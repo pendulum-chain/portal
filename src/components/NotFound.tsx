@@ -1,6 +1,6 @@
 import * as React from 'preact';
 
-export function NotFound(props) {
+export function NotFound() {
   return (
     <h1>NotFound</h1>
   )
