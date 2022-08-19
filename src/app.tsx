@@ -1,32 +1,22 @@
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import './app.css'
+import * as React from 'preact';
+import { Routes, Route } from "react-router-dom";
+import { NotFound } from "./components/NotFound";
+import { Dashboard } from "./pages/dashboard/Dashboard";
+// import { Staking } from "./pages/staking/Staking";
+// import { Swap } from "./pages/swap/Swap";
+import Layout from "./components/Layout";
 
 export function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ maxWidth: 1300, marginLeft: 'auto', marginRight: 'auto' }}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          {/*<Route path="staking" element={<Staking />} />*/}
+          {/*<Route path="swap" element={<Swap />} />*/}
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </div>
+  );
 }
