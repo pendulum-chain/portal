@@ -1,8 +1,6 @@
 import React, { createContext } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
-// Dispatch, SetStateAction,
-
 export interface Toast {
   message: string;
   type: 'success' | 'error';
@@ -23,7 +21,7 @@ const GlobalStateProvider = ({
   children,
   value = {} as GlobalStateInterface
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   value?: Partial<GlobalStateInterface>;
 }) => {
   const [state, setState] = useState(value);
