@@ -1,6 +1,6 @@
 import JSX = preact.JSX
 
-type SetStateAction<S> = S | (prevState: S) => S;
+type SetStateAction<S> = S | ((prevState: S) => S);
 
 type Dispatch<A> = (action: A) => void;
 
