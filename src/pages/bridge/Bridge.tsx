@@ -1,7 +1,7 @@
 import * as React from 'preact';
 
-export function Swap() {
+export function Bridge() {
   return (
-    <h1>Swap</h1>
+    <h1>Bridge</h1>
   )
 }

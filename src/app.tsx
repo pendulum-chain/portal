@@ -2,8 +2,9 @@ import * as React from 'preact';
 import { Navigate, Routes, Route } from "react-router-dom";
 import { NotFound } from "./components/NotFound";
 import { Dashboard } from "./pages/dashboard/Dashboard";
-import { Staking } from "./pages/staking/Staking";
-import { Swap } from "./pages/swap/Swap";
+import { Bridge } from './pages/bridge/Bridge';
+import { Amm } from "./pages/amm/Amm";
+import { Collators } from './pages/collators/Collators';
 import Layout from "./components/Layout";
 
 export function App() {
@@ -16,8 +17,9 @@ export function App() {
         />
         <Route path="/:network/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="staking" element={<Staking />} />
-          <Route path="swap" element={<Swap />} />
+          <Route path="amm" element={<Amm />} />
+          <Route path="bridge" element={<Bridge />} />
+          <Route path="collators" element={<Collators />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

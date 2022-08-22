@@ -1,7 +1,7 @@
 import * as React from 'preact';
 
-export function Staking() {
+export function Amm() {
   return (
-    <h1>Staking</h1>
+    <h1>Amm</h1>
   )
 }
