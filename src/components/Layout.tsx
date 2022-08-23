@@ -62,16 +62,16 @@ export default function Layout() {
             <SwapIcon /><span>Amm</span>
           </NavLink>
           <NavLink
-            to="./collators"
-            className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
-          >
-            <StakingIcon /><span>Collators</span>
-          </NavLink>
-          <NavLink
             to="./bridge"
             className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
           >
             <BridgeIcon /><span>Bridge</span>
+          </NavLink>
+          <NavLink
+            to="./collators"
+            className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
+          >
+            <StakingIcon /><span>Collators</span>
           </NavLink>
           <NavLink
             to="./governance"
