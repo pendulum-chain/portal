@@ -1,8 +1,8 @@
 import { useTheme } from "react-daisyui"
 
-const { setTheme } = useTheme();
+const { setTheme } = useTheme()
 
-type themeType = 'pendulum' | 'amplitud';
+type themeType = 'winter' | 'forest'; // light / dark
 
 const themeSwap = (themeName: themeType) => {
   document

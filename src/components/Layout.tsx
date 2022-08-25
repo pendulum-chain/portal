@@ -1,6 +1,7 @@
 import * as React from 'preact';
-import { useEffect } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useTheme, Button } from "react-daisyui";
 
 import BridgeIcon from '../assets/bridge';
 import DashboardIcon from "../assets/dashboard";
@@ -8,23 +9,43 @@ import GovernanceIcon from "../assets/governance";
 import SwapIcon from "../assets/swap";
 import StakingIcon from "../assets/staking";
 import PendulumLogo from '../assets/pendulum-logo.png';
+import AmplitudLogo from '../assets/amplitud-logo.svg';
 import MediumLogo from '../assets/medium-logo.png';
+import OpenWallet from './OpenWallet';
 
 type LinkParameter = { isActive: boolean; };
+
+const DownChevron = ({ style, fillColor }) => {
+  /* Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */
+
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" style={style} viewBox="0 0 448 512">
+      <path fill={fillColor} d="M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z" />
+    </svg>
+  )
+}
 
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const spllited = location.pathname.split('/');
+  const [isPendulum, setIsPendulum] = useState<boolean>(false);
+  const { setTheme } = useTheme();
 
-  console.log(spllited);
+  const sideBarLogo = isPendulum ? PendulumLogo : AmplitudLogo;
+  const chevronColor = isPendulum ? 'grey' : 'black';
+  const bgColor = isPendulum ? 'bg-white' : 'bg-black';
 
   useEffect(() => {
     if (spllited[1] && spllited[1] === 'pendulum' && !spllited[2]) {
+      setTheme('light');
+      setIsPendulum(true);
       navigate('/pendulum/dashboard');
     }
 
     if (spllited[1] && spllited[1] === 'amplitud' && !spllited[2]) {
+      setTheme('black');
+      setIsPendulum(false);
       navigate('/amplitud/dashboard');
     }
 
@@ -33,18 +54,37 @@ export default function Layout() {
     }
   }, []);
 
+  const FooterLink = () => {
+    return isPendulum
+      ? <span onClick={() => window.location.href = "/amplitud"}>Amplitud</span>
+      : <span onClick={() => window.location.href = "/pendulum"}>Pendulum</span>
+  }
+
   return (
-    <div class="flex md:flex-row-reverse flex-wrap bg-white">
+    <div class="flex md:flex-row-reverse flex-wrap `${bgColor}`">
       <div class="w-full md:w-4/5">
         <div class="container pt-16 px-6 h-full">
-          <div style={{ backgroundColor: '#919191', height: 90, width: '100%' }} />
+          <div style={{ height: 90, width: '100%' }} className="flex flex-row-reverse">
+
+            <OpenWallet />
+            <div class="dropdown dropdown-end">
+              <Button tabIndex={0} class="btn m-1" color="ghost" animation={false}>
+                {isPendulum ? 'Pendulum' : 'Amplitud'}
+                <DownChevron fillColor={chevronColor} style={{ marginLeft: 10, maxWidth: 15 }} />
+              </Button>
+              <ul tabIndex={0} class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li><FooterLink /></li>
+              </ul>
+            </div>
+
+          </div>
           <Outlet />
         </div>
       </div>
 
-      <div style={{ boxShadow: '7px 0 10px rgba(0,0,0,0.1)' }} class="w-full md:w-1/5 text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar">
+      <div style={{ ...isPendulum ? null : { backgroundColor: '#1c1c1c' }, ...{ boxShadow: '7px 0 10px rgba(0,0,0,0.1)' } }} class="w-full md:w-1/5 text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar">
         <div class="pendulum-versions">
-          <img class="pendulum-logo" src={PendulumLogo} alt="" />
+          <img class="pendulum-logo" src={sideBarLogo} alt="" style={isPendulum ? null : { marginTop: 20, marginBottom: 30, marginLeft: 30 }} />
           <p>Runtime: 2083</p>
           <p>DApp: P11.02</p>
         </div>
@@ -84,7 +124,12 @@ export default function Layout() {
           <div class="pendulum-network-id">
             <p>Network</p>
             <ul>
-              <li>• 134335322</li>
+              <li>
+                <svg height="10" width="10">
+                  <circle cx="5" cy="5" r="5" />
+                </svg>
+                <span>134335322</span>
+              </li>
             </ul>
           </div>
           <div className="pendulum-social-and-terms">
@@ -130,12 +175,12 @@ export default function Layout() {
                 <li><a href="#">User Manual</a></li>
                 <li><a href="#">Stats</a></li>
                 <li><a href="#">Wiki</a></li>
-                <li><a href="#">Pendulum</a></li>
+                <li><FooterLink /></li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

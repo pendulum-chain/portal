@@ -1,100 +1,104 @@
 h1 {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .portfolio {
-    float: left;
-    width: 390px;
-    height: 95%;
-    border: 40px;
-    border-radius: 30px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  float: left;
+  width: 390px;
+  height: 95%;
+  border: 40px;
+  border-radius: 30px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .portfolio>.portfolio {
-    height: auto;
-    padding-top: 20px;
-    padding-bottom: 15px;
-    text-align: center;
-    margin-bottom: 50px;
+  height: auto;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  text-align: center;
+  margin-bottom: 50px;
 }
 
 .portfolio>.portfolio ul {
-    background-color: #f8f8f8;
-    max-width: 55%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-radius: 1000px;
+  background-color: var(--grey-f8);
+  max-width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 1000px;
 }
 
 .portfolio>.portfolio li {
-    padding-left: 10px;
-    padding-right: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .portfolio>.portfolio li.up {
-    color: #0a0;
+  color: var(--dark-green);
 }
 
 .portfolio>.portfolio li.down {
-    color: #a00;
+  color: var(--dark-red);
 }
 
 .box h2 {
-    font-size: 30px;
-    font-weight: 700;
-    margin-left: 30px;
+  font-size: 30px;
+  font-weight: 700;
+  margin-left: 30px;
 }
 
 .box h1,
 .portfolio h1 {
-    font-weight: 500;
-    padding: 10px 30px;
-    font-size: 18px;
-    margin-top: 20px;
+  font-weight: 500;
+  padding: 10px 30px;
+  font-size: 18px;
+  margin-top: 20px;
 }
 
 .portfolio h2 {
-    font-size: 30px;
-    font-weight: 700;
-    margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0;
 }
 
 .portfolio h4 {}
 
 .portfolio>ul li {
-    display: inline;
+  display: inline;
 }
 
 .graph {
-    float: right;
-    width: 60%;
-    height: 95%;
-    border: 40px;
-    border-radius: 30px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    position: relative;
-    padding-left: 20px;
-    padding-right: 20px;
+  float: right;
+  width: 60%;
+  height: 95%;
+  border: 40px;
+  border-radius: 30px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .graph-stats {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    bottom: 30px;
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 30px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .graph-stats .token {
-    padding: 0 20px;
+  padding: 0 20px;
 }
 
 
 .graph-stats .token span {
-    font-weight: 500;
+  font-weight: 500;
+}
+
+.box {
+  background-color: var(--clear)
 }

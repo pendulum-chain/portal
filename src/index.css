@@ -2,10 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-light: #00aece;
+  --border-light: #1eb7d3;
+  --secondary-light: #eaf3f4;
+  --background-light: #ddeced;
+  --nice-light: #00cbf0;
+  --border-dark-light: #3aa4b7;
+  --clear-light: #ffffff;
+  --darkner-light: #000000;
+  --dark-green-light: #00aa00;
+  --dark-red-light: #aa0000;
+  --grey-91-light: #919191;
+  --grey-88-light: #888;
+  --grey-99-light: #999;
+  --grey-f9-light: #f9f9f9;
+  --grey-f8-light: #f8f8f8;
+
+  --primary-dark: #5defa7;
+  --border-dark: #53d96e;
+  --secondary-dark: #1c1c1c;
+  --background-dark: #1c1c1c;
+  --nice-dark: #46925e;
+  --border-dark-dark: #3cb73a;
+  --clear-dark: #1c1c1c;
+  --darkner-dark: #858585;
+  --dark-green-dark: #00aa00;
+  --dark-red-dark: #aa0000;
+  --grey-91-dark: #787777;
+  --grey-88-dark: rgb(97, 95, 95);
+  --grey-99-dark: rgb(60, 58, 58);
+  --grey-f9-dark: #191010;
+  --grey-f8-dark: #1c1c1c;
+}
+
+[data-theme="black"] {
+  --primary: var(--primary-dark);
+  --border: var(--border-dark);
+  --secondary: var(--secondary-dark);
+  --background: var(--background-dark);
+  --nice: var(--nice-dark);
+  --border-dark: var(--border-dark-dark);
+  --clear: var(--clear-dark);
+  --darkner: var(--darkner-dark);
+  --dark-green: var(--dark-green-dark);
+  --dark-red: var(--dark-red-dark);
+  --grey-91: var(--grey-91-dark);
+  --grey-88: var(--grey-88-dark);
+  --grey-99: var(--grey-99-dark);
+  --grey-f9: var(--grey-f9-dark);
+  --grey-f8: var(--grey-f8-dark);
+}
+
+[data-theme="light"] {
+  --primary: var(--primary-light);
+  --border: var(--border-light);
+  --secondary: var(--secondary-light);
+  --background: var(--background-light);
+  --nice: var(--nice-light);
+  --border-dark: var(--border-dark-light);
+  --clear: var(--clear-light);
+  --darkner: var(--darkner-light);
+  --dark-green: var(--dark-green-light);
+  --dark-red: var(--dark-red-light);
+  --grey-91: var(--grey-91-light);
+  --grey-88: var(--grey-88-light);
+  --grey-99: var(--grey-99-light);
+  --grey-f9: var(--grey-f9-light);
+  --grey-f8: var(--grey-f8-light);
+}
+
 body {
   font-family: 'Lexend', sans-serif;
   font-weight: 300;
-  color: #000;
+  color: var(--darkner);
+  background-color: var(--clear);
 }
 
 .sidebar {
@@ -18,14 +89,25 @@ body {
 .pendulum-versions {
   text-align: left;
   font-size: 15px;
-  color: #919191
+  color: var(--grey-91);
 }
 
 .pendulum-versions p,
 .pendulum-network-id ul,
 .pendulum-network-id p {
   padding-left: 30px;
-  color: #000;
+  color: var(--darkner);
+}
+
+.pendulum-network-id svg,
+.pendulum-network-id span {
+  display: inline;
+  margin-right: 10px;
+}
+
+.pendulum-network-id svg {
+  margin-top: -2px;
+  fill: var(--primary);
 }
 
 nav>a {
@@ -39,6 +121,11 @@ nav>a {
   max-width: 65%;
   transition: all 0.2s ease-out;
   align-items: center;
+  color: var(--darkner);
+}
+
+.turn-me-white {
+  stroke: var(--darkner);
 }
 
 nav>a:hover {
@@ -46,8 +133,8 @@ nav>a:hover {
 }
 
 nav>.active {
-  color: #fff;
-  background-color: #00aece;
+  color: var(--clear);
+  background-color: var(--primary);
   margin: 15px 20px 15px 40px;
 }
 
@@ -59,7 +146,7 @@ nav>.active {
 
 
 .pendulum-network-id li {
-  color: #00cbf0
+  color: var(--nice);
 }
 
 nav a svg {
@@ -75,7 +162,7 @@ a .turn-me-white {
 
 /* a:hover .turn-me-white  */
 a.active .turn-me-white {
-  stroke: #fff
+  stroke: var(--clear);
 }
 
 nav a span {
@@ -128,11 +215,13 @@ nav a span {
   float: left;
   width: 40%;
   font-size: 15px;
-  color: #999;
+  color: var(--grey-99);
   text-align: left;
   margin-bottom: 10px;
 }
 
+.pendulum-social-and-terms .terms span:hover,
 .pendulum-social-and-terms .terms a:hover {
+  cursor: pointer;
   border-bottom: 1px solid #888;
 }
