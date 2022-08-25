@@ -1,4 +1,4 @@
-import * as React from 'preact';
+import * as React from 'react';
 import { useEffect, useState } from 'preact/hooks';
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTheme, Button } from "react-daisyui";
@@ -14,12 +14,13 @@ import MediumLogo from '../assets/medium-logo.png';
 import OpenWallet from './OpenWallet';
 
 type LinkParameter = { isActive: boolean; };
+type superStyle = string | React.CSSProperties | undefined;
 
-const DownChevron = ({ style, fillColor }) => {
+const DownChevron = ({ svgStyle, fillColor } : { svgStyle: superStyle, fillColor: string }) => {
   /* Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" style={style} viewBox="0 0 448 512">
+    <svg xmlns="http://www.w3.org/2000/svg" style={svgStyle} viewBox="0 0 448 512">
       <path fill={fillColor} d="M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z" />
     </svg>
   )
@@ -61,7 +62,7 @@ export default function Layout() {
   }
 
   return (
-    <div class="flex md:flex-row-reverse flex-wrap `${bgColor}`">
+    <div class={`flex md:flex-row-reverse flex-wrap ${bgColor}`}>
       <div class="w-full md:w-4/5">
         <div class="container pt-16 px-6 h-full">
           <div style={{ height: 90, width: '100%' }} className="flex flex-row-reverse">
@@ -70,7 +71,7 @@ export default function Layout() {
             <div class="dropdown dropdown-end">
               <Button tabIndex={0} class="btn m-1" color="ghost" animation={false}>
                 {isPendulum ? 'Pendulum' : 'Amplitud'}
-                <DownChevron fillColor={chevronColor} style={{ marginLeft: 10, maxWidth: 15 }} />
+                <DownChevron fillColor={chevronColor} svgStyle={{ marginLeft: 10, maxWidth: 15 }} />
               </Button>
               <ul tabIndex={0} class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li><FooterLink /></li>
@@ -84,7 +85,7 @@ export default function Layout() {
 
       <div style={{ ...isPendulum ? null : { backgroundColor: '#1c1c1c' }, ...{ boxShadow: '7px 0 10px rgba(0,0,0,0.1)' } }} class="w-full md:w-1/5 text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar">
         <div class="pendulum-versions">
-          <img class="pendulum-logo" src={sideBarLogo} alt="" style={isPendulum ? null : { marginTop: 20, marginBottom: 30, marginLeft: 30 }} />
+          <img class="pendulum-logo" src={sideBarLogo} alt="" style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }} />
           <p>Runtime: 2083</p>
           <p>DApp: P11.02</p>
         </div>
