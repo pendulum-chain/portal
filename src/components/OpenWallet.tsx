@@ -15,11 +15,6 @@ const OpenWallet = () => {
         await web3Enable('Pendulum/Amplitud')
         let allAccounts = await web3Accounts()
 
-        allAccounts = allAccounts.map(({ address, meta }) => ({
-          address,
-          meta: { ...meta, name: `${meta.name} (${meta.source})` },
-        }))
-
         const provider = new WsProvider('wss://rpc.polkadot.io/');
         const _api = new ApiPromise({
           provider, ...jsonrpc
@@ -42,7 +37,6 @@ const OpenWallet = () => {
 
   if (addresses.length > 0) {
     let name = addresses[0].meta.name;
-    name = name?.substring(0, name.length - 14);
 
     return (
       <Button animation={false} title={addresses[0].address}>
