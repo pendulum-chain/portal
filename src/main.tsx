@@ -7,9 +7,11 @@ import { BrowserRouter } from "react-router-dom";
 import { Theme } from "react-daisyui";
 import './index.css';
 
+const theme = localStorage.getItem('theme') || "black";
+
 render(
   <GlobalStateProvider>
-    <Theme dataTheme="dark">
+    <Theme dataTheme={theme}>
       <BrowserRouter>
         <App />
       </BrowserRouter>

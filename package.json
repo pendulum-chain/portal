@@ -1,7 +1,7 @@
 {
-  "name": "vite-preact-ts-starter",
+  "name": "pemdulum-amplitud-portal",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
   "dependencies": {
     "@polkadot/api": "^9.2.1",
     "@polkadot/extension-dapp": "^0.44.5",
+    "@polkadot/ui-keyring": "^2.9.7",
     "@polkadot/util": "^10.1.4",
     "preact": "^10.10.3",
     "react-daisyui": "^2.2.0",

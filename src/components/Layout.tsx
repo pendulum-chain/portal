@@ -16,7 +16,7 @@ import OpenWallet from './OpenWallet';
 type LinkParameter = { isActive: boolean; };
 type superStyle = string | React.CSSProperties | undefined;
 
-const DownChevron = ({ svgStyle, fillColor } : { svgStyle: superStyle, fillColor: string }) => {
+const DownChevron = ({ svgStyle, fillColor }: { svgStyle: superStyle, fillColor: string }) => {
   /* Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */
 
   return (
