@@ -1,13 +1,11 @@
-import "preact/debug";
-
-import { h, render } from 'preact';
+import { h, render } from "preact";
 import { GlobalStateProvider } from "./GlobalStateProvider";
-import { App } from './app';
+import { App } from "./app";
 import { BrowserRouter } from "react-router-dom";
 import { Theme } from "react-daisyui";
-import './index.css';
+import "./index.css";
 
-const theme = localStorage.getItem('theme') || "black";
+const theme = localStorage.getItem("theme") || "black";
 
 render(
   <GlobalStateProvider>
@@ -16,7 +14,6 @@ render(
         <App />
       </BrowserRouter>
     </Theme>
-  </GlobalStateProvider>
-  ,
-  document.getElementById('app') as HTMLElement
-)
+  </GlobalStateProvider>,
+  document.getElementById("app") as HTMLElement
+);

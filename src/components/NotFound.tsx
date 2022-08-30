@@ -1,7 +1,6 @@
-import * as React from 'preact';
+import * as React from "preact";
+import { h } from "preact";
 
 export function NotFound() {
-  return (
-    <h1>NotFound</h1>
-  )
+  return <h1>NotFound</h1>;
 }

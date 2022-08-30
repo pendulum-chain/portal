@@ -1,48 +1,64 @@
 import { NavLink } from "react-router-dom";
+import { h } from "preact";
 
-import BridgeIcon from '../../assets/bridge';
+import BridgeIcon from "../../assets/bridge";
 import DashboardIcon from "../../assets/dashboard";
 import GovernanceIcon from "../../assets/governance";
 import SwapIcon from "../../assets/swap";
 import StakingIcon from "../../assets/staking";
 
-type LinkParameter = { isActive: boolean; };
+type LinkParameter = { isActive: boolean };
 
 const Nav = () => {
   return (
     <nav>
       <NavLink
         to="./dashboard"
-        className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : ""
+        }
       >
-        <DashboardIcon /><span>Dashboard</span>
+        <DashboardIcon />
+        <span>Dashboard</span>
       </NavLink>
       <NavLink
         to="./amm"
-        className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : ""
+        }
       >
-        <SwapIcon /><span>Amm</span>
+        <SwapIcon />
+        <span>Amm</span>
       </NavLink>
       <NavLink
         to="./bridge"
-        className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : ""
+        }
       >
-        <BridgeIcon /><span>Bridge</span>
+        <BridgeIcon />
+        <span>Bridge</span>
       </NavLink>
       <NavLink
         to="./collators"
-        className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : ""
+        }
       >
-        <StakingIcon /><span>Collators</span>
+        <StakingIcon />
+        <span>Collators</span>
       </NavLink>
       <NavLink
         to="./governance"
-        className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : ""
+        }
       >
-        <GovernanceIcon /><span>Governance</span>
+        <GovernanceIcon />
+        <span>Governance</span>
       </NavLink>
     </nav>
-  )
-}
+  );
+};
 
 export default Nav;

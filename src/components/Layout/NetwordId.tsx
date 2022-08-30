@@ -1,3 +1,5 @@
+import { h } from "preact";
+
 const NetworkId = () => {
   return (
     <div class="pendulum-network-id">
@@ -12,6 +14,6 @@ const NetworkId = () => {
       </ul>
     </div>
   );
-}
+};
 
 export default NetworkId;

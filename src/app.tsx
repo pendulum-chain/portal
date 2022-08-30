@@ -1,15 +1,16 @@
-import * as React from 'preact';
+import * as React from "preact";
+import { h } from "preact";
 import { Navigate, Routes, Route } from "react-router-dom";
 import { NotFound } from "./components/NotFound";
 import { Dashboard } from "./pages/dashboard/Dashboard";
-import { Bridge } from './pages/bridge/Bridge';
+import { Bridge } from "./pages/bridge/Bridge";
 import { Amm } from "./pages/amm/Amm";
-import { Collators } from './pages/collators/Collators';
+import { Collators } from "./pages/collators/Collators";
 import Layout from "./components/Layout";
 
 export function App() {
   return (
-    <div style={{ maxWidth: 1800, marginLeft: 'auto', marginRight: 'auto' }}>
+    <div style={{ maxWidth: 1800, marginLeft: "auto", marginRight: "auto" }}>
       <Routes>
         <Route
           path="/"

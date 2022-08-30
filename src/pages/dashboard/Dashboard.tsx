@@ -1,11 +1,12 @@
-import * as React from 'preact';
-import Tabs from '../../components/Tabs';
-import TickerChangeTable from '../../components/TickerChangeTable';
-import './styles.css';
+import * as React from "preact";
+import { h } from "preact";
+import Tabs from "../../components/Tabs";
+import TickerChangeTable from "../../components/TickerChangeTable";
+import "./styles.css";
 
 export function Dashboard() {
   return (
-    <div class='mt-10'>
+    <div class="mt-10">
       <div className="dashboard portfolio">
         <h1>Portfolio</h1>
         <div className="portfolio">
@@ -24,9 +25,22 @@ export function Dashboard() {
         <h2>$63.231,98</h2>
         <svg viewBox="0 0 200 200" className="chart">
           <defs>
-            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%" gradientTransform="rotate(65)">
-              <stop offset="0%" style="stop-color:rgb(89, 196, 226);stop-opacity:1" />
-              <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+            <linearGradient
+              id="grad"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+              gradientTransform="rotate(65)"
+            >
+              <stop
+                offset="0%"
+                style="stop-color:rgb(89, 196, 226);stop-opacity:1"
+              />
+              <stop
+                offset="100%"
+                style="stop-color:rgb(255,255,255);stop-opacity:1"
+              />
             </linearGradient>
           </defs>
           <polyline
@@ -48,10 +62,26 @@ export function Dashboard() {
           />
         </svg>
         <div className="graph-stats">
-          <div className="token">vsToken<br /><span>$62M</span></div>
-          <div className="token">vKSM<br /><span>$62M</span></div>
-          <div className="token">vETH<br /><span>$32M</span></div>
-          <div className="token">DEX<br /><span>$7M</span></div>
+          <div className="token">
+            vsToken
+            <br />
+            <span>$62M</span>
+          </div>
+          <div className="token">
+            vKSM
+            <br />
+            <span>$62M</span>
+          </div>
+          <div className="token">
+            vETH
+            <br />
+            <span>$32M</span>
+          </div>
+          <div className="token">
+            DEX
+            <br />
+            <span>$7M</span>
+          </div>
         </div>
       </div>
     </div>
