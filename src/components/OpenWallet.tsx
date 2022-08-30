@@ -8,30 +8,40 @@ import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
 
 const OpenWallet = () => {
   const [addresses, setAddress] = useState<InjectedAccountWithMeta[]>([]);
+  const [text, setText] = useState<string>('Connect wallet');
+
+  const attemptToConnect = async () => {
+    try {
+      await web3Enable('Pendulum/Amplitud')
+      let allAccounts = await web3Accounts()
+
+      const provider = new WsProvider('wss://rpc.polkadot.io/');
+      const _api = new ApiPromise({
+        provider, ...jsonrpc
+      })
+
+      _api.on('connected', () => {
+        _api.isReady.then(_api => setAddress(allAccounts))
+      })
+      _api.on('ready', () => true)
+      _api.on('error', err => console.error(err));
+
+      const isDevelopment = false;
+
+      Keyring.loadAll({ isDevelopment }, allAccounts)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const connectButtonAction = async () => {
+    setText('Connecting...');
+    await attemptToConnect();
+  }
 
   useEffect(() => {
     (async () => {
-      try {
-        await web3Enable('Pendulum/Amplitud')
-        let allAccounts = await web3Accounts()
-
-        const provider = new WsProvider('wss://rpc.polkadot.io/');
-        const _api = new ApiPromise({
-          provider, ...jsonrpc
-        })
-
-        _api.on('connected', () => {
-          _api.isReady.then(_api => setAddress(allAccounts))
-        })
-        _api.on('ready', () => true)
-        _api.on('error', err => console.error(err));
-
-        const isDevelopment = false;
-
-        Keyring.loadAll({ isDevelopment }, allAccounts)
-      } catch (e) {
-        console.error(e)
-      }
+      await attemptToConnect();
     })();
   }, []);
 
@@ -51,8 +61,8 @@ const OpenWallet = () => {
   }
 
   return (
-    <Button animation={false}>
-      Connect wallet
+    <Button animation={false} onClick={async () => connectButtonAction()}>
+      {text}
     </Button>
   )
 }

@@ -5,8 +5,8 @@ import './styles.css';
 
 export function Dashboard() {
   return (
-    <div>
-      <div className="box portfolio">
+    <div class='mt-10'>
+      <div className="dashboard portfolio">
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
@@ -19,7 +19,7 @@ export function Dashboard() {
         <Tabs />
         <TickerChangeTable />
       </div>
-      <div className="box graph">
+      <div className="dashboard graph">
         <h1>Total Value Locked</h1>
         <h2>$63.231,98</h2>
         <svg viewBox="0 0 200 200" className="chart">
