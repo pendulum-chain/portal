@@ -16,7 +16,9 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
       await web3Enable(networkName);
       let allAccounts = await web3Accounts();
 
-      const provider = new WsProvider("wss://rpc.polkadot.io/");
+      // const provider = new WsProvider("wss://rpc.polkadot.io/");
+      const provider = new WsProvider("wss://pencol-kus-01.pendulumchain.tech");
+
       const _api = new ApiPromise({
         provider,
         ...jsonrpc,

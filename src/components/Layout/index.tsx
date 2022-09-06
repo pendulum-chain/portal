@@ -10,6 +10,7 @@ import OpenWallet from "../OpenWallet";
 import Nav from "./Nav";
 import NetworkId from "./NetwordId";
 import SocialAndTermLinks from "./SocialAndTermLinks";
+import { useNodeInfoState } from "../../NodeInfoProvider";
 
 export default function Layout(): React.JSX.Element {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Layout(): React.JSX.Element {
   const strings = location.pathname.split("/");
   const [isPendulum, setIsPendulum] = useState<boolean>(false);
   const { setTheme } = useTheme();
+  const { state } = useNodeInfoState();
 
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? "white" : "grey ";
@@ -109,7 +111,11 @@ export default function Layout(): React.JSX.Element {
                 : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
             }
           />
-          <p>Runtime: 2083</p>
+          <p>
+            Runtime:{" "}
+            {(state.nodeVersion && state.nodeVersion.toString()) ||
+              "0.0.0-00000000000"}
+          </p>
           <p>DApp: P11.02</p>
         </div>
         <Nav />
