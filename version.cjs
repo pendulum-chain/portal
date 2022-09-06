@@ -2,6 +2,9 @@ const fs = require("fs");
 
 const theFile = __dirname + "/src/components/Layout/index.tsx";
 
+if (!process.env.COMMIT_REF)
+  return;
+
 fs.readFile(theFile, "utf8", function (err, data) {
   if (err) {
     return console.log(err);
