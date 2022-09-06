@@ -8,10 +8,6 @@ import { NodeInfoProvider } from "./NodeInfoProvider";
 
 const theme = localStorage.getItem("theme") || "black";
 
-console.log({
-  env: process.env,
-});
-
 render(
   <GlobalStateProvider>
     <NodeInfoProvider>
