@@ -116,7 +116,7 @@ export default function Layout(): React.JSX.Element {
             {(state.nodeVersion && state.nodeVersion.toString()) ||
               "0.0.0-00000000000"}
           </p>
-          <p>DApp: P11.02</p>
+          <p>DApp: COMMIT_HASH</p>
         </div>
         <Nav />
         <div className="sidebar-footer">
