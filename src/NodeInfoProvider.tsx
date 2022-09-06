@@ -36,14 +36,12 @@ const NodeInfoProvider = ({
       apiPromise.on("connected", async () => {
         try {
           apiPromise.isReady.then((api) => {
-            api.derive.chain
-              .bestNumberFinalized()
-              .then((bestNumberFinalize) => {
-                setState((prevState) => ({
-                  ...prevState,
-                  ...{ bestNumberFinalize: Number(bestNumberFinalize) },
-                }));
-              });
+            api.derive.chain.bestNumber().then((bestNumberFinalize) => {
+              setState((prevState) => ({
+                ...prevState,
+                ...{ bestNumberFinalize: Number(bestNumberFinalize) },
+              }));
+            });
           });
 
           const [chain, nodeName, nodeVersion] = await Promise.all([
