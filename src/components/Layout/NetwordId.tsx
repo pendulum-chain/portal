@@ -12,7 +12,13 @@ const NetworkId = () => {
           <svg height="10" width="10">
             <circle cx="5" cy="5" r="5" />
           </svg>
-          <span>{state.bestNumberFinalize || "000000"}</span>
+          <a
+            href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fpencol-kus-01.pendulumchain.tech#/explorer"
+            target="_blank"
+            rel="nofollow"
+          >
+            {state.bestNumberFinalize || "000000"}
+          </a>
         </li>
       </ul>
     </div>
