@@ -144,6 +144,9 @@ nav>.active {
   margin-bottom: 20px;
 }
 
+.pendulum-network-id a:hover {
+  text-decoration: underline;
+}
 
 .pendulum-network-id li {
   color: var(--nice);
