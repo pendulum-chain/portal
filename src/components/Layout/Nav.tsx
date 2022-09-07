@@ -48,15 +48,14 @@ const Nav = () => {
         <StakingIcon />
         <span>Collators</span>
       </NavLink>
-      <NavLink
-        to="./governance"
-        className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : ""
-        }
+      <a
+        href="https://amplitude.polkassembly.io/"
+        target="_blank"
+        rel="nofollow"
       >
         <GovernanceIcon />
         <span>Governance</span>
-      </NavLink>
+      </a>
     </nav>
   );
 };
