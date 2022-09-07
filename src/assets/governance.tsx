@@ -1,9 +1,26 @@
-const GovernanceIcon = () =>
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-    <g id="Group_3740" data-name="Group 3740" transform="translate(-80 -660)">
-      <path class="turn-me-white" id="primary" d="M15,6h5a1,1,0,0,1,1,1v3a1,1,0,0,1-1,1H16l-4,2V11a1,1,0,0,1-1-1V8" transform="translate(78 658)" fill="none" stroke="#1f1f1f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-      <path class="turn-me-white" id="primary-2" data-name="primary" d="M6,13a2,2,0,1,0,2,2A2,2,0,0,0,6,13Zm3,7a3,3,0,0,0-3-3H6a3,3,0,0,0-3,3v1H9ZM15,7V4a1,1,0,0,0-1-1H4A1,1,0,0,0,3,4V7A1,1,0,0,0,4,8H14A1,1,0,0,0,15,7Z" transform="translate(78 658)" fill="none" stroke="#1f1f1f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-    </g>
+import { h } from "preact";
+
+const GovernanceIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+    <path
+      className="turn-me-white"
+      d="m 13,4 h 5 a 1,1 0 0 1 1,1 v 3 a 1,1 0 0 1 -1,1 h -4 l -4,2 V 9 A 1,1 0 0 1 9,8 V 6"
+      fill="none"
+      stroke="#1f1f1f"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    />
+    <path
+      className="turn-me-white"
+      d="m 4,11 a 2,2 0 1 0 2,2 2,2 0 0 0 -2,-2 z m 3,7 A 3,3 0 0 0 4,15 v 0 a 3,3 0 0 0 -3,3 v 1 H 7 Z M 13,5 V 2 A 1,1 0 0 0 12,1 H 2 A 1,1 0 0 0 1,2 v 3 a 1,1 0 0 0 1,1 h 10 a 1,1 0 0 0 1,-1 z"
+      fill="none"
+      stroke="#1f1f1f"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    />
   </svg>
+);
 
 export default GovernanceIcon;
