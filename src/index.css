@@ -18,6 +18,7 @@
   --grey-99-light: #999;
   --grey-f9-light: #f9f9f9;
   --grey-f8-light: #f8f8f8;
+  --footer-links-light: #999999;
 
   --primary-dark: #5defa7;
   --border-dark: #53d96e;
@@ -34,6 +35,7 @@
   --grey-99-dark: rgb(60, 58, 58);
   --grey-f9-dark: #191010;
   --grey-f8-dark: #1c1c1c;
+  --footer-links-dark: #858585;
 }
 
 [data-theme="black"] {
@@ -52,6 +54,7 @@
   --grey-99: var(--grey-99-dark);
   --grey-f9: var(--grey-f9-dark);
   --grey-f8: var(--grey-f8-dark);
+  --footer-links: var(--footer-links-dark);
 }
 
 [data-theme="light"] {
@@ -70,6 +73,7 @@
   --grey-99: var(--grey-99-light);
   --grey-f9: var(--grey-f9-light);
   --grey-f8: var(--grey-f8-light);
+  --footer-links: var(--footer-links-light);
 }
 
 body {
@@ -206,6 +210,7 @@ nav a span {
 .pendulum-social-and-terms .social svg {
   width: 20px;
   height: 20px;
+  filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%);
 }
 
 .pendulum-social-and-terms .terms {
@@ -218,7 +223,7 @@ nav a span {
   float: left;
   width: 40%;
   font-size: 15px;
-  color: var(--grey-99);
+  color: var(--footer-links);
   text-align: left;
   margin-bottom: 10px;
 }
@@ -226,5 +231,5 @@ nav a span {
 .pendulum-social-and-terms .terms span:hover,
 .pendulum-social-and-terms .terms a:hover {
   cursor: pointer;
-  border-bottom: 1px solid #888;
+  border-bottom: 1px solid var(--footer-links);
 }
