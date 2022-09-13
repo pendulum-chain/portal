@@ -1,4 +1,4 @@
-import React, { createContext } from "preact";
+import { h, createContext } from "preact";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";

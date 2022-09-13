@@ -1,4 +1,3 @@
-import * as React from "preact";
 import { h } from "preact";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";

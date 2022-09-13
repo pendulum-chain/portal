@@ -1,4 +1,3 @@
-import * as React from "preact";
 import { Button, Table } from "react-daisyui";
 import { useState } from "preact/hooks";
 import { h } from "preact";

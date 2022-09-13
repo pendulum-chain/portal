@@ -1,6 +1,7 @@
-import * as React from "react";
 import { useEffect, useState } from "preact/hooks";
+import { memo, FC } from "preact/compat";
 import { h } from "preact";
+
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "react-daisyui";
 
@@ -42,7 +43,7 @@ export default function Layout(): React.JSX.Element {
     }
   }, []);
 
-  const FooterLink: React.FC = () => {
+  const FooterLink: FC = memo(() => {
     return isPendulum ? (
       <span onClick={() => (window.location.href = "/amplitude")}>
         Amplitude
@@ -50,7 +51,7 @@ export default function Layout(): React.JSX.Element {
     ) : (
       <span onClick={() => (window.location.href = "/pendulum")}>Pendulum</span>
     );
-  };
+  });
 
   return (
     <div class={`flex md:flex-row-reverse flex-wrap ${bgColor}`}>

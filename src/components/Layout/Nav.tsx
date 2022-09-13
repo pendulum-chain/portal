@@ -6,10 +6,11 @@ import DashboardIcon from "../../assets/dashboard";
 import GovernanceIcon from "../../assets/governance";
 import SwapIcon from "../../assets/swap";
 import StakingIcon from "../../assets/staking";
+import { memo } from "react";
 
 type LinkParameter = { isActive: boolean };
 
-const Nav = () => {
+const Nav = memo(() => {
   return (
     <nav>
       <NavLink
@@ -58,6 +59,6 @@ const Nav = () => {
       </a>
     </nav>
   );
-};
+});
 
 export default Nav;

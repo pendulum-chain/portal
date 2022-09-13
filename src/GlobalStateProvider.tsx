@@ -1,9 +1,9 @@
-import React, { createContext } from 'preact';
-import { useContext, useState } from 'preact/hooks';
+import { h, createContext } from "preact";
+import { useContext, useState } from "preact/hooks";
 
 export interface Toast {
   message: string;
-  type: 'success' | 'error';
+  type: "success" | "error";
 }
 export interface GlobalStateInterface {
   accountSecret: string;
@@ -14,18 +14,22 @@ export interface GlobalStateInterface {
 
 const GlobalStateContext = createContext({
   state: {} as Partial<GlobalStateInterface>,
-  setState: {} as Dispatch<SetStateAction<Partial<GlobalStateInterface>>>
+  setState: {} as Dispatch<SetStateAction<Partial<GlobalStateInterface>>>,
 });
 
 const GlobalStateProvider = ({
   children,
-  value = {} as GlobalStateInterface
+  value = {} as GlobalStateInterface,
 }: {
   children: ReactNode;
   value?: Partial<GlobalStateInterface>;
 }) => {
   const [state, setState] = useState(value);
-  return <GlobalStateContext.Provider value={{ state, setState }}>{children}</GlobalStateContext.Provider>;
+  return (
+    <GlobalStateContext.Provider value={{ state, setState }}>
+      {children}
+    </GlobalStateContext.Provider>
+  );
 };
 
 const useGlobalState = () => useContext(GlobalStateContext);

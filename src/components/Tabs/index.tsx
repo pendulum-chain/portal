@@ -1,9 +1,9 @@
-import * as React from "preact";
+import { FC } from "preact/compat";
 import { h } from "preact";
 
 import "./styles.css";
 
-const Tabs = () => {
+const Tabs: FC = () => {
   return (
     <div className="date-tabs">
       <ul>

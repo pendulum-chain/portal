@@ -1,4 +1,3 @@
-import * as React from "preact";
 import { h } from "preact";
 import { Navigate, Routes, Route } from "react-router-dom";
 import { NotFound } from "./components/NotFound";

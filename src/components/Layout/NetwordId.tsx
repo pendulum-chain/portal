@@ -1,7 +1,8 @@
 import { h } from "preact";
+import { memo, FC } from "preact/compat";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 
-const NetworkId = () => {
+const NetworkId: FC = memo(() => {
   const { state } = useNodeInfoState();
 
   return (
@@ -23,6 +24,6 @@ const NetworkId = () => {
       </ul>
     </div>
   );
-};
+});
 
 export default NetworkId;

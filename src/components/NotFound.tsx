@@ -1,4 +1,3 @@
-import * as React from "preact";
 import { h } from "preact";
 
 export function NotFound() {

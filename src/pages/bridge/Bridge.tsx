@@ -1,12 +1,10 @@
-import * as React from "preact";
-import Box from "../../components/Box";
-import "./styles.css";
 import { h } from "preact";
 import { Button } from "react-daisyui";
-
+import Box from "../../components/Box";
+import "./styles.css";
 import USDC from "../../assets/usdc.png";
 
-export function Bridge(): React.JSX.Element {
+export function Bridge(): JSX.Element {
   const Dummy = () => (
     <>
       <div className="row-pick-coin">

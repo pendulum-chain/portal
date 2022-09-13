@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "preact/compat";
 import { h } from "preact";
 import MediumLogo from "../../assets/medium-logo.png";
 
