@@ -2,6 +2,7 @@ import { Button, Table } from "react-daisyui";
 import { useState } from "preact/hooks";
 import { h } from "preact";
 import dummy_collator from "../../../collator";
+import { useNodeInfoState } from "../../NodeInfoProvider";
 
 export function Collators() {
   enum filters {
@@ -10,6 +11,15 @@ export function Collators() {
     delegations,
     apr,
   }
+
+  const { state } = useNodeInfoState();
+  const { api } = state;
+
+  api &&
+    api.query.collatorSelection.invulnerables().then((data) =>
+      // @ts-ignore
+      data.map((item) => console.log(item.toString()))
+    );
 
   // @ts-ignore
   const sortData = (sortable: filters, asc = false) => {
