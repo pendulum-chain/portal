@@ -3,6 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
+import AddressFormatter from "../../components/AddressFormatter";
 
 export function Collators() {
   enum filters {
@@ -183,8 +184,10 @@ export function Collators() {
             {invulnerables &&
               invulnerables.map((item, index) => (
                 <Table.Row key={`collator_table_${index}`}>
-                  {/* @ts-ignore */}
-                  <span>{item.toString()}</span>
+                  <span>
+                    {/* @ts-ignore */}
+                    <AddressFormatter address={item.toString()} />
+                  </span>
                   <span>0 AMPE</span>
                   <span>11.22%</span>
                   <span>20</span>

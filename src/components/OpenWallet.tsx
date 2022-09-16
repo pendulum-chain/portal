@@ -3,19 +3,13 @@ import { WalletSelect } from "@talisman-connect/components";
 import { Button } from "react-daisyui";
 import { useState } from "preact/hooks";
 import { WalletAccount, Wallet } from "@talisman-connect/wallets";
+import AddressFormatter from "./AddressFormatter";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
   const [address, setAddress] = useState<string>("");
 
   if (Object.keys(address).length > 0 && address.length > 0) {
-    const addressLength = address.length;
-    const displayAddress = [
-      address.slice(0, 6),
-      "...",
-      address.slice(addressLength - 6, addressLength),
-    ];
-
     return (
       <Button
         title={walletSelected.title}
@@ -28,7 +22,8 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
           />
         }
       >
-        {displayAddress}
+        {/* @ts-ignore */}
+        <AddressFormatter address={address.toString()} trimLength={4} />
       </Button>
     );
   }
