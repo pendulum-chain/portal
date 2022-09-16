@@ -8,6 +8,7 @@ export interface NodeInfoProviderInterface {
   chain: string;
   nodeName: string;
   nodeVersion: string;
+  api: ApiPromise;
 }
 
 const NodeInfoContext = createContext({
@@ -24,7 +25,11 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  const provider = new WsProvider("wss://pencol-kus-01.pendulumchain.tech");
+  const provider = new WsProvider([
+    "wss://pencol-kus-00.pendulumchain.tech",
+    "wss://pencol-kus-01.pendulumchain.tech",
+    "wss://pencol-kus-02.pendulumchain.tech",
+  ]);
 
   const apiPromise = new ApiPromise({
     provider,
@@ -39,7 +44,7 @@ const NodeInfoProvider = ({
             api.derive.chain.bestNumber().then((bestNumberFinalize) => {
               setState((prevState) => ({
                 ...prevState,
-                ...{ bestNumberFinalize: Number(bestNumberFinalize) },
+                ...{ bestNumberFinalize: Number(bestNumberFinalize), api },
               }));
             });
           });
