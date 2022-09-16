@@ -154,7 +154,7 @@ export function Collators() {
           </div>
         </div>
 
-        <Table className="mt-10 w-full" compact>
+        <Table className="mt-10 w-full">
           <Table.Head className="cursor-pointer">
             <span
               class="block w-1/5"
