@@ -83,6 +83,11 @@ body {
   background-color: var(--clear);
 }
 
+.main-wrapper {
+  max-width: 1800px;
+  min-width: 1700px;
+}
+
 .sidebar {
   display: flex;
   justify-content: space-between;

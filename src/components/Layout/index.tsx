@@ -51,7 +51,12 @@ export default function Layout(): React.JSX.Element {
         Amplitude
       </span>
     ) : (
-      <span onClick={() => (window.location.href = "/pendulum")}>Pendulum</span>
+      <span
+        onClick={() => (window.location.href = "/pendulum")}
+        className="hidden"
+      >
+        Pendulum
+      </span>
     );
   });
 

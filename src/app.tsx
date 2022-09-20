@@ -9,7 +9,7 @@ import Layout from "./components/Layout";
 
 export function App() {
   return (
-    <div style={{ maxWidth: 1800, marginLeft: "auto", marginRight: "auto" }}>
+    <div className="main-wrapper mx-auto">
       <Routes>
         <Route
           path="/"

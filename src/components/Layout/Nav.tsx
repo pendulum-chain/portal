@@ -26,24 +26,24 @@ const Nav = memo(() => {
       // FIXME: hiding pendulum code
       // https://github.com/pendulum-chain/portal/issues/15
       */}
-      {/*<NavLink*/}
-      {/*  to="./amm"*/}
-      {/*  className={(navData: LinkParameter) =>*/}
-      {/*    navData.isActive ? "active" : ""*/}
-      {/*  }*/}
-      {/*>*/}
-      {/*  <SwapIcon />*/}
-      {/*  <span>Amm</span>*/}
-      {/*</NavLink>*/}
-      {/*<NavLink*/}
-      {/*  to="./bridge"*/}
-      {/*  className={(navData: LinkParameter) =>*/}
-      {/*    navData.isActive ? "active" : ""*/}
-      {/*  }*/}
-      {/*>*/}
-      {/*  <BridgeIcon />*/}
-      {/*  <span>Bridge</span>*/}
-      {/*</NavLink>*/}
+      <NavLink
+        to="./amm"
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : "hidden"
+        }
+      >
+        <SwapIcon />
+        <span>Amm</span>
+      </NavLink>
+      <NavLink
+        to="./bridge"
+        className={(navData: LinkParameter) =>
+          navData.isActive ? "active" : "hidden"
+        }
+      >
+        <BridgeIcon />
+        <span>Bridge</span>
+      </NavLink>
       <NavLink
         to="./collators"
         className={(navData: LinkParameter) =>
