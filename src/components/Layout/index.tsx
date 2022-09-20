@@ -29,7 +29,9 @@ export default function Layout(): React.JSX.Element {
     if (strings[1] && strings[1] === "pendulum" && !strings[2]) {
       setTheme("light");
       setIsPendulum(true);
-      navigate("/pendulum/dashboard");
+      // FIXME: hiding pendulum code
+      // https://github.com/pendulum-chain/portal/issues/15
+      // navigate("/pendulum/dashboard");
     }
 
     if (strings[1] && strings[1] === "amplitude" && !strings[2]) {
@@ -59,7 +61,7 @@ export default function Layout(): React.JSX.Element {
         <div class="container pt-16 px-6 h-full">
           <div className="flex flex-row-reverse h-15">
             <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
-            <div className="dropdown dropdown-end mr-2">
+            <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
                 <span class={`${isPendulum ? "text-white" : ""}  text-md`}>
                   {isPendulum ? "Pendulum" : "Amplitude"}
