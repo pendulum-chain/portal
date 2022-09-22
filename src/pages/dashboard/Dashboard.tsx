@@ -5,23 +5,35 @@ import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
 
+interface AccountBalance {
+  free: number;
+  reserved: number;
+  miscFrozen: number;
+  feeFrozen: number;
+}
+
 export function Dashboard() {
   const { state } = useNodeInfoState();
   const { api, mainAddress } = state;
 
-  const [accountBalance, setAccountBalance] = useState<Map<any, any>>();
+  const [accountBalance, setAccountBalance] = useState<AccountBalance>({
+    free: 0,
+    reserved: 0,
+    miscFrozen: 0,
+    feeFrozen: 0,
+  });
 
   useEffect(() => {
-    api &&
-      api.query.balances
-        .account(mainAddress)
-        .then((data) => {
-          console.log(data);
-          // @ts-ignore
-          setAccountBalance(data);
-        })
-        .catch((e) => console.error(e));
-  }, [api]);
+    console.log(mainAddress);
+    api?.query.balances
+      .account(mainAddress)
+      .then((data) => {
+        // @ts-ignore
+        setAccountBalance(JSON.parse(data.toString()));
+        console.log(data.toString());
+      })
+      .catch((e) => console.error(e));
+  }, [api, mainAddress]);
 
   return (
     <div class="mt-10">
@@ -38,25 +50,10 @@ export function Dashboard() {
         <Tabs />
         <TickerChangeTable />
         <div className="mt-10 p-3 pb-10">
-          <p>
-            {"Free: "}
-            {accountBalance && accountBalance.get("free").negative.toString()}
-          </p>
-          <p>
-            {"Reserved: "}
-            {accountBalance &&
-              accountBalance.get("reserved").negative.toString()}
-          </p>
-          <p>
-            {"Misc frozen: "}
-            {accountBalance &&
-              accountBalance.get("miscFrozen").negative.toString()}
-          </p>
-          <p>
-            {"Free frozen: "}
-            {accountBalance &&
-              accountBalance.get("feeFrozen").negative.toString()}
-          </p>
+          <p>{`Free: ${accountBalance?.free}`}</p>
+          <p>{`Reserved: ${accountBalance?.reserved}`}</p>
+          <p>{`Misc frozen: ${accountBalance?.miscFrozen}`}</p>
+          <p>{`Free frozen: ${accountBalance?.feeFrozen}`}</p>
         </div>
       </div>
       <div className="dashboard graph">

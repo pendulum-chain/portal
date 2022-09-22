@@ -5,60 +5,70 @@ import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import AddressFormatter from "../../components/AddressFormatter";
 
-export function Collators() {
-  enum filters {
-    collators,
-    bounded,
-    delegations,
-    apr,
-  }
+interface Invulnerable {
+  accountId: string;
+  lastBlock?: string;
+  isInvulnerable: boolean;
+}
 
+enum filters {
+  collators,
+  bounded,
+  delegations,
+  apr,
+}
+
+export function Collators() {
+  const [invulnerables, setInvulnerables] = useState<Invulnerable[]>([]);
+  const [accounts, setAccounts] = useState([]);
+  // const [candidates, setCandidates] = useState([]);
   const { state } = useNodeInfoState();
   const { api } = state;
 
-  const [invulnerables, setInvulnerables] = useState([]);
-  const [candidates, setCandidates] = useState([]);
-  const [lastBlocks, setLastBlocks] = useState({});
-
   useEffect(() => {
     (async () => {
-      const lastAuthoredBlocks =
-        api && api.query.collatorSelection.lastAuthoredBlock?.multi;
-      const proc = invulnerables.reduce(
+      if (api && accounts) {
         // @ts-ignore
-        (map, accountId, index) => ({
-          ...map,
-          // @ts-ignore
-          [accountId]: lastAuthoredBlocks[index],
-        }),
-        {}
-      );
+        const wallets = accounts.map((item) => item.accountId);
 
-      setLastBlocks(proc);
+        return api.query.collatorSelection.lastAuthoredBlock?.multi(
+          wallets,
+          (data) => {
+            const accountsClone: Invulnerable[] = [...accounts];
+            const blockIds = data.toString().split(",");
+
+            for (const [index, element] of blockIds.entries()) {
+              accountsClone[index].lastBlock = element;
+            }
+
+            setInvulnerables(accountsClone);
+          }
+        );
+      }
     })();
-  }, [api]);
+  }, [api, accounts]);
 
-  useEffect(() => {
-    (async () => {
-      const rawCandidates =
-        api && (await api.query.collatorSelection.candidates());
-      // @ts-ignore
-      const proc = rawCandidates.map((candidates) => {
-        return Array.isArray(candidates)
-          ? candidates.map(({ deposit, who }) => ({
-              accountId: who.toString(),
-              deposit,
-              isInvulnerable: false,
-            }))
-          : candidates.strings.map((accountId: any) => ({
-              accountId,
-              isInvulnerable: false,
-            }));
-      });
-
-      setCandidates(proc);
-    })();
-  }, [api]);
+  // useEffect(() => {
+  //   (async () => {
+  //     const rawCandidates =
+  //       api && (await api.query.collatorSelection.candidates());
+  //     // @ts-ignore
+  //     const proc = rawCandidates.map((candidates) => {
+  //       return Array.isArray(candidates)
+  //         ? candidates.map(({ deposit, who }) => ({
+  //             accountId: who.toString(),
+  //             deposit,
+  //             isInvulnerable: false,
+  //           }))
+  //         : candidates.strings.map((accountId: any) => ({
+  //             accountId,
+  //             isInvulnerable: false,
+  //           }));
+  //     });
+  //
+  //     setCandidates(proc);
+  //   })();
+  // }, [api]);
 
   useEffect(() => {
     api &&
@@ -72,7 +82,7 @@ export function Collators() {
               isInvulnerable: true,
             };
           });
-          setInvulnerables(proc);
+          setAccounts(proc);
         })
         .catch((e) => console.error(e));
   }, [api]);
@@ -225,6 +235,7 @@ export function Collators() {
             </span>
             <span class="block w-1/5">delegations</span>
             <span class="block w-1/5">APR</span>
+            <span class="block w-1/5">Last block</span>
             {/*
               FIXME: Hide for first release
               https://github.com/pendulum-chain/portal/issues/15
@@ -234,15 +245,13 @@ export function Collators() {
 
           <Table.Body>
             {invulnerables &&
-              invulnerables.map((item, index) => (
+              invulnerables.map((item: Invulnerable, index: number) => (
                 <Table.Row key={`collator_table_${index}`}>
-                  <span>
-                    {/* @ts-ignore */}
-                    <AddressFormatter address={item.accountId} />
-                  </span>
-                  <span>0 AMPE</span>
-                  <span>11.22%</span>
-                  <span>20</span>
+                  <span>{AddressFormatter({ address: item.accountId })}</span>
+                  <span>-</span>
+                  <span>-</span>
+                  <span>-</span>
+                  <span>{item.lastBlock}</span>
                   <span className="hidden">
                     {/*
                       FIXME: Hide for first release
