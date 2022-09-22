@@ -17,6 +17,48 @@ export function Collators() {
   const { api } = state;
 
   const [invulnerables, setInvulnerables] = useState([]);
+  const [candidates, setCandidates] = useState([]);
+  const [lastBlocks, setLastBlocks] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const lastAuthoredBlocks =
+        api && api.query.collatorSelection.lastAuthoredBlock?.multi;
+      const proc = invulnerables.reduce(
+        // @ts-ignore
+        (map, accountId, index) => ({
+          ...map,
+          // @ts-ignore
+          [accountId]: lastAuthoredBlocks[index],
+        }),
+        {}
+      );
+
+      setLastBlocks(proc);
+    })();
+  }, [api]);
+
+  useEffect(() => {
+    (async () => {
+      const rawCandidates =
+        api && (await api.query.collatorSelection.candidates());
+      // @ts-ignore
+      const proc = rawCandidates.map((candidates) => {
+        return Array.isArray(candidates)
+          ? candidates.map(({ deposit, who }) => ({
+              accountId: who.toString(),
+              deposit,
+              isInvulnerable: false,
+            }))
+          : candidates.strings.map((accountId: any) => ({
+              accountId,
+              isInvulnerable: false,
+            }));
+      });
+
+      setCandidates(proc);
+    })();
+  }, [api]);
 
   useEffect(() => {
     api &&
@@ -24,7 +66,13 @@ export function Collators() {
         .invulnerables()
         .then((data) => {
           // @ts-ignore
-          setInvulnerables(data);
+          const proc = data.map((item) => {
+            return {
+              accountId: item.toString(),
+              isInvulnerable: true,
+            };
+          });
+          setInvulnerables(proc);
         })
         .catch((e) => console.error(e));
   }, [api]);
@@ -190,7 +238,7 @@ export function Collators() {
                 <Table.Row key={`collator_table_${index}`}>
                   <span>
                     {/* @ts-ignore */}
-                    <AddressFormatter address={item.toString()} />
+                    <AddressFormatter address={item.accountId} />
                   </span>
                   <span>0 AMPE</span>
                   <span>11.22%</span>

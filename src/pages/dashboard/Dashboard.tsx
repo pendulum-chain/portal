@@ -1,9 +1,28 @@
 import { h } from "preact";
+import { useEffect, useState } from "preact/hooks";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
+import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
 
 export function Dashboard() {
+  const { state } = useNodeInfoState();
+  const { api, mainAddress } = state;
+
+  const [accountBalance, setAccountBalance] = useState<Map<any, any>>();
+
+  useEffect(() => {
+    api &&
+      api.query.balances
+        .account(mainAddress)
+        .then((data) => {
+          console.log(data);
+          // @ts-ignore
+          setAccountBalance(data);
+        })
+        .catch((e) => console.error(e));
+  }, [api]);
+
   return (
     <div class="mt-10">
       <div className="dashboard portfolio">
@@ -18,6 +37,27 @@ export function Dashboard() {
         </div>
         <Tabs />
         <TickerChangeTable />
+        <div className="mt-10 p-3 pb-10">
+          <p>
+            {"Free: "}
+            {accountBalance && accountBalance.get("free").negative.toString()}
+          </p>
+          <p>
+            {"Reserved: "}
+            {accountBalance &&
+              accountBalance.get("reserved").negative.toString()}
+          </p>
+          <p>
+            {"Misc frozen: "}
+            {accountBalance &&
+              accountBalance.get("miscFrozen").negative.toString()}
+          </p>
+          <p>
+            {"Free frozen: "}
+            {accountBalance &&
+              accountBalance.get("feeFrozen").negative.toString()}
+          </p>
+        </div>
       </div>
       <div className="dashboard graph">
         <h1>Total Value Locked</h1>
