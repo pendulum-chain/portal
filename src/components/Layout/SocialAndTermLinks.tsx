@@ -146,16 +146,25 @@ const SocialAndTermLinks: FC<Props> = ({ Link }: Props) => {
       <div className="terms">
         <ul>
           <li>
-            <a href="#">Terms</a>
+            <a href="https://pendulumchain.org/terms" target="_blank">
+              Terms
+            </a>
           </li>
           <li>
-            <a href="#">User Manual</a>
+            <a
+              href="https://pendulumchain.org/legal/privacy-policy"
+              target="_blank"
+            >
+              Privacy
+            </a>
           </li>
           <li>
-            <a href="#">Stats</a>
-          </li>
-          <li>
-            <a href="#">Wiki</a>
+            <a
+              href="https://pendulum.gitbook.io/pendulum-docs/get-started/readme"
+              target="_blank"
+            >
+              Wiki
+            </a>
           </li>
           <li>
             <Link />

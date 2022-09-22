@@ -1,13 +1,22 @@
 import { h } from "preact";
 import { WalletSelect } from "@talisman-connect/components";
 import { Button } from "react-daisyui";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { WalletAccount, Wallet } from "@talisman-connect/wallets";
 import AddressFormatter from "./AddressFormatter";
+import { useNodeInfoState } from "../NodeInfoProvider";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
   const [address, setAddress] = useState<string>("");
+  const { setState } = useNodeInfoState();
+
+  useEffect(() => {
+    setState({
+      // console.log(keyring.accounts);
+      mainAddress: address,
+    });
+  }, [address]);
 
   if (Object.keys(address).length > 0 && address.length > 0) {
     return (

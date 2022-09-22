@@ -9,6 +9,7 @@ export interface NodeInfoProviderInterface {
   nodeName: string;
   nodeVersion: string;
   api: ApiPromise;
+  mainAddress: string;
 }
 
 const NodeInfoContext = createContext({
