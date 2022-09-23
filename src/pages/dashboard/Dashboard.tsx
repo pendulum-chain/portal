@@ -47,8 +47,10 @@ export function Dashboard() {
             <li className="up">+36,22%</li>
           </ul>
         </div>
-        <Tabs />
-        <TickerChangeTable />
+        <span class="hidden">
+          <Tabs />
+          <TickerChangeTable />
+        </span>
         <div className="mt-10 p-3 pb-10">
           <p>{`Free: ${accountBalance?.free}`}</p>
           <p>{`Reserved: ${accountBalance?.reserved}`}</p>
@@ -56,7 +58,7 @@ export function Dashboard() {
           <p>{`Free frozen: ${accountBalance?.feeFrozen}`}</p>
         </div>
       </div>
-      <div className="dashboard graph">
+      <div className="dashboard graph hidden">
         <h1>Total Value Locked</h1>
         <h2>$63.231,98</h2>
         <svg viewBox="0 0 200 200" className="chart">
