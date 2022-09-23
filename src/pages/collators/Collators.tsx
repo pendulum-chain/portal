@@ -3,7 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import AddressFormatter from "../../components/AddressFormatter";
+import addressFormatter from "../../helpers/AddressFormatter";
 
 interface Invulnerable {
   accountId: string;
@@ -20,7 +20,7 @@ enum filters {
 
 export function Collators() {
   const [invulnerables, setInvulnerables] = useState<Invulnerable[]>([]);
-  const [accounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState<Invulnerable[]>([]);
   // const [candidates, setCandidates] = useState([]);
   const { state } = useNodeInfoState();
   const { api } = state;
@@ -28,7 +28,6 @@ export function Collators() {
   useEffect(() => {
     (async () => {
       if (api && accounts) {
-        // @ts-ignore
         const wallets = accounts.map((item) => item.accountId);
 
         return api.query.collatorSelection.lastAuthoredBlock?.multi(
@@ -247,7 +246,7 @@ export function Collators() {
             {invulnerables &&
               invulnerables.map((item: Invulnerable, index: number) => (
                 <Table.Row key={`collator_table_${index}`}>
-                  <span>{AddressFormatter({ address: item.accountId })}</span>
+                  <span>{addressFormatter(item.accountId)}</span>
                   <span>-</span>
                   <span>-</span>
                   <span>-</span>

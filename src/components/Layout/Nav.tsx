@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { h } from "preact";
+import { memo } from "preact/compat";
 
 import BridgeIcon from "../../assets/bridge";
 import DashboardIcon from "../../assets/dashboard";
 import GovernanceIcon from "../../assets/governance";
 import SwapIcon from "../../assets/swap";
 import StakingIcon from "../../assets/staking";
-import { memo } from "react";
 
 type LinkParameter = { isActive: boolean };
 

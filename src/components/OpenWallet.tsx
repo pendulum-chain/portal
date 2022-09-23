@@ -3,7 +3,7 @@ import { WalletSelect } from "@talisman-connect/components";
 import { Button } from "react-daisyui";
 import { useEffect, useState } from "preact/hooks";
 import { WalletAccount, Wallet } from "@talisman-connect/wallets";
-import AddressFormatter from "./AddressFormatter";
+import addressFormatter from "../helpers/AddressFormatter";
 import { useNodeInfoState } from "../NodeInfoProvider";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
@@ -15,7 +15,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
     setState({
       ...state,
       ...{
-        mainAddress: address, // console.log(keyring.accounts);
+        mainAddress: address,
       },
     });
   }, [address]);
@@ -33,8 +33,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
           />
         }
       >
-        {/* @ts-ignore */}
-        <AddressFormatter address={address.toString()} trimLength={4} />
+        {addressFormatter(address.toString(), 4)}
       </Button>
     );
   }

@@ -1,7 +1,5 @@
-import * as React from "preact";
 import { h } from "preact";
 import "./styles.css";
-// @ts-ignore
 import usdc from "../../assets/usdc.png";
 
 const TickerChangeTable = () => (

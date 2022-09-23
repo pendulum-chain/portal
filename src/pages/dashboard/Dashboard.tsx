@@ -28,7 +28,6 @@ export function Dashboard() {
     api?.query.balances
       .account(mainAddress)
       .then((data) => {
-        // @ts-ignore
         setAccountBalance(JSON.parse(data.toString()));
         console.log(data.toString());
       })
