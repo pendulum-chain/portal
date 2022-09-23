@@ -9,12 +9,14 @@ import { useNodeInfoState } from "../NodeInfoProvider";
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
   const [address, setAddress] = useState<string>("");
-  const { setState } = useNodeInfoState();
+  const { state, setState } = useNodeInfoState();
 
   useEffect(() => {
     setState({
-      // console.log(keyring.accounts);
-      mainAddress: address,
+      ...state,
+      ...{
+        mainAddress: address, // console.log(keyring.accounts);
+      },
     });
   }, [address]);
 
