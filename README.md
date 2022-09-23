@@ -1,5 +1,15 @@
 # Pendulum WebApp
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/aa69406a-f4a1-4693-aed0-8478f1d1fabd/deploy-status)](https://app.netlify.com/sites/pendulum-portal-alpha/deploys)&nbsp;
+![TypeScript](https://img.shields.io/badge/-TypeSript-05122A?style=flat&logo=typescript)&nbsp;
+![Preact](https://img.shields.io/badge/-Preact-05122A?style=flat&logo=preact)&nbsp;
+![Vite](https://img.shields.io/badge/-Vite-05122A?style=flat&logo=vite)&nbsp;
+![Tailwind CSS](https://img.shields.io/badge/-Tailwind-05122A?style=flat&logo=tailwindcss)&nbsp;
+![SASS](https://img.shields.io/badge/-Sass-05122A?style=flat&logo=sass)&nbsp;
+![Polkadot](https://img.shields.io/badge/-Polkadot-05122A?style=flat&logo=polkadot)&nbsp;
+
+___
+
 Web application for Pendulum.
 This project was bootstrapped with [vite](https://vite.new/preact-ts)
 
