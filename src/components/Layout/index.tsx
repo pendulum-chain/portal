@@ -108,7 +108,10 @@ export default function Layout(): React.JSX.Element {
         }}
         class="w-full md:w-1/5 text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar"
       >
-        <div class="pendulum-versions">
+        <div class="pendulum-versions relative">
+          <span class="absolute right-14 top-2 text-green-300 hover:text-green-500 cursor-default rotate-6">
+            beta
+          </span>
           <img
             class="pendulum-logo"
             src={sideBarLogo}
