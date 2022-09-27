@@ -1,15 +1,17 @@
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
+import * as utils from "@polkadot/util";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
+import { toUnit } from "../../helpers/parseNumbers";
 
 interface AccountBalance {
-  free: number;
-  reserved: number;
-  miscFrozen: number;
-  feeFrozen: number;
+  free: BigInt;
+  reserved: BigInt;
+  miscFrozen: BigInt;
+  feeFrozen: BigInt;
 }
 
 export function Dashboard() {
@@ -17,22 +19,40 @@ export function Dashboard() {
   const { api, mainAddress } = state;
 
   const [accountBalance, setAccountBalance] = useState<AccountBalance>({
-    free: 0,
-    reserved: 0,
-    miscFrozen: 0,
-    feeFrozen: 0,
+    free: BigInt(0),
+    reserved: BigInt(0),
+    miscFrozen: BigInt(0),
+    feeFrozen: BigInt(0),
   });
+
+  const { feeFrozen, miscFrozen, free } = accountBalance;
+
+  if (free) {
+    console.log("Free proc: ", toUnit(free) / 1000);
+  }
+
+  // @ts-ignore
+  console.log("Free", free > 0 ? utils.formatDecimal(free.toString()) : null);
 
   useEffect(() => {
     console.log(mainAddress);
-    api?.query.balances
+    api?.query.system
       .account(mainAddress)
       .then((data) => {
-        setAccountBalance(JSON.parse(data.toString()));
+        // @ts-ignore
+        setAccountBalance(JSON.parse(data.data.toString()));
         console.log(data.toString());
       })
       .catch((e) => console.error(e));
   }, [api, mainAddress]);
+
+  const maxBalance = () => {
+    if (Number(miscFrozen) > 0 || Number(feeFrozen) > 0) {
+      return utils.nMax(miscFrozen.valueOf(), feeFrozen.valueOf());
+    }
+
+    return 0;
+  };
 
   return (
     <div class="mt-10">
@@ -40,8 +60,8 @@ export function Dashboard() {
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
-          <h2>$29.075,88</h2>
-          <ul>
+          <h2>${maxBalance()}</h2>
+          <ul className="hidden">
             <li className="up">+$106.076</li>
             <li className="up">+36,22%</li>
           </ul>
@@ -50,12 +70,6 @@ export function Dashboard() {
           <Tabs />
           <TickerChangeTable />
         </span>
-        <div className="mt-10 p-3 pb-10">
-          <p>{`Free: ${accountBalance?.free}`}</p>
-          <p>{`Reserved: ${accountBalance?.reserved}`}</p>
-          <p>{`Misc frozen: ${accountBalance?.miscFrozen}`}</p>
-          <p>{`Free frozen: ${accountBalance?.feeFrozen}`}</p>
-        </div>
       </div>
       <div className="dashboard graph hidden">
         <h1>Total Value Locked</h1>

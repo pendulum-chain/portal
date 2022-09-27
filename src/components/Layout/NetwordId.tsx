@@ -5,6 +5,8 @@ import { useNodeInfoState } from "../../NodeInfoProvider";
 const NetworkId: FC = memo(() => {
   const { state } = useNodeInfoState();
 
+  // https://polkadot.js.org/docs/api/examples/promise/listen-to-blocks/
+
   return (
     <div class="pendulum-network-id">
       <p>Network</p>

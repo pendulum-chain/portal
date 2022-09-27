@@ -3,13 +3,17 @@ import { WalletSelect } from "@talisman-connect/components";
 import { Button } from "react-daisyui";
 import { useEffect, useState } from "preact/hooks";
 import { WalletAccount, Wallet } from "@talisman-connect/wallets";
-import addressFormatter from "../helpers/AddressFormatter";
+import Keyring from "@polkadot/keyring";
+import addressFormatter from "../helpers/addressFormatter";
 import { useNodeInfoState } from "../NodeInfoProvider";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
   const [address, setAddress] = useState<string>("");
   const { state, setState } = useNodeInfoState();
+
+  const keyring = new Keyring();
+  keyring.setSS58Format(57);
 
   useEffect(() => {
     setState({
@@ -48,7 +52,8 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
         setWalletSelected(wallet);
       }}
       onAccountSelected={async (account: WalletAccount) => {
-        setAddress(account.address);
+        const procAddress = keyring.encodeAddress(account.address);
+        setAddress(procAddress);
       }}
     />
   );

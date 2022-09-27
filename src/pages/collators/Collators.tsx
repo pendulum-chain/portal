@@ -3,7 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import addressFormatter from "../../helpers/AddressFormatter";
+import addressFormatter from "../../helpers/addressFormatter";
 
 interface Invulnerable {
   accountId: string;
@@ -37,7 +37,9 @@ export function Collators() {
             const blockIds = data.toString().split(",");
 
             for (const [index, element] of blockIds.entries()) {
-              accountsClone[index].lastBlock = element;
+              if (accountsClone[index]) {
+                accountsClone[index].lastBlock = element;
+              }
             }
 
             setInvulnerables(accountsClone);
@@ -129,7 +131,7 @@ export function Collators() {
   return (
     <div className="overflow-y-scroll h-screen w-3/4 mx-auto">
       <div className="pt-40 -mt-32 mb-48 mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 hidden">
           <div
             class="flex flex-col space-y-6 rounded-xl shadow6_18_3 px-4 py-3 md:px-8 md:py-6 bg-white-opacity100"
             style={{ backgroundColor: "#0d0d0d" }}
