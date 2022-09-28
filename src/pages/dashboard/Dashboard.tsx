@@ -48,7 +48,7 @@ export function Dashboard() {
 
   const maxBalance = () => {
     if (Number(miscFrozen) > 0 || Number(feeFrozen) > 0) {
-      return utils.nMax(miscFrozen.valueOf(), feeFrozen.valueOf());
+      return toUnit(utils.nMax(miscFrozen.valueOf(), feeFrozen.valueOf()));
     }
 
     return 0;
@@ -60,7 +60,7 @@ export function Dashboard() {
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
-          <h2>${maxBalance()}</h2>
+          <h2>AMPE {maxBalance()}</h2>
           <ul className="hidden">
             <li className="up">+$106.076</li>
             <li className="up">+36,22%</li>
