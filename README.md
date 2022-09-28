@@ -1,4 +1,4 @@
-# Pendulum WebApp
+# Pendulum Portal
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/aa69406a-f4a1-4693-aed0-8478f1d1fabd/deploy-status)](https://app.netlify.com/sites/pendulum-portal-alpha/deploys)&nbsp;
 ![TypeScript](https://img.shields.io/badge/-TypeSript-05122A?style=flat&logo=typescript)&nbsp;
