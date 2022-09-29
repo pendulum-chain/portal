@@ -29,10 +29,8 @@ export function Dashboard() {
 
   if (free) {
     console.log("Free proc: ", toUnit(free) / 1000);
+    console.log("Free raw : ", utils.formatDecimal(free.toString()));
   }
-
-  // @ts-ignore
-  console.log("Free", free > 0 ? utils.formatDecimal(free.toString()) : null);
 
   useEffect(() => {
     console.log(mainAddress);
@@ -60,7 +58,7 @@ export function Dashboard() {
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
-          <h2>AMPE {maxBalance()}</h2>
+          <h2>{maxBalance()} AMPE</h2>
           <ul className="hidden">
             <li className="up">+$106.076</li>
             <li className="up">+36,22%</li>

@@ -110,7 +110,7 @@ export default function Layout(): React.JSX.Element {
       >
         <div class="pendulum-versions relative">
           <span class="absolute right-14 top-2 text-green-300 hover:text-green-500 cursor-default rotate-6">
-            beta
+            alpha
           </span>
           <img
             class="pendulum-logo"
