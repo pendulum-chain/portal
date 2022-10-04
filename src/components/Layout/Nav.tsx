@@ -22,10 +22,7 @@ const Nav = memo(() => {
         <DashboardIcon />
         <span>Dashboard</span>
       </NavLink>
-      {/*
-      // FIXME: hiding pendulum code
-      // https://github.com/pendulum-chain/portal/issues/15
-      */}
+      {/* hiding pendulum code */}
       <NavLink
         to="./amm"
         className={(navData: LinkParameter) =>

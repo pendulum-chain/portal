@@ -237,10 +237,6 @@ export function Collators() {
             <span class="block w-1/5">delegations</span>
             <span class="block w-1/5">APR</span>
             <span class="block w-1/5">Last block</span>
-            {/*
-              FIXME: Hide for first release
-              https://github.com/pendulum-chain/portal/issues/15
-            */}
             <span class="block w-1/5 hidden">my staked</span>
           </Table.Head>
 
@@ -254,10 +250,6 @@ export function Collators() {
                   <span>-</span>
                   <span>{item.lastBlock}</span>
                   <span className="hidden">
-                    {/*
-                      FIXME: Hide for first release
-                      https://github.com/pendulum-chain/portal/issues/15
-                    */}
                     <Button size="sm" animation={false}>
                       Delegate
                     </Button>

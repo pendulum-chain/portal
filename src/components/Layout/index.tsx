@@ -29,8 +29,7 @@ export default function Layout(): React.JSX.Element {
     if (strings[1] && strings[1] === "pendulum" && !strings[2]) {
       setTheme("light");
       setIsPendulum(true);
-      // FIXME: hiding pendulum code
-      // https://github.com/pendulum-chain/portal/issues/15
+      // hiding pendulum code
       // navigate("/pendulum/dashboard");
     }
 
@@ -113,7 +112,7 @@ export default function Layout(): React.JSX.Element {
             alpha
           </span>
           <img
-            class="pendulum-logo"
+            className="pendulum-logo"
             src={sideBarLogo}
             alt=""
             style={
