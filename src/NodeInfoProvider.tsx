@@ -8,6 +8,7 @@ export interface NodeInfoProviderInterface {
   chain: string;
   nodeName: string;
   nodeVersion: string;
+  ss58Format?: number;
   api: ApiPromise;
 }
 
@@ -40,12 +41,20 @@ const NodeInfoProvider = ({
       apiPromise.on("connected", async () => {
         try {
           apiPromise.isReady.then((api) => {
-            api.derive.chain.bestNumber().then((bestNumberFinalize) => {
+            (async () => {
+              const bestNumberFinalize = await api.derive.chain.bestNumber();
+              const chainProperties = await api.registry.getChainProperties();
+              const ss58Format = chainProperties?.get("ss58Format").toString();
+
               setState((prevState) => ({
                 ...prevState,
-                ...{ bestNumberFinalize: Number(bestNumberFinalize), api },
+                ...{
+                  bestNumberFinalize: Number(bestNumberFinalize),
+                  ss58Format: Number(ss58Format),
+                  api,
+                },
               }));
-            });
+            })();
           });
 
           const [chain, nodeName, nodeVersion] = await Promise.all([

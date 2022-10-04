@@ -6,14 +6,16 @@ import { WalletAccount, Wallet } from "@talisman-connect/wallets";
 import Keyring from "@polkadot/keyring";
 import addressFormatter from "../helpers/addressFormatter";
 import { useGlobalState } from "../GlobalStateProvider";
+import { useNodeInfoState } from "../NodeInfoProvider";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
   const [address, setAddress] = useState<string>("");
   const { state, setState } = useGlobalState();
+  const { state: nodeState } = useNodeInfoState();
 
   const keyring = new Keyring();
-  keyring.setSS58Format(57);
+  nodeState.ss58Format && keyring.setSS58Format(nodeState.ss58Format);
 
   useEffect(() => {
     setState({

@@ -36,6 +36,7 @@ export function Dashboard() {
   }
 
   useEffect(() => {
+    if (!userAddress) return;
     console.log(userAddress);
     api?.query.system
       .account(userAddress)
