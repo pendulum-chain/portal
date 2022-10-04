@@ -63,13 +63,12 @@ const NodeInfoProvider = ({
             apiPromise.rpc.system.version(),
           ]);
 
-          // @ts-ignore
           setState((prevState) => ({
             ...prevState,
             ...{
-              chain,
-              nodeName,
-              nodeVersion,
+              chain: chain.toString(),
+              nodeName: nodeName.toString(),
+              nodeVersion: nodeVersion.toString(),
             },
           }));
         } catch (e) {
