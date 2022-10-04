@@ -5,12 +5,12 @@ import { useEffect, useState } from "preact/hooks";
 import { WalletAccount, Wallet } from "@talisman-connect/wallets";
 import Keyring from "@polkadot/keyring";
 import addressFormatter from "../helpers/addressFormatter";
-import { useNodeInfoState } from "../NodeInfoProvider";
+import { useGlobalState } from "../GlobalStateProvider";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
   const [address, setAddress] = useState<string>("");
-  const { state, setState } = useNodeInfoState();
+  const { state, setState } = useGlobalState();
 
   const keyring = new Keyring();
   keyring.setSS58Format(57);

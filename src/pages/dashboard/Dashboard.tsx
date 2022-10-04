@@ -6,6 +6,7 @@ import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
 import { toUnit } from "../../helpers/parseNumbers";
+import { useGlobalState } from "../../GlobalStateProvider";
 
 interface AccountBalance {
   free: BigInt;
@@ -15,8 +16,10 @@ interface AccountBalance {
 }
 
 export function Dashboard() {
+  const { state: GlobalState } = useGlobalState();
+  const { userAddress } = GlobalState;
   const { state } = useNodeInfoState();
-  const { api, mainAddress } = state;
+  const { api } = state;
 
   const [accountBalance, setAccountBalance] = useState<AccountBalance>({
     free: BigInt(0),
@@ -33,16 +36,16 @@ export function Dashboard() {
   }
 
   useEffect(() => {
-    console.log(mainAddress);
+    console.log(userAddress);
     api?.query.system
-      .account(mainAddress)
+      .account(userAddress)
       .then((data) => {
         // @ts-ignore
         setAccountBalance(JSON.parse(data.data.toString()));
         console.log(data.toString());
       })
       .catch((e) => console.error(e));
-  }, [api, mainAddress]);
+  }, [api, userAddress]);
 
   const maxBalance = () => {
     if (Number(miscFrozen) > 0 || Number(feeFrozen) > 0) {

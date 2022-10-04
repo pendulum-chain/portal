@@ -6,6 +6,7 @@ export interface Toast {
   type: "success" | "error";
 }
 export interface GlobalStateInterface {
+  userAddress: string; // keyring.accounts
   accountSecret: string;
   accountName: string;
   infoMessage?: string;

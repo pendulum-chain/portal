@@ -9,7 +9,6 @@ export interface NodeInfoProviderInterface {
   nodeName: string;
   nodeVersion: string;
   api: ApiPromise;
-  mainAddress: string; // keyring.accounts
 }
 
 const NodeInfoContext = createContext({
@@ -28,14 +27,7 @@ const NodeInfoProvider = ({
 
   const provider = new WsProvider([
     // "wss://pencol-roc-00.pendulumchain.tech",
-    "wss://pencol-kus-00.pendulumchain.tech",
-    "wss://pencol-kus-01.pendulumchain.tech",
-    "wss://pencol-kus-02.pendulumchain.tech",
-    "wss://pencol-kus-03.pendulumchain.tech",
-    "wss://pencol-kus-04.pendulumchain.tech",
-    "wss://pencol-kus-05.pendulumchain.tech",
-    "wss://pencol-kus-06.pendulumchain.tech",
-    "wss://pencol-kus-07.pendulumchain.tech",
+    "wss://rpc.pendulumchain.tech",
   ]);
 
   const apiPromise = new ApiPromise({
