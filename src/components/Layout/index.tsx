@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { memo, FC } from "preact/compat";
+import { memo, FC, useRef } from "preact/compat";
 import { h } from "preact";
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -13,17 +13,22 @@ import NetworkId from "./NetwordId";
 import SocialAndTermLinks from "./SocialAndTermLinks";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 
+import "./styles.sass";
+
 export default function Layout(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const strings = location.pathname.split("/");
   const [isPendulum, setIsPendulum] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const { setTheme } = useTheme();
   const { state } = useNodeInfoState();
 
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? "white" : "grey ";
   const bgColor = isPendulum ? "bg-white" : "bg-black";
+
+  const sidebar = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (strings[1] && strings[1] === "pendulum" && !strings[2]) {
@@ -59,10 +64,67 @@ export default function Layout(): React.JSX.Element {
     );
   });
 
+  const toggleMenu = () => {
+    const theSidebar = sidebar.current;
+    if (!theSidebar) return;
+
+    if (visible) {
+      theSidebar.style.display = "none";
+      theSidebar.style.position = "relative";
+      theSidebar.style.top = "0";
+    } else {
+      theSidebar.style.display = "flex";
+      theSidebar.style.position = "absolute";
+      theSidebar.style.top = "0";
+    }
+    setVisible(!visible);
+  };
+
   return (
-    <div class={`flex md:flex-row-reverse flex-wrap ${bgColor}`}>
-      <div class="w-full md:w-4/5">
-        <div class="container pt-16 px-6 h-full">
+    <div id="sidebar-wrapper" class={`flex flex-wrap ${bgColor}`}>
+      <div
+        style={{
+          ...(isPendulum ? null : { backgroundColor: "#1c1c1c" }),
+          ...{ boxShadow: "7px 0 10px rgba(0,0,0,0.1)" },
+        }}
+        class="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen"
+        id="sidebar"
+        ref={sidebar}
+      >
+        <div class="pendulum-versions relative">
+          <span class="absolute right-14 top-2 text-green-300 hover:text-green-500 cursor-default rotate-6">
+            alpha
+          </span>
+          <img
+            className="pendulum-logo"
+            src={sideBarLogo}
+            alt=""
+            style={
+              isPendulum
+                ? {}
+                : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
+            }
+          />
+          <p>
+            Runtime:{" "}
+            {(state.nodeVersion && state.nodeVersion.toString()) ||
+              "0.0.0-00000000000"}
+          </p>
+          <p>DApp: COMMIT_HASH</p>
+        </div>
+        <Nav />
+        <div className="sidebar-footer">
+          <NetworkId />
+          <SocialAndTermLinks Link={FooterLink} />
+        </div>
+      </div>
+
+      <div className="mobile-menu">
+        <button className="menu" onClick={() => toggleMenu()} />
+      </div>
+
+      <div id="main">
+        <div class="container">
           <div className="flex flex-row-reverse h-15">
             <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
             <div className="dropdown dropdown-end mr-2 hidden">
@@ -97,41 +159,6 @@ export default function Layout(): React.JSX.Element {
             </div>
           </div>
           <Outlet />
-        </div>
-      </div>
-
-      <div
-        style={{
-          ...(isPendulum ? null : { backgroundColor: "#1c1c1c" }),
-          ...{ boxShadow: "7px 0 10px rgba(0,0,0,0.1)" },
-        }}
-        class="w-full md:w-1/5 text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar"
-      >
-        <div class="pendulum-versions relative">
-          <span class="absolute right-14 top-2 text-green-300 hover:text-green-500 cursor-default rotate-6">
-            alpha
-          </span>
-          <img
-            className="pendulum-logo"
-            src={sideBarLogo}
-            alt=""
-            style={
-              isPendulum
-                ? {}
-                : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
-            }
-          />
-          <p>
-            Runtime:{" "}
-            {(state.nodeVersion && state.nodeVersion.toString()) ||
-              "0.0.0-00000000000"}
-          </p>
-          <p>DApp: COMMIT_HASH</p>
-        </div>
-        <Nav />
-        <div className="sidebar-footer">
-          <NetworkId />
-          <SocialAndTermLinks Link={FooterLink} />
         </div>
       </div>
     </div>

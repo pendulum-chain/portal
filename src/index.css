@@ -88,12 +88,6 @@ body {
   /*min-width: 1700px;*/
 }
 
-.sidebar {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-}
-
 .pendulum-network-id,
 .pendulum-versions {
   text-align: left;
