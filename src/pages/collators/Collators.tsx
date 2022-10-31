@@ -129,7 +129,7 @@ export function Collators() {
   const [asc, setAsc] = useState(false);
 
   return (
-    <div className="overflow-y-scroll h-screen w-3/4 mx-auto">
+    <div className="overflow-y-scroll w-3/4 mx-auto">
       <div className="pt-40 -mt-32 mb-48 mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 hidden">
           <div

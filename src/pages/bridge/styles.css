@@ -1,8 +1,17 @@
-.amm {
-  margin-top: -100px;
+.space-walk {
 }
 
-.amm-wrapper {
+.space-walk input::-webkit-outer-spin-button,
+.space-walk input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.space-walk input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.space-walk-wrapper {
   width: 100%;
   border-radius: 30px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
@@ -31,6 +40,12 @@
   background-color: var(--grey-91);
   border-color: var(--grey-91);
   border-radius: 40px;
+}
+
+
+.row-pick-coin button button {
+  background-color: transparent;
+  border: 0
 }
 
 .box .parity {
