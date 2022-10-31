@@ -73,10 +73,17 @@ export function Bridge(): JSX.Element {
 
         <Modal.Actions style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            style={{ textTransform: "uppercase" }}
+            style={{
+              textTransform: "uppercase",
+              backgroundColor: "#5defa7",
+              borderRadius: 50,
+              paddingLeft: 30,
+              paddingRight: 30,
+            }}
             onClick={toggleVisible}
+            className="btn-success"
           >
-            I have made this transfer
+            <span className="text-black">I have made this transfer</span>
           </Button>
         </Modal.Actions>
       </Modal>
@@ -110,7 +117,7 @@ export function Bridge(): JSX.Element {
             </div>
             <div className="parity">
               <Button color="success mt-5" onClick={toggleVisible}>
-                preview swap
+                <span className="uppercase">preview swap</span>
               </Button>
             </div>
           </div>
