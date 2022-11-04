@@ -27,8 +27,7 @@ const NodeInfoProvider = ({
   const [state, setState] = useState(value);
 
   const provider = new WsProvider([
-    // "wss://pencol-roc-00.pendulumchain.tech",
-    "wss://rpc.pendulumchain.tech",
+    "wss://rpc-amplitude.pendulumchain.tech"
   ]);
 
   const apiPromise = new ApiPromise({

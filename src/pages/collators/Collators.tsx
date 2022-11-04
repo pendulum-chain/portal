@@ -4,12 +4,7 @@ import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import addressFormatter from "../../helpers/addressFormatter";
-
-interface Invulnerable {
-  accountId: string;
-  lastBlock?: string;
-  isInvulnerable: boolean;
-}
+import { toUnit } from "../../helpers/parseNumbers";
 
 enum filters {
   collators,
@@ -18,74 +13,34 @@ enum filters {
   apr,
 }
 
+type Candidate = {
+  owner: string;
+  amount: number;
+};
+
 export function Collators() {
-  const [invulnerables, setInvulnerables] = useState<Invulnerable[]>([]);
-  const [accounts, setAccounts] = useState<Invulnerable[]>([]);
-  // const [candidates, setCandidates] = useState([]);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
   const { state } = useNodeInfoState();
   const { api } = state;
 
   useEffect(() => {
     (async () => {
-      if (api && accounts) {
-        const wallets = accounts.map((item) => item.accountId);
+      if (api) {
+        const candidates = await api.query.parachainStaking.topCandidates();
+        const state: Candidate[] = [];
 
-        return api.query.collatorSelection.lastAuthoredBlock?.multi(
-          wallets,
-          (data) => {
-            const accountsClone: Invulnerable[] = [...accounts];
-            const blockIds = data.toString().split(",");
+        candidates &&
+          // @ts-ignore
+          candidates.map((candidate: Map[Candidate]) => {
+            state.push({
+              amount: toUnit(candidate.get("amount")),
+              owner: candidate.get("owner").toString(),
+            });
+          });
 
-            for (const [index, element] of blockIds.entries()) {
-              if (accountsClone[index]) {
-                accountsClone[index].lastBlock = element;
-              }
-            }
-
-            setInvulnerables(accountsClone);
-          }
-        );
+        setCandidates(state);
       }
     })();
-  }, [api, accounts]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const rawCandidates =
-  //       api && (await api.query.collatorSelection.candidates());
-  //     // @ts-ignore
-  //     const proc = rawCandidates.map((candidates) => {
-  //       return Array.isArray(candidates)
-  //         ? candidates.map(({ deposit, who }) => ({
-  //             accountId: who.toString(),
-  //             deposit,
-  //             isInvulnerable: false,
-  //           }))
-  //         : candidates.strings.map((accountId: any) => ({
-  //             accountId,
-  //             isInvulnerable: false,
-  //           }));
-  //     });
-  //
-  //     setCandidates(proc);
-  //   })();
-  // }, [api]);
-
-  useEffect(() => {
-    api &&
-      api.query.collatorSelection
-        .invulnerables()
-        .then((data) => {
-          // @ts-ignore
-          const proc = data.map((item) => {
-            return {
-              accountId: item.toString(),
-              isInvulnerable: true,
-            };
-          });
-          setAccounts(proc);
-        })
-        .catch((e) => console.error(e));
   }, [api]);
 
   // @ts-ignore
@@ -214,50 +169,66 @@ export function Collators() {
           </div>
         </div>
 
-        <Table className="mt-10 w-full">
-          <Table.Head className="cursor-pointer">
-            <span
-              class="block w-1/5"
-              onClick={() => {
-                sortData(filters.collators, asc);
-                setAsc(!asc);
-              }}
-            >
-              collator {renderIcon(filters.collators, asc)}
-            </span>
-            <span
-              class="block w-1/5"
-              onClick={() => {
-                sortData(filters.bounded, asc);
-                setAsc(!asc);
-              }}
-            >
-              total bounded {renderIcon(filters.bounded, asc)}
-            </span>
-            <span class="block w-1/5">delegations</span>
-            <span class="block w-1/5">APR</span>
-            <span class="block w-1/5">Last block</span>
-            <span class="block w-1/5 hidden">my staked</span>
-          </Table.Head>
+        <div
+          className="overflow-scroll"
+          style={{ minHeight: 400, maxHeight: "80vh" }}
+        >
+          <Table className="mt-10 w-full">
+            <Table.Head className="cursor-pointer">
+              <span
+                class="block w-1/5"
+                onClick={() => {
+                  sortData(filters.collators, asc);
+                  setAsc(!asc);
+                }}
+              >
+                collator {renderIcon(filters.collators, asc)}
+              </span>
+              <span
+                class="block w-1/5"
+                onClick={() => {
+                  sortData(filters.bounded, asc);
+                  setAsc(!asc);
+                }}
+              >
+                total bounded {renderIcon(filters.bounded, asc)}
+              </span>
+              <span class="block w-1/5">delegations</span>
+              <span class="block w-1/5">APR</span>
+              <span class="block w-1/5">Last block</span>
+              <span class="block w-1/5 hidden">my staked</span>
+            </Table.Head>
 
-          <Table.Body>
-            {invulnerables &&
-              invulnerables.map((item: Invulnerable, index: number) => (
-                <Table.Row key={`collator_table_${index}`}>
-                  <span>{addressFormatter(item.accountId)}</span>
-                  <span>-</span>
-                  <span>-</span>
-                  <span>-</span>
-                  <span>{item.lastBlock}</span>
-                  <span className="hidden">
-                    <Button size="sm" animation={false}>
-                      Delegate
-                    </Button>
-                  </span>
+            <Table.Body>
+              {candidates &&
+                candidates.map((item, index: number) => (
+                  <Table.Row key={`collator_table_${index}`}>
+                    <span title={item.owner}>
+                      {addressFormatter(item.owner)}
+                    </span>
+                    <span>{item.amount}</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span>-</span>
+                    <span className="hidden">
+                      <Button size="sm" animation={false}>
+                        Delegate
+                      </Button>
+                    </span>
+                  </Table.Row>
+                ))}
+              {candidates.length === 0 && (
+                <Table.Row>
+                  <span />
+                  <span />
+                  <span>Fetching collators...</span>
+                  <span />
+                  <span />
                 </Table.Row>
-              ))}
-          </Table.Body>
-        </Table>
+              )}
+            </Table.Body>
+          </Table>
+        </div>
       </div>
     </div>
   );
