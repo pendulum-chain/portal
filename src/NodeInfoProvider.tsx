@@ -9,6 +9,8 @@ export interface NodeInfoProviderInterface {
   nodeName: string;
   nodeVersion: string;
   ss58Format?: number;
+  tokenDecimals: number;
+  tokenSymbol: string;
   api: ApiPromise;
 }
 
@@ -26,9 +28,7 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  const provider = new WsProvider([
-    "wss://rpc-amplitude.pendulumchain.tech"
-  ]);
+  const provider = new WsProvider(["wss://rpc-amplitude.pendulumchain.tech"]);
 
   const apiPromise = new ApiPromise({
     provider,
@@ -44,12 +44,24 @@ const NodeInfoProvider = ({
               const bestNumberFinalize = await api.derive.chain.bestNumber();
               const chainProperties = await api.registry.getChainProperties();
               const ss58Format = chainProperties?.get("ss58Format").toString();
+              const tokenDecimals = Number(
+                chainProperties
+                  ?.get("tokenDecimals")
+                  .toString()
+                  .replace(/[\[\]]/g, "")
+              );
+              const tokenSymbol = chainProperties
+                ?.get("tokenSymbol")
+                .toString()
+                .replace(/[\[\]]/g, "");
 
               setState((prevState) => ({
                 ...prevState,
                 ...{
                   bestNumberFinalize: Number(bestNumberFinalize),
                   ss58Format: Number(ss58Format),
+                  tokenDecimals,
+                  tokenSymbol,
                   api,
                 },
               }));
