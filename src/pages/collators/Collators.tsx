@@ -80,7 +80,7 @@ export function Collators() {
     }
   };
 
-  const [data, setData] = useState(dummy_collator);
+  const [_, setData] = useState(dummy_collator);
   const [asc, setAsc] = useState(false);
 
   return (
@@ -206,7 +206,7 @@ export function Collators() {
                     <span title={item.owner}>
                       {addressFormatter(item.owner)}
                     </span>
-                    <span>{item.amount}</span>
+                    <span>{item.amount / 1000}</span>
                     <span>-</span>
                     <span>-</span>
                     <span>-</span>
