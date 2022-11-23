@@ -21,7 +21,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
     setState({
       ...state,
       ...{
-        mainAddress: address,
+        userAddress: address,
       },
     });
   }, [address]);
