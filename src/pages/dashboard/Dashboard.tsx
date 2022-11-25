@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import * as utils from "@polkadot/util";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
@@ -47,13 +47,16 @@ export function Dashboard() {
       .catch((e) => console.error(e));
   }, [api, userAddress]);
 
+  const cachedBalance = useMemo(() => toUnit(free) / 1000, [free]);
+  // TODO: improve / 1000
+
   return (
     <div class="mt-10">
       <div className="dashboard portfolio">
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
-          <h2>{toUnit(free) / 1000} AMPE</h2>
+          <h2>{cachedBalance} AMPE</h2>
           <ul className="hidden">
             <li className="up">+$106.076</li>
             <li className="up">+36,22%</li>

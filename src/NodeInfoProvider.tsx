@@ -29,8 +29,6 @@ const NodeInfoProvider = ({
   const [state, setState] = useState(value);
 
   const provider = new WsProvider(["wss://rpc-amplitude.pendulumchain.tech"]);
-  // const provider = new WsProvider(["ws://127.0.0.1:8844"]);
-  // const provider = new WsProvider(["wss://pencol-roc-00.pendulumchain.tech"]);
 
   const apiPromise = new ApiPromise({
     provider,
