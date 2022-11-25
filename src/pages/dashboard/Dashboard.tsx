@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import * as utils from "@polkadot/util";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
@@ -28,7 +28,7 @@ export function Dashboard() {
     feeFrozen: BigInt(0),
   });
 
-  const { feeFrozen, miscFrozen, free } = accountBalance;
+  const { free } = accountBalance;
 
   if (free) {
     console.log("Free proc: ", toUnit(free) / 1000);
@@ -37,24 +37,18 @@ export function Dashboard() {
 
   useEffect(() => {
     if (!userAddress) return;
-    console.log(userAddress);
+
     api?.query.system
       .account(userAddress)
       .then((data) => {
         // @ts-ignore
         setAccountBalance(JSON.parse(data.data.toString()));
-        console.log(data.toString());
       })
       .catch((e) => console.error(e));
   }, [api, userAddress]);
 
-  const maxBalance = () => {
-    if (Number(miscFrozen) > 0 || Number(feeFrozen) > 0) {
-      return toUnit(utils.nMax(miscFrozen.valueOf(), feeFrozen.valueOf()));
-    }
-
-    return 0;
-  };
+  const cachedBalance = useMemo(() => toUnit(free) / 1000, [free]);
+  // TODO: improve / 1000
 
   return (
     <div class="mt-10">
@@ -62,7 +56,7 @@ export function Dashboard() {
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
-          <h2>{maxBalance()} AMPE</h2>
+          <h2>{cachedBalance} AMPE</h2>
           <ul className="hidden">
             <li className="up">+$106.076</li>
             <li className="up">+36,22%</li>
