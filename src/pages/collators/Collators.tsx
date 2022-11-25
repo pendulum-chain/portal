@@ -4,7 +4,7 @@ import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import addressFormatter from "../../helpers/addressFormatter";
-import { toUnit } from "../../helpers/parseNumbers";
+import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
 
 enum filters {
   collators,
@@ -16,10 +16,13 @@ enum filters {
 type Candidate = {
   owner: string;
   amount: number;
+  delegators?: number;
+  stacked?: number;
 };
 
 export function Collators() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [candidatePool, setCandidatePool] = useState<Candidate[]>([]);
   const { state } = useNodeInfoState();
   const { api } = state;
 
@@ -39,6 +42,21 @@ export function Collators() {
           });
 
         setCandidates(state);
+      }
+    })();
+  }, [api]);
+
+  useEffect(() => {
+    (async () => {
+      if (api) {
+        const entries =
+          await api.query.parachainStaking.candidatePool.entries();
+
+        const output = entries.map((item, index) => {
+          console.log(53, item[0].toHuman());
+          console.log(54, item[1].toHuman());
+        });
+        // console.log(51, output);
       }
     })();
   }, [api]);
@@ -206,7 +224,7 @@ export function Collators() {
                     <span title={item.owner}>
                       {addressFormatter(item.owner)}
                     </span>
-                    <span>{item.amount / 1000}</span>
+                    <span>{prettyNumbers(item.amount)}</span>
                     <span>-</span>
                     <span>-</span>
                     <span>-</span>
