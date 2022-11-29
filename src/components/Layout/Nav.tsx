@@ -35,7 +35,7 @@ const Nav = memo(() => {
       <NavLink
         to="./bridge"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : ""
+          navData.isActive ? "active" : "hidden"
         }
       >
         <BridgeIcon />
