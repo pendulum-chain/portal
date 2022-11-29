@@ -4,7 +4,7 @@ import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import addressFormatter from "../../helpers/addressFormatter";
-import { toUnit } from "../../helpers/parseNumbers";
+import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
 
 enum filters {
   collators,
@@ -16,10 +16,27 @@ enum filters {
 type Candidate = {
   owner: string;
   amount: number;
+  delegators?: number;
+};
+
+type CandidateProps = {
+  owner: string;
+  delegators: number;
+};
+
+type DelegatorData = {
+  owner: string[];
+  delegators: string[];
+  id: string;
+  status: string;
+  total: string;
 };
 
 export function Collators() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [candidatePool, setCandidatePool] = useState<CandidateProps[]>([]);
+  const [combined, setCombined] = useState<Candidate[]>([]);
+  const [apy, setApy] = useState<string>("");
   const { state } = useNodeInfoState();
   const { api } = state;
 
@@ -31,7 +48,7 @@ export function Collators() {
 
         candidates &&
           // @ts-ignore
-          candidates.map((candidate: Map[Candidate]) => {
+          candidates.forEach((candidate: Map[Candidate]) => {
             state.push({
               amount: toUnit(candidate.get("amount")),
               owner: candidate.get("owner").toString(),
@@ -42,6 +59,60 @@ export function Collators() {
       }
     })();
   }, [api]);
+
+  useEffect(() => {
+    (async () => {
+      if (api) {
+        const state: CandidateProps[] = [];
+
+        const entries =
+          await api.query.parachainStaking.candidatePool.entries();
+
+        entries &&
+          entries.forEach((item) => {
+            const identity = item[0].toHuman() as string;
+            const delegatorData = item[1].toHuman() as DelegatorData;
+
+            // const stackedValue = delegatorData.stake.replaceAll(",", "");
+            // const stacked = prettyNumbers(toUnit(BigInt(stackedValue)));
+
+            state.push({
+              owner: identity[0],
+              delegators: delegatorData.delegators.length,
+            });
+          });
+
+        setCandidatePool(state);
+      }
+    })();
+  }, [api]);
+
+  useEffect(() => {
+    (async () => {
+      if (api) {
+        const apy = await api.query.parachainStaking.inflationConfig();
+        // @ts-ignore
+        const { annual } = apy.toHuman().collator.rewardRate;
+
+        setApy(annual);
+      }
+    })();
+  });
+
+  useEffect(() => {
+    const candidatesCombined: Candidate[] = [];
+    candidatePool &&
+      candidatePool.forEach((candidate) => {
+        const o: Candidate = {
+          ...candidate,
+          amount:
+            candidates.find((c) => candidate.owner === c.owner)?.amount || 0,
+        };
+
+        candidatesCombined.push(o);
+      });
+    setCombined(candidatesCombined);
+  }, [candidatePool, candidates]);
 
   // @ts-ignore
   const sortData = (sortable: filters, asc = false) => {
@@ -200,15 +271,15 @@ export function Collators() {
             </Table.Head>
 
             <Table.Body>
-              {candidates &&
-                candidates.map((item, index: number) => (
+              {combined.length > 0 &&
+                combined.map((item, index: number) => (
                   <Table.Row key={`collator_table_${index}`}>
                     <span title={item.owner}>
                       {addressFormatter(item.owner)}
                     </span>
-                    <span>{item.amount / 1000}</span>
-                    <span>-</span>
-                    <span>-</span>
+                    <span>{prettyNumbers(item.amount)}</span>
+                    <span>{item.delegators}</span>
+                    <span>{apy}</span>
                     <span>-</span>
                     <span className="hidden">
                       <Button size="sm" animation={false}>
@@ -217,7 +288,7 @@ export function Collators() {
                     </span>
                   </Table.Row>
                 ))}
-              {candidates.length === 0 && (
+              {combined.length === 0 && (
                 <Table.Row>
                   <span />
                   <span />
