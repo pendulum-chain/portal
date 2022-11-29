@@ -1,11 +1,10 @@
 import { h } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import * as utils from "@polkadot/util";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
-import { toUnit } from "../../helpers/parseNumbers";
+import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
 
 interface AccountBalance {
@@ -30,11 +29,6 @@ export function Dashboard() {
 
   const { free } = accountBalance;
 
-  if (free) {
-    console.log("Free proc: ", toUnit(free) / 1000);
-    console.log("Free raw : ", utils.formatDecimal(free.toString()));
-  }
-
   useEffect(() => {
     if (!userAddress) return;
 
@@ -47,8 +41,9 @@ export function Dashboard() {
       .catch((e) => console.error(e));
   }, [api, userAddress]);
 
-  const cachedBalance = useMemo(() => toUnit(free) / 1000, [free]);
-  // TODO: improve / 1000
+  const cachedBalance = useMemo(() => {
+    return prettyNumbers(toUnit(free));
+  }, [free]);
 
   return (
     <div class="mt-10">

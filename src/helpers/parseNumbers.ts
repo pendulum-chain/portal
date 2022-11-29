@@ -1,13 +1,16 @@
 import BN from "bn.js";
 
-export const DIV_PRECISION = 1000;
 export const UNIT_PRECISION = 1000000000000;
 
 export const toUnit = (value: BigInt) => {
-  const BigIntValue = new BN(value.toString(12), 12);
-  const dividend = BigIntValue.muln(DIV_PRECISION);
+  const bigIntValue = new BN(value.toString());
   const divisor = new BN(UNIT_PRECISION);
-  const quotient = dividend.div(divisor);
+  const quotient = bigIntValue.div(divisor);
 
   return quotient.toNumber();
 };
+
+export const prettyNumbers = (number: number, lang: string = "en-US") =>
+  number.toLocaleString(lang, {
+    minimumFractionDigits: 2,
+  });
