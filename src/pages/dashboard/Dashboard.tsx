@@ -1,6 +1,5 @@
 import { h } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import * as utils from "@polkadot/util";
 import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
@@ -29,11 +28,6 @@ export function Dashboard() {
   });
 
   const { free } = accountBalance;
-
-  if (free) {
-    console.log("Free proc: ", toUnit(free));
-    console.log("Free raw : ", utils.formatDecimal(free.toString()));
-  }
 
   useEffect(() => {
     if (!userAddress) return;

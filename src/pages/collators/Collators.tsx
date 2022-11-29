@@ -19,7 +19,7 @@ type Candidate = {
   delegators?: number;
 };
 
-type CandidatePoolProps = {
+type CandidateProps = {
   owner: string;
   delegators: number;
 };
@@ -34,7 +34,7 @@ type DelegatorData = {
 
 export function Collators() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [candidatePool, setCandidatePool] = useState<CandidatePoolProps[]>([]);
+  const [candidatePool, setCandidatePool] = useState<CandidateProps[]>([]);
   const [combined, setCombined] = useState<Candidate[]>([]);
   const [apy, setApy] = useState<string>("");
   const { state } = useNodeInfoState();
@@ -63,7 +63,7 @@ export function Collators() {
   useEffect(() => {
     (async () => {
       if (api) {
-        const state: CandidatePoolProps[] = [];
+        const state: CandidateProps[] = [];
 
         const entries =
           await api.query.parachainStaking.candidatePool.entries();
