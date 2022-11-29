@@ -17,12 +17,26 @@ type Candidate = {
   owner: string;
   amount: number;
   delegators?: number;
-  stacked?: number;
+};
+
+type CandidatePoolProps = {
+  owner: string;
+  delegators: number;
+};
+
+type DelegatorData = {
+  owner: string[];
+  delegators: string[];
+  id: string;
+  status: string;
+  total: string;
 };
 
 export function Collators() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [candidatePool, setCandidatePool] = useState<Candidate[]>([]);
+  const [candidatePool, setCandidatePool] = useState<CandidatePoolProps[]>([]);
+  const [combined, setCombined] = useState<Candidate[]>([]);
+  const [apy, setApy] = useState<string>("");
   const { state } = useNodeInfoState();
   const { api } = state;
 
@@ -34,7 +48,7 @@ export function Collators() {
 
         candidates &&
           // @ts-ignore
-          candidates.map((candidate: Map[Candidate]) => {
+          candidates.forEach((candidate: Map[Candidate]) => {
             state.push({
               amount: toUnit(candidate.get("amount")),
               owner: candidate.get("owner").toString(),
@@ -49,17 +63,56 @@ export function Collators() {
   useEffect(() => {
     (async () => {
       if (api) {
+        const state: CandidatePoolProps[] = [];
+
         const entries =
           await api.query.parachainStaking.candidatePool.entries();
 
-        const output = entries.map((item, index) => {
-          console.log(53, item[0].toHuman());
-          console.log(54, item[1].toHuman());
-        });
-        // console.log(51, output);
+        entries &&
+          entries.forEach((item) => {
+            const identity = item[0].toHuman() as string;
+            const delegatorData = item[1].toHuman() as DelegatorData;
+
+            // const stackedValue = delegatorData.stake.replaceAll(",", "");
+            // const stacked = prettyNumbers(toUnit(BigInt(stackedValue)));
+
+            state.push({
+              owner: identity[0],
+              delegators: delegatorData.delegators.length,
+            });
+          });
+
+        setCandidatePool(state);
       }
     })();
   }, [api]);
+
+  useEffect(() => {
+    (async () => {
+      if (api) {
+        const apy = await api.query.parachainStaking.inflationConfig();
+        // @ts-ignore
+        const { annual } = apy.toHuman().collator.rewardRate;
+
+        setApy(annual);
+      }
+    })();
+  });
+
+  useEffect(() => {
+    const candidatesCombined: Candidate[] = [];
+    candidatePool &&
+      candidatePool.forEach((candidate) => {
+        const o: Candidate = {
+          ...candidate,
+          amount:
+            candidates.find((c) => candidate.owner === c.owner)?.amount || 0,
+        };
+
+        candidatesCombined.push(o);
+      });
+    setCombined(candidatesCombined);
+  }, [candidatePool, candidates]);
 
   // @ts-ignore
   const sortData = (sortable: filters, asc = false) => {
@@ -218,15 +271,15 @@ export function Collators() {
             </Table.Head>
 
             <Table.Body>
-              {candidates &&
-                candidates.map((item, index: number) => (
+              {combined.length > 0 &&
+                combined.map((item, index: number) => (
                   <Table.Row key={`collator_table_${index}`}>
                     <span title={item.owner}>
                       {addressFormatter(item.owner)}
                     </span>
                     <span>{prettyNumbers(item.amount)}</span>
-                    <span>-</span>
-                    <span>-</span>
+                    <span>{item.delegators}</span>
+                    <span>{apy}</span>
                     <span>-</span>
                     <span className="hidden">
                       <Button size="sm" animation={false}>
@@ -235,7 +288,7 @@ export function Collators() {
                     </span>
                   </Table.Row>
                 ))}
-              {candidates.length === 0 && (
+              {combined.length === 0 && (
                 <Table.Row>
                   <span />
                   <span />
