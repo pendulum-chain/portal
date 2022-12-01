@@ -86,4 +86,4 @@ const GlobalStateProvider = ({
 
 const useGlobalState = () => useContext(GlobalStateContext);
 
-export { GlobalStateProvider, useGlobalState };
+export { GlobalStateContext, GlobalStateProvider, useGlobalState };

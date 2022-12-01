@@ -1,5 +1,5 @@
 import { h, render } from "preact";
-import { GlobalStateProvider } from "./GlobalStateProvider";
+import { GlobalStateContext, GlobalStateProvider } from "./GlobalStateProvider";
 import { App } from "./app";
 import { BrowserRouter } from "react-router-dom";
 import { Theme } from "react-daisyui";
@@ -13,11 +13,17 @@ const theme = localStorage.getItem("theme") || "black";
 render(
   <BrowserRouter>
     <GlobalStateProvider>
-      <Theme dataTheme={theme}>
-        <NodeInfoProvider>
-          <App />
-        </NodeInfoProvider>
-      </Theme>
+      <GlobalStateContext.Consumer>
+        {({ state }) =>
+          state.tenantRPC && (
+            <Theme dataTheme={theme}>
+              <NodeInfoProvider tenantRPC={state.tenantRPC}>
+                <App />
+              </NodeInfoProvider>
+            </Theme>
+          )
+        }
+      </GlobalStateContext.Consumer>
     </GlobalStateProvider>
   </BrowserRouter>,
   document.getElementById("app") as HTMLElement

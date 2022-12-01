@@ -22,17 +22,17 @@ const NodeInfoContext = createContext({
 
 const NodeInfoProvider = ({
   children,
+  tenantRPC,
   value = {},
 }: {
   children: any;
+  tenantRPC: string;
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
-  const { state: globalState } = useGlobalState();
   const [state, setState] = useState(value);
 
-  const { tenantRPC } = globalState;
-  console.log(tenantRPC);
-  const provider = new WsProvider([tenantRPC]);
+  console.log("tenantRPC", tenantRPC)
+  const provider = new WsProvider(tenantRPC);
 
   const apiPromise = new ApiPromise({
     provider,
