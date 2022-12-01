@@ -11,7 +11,7 @@ export interface Toast {
 export enum TenantName {
   Amplitude = "amplitude",
   Pendulum = "pendulum",
-  Fococo = "fococo",
+  Foucoco = "foucoco",
 }
 
 export interface GlobalStateInterface {
@@ -47,7 +47,7 @@ const GlobalStateProvider = ({
 
   useEffect(() => {
     const isPendulum = strings[1] && strings[1] === "pendulum" && !strings[2];
-    const isFococo = strings[1] && strings[1] === "fococo" && !strings[2];
+    const isFoucoco = strings[1] && strings[1] === "foucoco" && !strings[2];
     let tenantNane: TenantName;
     let tenantRPC: string;
 
@@ -59,11 +59,11 @@ const GlobalStateProvider = ({
         navigate("/pendulum/dashboard");
         break;
 
-      case isFococo:
-        tenantNane = TenantName.Fococo;
+      case isFoucoco:
+        tenantNane = TenantName.Foucoco;
         tenantRPC = "wss://rpc-foucoco.pendulumchain.tech";
         setTheme("black");
-        navigate("/fococo/dashboard");
+        navigate("/foucoco/dashboard");
         break;
 
       default:

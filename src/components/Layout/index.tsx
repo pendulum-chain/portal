@@ -31,7 +31,7 @@ export default function Layout(): React.JSX.Element {
   const tenantIndicator = () => {
     if (tenantNane === "amplitude") return "alpha";
     if (tenantNane === "pendulum") return "";
-    if (tenantNane === "fococo") return "Fococo";
+    if (tenantNane === "foucoco") return "Foucoco";
   };
 
   const FooterLink: FC = memo(() => {
