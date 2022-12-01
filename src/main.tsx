@@ -11,14 +11,14 @@ import { NodeInfoProvider } from "./NodeInfoProvider";
 const theme = localStorage.getItem("theme") || "black";
 
 render(
-  <GlobalStateProvider>
-    <NodeInfoProvider>
+  <BrowserRouter>
+    <GlobalStateProvider>
       <Theme dataTheme={theme}>
-        <BrowserRouter>
+        <NodeInfoProvider>
           <App />
-        </BrowserRouter>
+        </NodeInfoProvider>
       </Theme>
-    </NodeInfoProvider>
-  </GlobalStateProvider>,
+    </GlobalStateProvider>
+  </BrowserRouter>,
   document.getElementById("app") as HTMLElement
 );
