@@ -155,7 +155,7 @@ export function Collators() {
   const [asc, setAsc] = useState(false);
 
   return (
-    <div className="overflow-y-scroll w-3/4 mx-auto">
+    <div className="w-3/4 mx-auto">
       <div className="pt-40 -mt-32 mb-48 mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 hidden">
           <div
@@ -240,12 +240,9 @@ export function Collators() {
           </div>
         </div>
 
-        <div
-          className="overflow-scroll"
-          style={{ minHeight: 400, maxHeight: "80vh" }}
-        >
-          <Table className="mt-10 w-full">
-            <Table.Head className="cursor-pointer">
+        <div className="collators-list-container">
+          <Table className="collators-list-table">
+            <Table.Head className="cursor-pointer collators-list-header">
               <span
                 class="block w-1/5"
                 onClick={() => {

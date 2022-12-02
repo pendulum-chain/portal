@@ -98,3 +98,20 @@ h1 {
 .dashboard {
   background-color: var(--clear)
 }
+
+.collators-list-container{
+  overflow-y: auto;
+  display: inline-block;
+  max-height: 80vh;
+  min-height: 400;
+}
+
+.collators-list-table {
+  position: relative;
+}
+
+.collators-list-header {
+  top: 0;
+  position: sticky;
+  z-index: 12;
+}
