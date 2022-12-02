@@ -1,15 +1,26 @@
 import { h, createContext } from "preact";
-import { useContext, useState } from "preact/hooks";
+import { useContext, useEffect, useState } from "preact/hooks";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "react-daisyui";
 
 export interface Toast {
   message: string;
   type: "success" | "error";
 }
+
+export enum TenantName {
+  Amplitude = "amplitude",
+  Pendulum = "pendulum",
+  Foucoco = "foucoco",
+}
+
 export interface GlobalStateInterface {
   userAddress: string; // keyring.accounts
   accountSecret: string;
   accountName: string;
   infoMessage?: string;
+  tenantNane: TenantName;
+  tenantRPC: string;
   toast?: Toast;
 }
 
@@ -20,12 +31,52 @@ const GlobalStateContext = createContext({
 
 const GlobalStateProvider = ({
   children,
-  value = {} as GlobalStateInterface,
+  value = {
+    tenantRPC: "",
+  } as GlobalStateInterface,
 }: {
   children: ReactNode;
   value?: Partial<GlobalStateInterface>;
 }) => {
   const [state, setState] = useState(value);
+
+  const navigate = useNavigate();
+  const { location } = window;
+  const { setTheme } = useTheme();
+  const strings = location.pathname.split("/");
+
+  useEffect(() => {
+    const isPendulum = strings[1] && strings[1] === "pendulum" && !strings[2];
+    const isFoucoco = strings[1] && strings[1] === "foucoco" && !strings[2];
+    let tenantNane: TenantName;
+    let tenantRPC: string;
+
+    switch (true) {
+      case isPendulum:
+        tenantNane = TenantName.Pendulum;
+        tenantRPC = "wss://rpc-pendulum.pendulumchain.tech";
+        setTheme("light");
+        navigate("/pendulum/dashboard");
+        break;
+
+      case isFoucoco:
+        tenantNane = TenantName.Foucoco;
+        tenantRPC = "wss://rpc-foucoco.pendulumchain.tech";
+        setTheme("black");
+        navigate("/foucoco/dashboard");
+        break;
+
+      default:
+        tenantNane = TenantName.Amplitude;
+        tenantRPC = "wss://rpc-amplitude.pendulumchain.tech";
+        setTheme("black");
+        navigate("/amplitude/dashboard");
+        break;
+    }
+
+    setState({ tenantNane, tenantRPC });
+  }, [window]);
+
   return (
     <GlobalStateContext.Provider value={{ state, setState }}>
       {children}
@@ -35,4 +86,4 @@ const GlobalStateProvider = ({
 
 const useGlobalState = () => useContext(GlobalStateContext);
 
-export { GlobalStateProvider, useGlobalState };
+export { GlobalStateContext, GlobalStateProvider, useGlobalState };

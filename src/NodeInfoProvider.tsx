@@ -21,14 +21,16 @@ const NodeInfoContext = createContext({
 
 const NodeInfoProvider = ({
   children,
+  tenantRPC,
   value = {},
 }: {
   children: any;
+  tenantRPC: string;
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
 
-  const provider = new WsProvider(["wss://rpc-amplitude.pendulumchain.tech"]);
+  const provider = new WsProvider(tenantRPC);
 
   const apiPromise = new ApiPromise({
     provider,

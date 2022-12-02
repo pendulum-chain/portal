@@ -1,9 +1,7 @@
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { memo, FC, useRef } from "preact/compat";
 import { h } from "preact";
-
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useTheme } from "react-daisyui";
+import { Outlet } from "react-router-dom";
 
 import PendulumLogo from "../../assets/pendulum-logo.png";
 import AmplitudeLogo from "../../assets/amplitud-logo.svg";
@@ -12,17 +10,17 @@ import Nav from "./Nav";
 import NetworkId from "./NetwordId";
 import SocialAndTermLinks from "./SocialAndTermLinks";
 import { useNodeInfoState } from "../../NodeInfoProvider";
+import { useGlobalState } from "../../GlobalStateProvider";
 
 import "./styles.sass";
 
 export default function Layout(): React.JSX.Element {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const strings = location.pathname.split("/");
-  const [isPendulum, setIsPendulum] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  const { setTheme } = useTheme();
   const { state } = useNodeInfoState();
+  const { state: globalState } = useGlobalState();
+  const { tenantNane } = globalState;
+
+  const isPendulum = tenantNane === "pendulum";
 
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? "white" : "grey ";
@@ -30,24 +28,11 @@ export default function Layout(): React.JSX.Element {
 
   const sidebar = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (strings[1] && strings[1] === "pendulum" && !strings[2]) {
-      setTheme("light");
-      setIsPendulum(true);
-      // hiding pendulum code
-      // navigate("/pendulum/dashboard");
-    }
-
-    if (strings[1] && strings[1] === "amplitude" && !strings[2]) {
-      setTheme("black");
-      setIsPendulum(false);
-      navigate("/amplitude/dashboard");
-    }
-
-    if (strings[1] && strings[1].match("amplitude|pendulum") == null) {
-      navigate("/amplitude/dashboard");
-    }
-  }, []);
+  const tenantIndicator = () => {
+    if (tenantNane === "amplitude") return "alpha";
+    if (tenantNane === "pendulum") return "";
+    if (tenantNane === "foucoco") return "Foucoco";
+  };
 
   const FooterLink: FC = memo(() => {
     return isPendulum ? (
@@ -93,7 +78,7 @@ export default function Layout(): React.JSX.Element {
       >
         <div class="pendulum-versions relative">
           <span class="absolute right-14 top-2 text-green-300 hover:text-green-500 cursor-default rotate-6">
-            alpha
+            {tenantIndicator()}
           </span>
           <img
             className="pendulum-logo"
