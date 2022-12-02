@@ -67,7 +67,7 @@ const GlobalStateProvider = ({
         break;
 
       default:
-        tenantNane = TenantName.Pendulum;
+        tenantNane = TenantName.Amplitude;
         tenantRPC = "wss://rpc-amplitude.pendulumchain.tech";
         setTheme("black");
         navigate("/amplitude/dashboard");

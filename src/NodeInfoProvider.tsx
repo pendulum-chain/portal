@@ -2,7 +2,6 @@ import { h, createContext } from "preact";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
-import { useGlobalState } from "./GlobalStateProvider";
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -31,7 +30,6 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  console.log("tenantRPC", tenantRPC)
   const provider = new WsProvider(tenantRPC);
 
   const apiPromise = new ApiPromise({
