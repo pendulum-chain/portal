@@ -27,11 +27,18 @@
       ],
       "react-dom": [
         "./node_modules/preact/compat/"
+      ],
+      "@polkadot/types": [
+        "./node_modules/@pendulum-chain/types"
+      ],
+      "@polkadot/types/*": [
+        "./node_modules/@pendulum-chain/types/*"
       ]
     }
   },
   "include": [
-    "src"
+    "src",
+    "node_modules/@pendulum-chain/types"
   ],
   "references": [
     {
