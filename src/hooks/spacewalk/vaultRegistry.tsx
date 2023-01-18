@@ -1,34 +1,58 @@
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import type { VaultRegistryVault } from "@polkadot/types/lookup";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { SpacewalkPrimitivesVaultId } from "@polkadot/types/lookup";
+import { AccountId32 } from "@polkadot/types/interfaces";
+import { Keypair } from "stellar-sdk";
 
 export function useVaultRegistryPallet() {
-  const { state } = useNodeInfoState();
-  const { api } = state;
+  const { api } = useNodeInfoState().state;
 
-  if (!api) {
-    return null;
-  }
+  const [vaults, setVaults] = useState<VaultRegistryVault[]>([]);
 
-  const subscribeVaults = async (
-    callback: (vaults: VaultRegistryVault[]) => void
-  ) => {
-    const unsub = await api.query.vaultRegistry.vaults.multi([], (result) => {
-      const vaults = result.map(
-        (vault) => vault.toJSON() as unknown as VaultRegistryVault
-      );
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
 
-      callback(vaults);
+    let unsubscribe: () => void;
+
+    api.query.vaultRegistry.vaults.entries().then((entries) => {
+      let richEntries = entries.map(([key, value]) => {
+        return value.toJSON() as unknown as VaultRegistryVault;
+      });
+
+      setVaults(richEntries);
     });
 
-    return unsub;
-  };
+    return () => unsubscribe && unsubscribe();
+  }, [api]);
 
-  const getVaults = async () => {
-    return await api.query.vaultRegistry.vaults.entries();
-  };
+  const memo = useMemo(() => {
+    return {
+      getVaults() {
+        return vaults;
+      },
+      async getVaultStellarPublicKey(accountId: AccountId32) {
+        if (!api) {
+          return undefined;
+        }
+        let publicKeyBinary =
+          await api.query.vaultRegistry.vaultStellarPublicKey(accountId);
 
-  return {
-    subscribeVaults,
-    getVaults,
-  };
+        if (publicKeyBinary.isNone) {
+          return undefined;
+        }
+
+        let key = new Keypair({
+          type: "ed25519",
+          publicKey: publicKeyBinary.unwrap().toU8a().toString(),
+        });
+
+        return key.publicKey();
+      },
+    };
+  }, [api, vaults]);
+
+  return memo;
 }
