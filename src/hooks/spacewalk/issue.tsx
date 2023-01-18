@@ -1,48 +1,69 @@
+import type {
+  SpacewalkPrimitivesIssueIssueRequest,
+  SpacewalkPrimitivesVaultId,
+} from "@polkadot/types/lookup";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import { H256 } from "@polkadot/types/interfaces";
-import type { SpacewalkPrimitivesIssueIssueRequest } from "@polkadot/types/lookup";
+
+interface IssueRequest {
+  id: H256;
+  request: SpacewalkPrimitivesIssueIssueRequest;
+}
 
 export function useIssuePallet() {
-  const { state } = useNodeInfoState();
-  const { api } = state;
+  const [issueRequests, setIssueRequests] = useState<IssueRequest[]>([]);
 
-  if (!api) {
-    return null;
-  }
+  const { api } = useNodeInfoState().state;
 
-  const getIssueRequests = () => {
-    return api.query.issue.issueRequests.entries();
-  };
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
 
-  const getIssueRequestsForAccount = (accountId: string) => {
-    // api.query.issue.issueRequests(accountId, (issueRequest) => {
-    //   console.log("issueRequests", issueRequests);
-    //   return issueRequests;
-    // }
-    return [];
-  };
+    let unsubscribe: () => void;
 
-  const getVaultIssueRequests: (vaultId: string) => H256[] = (
-    vaultId: string
-  ) => {
-    api.consts.vaultRegistry.getGriefingCollateralCurrencyId;
-    return [];
-  };
+    api.query.issue.issueRequests.entries().then((entries) => {
+      let richEntries = entries.map(([key, value]) => {
+        const req =
+          value.toJSON() as unknown as SpacewalkPrimitivesIssueIssueRequest;
 
-  const getIssueRequestById = async (issueId: string) => {
-    let result = await api.query.issue.issueRequests(issueId);
+        const issueRequest: IssueRequest = {
+          id: key.args[0] as H256,
+          request: req,
+        };
 
-    let issueRequest =
-      result.toJSON() as unknown as SpacewalkPrimitivesIssueIssueRequest;
+        return issueRequest;
+      });
 
-    console.log(issueRequest);
-    return issueRequest;
-  };
+      setIssueRequests(richEntries);
+    });
 
-  return {
-    getIssueRequests,
-    getIssueRequestsForAccount,
-    getVaultIssueRequests,
-    getIssueRequestById,
-  };
+    return () => unsubscribe && unsubscribe();
+  }, [api]);
+
+  const memo = useMemo(() => {
+    return {
+      getIssueRequests() {
+        return issueRequests;
+      },
+      getIssueRequest(vaultId: SpacewalkPrimitivesVaultId) {
+        return issueRequests.find((issueRequest) =>
+          issueRequest.request.vault.eq(vaultId)
+        );
+      },
+      getIssueRequestsForRequester(accountId: string) {
+        return issueRequests.filter((issueRequest) => {
+          return issueRequest.request.requester.toString() === accountId;
+        });
+      },
+      getIssueRequestsForVault(vaultId: SpacewalkPrimitivesVaultId) {
+        return issueRequests.filter((issueRequest) => {
+          return issueRequest.request.vault === vaultId;
+        });
+      },
+    };
+  }, [api, issueRequests]);
+
+  return memo;
 }
