@@ -3,7 +3,9 @@ import type { VaultRegistryVault } from "@polkadot/types/lookup";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { SpacewalkPrimitivesVaultId } from "@polkadot/types/lookup";
 import { AccountId32 } from "@polkadot/types/interfaces";
-import { Keypair } from "stellar-sdk";
+import { Keypair, StrKey } from "stellar-sdk";
+import { Buffer } from "buffer";
+import { convertRawToPublicKey } from "../../helpers/stellar";
 
 export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;
@@ -42,14 +44,9 @@ export function useVaultRegistryPallet() {
 
         if (publicKeyBinary.isNone) {
           return undefined;
+        } else {
+          return convertRawToPublicKey(publicKeyBinary.toHex());
         }
-
-        let key = new Keypair({
-          type: "ed25519",
-          publicKey: publicKeyBinary.unwrap().toU8a().toString(),
-        });
-
-        return key.publicKey();
       },
     };
   }, [api, vaults]);
