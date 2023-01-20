@@ -27,11 +27,20 @@ function Bridge(): JSX.Element {
       className="flex items-center justify-center h-full space-walk grid place-items-center"
       style={{ minHeight: 600 }}
     >
-      <Tabs value={tabValue} onChange={setTabValue}>
-        <Tabs.Tab value={0}>To {parachainNetwork}</Tabs.Tab>
-        <Tabs.Tab value={1}>To Stellar</Tabs.Tab>
-      </Tabs>
-      {Content}
+      <div style={{ width: 500 }}>
+        <div class="box">
+          <div class="box-inner">
+            <div className="flex justify-between px-10 py-5 mb-5">
+            <Tabs value={tabValue} onChange={setTabValue}>
+              <Tabs.Tab value={0}>To {parachainNetwork}</Tabs.Tab>
+              <Tabs.Tab value={1}>To Stellar</Tabs.Tab>
+            </Tabs>
+            </div>
+
+            {Content}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
