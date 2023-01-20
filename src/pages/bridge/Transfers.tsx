@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Table } from "react-daisyui";
 import "./styles.css";
 
-export function BridgeTransfer(): JSX.Element {
+export function Transfers(): JSX.Element {
   return (
     <div
       className="flex items-center justify-center h-full space-walk grid place-items-center"
