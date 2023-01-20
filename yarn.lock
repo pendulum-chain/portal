@@ -383,44 +383,44 @@
   dependencies:
     "@open-web3/orml-type-definitions" "1.1.4"
 
-"@pendulum-chain/api-derive@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.1.4.tgz#1297018d8794ca22360b7d9bd6bd17af3fd70c91"
-  integrity sha512-VK5RzI7CTLlAklnwZY3rl2Fdvr5FNuCRtz08cita6yjQ40t0mvAo34Eo83SzuWbr/41O+74c/ZE2exs5KXHzdw==
+"@pendulum-chain/api-derive@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.1.6.tgz#174f46c69e6d93b38507a50b4f529d88661645fe"
+  integrity sha512-ZZOemb2vadZg/MFCmd0Z8ME1HSW/lAPvYB+1gia2EVn3DuxgpCt/yORk4x5pPxVttZF4H5yb8eoCsUs7Guhp9A==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-types" "^1.1.4"
-    "@pendulum-chain/types" "0.1.4"
+    "@pendulum-chain/types" "0.1.6"
     "@polkadot/api-derive" "^9.9.1"
 
-"@pendulum-chain/api@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/api/-/api-0.1.4.tgz#fa4f6cdc68a5bc45905ba209e819a11ccfecef94"
-  integrity sha512-extE7xA7NYXVzA4++o9ogXtpX2wzCQ9UpxltIJBKbeamNTVNkuLUm54BqwAWtAcTHqNAk5BTNKvoHVSYMZYHsg==
+"@pendulum-chain/api@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api/-/api-0.1.6.tgz#9717b71af561e6c98c1291c5e8b07d0326039afc"
+  integrity sha512-wsx+or1CjAVMISfmfhP4dB7HtDNZhULjpxBIBERTllw6KLf2bgahfBOOxkU6qiJpBt+b2CaGaeML+l5wKe9M1g==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-api-derive" "^1.1.4"
-    "@pendulum-chain/api-derive" "0.1.4"
-    "@pendulum-chain/types" "^0.1.4"
+    "@pendulum-chain/api-derive" "0.1.6"
+    "@pendulum-chain/types" "^0.1.6"
     "@polkadot/api" "^9.9.1"
 
-"@pendulum-chain/type-definitions@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/type-definitions/-/type-definitions-0.1.4.tgz#2608c36d0a9cdb80cbf33df4f4330faaf2416c00"
-  integrity sha512-J4zzTIAKXkf+iMJMLrtoROVilyjxbeeIOPNehKzicmNyQzFWdI8KAO23ZZhSYvFEQH8X4lUI59S4/rsGvrbqWw==
+"@pendulum-chain/type-definitions@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/type-definitions/-/type-definitions-0.1.6.tgz#9ca60304182220312cd9f04a5aea9cdcfa361c4f"
+  integrity sha512-0ahlICiT7DUjqebw3zBjAtpmXgOQAxNj/PBxQvVRZWoi72AVvQBji/M65vPNsieDmSK/fX42e3kkdSBQbEorVg==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-type-definitions" "^1.1.4"
 
-"@pendulum-chain/types@0.1.4", "@pendulum-chain/types@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/types/-/types-0.1.4.tgz#34648b10b1b6683440ece3c15dc941ca724a9411"
-  integrity sha512-jdYzaWcCkPzve3OrxahruPKa/qhvw5XqiQ1me9oUljXL/8IfEwhJAoSizvZMx57vX2S1nHDRW7Xl889cfsuNAg==
+"@pendulum-chain/types@0.1.6", "@pendulum-chain/types@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/types/-/types-0.1.6.tgz#968994285737cb647bf1b91a19e199743d92ab95"
+  integrity sha512-ASTVhoBm0Q1PG/J7Ft+gPtKYQP8AXejn5TveuNoFmEFN4C22fMDx7H3lSFCQ6JdP8aVnwGpvWIfInQfVvBiq4g==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/api-mobx" "^1.1.4"
     "@open-web3/orml-types" "^1.1.4"
-    "@pendulum-chain/type-definitions" "0.1.4"
+    "@pendulum-chain/type-definitions" "0.1.6"
 
 "@polkadot/api-augment@7.15.1":
   version "7.15.1"
@@ -639,7 +639,7 @@
     "@polkadot/types-codec" "7.15.1"
     "@polkadot/util" "^8.7.1"
 
-"@polkadot/rpc-augment@9.11.3":
+"@polkadot/rpc-augment@9.11.3", "@polkadot/rpc-augment@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-augment/-/rpc-augment-9.11.3.tgz#cd092d2604b3035e94aae8ef2d0ef60c936ed954"
   integrity sha512-EQBEhTCrcxwDTUFgMAFgwhGCJYogQeLe2FM2mQpw6OBpUqHfqE3vVNT/phwZyl4zO0YAvjpBbmSPpjIF10XYsA==
@@ -662,7 +662,7 @@
     "@polkadot/util" "^8.7.1"
     rxjs "^7.5.5"
 
-"@polkadot/rpc-core@9.11.3":
+"@polkadot/rpc-core@9.11.3", "@polkadot/rpc-core@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-core/-/rpc-core-9.11.3.tgz#f8c29570d886db978babe2f9fd6d67b54a8b7b07"
   integrity sha512-L9pPPh8wx6d1N2o1KsBAnjWqDevDTFL1eJVEcG6M4PXRH8AfNTPkGEj5BbJAu2qn8UMexvg8omaU6cgRqygB5Q==
@@ -693,7 +693,7 @@
     mock-socket "^9.1.2"
     nock "^13.2.4"
 
-"@polkadot/rpc-provider@9.11.3", "@polkadot/rpc-provider@^9.11.1":
+"@polkadot/rpc-provider@9.11.3", "@polkadot/rpc-provider@^9.11.1", "@polkadot/rpc-provider@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-provider/-/rpc-provider-9.11.3.tgz#64750e62095b1b76344bcd59a515abf4d1b6c428"
   integrity sha512-msFUDHTYgruYG932R7cePKXGmDI6wscUMRtFEoZEmBgks5fn8J7SQ8Onz1rg/GveeJEoMgFiTARdi6sKHVx0eg==
@@ -723,7 +723,7 @@
     "@polkadot/types-codec" "7.15.1"
     "@polkadot/util" "^8.7.1"
 
-"@polkadot/types-augment@9.11.3":
+"@polkadot/types-augment@9.11.3", "@polkadot/types-augment@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/types-augment/-/types-augment-9.11.3.tgz#cdf9ab24628bdab2493a754898cf8d1e091b29c7"
   integrity sha512-kKEupciBF6CYTTW/OrApuyD/sC96YOWHBq/HYrTACK+f5kVCnGGPVm8gXVUh46qxmQYkZaRcNg3+DT264WBohA==
@@ -741,7 +741,7 @@
     "@babel/runtime" "^7.17.8"
     "@polkadot/util" "^8.7.1"
 
-"@polkadot/types-codec@9.11.3":
+"@polkadot/types-codec@9.11.3", "@polkadot/types-codec@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/types-codec/-/types-codec-9.11.3.tgz#c07b8b4ea213e0eec33498fa62362b1217287cc5"
   integrity sha512-bYgDr6762snxqV9V4Fd3DtValZOv7psoC1kMJUaOb5I1cS+F8cuQ8gTpT2TEpMUSwDlGPJH0HdJknAO7PH/ZdA==
@@ -759,7 +759,7 @@
     "@polkadot/types-codec" "7.15.1"
     "@polkadot/util" "^8.7.1"
 
-"@polkadot/types-create@9.11.3":
+"@polkadot/types-create@9.11.3", "@polkadot/types-create@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/types-create/-/types-create-9.11.3.tgz#d3829426400a5add63a262ffe18c8d0dcffb5262"
   integrity sha512-K1npBk7WJ97BDdDRLAdxL5eNemtx9gNLRWpJ4P+lZKWBCL5XvmkrBKxz56YPbOph0s8wfdC9RR6Sck4k4M2aug==
@@ -780,7 +780,7 @@
     "@polkadot/types-create" "7.15.1"
     "@polkadot/util" "^8.7.1"
 
-"@polkadot/types-known@9.11.3":
+"@polkadot/types-known@9.11.3", "@polkadot/types-known@^9.9.1":
   version "9.11.3"
   resolved "https://registry.yarnpkg.com/@polkadot/types-known/-/types-known-9.11.3.tgz#1a9eebde3a4111ac91e0ddd51908f8a3b66f670f"
   integrity sha512-coCDjVgdGsPaPOamUrzknWeWgP08iRy2YEdusH8J+wfq14gKpr+me4qXaaa9OaqnhLrNYkffnXQXHg90v1oEDw==

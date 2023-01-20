@@ -27,17 +27,12 @@
       ],
       "react-dom": [
         "./node_modules/preact/compat/"
-      ],
-      "@polkadot/types": [
-        "./node_modules/@pendulum-chain/types"
-      ],
-      "@polkadot/types/*": [
-        "./node_modules/@pendulum-chain/types/*"
       ]
     }
   },
   "include": [
     "src",
+    // Include the Pendulum types so we can use them in our code
     "node_modules/@pendulum-chain/types"
   ],
   "references": [
