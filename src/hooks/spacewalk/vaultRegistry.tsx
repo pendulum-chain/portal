@@ -1,10 +1,7 @@
-import { useNodeInfoState } from "../../NodeInfoProvider";
 import type { VaultRegistryVault } from "@polkadot/types/lookup";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import { SpacewalkPrimitivesVaultId } from "@polkadot/types/lookup";
 import { AccountId32 } from "@polkadot/types/interfaces";
-import { Keypair, StrKey } from "stellar-sdk";
-import { Buffer } from "buffer";
+import { useNodeInfoState } from "../../NodeInfoProvider";
 import { convertRawToPublicKey } from "../../helpers/stellar";
 
 export function useVaultRegistryPallet() {
