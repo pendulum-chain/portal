@@ -31,7 +31,9 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    // Include the Pendulum types so we can use them in our code
+    "node_modules/@pendulum-chain/types"
   ],
   "references": [
     {
