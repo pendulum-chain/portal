@@ -1,0 +1,35 @@
+import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
+import { Asset } from "stellar-sdk";
+import { convertRawHexKeyToPublicKey } from "./stellar";
+
+// Convert a hex string to an ASCII string
+function hex_to_ascii(hexString: string, leading0x: boolean = true) {
+  const hex = hexString.toString();
+  let str = "";
+  for (let n = leading0x ? 2 : 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+  }
+  return str;
+}
+
+export function convertCurrencyToStellarAsset(
+  currency: SpacewalkPrimitivesCurrencyId
+): Asset | null {
+  if (currency.isStellarNative) {
+    return Asset.native();
+  } else if (currency.isAlphaNum4) {
+    const code = hex_to_ascii(currency.asAlphaNum4.code.toHex());
+    const issuer = convertRawHexKeyToPublicKey(
+      currency.asAlphaNum4.issuer.toHex()
+    );
+    return new Asset(code, issuer.publicKey());
+  } else if (currency.isAlphaNum12) {
+    const code = hex_to_ascii(currency.asAlphaNum12.code.toHex());
+    const issuer = convertRawHexKeyToPublicKey(
+      currency.asAlphaNum12.issuer.toHex()
+    );
+    return new Asset(code, issuer.publicKey());
+  } else {
+    return null;
+  }
+}
