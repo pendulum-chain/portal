@@ -2,7 +2,7 @@ import type { VaultRegistryVault } from "@polkadot/types/lookup";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { AccountId32 } from "@polkadot/types/interfaces";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { convertRawToPublicKey } from "../../helpers/stellar";
+import { convertRawHexKeyToPublicKey } from "../../helpers/stellar";
 
 export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;
@@ -17,11 +17,11 @@ export function useVaultRegistryPallet() {
     let unsubscribe: () => void;
 
     api.query.vaultRegistry.vaults.entries().then((entries) => {
-      let richEntries = entries.map(([key, value]) => {
-        return value.toJSON() as unknown as VaultRegistryVault;
+      let typedEntries = entries.map(([key, value]) => {
+        return value.unwrap();
       });
 
-      setVaults(richEntries);
+      setVaults(typedEntries);
     });
 
     return () => unsubscribe && unsubscribe();
@@ -42,7 +42,7 @@ export function useVaultRegistryPallet() {
         if (publicKeyBinary.isNone) {
           return undefined;
         } else {
-          return convertRawToPublicKey(publicKeyBinary.toHex());
+          return convertRawHexKeyToPublicKey(publicKeyBinary.toHex());
         }
       },
     };

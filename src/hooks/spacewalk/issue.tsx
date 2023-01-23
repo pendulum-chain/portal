@@ -25,12 +25,11 @@ export function useIssuePallet() {
 
     api.query.issue.issueRequests.entries().then((entries) => {
       let richEntries = entries.map(([key, value]) => {
-        const req =
-          value.toJSON() as unknown as SpacewalkPrimitivesIssueIssueRequest;
+        const request = value.unwrap();
 
         const issueRequest: IssueRequest = {
           id: key.args[0] as H256,
-          request: req,
+          request,
         };
 
         return issueRequest;
