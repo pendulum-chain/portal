@@ -43,11 +43,14 @@ const GlobalStateProvider = ({
   const navigate = useNavigate();
   const { location } = window;
   const { setTheme } = useTheme();
-  const strings = location.pathname.split("/");
+  const splittedUrl = location.pathname.split("/");
 
   useEffect(() => {
-    const isPendulum = strings[1] && strings[1] === "pendulum" && !strings[2];
-    const isFoucoco = strings[1] && strings[1] === "foucoco" && !strings[2];
+    const chain = splittedUrl[1] || 'amplitude';
+    const path = splittedUrl.slice(2).join('/') || "dashboard";
+    const isPendulum = chain === "pendulum";
+    const isFoucoco = chain === "foucoco";
+
     let tenantNane: TenantName;
     let tenantRPC: string;
 
@@ -56,21 +59,21 @@ const GlobalStateProvider = ({
         tenantNane = TenantName.Pendulum;
         tenantRPC = "wss://rpc-pendulum.pendulumchain.tech";
         setTheme("light");
-        navigate("/pendulum/dashboard");
+        navigate("/pendulum/" + path);
         break;
 
       case isFoucoco:
         tenantNane = TenantName.Foucoco;
         tenantRPC = "wss://rpc-foucoco.pendulumchain.tech";
         setTheme("black");
-        navigate("/foucoco/dashboard");
+        navigate("/foucoco/" + path);
         break;
 
       default:
         tenantNane = TenantName.Amplitude;
         tenantRPC = "wss://rpc-amplitude.pendulumchain.tech";
         setTheme("black");
-        navigate("/amplitude/dashboard");
+        navigate("/amplitude/" + path);
         break;
     }
 
