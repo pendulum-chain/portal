@@ -1,4 +1,4 @@
-import { Keypair, StrKey } from "stellar-sdk";
+import { Asset, Keypair, StrKey } from "stellar-sdk";
 import { Buffer } from "buffer";
 
 export function convertRawHexKeyToPublicKey(rawPublicKeyHex: string): Keypair {
@@ -6,4 +6,8 @@ export function convertRawHexKeyToPublicKey(rawPublicKeyHex: string): Keypair {
     Buffer.from(rawPublicKeyHex.slice(2), "hex")
   );
   return Keypair.fromPublicKey(ed25519PublicKey);
+}
+
+export function stringifyStellarAsset(asset: Asset): string {
+  return asset.isNative() ? "XLM" : `${asset.getCode()}:${asset.getIssuer()}`;
 }

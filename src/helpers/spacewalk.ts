@@ -1,5 +1,6 @@
 import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
-import { Asset } from "stellar-sdk";
+import { ApiPromise } from "@polkadot/api";
+import { Asset, Keypair } from "stellar-sdk";
 import { convertRawHexKeyToPublicKey } from "./stellar";
 
 // Convert a hex string to an ASCII string
@@ -31,5 +32,37 @@ export function convertCurrencyToStellarAsset(
     return new Asset(code, issuer.publicKey());
   } else {
     return null;
+  }
+}
+
+export function convertStellarAssetToCurrency(
+  asset: Asset,
+  api: ApiPromise
+): SpacewalkPrimitivesCurrencyId {
+  if (asset.isNative()) {
+    return api.createType("SpacewalkPrimitivesCurrencyId", "StellarNative");
+  } else {
+    const pair = Keypair.fromPublicKey(asset.getIssuer());
+    // We need the raw public key, not the base58 encoded version
+    const issuerRawPublicKey = pair.rawPublicKey();
+    const issuer = api.createType("Raw", issuerRawPublicKey, 32);
+
+    if (asset.getCode().length <= 4) {
+      const code = api.createType("Raw", asset.getCode(), 4);
+      return api.createType("SpacewalkPrimitivesCurrencyId", {
+        AlphaNum4: {
+          code,
+          issuer,
+        },
+      });
+    } else {
+      const code = api.createType("Raw", asset.getCode(), 12);
+      return api.createType("SpacewalkPrimitivesCurrencyId", {
+        AlphaNum12: {
+          code,
+          issuer,
+        },
+      });
+    }
   }
 }
