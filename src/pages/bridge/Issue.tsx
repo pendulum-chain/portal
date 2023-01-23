@@ -3,10 +3,12 @@ import { Button, Checkbox, Form } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import "./styles.css";
 import LabelledInputField from "../../components/LabelledInputField";
-import DropdownSelector from "../../components/DropdownSelector";
+import DropdownSelector from "../../components/LabelledSelector";
 import { useIssuePallet } from "../../hooks/spacewalk/issue";
 import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
 import { VaultRegistryVault } from "@polkadot/types/lookup";
+import { convertCurrencyToStellarAsset } from "../../helpers/spacewalk";
+import { Asset } from "stellar-sdk";
 
 interface VaultSelectorProps {
   vaults: VaultRegistryVault[];
@@ -65,6 +67,17 @@ function Issue(): JSX.Element {
     });
   }, [vaults]);
 
+  const wrappedAssets = useMemo(() => {
+    return vaults
+      .map((vault) => {
+        const currency = vault.id.currencies.wrapped;
+        return convertCurrencyToStellarAsset(currency);
+      })
+      .filter((asset): asset is Asset => {
+        return asset != null;
+      });
+  }, [vaults]);
+
   useEffect(() => {
     if (!manualVaultSelection) {
       // TODO build a better algorithm for automatically selecting a vault
@@ -86,7 +99,11 @@ function Issue(): JSX.Element {
               onChange={setAmount}
             />
             <DropdownSelector
-              items={[{ displayName: "USDC", id: 1 }]}
+              label="Asset"
+              items={wrappedAssets.map((asset, index) => ({
+                displayName: asset.getCode(),
+                id: index,
+              }))}
               onChange={() => undefined}
             />
             <Form className="shadow bg-base-200 rounded-lg p-4 m-4">
