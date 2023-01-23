@@ -3,12 +3,53 @@ import { Button, Checkbox, Form } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import "./styles.css";
 import LabelledInputField from "../../components/LabelledInputField";
-import DropdownSelector from "../../components/LabelledSelector";
+import LabelledSelector from "../../components/LabelledSelector";
 import { useIssuePallet } from "../../hooks/spacewalk/issue";
 import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
 import { VaultRegistryVault } from "@polkadot/types/lookup";
 import { convertCurrencyToStellarAsset } from "../../helpers/spacewalk";
 import { Asset } from "stellar-sdk";
+import { stringifyStellarAsset } from "../../helpers/stellar";
+
+interface AssetSelectorProps {
+  selectedAsset?: Asset;
+  onChange: (asset: Asset) => void;
+  assets: Asset[];
+  style?: React.CSSProperties;
+}
+
+function AssetSelector(props: AssetSelectorProps): JSX.Element {
+  const { assets, selectedAsset } = props;
+
+  const items = assets.map((asset) => {
+    return {
+      displayName: asset.getCode(),
+      id: stringifyStellarAsset(asset),
+    };
+  });
+
+  const selectedAssetItem = selectedAsset
+    ? {
+        displayName: selectedAsset.getCode(),
+        id: stringifyStellarAsset(selectedAsset),
+      }
+    : undefined;
+
+  return (
+    <LabelledSelector
+      items={items}
+      label="Asset"
+      onChange={(newItem) => {
+        const newAsset = assets.find((asset) => {
+          return stringifyStellarAsset(asset) === newItem.id;
+        });
+        newAsset && props.onChange(newAsset);
+      }}
+      value={selectedAssetItem}
+      style={props.style}
+    />
+  );
+}
 
 interface VaultSelectorProps {
   vaults: VaultRegistryVault[];
@@ -34,7 +75,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
     : undefined;
 
   return (
-    <DropdownSelector
+    <LabelledSelector
       items={items}
       onChange={(newItem) => {
         const newVault = vaults.find((vault) => {
@@ -50,22 +91,13 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
 function Issue(): JSX.Element {
   const [amount, setAmount] = useState<string>("0");
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
+  const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
 
   const issueHelpers = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
 
   const vaults = getVaults();
-
-  const vaultsForCurrency = useMemo(() => {
-    return vaults.filter((vault) => {
-      // const currency = vault.id.currencies.wrapped.isAlphaNum4
-      //   ? vault.id.currencies.wrapped.asAlphaNum4.code
-      //   : vault.id.currencies.wrapped.asAlphaNum12().assetCode;
-      // return vault.id.currencies.wrapped === "USD";
-      return true;
-    });
-  }, [vaults]);
 
   const wrappedAssets = useMemo(() => {
     return vaults
@@ -78,11 +110,27 @@ function Issue(): JSX.Element {
       });
   }, [vaults]);
 
+  const vaultsForCurrency = useMemo(() => {
+    return vaults.filter((vault) => {
+      if (!selectedAsset) {
+        return false;
+      }
+
+      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(
+        vault.id.currencies.wrapped
+      );
+      return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
+    });
+  }, [selectedAsset, vaults]);
+
   useEffect(() => {
     if (!manualVaultSelection) {
       // TODO build a better algorithm for automatically selecting a vault
       if (vaultsForCurrency.length > 0) {
         setSelectedVault(vaultsForCurrency[0]);
+      }
+      if (!selectedAsset && wrappedAssets.length > 0) {
+        setSelectedAsset(wrappedAssets[0]);
       }
     }
   }, [manualVaultSelection, vaultsForCurrency]);
@@ -92,20 +140,21 @@ function Issue(): JSX.Element {
       <div style={{ width: 500 }}>
         <div class="box">
           <div class="box-inner">
-            <LabelledInputField
-              label="From Stellar"
-              type="number"
-              value={amount}
-              onChange={setAmount}
-            />
-            <DropdownSelector
-              label="Asset"
-              items={wrappedAssets.map((asset, index) => ({
-                displayName: asset.getCode(),
-                id: index,
-              }))}
-              onChange={() => undefined}
-            />
+            <div className="flex items-center px-5">
+              <LabelledInputField
+                label="From Stellar"
+                type="number"
+                value={amount}
+                onChange={setAmount}
+                style={{ flexGrow: 2 }}
+              />
+              <AssetSelector
+                selectedAsset={selectedAsset}
+                assets={wrappedAssets}
+                onChange={setSelectedAsset}
+                style={{ flexGrow: 1 }}
+              />
+            </div>
             <Form className="shadow bg-base-200 rounded-lg p-4 m-4">
               <Form.Label title="Manually select vault">
                 <Checkbox

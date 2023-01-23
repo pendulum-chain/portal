@@ -27,20 +27,21 @@ interface Props<T> {
   label?: string;
   onChange: (item: T) => void;
   value?: T;
+  style?: React.CSSProperties;
 }
 
 function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
   const { label, items, onChange, value } = props;
 
   return (
-    <div className="form-control w-full max-w-xs">
+    <div className="form-control max-w-xs" style={props.style}>
       {label && (
         <label className="label">
           <span className="label-text">{label}</span>
         </label>
       )}
       <Select
-        className="w-52 h-10 border border-gray-300 rounded-md"
+        className="w-fit h-10 border border-gray-500 rounded-md"
         onChange={(e) => {
           const id = e.target.value;
           const item = items.find((i) => i.id === id);
