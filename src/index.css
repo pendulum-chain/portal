@@ -38,7 +38,7 @@
   --footer-links-dark: #858585;
 }
 
-[data-theme="black"] {
+[data-theme="amplitude"] {
   --primary: var(--primary-dark);
   --border: var(--border-dark);
   --secondary: var(--secondary-dark);
@@ -57,7 +57,7 @@
   --footer-links: var(--footer-links-dark);
 }
 
-[data-theme="light"] {
+[data-theme="pendulum"] {
   --primary: var(--primary-light);
   --border: var(--border-light);
   --secondary: var(--secondary-light);

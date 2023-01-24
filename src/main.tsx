@@ -8,19 +8,17 @@ import "@talisman-connect/ui/talisman-connect-ui.esm.css";
 import "./index.css";
 import { NodeInfoProvider } from "./NodeInfoProvider";
 
-const theme = localStorage.getItem("theme") || "black";
-
 render(
   <BrowserRouter>
     <GlobalStateProvider>
       <GlobalStateContext.Consumer>
         {({ state }) =>
           state.tenantRPC && (
-            <Theme dataTheme={theme}>
-              <NodeInfoProvider tenantRPC={state.tenantRPC}>
+            <NodeInfoProvider tenantRPC={state.tenantRPC}>
+              <Theme dataTheme={state.tenantNane}>
                 <App />
-              </NodeInfoProvider>
-            </Theme>
+              </Theme>
+            </NodeInfoProvider>
           )
         }
       </GlobalStateContext.Consumer>
