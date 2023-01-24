@@ -1,7 +1,6 @@
 import { h } from "preact";
 import { Button, Checkbox, Form } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import "./styles.css";
 import LabelledInputField from "../../components/LabelledInputField";
 import LabelledSelector from "../../components/LabelledSelector";
 import { useIssuePallet } from "../../hooks/spacewalk/issue";
@@ -88,6 +87,56 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
   );
 }
 
+interface FeeBoxProps {
+  bridgedAsset?: Asset;
+}
+
+function FeeBox(props: FeeBoxProps): JSX.Element {
+  const { bridgedAsset } = props;
+
+  // TODO - get this from somewhere
+  const network = "Amplitude"; // or Pendulum
+  const nativeCurrency = network === "Amplitude" ? "AMPE" : "PEN";
+  const wrappedCurrencyPrefix = network === "Amplitude" ? "a" : "p";
+
+  const wrappedCurrencyName = bridgedAsset
+    ? wrappedCurrencyPrefix + bridgedAsset.getCode()
+    : "";
+
+  const bridgeFee = useMemo(() => {
+    return 0;
+  }, []);
+
+  const griefingCollateral = useMemo(() => {
+    return 0;
+  }, []);
+
+  const transactionFee = useMemo(() => {
+   return 0;
+  },[]);
+
+  return (
+    <div className="shadow bg-base-200 rounded-lg p-4 my-4 flex flex-col">
+      <div className="flex justify-between">
+        <span>To {network}</span>
+        <span>0.00 {wrappedCurrencyName}</span>
+      </div>
+      <div className="flex justify-between mt-2">
+        <span>Bridge Fee</span>
+        <span>{bridgeFee} {bridgedAsset?.getCode()}</span>
+      </div>
+      <div className="flex justify-between mt-2">
+        <span>Security Deposit</span>
+        <span>{griefingCollateral} {nativeCurrency}</span>
+      </div>
+      <div className="flex justify-between mt-2">
+        <span>Transaction Fee</span>
+        <span>{transactionFee} {nativeCurrency}</span>
+      </div>
+    </div>
+  );
+}
+
 function Issue(): JSX.Element {
   const [amount, setAmount] = useState<string>("0");
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
@@ -139,8 +188,8 @@ function Issue(): JSX.Element {
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
       <div style={{ width: 500 }}>
         <div class="box">
-          <div class="box-inner">
-            <div className="flex items-center px-5">
+          <div class="px-5 flex flex-col">
+            <div className="flex items-center">
               <LabelledInputField
                 label="From Stellar"
                 type="number"
@@ -155,7 +204,7 @@ function Issue(): JSX.Element {
                 style={{ flexGrow: 1 }}
               />
             </div>
-            <Form className="shadow bg-base-200 rounded-lg p-4 m-4">
+            <Form className="shadow bg-base-200 rounded-lg p-4 my-4">
               <Form.Label title="Manually select vault">
                 <Checkbox
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +223,7 @@ function Issue(): JSX.Element {
                 selectedVault={selectedVault}
               />
             )}
+            <FeeBox bridgedAsset={selectedAsset} />
           </div>
           <div className="parity">
             <Button color="success mt-5" onClick={() => undefined}>

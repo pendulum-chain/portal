@@ -13,14 +13,14 @@ function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
   const { label, items, onChange, value } = props;
 
   return (
-    <div className="form-control max-w-xs" style={props.style}>
+    <div className="form-control" style={props.style}>
       {label && (
         <label className="label">
           <span className="label-text">{label}</span>
         </label>
       )}
       <Select
-        className="w-fit h-10 border border-gray-500 rounded-md"
+        className="w-fit max-w-full h-10 border border-gray-500 rounded-md"
         onChange={(e) => {
           const id = e.target.value;
           const item = items.find((i) => i.id === id);
