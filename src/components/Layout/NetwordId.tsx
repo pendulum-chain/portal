@@ -8,7 +8,7 @@ const NetworkId: FC = memo(() => {
   // https://polkadot.js.org/docs/api/examples/promise/listen-to-blocks/
 
   return (
-    <div class="pendulum-network-id">
+    <div className="pendulum-network-id">
       <p>Network</p>
       <ul>
         <li>
@@ -18,7 +18,7 @@ const NetworkId: FC = memo(() => {
           <a
             href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fpencol-kus-01.pendulumchain.tech#/explorer"
             target="_blank"
-            rel="nofollow"
+            rel="noreferrer"
             title="Last block number"
           >
             {state.bestNumberFinalize || "000000"}

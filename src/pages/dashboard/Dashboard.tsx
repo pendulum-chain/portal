@@ -46,8 +46,8 @@ export function Dashboard() {
   }, [free]);
 
   return (
-    <div class="mt-10">
-      <div className="dashboard portfolio">
+    <div className="mt-10">
+      <div className="dashboard portfolio hidden">
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
@@ -57,7 +57,7 @@ export function Dashboard() {
             <li className="up">+36,22%</li>
           </ul>
         </div>
-        <span class="hidden">
+        <span className="hidden">
           <Tabs />
           <TickerChangeTable />
         </span>
