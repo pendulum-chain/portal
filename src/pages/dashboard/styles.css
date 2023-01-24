@@ -34,7 +34,6 @@ h1 {
 }
 
 .portfolio>.portfolio li.up {
-  color: var(--dark-green);
 }
 
 .portfolio>.portfolio li.down {

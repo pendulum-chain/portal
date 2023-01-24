@@ -3,22 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --primary-light: #00aece;
-  --border-light: #1eb7d3;
-  --secondary-light: #eaf3f4;
-  --background-light: #ddeced;
-  --nice-light: #00cbf0;
-  --border-dark-light: #3aa4b7;
+  --primary-light: background: #907EA0;
+  --primary-light: color: #ffffff;
+  --border-light: #907EA0;
+  --secondary-light: #58667E;
+  --background-light: #F4F5F6;
+  --nice-light: #907EA0;
+  --border-dark-light: #907EA0;
   --clear-light: #ffffff;
-  --darkner-light: #000000;
-  --dark-green-light: #00aa00;
-  --dark-red-light: #aa0000;
-  --grey-91-light: #919191;
-  --grey-88-light: #888;
-  --grey-99-light: #999;
-  --grey-f9-light: #f9f9f9;
-  --grey-f8-light: #f8f8f8;
-  --footer-links-light: #999999;
+  --footer-links-light: #58667E;
 
   --primary-dark: #5defa7;
   --border-dark: #53d96e;
@@ -26,16 +19,9 @@
   --background-dark: #1c1c1c;
   --nice-dark: #46925e;
   --border-dark-dark: #3cb73a;
-  --clear-dark: #1c1c1c;
-  --darkner-dark: #858585;
-  --dark-green-dark: #00aa00;
-  --dark-red-dark: #aa0000;
-  --grey-91-dark: #787777;
-  --grey-88-dark: rgb(97, 95, 95);
-  --grey-99-dark: rgb(60, 58, 58);
-  --grey-f9-dark: #191010;
-  --grey-f8-dark: #1c1c1c;
+ 
   --footer-links-dark: #858585;
+  --darkner: #1c1c1c;
 }
 
 [data-theme="amplitude"] {
@@ -45,15 +31,6 @@
   --background: var(--background-dark);
   --nice: var(--nice-dark);
   --border-dark: var(--border-dark-dark);
-  --clear: var(--clear-dark);
-  --darkner: var(--darkner-dark);
-  --dark-green: var(--dark-green-dark);
-  --dark-red: var(--dark-red-dark);
-  --grey-91: var(--grey-91-dark);
-  --grey-88: var(--grey-88-dark);
-  --grey-99: var(--grey-99-dark);
-  --grey-f9: var(--grey-f9-dark);
-  --grey-f8: var(--grey-f8-dark);
   --footer-links: var(--footer-links-dark);
 }
 
@@ -62,30 +39,19 @@
   --border: var(--border-light);
   --secondary: var(--secondary-light);
   --background: var(--background-light);
-  --nice: var(--nice-light);
   --border-dark: var(--border-dark-light);
-  --clear: var(--clear-light);
-  --darkner: var(--darkner-light);
-  --dark-green: var(--dark-green-light);
-  --dark-red: var(--dark-red-light);
-  --grey-91: var(--grey-91-light);
-  --grey-88: var(--grey-88-light);
-  --grey-99: var(--grey-99-light);
-  --grey-f9: var(--grey-f9-light);
-  --grey-f8: var(--grey-f8-light);
+  --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
 }
 
 body {
-  font-family: 'Lexend', sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   font-weight: 300;
   color: var(--darkner);
   background-color: var(--clear);
 }
 
 .main-wrapper {
-  max-width: 1800px;
-  /*min-width: 1700px;*/
 }
 
 .pendulum-network-id,
@@ -142,11 +108,12 @@ nav>.active {
 }
 
 nav svg {
-  fill: var(--darkner);
+  fill: var(--secondary-light);
 }
 
 nav a {
   position: relative;
+  font-size: 14px;
 }
 
 nav .external-link {
