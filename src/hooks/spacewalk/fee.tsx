@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
+import Big from "big.js";
+import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import BigNumber from "bn.js";
 
 export function useFeePallet() {
-  const [issueFee, setIssueFee] = useState<BigNumber>(new BigNumber(0));
-  const [redeemFee, setRedeemFee] = useState<BigNumber>(new BigNumber(0));
-  const [punishmentFee, setPunishmentFee] = useState<BigNumber>(
-    new BigNumber(0)
+  const [issueFee, setIssueFee] = useState<Big>(new Big(0));
+  const [redeemFee, setRedeemFee] = useState<Big>(new Big(0));
+  const [punishmentFee, setPunishmentFee] = useState<Big>(new Big(0));
+  const [premiumRedeemFee, setPremiumRedeemFee] = useState<Big>(new Big(0));
+  const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(
+    new Big(0)
   );
-  const [premiumRedeemFee, setPremiumRedeemFee] = useState<BigNumber>(
-    new BigNumber(0)
-  );
-  const [issueGriefingCollateral, setIssueGriefingCollateral] =
-    useState<BigNumber>(new BigNumber(0));
   const [replaceGriefingCollateral, setReplaceGriefingCollateral] =
-    useState<BigNumber>(new BigNumber(0));
+    useState<Big>(new Big(0));
+
+  const [griefingCollateralCurrency, setGriefingCollateralCurrency] = useState<
+    SpacewalkPrimitivesCurrencyId | undefined
+  >(undefined);
 
   const { api } = useNodeInfoState().state;
 
@@ -25,24 +27,28 @@ export function useFeePallet() {
 
     let unsubscribe: () => void = () => {};
 
+    setGriefingCollateralCurrency(
+      api.consts.vaultRegistry.getGriefingCollateralCurrencyId
+    );
+
     Promise.all([
       api.query.fee.issueFee((fee) => {
-        setIssueFee(fee);
+        setIssueFee(Big(fee.toString()));
       }),
       api.query.fee.punishmentFee((fee) => {
-        setPunishmentFee(fee);
+        setPunishmentFee(Big(fee.toString()));
       }),
       api.query.fee.redeemFee((fee) => {
-        setRedeemFee(fee);
+        setRedeemFee(Big(fee.toString()));
       }),
       api.query.fee.premiumRedeemFee((fee) => {
-        setPremiumRedeemFee(fee);
+        setPremiumRedeemFee(Big(fee.toString()));
       }),
       api.query.fee.issueGriefingCollateral((fee) => {
-        setIssueGriefingCollateral(fee);
+        setIssueGriefingCollateral(Big(fee.toString()));
       }),
       api.query.fee.replaceGriefingCollateral((fee) => {
-        setReplaceGriefingCollateral(fee);
+        setReplaceGriefingCollateral(Big(fee.toString()));
       }),
     ]).then((unsubscribeFunctions) => {
       unsubscribe = () => {
@@ -63,9 +69,46 @@ export function useFeePallet() {
           premiumRedeemFee,
           issueGriefingCollateral,
           replaceGriefingCollateral,
+          griefingCollateralCurrency,
         };
       },
+      async getTransactionFee() {
+        if (!api) {
+          return new Big(0);
+        }
+        const extrinsicData = api.tx.issue.requestIssue.data;
+        console.log("extrinsicData", extrinsicData);
+        if (!extrinsicData) {
+          return new Big(0);
+        }
+        const fee = await api.rpc.payment.queryFeeDetails(extrinsicData);
+
+        console.log("fee", fee);
+        let inclusionFee = fee.inclusionFee.isSome
+          ? fee.inclusionFee.unwrap()
+          : null;
+        let totalFee = inclusionFee
+          ? Big(
+              inclusionFee.baseFee
+                .add(inclusionFee.lenFee)
+                .add(inclusionFee.adjustedWeightFee)
+                .toString()
+            )
+          : null;
+
+        return totalFee ? totalFee : new Big(0);
+      },
     };
-  }, []);
+  }, [
+    api,
+    issueFee,
+    redeemFee,
+    punishmentFee,
+    premiumRedeemFee,
+    issueGriefingCollateral,
+    replaceGriefingCollateral,
+    griefingCollateralCurrency,
+  ]);
+
   return memo;
 }

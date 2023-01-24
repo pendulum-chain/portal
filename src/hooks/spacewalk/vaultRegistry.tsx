@@ -1,5 +1,4 @@
 import type { VaultRegistryVault } from "@polkadot/types/lookup";
-import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { AccountId32 } from "@polkadot/types/interfaces";
 import { useNodeInfoState } from "../../NodeInfoProvider";
@@ -9,9 +8,6 @@ export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;
 
   const [vaults, setVaults] = useState<VaultRegistryVault[]>([]);
-  const [griefingCollateralCurrency, setGriefingCollateralCurrency] = useState<
-    SpacewalkPrimitivesCurrencyId | undefined
-  >(undefined);
 
   useEffect(() => {
     if (!api) {
@@ -27,10 +23,6 @@ export function useVaultRegistryPallet() {
 
       setVaults(typedEntries);
     });
-
-    setGriefingCollateralCurrency(
-      api.consts.vaultRegistry.getGriefingCollateralCurrencyId
-    );
 
     return () => unsubscribe && unsubscribe();
   }, [api]);
@@ -52,9 +44,6 @@ export function useVaultRegistryPallet() {
         } else {
           return convertRawHexKeyToPublicKey(publicKeyBinary.toHex());
         }
-      },
-      getGriefingCollateralCurrency() {
-        return griefingCollateralCurrency;
       },
     };
   }, [api, vaults]);

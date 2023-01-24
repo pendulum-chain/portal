@@ -9,6 +9,9 @@ import { VaultRegistryVault } from "@polkadot/types/lookup";
 import { convertCurrencyToStellarAsset } from "../../helpers/spacewalk";
 import { Asset } from "stellar-sdk";
 import { stringifyStellarAsset } from "../../helpers/stellar";
+import { useFeePallet } from "../../hooks/spacewalk/fee";
+import { toUnit } from "../../helpers/parseNumbers";
+import Big from "big.js";
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -89,10 +92,22 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
+  amountString: string;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
   const { bridgedAsset } = props;
+
+  const { getFees, getTransactionFee } = useFeePallet();
+  const fees = getFees();
+
+  const [transactionFee, setTransactionFee] = useState<Big>(new Big(0));
+
+  useEffect(() => {
+    getTransactionFee().then((fee) => {
+      setTransactionFee(fee);
+    });
+  }, [getTransactionFee, setTransactionFee]);
 
   // TODO - get this from somewhere
   const network = "Amplitude"; // or Pendulum
@@ -103,17 +118,21 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     ? wrappedCurrencyPrefix + bridgedAsset.getCode()
     : "";
 
+  const amount = useMemo(() => {
+    try {
+      return new Big(props.amountString);
+    } catch (e) {
+      return new Big(0);
+    }
+  }, [props.amountString]);
+
   const bridgeFee = useMemo(() => {
-    return 0;
-  }, []);
+    return toUnit(amount.mul(fees.issueFee));
+  }, [amount, fees]);
 
   const griefingCollateral = useMemo(() => {
-    return 0;
-  }, []);
-
-  const transactionFee = useMemo(() => {
-   return 0;
-  },[]);
+    return toUnit(amount.mul(fees.issueGriefingCollateral));
+  }, [amount, fees]);
 
   return (
     <div className="shadow bg-base-200 rounded-lg p-4 my-4 flex flex-col">
@@ -123,15 +142,21 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       </div>
       <div className="flex justify-between mt-2">
         <span>Bridge Fee</span>
-        <span>{bridgeFee} {bridgedAsset?.getCode()}</span>
+        <span>
+          {bridgeFee.toString()} {bridgedAsset?.getCode()}
+        </span>
       </div>
       <div className="flex justify-between mt-2">
         <span>Security Deposit</span>
-        <span>{griefingCollateral} {nativeCurrency}</span>
+        <span>
+          {griefingCollateral.toString()} {nativeCurrency}
+        </span>
       </div>
       <div className="flex justify-between mt-2">
         <span>Transaction Fee</span>
-        <span>{transactionFee} {nativeCurrency}</span>
+        <span>
+          {transactionFee.toString()} {nativeCurrency}
+        </span>
       </div>
     </div>
   );
@@ -223,7 +248,7 @@ function Issue(): JSX.Element {
                 selectedVault={selectedVault}
               />
             )}
-            <FeeBox bridgedAsset={selectedAsset} />
+            <FeeBox amountString={amount} bridgedAsset={selectedAsset} />
           </div>
           <div className="parity">
             <Button color="success mt-5" onClick={() => undefined}>
