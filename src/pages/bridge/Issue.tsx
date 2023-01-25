@@ -12,6 +12,7 @@ import { stringifyStellarAsset } from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
 import { toUnit } from "../../helpers/parseNumbers";
 import Big from "big.js";
+import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -93,21 +94,11 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
 interface FeeBoxProps {
   bridgedAsset?: Asset;
   amountString: string;
+  extrinsic?: SubmittableExtrinsic;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset } = props;
-
-  const { getFees, getTransactionFee } = useFeePallet();
-  const fees = getFees();
-
-  const [transactionFee, setTransactionFee] = useState<Big>(new Big(0));
-
-  useEffect(() => {
-    getTransactionFee().then((fee) => {
-      setTransactionFee(fee);
-    });
-  }, [getTransactionFee, setTransactionFee]);
+  const { bridgedAsset, extrinsic } = props;
 
   // TODO - get this from somewhere
   const network = "Amplitude"; // or Pendulum
@@ -117,6 +108,21 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   const wrappedCurrencyName = bridgedAsset
     ? wrappedCurrencyPrefix + bridgedAsset.getCode()
     : "";
+
+  const { getFees, getTransactionFee } = useFeePallet();
+  const fees = getFees();
+
+  const [transactionFee, setTransactionFee] = useState<number>(0);
+
+  useEffect(() => {
+    if (!extrinsic) {
+      return;
+    }
+
+    getTransactionFee(extrinsic).then((fee) => {
+      setTransactionFee(toUnit(fee));
+    });
+  }, [extrinsic, getTransactionFee, setTransactionFee]);
 
   const amount = useMemo(() => {
     try {
@@ -134,11 +140,25 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     return toUnit(amount.mul(fees.issueGriefingCollateral));
   }, [amount, fees]);
 
+  const totalAmount = useMemo(() => {
+    if (amount.cmp(0) === 0) {
+      return 0;
+    }
+
+    return amount
+      .sub(bridgeFee)
+      .sub(griefingCollateral)
+      .sub(transactionFee)
+      .toNumber();
+  }, [amount, bridgeFee, griefingCollateral, transactionFee]);
+
   return (
     <div className="shadow bg-base-200 rounded-lg p-4 my-4 flex flex-col">
       <div className="flex justify-between">
         <span>To {network}</span>
-        <span>0.00 {wrappedCurrencyName}</span>
+        <span>
+          {totalAmount.toFixed(4)} {wrappedCurrencyName}
+        </span>
       </div>
       <div className="flex justify-between mt-2">
         <span>Bridge Fee</span>
@@ -155,7 +175,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       <div className="flex justify-between mt-2">
         <span>Transaction Fee</span>
         <span>
-          {transactionFee.toString()} {nativeCurrency}
+          {transactionFee.toFixed(12)} {nativeCurrency}
         </span>
       </div>
     </div>
@@ -168,7 +188,7 @@ function Issue(): JSX.Element {
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
 
-  const issueHelpers = useIssuePallet();
+  const { createIssueRequestExtrinsic } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
 
   const vaults = getVaults();
@@ -209,6 +229,14 @@ function Issue(): JSX.Element {
     }
   }, [manualVaultSelection, vaultsForCurrency]);
 
+  const requestIssueExtrinsic = useMemo(() => {
+    if (!selectedVault || !amount) {
+      return undefined;
+    }
+
+    return createIssueRequestExtrinsic(amount, selectedVault.id);
+  }, [amount, createIssueRequestExtrinsic, selectedVault]);
+
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
       <div style={{ width: 500 }}>
@@ -248,7 +276,11 @@ function Issue(): JSX.Element {
                 selectedVault={selectedVault}
               />
             )}
-            <FeeBox amountString={amount} bridgedAsset={selectedAsset} />
+            <FeeBox
+              amountString={amount}
+              bridgedAsset={selectedAsset}
+              extrinsic={requestIssueExtrinsic}
+            />
           </div>
           <div className="parity">
             <Button color="success mt-5" onClick={() => undefined}>

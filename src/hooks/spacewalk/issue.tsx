@@ -61,6 +61,16 @@ export function useIssuePallet() {
           return issueRequest.request.vault === vaultId;
         });
       },
+      createIssueRequestExtrinsic(
+        amount: string,
+        vaultId: SpacewalkPrimitivesVaultId
+      ) {
+        if (!api) {
+          return undefined;
+        }
+
+        return api.tx.issue.requestIssue(amount, vaultId);
+      },
     };
   }, [api, issueRequests]);
 
