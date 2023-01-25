@@ -1,13 +1,16 @@
-import { h, createContext } from "preact";
+import { createContext, h } from "preact";
 import { useContext, useState } from "preact/hooks";
+import { WalletAccount } from "@talismn/connect-wallets";
 
 export interface Toast {
   message: string;
   type: "success" | "error";
 }
+
 export interface GlobalStateInterface {
   userAddress: string; // keyring.accounts
   accountSecret: string;
+  walletAccount?: WalletAccount;
   accountName: string;
   infoMessage?: string;
   toast?: Toast;

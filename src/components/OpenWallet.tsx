@@ -1,64 +1,55 @@
 import { h } from "preact";
-import { WalletSelect } from "@talisman-connect/components";
 import { Button } from "react-daisyui";
-import { useEffect, useState } from "preact/hooks";
-import { WalletAccount, Wallet } from "@talisman-connect/wallets";
-import Keyring from "@polkadot/keyring";
-import addressFormatter from "../helpers/addressFormatter";
+import { useMemo } from "preact/hooks";
+import { WalletAccount } from "@talismn/connect-wallets";
+import { WalletSelect } from "@talismn/connect-components";
 import { useGlobalState } from "../GlobalStateProvider";
-import { useNodeInfoState } from "../NodeInfoProvider";
+import addressFormatter from "../helpers/addressFormatter";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
-  const [walletSelected, setWalletSelected] = useState<Partial<Wallet>>({});
-  const [address, setAddress] = useState<string>("");
   const { state, setState } = useGlobalState();
-  const { state: nodeState } = useNodeInfoState();
 
-  const keyring = new Keyring();
-  nodeState.ss58Format && keyring.setSS58Format(nodeState.ss58Format);
-
-  useEffect(() => {
+  const updateGlobalAccount = (account: WalletAccount) => {
     setState({
       ...state,
       ...{
-        userAddress: address,
+        walletAccount: account,
       },
     });
-  }, [address]);
+  };
 
-  if (Object.keys(address).length > 0 && address.length > 0) {
-    return (
-      <Button
-        title={walletSelected.title}
-        style={{ marginRight: 10 }}
-        endIcon={
-          <img
-            src={walletSelected.logo?.src || ""}
-            style={{ width: 20 }}
-            alt={walletSelected.logo?.alt || ""}
-          />
-        }
-      >
-        {addressFormatter(address.toString(), 4)}
-      </Button>
-    );
-  }
+  const ConnectButton = useMemo(
+    () =>
+      state.walletAccount ? (
+        <Button
+          title={state.walletAccount.wallet?.title}
+          style={{ marginRight: 10 }}
+          endIcon={
+            <img
+              src={state.walletAccount.wallet?.logo?.src || ""}
+              style={{ width: 20 }}
+              alt={state.walletAccount.wallet?.logo?.alt || ""}
+            />
+          }
+        >
+          {addressFormatter(state.walletAccount.address, 4)}
+        </Button>
+      ) : (
+        <Button>Connect to Wallet</Button>
+      ),
+    [state.walletAccount]
+  );
 
   return (
     <WalletSelect
       dappName={networkName}
       open={false}
       showAccountsList={true}
-      triggerComponent={<Button>Connect to wallet</Button>}
-      onWalletSelected={async (wallet: Wallet) => {
-        setWalletSelected(wallet);
-      }}
-      onAccountSelected={async (account: WalletAccount) => {
-        const procAddress = keyring.encodeAddress(account.address);
-        setAddress(procAddress);
+      triggerComponent={ConnectButton}
+      onAccountSelected={(account) => {
+        updateGlobalAccount(account);
       }}
     />
   );
 };
-
 export default OpenWallet;
