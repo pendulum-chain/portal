@@ -1,6 +1,6 @@
 import { h } from "preact";
 import { Button, Checkbox, Form, Modal } from "react-daisyui";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import LabelledInputField from "../../components/LabelledInputField";
 import LabelledSelector from "../../components/LabelledSelector";
 import { useIssuePallet } from "../../hooks/spacewalk/issue";
@@ -13,6 +13,7 @@ import { useFeePallet } from "../../hooks/spacewalk/fee";
 import { toUnit } from "../../helpers/parseNumbers";
 import Big from "big.js";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
+import { useGlobalState } from "../../GlobalStateProvider";
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -215,9 +216,11 @@ function Issue(): JSX.Element {
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
     useState(false);
+  const [submissionPending, setSubmissionPending] = useState(false);
 
   const { createIssueRequestExtrinsic } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
+  const { walletAccount } = useGlobalState().state;
 
   const vaults = getVaults();
 
@@ -264,6 +267,34 @@ function Issue(): JSX.Element {
 
     return createIssueRequestExtrinsic(amount, selectedVault.id);
   }, [amount, createIssueRequestExtrinsic, selectedVault]);
+
+  const submitRequestIssueExtrinsic = useCallback(() => {
+    if (!requestIssueExtrinsic || !walletAccount) {
+      return;
+    }
+
+    setSubmissionPending(true);
+
+    requestIssueExtrinsic
+      .signAndSend(
+        walletAccount.address,
+        { signer: walletAccount.signer as any },
+        (result) => {
+          console.log("result", result);
+
+          if (result.isCompleted) {
+            setConfirmationDialogVisible(true);
+          }
+        }
+      )
+      .catch((error) => {
+        // TODO show error to user
+        console.error("Transaction submission failed", error);
+      })
+      .finally(() => {
+        setSubmissionPending(false);
+      });
+  }, [requestIssueExtrinsic]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
@@ -315,7 +346,12 @@ function Issue(): JSX.Element {
             />
           </div>
           <div className="parity">
-            <Button color="primary" onClick={() => setConfirmationDialogVisible(true)}>
+            <Button
+              color="primary"
+              disabled={!walletAccount}
+              loading={submissionPending}
+              onClick={submitRequestIssueExtrinsic}
+            >
               <span className="uppercase">Confirm</span>
             </Button>
           </div>
