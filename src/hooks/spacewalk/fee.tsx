@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import Big from "big.js";
 import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
 import { useNodeInfoState } from "../../NodeInfoProvider";
+import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 
 export function useFeePallet() {
   const [issueFee, setIssueFee] = useState<Big>(new Big(0));
@@ -72,31 +73,17 @@ export function useFeePallet() {
           griefingCollateralCurrency,
         };
       },
-      async getTransactionFee() {
-        if (!api) {
+      async getTransactionFee(extrinsic: SubmittableExtrinsic) {
+        if (!api || !extrinsic.hasPaymentInfo) {
           return new Big(0);
         }
-        const extrinsicData = api.tx.issue.requestIssue.data;
-        console.log("extrinsicData", extrinsicData);
-        if (!extrinsicData) {
-          return new Big(0);
-        }
-        const fee = await api.rpc.payment.queryFeeDetails(extrinsicData);
 
-        console.log("fee", fee);
-        let inclusionFee = fee.inclusionFee.isSome
-          ? fee.inclusionFee.unwrap()
-          : null;
-        let totalFee = inclusionFee
-          ? Big(
-              inclusionFee.baseFee
-                .add(inclusionFee.lenFee)
-                .add(inclusionFee.adjustedWeightFee)
-                .toString()
-            )
-          : null;
+        // Can be any address because we don't care about executing it here
+        const dummyAddress = "5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS";
+        const sender = dummyAddress;
+        const info = await extrinsic.paymentInfo(sender);
 
-        return totalFee ? totalFee : new Big(0);
+        return new Big(info.partialFee.toString());
       },
     };
   }, [
