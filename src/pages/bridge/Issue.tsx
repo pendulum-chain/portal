@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { Button, Checkbox, Form } from "react-daisyui";
+import { Button, Checkbox, Form, Modal } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import LabelledInputField from "../../components/LabelledInputField";
 import LabelledSelector from "../../components/LabelledSelector";
@@ -182,11 +182,39 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   );
 }
 
+interface ConfirmationDialogProps {
+  visible: boolean;
+  toggleVisible: () => void;
+}
+
+function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
+  const { visible, toggleVisible } = props;
+
+  return (
+    <Modal open={visible}>
+      <Modal.Header className="font-bold">
+        Congratulations random Interner user!
+      </Modal.Header>
+
+      <Modal.Body>
+        You've been selected for a chance to get one year of subscription to use
+        Wikipedia for free!
+      </Modal.Body>
+
+      <Modal.Actions>
+        <Button onClick={toggleVisible}>Yay!</Button>
+      </Modal.Actions>
+    </Modal>
+  );
+}
+
 function Issue(): JSX.Element {
   const [amount, setAmount] = useState<string>("0");
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] =
+    useState(false);
 
   const { createIssueRequestExtrinsic } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
@@ -239,6 +267,10 @@ function Issue(): JSX.Element {
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
+      <ConfirmationDialog
+        visible={confirmationDialogVisible}
+        toggleVisible={() => setConfirmationDialogVisible(false)}
+      />
       <div style={{ width: 500 }}>
         <div class="box">
           <div class="px-5 flex flex-col">
@@ -283,8 +315,8 @@ function Issue(): JSX.Element {
             />
           </div>
           <div className="parity">
-            <Button color="success mt-5" onClick={() => undefined}>
-              <span className="uppercase">Bridge</span>
+            <Button color="primary" onClick={() => setConfirmationDialogVisible(true)}>
+              <span className="uppercase">Confirm</span>
             </Button>
           </div>
         </div>
