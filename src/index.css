@@ -3,22 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --primary-light: background: #907EA0;
-  --primary-light: color: #ffffff;
+  --primary-light: #907EA0;
   --border-light: #907EA0;
   --secondary-light: #58667E;
   --background-light: #F4F5F6;
   --nice-light: #907EA0;
-  --border-dark-light: #907EA0;
   --clear-light: #ffffff;
   --footer-links-light: #58667E;
 
   --primary-dark: #5defa7;
-  --border-dark: #53d96e;
   --secondary-dark: #1c1c1c;
   --background-dark: #1c1c1c;
-  --nice-dark: #46925e;
-  --border-dark-dark: #3cb73a;
+  --nice-dark: #09C63E;
  
   --footer-links-dark: #858585;
   --darkner: #1c1c1c;
@@ -30,7 +26,6 @@
   --secondary: var(--secondary-dark);
   --background: var(--background-dark);
   --nice: var(--nice-dark);
-  --border-dark: var(--border-dark-dark);
   --footer-links: var(--footer-links-dark);
 }
 
@@ -39,7 +34,6 @@
   --border: var(--border-light);
   --secondary: var(--secondary-light);
   --background: var(--background-light);
-  --border-dark: var(--border-dark-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
 }
@@ -51,21 +45,25 @@ body {
   background-color: var(--clear);
 }
 
-.main-wrapper {
+#main {
+  background-color: #F5F5F5;
 }
 
 .pendulum-network-id,
 .pendulum-versions {
   text-align: left;
-  font-size: 15px;
-  color: var(--grey-91);
+  font-size: 12px;
+  justify-content: end;
+  align-items: flex-end;
+  margin-bottom: 20px;
 }
 
 .pendulum-versions p,
 .pendulum-network-id ul,
 .pendulum-network-id p {
-  padding-left: 30px;
-  color: var(--darkner);
+  margin-bottom: 5px;
+  margin-left: 30px;
+  color: var(--secondary-light);
 }
 
 .pendulum-network-id svg,
@@ -79,33 +77,53 @@ body {
   fill: var(--primary);
 }
 
+nav {
+  margin-bottom: auto;
+}
+
 nav>a {
+  color: #58667E;
+  font-weight: 600;
   display: flex;
   text-align: left;
   border-radius: 100px;
-  margin: 15px 20px;
+  margin: 10px;
   font-size: 22px;
   padding-top: 15px;
   padding-bottom: 15px;
-  max-width: 65%;
   transition: all 0.2s ease-out;
   align-items: center;
-  color: var(--darkner);
+  border-radius: 9px;
 }
 
 .turn-me-white {
   stroke: var(--darkner);
 }
 
+#sidebar-wrapper {
+  border-right: 1px solid  hsla(210, 23%, 95%, 1);
+}
+
 nav>a:hover {
-  margin: 15px 20px 15px 40px;
+  background-color: hsla(272, 15%, 56%, 0.1);
 }
 
 nav>.active {
-  color: var(--clear);
-  background-color: var(--primary);
-  margin: 15px 20px 15px 40px;
+  background-color: hsla(272, 15%, 56%, 0.1);
 }
+
+nav .nav-arrow {
+  fill: hsla(271, 25%, 19%, 1);
+  font-weight: 400;
+  width: 3px;
+  height: 7px;
+  visibility: hidden;
+}
+
+nav>.active .nav-arrow {
+  visibility: visible;
+}
+
 
 nav svg {
   fill: var(--secondary-light);
@@ -118,14 +136,22 @@ nav a {
 
 nav .external-link {
   position: absolute;
-  right: -5px;
+  width: 10px;
+  right: 58px;
   z-index: 10;
 }
 
 .pendulum-logo {
-  width: 250px;
+  width: 160px;
   margin-left: 20px;
   margin-bottom: 20px;
+}
+
+.pendulum-network-id {
+  background-color: hsla(0, 0%, 0%, 0.04);
+  border-radius: 4px;
+  width: 122px;
+  margin-left: 30px;
 }
 
 .pendulum-network-id a:hover {

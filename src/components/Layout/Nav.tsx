@@ -6,7 +6,8 @@ import BridgeIcon from "../../assets/bridge";
 import DashboardIcon from "../../assets/dashboard";
 import GovernanceIcon from "../../assets/governance";
 import SwapIcon from "../../assets/swap";
-import StakingIcon from "../../assets/staking";
+import CollatorsIcon from "../../assets/collators";
+import arrow from "../../assets/nav-arrow.png";
 
 type LinkParameter = { isActive: boolean };
 
@@ -21,25 +22,27 @@ const Nav = memo(() => {
       >
         <DashboardIcon />
         <span>Dashboard</span>
+        <img src={arrow} className="nav-arrow" />
       </NavLink>
-      {/* hiding pendulum code */}
       <NavLink
         to="./amm"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : "hidden"
+          navData.isActive ? "active" : ""
         }
       >
         <SwapIcon />
         <span>Amm</span>
+        <img src={arrow} className="nav-arrow" />
       </NavLink>
       <NavLink
         to="./bridge"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : "hidden"
+          navData.isActive ? "active" : ""
         }
       >
         <BridgeIcon />
         <span>Bridge</span>
+        <img src={arrow} className="nav-arrow" />
       </NavLink>
       <NavLink
         to="./collators"
@@ -47,13 +50,14 @@ const Nav = memo(() => {
           navData.isActive ? "active" : ""
         }
       >
-        <StakingIcon />
+        <CollatorsIcon />
         <span>Collators</span>
+        <img src={arrow} className="nav-arrow" />
       </NavLink>
       <a
         href="https://amplitude.polkassembly.io/"
         target="_blank"
-        rel="nofollow"
+        rel="nofollow noreferrer"
       >
         <GovernanceIcon />
         <span>Governance</span>

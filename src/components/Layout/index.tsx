@@ -9,14 +9,13 @@ import OpenWallet from "../OpenWallet";
 import Nav from "./Nav";
 import NetworkId from "./NetwordId";
 import SocialAndTermLinks from "./SocialAndTermLinks";
-import { useNodeInfoState } from "../../NodeInfoProvider";
 import { useGlobalState } from "../../GlobalStateProvider";
 
 import "./styles.sass";
+import Versions from "./Versions";
 
 export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
-  const { state } = useNodeInfoState();
   const { state: globalState } = useGlobalState();
   const { tenantNane } = globalState;
 
@@ -27,12 +26,6 @@ export default function Layout(): React.JSX.Element {
   const bgColor = isPendulum ? "bg-white" : "bg-black";
 
   const sidebar = useRef<HTMLDivElement>(null);
-
-  const tenantIndicator = () => {
-    if (tenantNane === "amplitude") return "alpha";
-    if (tenantNane === "pendulum") return "";
-    if (tenantNane === "foucoco") return "Foucoco";
-  };
 
   const FooterLink: FC = memo(() => {
     return isPendulum ? (
@@ -66,20 +59,17 @@ export default function Layout(): React.JSX.Element {
   };
 
   return (
-    <div id="sidebar-wrapper" class={`flex flex-wrap ${bgColor}`}>
-      <div
-        style={{
-          ...(isPendulum ? null : { backgroundColor: "#1c1c1c" }),
-          ...{ boxShadow: "7px 0 10px rgba(0,0,0,0.1)" },
-        }}
-        class="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen"
-        id="sidebar"
-        ref={sidebar}
-      >
-        <div class="pendulum-versions relative">
-          <span class="absolute right-14 top-2 text-green-300 hover:text-green-500 cursor-default rotate-6">
-            {tenantIndicator()}
-          </span>
+    <div className="flex">
+      <div id="sidebar-wrapper" className={`flex flex-wrap ${bgColor}`}>
+        <div
+          style={{
+            ...(isPendulum ? null : { backgroundColor: "#1c1c1c" }),
+            ...{ boxShadow: "7px 0 10px rgba(0,0,0,0.1)" },
+          }}
+          className="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen"
+          id="sidebar"
+          ref={sidebar}
+        >
           <img
             className="pendulum-logo"
             src={sideBarLogo}
@@ -90,31 +80,25 @@ export default function Layout(): React.JSX.Element {
                 : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
             }
           />
-          <p>
-            Runtime:{" "}
-            {(state.nodeVersion && state.nodeVersion.toString()) ||
-              "0.0.0-00000000000"}
-          </p>
-          <p>DApp: COMMIT_HASH</p>
+          <Nav />
+          <div className="sidebar-footer">
+            <Versions tenantName={tenantNane} />
+            <NetworkId />
+            <SocialAndTermLinks Link={FooterLink} />
+          </div>
         </div>
-        <Nav />
-        <div className="sidebar-footer">
-          <NetworkId />
-          <SocialAndTermLinks Link={FooterLink} />
+
+        <div className="mobile-menu">
+          <button className="menu" onClick={() => toggleMenu()} />
         </div>
       </div>
-
-      <div className="mobile-menu">
-        <button className="menu" onClick={() => toggleMenu()} />
-      </div>
-
-      <div id="main">
-        <div class="container">
+      <div id="main" className="flex-wrap">
+        <div className="container flex-wrap">
           <div className="flex flex-row-reverse h-15">
             <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
-                <span class={`${isPendulum ? "text-white" : ""}  text-md`}>
+                <span className={`${isPendulum ? "text-white" : ""}  text-md`}>
                   {isPendulum ? "Pendulum" : "Amplitude"}
                 </span>
                 <svg
@@ -135,7 +119,7 @@ export default function Layout(): React.JSX.Element {
               </button>
               <ul
                 tabIndex={0}
-                class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
                   <FooterLink />
@@ -149,3 +133,5 @@ export default function Layout(): React.JSX.Element {
     </div>
   );
 }
+
+
