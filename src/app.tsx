@@ -1,5 +1,7 @@
 import { h } from "preact";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { NotFound } from "./components/NotFound";
 import { Dashboard } from "./pages/dashboard/Dashboard";
 import Bridge from "./pages/bridge";
@@ -23,6 +25,7 @@ export function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      <ToastContainer />
     </div>
   );
 }
