@@ -15,7 +15,7 @@ render(
         {({ state }) =>
           state.tenantRPC && (
             <NodeInfoProvider tenantRPC={state.tenantRPC}>
-              <Theme dataTheme={state.tenantNane}>
+              <Theme dataTheme={"pendulum"}>
                 <App />
               </Theme>
             </NodeInfoProvider>

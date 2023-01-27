@@ -49,13 +49,30 @@ body {
   background-color: #F5F5F5;
 }
 
+.pendulum-network-id {
+  background-color: hsla(0, 0%, 0%, 0.04);
+  border-radius: 4px;
+  width: 160px;
+  margin-left: 30px;
+  padding: 8px;
+}
+
+.pendulum-network-id a:hover {
+  text-decoration: underline;
+}
+
+.pendulum-network-id li {
+  color: var(--nice);
+}
+
 .pendulum-network-id,
 .pendulum-versions {
   text-align: left;
   font-size: 12px;
   justify-content: end;
   align-items: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  color: var(--secondary-light);
 }
 
 .pendulum-versions p,
@@ -63,7 +80,6 @@ body {
 .pendulum-network-id p {
   margin-bottom: 5px;
   margin-left: 30px;
-  color: var(--secondary-light);
 }
 
 .pendulum-network-id svg,
@@ -72,9 +88,12 @@ body {
   margin-right: 10px;
 }
 
+
 .pendulum-network-id svg {
   margin-top: -2px;
-  fill: var(--primary);
+  width: 5px;
+  height: 5px;
+  fill: hsla(137, 91%, 41%, 1);
 }
 
 nav {
@@ -147,21 +166,6 @@ nav .external-link {
   margin-bottom: 20px;
 }
 
-.pendulum-network-id {
-  background-color: hsla(0, 0%, 0%, 0.04);
-  border-radius: 4px;
-  width: 122px;
-  margin-left: 30px;
-}
-
-.pendulum-network-id a:hover {
-  text-decoration: underline;
-}
-
-.pendulum-network-id li {
-  color: var(--nice);
-}
-
 nav a svg {
   margin-left: 25px;
   width: 20px;
@@ -188,7 +192,7 @@ nav a span {
 .pendulum-social-and-terms {
   margin-top: 40px;
   padding-left: 30px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   width: 100%;
   display: block;
 }
@@ -214,24 +218,32 @@ nav a span {
 
 .pendulum-social-and-terms .social img,
 .pendulum-social-and-terms .social svg {
-  width: 20px;
-  height: 20px;
-  filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%);
+  width: 18px;
+  height: 18px;
+  fill: var(--secondary-light);
 }
 
 .pendulum-social-and-terms .terms {
   padding-top: 40px;
-  padding-bottom: 30px;
+}
+
+.pendulum-social-and-terms .terms ul {  
+  display:flex;
+  width:100%;
 }
 
 .pendulum-social-and-terms .terms li {
-  display: inline;
+  display:inline-flex; 
+  flex-wrap: wrap;
+  flex: 1;
   float: left;
-  width: 40%;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--footer-links);
-  text-align: left;
-  margin-bottom: 10px;
+}
+
+.pendulum-social-and-terms .terms span,
+.pendulum-social-and-terms .terms a {
+  border-bottom: 1px solid var(--background);
 }
 
 .pendulum-social-and-terms .terms span:hover,

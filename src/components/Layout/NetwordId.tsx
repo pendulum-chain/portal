@@ -10,8 +10,8 @@ const NetworkId: FC = memo(() => {
   return (
     <div className="pendulum-network-id">
       <span>Network: </span>
-      <svg height="10" width="10">
-        <circle cx="5" cy="5" r="5" />
+      <svg height="5" width="5">
+        <circle cx="2.5" cy="2.5" r="2.5" />
       </svg>
       <a
         href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fpencol-kus-01.pendulumchain.tech#/explorer"

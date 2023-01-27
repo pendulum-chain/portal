@@ -50,6 +50,7 @@ const GlobalStateProvider = ({
     const path = splittedUrl.slice(2).join('/') || "dashboard";
     const isPendulum = chain === "pendulum";
     const isFoucoco = chain === "foucoco";
+    const isLocal = chain === "local";
 
     let tenantNane: TenantName;
     let tenantRPC: string;
@@ -67,6 +68,13 @@ const GlobalStateProvider = ({
         tenantRPC = "wss://rpc-foucoco.pendulumchain.tech";
         setTheme("black");
         navigate("/foucoco/" + path);
+        break;
+
+      case isLocal:
+        tenantNane = TenantName.Foucoco;
+        tenantRPC = "ws://localhost:5173/";
+        setTheme("pendulum");
+        navigate("/local/" + path);
         break;
 
       default:
