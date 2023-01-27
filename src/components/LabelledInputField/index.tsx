@@ -1,6 +1,7 @@
 import { Input, InputProps } from "react-daisyui";
 
 interface Props {
+  autoSelect?: boolean;
   label?: string;
   type: string;
   value: string;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 function LabelledInputField(props: Props & InputProps) {
-  const { label, onChange, ...rest } = props;
+  const { autoSelect, label, onChange, ...rest } = props;
 
   return (
     <div
@@ -23,6 +24,11 @@ function LabelledInputField(props: Props & InputProps) {
         <Input
           className="border border-gray-500 rounded-md"
           {...rest}
+          onFocus={(event: React.TargetedEvent) => {
+            if (event.target instanceof HTMLInputElement) {
+              event.target.select();
+            }
+          }}
           onInput={(event: React.ChangeEvent) => {
             if (event.target instanceof HTMLInputElement) {
               onChange?.(event.target.value);
