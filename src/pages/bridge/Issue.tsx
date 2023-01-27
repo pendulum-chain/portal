@@ -14,6 +14,9 @@ import { toUnit } from "../../helpers/parseNumbers";
 import Big from "big.js";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 import { useGlobalState } from "../../GlobalStateProvider";
+import { useNodeInfoState } from "../../NodeInfoProvider";
+import { getErrors } from "../../helpers/substrate";
+import { toast } from "react-toastify";
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -221,6 +224,7 @@ function Issue(): JSX.Element {
   const { createIssueRequestExtrinsic } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
   const { walletAccount } = useGlobalState().state;
+  const { api } = useNodeInfoState().state;
 
   const vaults = getVaults();
 
@@ -269,7 +273,7 @@ function Issue(): JSX.Element {
   }, [amount, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
-    if (!requestIssueExtrinsic || !walletAccount) {
+    if (!requestIssueExtrinsic || !walletAccount || !api) {
       return;
     }
 
@@ -280,21 +284,32 @@ function Issue(): JSX.Element {
         walletAccount.address,
         { signer: walletAccount.signer as any },
         (result) => {
-          console.log("result", result);
+          const { status, events } = result;
 
-          if (result.isCompleted) {
-            setConfirmationDialogVisible(true);
+          let errors = getErrors(events, api);
+          if (status.isInBlock) {
+            if (errors.length > 0) {
+              const errorMessage = `Transaction failed with errors: ${errors.join(
+                "\n"
+              )}`;
+              console.error(errorMessage);
+              toast(errorMessage, { type: "error" });
+            }
+          } else if (status.isFinalized) {
+            setSubmissionPending(false);
+
+            if (errors.length === 0) {
+              setConfirmationDialogVisible(true);
+            }
           }
         }
       )
       .catch((error) => {
-        // TODO show error to user
         console.error("Transaction submission failed", error);
-      })
-      .finally(() => {
+        toast("Transaction submission failed", { type: "error" });
         setSubmissionPending(false);
       });
-  }, [requestIssueExtrinsic]);
+  }, [api, requestIssueExtrinsic, walletAccount, toast]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
@@ -307,6 +322,7 @@ function Issue(): JSX.Element {
           <div class="px-5 flex flex-col">
             <div className="flex items-center">
               <LabelledInputField
+                autoSelect
                 label="From Stellar"
                 type="number"
                 value={amount}
@@ -361,4 +377,4 @@ function Issue(): JSX.Element {
   );
 }
 
-export default Issue;
+  export default Issue;
