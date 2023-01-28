@@ -68,7 +68,7 @@ const SocialAndTermLinks: FC<Props> = ({ Link }: Props) => {
               target="_blank"
               rel="nofollow noreferrer"
             >
-              <TwitterLogo />
+              <RedditLogo />
             </a>
           </li>
           <li>

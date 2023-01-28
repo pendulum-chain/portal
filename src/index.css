@@ -4,19 +4,19 @@
 
 :root {
   --primary-light: #907EA0;
-  --border-light: #907EA0;
+  --border-light: #EFF2F5;
   --secondary-light: #58667E;
-  --background-light: #F4F5F6;
+  --background-light: #FBFCFE;
   --nice-light: #907EA0;
   --clear-light: #ffffff;
   --footer-links-light: #58667E;
 
   --primary-dark: #5defa7;
-  --secondary-dark: #1c1c1c;
-  --background-dark: #1c1c1c;
+  --secondary-dark: #fff;
+  --background-dark: #202020;
   --nice-dark: #09C63E;
- 
-  --footer-links-dark: #858585;
+  --border-dark: rgba(239, 242, 245, 0.03);
+  --footer-links-dark:  #616875;
   --darkner: #1c1c1c;
 }
 
@@ -27,6 +27,10 @@
   --background: var(--background-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
+  --table-text: "#BBBBBB";
+  --table-text-header: "#fff";
+  --table-background: "#1C1C1C";
+  --table-border: rgba(223, 224, 235, 0.03);
 }
 
 [data-theme="pendulum"] {
@@ -36,17 +40,19 @@
   --background: var(--background-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
+  --table-text: "#252733";
+  --table-text-header: "#9FA2B4";
+  --table-background: "#fff";
+  --table-border: "#DFE0EB";
 }
 
 body {
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 300;
-  color: var(--darkner);
-  background-color: var(--clear);
 }
 
 #main {
-  background-color: #F5F5F5;
+  background-color: var(--background);
 }
 
 .pendulum-network-id {
@@ -72,7 +78,7 @@ body {
   justify-content: end;
   align-items: flex-end;
   margin-bottom: 10px;
-  color: var(--secondary-light);
+  color: var(--secondary);
 }
 
 .pendulum-versions p,
@@ -101,7 +107,7 @@ nav {
 }
 
 nav>a {
-  color: #58667E;
+  color: var(--text);
   font-weight: 600;
   display: flex;
   text-align: left;
@@ -115,12 +121,8 @@ nav>a {
   border-radius: 9px;
 }
 
-.turn-me-white {
-  stroke: var(--darkner);
-}
-
 #sidebar-wrapper {
-  border-right: 1px solid  hsla(210, 23%, 95%, 1);
+  border-right: 1px solid var(--border);
 }
 
 nav>a:hover {
@@ -145,7 +147,7 @@ nav>.active .nav-arrow {
 
 
 nav svg {
-  fill: var(--secondary-light);
+  fill: var(--secondary);
 }
 
 nav a {
@@ -154,10 +156,9 @@ nav a {
 }
 
 nav .external-link {
-  position: absolute;
   width: 10px;
-  right: 58px;
-  z-index: 10;
+  margin-left: 0;
+  text-align: end;
 }
 
 .pendulum-logo {
@@ -172,25 +173,18 @@ nav a svg {
   height: 20px;
 }
 
-
-a .turn-me-white {
-  transition: all 0.2s ease-out;
-}
-
-/* a:hover .turn-me-white  */
-a.active .turn-me-white {
-  stroke: var(--clear);
-}
-
 nav a span {
   display: block;
-  margin-left: 30px;
+  margin-left: 20px;
   width: 140px;
   height: auto;
+  color: var(--secondary);
 }
 
 .pendulum-social-and-terms {
-  margin-top: 40px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
   padding-left: 30px;
   padding-bottom: 20px;
   width: 100%;
@@ -220,7 +214,7 @@ nav a span {
 .pendulum-social-and-terms .social svg {
   width: 18px;
   height: 18px;
-  fill: var(--secondary-light);
+  fill: var(--footer-links);
 }
 
 .pendulum-social-and-terms .terms {
@@ -243,7 +237,7 @@ nav a span {
 
 .pendulum-social-and-terms .terms span,
 .pendulum-social-and-terms .terms a {
-  border-bottom: 1px solid var(--background);
+  border-bottom: 1px solid var(--border);
 }
 
 .pendulum-social-and-terms .terms span:hover,

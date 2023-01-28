@@ -33,9 +33,6 @@ h1 {
   padding-right: 10px;
 }
 
-.portfolio>.portfolio li.up {
-}
-
 .portfolio>.portfolio li.down {
   color: var(--dark-red);
 }
@@ -69,7 +66,6 @@ h1 {
   width: 70%;
   height: 95%;
   border-radius: 30px;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   padding-left: 20px;
   padding-right: 20px;
@@ -98,19 +94,45 @@ h1 {
   background-color: var(--clear)
 }
 
-.collators-list-container{
+.collators-list-container {
   overflow-y: auto;
   display: inline-block;
   max-height: 80vh;
   min-height: 400;
+  color: var(--table-text);
 }
 
 .collators-list-table {
   position: relative;
+  border: 1px solid var(--table-border);
+  border-radius: 8px;
+  border-collapse: unset;
+}
+
+.collators-list-table span {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--table-text);
+}
+
+.collators-list-table td, .collators-list-table th {
+  background-color: var(--table-background);
+  border-bottom: 1px solid var(--table-border);
+  color: var(--table-text);
+}
+
+.collators-list-header tbody th {
+  background-color: var(--table-background);
+  color: var(--table-text-header);
+  text-transform: none;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 .collators-list-header {
-  top: 0;
-  position: sticky;
   z-index: 12;
+  border-bottom: 1px solid var(--table-border);
 }
