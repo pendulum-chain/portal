@@ -8,10 +8,10 @@ import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
 
 interface AccountBalance {
-  free: BigInt;
-  reserved: BigInt;
-  miscFrozen: BigInt;
-  feeFrozen: BigInt;
+  free: bigint;
+  reserved: bigint;
+  miscFrozen: bigint;
+  feeFrozen: bigint;
 }
 
 export function Dashboard() {
@@ -35,7 +35,6 @@ export function Dashboard() {
     api?.query.system
       .account(userAddress)
       .then((data) => {
-        // @ts-ignore
         setAccountBalance(JSON.parse(data.data.toString()));
       })
       .catch((e) => console.error(e));
