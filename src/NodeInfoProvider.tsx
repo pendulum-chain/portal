@@ -1,5 +1,5 @@
 import { createContext, h } from "preact";
-import { useContext, useEffect, useState } from "preact/hooks";
+import { useContext, useEffect, useMemo, useState } from "preact/hooks";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { options } from "@pendulum-chain/api";
 import { rpc, typesBundle } from "@pendulum-chain/types";
@@ -31,68 +31,67 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  const provider = new WsProvider(tenantRPC);
-
-  const apiPromise = new ApiPromise(
-    options({
-      provider,
-      rpc,
-      typesBundle: typesBundle,
-    })
-  );
+  const apiPromise = useMemo(() => {
+    const provider = new WsProvider(tenantRPC);
+    return new ApiPromise(
+      options({
+        provider,
+        rpc,
+        typesBundle: typesBundle,
+      })
+    );
+  }, [tenantRPC]);
 
   useEffect(() => {
-    (async () => {
-      apiPromise.on("connected", async () => {
-        try {
-          apiPromise.isReady.then((api) => {
-            (async () => {
-              const bestNumberFinalize = await api.derive.chain.bestNumber();
-              const chainProperties = await api.registry.getChainProperties();
-              const ss58Format = chainProperties?.get("ss58Format").toString();
-              const tokenDecimals = Number(
-                chainProperties
-                  ?.get("tokenDecimals")
-                  .toString()
-                  .replace(/[\[\]]/g, "")
-              );
-              const tokenSymbol = chainProperties
-                ?.get("tokenSymbol")
+    apiPromise.on("connected", async () => {
+      try {
+        apiPromise.isReady.then((api) => {
+          (async () => {
+            const bestNumberFinalize = await api.derive.chain.bestNumber();
+            const chainProperties = await api.registry.getChainProperties();
+            const ss58Format = chainProperties?.get("ss58Format").toString();
+            const tokenDecimals = Number(
+              chainProperties
+                ?.get("tokenDecimals")
                 .toString()
-                .replace(/[\[\]]/g, "");
+                .replace(/[\[\]]/g, "")
+            );
+            const tokenSymbol = chainProperties
+              ?.get("tokenSymbol")
+              .toString()
+              .replace(/[\[\]]/g, "");
 
-              setState((prevState) => ({
-                ...prevState,
-                ...{
-                  bestNumberFinalize: Number(bestNumberFinalize),
-                  ss58Format: Number(ss58Format),
-                  tokenDecimals,
-                  tokenSymbol,
-                  api,
-                },
-              }));
-            })();
-          });
+            setState((prevState) => ({
+              ...prevState,
+              ...{
+                bestNumberFinalize: Number(bestNumberFinalize),
+                ss58Format: Number(ss58Format),
+                tokenDecimals,
+                tokenSymbol,
+                api,
+              },
+            }));
+          })();
+        });
 
-          const [chain, nodeName, nodeVersion] = await Promise.all([
-            apiPromise.rpc.system.chain(),
-            apiPromise.rpc.system.name(),
-            apiPromise.rpc.system.version(),
-          ]);
+        const [chain, nodeName, nodeVersion] = await Promise.all([
+          apiPromise.rpc.system.chain(),
+          apiPromise.rpc.system.name(),
+          apiPromise.rpc.system.version(),
+        ]);
 
-          setState((prevState) => ({
-            ...prevState,
-            ...{
-              chain: chain.toString(),
-              nodeName: nodeName.toString(),
-              nodeVersion: nodeVersion.toString(),
-            },
-          }));
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    })();
+        setState((prevState) => ({
+          ...prevState,
+          ...{
+            chain: chain.toString(),
+            nodeName: nodeName.toString(),
+            nodeVersion: nodeVersion.toString(),
+          },
+        }));
+      } catch (e) {
+        console.error(e);
+      }
+    });
   }, [apiPromise]);
 
   return (
