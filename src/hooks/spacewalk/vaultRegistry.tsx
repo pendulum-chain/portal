@@ -17,7 +17,7 @@ export function useVaultRegistryPallet() {
     let unsubscribe: () => void;
 
     api.query.vaultRegistry.vaults.entries().then((entries) => {
-      let typedEntries = entries.map(([key, value]) => {
+      const typedEntries = entries.map(([key, value]) => {
         return value.unwrap();
       });
 
@@ -36,7 +36,7 @@ export function useVaultRegistryPallet() {
         if (!api) {
           return undefined;
         }
-        let publicKeyBinary =
+        const publicKeyBinary =
           await api.query.vaultRegistry.vaultStellarPublicKey(accountId);
 
         if (publicKeyBinary.isNone) {

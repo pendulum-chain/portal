@@ -26,5 +26,5 @@
 
 .date-tabs .active:hover {
   background-color: var(--background);
-  border: 1px solid var(--border-dark);
+  border: 1px solid var(--border);
 }

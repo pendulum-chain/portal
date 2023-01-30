@@ -1,11 +1,7 @@
-import { h, createContext } from "preact";
+import { createContext, h } from "preact";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-// import { AugmentedQuery } from "@polkadot/api/types";
 import { options } from "@pendulum-chain/api";
-// import { AccountId } from "@pendulum-chain/types/interfaces";
-// import {__SubmittableExtrinsic} from "@pendulum-chain/types/argument/api-tx"
-// import {} from "@pendulum-chain/types/metadata"
 import { rpc, typesBundle } from "@pendulum-chain/types";
 
 export interface NodeInfoProviderInterface {
@@ -26,22 +22,22 @@ const NodeInfoContext = createContext({
 
 const NodeInfoProvider = ({
   children,
+  tenantRPC,
   value = {},
 }: {
   children: any;
+  tenantRPC: string;
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
 
-  // let endpoint = "wss://rpc-amplitude.pendulumchain.tech";
-  let endpoint = "ws://localhost:9944";
-  const provider = new WsProvider([endpoint]);
+  const provider = new WsProvider(tenantRPC);
 
   const apiPromise = new ApiPromise(
     options({
       provider,
       rpc,
-      typesBundle: typesBundle
+      typesBundle: typesBundle,
     })
   );
 
@@ -50,7 +46,6 @@ const NodeInfoProvider = ({
       apiPromise.on("connected", async () => {
         try {
           apiPromise.isReady.then((api) => {
-            console.log("api is ready", api);
             (async () => {
               const bestNumberFinalize = await api.derive.chain.bestNumber();
               const chainProperties = await api.registry.getChainProperties();

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "node version.cjs && tsc && vite build && echo '/* /index.html 200' | cat > dist/_redirects",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
     "@pendulum-chain/api": "^0.1.6",
@@ -45,8 +46,13 @@
     "@types/big.js": "^6.1.6",
     "@types/node": "^18.7.18",
     "@types/react": "^18.0.17",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
     "autoprefixer": "^10.4.8",
     "daisyui": "^2.24.0",
+    "eslint": "^8.32.0",
+    "eslint-plugin-react": "^7.32.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
     "sass": "^1.54.9",

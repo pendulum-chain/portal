@@ -22,10 +22,9 @@ $menu: 30px
 
 #sidebar
   display: flex
-  justify-content: space-between
   flex-direction: column
   padding-top: 20px
-  min-width: 350px
+  min-width: 260px
   @media screen and (max-width: $medium)
     display: none
   .floating-sidebar
@@ -35,10 +34,11 @@ $menu: 30px
 
 #main
   height: 100vh
-  width: 70%
+  width: 100%
   overflow: hidden
   .container
-    padding: 4rem 1.5rem
+    padding: 1rem 1.5rem
+    max-width: inherit
     @media screen and (min-width: $small)
       width: 100% !important
 
@@ -46,4 +46,4 @@ $menu: 30px
     width: 100%
 
   @media screen and (min-width: $medium)
-    width: 65%
+    width: 100%

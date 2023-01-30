@@ -22,6 +22,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
     () =>
       state.walletAccount ? (
         <Button
+          color="primary"
           title={state.walletAccount.wallet?.title}
           style={{ marginRight: 10 }}
           endIcon={
@@ -52,4 +53,5 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
     />
   );
 };
+
 export default OpenWallet;

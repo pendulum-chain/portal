@@ -8,10 +8,10 @@ import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
 
 interface AccountBalance {
-  free: BigInt;
-  reserved: BigInt;
-  miscFrozen: BigInt;
-  feeFrozen: BigInt;
+  free: bigint;
+  reserved: bigint;
+  miscFrozen: bigint;
+  feeFrozen: bigint;
 }
 
 export function Dashboard() {
@@ -35,6 +35,7 @@ export function Dashboard() {
     api?.query.system
       .account(userAddress)
       .then((data) => {
+        // FIXME: remove ts-ignore
         // @ts-ignore
         setAccountBalance(JSON.parse(data.data.toString()));
       })
@@ -46,8 +47,8 @@ export function Dashboard() {
   }, [free]);
 
   return (
-    <div class="mt-10">
-      <div className="dashboard portfolio">
+    <div className="mt-10">
+      <div className="dashboard portfolio hidden">
         <h1>Portfolio</h1>
         <div className="portfolio">
           <h4>Total balance</h4>
@@ -57,7 +58,7 @@ export function Dashboard() {
             <li className="up">+36,22%</li>
           </ul>
         </div>
-        <span class="hidden">
+        <span className="hidden">
           <Tabs />
           <TickerChangeTable />
         </span>
