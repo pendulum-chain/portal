@@ -38,6 +38,20 @@ export function getErrors(events: EventRecord[], api: ApiPromise) {
   );
 }
 
+export function getEventBySectionAndMethod(
+  events: EventRecord[],
+  section: string,
+  method: string
+) {
+  return events
+    .filter(
+      ({ event: { method: eventMethod, section: eventSection } }) =>
+        eventSection.toLowerCase() === section.toLowerCase() &&
+        eventMethod.toLowerCase() === method.toLowerCase()
+    )
+    .map((event) => event.event);
+}
+
 export function getEventMessages(events: EventRecord[]) {
   return events.map(({ event: { data, method, section }, phase }) => {
     return `${section}.${method}( ${data.toString()} )`;
