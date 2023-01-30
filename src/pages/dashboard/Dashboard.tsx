@@ -6,13 +6,7 @@ import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
 import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
-
-interface AccountBalance {
-  free: bigint;
-  reserved: bigint;
-  miscFrozen: bigint;
-  feeFrozen: bigint;
-}
+import { PalletBalancesAccountData } from "@polkadot/types/lookup";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
@@ -20,14 +14,9 @@ export function Dashboard() {
   const { state } = useNodeInfoState();
   const { api } = state;
 
-  const [accountBalance, setAccountBalance] = useState<AccountBalance>({
-    free: BigInt(0),
-    reserved: BigInt(0),
-    miscFrozen: BigInt(0),
-    feeFrozen: BigInt(0),
-  });
-
-  const { free } = accountBalance;
+  const [accountBalance, setAccountBalance] = useState<
+    PalletBalancesAccountData | undefined
+  >(undefined);
 
   useEffect(() => {
     if (!userAddress) return;
@@ -35,16 +24,16 @@ export function Dashboard() {
     api?.query.system
       .account(userAddress)
       .then((data) => {
-        // FIXME: remove ts-ignore
-        // @ts-ignore
-        setAccountBalance(JSON.parse(data.data.toString()));
+        setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
   }, [api, userAddress]);
 
   const cachedBalance = useMemo(() => {
-    return prettyNumbers(toUnit(free));
-  }, [free]);
+    if (!accountBalance) return "0";
+
+    return prettyNumbers(toUnit(accountBalance.free.toString()));
+  }, [accountBalance]);
 
   return (
     <div className="mt-10">
