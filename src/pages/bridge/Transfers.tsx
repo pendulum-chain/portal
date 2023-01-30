@@ -9,8 +9,8 @@ export function Transfers(): JSX.Element {
       className="flex items-center justify-center h-full space-walk grid place-items-center"
       style={{ minHeight: 700 }}
     >
-      <div class="box">
-        <div class="box-inner">
+      <div className="box">
+        <div className="box-inner">
           <div className="flex justify-between px-10 py-5 mb-5">
             <NavLink className="hover:text-white" to="/amplitude/bridge">
               Swap
