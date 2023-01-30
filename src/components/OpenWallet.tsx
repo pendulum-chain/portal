@@ -36,7 +36,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
           {addressFormatter(state.walletAccount.address, 4)}
         </Button>
       ) : (
-        <Button>Connect to Wallet</Button>
+        <Button color="primary">Connect to Wallet</Button>
       ),
     [state.walletAccount]
   );
