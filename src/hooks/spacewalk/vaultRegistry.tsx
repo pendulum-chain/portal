@@ -38,6 +38,7 @@ export function useVaultRegistryPallet() {
         }
         const publicKeyBinary =
           await api.query.vaultRegistry.vaultStellarPublicKey(accountId);
+        // FIXME: remove ts-ignore
         // @ts-ignore
         if (publicKeyBinary.isNone) {
           return undefined;
