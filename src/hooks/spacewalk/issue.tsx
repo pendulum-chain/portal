@@ -25,7 +25,7 @@ export function useIssuePallet() {
 
     api.query.issue.issueRequests.entries().then((entries) => {
       console.log("updating issue requests", entries)
-      let richEntries = entries.map(([key, value]) => {
+      const richEntries = entries.map(([key, value]) => {
         const request = value.unwrap();
 
         const issueRequest: RichIssueRequest = {

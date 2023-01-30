@@ -26,7 +26,7 @@ export function useFeePallet() {
       return;
     }
 
-    let unsubscribe: () => void = () => {};
+    let unsubscribe: () => void = () => undefined;
 
     setGriefingCollateralCurrency(
       api.consts.vaultRegistry.getGriefingCollateralCurrencyId

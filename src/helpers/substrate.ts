@@ -20,7 +20,7 @@ export function getErrors(events: EventRecord[], api: ApiPromise) {
       .map(
         ({
           event: {
-            data: [error, info],
+            data: [error],
           },
         }) => {
           if ((error as any).isModule) {

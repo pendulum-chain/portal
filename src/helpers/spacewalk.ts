@@ -4,7 +4,7 @@ import { Asset, Keypair } from "stellar-sdk";
 import { convertRawHexKeyToPublicKey } from "./stellar";
 
 // Convert a hex string to an ASCII string
-function hex_to_ascii(hexString: string, leading0x: boolean = true) {
+function hex_to_ascii(hexString: string, leading0x= true) {
   const hex = hexString.toString();
   let str = "";
   for (let n = leading0x ? 2 : 0; n < hex.length; n += 2) {

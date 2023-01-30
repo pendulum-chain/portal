@@ -1,4 +1,3 @@
-import BN from "bn.js";
 import BigNumber from "big.js";
 
 export const UNIT_PRECISION = 1000000000000;
@@ -15,7 +14,7 @@ export const toUnit = (value: BigNumber | number | string) => {
   return quotient.toNumber();
 };
 
-export const prettyNumbers = (number: number, lang: string = "en-US") =>
+export const prettyNumbers = (number: number, lang = "en-US") =>
   number.toLocaleString(lang, {
     minimumFractionDigits: 2,
   });

@@ -17,7 +17,7 @@ export function useVaultRegistryPallet() {
     let unsubscribe: () => void;
 
     api.query.vaultRegistry.vaults.entries().then((entries) => {
-      const typedEntries = entries.map(([key, value]) => {
+      const typedEntries = entries.map(([, value]) => {
         return value.unwrap();
       });
 

@@ -81,14 +81,14 @@ const GlobalStateProvider = ({
 
       default:
         tenantNane = TenantName.Amplitude;
-        tenantRPC = "wss://rpc-amplitude.pendulumchain.tech";
+        tenantRPC = "ws://localhost:9944/";
         setTheme("black");
         navigate("/amplitude/" + path);
         break;
     }
 
     setState({ tenantNane, tenantRPC });
-  }, [window]);
+  }, [navigate, setTheme, splittedUrl]);
 
   return (
     <GlobalStateContext.Provider value={{ state, setState }}>

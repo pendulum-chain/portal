@@ -93,7 +93,7 @@ const NodeInfoProvider = ({
         }
       });
     })();
-  }, []);
+  }, [apiPromise]);
 
   return (
     <NodeInfoContext.Provider value={{ state, setState }}>

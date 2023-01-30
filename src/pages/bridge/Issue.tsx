@@ -262,7 +262,7 @@ function Issue(): JSX.Element {
         setSelectedAsset(wrappedAssets[0]);
       }
     }
-  }, [manualVaultSelection, vaultsForCurrency]);
+  }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
 
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !amount) {
@@ -286,7 +286,7 @@ function Issue(): JSX.Element {
         (result) => {
           const { status, events } = result;
 
-          let errors = getErrors(events, api);
+          const errors = getErrors(events, api);
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join(
@@ -321,7 +321,7 @@ function Issue(): JSX.Element {
         toast("Transaction submission failed", { type: "error" });
         setSubmissionPending(false);
       });
-  }, [api, requestIssueExtrinsic, walletAccount, toast]);
+  }, [api, requestIssueExtrinsic, walletAccount]);
 
   const submittedIssueRequestData = useMemo(() => {
     if (!submittedIssueRequestId || !api) {
@@ -340,8 +340,8 @@ function Issue(): JSX.Element {
         toggleVisible={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
-        <div class="box">
-          <div class="px-5 flex flex-col">
+        <div className="box">
+          <div className="px-5 flex flex-col">
             <div className="flex items-center">
               <LabelledInputField
                 autoSelect

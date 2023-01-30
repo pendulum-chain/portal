@@ -28,8 +28,8 @@ function Bridge(): JSX.Element {
       style={{ minHeight: 600 }}
     >
       <div style={{ width: 500 }}>
-        <div class="box">
-          <div class="box-inner">
+        <div className="box">
+          <div className="box-inner">
             <div className="flex justify-between px-10 py-5 mb-5">
             <Tabs boxed value={tabValue} onChange={setTabValue}>
               <Tabs.Tab value={0}>To {parachainNetwork}</Tabs.Tab>
