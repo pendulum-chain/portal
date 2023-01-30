@@ -17,7 +17,7 @@ export function useVaultRegistryPallet() {
     let unsubscribe: () => void;
 
     api.query.vaultRegistry.vaults.entries().then((entries) => {
-      let richEntries = entries.map(([key, value]) => {
+      const richEntries = entries.map(([key, value]) => {
         return value.toJSON() as unknown as VaultRegistryVault;
       });
 
@@ -36,9 +36,10 @@ export function useVaultRegistryPallet() {
         if (!api) {
           return undefined;
         }
-        let publicKeyBinary =
+        const publicKeyBinary =
           await api.query.vaultRegistry.vaultStellarPublicKey(accountId);
-
+        // FIXME: remove ts-ignore
+        // @ts-ignore
         if (publicKeyBinary.isNone) {
           return undefined;
         } else {

@@ -1,16 +1,16 @@
 .amm {
-  margin-top: -100px;
+  margin-top: 100px;
 }
 
 .amm-wrapper {
   width: 100%;
   border-radius: 30px;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-  background-color: var(--clear);
+  background-color: var(--background);
   position: relative;
   min-height: auto;
-  color: var(--grey-88-dark);
+  color: var(--primary-content);
   padding-top: 1px;
+  border: 1px solid var(--table-border);
 }
 
 .row-pick-coin {
@@ -60,7 +60,7 @@
   border: 1px solid #ddd;
   text-align: center;
   line-height: 35px;
-  background-color: var(--clear);
+  background-color: var(--primary-content);
   position: absolute;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .box .btn-success {
-  color: var(--clear);
+  color: var(--primary-content);
   background-color: var(--primary);
   border-color: var(--primary);
   width: 200px;

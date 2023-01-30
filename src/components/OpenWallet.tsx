@@ -49,7 +49,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
       dappName={networkName}
       open={false}
       showAccountsList={true}
-      triggerComponent={<Button>Connect to wallet</Button>}
+      triggerComponent={<Button className="btn-primary">Connect wallet</Button>}
       onWalletSelected={async (wallet: Wallet) => {
         setWalletSelected(wallet);
       }}
