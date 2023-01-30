@@ -6,13 +6,13 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import { H256 } from "@polkadot/types/interfaces";
 
-interface IssueRequest {
+export interface RichIssueRequest {
   id: H256;
   request: SpacewalkPrimitivesIssueIssueRequest;
 }
 
 export function useIssuePallet() {
-  const [issueRequests, setIssueRequests] = useState<IssueRequest[]>([]);
+  const [issueRequests, setIssueRequests] = useState<RichIssueRequest[]>([]);
 
   const { api } = useNodeInfoState().state;
 
@@ -24,10 +24,11 @@ export function useIssuePallet() {
     let unsubscribe: () => void;
 
     api.query.issue.issueRequests.entries().then((entries) => {
+      console.log("updating issue requests", entries)
       let richEntries = entries.map(([key, value]) => {
         const request = value.unwrap();
 
-        const issueRequest: IssueRequest = {
+        const issueRequest: RichIssueRequest = {
           id: key.args[0] as H256,
           request,
         };
@@ -39,16 +40,16 @@ export function useIssuePallet() {
     });
 
     return () => unsubscribe && unsubscribe();
-  }, [api]);
+  }, [api, setIssueRequests]);
 
   const memo = useMemo(() => {
     return {
       getIssueRequests() {
         return issueRequests;
       },
-      getIssueRequest(vaultId: SpacewalkPrimitivesVaultId) {
+      getIssueRequest(issueId: H256) {
         return issueRequests.find((issueRequest) =>
-          issueRequest.request.vault.eq(vaultId)
+          issueRequest.id.eq(issueId)
         );
       },
       getIssueRequestsForRequester(accountId: string) {

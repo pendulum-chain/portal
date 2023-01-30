@@ -3,7 +3,7 @@ import { Button, Checkbox, Form, Modal } from "react-daisyui";
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import LabelledInputField from "../../components/LabelledInputField";
 import LabelledSelector from "../../components/LabelledSelector";
-import { useIssuePallet } from "../../hooks/spacewalk/issue";
+import { RichIssueRequest, useIssuePallet } from "../../hooks/spacewalk/issue";
 import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
 import { VaultRegistryVault } from "@polkadot/types/lookup";
 import { convertCurrencyToStellarAsset } from "../../helpers/spacewalk";
@@ -15,8 +15,9 @@ import Big from "big.js";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 import { useGlobalState } from "../../GlobalStateProvider";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { getErrors } from "../../helpers/substrate";
+import { getErrors, getEventBySectionAndMethod } from "../../helpers/substrate";
 import { toast } from "react-toastify";
+import { H256 } from "@polkadot/types/interfaces";
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -189,21 +190,17 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
 interface ConfirmationDialogProps {
   visible: boolean;
   toggleVisible: () => void;
+  issueRequest: RichIssueRequest | undefined;
 }
 
 function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { visible, toggleVisible } = props;
+  const { issueRequest, visible, toggleVisible } = props;
 
   return (
     <Modal open={visible}>
-      <Modal.Header className="font-bold">
-        Congratulations random Interner user!
-      </Modal.Header>
+      <Modal.Header className="font-bold">Deposit</Modal.Header>
 
-      <Modal.Body>
-        You've been selected for a chance to get one year of subscription to use
-        Wikipedia for free!
-      </Modal.Body>
+      <Modal.Body>Send {issueRequest?.request.amount.toString()} </Modal.Body>
 
       <Modal.Actions>
         <Button onClick={toggleVisible}>Yay!</Button>
@@ -221,7 +218,10 @@ function Issue(): JSX.Element {
     useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
 
-  const { createIssueRequestExtrinsic } = useIssuePallet();
+  const [submittedIssueRequestId, setSubmittedIssueRequestId] =
+    useState<H256 | null>(null);
+
+  const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
   const { walletAccount } = useGlobalState().state;
   const { api } = useNodeInfoState().state;
@@ -296,6 +296,18 @@ function Issue(): JSX.Element {
               toast(errorMessage, { type: "error" });
             }
           } else if (status.isFinalized) {
+            const requestIssueEvents = getEventBySectionAndMethod(
+              events,
+              "issue",
+              "RequestIssue"
+            );
+
+            for (const requestIssueEvent of requestIssueEvents) {
+              // We do not have a proper type for this event, so we have to cast it to any
+              const issueId = (requestIssueEvent.data as any).issueId;
+              setSubmittedIssueRequestId(issueId);
+            }
+
             setSubmissionPending(false);
 
             if (errors.length === 0) {
@@ -311,9 +323,19 @@ function Issue(): JSX.Element {
       });
   }, [api, requestIssueExtrinsic, walletAccount, toast]);
 
+  const submittedIssueRequestData = useMemo(() => {
+    if (!submittedIssueRequestId || !api) {
+      return undefined;
+    }
+
+    const issueRequest = getIssueRequest(submittedIssueRequestId);
+    return issueRequest;
+  }, [submittedIssueRequestId, api, getIssueRequest]);
+
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
       <ConfirmationDialog
+        issueRequest={submittedIssueRequestData}
         visible={confirmationDialogVisible}
         toggleVisible={() => setConfirmationDialogVisible(false)}
       />
