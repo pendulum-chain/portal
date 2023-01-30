@@ -8,6 +8,7 @@ import GovernanceIcon from "../../assets/governance";
 import SwapIcon from "../../assets/swap";
 import CollatorsIcon from "../../assets/collators";
 import arrow from "../../assets/nav-arrow.png";
+import ArrowIcon from "../../assets/nav-arrow";
 
 type LinkParameter = { isActive: boolean };
 
@@ -22,7 +23,9 @@ const Nav = memo(() => {
       >
         <DashboardIcon />
         <span>Dashboard</span>
-        <img src={arrow} className="nav-arrow" />
+        <div className={'nav-arrow-container'}>
+          <ArrowIcon />
+        </div>
       </NavLink>
       <NavLink
         to="./amm"
@@ -32,7 +35,9 @@ const Nav = memo(() => {
       >
         <SwapIcon />
         <span>Amm</span>
-        <img src={arrow} className="nav-arrow" />
+        <div className="nav-arrow-container">
+          <ArrowIcon />
+        </div>
       </NavLink>
       <NavLink
         to="./bridge"
@@ -42,7 +47,9 @@ const Nav = memo(() => {
       >
         <BridgeIcon />
         <span>Bridge</span>
-        <img src={arrow} className="nav-arrow" />
+        <div className="nav-arrow-container">
+          <ArrowIcon />
+        </div>
       </NavLink>
       <NavLink
         to="./collators"
@@ -52,7 +59,9 @@ const Nav = memo(() => {
       >
         <CollatorsIcon />
         <span>Collators</span>
-        <img src={arrow} className="nav-arrow" />
+        <div className="nav-arrow-container">
+          <ArrowIcon />
+        </div>
       </NavLink>
       <a
         href="https://amplitude.polkassembly.io/"
