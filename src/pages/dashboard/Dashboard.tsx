@@ -35,6 +35,7 @@ export function Dashboard() {
     api?.query.system
       .account(userAddress)
       .then((data) => {
+        // FIXME: remove ts-ignore
         // @ts-ignore
         setAccountBalance(JSON.parse(data.data.toString()));
       })
