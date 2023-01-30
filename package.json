@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "node version.cjs && tsc && vite build && echo '/* /index.html 200' | cat > dist/_redirects",
     "preview": "vite preview",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
     "@pendulum-chain/api": "^0.1.6",
