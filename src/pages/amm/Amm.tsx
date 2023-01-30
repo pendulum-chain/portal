@@ -29,7 +29,7 @@ export function Amm(): JSX.Element {
         >
           usd coin
         </Button>
-        <p class="text-4xl font-bold">300</p>
+        <p className="text-4xl font-bold">300</p>
       </div>
       <div className="row-pick-coin">
         <p>Balance: 3000 USDC</p>

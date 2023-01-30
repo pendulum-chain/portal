@@ -88,22 +88,16 @@ export function Bridge(): JSX.Element {
         </Modal.Actions>
       </Modal>
       <div style={{ width: 500 }}>
-        <div class="box">
-          <div class="box-inner">
+        <div className="box">
+          <div className="box-inner">
             <div className="flex justify-between px-10 py-5 mb-5">
-              <NavLink className="text-white" to="/amplitude/bridge">
+              <NavLink to="/amplitude/bridge">
                 Swap
               </NavLink>
-              <NavLink
-                className="hover:text-white"
-                to="/amplitude/bridge/redeem"
-              >
+              <NavLink to="/amplitude/bridge/redeem">
                 Redeem
               </NavLink>
-              <NavLink
-                className="hover:text-white"
-                to="/amplitude/bridge/transfer"
-              >
+              <NavLink to="/amplitude/bridge/transfer">
                 Transfer
               </NavLink>
             </div>
