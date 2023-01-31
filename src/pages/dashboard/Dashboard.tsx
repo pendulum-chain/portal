@@ -10,7 +10,7 @@ import { PalletBalancesAccountData } from "@polkadot/types/lookup";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
-  const { userAddress } = GlobalState;
+  const { walletAccount } = GlobalState;
   const { state } = useNodeInfoState();
   const { api } = state;
 
@@ -19,15 +19,15 @@ export function Dashboard() {
   >(undefined);
 
   useEffect(() => {
-    if (!userAddress) return;
+    if (!walletAccount?.address) return;
 
     api?.query.system
-      .account(userAddress)
+      .account(walletAccount.address)
       .then((data) => {
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
-  }, [api, userAddress]);
+  }, [api, walletAccount]);
 
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return "0";

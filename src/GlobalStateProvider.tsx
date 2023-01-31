@@ -16,11 +16,7 @@ export enum TenantName {
 }
 
 export interface GlobalStateInterface {
-  userAddress: string; // keyring.accounts
-  accountSecret: string;
   walletAccount?: WalletAccount;
-  accountName: string;
-  infoMessage?: string;
   tenantNane: TenantName;
   tenantRPC: string;
   toast?: Toast;
@@ -81,7 +77,7 @@ const GlobalStateProvider = ({
 
       default:
         tenantNane = TenantName.Amplitude;
-        tenantRPC = "ws://localhost:9944/";
+        tenantRPC = "ws://localhost:9944/"; // TODO change this back
         setTheme("black");
         navigate("/amplitude/" + path);
         break;
