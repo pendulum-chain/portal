@@ -1,8 +1,8 @@
 import { createContext, h } from "preact";
-import { useContext, useEffect, useMemo, useState } from "preact/hooks";
+import { useContext, useEffect, useState } from "preact/hooks";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { options } from "@pendulum-chain/api";
-import { rpc, typesBundle } from "@pendulum-chain/types";
+import { rpc } from "@pendulum-chain/types";
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -31,68 +31,38 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  const apiPromise = useMemo(() => {
-    const provider = new WsProvider(tenantRPC);
-    return new ApiPromise(
-      options({
-        provider,
-        rpc,
-        typesBundle: typesBundle,
-      })
-    );
-  }, [tenantRPC]);
+  console.log("tenantRPC", tenantRPC, state.api);
+
+  console.log("NodeInfoProvider", state);
 
   useEffect(() => {
-    apiPromise.on("connected", async () => {
-      try {
-        apiPromise.isReady.then((api) => {
-          (async () => {
-            const bestNumberFinalize = await api.derive.chain.bestNumber();
-            const chainProperties = await api.registry.getChainProperties();
-            const ss58Format = chainProperties?.get("ss58Format").toString();
-            const tokenDecimals = Number(
-              chainProperties
-                ?.get("tokenDecimals")
-                .toString()
-                .replace(/[\[\]]/g, "")
-            );
-            const tokenSymbol = chainProperties
-              ?.get("tokenSymbol")
-              .toString()
-              .replace(/[\[\]]/g, "");
+    let disconnect: () => void = () => undefined;
 
-            setState((prevState) => ({
-              ...prevState,
-              ...{
-                bestNumberFinalize: Number(bestNumberFinalize),
-                ss58Format: Number(ss58Format),
-                tokenDecimals,
-                tokenSymbol,
-                api,
-              },
-            }));
-          })();
-        });
+    const connect = async () => {
+      const provider = new WsProvider(tenantRPC);
+      const api = await ApiPromise.create(
+        options({
+          provider,
+          rpc,
+        })
+      );
 
-        const [chain, nodeName, nodeVersion] = await Promise.all([
-          apiPromise.rpc.system.chain(),
-          apiPromise.rpc.system.name(),
-          apiPromise.rpc.system.version(),
-        ]);
-
-        setState((prevState) => ({
+      setState((prevState) => {
+        return {
           ...prevState,
-          ...{
-            chain: chain.toString(),
-            nodeName: nodeName.toString(),
-            nodeVersion: nodeVersion.toString(),
-          },
-        }));
-      } catch (e) {
-        console.error(e);
-      }
-    });
-  }, [apiPromise]);
+          api,
+        };
+      });
+
+      disconnect = () => {
+        api.disconnect();
+      };
+    };
+
+    connect();
+
+    return disconnect;
+  }, [tenantRPC]);
 
   return (
     <NodeInfoContext.Provider value={{ state, setState }}>

@@ -21,10 +21,15 @@ export function useIssuePallet() {
       return;
     }
 
+    // Check that the pallet is available
+    if (!api.query.issue || !api.tx.issue) {
+      return;
+    }
+
     let unsubscribe: () => void;
 
     api.query.issue.issueRequests.entries().then((entries) => {
-      console.log("updating issue requests", entries)
+      console.log("updating issue requests", entries);
       const richEntries = entries.map(([key, value]) => {
         const request = value.unwrap();
 
@@ -70,7 +75,7 @@ export function useIssuePallet() {
           return undefined;
         }
 
-        return api.tx.issue.requestIssue(amount, vaultId);
+        return api.tx.issue?.requestIssue(amount, vaultId);
       },
     };
   }, [api, issueRequests]);

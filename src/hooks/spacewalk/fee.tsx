@@ -26,10 +26,15 @@ export function useFeePallet() {
       return;
     }
 
+    // Check that the pallet is available
+    if (!api.query.fee || !api.consts.vaultRegistry) {
+      return;
+    }
+
     let unsubscribe: () => void = () => undefined;
 
     setGriefingCollateralCurrency(
-      api.consts.vaultRegistry.getGriefingCollateralCurrencyId
+      api.consts.vaultRegistry?.getGriefingCollateralCurrencyId
     );
 
     Promise.all([

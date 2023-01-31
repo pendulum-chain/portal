@@ -14,6 +14,11 @@ export function useVaultRegistryPallet() {
       return;
     }
 
+    // Check that the pallet is available
+    if (!api.query.vaultRegistry || !api.tx.vaultRegistry) {
+      return;
+    }
+
     let unsubscribe: () => void;
 
     api.query.vaultRegistry.vaults.entries().then((entries) => {
@@ -37,7 +42,7 @@ export function useVaultRegistryPallet() {
           return undefined;
         }
         const publicKeyBinary =
-          await api.query.vaultRegistry.vaultStellarPublicKey(accountId);
+          await api.query.vaultRegistry?.vaultStellarPublicKey(accountId);
 
         if (publicKeyBinary.isNone) {
           return undefined;
