@@ -3,7 +3,7 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}', 'node_modules/daisyui/dist/**/*.js', 'node_modules/react-daisyui/dist/**/*.js'],
   // eslint-disable-next-line no-undef
   plugins: [require('daisyui')],
-  themes: ['light', 'dark'],
+  themes: ['light', 'dark', "pendulum", "amplitude"],
   daisyui: {
     themes: [
       {

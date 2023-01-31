@@ -10,10 +10,10 @@ render(
   <BrowserRouter>
     <GlobalStateProvider>
       <GlobalStateContext.Consumer>
-        {({ state }) =>
+        {({ state, getThemeName }) =>
           state.tenantRPC && (
             <NodeInfoProvider tenantRPC={state.tenantRPC}>
-              <Theme dataTheme={state.tenantNane}>
+              <Theme dataTheme={getThemeName()}>
                 <App />
               </Theme>
             </NodeInfoProvider>
