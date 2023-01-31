@@ -31,10 +31,6 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  console.log("tenantRPC", tenantRPC, state.api);
-
-  console.log("NodeInfoProvider", state);
-
   useEffect(() => {
     let disconnect: () => void = () => undefined;
 
@@ -47,12 +43,30 @@ const NodeInfoProvider = ({
         })
       );
 
-      setState((prevState) => {
-        return {
-          ...prevState,
+      const bestNumberFinalize = await api.derive.chain.bestNumber();
+      const chainProperties = await api.registry.getChainProperties();
+      const ss58Format = chainProperties?.get("ss58Format").toString();
+      const tokenDecimals = Number(
+        chainProperties
+          ?.get("tokenDecimals")
+          .toString()
+          .replace(/[\\[\]]/g, "")
+      );
+      const tokenSymbol = chainProperties
+        ?.get("tokenSymbol")
+        .toString()
+        .replace(/[\\[\]]/g, "");
+
+      setState((prevState) => ({
+        ...prevState,
+        ...{
+          bestNumberFinalize: Number(bestNumberFinalize),
+          ss58Format: Number(ss58Format),
+          tokenDecimals,
+          tokenSymbol,
           api,
-        };
-      });
+        },
+      }));
 
       disconnect = () => {
         api.disconnect();
