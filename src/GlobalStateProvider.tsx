@@ -47,8 +47,6 @@ const GlobalStateProvider = ({
 }) => {
   const [state, setState] = useState(value);
 
-  console.log("GlobalStateProvider", state);
-
   const getThemeName = () => {
     switch (state.tenantName) {
       case TenantName.Pendulum:

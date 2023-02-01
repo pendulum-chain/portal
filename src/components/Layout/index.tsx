@@ -30,8 +30,6 @@ export default function Layout(): React.JSX.Element {
       : TenantName.Pendulum;
   }, [params.network]);
 
-  console.log("Layout", network);
-
   useEffect(() => {
     // Only change state if network is different
     if (state.tenantName !== network) {
