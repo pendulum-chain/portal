@@ -20,7 +20,7 @@ function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
         </label>
       )}
       <Select
-        className="w-fit max-w-full h-10 border border-gray-500 rounded-md"
+        className="w-fit max-w-full h-10 border border-gray-500 rounded-md bg-transparent"
         onChange={(e) => {
           const id = e.target.value;
           const item = items.find((i) => i.id === id);

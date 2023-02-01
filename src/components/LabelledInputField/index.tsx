@@ -22,7 +22,8 @@ function LabelledInputField(props: Props & InputProps) {
           {label && <span className="label-text">{label}</span>}
         </label>
         <Input
-          className="border border-gray-500 rounded-md"
+          className="border border-gray-500 rounded-md bg-transparent"
+          color="primary"
           {...rest}
           onFocus={(event: React.TargetedEvent) => {
             if (event.target instanceof HTMLInputElement) {
