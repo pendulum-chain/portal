@@ -30,9 +30,17 @@ const NodeInfoProvider = ({
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
+  const [currentTenantRPC, setCurrentTenantRPC] = useState(tenantRPC);
+  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
+    Promise<unknown>
+  >(Promise.resolve());
 
   useEffect(() => {
     let disconnect: () => void = () => undefined;
+
+    if (tenantRPC === currentTenantRPC) {
+      return;
+    }
 
     const connect = async () => {
       const provider = new WsProvider(tenantRPC);
@@ -73,10 +81,21 @@ const NodeInfoProvider = ({
       };
     };
 
-    connect();
+    pendingInitiationPromise.then(() => {
+      // We need this promise based approach to prevent race conditions when the user switches between tenants very quickly.
+      // Otherwise, it might happen that the connection to the first endpoint takes longer and resolves later than
+      // the connection to the second endpoint which would make us end up with a connection to the outdated endpoint.
+      setPendingInitiationPromise(connect());
+      setCurrentTenantRPC(tenantRPC);
+    });
 
     return disconnect;
-  }, [tenantRPC]);
+  }, [
+    currentTenantRPC,
+    tenantRPC,
+    pendingInitiationPromise,
+    setPendingInitiationPromise,
+  ]);
 
   return (
     <NodeInfoContext.Provider value={{ state, setState }}>
