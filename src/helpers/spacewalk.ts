@@ -2,9 +2,10 @@ import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
 import { ApiPromise } from "@polkadot/api";
 import { Asset, Keypair } from "stellar-sdk";
 import { convertRawHexKeyToPublicKey } from "./stellar";
+import { DateTime } from "luxon";
 
 // Convert a hex string to an ASCII string
-function hex_to_ascii(hexString: string, leading0x= true) {
+function hex_to_ascii(hexString: string, leading0x = true) {
   const hex = hexString.toString();
   let str = "";
   for (let n = leading0x ? 2 : 0; n < hex.length; n += 2) {
@@ -65,4 +66,27 @@ export function convertStellarAssetToCurrency(
       });
     }
   }
+}
+
+// Calculate the remaining duration for a request
+// Params:
+//   currentActiveBlock: The block number of the current active block
+//   activeBlockOpenTime: The block number of the active block when the request was opened
+//   period: The period of the request
+//   blockTimeSec: The average block time in seconds
+// Returns:
+//   The estimated end time of the request
+export function calculateDeadline(
+  currentActiveBlock: number,
+  activeBlockOpenTime: number,
+  period: number,
+  blockTimeSec = 12
+) {
+  const deadlineBlock = activeBlockOpenTime + period;
+  const blocksRemaining = deadlineBlock - currentActiveBlock;
+  const remainingDurationSecs = blocksRemaining * blockTimeSec;
+
+  const now = DateTime.now();
+  const end = now.plus({ seconds: remainingDurationSecs });
+  return end;
 }

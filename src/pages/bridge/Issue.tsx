@@ -1,14 +1,20 @@
 import { h } from "preact";
-import { Button, Checkbox, Form, Modal } from "react-daisyui";
+import { Button, Checkbox, Divider, Form, Modal } from "react-daisyui";
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import LabelledInputField from "../../components/LabelledInputField";
 import LabelledSelector from "../../components/LabelledSelector";
 import { RichIssueRequest, useIssuePallet } from "../../hooks/spacewalk/issue";
 import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
 import { VaultRegistryVault } from "@polkadot/types/lookup";
-import { convertCurrencyToStellarAsset } from "../../helpers/spacewalk";
+import {
+  calculateDeadline,
+  convertCurrencyToStellarAsset,
+} from "../../helpers/spacewalk";
 import { Asset } from "stellar-sdk";
-import { stringifyStellarAsset } from "../../helpers/stellar";
+import {
+  convertRawHexKeyToPublicKey,
+  stringifyStellarAsset,
+} from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
 import { toUnit } from "../../helpers/parseNumbers";
 import Big from "big.js";
@@ -18,6 +24,10 @@ import { useNodeInfoState } from "../../NodeInfoProvider";
 import { getErrors, getEventBySectionAndMethod } from "../../helpers/substrate";
 import { toast } from "react-toastify";
 import { H256 } from "@polkadot/types/interfaces";
+import { CopyableAddress, PublicKey } from "../../components/PublicKey";
+import { useSecurityPallet } from "../../hooks/spacewalk/security";
+import { VoidFn } from "@polkadot/api-base/types";
+import { DateTime } from "luxon";
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -188,22 +198,103 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
 }
 
 interface ConfirmationDialogProps {
-  visible: boolean;
-  toggleVisible: () => void;
   issueRequest: RichIssueRequest | undefined;
+  onClose: () => void;
+  visible: boolean;
 }
 
 function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { issueRequest, visible, toggleVisible } = props;
+  const { issueRequest, visible, onClose } = props;
+
+  const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
+  const [remainingDurationString, setRemainingDurationString] =
+    useState<string>("");
+
+  const totalAmount = issueRequest
+    ? issueRequest.request.amount.add(issueRequest.request.fee).toString()
+    : "";
+  const currency = issueRequest?.request.asset;
+  const asset = currency && convertCurrencyToStellarAsset(currency);
+
+  const rawDestinationAddress = issueRequest?.request.stellarAddress;
+  const destination = rawDestinationAddress
+    ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
+    : "";
+
+  useEffect(() => {
+    let unsub: VoidFn = () => undefined;
+    subscribeActiveBlockNumber((blockNumber) => {
+      setActiveBlockNumber(blockNumber);
+    }).then((u) => (unsub = u));
+
+    return unsub;
+  }, [subscribeActiveBlockNumber]);
+
+  const deadline = useMemo(() => {
+    const openTime = issueRequest?.request.opentime.toNumber() || 0;
+    const period = issueRequest?.request.period.toNumber() || 0;
+    const end = calculateDeadline(activeBlockNumber, openTime, period, 6);
+
+    return end;
+  }, [activeBlockNumber, issueRequest]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newDeadlineString = deadline
+        .diff(DateTime.now())
+        .toFormat("hh:mm:ss");
+      setRemainingDurationString(newDeadlineString);
+    });
+
+    return () => clearInterval(interval);
+  }, [deadline]);
 
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Deposit</Modal.Header>
+      <Button
+        color="ghost"
+        size="md"
+        shape="circle"
+        className="absolute right-4 top-4"
+        onClick={onClose}
+      >
+        ✕
+      </Button>
+      <Modal.Body>
+        <div className="text-center">
+          <div className="text-xl">
+            Send {totalAmount} {asset?.getCode()}
+          </div>
+          <div className="text-sm">
+            (issued by{" "}
+            {asset && (
+              <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+            )}
+            )
+          </div>
+          <div className="text mt-4">In a single transaction to</div>
+          <CopyableAddress variant="short" publicKey={destination} />
+          <div>Within {remainingDurationString}</div>
+        </div>
+        <Divider />
+        <div>
+          <div className="text-sm">
+            Warning: Make sure that the USDC you are sending are issued by the
+            correct issuer.
+          </div>
+        </div>
+        <div className="text-sm mt-4">
+          Note: If you have already made the payment, please wait for a few
+          minutes for it to be confirmed.
+        </div>
+      </Modal.Body>
 
-      <Modal.Body>Send {issueRequest?.request.amount.toString()} </Modal.Body>
-
-      <Modal.Actions>
-        <Button onClick={toggleVisible}>Yay!</Button>
+      <Modal.Actions className="justify-center">
+        <Button color="primary" onClick={onClose}>
+          I have made the payment
+        </Button>
       </Modal.Actions>
     </Modal>
   );
@@ -220,6 +311,9 @@ function Issue(): JSX.Element {
 
   const [submittedIssueRequestId, setSubmittedIssueRequestId] =
     useState<H256 | null>(null);
+  const [submittedIssueRequest, setSubmittedIssueRequest] = useState<
+    RichIssueRequest | undefined
+  >(undefined);
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
@@ -265,15 +359,15 @@ function Issue(): JSX.Element {
   }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
 
   const requestIssueExtrinsic = useMemo(() => {
-    if (!selectedVault || !amount) {
+    if (!selectedVault || !amount || !api) {
       return undefined;
     }
 
     return createIssueRequestExtrinsic(amount, selectedVault.id);
-  }, [amount, createIssueRequestExtrinsic, selectedVault]);
+  }, [amount, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
-    if (!requestIssueExtrinsic || !walletAccount || !api) {
+    if (!requestIssueExtrinsic || !walletAccount || !api || !selectedVault) {
       return;
     }
 
@@ -306,6 +400,10 @@ function Issue(): JSX.Element {
               // We do not have a proper type for this event, so we have to cast it to any
               const issueId = (requestIssueEvent.data as any).issueId;
               setSubmittedIssueRequestId(issueId);
+
+              getIssueRequest(issueId).then((issueRequest) => {
+                setSubmittedIssueRequest(issueRequest);
+              });
             }
 
             setSubmissionPending(false);
@@ -321,23 +419,20 @@ function Issue(): JSX.Element {
         toast("Transaction submission failed", { type: "error" });
         setSubmissionPending(false);
       });
-  }, [api, requestIssueExtrinsic, walletAccount]);
-
-  const submittedIssueRequestData = useMemo(() => {
-    if (!submittedIssueRequestId || !api) {
-      return undefined;
-    }
-
-    const issueRequest = getIssueRequest(submittedIssueRequestId);
-    return issueRequest;
-  }, [submittedIssueRequestId, api, getIssueRequest]);
+  }, [
+    api,
+    getIssueRequest,
+    requestIssueExtrinsic,
+    selectedVault,
+    walletAccount,
+  ]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
       <ConfirmationDialog
-        issueRequest={submittedIssueRequestData}
+        issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
-        toggleVisible={() => setConfirmationDialogVisible(false)}
+        onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
         <div className="box">
@@ -399,4 +494,4 @@ function Issue(): JSX.Element {
   );
 }
 
-  export default Issue;
+export default Issue;
