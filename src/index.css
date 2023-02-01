@@ -35,6 +35,7 @@
   --table-background: "#1C1C1C";
   --table-border: #dfe0eb08;
   --modal-title:  var(--clear-light);
+  --b1: 0 0% 11%;
 }
 
 [data-theme="pendulum"] {
