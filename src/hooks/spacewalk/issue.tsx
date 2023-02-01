@@ -2,7 +2,7 @@ import type {
   SpacewalkPrimitivesIssueIssueRequest,
   SpacewalkPrimitivesVaultId,
 } from "@polkadot/types/lookup";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useMemo } from "preact/hooks";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import { H256 } from "@polkadot/types/interfaces";
 
@@ -12,60 +12,37 @@ export interface RichIssueRequest {
 }
 
 export function useIssuePallet() {
-  const [issueRequests, setIssueRequests] = useState<RichIssueRequest[]>([]);
-
   const { api } = useNodeInfoState().state;
-
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    // Check that the pallet is available
-    if (!api.query.issue || !api.tx.issue) {
-      return;
-    }
-
-    let unsubscribe: () => void;
-
-    api.query.issue.issueRequests.entries().then((entries) => {
-      console.log("updating issue requests", entries);
-      const richEntries = entries.map(([key, value]) => {
-        const request = value.unwrap();
-
-        const issueRequest: RichIssueRequest = {
-          id: key.args[0] as H256,
-          request,
-        };
-
-        return issueRequest;
-      });
-
-      setIssueRequests(richEntries);
-    });
-
-    return () => unsubscribe && unsubscribe();
-  }, [api, setIssueRequests]);
 
   const memo = useMemo(() => {
     return {
-      getIssueRequests() {
-        return issueRequests;
-      },
-      getIssueRequest(issueId: H256) {
-        return issueRequests.find((issueRequest) =>
-          issueRequest.id.eq(issueId)
-        );
-      },
-      getIssueRequestsForRequester(accountId: string) {
-        return issueRequests.filter((issueRequest) => {
-          return issueRequest.request.requester.toString() === accountId;
+      async getIssueRequests() {
+        const entries = await api?.query.issue.issueRequests.entries();
+        if (!entries) {
+          return [];
+        }
+
+        return entries.map(([key, value]) => {
+          const request = value.unwrap();
+
+          const issueRequest: RichIssueRequest = {
+            id: key.args[0] as H256,
+            request,
+          };
+
+          return issueRequest;
         });
       },
-      getIssueRequestsForVault(vaultId: SpacewalkPrimitivesVaultId) {
-        return issueRequests.filter((issueRequest) => {
-          return issueRequest.request.vault === vaultId;
-        });
+      async getIssueRequest(issueId: H256) {
+        const request = await api?.query.issue.issueRequests(issueId);
+        if (request && request.isSome) {
+          return {
+            id: issueId,
+            request: request.unwrap(),
+          };
+        } else {
+          return undefined;
+        }
       },
       createIssueRequestExtrinsic(
         amount: string,
@@ -78,7 +55,7 @@ export function useIssuePallet() {
         return api.tx.issue?.requestIssue(amount, vaultId);
       },
     };
-  }, [api, issueRequests]);
+  }, [api]);
 
   return memo;
 }
