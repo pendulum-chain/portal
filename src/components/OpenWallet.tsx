@@ -1,22 +1,28 @@
 import { h } from "preact";
 import { Button } from "react-daisyui";
-import { useMemo } from "preact/hooks";
+import { useCallback, useMemo } from "preact/hooks";
 import { WalletAccount } from "@talismn/connect-wallets";
 import { WalletSelect } from "@talismn/connect-components";
-import { useGlobalState } from "../GlobalStateProvider";
+import { GlobalStateInterface, useGlobalState } from "../GlobalStateProvider";
 import addressFormatter from "../helpers/addressFormatter";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const { state, setState } = useGlobalState();
 
-  const updateGlobalAccount = (account: WalletAccount) => {
-    setState({
-      ...state,
-      ...{
-        walletAccount: account,
-      },
-    });
-  };
+  const updateGlobalAccount = useCallback(
+    (account: WalletAccount) => {
+      setState((prevState) => {
+        const newState: Partial<GlobalStateInterface> = {
+          ...prevState,
+          ...{
+            walletAccount: account,
+          },
+        };
+        return newState;
+      });
+    },
+    [setState]
+  );
 
   const ConnectButton = useMemo(
     () =>
