@@ -3,6 +3,7 @@ import Big from "big.js";
 import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
+import { nativeToDecimal } from "../../helpers/parseNumbers";
 
 export function useFeePallet() {
   const [issueFee, setIssueFee] = useState<Big>(new Big(0));
@@ -39,22 +40,28 @@ export function useFeePallet() {
 
     Promise.all([
       api.query.fee.issueFee((fee) => {
-        setIssueFee(Big(fee.toString()));
+        const decimal = Big(nativeToDecimal(fee.toString()));
+        setIssueFee(decimal);
       }),
       api.query.fee.punishmentFee((fee) => {
-        setPunishmentFee(Big(fee.toString()));
+        const decimal = Big(nativeToDecimal(fee.toString()));
+        setPunishmentFee(decimal);
       }),
       api.query.fee.redeemFee((fee) => {
-        setRedeemFee(Big(fee.toString()));
+        const decimal = Big(nativeToDecimal(fee.toString()));
+        setRedeemFee(decimal);
       }),
       api.query.fee.premiumRedeemFee((fee) => {
-        setPremiumRedeemFee(Big(fee.toString()));
+        const decimal = Big(nativeToDecimal(fee.toString()));
+        setPremiumRedeemFee(decimal);
       }),
       api.query.fee.issueGriefingCollateral((fee) => {
-        setIssueGriefingCollateral(Big(fee.toString()));
+        const decimal = Big(nativeToDecimal(fee.toString()));
+        setIssueGriefingCollateral(decimal);
       }),
       api.query.fee.replaceGriefingCollateral((fee) => {
-        setReplaceGriefingCollateral(Big(fee.toString()));
+        const decimal = Big(nativeToDecimal(fee.toString()));
+        setReplaceGriefingCollateral(decimal);
       }),
     ]).then((unsubscribeFunctions) => {
       unsubscribe = () => {

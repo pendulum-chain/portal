@@ -4,7 +4,7 @@ import { h } from "preact";
 import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import addressFormatter from "../../helpers/addressFormatter";
-import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
+import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
 
 enum filters {
   collators,
@@ -50,7 +50,7 @@ export function Collators() {
           // @ts-ignore
           candidates.forEach((candidate: Map[Candidate]) => {
             state.push({
-              amount: toUnit(candidate.get("amount")),
+              amount: nativeToDecimal(candidate.get("amount")),
               owner: candidate.get("owner").toString(),
             });
           });

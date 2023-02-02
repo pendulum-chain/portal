@@ -4,7 +4,7 @@ import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
-import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
+import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
 import { PalletBalancesAccountData } from "@polkadot/types/lookup";
 
@@ -32,7 +32,7 @@ export function Dashboard() {
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return "0";
 
-    return prettyNumbers(toUnit(accountBalance.free.toString()));
+    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()));
   }, [accountBalance]);
 
   return (

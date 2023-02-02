@@ -16,14 +16,13 @@ import {
   stringifyStellarAsset,
 } from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
-import { toUnit } from "../../helpers/parseNumbers";
+import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
 import Big from "big.js";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 import { useGlobalState } from "../../GlobalStateProvider";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import { getErrors, getEventBySectionAndMethod } from "../../helpers/substrate";
 import { toast } from "react-toastify";
-import { H256 } from "@polkadot/types/interfaces";
 import { CopyableAddress, PublicKey } from "../../components/PublicKey";
 import { useSecurityPallet } from "../../hooks/spacewalk/security";
 import { VoidFn } from "@polkadot/api-base/types";
@@ -110,12 +109,21 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
-  amountString: string;
+  // The amount of the bridged asset denoted in the smallest unit of the asset
+  amountDecimal: string;
   extrinsic?: SubmittableExtrinsic;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
   const { bridgedAsset, extrinsic } = props;
+
+  const amount = useMemo(() => {
+    try {
+      return new Big(props.amountDecimal);
+    } catch (e) {
+      return new Big(0);
+    }
+  }, [props.amountDecimal]);
 
   // TODO - get this from somewhere
   const network = "Amplitude"; // or Pendulum
@@ -137,24 +145,16 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     }
 
     getTransactionFee(extrinsic).then((fee) => {
-      setTransactionFee(toUnit(fee));
+      setTransactionFee(nativeToDecimal(fee));
     });
   }, [extrinsic, getTransactionFee, setTransactionFee]);
 
-  const amount = useMemo(() => {
-    try {
-      return new Big(props.amountString);
-    } catch (e) {
-      return new Big(0);
-    }
-  }, [props.amountString]);
-
   const bridgeFee = useMemo(() => {
-    return toUnit(amount.mul(fees.issueFee));
+    return amount.mul(fees.issueFee);
   }, [amount, fees]);
 
   const griefingCollateral = useMemo(() => {
-    return toUnit(amount.mul(fees.issueGriefingCollateral));
+    return amount.mul(fees.issueGriefingCollateral);
   }, [amount, fees]);
 
   const totalAmount = useMemo(() => {
@@ -162,19 +162,15 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return 0;
     }
 
-    return amount
-      .sub(bridgeFee)
-      .sub(griefingCollateral)
-      .sub(transactionFee)
-      .toNumber();
-  }, [amount, bridgeFee, griefingCollateral, transactionFee]);
+    return amount.sub(bridgeFee);
+  }, [amount, bridgeFee]);
 
   return (
     <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col">
       <div className="flex justify-between">
         <span>To {network}</span>
         <span>
-          {totalAmount.toFixed(4)} {wrappedCurrencyName}
+          {totalAmount.toString()} {wrappedCurrencyName}
         </span>
       </div>
       <div className="flex justify-between mt-2">
@@ -310,9 +306,6 @@ function Issue(): JSX.Element {
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
     useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-
-  const [submittedIssueRequestId, setSubmittedIssueRequestId] =
-    useState<H256 | null>(null);
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<
     RichIssueRequest | undefined
   >(undefined);
@@ -323,6 +316,11 @@ function Issue(): JSX.Element {
   const { api } = useNodeInfoState().state;
 
   const vaults = getVaults();
+
+  // The amount represented in the units of the native currency (as integer)
+  const amountNative = useMemo(() => {
+    return amount ? decimalToNative(amount) : Big(0);
+  }, [amount]);
 
   const wrappedAssets = useMemo(() => {
     return vaults
@@ -361,12 +359,15 @@ function Issue(): JSX.Element {
   }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
 
   const requestIssueExtrinsic = useMemo(() => {
-    if (!selectedVault || !amount || !api) {
+    if (!selectedVault || !api) {
       return undefined;
     }
 
-    return createIssueRequestExtrinsic(amount, selectedVault.id);
-  }, [amount, api, createIssueRequestExtrinsic, selectedVault]);
+    return createIssueRequestExtrinsic(
+      amountNative.toString(),
+      selectedVault.id
+    );
+  }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
     if (!requestIssueExtrinsic || !walletAccount || !api || !selectedVault) {
@@ -398,10 +399,10 @@ function Issue(): JSX.Element {
               "RequestIssue"
             );
 
+            // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
               const issueId = (requestIssueEvent.data as any).issueId;
-              setSubmittedIssueRequestId(issueId);
 
               getIssueRequest(issueId).then((issueRequest) => {
                 setSubmittedIssueRequest(issueRequest);
@@ -474,7 +475,7 @@ function Issue(): JSX.Element {
             />
           )}
           <FeeBox
-            amountString={amount}
+            amountDecimal={amount}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
           />
