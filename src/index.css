@@ -3,25 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --primary-light: #907EA0;
   --border-light: #EFF2F5;
-  --secondary-light: #58667E;
-  --background-light: #FBFCFE;
   --nice-light: #907EA0;
   --clear-light: #ffffff;
   --footer-links-light: #58667E;
   --nav-arrow-light: var(--clear-light);
 
-  --primary-dark: #5defa7;
-  --secondary-dark: #fff;
-  --background-dark: #202020;
   --nice-dark: #09C63E;
   --border-dark: rgba(239, 242, 245, 0.03);
-  --footer-links-dark:  #616875;
+  --footer-links-dark: #616875;
   --nav-arrow-dark: hsla(271, 25%, 19%, 1);
   --darkner: #1c1c1c;
 
-  /* From daiysUI theme variables*/
+  /* From daisyUI theme variables*/
   --text-primary: var(--bc);
   --text-secondary: var(--nc);
 }
@@ -34,15 +28,11 @@
   --table-text-header: "#fff";
   --table-background: "#1C1C1C";
   --table-border: #dfe0eb08;
-  --modal-title:  var(--clear-light);
+  --modal-title: var(--clear-light);
 }
 
 [data-theme="pendulum"] {
-  --primary: var(--primary-light);
-  --primary-content: var(--clear-light);
   --border: var(--border-light);
-  --secondary: var(--secondary-light);
-  --background: var(--background-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
   --table-text: "#252733";
@@ -112,7 +102,7 @@ nav {
   margin-bottom: auto;
 }
 
-nav>a {
+nav > a {
   color: var(--text-primary);
   font-weight: 600;
   display: flex;
@@ -127,7 +117,7 @@ nav>a {
   border-radius: 9px;
 }
 
-nav>a .nav-arrow-container svg {
+nav > a .nav-arrow-container svg {
   font-weight: 400;
   width: 5px;
   height: 9px;
@@ -135,7 +125,7 @@ nav>a .nav-arrow-container svg {
   margin-left: 0;
 }
 
-nav>a.active .nav-arrow-container svg {
+nav > a.active .nav-arrow-container svg {
   visibility: visible;
 }
 
@@ -143,11 +133,11 @@ nav>a.active .nav-arrow-container svg {
   border-right: 1px solid var(--border);
 }
 
-nav>a:hover {
+nav > a:hover {
   background-color: hsla(272, 15%, 56%, 0.1);
 }
 
-nav>.active {
+nav > .active {
   background-color: hsla(272, 15%, 56%, 0.1);
 }
 
@@ -226,13 +216,13 @@ nav a span {
   padding-top: 40px;
 }
 
-.pendulum-social-and-terms .terms ul {  
-  display:flex;
-  width:100%;
+.pendulum-social-and-terms .terms ul {
+  display: flex;
+  width: 100%;
 }
 
 .pendulum-social-and-terms .terms li {
-  display:inline-flex; 
+  display: inline-flex;
   flex-wrap: wrap;
   flex: 1;
   float: left;
