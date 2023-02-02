@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { Button, Checkbox, Divider, Form, Modal } from "react-daisyui";
+import { Button, Checkbox, Divider, Modal } from "react-daisyui";
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import LabelledInputField from "../../components/LabelledInputField";
 import LabelledSelector from "../../components/LabelledSelector";
@@ -95,6 +95,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
   return (
     <LabelledSelector
       items={items}
+      label="Select Vault"
       onChange={(newItem) => {
         const newVault = vaults.find((vault) => {
           return vault.id === newItem.id;
@@ -102,6 +103,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
         newVault && props.onChange(newVault);
       }}
       value={selectedVaultItem}
+      style={{ marginTop: "8px" }}
     />
   );
 }
@@ -168,7 +170,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [amount, bridgeFee, griefingCollateral, transactionFee]);
 
   return (
-    <div className="shadow bg-base-200 rounded-lg p-4 my-4 flex flex-col">
+    <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col">
       <div className="flex justify-between">
         <span>To {network}</span>
         <span>
@@ -428,66 +430,63 @@ function Issue(): JSX.Element {
   ]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk grid place-items-center p-5">
+    <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
       <ConfirmationDialog
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
-        <div className="box">
-          <div className="px-5 flex flex-col">
-            <div className="flex items-center">
-              <LabelledInputField
-                autoSelect
-                label="From Stellar"
-                type="number"
-                value={amount}
-                onChange={setAmount}
-                style={{ flexGrow: 2 }}
-              />
-              <AssetSelector
-                selectedAsset={selectedAsset}
-                assets={wrappedAssets}
-                onChange={setSelectedAsset}
-                style={{ flexGrow: 1 }}
-              />
-            </div>
-            <Form className="shadow bg-base-200 rounded-lg p-4 my-4">
-              <Form.Label title="Manually select vault">
-                <Checkbox
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.target instanceof HTMLInputElement) {
-                      setManualVaultSelection(e.target.checked);
-                    }
-                  }}
-                  checked={manualVaultSelection}
-                />
-              </Form.Label>
-            </Form>
-            {manualVaultSelection && (
-              <VaultSelector
-                vaults={vaultsForCurrency}
-                onChange={setSelectedVault}
-                selectedVault={selectedVault}
-              />
-            )}
-            <FeeBox
-              amountString={amount}
-              bridgedAsset={selectedAsset}
-              extrinsic={requestIssueExtrinsic}
+        <div className="px-5 flex flex-col">
+          <div className="flex items-center">
+            <LabelledInputField
+              autoSelect
+              label="From Stellar"
+              type="number"
+              value={amount}
+              onChange={setAmount}
+              style={{ flexGrow: 2 }}
+            />
+            <AssetSelector
+              selectedAsset={selectedAsset}
+              assets={wrappedAssets}
+              onChange={setSelectedAsset}
+              style={{ flexGrow: 1 }}
             />
           </div>
-          <div className="parity">
-            <Button
-              color="primary"
-              disabled={!walletAccount}
-              loading={submissionPending}
-              onClick={submitRequestIssueExtrinsic}
-            >
-              <span className="uppercase">Confirm</span>
-            </Button>
+          <div className="flex align-center mt-4">
+            <Checkbox
+              size="sm"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.target instanceof HTMLInputElement) {
+                  setManualVaultSelection(e.target.checked);
+                }
+              }}
+              checked={manualVaultSelection}
+            />
+            <span className="ml-2">Manually select vault</span>
           </div>
+          {manualVaultSelection && (
+            <VaultSelector
+              vaults={vaultsForCurrency}
+              onChange={setSelectedVault}
+              selectedVault={selectedVault}
+            />
+          )}
+          <FeeBox
+            amountString={amount}
+            bridgedAsset={selectedAsset}
+            extrinsic={requestIssueExtrinsic}
+          />
+          <Button
+            className="w-full"
+            color="primary"
+            disabled={!walletAccount}
+            loading={submissionPending}
+            onClick={submitRequestIssueExtrinsic}
+          >
+            Bridge
+          </Button>
         </div>
       </div>
     </div>

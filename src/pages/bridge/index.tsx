@@ -1,6 +1,5 @@
 import { h } from "preact";
-import { Tabs } from "react-daisyui";
-import "./styles.css";
+import { Card, Tabs } from "react-daisyui";
 import { useMemo, useState } from "preact/hooks";
 import Redeem from "./Redeem";
 import Issue from "./Issue";
@@ -23,23 +22,25 @@ function Bridge(): JSX.Element {
   }, [tabValue]);
 
   return (
-    <div
-      className="flex items-center justify-center h-full space-walk grid place-items-center"
-      style={{ minHeight: 600 }}
-    >
-      <div style={{ width: 500 }}>
-        <div className="box">
-          <div className="box-inner">
-            <div className="flex justify-between px-10 py-5 mb-5">
-            <Tabs boxed value={tabValue} onChange={setTabValue}>
-              <Tabs.Tab value={0}>To {parachainNetwork}</Tabs.Tab>
-              <Tabs.Tab value={1}>To Stellar</Tabs.Tab>
-            </Tabs>
-            </div>
-            {Content}
-          </div>
+    <div className="h-full flex items-center justify-center grid place-items-center mt-4">
+      <Card className="bg-base-200 min-h-500 min-w-535 w-fit">
+        <div className="flex justify-between px-10 mt-5">
+          <Tabs
+            className="flex flex-grow"
+            boxed
+            value={tabValue}
+            onChange={setTabValue}
+          >
+            <Tabs.Tab className="w-2/4 h-fit p-2" value={0}>
+              To {parachainNetwork}
+            </Tabs.Tab>
+            <Tabs.Tab className="w-2/4 h-fit p-2" value={1}>
+              To Stellar
+            </Tabs.Tab>
+          </Tabs>
         </div>
-      </div>
+        {Content}
+      </Card>
     </div>
   );
 }

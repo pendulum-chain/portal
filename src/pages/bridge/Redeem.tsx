@@ -1,7 +1,6 @@
 import { h } from "preact";
 import { Button, Modal } from "react-daisyui";
 import { NavLink } from "react-router-dom";
-import "./styles.css";
 import { useState } from "preact/hooks";
 import { useIssuePallet } from "../../hooks/spacewalk/issue";
 import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
