@@ -20,14 +20,14 @@
   --footer-links-dark:  #616875;
   --nav-arrow-dark: hsla(271, 25%, 19%, 1);
   --darkner: #1c1c1c;
+
+  /* From daiysUI theme variables*/
+  --text-primary: var(--bc);
+  --text-secondary: var(--nc);
 }
 
 [data-theme="amplitude"] {
-  --primary: var(--primary-dark);
-  --primary-content: var(--clear-light);
   --border: var(--border-dark);
-  --secondary: var(--secondary-dark);
-  --background: var(--background-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
   --table-text: "#BBBBBB";
@@ -35,7 +35,6 @@
   --table-background: "#1C1C1C";
   --table-border: #dfe0eb08;
   --modal-title:  var(--clear-light);
-  --b1: 0 0% 11%;
 }
 
 [data-theme="pendulum"] {
@@ -59,7 +58,7 @@ body {
 }
 
 #main {
-  background-color: var(--background);
+  background-color: var(--b1);
 }
 
 .pendulum-network-id {
@@ -85,7 +84,7 @@ body {
   justify-content: end;
   align-items: flex-end;
   margin-bottom: 10px;
-  color: var(--secondary);
+  color: var(--text-primary);
 }
 
 .pendulum-versions p,
@@ -114,7 +113,7 @@ nav {
 }
 
 nav>a {
-  color: var(--secondary);
+  color: var(--text-primary);
   font-weight: 600;
   display: flex;
   text-align: left;
@@ -153,7 +152,7 @@ nav>.active {
 }
 
 nav svg {
-  fill: var(--secondary);
+  fill: currentColor;
 }
 
 nav a {
@@ -184,7 +183,7 @@ nav a span {
   margin-left: 20px;
   width: 140px;
   height: auto;
-  color: var(--secondary);
+  color: var(--text-primary);
 }
 
 .pendulum-social-and-terms {
@@ -238,7 +237,7 @@ nav a span {
   flex: 1;
   float: left;
   font-size: 14px;
-  color: var(--footer-links);
+  color: var(--text-primary);
 }
 
 .pendulum-social-and-terms .terms span,
