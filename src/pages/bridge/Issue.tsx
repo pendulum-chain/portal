@@ -210,7 +210,9 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     useState<string>("");
 
   const totalAmount = issueRequest
-    ? issueRequest.request.amount.add(issueRequest.request.fee).toString()
+    ? nativeToDecimal(
+        issueRequest.request.amount.add(issueRequest.request.fee).toString()
+      ).toString()
     : "";
   const currency = issueRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
@@ -448,6 +450,7 @@ function Issue(): JSX.Element {
               onChange={setAmount}
               style={{ flexGrow: 2 }}
             />
+            <div className="px-1" />
             <AssetSelector
               selectedAsset={selectedAsset}
               assets={wrappedAssets}
