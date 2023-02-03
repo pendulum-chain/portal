@@ -35,7 +35,7 @@ function Bridge(): JSX.Element {
               To {parachainNetwork}
             </Tabs.Tab>
             <Tabs.Tab className="w-2/4 h-fit p-2" value={1}>
-              To Stellar
+              Back To Stellar
             </Tabs.Tab>
           </Tabs>
         </div>
