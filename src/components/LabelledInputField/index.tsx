@@ -27,7 +27,7 @@ const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
           {label && <span className="label-text">{error ? error : label}</span>}
         </label>
         <Input
-          className="border border-gray-500 rounded-md bg-transparent"
+          className="border rounded-md bg-transparent"
           color={inputColor}
           ref={ref}
           {...rest}
