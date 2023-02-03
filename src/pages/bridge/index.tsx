@@ -9,17 +9,29 @@ function Bridge(): JSX.Element {
 
   // TODO - get the network from somewhere
   const parachainNetwork = "Amplitude";
+  const nativeCurrency = parachainNetwork === "Amplitude" ? "AMPE" : "PEN";
+  const wrappedCurrencyPrefix = parachainNetwork === "Amplitude" ? "a" : "p";
 
   const Content = useMemo(() => {
     switch (tabValue) {
       case 0:
-        return <Issue />;
+        return (
+          <Issue
+            network={parachainNetwork}
+            nativeCurrency={nativeCurrency}
+            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
+          />
+        );
       case 1:
-        return <Redeem />;
-      default:
-        return <Issue />;
+        return (
+          <Redeem
+            network={parachainNetwork}
+            nativeCurrency={nativeCurrency}
+            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
+          />
+        );
     }
-  }, [tabValue]);
+  }, [nativeCurrency, tabValue, wrappedCurrencyPrefix]);
 
   return (
     <div className="h-full flex items-center justify-center grid place-items-center mt-4">

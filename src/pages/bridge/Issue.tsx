@@ -30,10 +30,19 @@ interface FeeBoxProps {
   // The amount of the bridged asset denoted in the smallest unit of the asset
   amountDecimal: string;
   extrinsic?: SubmittableExtrinsic;
+  network: string;
+  wrappedCurrencyPrefix?: string;
+  nativeCurrency: string;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic } = props;
+  const {
+    bridgedAsset,
+    extrinsic,
+    network,
+    wrappedCurrencyPrefix,
+    nativeCurrency,
+  } = props;
 
   const amount = useMemo(() => {
     try {
@@ -43,13 +52,8 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     }
   }, [props.amountDecimal]);
 
-  // TODO - get this from somewhere
-  const network = "Amplitude"; // or Pendulum
-  const nativeCurrency = network === "Amplitude" ? "AMPE" : "PEN";
-  const wrappedCurrencyPrefix = network === "Amplitude" ? "a" : "p";
-
   const wrappedCurrencyName = bridgedAsset
-    ? wrappedCurrencyPrefix + bridgedAsset.getCode()
+    ? (wrappedCurrencyPrefix || "") + bridgedAsset.getCode()
     : "";
 
   const { getFees, getTransactionFee } = useFeePallet();
@@ -218,7 +222,15 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   );
 }
 
-function Issue(): JSX.Element {
+interface IssueProps {
+  network: string;
+  wrappedCurrencyPrefix: string;
+  nativeCurrency: string;
+}
+
+function Issue(props: IssueProps): JSX.Element {
+  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
+
   const [amount, setAmount] = useState<string>("0");
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
@@ -290,7 +302,12 @@ function Issue(): JSX.Element {
   }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
-    if (!requestIssueExtrinsic || !walletAccount || !api || !selectedVault) {
+    if (!requestIssueExtrinsic || !api || !selectedVault) {
+      return;
+    }
+
+    if (!walletAccount) {
+      toast("No wallet account selected", { type: "error" });
       return;
     }
 
@@ -399,11 +416,13 @@ function Issue(): JSX.Element {
             amountDecimal={amount}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
+            network={network}
+            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
+            nativeCurrency={nativeCurrency}
           />
           <Button
             className="w-full"
             color="primary"
-            disabled={!walletAccount}
             loading={submissionPending}
             onClick={submitRequestIssueExtrinsic}
           >

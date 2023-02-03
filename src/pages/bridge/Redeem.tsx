@@ -60,7 +60,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [props.amountDecimal]);
 
   const wrappedCurrencyName = bridgedAsset
-    ? wrappedCurrencyPrefix || "" + bridgedAsset.getCode()
+    ? (wrappedCurrencyPrefix || "") + bridgedAsset.getCode()
     : "";
 
   const { getFees, getTransactionFee } = useFeePallet();
@@ -224,7 +224,13 @@ interface RedeemFormInputs {
   stellarAddress: string;
 }
 
-function Redeem(): JSX.Element {
+interface RedeemProps {
+  network: string;
+  wrappedCurrencyPrefix: string;
+  nativeCurrency: string;
+}
+
+function Redeem(props: RedeemProps): JSX.Element {
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
@@ -253,10 +259,7 @@ function Redeem(): JSX.Element {
     },
   });
 
-  // TODO - get this from somewhere
-  const network = "Amplitude"; // or Pendulum
-  const nativeCurrency = network === "Amplitude" ? "AMPE" : "PEN";
-  const wrappedCurrencyPrefix = network === "Amplitude" ? "a" : "p";
+  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch("amount");
