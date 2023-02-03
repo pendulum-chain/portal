@@ -24,6 +24,8 @@ import { useSecurityPallet } from "../../hooks/spacewalk/security";
 import { VoidFn } from "@polkadot/api-base/types";
 import { DateTime } from "luxon";
 import AssetSelector from "../../components/AssetSelector";
+import VaultSelector from "../../components/VaultSelector";
+import { Controller, useForm } from "react-hook-form";
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -212,8 +214,12 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   );
 }
 
+interface RedeemFormInputs {
+  amount: string;
+  stellarAddress: string;
+}
+
 function Redeem(): JSX.Element {
-  const [amount, setAmount] = useState<string>("0");
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
@@ -222,12 +228,26 @@ function Redeem(): JSX.Element {
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<
     RichIssueRequest | undefined
   >(undefined);
-  const [stellarAddress, setStellarAddress] = useState<string>("");
+  const [manualVaultSelection, setManualVaultSelection] = useState(false);
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
   const { walletAccount } = useGlobalState().state;
   const { api } = useNodeInfoState().state;
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    getValues,
+  } = useForm<RedeemFormInputs>({
+    defaultValues: {
+      amount: "0",
+      stellarAddress: "",
+    },
+  });
+
+  const { stellarAddress, amount } = getValues();
 
   const vaults = getVaults();
 
@@ -340,15 +360,24 @@ function Redeem(): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
-        <div className="px-5 flex flex-col">
+        <form
+          className="px-5 flex flex-col"
+          onSubmit={handleSubmit(submitRequestIssueExtrinsic)}
+        >
           <div className="flex items-center">
-            <LabelledInputField
-              autoSelect
-              label="From Amplitude"
-              type="number"
-              value={amount}
-              onChange={setAmount}
-              style={{ flexGrow: 2 }}
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <LabelledInputField
+                  autoSelect
+                  label="From Amplitude"
+                  type="number"
+                  style={{ flexGrow: 2 }}
+                  {...field}
+                />
+              )}
+              name="amount"
             />
             <div className="px-1" />
             <AssetSelector
@@ -358,12 +387,42 @@ function Redeem(): JSX.Element {
               style={{ flexGrow: 1 }}
             />
           </div>
-          <LabelledInputField
-            label="Stellar Address"
-            placeholder="Enter target Stellar address"
-            type="text"
-            value={stellarAddress}
-            onChange={setStellarAddress}
+          <div className="flex align-center mt-4">
+            <Checkbox
+              size="sm"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.target instanceof HTMLInputElement) {
+                  setManualVaultSelection(e.target.checked);
+                }
+              }}
+              checked={manualVaultSelection}
+            />
+            <span className="ml-2">Manually select vault</span>
+          </div>
+          {manualVaultSelection && (
+            <VaultSelector
+              vaults={vaultsForCurrency}
+              onChange={setSelectedVault}
+              selectedVault={selectedVault}
+            />
+          )}
+          <Controller
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <LabelledInputField
+                label={
+                  !errors.stellarAddress
+                    ? "Stellar Address"
+                    : "Stellar Address is required"
+                }
+                placeholder="Enter target Stellar address"
+                type="text"
+                style={{ marginTop: 8 }}
+                {...field}
+              />
+            )}
+            name="stellarAddress"
           />
           <FeeBox
             amountDecimal={amount}
@@ -375,11 +434,12 @@ function Redeem(): JSX.Element {
             color="primary"
             disabled={!walletAccount}
             loading={submissionPending}
-            onClick={submitRequestIssueExtrinsic}
+            type="submit"
+            // onClick={submitRequestIssueExtrinsic}
           >
             Bridge
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -10,12 +10,12 @@ interface Props {
 }
 
 function LabelledInputField(props: Props & InputProps) {
-  const { autoSelect, label, onChange, ...rest } = props;
+  const { autoSelect, label, onChange, style, ...rest } = props;
 
   return (
     <div
       className="flex w-full component-preview items-center justify-center gap-2 font-sans"
-      style={props.style}
+      style={style}
     >
       <div className="form-control w-full">
         <label className="label">
