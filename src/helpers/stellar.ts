@@ -1,8 +1,10 @@
 import { Asset, Keypair, StrKey } from "stellar-sdk";
 import { Buffer } from "buffer";
 
+export const StellarPublicKeyPattern = /^G[A-Z0-9]{55}$/;
+
 export const isPublicKey = (str: string) =>
-  Boolean(str.match(/^G[A-Z0-9]{55}$/));
+  Boolean(str.match(StellarPublicKeyPattern));
 export const isMuxedAddress = (str: string) =>
   Boolean(str.match(/^M[A-Z0-9]{68}$/));
 export const isStellarAddress = (str: string) =>

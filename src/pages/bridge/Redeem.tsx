@@ -2,7 +2,10 @@ import { h } from "preact";
 import { Button, Checkbox, Divider, Modal } from "react-daisyui";
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import LabelledInputField from "../../components/LabelledInputField";
-import { RichIssueRequest, useIssuePallet } from "../../hooks/spacewalk/issue";
+import {
+  RichRedeemRequest,
+  useRedeemPallet,
+} from "../../hooks/spacewalk/redeem";
 import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
 import { VaultRegistryVault } from "@polkadot/types/lookup";
 import {
@@ -10,7 +13,11 @@ import {
   convertCurrencyToStellarAsset,
 } from "../../helpers/spacewalk";
 import { Asset } from "stellar-sdk";
-import { convertRawHexKeyToPublicKey } from "../../helpers/stellar";
+import {
+  convertRawHexKeyToPublicKey,
+  isPublicKey,
+  StellarPublicKeyPattern,
+} from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
 import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
 import Big from "big.js";
@@ -23,8 +30,7 @@ import { CopyableAddress, PublicKey } from "../../components/PublicKey";
 import { useSecurityPallet } from "../../hooks/spacewalk/security";
 import { VoidFn } from "@polkadot/api-base/types";
 import { DateTime } from "luxon";
-import AssetSelector from "../../components/AssetSelector";
-import VaultSelector from "../../components/VaultSelector";
+import { AssetSelector, VaultSelector } from "../../components/Selector";
 import { Controller, useForm } from "react-hook-form";
 
 interface FeeBoxProps {
@@ -37,6 +43,8 @@ interface FeeBoxProps {
 function FeeBox(props: FeeBoxProps): JSX.Element {
   const { bridgedAsset, extrinsic } = props;
 
+  console.log("amountDecimal: ", props.amountDecimal);
+
   const amount = useMemo(() => {
     try {
       return new Big(props.amountDecimal);
@@ -44,6 +52,8 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return new Big(0);
     }
   }, [props.amountDecimal]);
+
+  console.log("amount", amount.toString());
 
   // TODO - get this from somewhere
   const network = "Amplitude"; // or Pendulum
@@ -70,11 +80,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [extrinsic, getTransactionFee, setTransactionFee]);
 
   const bridgeFee = useMemo(() => {
-    return amount.mul(fees.issueFee);
-  }, [amount, fees]);
-
-  const griefingCollateral = useMemo(() => {
-    return amount.mul(fees.issueGriefingCollateral);
+    return amount.mul(fees.redeemFee);
   }, [amount, fees]);
 
   const totalAmount = useMemo(() => {
@@ -110,28 +116,28 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
 }
 
 interface ConfirmationDialogProps {
-  issueRequest: RichIssueRequest | undefined;
+  redeemRequest: RichRedeemRequest | undefined;
   onClose: () => void;
   visible: boolean;
 }
 
 function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { issueRequest, visible, onClose } = props;
+  const { redeemRequest, visible, onClose } = props;
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [remainingDurationString, setRemainingDurationString] =
     useState<string>("");
 
-  const totalAmount = issueRequest
+  const totalAmount = redeemRequest
     ? nativeToDecimal(
-        issueRequest.request.amount.add(issueRequest.request.fee).toString()
+        redeemRequest.request.amount.add(redeemRequest.request.fee).toString()
       ).toString()
     : "";
-  const currency = issueRequest?.request.asset;
+  const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
-  const rawDestinationAddress = issueRequest?.request.stellarAddress;
+  const rawDestinationAddress = redeemRequest?.request.stellarAddress;
   const destination = rawDestinationAddress
     ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
     : "";
@@ -146,12 +152,12 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   }, [subscribeActiveBlockNumber]);
 
   const deadline = useMemo(() => {
-    const openTime = issueRequest?.request.opentime.toNumber() || 0;
-    const period = issueRequest?.request.period.toNumber() || 0;
+    const openTime = redeemRequest?.request.opentime.toNumber() || 0;
+    const period = redeemRequest?.request.period.toNumber() || 0;
     const end = calculateDeadline(activeBlockNumber, openTime, period, 6);
 
     return end;
-  }, [activeBlockNumber, issueRequest]);
+  }, [activeBlockNumber, redeemRequest]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -225,12 +231,12 @@ function Redeem(): JSX.Element {
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
     useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-  const [submittedIssueRequest, setSubmittedIssueRequest] = useState<
-    RichIssueRequest | undefined
+  const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<
+    RichRedeemRequest | undefined
   >(undefined);
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
 
-  const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
+  const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults } = useVaultRegistryPallet();
   const { walletAccount } = useGlobalState().state;
   const { api } = useNodeInfoState().state;
@@ -240,6 +246,7 @@ function Redeem(): JSX.Element {
     formState: { errors },
     handleSubmit,
     getValues,
+    watch,
   } = useForm<RedeemFormInputs>({
     defaultValues: {
       amount: "0",
@@ -247,7 +254,9 @@ function Redeem(): JSX.Element {
     },
   });
 
-  const { stellarAddress, amount } = getValues();
+  // We watch the amount because we need to re-render the FeeBox constantly
+  const amount = watch("amount");
+  const { stellarAddress } = getValues();
 
   const vaults = getVaults();
 
@@ -280,25 +289,54 @@ function Redeem(): JSX.Element {
     });
   }, [selectedAsset, vaults]);
 
-  const requestIssueExtrinsic = useMemo(() => {
-    if (!selectedVault || !api) {
+  useEffect(() => {
+    if (!manualVaultSelection) {
+      // TODO build a better algorithm for automatically selecting a vault
+      if (vaultsForCurrency.length > 0) {
+        setSelectedVault(vaultsForCurrency[0]);
+      }
+      if (!selectedAsset && wrappedAssets.length > 0) {
+        setSelectedAsset(wrappedAssets[0]);
+      }
+    }
+  }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
+
+  const requestRedeemExtrinsic = useMemo(() => {
+    if (
+      !selectedVault ||
+      !api ||
+      !stellarAddress ||
+      !isPublicKey(stellarAddress)
+    ) {
       return undefined;
     }
 
-    return createIssueRequestExtrinsic(
+    return createRedeemRequestExtrinsic(
       amountNative.toString(),
+      stellarAddress,
       selectedVault.id
     );
-  }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
+  }, [
+    amountNative,
+    api,
+    createRedeemRequestExtrinsic,
+    selectedVault,
+    stellarAddress,
+  ]);
 
-  const submitRequestIssueExtrinsic = useCallback(() => {
-    if (!requestIssueExtrinsic || !walletAccount || !api || !selectedVault) {
+  const submitRequestRedeemExtrinsic = useCallback(() => {
+    if (!requestRedeemExtrinsic || !api || !selectedVault) {
+      return;
+    }
+
+    if (!walletAccount) {
+      toast("No wallet connected", { type: "error" });
       return;
     }
 
     setSubmissionPending(true);
 
-    requestIssueExtrinsic
+    requestRedeemExtrinsic
       .signAndSend(
         walletAccount.address,
         { signer: walletAccount.signer as any },
@@ -315,19 +353,19 @@ function Redeem(): JSX.Element {
               toast(errorMessage, { type: "error" });
             }
           } else if (status.isFinalized) {
-            const requestIssueEvents = getEventBySectionAndMethod(
+            const requestRedeemEvents = getEventBySectionAndMethod(
               events,
-              "issue",
-              "RequestIssue"
+              "redeem",
+              "RequestRedeem"
             );
 
             // We only expect one event but loop over all of them just in case
-            for (const requestIssueEvent of requestIssueEvents) {
+            for (const requestRedeemEvent of requestRedeemEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
-              const issueId = (requestIssueEvent.data as any).issueId;
+              const redeemId = (requestRedeemEvent.data as any).redeemId;
 
-              getIssueRequest(issueId).then((issueRequest) => {
-                setSubmittedIssueRequest(issueRequest);
+              getRedeemRequest(redeemId).then((redeemRequest) => {
+                setSubmittedRedeemRequest(redeemRequest);
               });
             }
 
@@ -346,8 +384,8 @@ function Redeem(): JSX.Element {
       });
   }, [
     api,
-    getIssueRequest,
-    requestIssueExtrinsic,
+    getRedeemRequest,
+    requestRedeemExtrinsic,
     selectedVault,
     walletAccount,
   ]);
@@ -355,26 +393,28 @@ function Redeem(): JSX.Element {
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
       <ConfirmationDialog
-        issueRequest={submittedIssueRequest}
+        redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
         <form
           className="px-5 flex flex-col"
-          onSubmit={handleSubmit(submitRequestIssueExtrinsic)}
+          onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
         >
           <div className="flex items-center">
             <Controller
               control={control}
-              rules={{ required: true }}
+              rules={{ required: "Amount is required" }}
               render={({ field }) => (
                 <LabelledInputField
                   autoSelect
+                  error={errors.amount?.message}
                   label="From Amplitude"
                   type="number"
                   style={{ flexGrow: 2 }}
-                  {...field}
+                  onChange={(value: string) => field.onChange(value)}
+                  value={field.value}
                 />
               )}
               name="amount"
@@ -408,18 +448,22 @@ function Redeem(): JSX.Element {
           )}
           <Controller
             control={control}
-            rules={{ required: true }}
+            rules={{
+              required: "Stellar address is required",
+              pattern: {
+                value: StellarPublicKeyPattern,
+                message: "Stellar address is invalid",
+              },
+            }}
             render={({ field }) => (
               <LabelledInputField
-                label={
-                  !errors.stellarAddress
-                    ? "Stellar Address"
-                    : "Stellar Address is required"
-                }
+                label="Stellar Address"
+                error={errors.stellarAddress?.message}
                 placeholder="Enter target Stellar address"
                 type="text"
+                value={field.value}
+                onChange={(value: string) => field.onChange(value)}
                 style={{ marginTop: 8 }}
-                {...field}
               />
             )}
             name="stellarAddress"
@@ -427,15 +471,13 @@ function Redeem(): JSX.Element {
           <FeeBox
             amountDecimal={amount}
             bridgedAsset={selectedAsset}
-            extrinsic={requestIssueExtrinsic}
+            extrinsic={requestRedeemExtrinsic}
           />
           <Button
             className="w-full"
             color="primary"
-            disabled={!walletAccount}
             loading={submissionPending}
             type="submit"
-            // onClick={submitRequestIssueExtrinsic}
           >
             Bridge
           </Button>

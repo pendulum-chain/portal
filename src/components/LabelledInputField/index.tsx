@@ -1,16 +1,21 @@
 import { Input, InputProps } from "react-daisyui";
+import { forwardRef } from "react";
 
 interface Props {
   autoSelect?: boolean;
   label?: string;
+  color?: string;
+  error?: string;
   type: string;
   value: string;
   onChange?: (value: string) => void;
   style?: React.CSSProperties;
 }
 
-function LabelledInputField(props: Props & InputProps) {
-  const { autoSelect, label, onChange, style, ...rest } = props;
+const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
+  const { autoSelect, color, error, label, onChange, style, ...rest } = props;
+
+  const inputColor = error ? "error" : color;
 
   return (
     <div
@@ -19,15 +24,16 @@ function LabelledInputField(props: Props & InputProps) {
     >
       <div className="form-control w-full">
         <label className="label">
-          {label && <span className="label-text">{label}</span>}
+          {label && <span className="label-text">{error ? error : label}</span>}
         </label>
         <Input
           className="border border-gray-500 rounded-md bg-transparent"
-          color="primary"
+          color={inputColor}
+          ref={ref}
           {...rest}
           onFocus={(event: React.TargetedEvent) => {
             if (event.target instanceof HTMLInputElement) {
-              event.target.select();
+              autoSelect && event.target.select();
             }
           }}
           onInput={(event: React.ChangeEvent) => {
@@ -39,6 +45,6 @@ function LabelledInputField(props: Props & InputProps) {
       </div>
     </div>
   );
-}
+});
 
 export default LabelledInputField;
