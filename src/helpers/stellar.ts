@@ -17,6 +17,11 @@ export function convertRawHexKeyToPublicKey(rawPublicKeyHex: string): Keypair {
   return Keypair.fromPublicKey(ed25519PublicKey);
 }
 
+export function convertPublicKeyToRaw(pubKey: string): string {
+  const raw = StrKey.decodeEd25519PublicKey(pubKey);
+  return `0x${raw.toString("hex")}`;
+}
+
 export function stringifyStellarAsset(asset: Asset): string {
   return asset.isNative() ? "XLM" : `${asset.getCode()}:${asset.getIssuer()}`;
 }
