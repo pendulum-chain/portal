@@ -11,10 +11,7 @@ import {
   convertCurrencyToStellarAsset,
 } from "../../helpers/spacewalk";
 import { Asset } from "stellar-sdk";
-import {
-  convertRawHexKeyToPublicKey,
-  stringifyStellarAsset,
-} from "../../helpers/stellar";
+import { convertRawHexKeyToPublicKey } from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
 import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
 import Big from "big.js";
@@ -27,46 +24,7 @@ import { CopyableAddress, PublicKey } from "../../components/PublicKey";
 import { useSecurityPallet } from "../../hooks/spacewalk/security";
 import { VoidFn } from "@polkadot/api-base/types";
 import { DateTime } from "luxon";
-
-interface AssetSelectorProps {
-  selectedAsset?: Asset;
-  onChange: (asset: Asset) => void;
-  assets: Asset[];
-  style?: React.CSSProperties;
-}
-
-function AssetSelector(props: AssetSelectorProps): JSX.Element {
-  const { assets, selectedAsset } = props;
-
-  const items = assets.map((asset) => {
-    return {
-      displayName: asset.getCode(),
-      id: stringifyStellarAsset(asset),
-    };
-  });
-
-  const selectedAssetItem = selectedAsset
-    ? {
-        displayName: selectedAsset.getCode(),
-        id: stringifyStellarAsset(selectedAsset),
-      }
-    : undefined;
-
-  return (
-    <LabelledSelector
-      items={items}
-      label="Asset"
-      onChange={(newItem) => {
-        const newAsset = assets.find((asset) => {
-          return stringifyStellarAsset(asset) === newItem.id;
-        });
-        newAsset && props.onChange(newAsset);
-      }}
-      value={selectedAssetItem}
-      style={props.style}
-    />
-  );
-}
+import AssetSelector from "../../components/AssetSelector";
 
 interface VaultSelectorProps {
   vaults: VaultRegistryVault[];
