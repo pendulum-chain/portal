@@ -38,13 +38,19 @@ interface FeeBoxProps {
   // The amount of the bridged asset denoted in the smallest unit of the asset
   amountDecimal: string;
   extrinsic?: SubmittableExtrinsic;
+  network: string;
+  nativeCurrency: string;
+  wrappedCurrencyPrefix?: string;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic } = props;
-
-  console.log("amountDecimal: ", props.amountDecimal);
-
+  const {
+    bridgedAsset,
+    extrinsic,
+    nativeCurrency,
+    wrappedCurrencyPrefix,
+    network,
+  } = props;
   const amount = useMemo(() => {
     try {
       return new Big(props.amountDecimal);
@@ -53,15 +59,8 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     }
   }, [props.amountDecimal]);
 
-  console.log("amount", amount.toString());
-
-  // TODO - get this from somewhere
-  const network = "Amplitude"; // or Pendulum
-  const nativeCurrency = network === "Amplitude" ? "AMPE" : "PEN";
-  const wrappedCurrencyPrefix = network === "Amplitude" ? "a" : "p";
-
   const wrappedCurrencyName = bridgedAsset
-    ? wrappedCurrencyPrefix + bridgedAsset.getCode()
+    ? wrappedCurrencyPrefix || "" + bridgedAsset.getCode()
     : "";
 
   const { getFees, getTransactionFee } = useFeePallet();
@@ -94,7 +93,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   return (
     <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col">
       <div className="flex justify-between">
-        <span>To Stellar</span>
+        <span>To {network}</span>
         <span>
           {totalAmount.toString()} {wrappedCurrencyName}
         </span>
@@ -253,6 +252,11 @@ function Redeem(): JSX.Element {
       stellarAddress: "",
     },
   });
+
+  // TODO - get this from somewhere
+  const network = "Amplitude"; // or Pendulum
+  const nativeCurrency = network === "Amplitude" ? "AMPE" : "PEN";
+  const wrappedCurrencyPrefix = network === "Amplitude" ? "a" : "p";
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch("amount");
@@ -421,6 +425,7 @@ function Redeem(): JSX.Element {
             />
             <div className="px-1" />
             <AssetSelector
+              assetPrefix={wrappedCurrencyPrefix}
               selectedAsset={selectedAsset}
               assets={wrappedAssets}
               onChange={setSelectedAsset}
@@ -472,6 +477,8 @@ function Redeem(): JSX.Element {
             amountDecimal={amount}
             bridgedAsset={selectedAsset}
             extrinsic={requestRedeemExtrinsic}
+            network="Stellar"
+            nativeCurrency={nativeCurrency}
           />
           <Button
             className="w-full"

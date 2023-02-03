@@ -8,21 +8,26 @@ interface AssetSelectorProps {
   onChange: (asset: Asset) => void;
   assets: Asset[];
   style?: React.CSSProperties;
+  assetPrefix?: string;
+}
+
+function getDisplayName(asset: Asset, assetPrefix?: string): string {
+  return `${assetPrefix || ""}${asset.getCode()}`;
 }
 
 function AssetSelector(props: AssetSelectorProps): JSX.Element {
-  const { assets, selectedAsset } = props;
+  const { assets, selectedAsset, assetPrefix } = props;
 
   const items = assets.map((asset) => {
     return {
-      displayName: asset.getCode(),
+      displayName: getDisplayName(asset, assetPrefix),
       id: stringifyStellarAsset(asset),
     };
   });
 
   const selectedAssetItem = selectedAsset
     ? {
-        displayName: selectedAsset.getCode(),
+        displayName: getDisplayName(selectedAsset, assetPrefix),
         id: stringifyStellarAsset(selectedAsset),
       }
     : undefined;
