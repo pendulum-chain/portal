@@ -1,5 +1,5 @@
 import { VaultRegistryVault } from "@polkadot/types/lookup";
-import LabelledSelector from "../LabelledSelector";
+import LabelledSelector from "./LabelledSelector";
 import { h } from "preact";
 
 interface VaultSelectorProps {

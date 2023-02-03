@@ -1,6 +1,6 @@
 import { Asset } from "stellar-sdk";
 import { stringifyStellarAsset } from "../../helpers/stellar";
-import LabelledSelector from "../LabelledSelector";
+import LabelledSelector from "./LabelledSelector";
 import { h } from "preact";
 
 interface AssetSelectorProps {
