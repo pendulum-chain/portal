@@ -4,47 +4,36 @@ import Tabs from "../../components/Tabs";
 import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
-import { prettyNumbers, toUnit } from "../../helpers/parseNumbers";
+import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
-
-interface AccountBalance {
-  free: bigint;
-  reserved: bigint;
-  miscFrozen: bigint;
-  feeFrozen: bigint;
-}
+import { PalletBalancesAccountData } from "@polkadot/types/lookup";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
-  const { userAddress } = GlobalState;
+  const { walletAccount } = GlobalState;
   const { state } = useNodeInfoState();
   const { api } = state;
 
-  const [accountBalance, setAccountBalance] = useState<AccountBalance>({
-    free: BigInt(0),
-    reserved: BigInt(0),
-    miscFrozen: BigInt(0),
-    feeFrozen: BigInt(0),
-  });
-
-  const { free } = accountBalance;
+  const [accountBalance, setAccountBalance] = useState<
+    PalletBalancesAccountData | undefined
+  >(undefined);
 
   useEffect(() => {
-    if (!userAddress) return;
+    if (!walletAccount?.address) return;
 
     api?.query.system
-      .account(userAddress)
+      .account(walletAccount.address)
       .then((data) => {
-        // FIXME: remove ts-ignore
-        // @ts-ignore
-        setAccountBalance(JSON.parse(data.data.toString()));
+        setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
-  }, [api, userAddress]);
+  }, [api, walletAccount]);
 
   const cachedBalance = useMemo(() => {
-    return prettyNumbers(toUnit(free));
-  }, [free]);
+    if (!accountBalance) return "0";
+
+    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()));
+  }, [accountBalance]);
 
   return (
     <div className="mt-10">

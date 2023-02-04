@@ -2,7 +2,7 @@ import type { VaultRegistryVault } from "@polkadot/types/lookup";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { AccountId32 } from "@polkadot/types/interfaces";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { convertRawToPublicKey } from "../../helpers/stellar";
+import { convertRawHexKeyToPublicKey } from "../../helpers/stellar";
 
 export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;
@@ -14,14 +14,19 @@ export function useVaultRegistryPallet() {
       return;
     }
 
+    // Check that the pallet is available
+    if (!api.query.vaultRegistry || !api.tx.vaultRegistry) {
+      return;
+    }
+
     let unsubscribe: () => void;
 
     api.query.vaultRegistry.vaults.entries().then((entries) => {
-      const richEntries = entries.map(([key, value]) => {
-        return value.toJSON() as unknown as VaultRegistryVault;
+      const typedEntries = entries.map(([, value]) => {
+        return value.unwrap();
       });
 
-      setVaults(richEntries);
+      setVaults(typedEntries);
     });
 
     return () => unsubscribe && unsubscribe();
@@ -37,13 +42,12 @@ export function useVaultRegistryPallet() {
           return undefined;
         }
         const publicKeyBinary =
-          await api.query.vaultRegistry.vaultStellarPublicKey(accountId);
-        // FIXME: remove ts-ignore
-        // @ts-ignore
+          await api.query.vaultRegistry?.vaultStellarPublicKey(accountId);
+
         if (publicKeyBinary.isNone) {
           return undefined;
         } else {
-          return convertRawToPublicKey(publicKeyBinary.toHex());
+          return convertRawHexKeyToPublicKey(publicKeyBinary.toHex());
         }
       },
     };

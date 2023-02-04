@@ -1,25 +1,68 @@
-import { useState } from "preact/hooks";
-import { memo, FC, useRef } from "preact/compat";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { FC, memo, useRef } from "preact/compat";
 import { h } from "preact";
-import { Outlet } from "react-router-dom";
-
+import { Outlet, useParams } from "react-router-dom";
 import PendulumLogo from "../../assets/pendulum-logo.png";
 import AmplitudeLogo from "../../assets/amplitud-logo.svg";
 import OpenWallet from "../OpenWallet";
 import Nav from "./Nav";
 import NetworkId from "./NetwordId";
 import SocialAndTermLinks from "./SocialAndTermLinks";
-import { useGlobalState } from "../../GlobalStateProvider";
-
 import "./styles.sass";
 import Versions from "./Versions";
+import {
+  TenantName,
+  TenantRPC,
+  useGlobalState,
+} from "../../GlobalStateProvider";
+import { useTheme } from "react-daisyui";
 
 export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
-  const { state: globalState } = useGlobalState();
-  const { tenantNane } = globalState;
+  const params = useParams();
+  const { setTheme } = useTheme();
+  const { state, setState } = useGlobalState();
 
-  const isPendulum = tenantNane === "pendulum";
+  const network: TenantName = useMemo(() => {
+    return params.network &&
+      Object.values<string>(TenantName).includes(params.network)
+      ? (params.network as TenantName)
+      : TenantName.Pendulum;
+  }, [params.network]);
+
+  useEffect(() => {
+    // Only change state if network is different
+    if (state.tenantName !== network) {
+      let newTenantRPC: TenantRPC;
+      switch (network) {
+        case "pendulum":
+          newTenantRPC = TenantRPC.Pendulum;
+          setTheme("light");
+          break;
+        case "foucoco":
+          newTenantRPC = TenantRPC.Foucoco;
+          setTheme("black");
+          break;
+        case "local":
+          newTenantRPC = TenantRPC.Local;
+          setTheme("amplitude");
+          break;
+        case "amplitude":
+        default:
+          newTenantRPC = TenantRPC.Amplitude;
+          setTheme("black");
+          break;
+      }
+
+      setState((prevState) => ({
+        ...prevState,
+        tenantName: network,
+        tenantRPC: newTenantRPC,
+      }));
+    }
+  }, [network, setState, setTheme, state.tenantName]);
+
+  const isPendulum = network === "pendulum";
 
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? "white" : "grey ";
@@ -82,7 +125,7 @@ export default function Layout(): React.JSX.Element {
           />
           <Nav />
           <div className="sidebar-footer">
-            <Versions tenantName={tenantNane} />
+            <Versions tenantName={network} />
             <NetworkId />
             <SocialAndTermLinks Link={FooterLink} />
           </div>

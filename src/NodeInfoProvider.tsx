@@ -1,7 +1,8 @@
-import { h, createContext } from "preact";
+import { createContext, h } from "preact";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
+import { options } from "@pendulum-chain/api";
+import { rpc } from "@pendulum-chain/types";
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -29,67 +30,72 @@ const NodeInfoProvider = ({
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
-
-  const provider = new WsProvider(tenantRPC);
-
-  const apiPromise = new ApiPromise({
-    provider,
-    ...jsonrpc,
-  });
+  const [currentTenantRPC, setCurrentTenantRPC] = useState(tenantRPC);
+  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
+    Promise<unknown>
+  >(Promise.resolve());
 
   useEffect(() => {
-    (async () => {
-      apiPromise.on("connected", async () => {
-        try {
-          apiPromise.isReady.then((api) => {
-            (async () => {
-              const bestNumberFinalize = await api.derive.chain.bestNumber();
-              const chainProperties = await api.registry.getChainProperties();
-              const ss58Format = chainProperties?.get("ss58Format").toString();
-              const tokenDecimals = Number(
-                chainProperties
-                  ?.get("tokenDecimals")
-                  .toString()
-                  .replace(/[\[\]]/g, "")
-              );
-              const tokenSymbol = chainProperties
-                ?.get("tokenSymbol")
-                .toString()
-                .replace(/[\[\]]/g, "");
+    let disconnect: () => void = () => undefined;
 
-              setState((prevState) => ({
-                ...prevState,
-                ...{
-                  bestNumberFinalize: Number(bestNumberFinalize),
-                  ss58Format: Number(ss58Format),
-                  tokenDecimals,
-                  tokenSymbol,
-                  api,
-                },
-              }));
-            })();
-          });
+    if (tenantRPC === currentTenantRPC) {
+      return;
+    }
 
-          const [chain, nodeName, nodeVersion] = await Promise.all([
-            apiPromise.rpc.system.chain(),
-            apiPromise.rpc.system.name(),
-            apiPromise.rpc.system.version(),
-          ]);
+    const connect = async () => {
+      const provider = new WsProvider(tenantRPC);
+      const api = await ApiPromise.create(
+        options({
+          provider,
+          rpc,
+        })
+      );
 
-          setState((prevState) => ({
-            ...prevState,
-            ...{
-              chain: chain.toString(),
-              nodeName: nodeName.toString(),
-              nodeVersion: nodeVersion.toString(),
-            },
-          }));
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    })();
-  }, []);
+      const bestNumberFinalize = await api.derive.chain.bestNumber();
+      const chainProperties = await api.registry.getChainProperties();
+      const ss58Format = chainProperties?.get("ss58Format").toString();
+      const tokenDecimals = Number(
+        chainProperties
+          ?.get("tokenDecimals")
+          .toString()
+          .replace(/[\\[\]]/g, "")
+      );
+      const tokenSymbol = chainProperties
+        ?.get("tokenSymbol")
+        .toString()
+        .replace(/[\\[\]]/g, "");
+
+      setState((prevState) => ({
+        ...prevState,
+        ...{
+          bestNumberFinalize: Number(bestNumberFinalize),
+          ss58Format: Number(ss58Format),
+          tokenDecimals,
+          tokenSymbol,
+          api,
+        },
+      }));
+
+      disconnect = () => {
+        api.disconnect();
+      };
+    };
+
+    pendingInitiationPromise.then(() => {
+      // We need this promise based approach to prevent race conditions when the user switches between tenants very quickly.
+      // Otherwise, it might happen that the connection to the first endpoint takes longer and resolves later than
+      // the connection to the second endpoint which would make us end up with a connection to the outdated endpoint.
+      setPendingInitiationPromise(connect());
+      setCurrentTenantRPC(tenantRPC);
+    });
+
+    return disconnect;
+  }, [
+    currentTenantRPC,
+    tenantRPC,
+    pendingInitiationPromise,
+    setPendingInitiationPromise,
+  ]);
 
   return (
     <NodeInfoContext.Provider value={{ state, setState }}>
