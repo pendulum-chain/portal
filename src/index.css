@@ -29,6 +29,7 @@
   --table-background: "#1C1C1C";
   --table-border: #dfe0eb08;
   --modal-title: var(--clear-light);
+  --selected-nav-item:  hsla(158, 100%, 47%, 0.08);
 }
 
 [data-theme="pendulum"] {
@@ -40,6 +41,7 @@
   --table-background: "#fff";
   --table-border: "#DFE0EB";
   --modal-title: var(--darkner);
+  --selected-nav-item: hsla(272, 15%, 56%, 0.1);
 }
 
 body {
@@ -134,11 +136,11 @@ nav > a.active .nav-arrow-container svg {
 }
 
 nav > a:hover {
-  background-color: hsla(272, 15%, 56%, 0.1);
+  background-color: var(--selected-nav-item);
 }
 
 nav > .active {
-  background-color: hsla(272, 15%, 56%, 0.1);
+  background-color: var(--selected-nav-item);
 }
 
 nav svg {
