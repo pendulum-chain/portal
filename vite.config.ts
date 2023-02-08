@@ -78,7 +78,7 @@ export default defineConfig({
             if (id.match(/react|preact|daisyui|tailwind/g)) {
               return "vendor_ui";
             } else if (id.includes("@polkadot")) {
-              return "vendor_crypto";
+              return "vendor_ui";
             }
             return "vendor";
           }
