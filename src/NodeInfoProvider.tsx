@@ -76,6 +76,21 @@ const NodeInfoProvider = ({
         },
       }));
 
+      const [chain, nodeName, nodeVersion] = await Promise.all([
+        api.rpc.system.chain(),
+        api.rpc.system.name(),
+        api.rpc.system.version(),
+      ]);
+
+      setState((prevState) => ({
+        ...prevState,
+        ...{
+          chain: chain.toString(),
+          nodeName: nodeName.toString(),
+          nodeVersion: nodeVersion.toString(),
+        },
+      }));
+
       disconnect = () => {
         api.disconnect();
       };

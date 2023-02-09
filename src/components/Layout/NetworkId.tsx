@@ -1,11 +1,12 @@
 import { h } from "preact";
 import { memo, FC } from "preact/compat";
 import { useNodeInfoState } from "../../NodeInfoProvider";
+import { useGlobalState } from "../../GlobalStateProvider";
 
 const NetworkId: FC = memo(() => {
-  const { state } = useNodeInfoState();
-
-  // https://polkadot.js.org/docs/api/examples/promise/listen-to-blocks/
+  const lastBlockNumber = useNodeInfoState().state.bestNumberFinalize;
+  const tenantRPC = useGlobalState().state.tenantRPC;
+  const encodedRPC = tenantRPC ? encodeURI(tenantRPC) : "";
 
   return (
     <div className="pendulum-network-id">
@@ -14,12 +15,12 @@ const NetworkId: FC = memo(() => {
         <circle cx="2.5" cy="2.5" r="2.5" />
       </svg>
       <a
-        href="https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fpencol-kus-01.pendulumchain.tech#/explorer"
+        href={`https://polkadot.js.org/apps/?rpc=${encodedRPC}#/explorer`}
         target="_blank"
         rel="noreferrer"
         title="Last block number"
       >
-        {state.bestNumberFinalize || "000000"}
+        {lastBlockNumber || "000000"}
       </a>
     </div>
   );

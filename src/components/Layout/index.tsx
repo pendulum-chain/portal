@@ -6,7 +6,7 @@ import PendulumLogo from "../../assets/pendulum-logo.png";
 import AmplitudeLogo from "../../assets/amplitud-logo.svg";
 import OpenWallet from "../OpenWallet";
 import Nav from "./Nav";
-import NetworkId from "./NetwordId";
+import NetworkId from "./NetworkId";
 import SocialAndTermLinks from "./SocialAndTermLinks";
 import "./styles.sass";
 import Versions from "./Versions";
@@ -176,5 +176,3 @@ export default function Layout(): React.JSX.Element {
     </div>
   );
 }
-
-
