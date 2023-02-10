@@ -37,11 +37,11 @@ export default function Layout(): React.JSX.Element {
       switch (network) {
         case "pendulum":
           newTenantRPC = TenantRPC.Pendulum;
-          setTheme("light");
+          setTheme("pendulum");
           break;
         case "foucoco":
           newTenantRPC = TenantRPC.Foucoco;
-          setTheme("black");
+          setTheme("amplitude");
           break;
         case "local":
           newTenantRPC = TenantRPC.Local;
@@ -50,7 +50,7 @@ export default function Layout(): React.JSX.Element {
         case "amplitude":
         default:
           newTenantRPC = TenantRPC.Amplitude;
-          setTheme("black");
+          setTheme("amplitude");
           break;
       }
 
