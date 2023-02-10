@@ -3,6 +3,7 @@ import { Input, InputProps } from "react-daisyui";
 interface Props {
   autoSelect?: boolean;
   label?: string;
+  secondaryLabel?: string;
   type: string;
   value: string;
   onChange?: (value: string) => void;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 function LabelledInputField(props: Props & InputProps) {
-  const { autoSelect, label, onChange, ...rest } = props;
+  const { autoSelect, label, secondaryLabel, onChange, ...rest } = props;
 
   return (
     <div
@@ -20,6 +21,9 @@ function LabelledInputField(props: Props & InputProps) {
       <div className="form-control w-full">
         <label className="label">
           {label && <span className="label-text">{label}</span>}
+          {secondaryLabel && (
+            <span className="label-text-alt">{secondaryLabel}</span>
+          )}
         </label>
         <Input
           className="border border-gray-500 rounded-md bg-transparent"
