@@ -1434,6 +1434,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-table@npm:^7":
+  version: 7.7.14
+  resolution: "@types/react-table@npm:7.7.14"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 11754d7e303cc1748dc2902abbae9fa832853ad5cea4507657031e2f29194d24cc415ea7943277f47a06883a29a9c20225af9a76596fad99758bbe9f34ca646d
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:*, @types/react@npm:^18.0.17, @types/react@npm:^18.0.18":
   version: 18.0.27
   resolution: "@types/react@npm:18.0.27"
@@ -5167,6 +5176,7 @@ __metadata:
     "@types/luxon": "npm:^3.2.0"
     "@types/node": "npm:^18.7.18"
     "@types/react": "npm:^18.0.17"
+    "@types/react-table": "npm:^7"
     "@typescript-eslint/eslint-plugin": "npm:^5.49.0"
     "@typescript-eslint/parser": "npm:^5.49.0"
     autoprefixer: "npm:^10.4.8"
@@ -5182,6 +5192,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     react-daisyui: "npm:^2.2.0"
     react-router-dom: "npm:^6.3.0"
+    react-table: "npm:^7.8.0"
     react-toastify: "npm:^9.1.1"
     sass: "npm:^1.54.9"
     stellar-sdk: "npm:^10.4.1"
@@ -5874,6 +5885,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 32b228bb840e4c77ee6d5786d2387bdab9b920906f56d530e1fa3183a9ffb3b2f4da02c6da385d528a2ebcea0011d0275568ff963d89aa4b69a276bcc57fe692
+  languageName: node
+  linkType: hard
+
+"react-table@npm:^7.8.0":
+  version: 7.8.0
+  resolution: "react-table@npm:7.8.0"
+  peerDependencies:
+    react: ^16.8.3 || ^17.0.0-0 || ^18.0.0
+  checksum: fb4060aac183d7b3976642d924b9e283954b41658e29dfae88908e1cbdf3943951c6f3ee91e358cd916d2cb27a0b742397b21322740783d24ac402864984e88a
   languageName: node
   linkType: hard
 
