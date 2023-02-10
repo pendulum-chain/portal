@@ -1,136 +1,271 @@
-import { Button, Table } from "react-daisyui";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { Button, Modal } from "react-daisyui";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
-import dummy_collator from "../../../collator";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import addressFormatter from "../../helpers/addressFormatter";
-import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
-import { useTable } from "react-table";
+import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
+import { useSortBy, useTable } from "react-table";
+import { Option } from "@polkadot/types-codec";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { PublicKey } from "../../components/PublicKey";
+import LabelledInputField from "../../components/LabelledInputField";
+import AmplitudeLogo from "../../assets/AmplitudeLogo";
+import Big from "big.js";
+import { useGlobalState } from "../../GlobalStateProvider";
+import {
+  ParachainStakingCandidate,
+  ParachainStakingInflationInflationInfo,
+  useStakingPallet,
+} from "../../hooks/staking/staking";
 
-enum filters {
-  collators,
-  bounded,
-  delegations,
-  apr,
+interface DelegateToCollatorDialogProps {
+  availableBalance?: string;
+  collator?: ParachainStakingCandidate;
+  inflationInfo?: ParachainStakingInflationInflationInfo;
+  minDelegatorStake: string;
+  tokenSymbol: string;
+  visible: boolean;
+  onClose?: () => void;
+  onSubmit?: (amount: string) => void;
 }
 
-type Candidate = {
-  owner: string;
-  amount: number;
-  delegators?: number;
-};
+function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
+  const {
+    availableBalance = "0",
+    collator,
+    inflationInfo,
+    minDelegatorStake,
+    tokenSymbol,
+    visible,
+    onClose,
+    onSubmit,
+  } = props;
 
-type CandidateProps = {
-  owner: string;
-  delegators: number;
-};
+  const [amount, setAmount] = useState<string>("");
 
-type DelegatorData = {
-  owner: string[];
-  delegators: string[];
-  id: string;
-  status: string;
-  total: string;
-};
+  const CollatorInfo = useMemo(
+    () =>
+      collator ? (
+        <div className="flex flex-row items-center bg-base-100 justify-between text-right px-2">
+          <div className="flex flex-row items-center">
+            <AmplitudeLogo className="w-8 h-8 mr-2" />
+            <PublicKey variant="shorter" publicKey={collator.id} />
+          </div>
+          <div>
+            <div className="text-lg">
+              APR {inflationInfo?.delegator.rewardRate.annual || "0.00%"}
+            </div>
+            <div className="text-sm text-neutral-content">
+              Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div />
+      ),
+    [collator, inflationInfo, minDelegatorStake, tokenSymbol]
+  );
+
+  return (
+    <Modal open={visible}>
+      <Modal.Header className="font-bold">Delegate</Modal.Header>
+      <Button
+        color="ghost"
+        size="md"
+        shape="circle"
+        className="absolute right-4 top-4"
+        onClick={onClose}
+      >
+        ✕
+      </Button>
+      <Modal.Body>
+        {CollatorInfo}
+        <div className="mt-4" />
+        <LabelledInputField
+          type="number"
+          value={amount}
+          onChange={setAmount}
+          label="Amount"
+          secondaryLabel={`Available: ${nativeToDecimal(
+            availableBalance
+          ).toFixed(4)} ${tokenSymbol}`}
+          placeholder="Enter amount..."
+        />
+      </Modal.Body>
+
+      <Modal.Actions className="justify-center">
+        <Button
+          className="px-6"
+          color="primary"
+          onClick={() => onSubmit && onSubmit(amount)}
+        >
+          Delegate
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
+}
+
+interface ConfirmDelegateDialogProps {
+  availableBalance?: string;
+  amount?: string;
+  tokenSymbol: string;
+  transactionFee?: Big;
+  visible: boolean;
+  onCancel?: () => void;
+  onClose?: () => void;
+  onConfirm?: () => void;
+}
+
+function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
+  const {
+    availableBalance = "0",
+    amount = "0",
+    tokenSymbol,
+    visible,
+    transactionFee = "0",
+    onCancel,
+    onClose,
+    onConfirm,
+  } = props;
+
+  const balanceNative = nativeToDecimal(availableBalance);
+
+  console.log("balance amount fees", availableBalance, balanceNative, amount);
+
+  const resultingBalance = Big(balanceNative)
+    .minus(amount)
+    .minus(transactionFee)
+    .toString();
+
+  return (
+    <Modal open={visible}>
+      <Modal.Header className="font-bold">Settlement Confirmation</Modal.Header>
+      <Button
+        color="ghost"
+        size="md"
+        shape="circle"
+        className="absolute right-4 top-4"
+        onClick={onClose}
+      >
+        ✕
+      </Button>
+      <Modal.Body>
+        <div className="flex flex-col items-center justify-between">
+          <div className="text-md text-neutral-content">Delegate</div>
+          <div className="text-xl mt-2">
+            {amount} {tokenSymbol}
+          </div>
+        </div>
+
+        <div className="px-4 bg-base-100 mt-8">
+          <div className="flex justify-between">
+            <span className="text-neutral-content">Available Balance</span>
+            <span>
+              {nativeToDecimal(availableBalance)} {tokenSymbol}
+            </span>
+          </div>
+          <div className="flex justify-between mt-4">
+            <span className="text-neutral-content">Fees</span>
+            <span>
+              {nativeToDecimal(transactionFee)} {tokenSymbol}
+            </span>
+          </div>
+        </div>
+        <div className="flex justify-between mt-4 px-4">
+          <span className="text-neutral-content">Resulting Balance</span>
+          <span>
+            {resultingBalance} {tokenSymbol}
+          </span>
+        </div>
+      </Modal.Body>
+
+      <Modal.Actions className="justify-center">
+        <Button className="px-6" color="ghost" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button className="px-6" color="primary" onClick={onConfirm}>
+          Confirm
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
+}
 
 export function Collators() {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [candidatePool, setCandidatePool] = useState<CandidateProps[]>([]);
-  const [combined, setCombined] = useState<Candidate[]>([]);
-  const [apy, setApy] = useState<string>("");
-  const { state } = useNodeInfoState();
-  const { api } = state;
+  const { api, tokenSymbol, chain } = useNodeInfoState().state;
+  const { walletAccount } = useGlobalState().state;
 
-  console.log("api.query.parachainStaking", api?.query.parachainStaking);
+  const {
+    candidates,
+    minDelegatorStake,
+    inflationInfo,
+    joinDelegatorsTransactionFee,
+    createJoinDelegatorsExtrinsic,
+  } = useStakingPallet();
+
+  // Holds the candidate for which the delegation modal is to be shown
+  const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
+    useState<ParachainStakingCandidate | undefined>(undefined);
+  // Holds the amount that is to be delegated to the candidate
+  const [delegationAmount, setDelegationAmount] = useState<string | undefined>(
+    undefined
+  );
+
+  const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0");
+
+  const joinDelegatorsExtrinsic = useMemo(() => {
+    if (
+      !api ||
+      !walletAccount ||
+      !selectedCandidateForDelegation ||
+      !delegationAmount
+    ) {
+      return;
+    }
+
+    const amount = decimalToNative(delegationAmount);
+    return createJoinDelegatorsExtrinsic(
+      selectedCandidateForDelegation.id,
+      amount.toString()
+    );
+  }, [
+    api,
+    createJoinDelegatorsExtrinsic,
+    delegationAmount,
+    selectedCandidateForDelegation,
+    walletAccount,
+  ]);
 
   useEffect(() => {
-    (async () => {
-      if (api) {
-        const candidates = await api.query.parachainStaking.topCandidates();
-        const state: Candidate[] = [];
-
-        candidates &&
-          // @ts-ignore
-          candidates.forEach((candidate: Map[Candidate]) => {
-            state.push({
-              amount: nativeToDecimal(candidate.get("amount")),
-              owner: candidate.get("owner").toString(),
-            });
-          });
-
-        setCandidates(state);
+    const fetchAvailableBalance = async () => {
+      if (!api || !walletAccount) {
+        return "0";
       }
-    })();
-  }, [api]);
 
-  useEffect(() => {
-    (async () => {
-      if (api) {
-        const state: CandidateProps[] = [];
+      const { data: balance } = await api.query.system.account(
+        walletAccount?.address
+      );
+      return balance.free.toHuman() as string;
+    };
 
-        const entries =
-          await api.query.parachainStaking.candidatePool.entries();
-
-        entries &&
-          entries.forEach((item) => {
-            const identity = item[0].toHuman() as string;
-            const delegatorData = item[1].toHuman() as DelegatorData;
-
-            // const stackedValue = delegatorData.stake.replaceAll(",", "");
-            // const stacked = prettyNumbers(toUnit(BigInt(stackedValue)));
-
-            state.push({
-              owner: identity[0],
-              delegators: delegatorData.delegators.length,
-            });
-          });
-
-        setCandidatePool(state);
-      }
-    })();
-  }, [api]);
-
-  useEffect(() => {
-    (async () => {
-      if (api) {
-        const apy = await api.query.parachainStaking.inflationConfig();
-        const { annual } = apy.toHuman().collator.rewardRate;
-
-        setApy(annual);
-      }
-    })();
-  });
-
-  useEffect(() => {
-    const candidatesCombined: Candidate[] = [];
-    candidatePool &&
-      candidatePool.forEach((candidate) => {
-        const o: Candidate = {
-          ...candidate,
-          amount:
-            candidates.find((c) => candidate.owner === c.owner)?.amount || 0,
-        };
-
-        candidatesCombined.push(o);
-      });
-    setCombined(candidatesCombined);
-  }, [candidatePool, candidates]);
-
-  console.log("candidates", candidates);
-  console.log("candidatePool", candidatePool);
-  console.log("candidatesCombined", combined);
-  console.log("apy", apy);
+    fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
+  }, [api, walletAccount]);
 
   const data = useMemo(
-    () => [
-      {
-        collator: "XYZ",
-        total_staked: "10.000 AMPI",
-        delegators: "30",
-        apy: "10%",
-      },
-    ],
-    []
+    () =>
+      candidates.map((candidate) => {
+        const totalStaked = nativeToDecimal(candidate.total);
+
+        const rowItem = {
+          candidate: candidate,
+          collator: candidate.id,
+          totalStaked: totalStaked.toFixed(2) + ` ${tokenSymbol}`,
+          delegators: candidate.delegators.length,
+          apy: inflationInfo?.collator.rewardRate.annual || "0.00%",
+        };
+        return rowItem;
+      }),
+    [candidates, inflationInfo?.collator.rewardRate.annual, tokenSymbol]
   );
 
   const columns = useMemo(
@@ -141,7 +276,7 @@ export function Collators() {
       },
       {
         Header: "Total Staked",
-        accessor: "total_staked",
+        accessor: "totalStaked",
       },
       {
         Header: "Delegators",
@@ -151,23 +286,93 @@ export function Collators() {
         Header: "APY",
         accessor: "apy",
       },
+      {
+        Header: "",
+        accessor: "actions",
+        Cell: ({ row }) => {
+          const showUnbond = false;
+
+          return (
+            <div className="flex flex-row justify-center">
+              {showUnbond && (
+                <Button
+                  className="mr-2"
+                  size="sm"
+                  color="primary"
+                  onClick={() => undefined}
+                >
+                  Unbond
+                </Button>
+              )}
+              <Button
+                size="sm"
+                color="primary"
+                variant="outline"
+                onClick={() => {
+                  // eslint-disable-next-line react/prop-types
+                  setSelectedCandidateForDelegation(row.original.candidate);
+                }}
+              >
+                Delegate
+              </Button>
+            </div>
+          );
+        },
+      },
     ],
     []
   );
 
-  const tableInstance = useTable({ columns, data });
+  const tableInstance = useTable({ columns, data }, useSortBy);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
 
   return (
     <div className="overflow-x-auto">
+      <DelegateToCollatorDialog
+        availableBalance={userAvailableBalance}
+        collator={selectedCandidateForDelegation}
+        inflationInfo={inflationInfo}
+        minDelegatorStake={minDelegatorStake}
+        tokenSymbol={tokenSymbol || ""}
+        visible={Boolean(selectedCandidateForDelegation && !delegationAmount)}
+        onClose={() => setSelectedCandidateForDelegation(undefined)}
+        onSubmit={(amount) => setDelegationAmount(amount)}
+      />
+      <ConfirmDelegateDialog
+        amount={delegationAmount}
+        availableBalance={userAvailableBalance}
+        transactionFee={joinDelegatorsTransactionFee}
+        onConfirm={() => undefined}
+        onCancel={() => setDelegationAmount(undefined)}
+        onClose={() => {
+          // Reset both values to close both modals
+          setSelectedCandidateForDelegation(undefined);
+          setDelegationAmount(undefined);
+        }}
+        tokenSymbol={tokenSymbol || ""}
+        visible={Boolean(selectedCandidateForDelegation && delegationAmount)}
+      />
       <table className="table table-compact w-full" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render("Header")}
+                  <span style={{ float: "right" }}>
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <ChevronDownIcon className="w-4 h-4" />
+                      ) : (
+                        <ChevronUpIcon className="w-4 h-4" />
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </th>
               ))}
             </tr>
           ))}
