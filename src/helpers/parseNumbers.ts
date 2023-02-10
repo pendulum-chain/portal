@@ -2,7 +2,7 @@ import BigNumber from "big.js";
 
 export const UNIT_PRECISION = 1000000000000;
 
-export const AMPLITUDE_DECIMALS = 18;
+export const AMPLITUDE_DECIMALS = 12;
 
 // Change the positive exponent to a high value to prevent toString() returning exponential notation
 BigNumber.PE = 100;
@@ -18,7 +18,12 @@ export const decimalToNative = (value: BigNumber | number | string) => {
 };
 
 export const nativeToDecimal = (value: BigNumber | number | string) => {
+  if (typeof value === "string") {
+    // Replace the unnecessary ',' with '' to prevent BigNumber from throwing an error
+    value = new BigNumber(value.replaceAll(",", ""));
+  }
   const bigIntValue = new BigNumber(value);
+
   // const divisor = new BN(UNIT_PRECISION);
   const divisor = new BigNumber(10).pow(AMPLITUDE_DECIMALS);
 
