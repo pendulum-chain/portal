@@ -84,13 +84,9 @@ export function useStakingPallet() {
     const fetchJoinDelegatorsTransactionFee = async () => {
       const dummyAddress = "5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS";
       const sender = dummyAddress;
-      // This does not work yet
-      // const extrinsic = api.query.parachainStaking?.joinDelegators(
-      //   dummyAddress,
-      //   "0"
-      // );
-      // const info = await extrinsic.paymentInfo(sender);
-
+      const info = await api.tx.parachainStaking
+        ?.joinDelegators(dummyAddress, "0")
+        .paymentInfo(sender);
       return new Big(info.partialFee.toString());
     };
 
@@ -98,6 +94,7 @@ export function useStakingPallet() {
     fetchInflationInfo().then((inflationInfo) =>
       setInflationInfo(inflationInfo)
     );
+
     fetchJoinDelegatorsTransactionFee().then((fee) =>
       setJoinDelegatorsTransactionFee(fee)
     );

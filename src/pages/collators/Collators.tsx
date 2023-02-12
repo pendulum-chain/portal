@@ -16,6 +16,8 @@ import {
   ParachainStakingInflationInflationInfo,
   useStakingPallet,
 } from "../../hooks/staking/staking";
+import { getErrors, getEventBySectionAndMethod } from "../../helpers/substrate";
+import { toast } from "react-toastify";
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;
@@ -107,7 +109,8 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;
-  amount?: string;
+  delegationAmountDecimal?: string;
+  submissionPending?: boolean;
   tokenSymbol: string;
   transactionFee?: Big;
   visible: boolean;
@@ -119,22 +122,22 @@ interface ConfirmDelegateDialogProps {
 function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const {
     availableBalance = "0",
-    amount = "0",
+    delegationAmountDecimal = "0",
     tokenSymbol,
     visible,
-    transactionFee = "0",
+    transactionFee = Big(0),
+    submissionPending = false,
     onCancel,
     onClose,
     onConfirm,
   } = props;
 
-  const balanceNative = nativeToDecimal(availableBalance);
+  const balanceDecimal = nativeToDecimal(availableBalance);
+  const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
 
-  console.log("balance amount fees", availableBalance, balanceNative, amount);
-
-  const resultingBalance = Big(balanceNative)
-    .minus(amount)
-    .minus(transactionFee)
+  const resultingBalance = Big(balanceDecimal)
+    .minus(delegationAmountDecimal)
+    .minus(transactionFeeDecimal)
     .toString();
 
   return (
@@ -153,7 +156,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         <div className="flex flex-col items-center justify-between">
           <div className="text-md text-neutral-content">Delegate</div>
           <div className="text-xl mt-2">
-            {amount} {tokenSymbol}
+            {delegationAmountDecimal} {tokenSymbol}
           </div>
         </div>
 
@@ -183,7 +186,12 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         <Button className="px-6" color="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button className="px-6" color="primary" onClick={onConfirm}>
+        <Button
+          className="px-6"
+          color="primary"
+          loading={submissionPending}
+          onClick={onConfirm}
+        >
           Confirm
         </Button>
       </Modal.Actions>
@@ -212,29 +220,9 @@ export function Collators() {
   );
 
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0");
-
-  const joinDelegatorsExtrinsic = useMemo(() => {
-    if (
-      !api ||
-      !walletAccount ||
-      !selectedCandidateForDelegation ||
-      !delegationAmount
-    ) {
-      return;
-    }
-
-    const amount = decimalToNative(delegationAmount);
-    return createJoinDelegatorsExtrinsic(
-      selectedCandidateForDelegation.id,
-      amount.toString()
-    );
-  }, [
-    api,
-    createJoinDelegatorsExtrinsic,
-    delegationAmount,
-    selectedCandidateForDelegation,
-    walletAccount,
-  ]);
+  const [submissionPending, setSubmissionPending] = useState<boolean>(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const fetchAvailableBalance = async () => {
@@ -250,6 +238,64 @@ export function Collators() {
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
   }, [api, walletAccount]);
+
+  const submitJoinDelegatorsExtrinsic = useCallback(() => {
+    if (
+      !walletAccount ||
+      !api ||
+      !delegationAmount ||
+      !selectedCandidateForDelegation
+    ) {
+      return;
+    }
+
+    const amount = decimalToNative(delegationAmount);
+    const joinDelegatorsExtrinsic = createJoinDelegatorsExtrinsic(
+      selectedCandidateForDelegation.id,
+      amount.toString()
+    );
+
+    setSubmissionPending(true);
+
+    joinDelegatorsExtrinsic
+      ?.signAndSend(
+        walletAccount.address,
+        { signer: walletAccount.signer as any },
+        (result) => {
+          const { status, events } = result;
+
+          const errors = getErrors(events, api);
+          if (status.isInBlock) {
+            if (errors.length > 0) {
+              const errorMessage = `Transaction failed with errors: ${errors.join(
+                "\n"
+              )}`;
+              console.error(errorMessage);
+              toast(errorMessage, { type: "error" });
+            }
+          } else if (status.isFinalized) {
+            setSubmissionPending(false);
+
+            if (errors.length === 0) {
+              setConfirmationDialogVisible(true);
+              setSelectedCandidateForDelegation(undefined);
+              setDelegationAmount(undefined);
+            }
+          }
+        }
+      )
+      .catch((error) => {
+        console.error("Transaction submission failed", error);
+        toast("Transaction submission failed", { type: "error" });
+        setSubmissionPending(false);
+      });
+  }, [
+    api,
+    createJoinDelegatorsExtrinsic,
+    delegationAmount,
+    selectedCandidateForDelegation,
+    walletAccount,
+  ]);
 
   const data = useMemo(
     () =>
@@ -341,10 +387,11 @@ export function Collators() {
         onSubmit={(amount) => setDelegationAmount(amount)}
       />
       <ConfirmDelegateDialog
-        amount={delegationAmount}
+        delegationAmountDecimal={delegationAmount}
         availableBalance={userAvailableBalance}
         transactionFee={joinDelegatorsTransactionFee}
-        onConfirm={() => undefined}
+        submissionPending={submissionPending}
+        onConfirm={submitJoinDelegatorsExtrinsic}
         onCancel={() => setDelegationAmount(undefined)}
         onClose={() => {
           // Reset both values to close both modals
