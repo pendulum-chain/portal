@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "preact/hooks";
 import { WalletAccount } from "@talismn/connect-wallets";
 import { WalletSelect } from "@talismn/connect-components";
 import { GlobalStateInterface, useGlobalState } from "../GlobalStateProvider";
-import addressFormatter from "../helpers/addressFormatter";
+import { trimAddress } from "../helpers/addressFormatter";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const { state, setState } = useGlobalState();
@@ -39,7 +39,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
             />
           }
         >
-          {addressFormatter(state.walletAccount.address, 4)}
+          {trimAddress(state.walletAccount.address, 4)}
         </Button>
       ) : (
         <Button color="primary">Connect to Wallet</Button>
