@@ -14,9 +14,13 @@ import { getErrors } from "../../helpers/substrate";
 import { toast } from "react-toastify";
 import DelegateToCollatorDialog from "./dialogs/DelegateToCollatorDialog";
 import ConfirmDelegateDialog from "./dialogs/ConfirmDelegateDialog";
+import DelegationSuccessfulDialog from "./dialogs/DelegationSuccessfulDialog";
+import { encodeAddress } from "@polkadot/keyring";
+import { getAddressForFormat } from "../../helpers/addressFormatter";
+import UnlinkIcon from "../../assets/UnlinkIcon";
 
 export function Collators() {
-  const { api, tokenSymbol, chain } = useNodeInfoState().state;
+  const { api, tokenSymbol, chain, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
 
   const {
@@ -26,6 +30,9 @@ export function Collators() {
     joinDelegatorsTransactionFee,
     createJoinDelegatorsExtrinsic,
   } = useStakingPallet();
+
+  console.log("candidates", candidates);
+  console.log("api.query.parachainStaking", api?.query.parachainStaking);
 
   // Holds the candidate for which the delegation modal is to be shown
   const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
@@ -149,23 +156,53 @@ export function Collators() {
         accessor: "apy",
       },
       {
+        Header: "My Staked",
+        accessor: "myStaked",
+        Cell: ({ row }) => {
+          const ss58Address =
+            walletAccount && ss58Format
+              ? getAddressForFormat(walletAccount?.address, ss58Format)
+              : "";
+
+          const isDelegator = row.original.candidate.delegators.find(
+            (delegator) => delegator.owner === ss58Address
+          );
+          return isDelegator ? (
+            <div>
+              {nativeToDecimal(isDelegator.amount)} {tokenSymbol}
+            </div>
+          ) : (
+            <div />
+          );
+        },
+      },
+      {
         Header: "",
         accessor: "actions",
         Cell: ({ row }) => {
-          const showUnbond = false;
+          const ss58Address =
+            walletAccount && ss58Format
+              ? getAddressForFormat(walletAccount?.address, ss58Format)
+              : "";
+
+          const isDelegator = row.original.candidate.delegators.find(
+            (delegator) => delegator.owner === ss58Address
+          );
+
+          const showUnbond = Boolean(isDelegator);
 
           return (
             <div className="flex flex-row justify-center">
-              {showUnbond && (
-                <Button
-                  className="mr-2"
-                  size="sm"
-                  color="primary"
-                  onClick={() => undefined}
-                >
-                  Unbond
-                </Button>
-              )}
+              <Button
+                className="mr-2 text-primary"
+                size="sm"
+                color="ghost"
+                onClick={() => undefined}
+                startIcon={<UnlinkIcon className="w-4 h-4" />}
+                style={{ visibility: showUnbond ? "visible" : "hidden" }}
+              >
+                Unbond
+              </Button>
               <Button
                 size="sm"
                 color="primary"
@@ -182,7 +219,7 @@ export function Collators() {
         },
       },
     ],
-    []
+    [ss58Format, tokenSymbol, walletAccount]
   );
 
   const tableInstance = useTable({ columns, data }, useSortBy);
@@ -216,6 +253,11 @@ export function Collators() {
         }}
         tokenSymbol={tokenSymbol || ""}
         visible={Boolean(selectedCandidateForDelegation && delegationAmount)}
+      />
+      <DelegationSuccessfulDialog
+        visible={confirmationDialogVisible}
+        onClose={() => setConfirmationDialogVisible(false)}
+        onConfirm={() => setConfirmationDialogVisible(false)}
       />
       <table className="table table-compact w-full" {...getTableProps()}>
         <thead>
