@@ -4,10 +4,12 @@ import { useCallback, useMemo } from "preact/hooks";
 import { WalletAccount } from "@talismn/connect-wallets";
 import { WalletSelect } from "@talismn/connect-components";
 import { GlobalStateInterface, useGlobalState } from "../GlobalStateProvider";
-import { trimAddress } from "../helpers/addressFormatter";
+import { getAddressForFormat, trimAddress } from "../helpers/addressFormatter";
+import { useNodeInfoState } from "../NodeInfoProvider";
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const { state, setState } = useGlobalState();
+  const { ss58Format } = useNodeInfoState().state;
 
   const updateGlobalAccount = useCallback(
     (account: WalletAccount) => {
@@ -24,9 +26,15 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
     [setState]
   );
 
-  const ConnectButton = useMemo(
-    () =>
-      state.walletAccount ? (
+  const ConnectButton = useMemo(() => {
+    if (!state.walletAccount) {
+      return <Button color="primary">Connect to Wallet</Button>;
+    } else {
+      const addressForFormat = ss58Format
+        ? getAddressForFormat(state.walletAccount.address, ss58Format)
+        : state.walletAccount.address;
+
+      return (
         <Button
           color="primary"
           title={state.walletAccount.wallet?.title}
@@ -39,13 +47,11 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
             />
           }
         >
-          {trimAddress(state.walletAccount.address, 4)}
+          {trimAddress(addressForFormat, 4)}
         </Button>
-      ) : (
-        <Button color="primary">Connect to Wallet</Button>
-      ),
-    [state.walletAccount]
-  );
+      );
+    }
+  }, [ss58Format, state.walletAccount]);
 
   return (
     <WalletSelect
