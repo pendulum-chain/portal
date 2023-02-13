@@ -1,8 +1,8 @@
 import { Button } from "react-daisyui";
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
+import { nativeToDecimal } from "../../helpers/parseNumbers";
 import { useSortBy, useTable } from "react-table";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useGlobalState } from "../../GlobalStateProvider";
@@ -10,42 +10,21 @@ import {
   ParachainStakingCandidate,
   useStakingPallet,
 } from "../../hooks/staking/staking";
-import { getErrors } from "../../helpers/substrate";
-import { toast } from "react-toastify";
-import DelegateToCollatorDialog from "./dialogs/DelegateToCollatorDialog";
-import ConfirmDelegateDialog from "./dialogs/ConfirmDelegateDialog";
-import DelegationSuccessfulDialog from "./dialogs/DelegationSuccessfulDialog";
-import { encodeAddress } from "@polkadot/keyring";
 import { getAddressForFormat } from "../../helpers/addressFormatter";
 import UnlinkIcon from "../../assets/UnlinkIcon";
+import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
 
 export function Collators() {
   const { api, tokenSymbol, chain, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
 
-  const {
-    candidates,
-    minDelegatorStake,
-    inflationInfo,
-    joinDelegatorsTransactionFee,
-    createJoinDelegatorsExtrinsic,
-  } = useStakingPallet();
-
-  console.log("candidates", candidates);
-  console.log("api.query.parachainStaking", api?.query.parachainStaking);
+  const { candidates, inflationInfo } = useStakingPallet();
 
   // Holds the candidate for which the delegation modal is to be shown
   const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
     useState<ParachainStakingCandidate | undefined>(undefined);
-  // Holds the amount that is to be delegated to the candidate
-  const [delegationAmount, setDelegationAmount] = useState<string | undefined>(
-    undefined
-  );
 
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0");
-  const [submissionPending, setSubmissionPending] = useState<boolean>(false);
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState<boolean>(false);
 
   useEffect(() => {
     const fetchAvailableBalance = async () => {
@@ -61,64 +40,6 @@ export function Collators() {
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
   }, [api, walletAccount]);
-
-  const submitJoinDelegatorsExtrinsic = useCallback(() => {
-    if (
-      !walletAccount ||
-      !api ||
-      !delegationAmount ||
-      !selectedCandidateForDelegation
-    ) {
-      return;
-    }
-
-    const amount = decimalToNative(delegationAmount);
-    const joinDelegatorsExtrinsic = createJoinDelegatorsExtrinsic(
-      selectedCandidateForDelegation.id,
-      amount.toString()
-    );
-
-    setSubmissionPending(true);
-
-    joinDelegatorsExtrinsic
-      ?.signAndSend(
-        walletAccount.address,
-        { signer: walletAccount.signer as any },
-        (result) => {
-          const { status, events } = result;
-
-          const errors = getErrors(events, api);
-          if (status.isInBlock) {
-            if (errors.length > 0) {
-              const errorMessage = `Transaction failed with errors: ${errors.join(
-                "\n"
-              )}`;
-              console.error(errorMessage);
-              toast(errorMessage, { type: "error" });
-            }
-          } else if (status.isFinalized) {
-            setSubmissionPending(false);
-
-            if (errors.length === 0) {
-              setConfirmationDialogVisible(true);
-              setSelectedCandidateForDelegation(undefined);
-              setDelegationAmount(undefined);
-            }
-          }
-        }
-      )
-      .catch((error) => {
-        console.error("Transaction submission failed", error);
-        toast("Transaction submission failed", { type: "error" });
-        setSubmissionPending(false);
-      });
-  }, [
-    api,
-    createJoinDelegatorsExtrinsic,
-    delegationAmount,
-    selectedCandidateForDelegation,
-    walletAccount,
-  ]);
 
   const data = useMemo(
     () =>
@@ -229,35 +150,10 @@ export function Collators() {
 
   return (
     <div className="overflow-x-auto">
-      <DelegateToCollatorDialog
-        availableBalance={userAvailableBalance}
-        collator={selectedCandidateForDelegation}
-        inflationInfo={inflationInfo}
-        minDelegatorStake={minDelegatorStake}
-        tokenSymbol={tokenSymbol || ""}
-        visible={Boolean(selectedCandidateForDelegation && !delegationAmount)}
+      <ExecuteDelegationDialogs
+        userAvailableBalance={userAvailableBalance}
+        selectedCandidateForDelegation={selectedCandidateForDelegation}
         onClose={() => setSelectedCandidateForDelegation(undefined)}
-        onSubmit={(amount) => setDelegationAmount(amount)}
-      />
-      <ConfirmDelegateDialog
-        delegationAmountDecimal={delegationAmount}
-        availableBalance={userAvailableBalance}
-        transactionFee={joinDelegatorsTransactionFee}
-        submissionPending={submissionPending}
-        onConfirm={submitJoinDelegatorsExtrinsic}
-        onCancel={() => setDelegationAmount(undefined)}
-        onClose={() => {
-          // Reset both values to close both modals
-          setSelectedCandidateForDelegation(undefined);
-          setDelegationAmount(undefined);
-        }}
-        tokenSymbol={tokenSymbol || ""}
-        visible={Boolean(selectedCandidateForDelegation && delegationAmount)}
-      />
-      <DelegationSuccessfulDialog
-        visible={confirmationDialogVisible}
-        onClose={() => setConfirmationDialogVisible(false)}
-        onConfirm={() => setConfirmationDialogVisible(false)}
       />
       <table className="table table-compact w-full" {...getTableProps()}>
         <thead>
