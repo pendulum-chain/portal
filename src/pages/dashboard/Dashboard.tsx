@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
 import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
-import { TenantName, useGlobalState } from "../../GlobalStateProvider";
+import { useGlobalState } from "../../GlobalStateProvider";
 import { PalletBalancesAccountData } from "@polkadot/types/lookup";
+import Banner from "../../assets/banner-spacewalk-4x.png";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
@@ -43,7 +44,7 @@ export function Dashboard() {
               <h2 className={"float-left"}>Promo</h2>
               <h2 className={"float-right"}>Join now</h2>
             </div>
-            <figure> <img src={"/src/assets/banner-spacewalk-4x.png"} /></figure>
+            <figure> <img src={Banner} /></figure>
           </div>
         </a>
       </div>

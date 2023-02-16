@@ -3,10 +3,32 @@
   font-size: 20px;
 }
 
+.banner h2 {
+  font-weight: 400;
+}
+
 .banner {
   border-radius: 5px;
   border: 1px solid var(--portfolio-border);
   background-color: var(--portfolio-bg);
+}
+
+.banner.card-compact .card-body {
+  padding: 0;
+  gap: 0;
+}
+
+.banner.card-compact .card-title {
+  padding: 1rem;
+  margin: 0;
+}
+
+.card figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .portfolio {
@@ -16,6 +38,10 @@
   background-color: var(--portfolio-bg);
   border-radius: 5px;
   border: 1px solid var(--portfolio-border);
+}
+
+.portfolio.card .card-body {
+  padding: 1rem;
 }
 
 .portfolio .balance h1 {
