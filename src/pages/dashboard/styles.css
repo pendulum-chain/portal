@@ -1,31 +1,61 @@
-h1 {
+.card-title {
+  font-family: 'Nunito';
   font-size: 20px;
 }
 
-.portfolio {
-  float: left;
-  width: 390px;
-  height: 95%;
-  border-radius: 30px;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+.banner h2 {
+  font-weight: 400;
 }
 
-.portfolio>.portfolio {
-  height: auto;
+.banner {
+  border-radius: 5px;
+  border: 1px solid var(--portfolio-border);
+  background-color: var(--portfolio-bg);
+}
+
+.banner.card-compact .card-body {
+  padding: 0;
+  gap: 0;
+}
+
+.banner.card-compact .card-title {
+  padding: 1rem;
+  margin: 0;
+}
+
+.card figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.portfolio {
+  font-family: 'Nunito';
+  width: 300px;
+  height: 95%;
+  background-color: var(--portfolio-bg);
+  border-radius: 5px;
+  border: 1px solid var(--portfolio-border);
+}
+
+.portfolio.card .card-body {
+  padding: 1rem;
+}
+
+.portfolio .balance h1 {
+  font-size: 40px;
+}
+
+.portfolio .balance h2 {
+  font-size: 20px;
+}
+
+.portfolio>.balance {
   padding-top: 20px;
   padding-bottom: 15px;
   text-align: center;
-  margin-bottom: 50px;
-}
-
-.portfolio>.portfolio ul {
-  background-color: var(--grey-f8);
-  max-width: 55%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  border-radius: 1000px;
 }
 
 .portfolio>.portfolio li {
@@ -33,32 +63,8 @@ h1 {
   padding-right: 10px;
 }
 
-.portfolio>.portfolio li.up {
-  color: var(--dark-green);
-}
-
 .portfolio>.portfolio li.down {
   color: var(--dark-red);
-}
-
-.dashboard h2 {
-  font-size: 30px;
-  font-weight: 700;
-  margin-left: 30px;
-}
-
-.dashboard h1,
-.portfolio h1 {
-  font-weight: 500;
-  padding: 10px 30px;
-  font-size: 18px;
-  margin-top: 20px;
-}
-
-.portfolio h2 {
-  font-size: 30px;
-  font-weight: 700;
-  margin: 0;
 }
 
 .portfolio>ul li {
@@ -70,7 +76,6 @@ h1 {
   width: 70%;
   height: 95%;
   border-radius: 30px;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   padding-left: 20px;
   padding-right: 20px;
@@ -90,28 +95,49 @@ h1 {
   padding: 0 20px;
 }
 
-
 .graph-stats .token span {
   font-weight: 500;
 }
 
-.dashboard {
-  background-color: var(--clear)
-}
-
-.collators-list-container{
+.collators-list-container {
   overflow-y: auto;
   display: inline-block;
   max-height: 80vh;
   min-height: 400;
+  color: var(--table-text);
 }
 
 .collators-list-table {
   position: relative;
+  border: 1px solid var(--table-border);
+  border-radius: 8px;
+  border-collapse: unset;
+}
+
+.collators-list-table span {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--table-text);
+}
+
+.collators-list-table td, .collators-list-table th {
+  background-color: var(--table-background);
+  border-bottom: 1px solid var(--table-border);
+  color: var(--table-text);
+}
+
+.collators-list-header tbody th {
+  background-color: var(--table-background);
+  color: var(--table-text-header);
+  text-transform: none;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 .collators-list-header {
-  top: 0;
-  position: sticky;
   z-index: 12;
+  border-bottom: 1px solid var(--table-border);
 }

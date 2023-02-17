@@ -9,8 +9,8 @@ type Props = {
 
 const Box = ({ title, subTitle, children }: Props) => {
   return (
-    <div class="box">
-      <div class="box-inner">
+    <div className="box">
+      <div className="box-inner">
         {title && <h1>{title}</h1>}
         {subTitle && <h2>{subTitle}</h2>}
         {children}
