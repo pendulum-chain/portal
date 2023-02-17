@@ -38,10 +38,6 @@ const NodeInfoProvider = ({
   useEffect(() => {
     let disconnect: () => void = () => undefined;
 
-    if (tenantRPC === currentTenantRPC) {
-      return;
-    }
-
     const connect = async () => {
       const provider = new WsProvider(tenantRPC);
       const api = await ApiPromise.create(

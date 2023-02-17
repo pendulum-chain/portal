@@ -11,7 +11,7 @@ export enum TenantName {
 
 export enum TenantRPC {
   Amplitude = "wss://rpc-amplitude.pendulumchain.tech",
-  Pendulum = "wss://rpc-pendulum.pendulumchain.tech",
+  Pendulum = "wss://rpc-pendulum.prd.pendulumchain.tech",
   Foucoco = "wss://rpc-foucoco.pendulumchain.tech",
   Local = "ws://localhost:9944",
 }
