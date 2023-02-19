@@ -1,5 +1,5 @@
-import { h } from "preact";
-import "./styles.css";
+import './styles.css';
+import { h } from 'preact';
 
 type Props = {
   title?: string;
