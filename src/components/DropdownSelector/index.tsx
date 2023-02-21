@@ -1,6 +1,6 @@
-import { Button, Dropdown } from "react-daisyui";
-import { h } from "preact";
-import "./styles.css";
+import { Button, Dropdown } from 'react-daisyui';
+import { h } from 'preact';
+import './styles.css';
 
 function ArrowIcon() {
   return (
@@ -29,7 +29,7 @@ interface Props<T> {
 }
 
 function DropdownSelector<T extends { id: any; displayName: string }>(
-  props: Props<T>
+  props: Props<T>,
 ) {
   const { items, onChange, value } = props;
 

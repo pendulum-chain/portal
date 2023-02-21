@@ -1,8 +1,8 @@
-import { createContext, h } from "preact";
-import { useContext, useEffect, useState } from "preact/hooks";
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { options } from "@pendulum-chain/api";
-import { rpc } from "@pendulum-chain/types";
+import { createContext, h } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { options } from '@pendulum-chain/api';
+import { rpc } from '@pendulum-chain/types';
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -44,22 +44,22 @@ const NodeInfoProvider = ({
         options({
           provider,
           rpc,
-        })
+        }),
       );
 
       const bestNumberFinalize = await api.derive.chain.bestNumber();
       const chainProperties = await api.registry.getChainProperties();
-      const ss58Format = chainProperties?.get("ss58Format").toString();
+      const ss58Format = chainProperties?.get('ss58Format').toString();
       const tokenDecimals = Number(
         chainProperties
-          ?.get("tokenDecimals")
+          ?.get('tokenDecimals')
           .toString()
-          .replace(/[\\[\]]/g, "")
+          .replace(/[\\[\]]/g, ''),
       );
       const tokenSymbol = chainProperties
-        ?.get("tokenSymbol")
+        ?.get('tokenSymbol')
         .toString()
-        .replace(/[\\[\]]/g, "");
+        .replace(/[\\[\]]/g, '');
 
       setState((prevState) => ({
         ...prevState,

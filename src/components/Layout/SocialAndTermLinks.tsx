@@ -1,12 +1,12 @@
-import { FC } from "preact/compat";
-import { h } from "preact";
-import GithubLogo from "../../assets/socials-github";
-import LinkedinLogo from "../../assets/socials-linkedin";
-import MediumLogo from "../../assets/socials-medium";
-import RedditLogo from "../../assets/socials-reddit";
-import TelegramLogo from "../../assets/socials-telegram";
-import TwitterLogo from "../../assets/socials-twitter";
-import DiscordLogo from "../../assets/socials-discord";
+import { FC } from 'preact/compat';
+import { h } from 'preact';
+import GithubLogo from '../../assets/socials-github';
+import LinkedinLogo from '../../assets/socials-linkedin';
+import MediumLogo from '../../assets/socials-medium';
+import RedditLogo from '../../assets/socials-reddit';
+import TelegramLogo from '../../assets/socials-telegram';
+import TwitterLogo from '../../assets/socials-twitter';
+import DiscordLogo from '../../assets/socials-discord';
 
 interface Props {
   Link: React.FC;
@@ -87,7 +87,8 @@ const SocialAndTermLinks: FC<Props> = ({ Link }: Props) => {
           <li>
             <a
               href="https://pendulumchain.org/legal/terms-and-conditions"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               Terms
             </a>
@@ -95,7 +96,8 @@ const SocialAndTermLinks: FC<Props> = ({ Link }: Props) => {
           <li>
             <a
               href="https://pendulumchain.org/legal/privacy-policy"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               Privacy
             </a>
@@ -103,7 +105,8 @@ const SocialAndTermLinks: FC<Props> = ({ Link }: Props) => {
           <li>
             <a
               href="https://pendulum.gitbook.io/pendulum-docs/get-started/readme"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               Wiki
             </a>

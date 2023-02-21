@@ -1,10 +1,10 @@
 import type {
   SpacewalkPrimitivesIssueIssueRequest,
   SpacewalkPrimitivesVaultId,
-} from "@polkadot/types/lookup";
-import { useMemo } from "preact/hooks";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { H256 } from "@polkadot/types/interfaces";
+} from '@polkadot/types/lookup';
+import { useMemo } from 'preact/hooks';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { H256 } from '@polkadot/types/interfaces';
 
 export interface RichIssueRequest {
   id: H256;
@@ -46,7 +46,7 @@ export function useIssuePallet() {
       },
       createIssueRequestExtrinsic(
         amount: string,
-        vaultId: SpacewalkPrimitivesVaultId
+        vaultId: SpacewalkPrimitivesVaultId,
       ) {
         if (!api) {
           return undefined;

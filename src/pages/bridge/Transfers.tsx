@@ -1,7 +1,7 @@
-import { h } from "preact";
-import { NavLink } from "react-router-dom";
-import { Table } from "react-daisyui";
-import "./styles.css";
+import { h } from 'preact';
+import { NavLink } from 'react-router-dom';
+import { Table } from 'react-daisyui';
+import './styles.css';
 
 export function Transfers(): JSX.Element {
   return (
