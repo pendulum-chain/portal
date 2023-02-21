@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "yarn@3.2.4",
   "scripts": {
     "dev": "vite",
     "build": "node version.cjs && tsc && vite build && echo '/* /index.html 200' | cat > dist/_redirects",
