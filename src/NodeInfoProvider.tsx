@@ -25,7 +25,7 @@ const NodeInfoProvider = ({
   tenantRPC,
   value = {},
 }: {
-  children: any;
+  children: ReactNode;
   tenantRPC: string;
   value?: Partial<NodeInfoProviderInterface>;
 }) => {

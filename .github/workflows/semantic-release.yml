@@ -46,9 +46,8 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --prefer-offline --frozen-lockfile
 
-      - name: 🚀 Publish packages
-        continue-on-error: true
-        run: yarn publish
+      - name: 📦 Update version
+        run: yarn version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
       

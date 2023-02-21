@@ -23,8 +23,10 @@ export function getErrors(events: EventRecord[], api: ApiPromise) {
             data: [error],
           },
         }) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           if ((error as any).isModule) {
             // for module errors, we have the section indexed, lookup
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const decoded = api.registry.findMetaError((error as any).asModule);
             const { docs, method, section } = decoded;
 
@@ -53,7 +55,7 @@ export function getEventBySectionAndMethod(
 }
 
 export function getEventMessages(events: EventRecord[]) {
-  return events.map(({ event: { data, method, section }, phase }) => {
+  return events.map(({ event: { data, method, section } }) => {
     return `${section}.${method}( ${data.toString()} )`;
   });
 }

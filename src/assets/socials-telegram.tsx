@@ -1,4 +1,4 @@
-import { JSX } from 'preact';
+import { h } from 'preact';
 
 const TelegramLogo = () => (
   <svg

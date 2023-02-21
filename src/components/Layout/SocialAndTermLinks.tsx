@@ -12,7 +12,7 @@ interface Props {
   Link: React.FC;
 }
 
-const SocialAndTermLinks: FC<Props> = ({ Link }: Props) => {
+const SocialAndTermLinks: FC<Props> = () => {
   return (
     <div className="pendulum-social-and-terms">
       <div className="social">

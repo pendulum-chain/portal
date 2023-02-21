@@ -59,14 +59,3 @@ jobs:
 
       - name: 🧪 Test
         run: yarn test
-
-      #- name: 🧪 Cypress
-      #  uses: cypress-io/github-action@v5.0.0
-      #  with:
-      #    install: true
-      #    install-command: yarn cypress install --force
-      #    start: yarn start
-      #    working-directory: packages/web-app
-      #    config-file: cypress.ci.config.js
-      #    wait-on: 'http://localhost:3000'
-      #    wait-on-timeout: 300

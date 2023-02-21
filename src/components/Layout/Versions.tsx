@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { h } from 'preact';
 import { memo, FC } from 'preact/compat';
 import { TenantName } from '../../GlobalStateProvider';

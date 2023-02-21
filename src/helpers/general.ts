@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 export const instanceOf =
   <T extends HTMLElement>(type: Function) =>
   (elem: HTMLElement | EventTarget | null): elem is T =>

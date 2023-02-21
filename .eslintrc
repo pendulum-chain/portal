@@ -20,7 +20,8 @@
   },
   "settings": {
     "react": {
-      "pragma": "h"
+      "pragma": "h",
+      "version": "detect"
     }
   },
   "plugins": ["react", "@typescript-eslint", "jest"],

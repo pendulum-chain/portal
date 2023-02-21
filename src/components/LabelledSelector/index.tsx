@@ -11,6 +11,7 @@ interface Props<T> {
   style?: React.CSSProperties;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
   const { label, items, onChange, value } = props;
 

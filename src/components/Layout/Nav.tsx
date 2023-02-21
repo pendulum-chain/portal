@@ -7,7 +7,6 @@ import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import SwapIcon from '../../assets/swap';
 import CollatorsIcon from '../../assets/collators';
-import arrow from '../../assets/nav-arrow.png';
 import ArrowIcon from '../../assets/nav-arrow';
 
 type LinkParameter = { isActive: boolean };

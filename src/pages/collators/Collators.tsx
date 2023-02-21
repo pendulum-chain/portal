@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button, Table } from 'react-daisyui';
 import { useEffect, useState } from 'preact/hooks';
 import { h } from 'preact';
@@ -151,7 +152,7 @@ export function Collators() {
     }
   };
 
-  const [_, setData] = useState(dummy_collator);
+  const [, setData] = useState(dummy_collator);
   const [asc, setAsc] = useState(false);
 
   return (

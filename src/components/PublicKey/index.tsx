@@ -19,7 +19,7 @@ function getDigitCounts(variant?: Variant) {
   }
 }
 
-function shortenName(name: string, intendedLength: number) {
+export function shortenName(name: string, intendedLength: number) {
   if (name.length <= intendedLength) {
     return name;
   } else {
