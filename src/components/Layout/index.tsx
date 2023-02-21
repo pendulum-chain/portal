@@ -1,24 +1,24 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
-import { FC, memo, useRef } from "preact/compat";
-import { h } from "preact";
-import { Outlet, useParams } from "react-router-dom";
-import PendulumLogo from "../../assets/pendulum-logo.png";
-import AmplitudeLogo from "../../assets/amplitud-logo.svg";
-import OpenWallet from "../OpenWallet";
-import Nav from "./Nav";
-import NetworkId from "./NetworkId";
-import SocialAndTermLinks from "./SocialAndTermLinks";
-import "./styles.sass";
-import Versions from "./Versions";
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { FC, memo, useRef } from 'preact/compat';
+import { h } from 'preact';
+import { Outlet, useParams } from 'react-router-dom';
+import PendulumLogo from '../../assets/pendulum-logo.png';
+import AmplitudeLogo from '../../assets/amplitud-logo.svg';
+import OpenWallet from '../OpenWallet';
+import Nav from './Nav';
+import NetworkId from './NetworkId';
+import SocialAndTermLinks from './SocialAndTermLinks';
+import './styles.sass';
+import Versions from './Versions';
 import {
   TenantName,
   TenantRPC,
   useGlobalState,
-} from "../../GlobalStateProvider";
-import { useTheme } from "react-daisyui";
+} from '../../GlobalStateProvider';
+import { useTheme } from 'react-daisyui';
 
 export default function Layout(): React.JSX.Element {
-  const [visible, setVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
   const params = useParams();
   const { setTheme } = useTheme();
   const { state, setState } = useGlobalState();
@@ -35,22 +35,22 @@ export default function Layout(): React.JSX.Element {
     if (state.tenantName !== network) {
       let newTenantRPC: TenantRPC;
       switch (network) {
-        case "pendulum":
+        case 'pendulum':
           newTenantRPC = TenantRPC.Pendulum;
-          setTheme("pendulum");
+          setTheme('pendulum');
           break;
-        case "foucoco":
+        case 'foucoco':
           newTenantRPC = TenantRPC.Foucoco;
-          setTheme("amplitude");
+          setTheme('amplitude');
           break;
-        case "local":
+        case 'local':
           newTenantRPC = TenantRPC.Local;
-          setTheme("pendulum");
+          setTheme('pendulum');
           break;
-        case "amplitude":
+        case 'amplitude':
         default:
           newTenantRPC = TenantRPC.Amplitude;
-          setTheme("amplitude");
+          setTheme('amplitude');
           break;
       }
 
@@ -62,22 +62,22 @@ export default function Layout(): React.JSX.Element {
     }
   }, [network, setState, setTheme, state.tenantName]);
 
-  const isPendulum = network === "pendulum";
+  const isPendulum = network === 'pendulum';
 
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
-  const chevronColor = isPendulum ? "white" : "grey ";
-  const bgColor = isPendulum ? "bg-white" : "bg-black";
+  const chevronColor = isPendulum ? 'white' : 'grey ';
+  const bgColor = isPendulum ? 'bg-white' : 'bg-black';
 
   const sidebar = useRef<HTMLDivElement>(null);
 
   const FooterLink: FC = memo(() => {
     return isPendulum ? (
-      <span onClick={() => (window.location.href = "/amplitude")}>
+      <span onClick={() => (window.location.href = '/amplitude')}>
         Amplitude
       </span>
     ) : (
       <span
-        onClick={() => (window.location.href = "/pendulum")}
+        onClick={() => (window.location.href = '/pendulum')}
         className="hidden"
       >
         Pendulum
@@ -90,26 +90,28 @@ export default function Layout(): React.JSX.Element {
     if (!theSidebar) return;
 
     if (visible) {
-      theSidebar.style.display = "none";
-      theSidebar.style.position = "relative";
-      theSidebar.style.top = "0";
+      theSidebar.style.display = 'none';
+      theSidebar.style.position = 'relative';
+      theSidebar.style.top = '0';
     } else {
-      theSidebar.style.display = "flex";
-      theSidebar.style.position = "absolute";
-      theSidebar.style.top = "0";
+      theSidebar.style.display = 'flex';
+      theSidebar.style.position = 'absolute';
+      theSidebar.style.top = '0';
     }
     setVisible(!visible);
   };
 
   return (
     <div className="flex">
-      <div id="sidebar-wrapper" className={`flex flex-wrap ${bgColor}`}>
+      <div id="sidebar-wrapper" className="flex flex-wrap z-50">
         <div
           style={{
-            ...(isPendulum ? null : { backgroundColor: "#1c1c1c" }),
-            ...{ boxShadow: "7px 0 10px rgba(0,0,0,0.1)" },
+            ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
+            ...{ boxShadow: '7px 0 10px rgba(0,0,0,0.1)' },
           }}
-          className="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen"
+          className={`self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen ${bgColor} ${
+            visible ? 'open' : 'closed'
+          }`}
           id="sidebar"
           ref={sidebar}
         >
@@ -130,19 +132,18 @@ export default function Layout(): React.JSX.Element {
             <SocialAndTermLinks Link={FooterLink} />
           </div>
         </div>
-
-        <div className="mobile-menu">
-          <button className="menu" onClick={() => toggleMenu()} />
-        </div>
       </div>
       <div id="main" className="flex-wrap">
         <div className="container flex-wrap">
-          <div className="flex flex-row-reverse h-15">
-            <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
+          <div className="flex flex-row-reverse h-15 gap-2">
+            <div className="mobile-menu">
+              <button className="menu" onClick={() => toggleMenu()} />
+            </div>
+            <OpenWallet networkName={isPendulum ? 'Pendulum' : 'Amplitude'} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
-                <span className={`${isPendulum ? "text-white" : ""}  text-md`}>
-                  {isPendulum ? "Pendulum" : "Amplitude"}
+                <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
+                  {isPendulum ? 'Pendulum' : 'Amplitude'}
                 </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

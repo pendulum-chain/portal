@@ -1,22 +1,22 @@
 $small: 300px
 $medium: 900px
-$menu: 30px
+$menu: 48px
 
 .mobile-menu
   display: none
-  width: 100%
+  width: $menu
   height: $menu
-  position: absolute
+  padding: 12px
+  transition: opacity .2s ease-out
+  :hover
+    opacity: .9
   @media screen and (max-width: $medium)
     display: block
 
   .menu
-    width: $menu
-    height: $menu
+    width: 100%
+    height: 100%
     background: transparent center center no-repeat url(../../assets/bars.svg)
-    float: right
-    margin: 20px
-    display: block
     svg
       filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%)
 

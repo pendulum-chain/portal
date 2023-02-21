@@ -1,14 +1,12 @@
-import { NavLink } from "react-router-dom";
-import { h } from "preact";
-import { memo } from "preact/compat";
-
-import BridgeIcon from "../../assets/bridge";
-import DashboardIcon from "../../assets/dashboard";
-import GovernanceIcon from "../../assets/governance";
-import SwapIcon from "../../assets/swap";
-import CollatorsIcon from "../../assets/collators";
-import arrow from "../../assets/nav-arrow.png";
-import ArrowIcon from "../../assets/nav-arrow";
+import { NavLink } from 'react-router-dom';
+import { h } from 'preact';
+import { memo } from 'preact/compat';
+import BridgeIcon from '../../assets/bridge';
+import DashboardIcon from '../../assets/dashboard';
+import GovernanceIcon from '../../assets/governance';
+import SwapIcon from '../../assets/swap';
+import CollatorsIcon from '../../assets/collators';
+import ArrowIcon from '../../assets/nav-arrow';
 
 type LinkParameter = { isActive: boolean };
 
@@ -18,7 +16,7 @@ const Nav = memo(() => {
       <NavLink
         to="./dashboard"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : ""
+          navData.isActive ? 'active' : ''
         }
       >
         <DashboardIcon />
@@ -30,7 +28,7 @@ const Nav = memo(() => {
       <NavLink
         to="./amm"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : "hidden"
+          navData.isActive ? 'active' : 'hidden'
         }
       >
         <SwapIcon />
@@ -42,7 +40,7 @@ const Nav = memo(() => {
       <NavLink
         to="./bridge"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : "hidden"
+          navData.isActive ? 'active' : 'hidden'
         }
       >
         <BridgeIcon />
@@ -54,7 +52,7 @@ const Nav = memo(() => {
       <NavLink
         to="./collators"
         className={(navData: LinkParameter) =>
-          navData.isActive ? "active" : ""
+          navData.isActive ? 'active' : ''
         }
       >
         <CollatorsIcon />
