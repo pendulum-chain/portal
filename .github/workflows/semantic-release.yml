@@ -1,0 +1,54 @@
+name: push
+on:
+  push:
+    branches: [staging, develop]
+
+  workflow_dispatch:
+
+jobs:
+  semantic-release:
+    name: Running push
+    if: "!contains(toJSON(github.event.commits.*.message), 'chore(release):')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18]
+    env:
+      CI: true
+
+    steps:
+      - name: 🛒 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 💿 Setup Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: 💾 Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 💾 Cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: |
+            **/.cache/Cypress
+            **/cypress/cache
+            **/node_modules
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn
+
+      - name: 🧩 Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --prefer-offline --frozen-lockfile
+
+      - name: 🚀 Publish packages
+        continue-on-error: true
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+      
