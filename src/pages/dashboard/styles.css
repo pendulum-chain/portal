@@ -1,5 +1,4 @@
 .card-title {
-  font-family: 'Nunito';
   font-size: 20px;
 }
 
@@ -32,7 +31,6 @@
 }
 
 .portfolio {
-  font-family: 'Nunito';
   width: 300px;
   height: 95%;
   background-color: var(--portfolio-bg);
@@ -52,22 +50,22 @@
   font-size: 20px;
 }
 
-.portfolio>.balance {
+.portfolio > .balance {
   padding-top: 20px;
   padding-bottom: 15px;
   text-align: center;
 }
 
-.portfolio>.portfolio li {
+.portfolio > .portfolio li {
   padding-left: 10px;
   padding-right: 10px;
 }
 
-.portfolio>.portfolio li.down {
+.portfolio > .portfolio li.down {
   color: var(--dark-red);
 }
 
-.portfolio>ul li {
+.portfolio > ul li {
   display: inline;
 }
 
@@ -115,7 +113,6 @@
 }
 
 .collators-list-table span {
-  font-family: 'Nunito';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -123,7 +120,8 @@
   color: var(--table-text);
 }
 
-.collators-list-table td, .collators-list-table th {
+.collators-list-table td,
+.collators-list-table th {
   background-color: var(--table-background);
   border-bottom: 1px solid var(--table-border);
   color: var(--table-text);

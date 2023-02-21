@@ -21,13 +21,13 @@
   --text-secondary: var(--nc);
 }
 
-[data-theme="amplitude"] {
+[data-theme='amplitude'] {
   --background: var(--darkner);
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
-  --table-text: "#BBBBBB";
-  --table-text-header: "#fff";
+  --table-text: '#BBBBBB';
+  --table-text-header: '#fff';
   --table-background: var(--dark-light);
   --table-border: #dfe0eb08;
   --modal-title: var(--clear-light);
@@ -36,15 +36,15 @@
   --selected-nav-item: hsla(158, 100%, 47%, 0.08);
 }
 
-[data-theme="pendulum"] {
+[data-theme='pendulum'] {
   --background: #fbfcfe;
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
-  --table-text: "#252733";
-  --table-text-header: "#9FA2B4";
-  --table-background: "#fff";
-  --table-border: "#DFE0EB";
+  --table-text: '#252733';
+  --table-text-header: '#9FA2B4';
+  --table-background: '#fff';
+  --table-border: '#DFE0EB';
   --portfolio-border: #e5e5e5;
   --modal-title: var(--darkner);
   --portfolio-bg: var(--clear-light);
@@ -72,6 +72,13 @@ select {
 
 .font-2 {
   font-family: "Outfit", sans-serif;
+}
+
+body,
+input,
+textarea,
+select {
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 #main {
