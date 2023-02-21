@@ -45,7 +45,7 @@ export default function Layout(): React.JSX.Element {
           break;
         case "local":
           newTenantRPC = TenantRPC.Local;
-          setTheme("amplitude");
+          setTheme("pendulum");
           break;
         case "amplitude":
         default:
@@ -63,11 +63,7 @@ export default function Layout(): React.JSX.Element {
   }, [network, setState, setTheme, state.tenantName]);
 
   const isPendulum = network === "pendulum";
-
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
-  const chevronColor = isPendulum ? "white" : "grey ";
-  const bgColor = isPendulum ? "bg-white" : "bg-black";
-
   const sidebar = useRef<HTMLDivElement>(null);
 
   const FooterLink: FC = memo(() => {
@@ -103,13 +99,9 @@ export default function Layout(): React.JSX.Element {
 
   return (
     <div className="flex">
-      <div id="sidebar-wrapper" className={`flex flex-wrap ${bgColor}`}>
+      <div id="sidebar-wrapper" className="flex flex-wrap">
         <div
-          style={{
-            ...(isPendulum ? null : { backgroundColor: "#1c1c1c" }),
-            ...{ boxShadow: "7px 0 10px rgba(0,0,0,0.1)" },
-          }}
-          className="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen"
+          className="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar"
           id="sidebar"
           ref={sidebar}
         >
@@ -135,7 +127,7 @@ export default function Layout(): React.JSX.Element {
           <button className="menu" onClick={() => toggleMenu()} />
         </div>
       </div>
-      <div id="main" className="flex-wrap">
+      <div id="main" className="flex-wrap bg-base-100">
         <div className="container flex-wrap">
           <div className="flex flex-row-reverse h-15">
             <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
@@ -155,7 +147,7 @@ export default function Layout(): React.JSX.Element {
                   viewBox="0 0 448 512"
                 >
                   <path
-                    fill={chevronColor}
+                    fill={isPendulum ? "white" : "grey"}
                     d="M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z"
                   />
                 </svg>

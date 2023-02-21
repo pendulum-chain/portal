@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
@@ -45,7 +46,6 @@ export function Collators() {
     () =>
       candidates.map((candidate) => {
         const totalStaked = nativeToDecimal(candidate.total);
-
         const rowItem = {
           candidate: candidate,
           collator: candidate.id,
@@ -149,20 +149,40 @@ export function Collators() {
     tableInstance;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto collators-list-container mt-10">
+      <div className="flex mb-8 justify-between">
+        <div className="card rounded-lg text-primary-content bg-base-100 w-1/2 mr-4 collators-box">
+          <div className="card-body">
+            <h2 className="card-title">Collators</h2>
+            <p>placeholder</p>
+            <div className="card-actions justify-end">
+              <button className="btn">Unbound</button>
+            </div>
+          </div>
+        </div>
+        <div className="card rounded-lg text-primary-content bg-base-100 w-1/2 ml-4 collators-box">
+          <div className="card-body">
+            <h2 className="card-title">Staking Rewards</h2>
+            <p>placeholder</p>
+            <div className="card-actions justify-end">
+              <button className="btn">Claim</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <ExecuteDelegationDialogs
         userAvailableBalance={userAvailableBalance}
         selectedCandidateForDelegation={selectedCandidateForDelegation}
         onClose={() => setSelectedCandidateForDelegation(undefined)}
       />
-      <table className="table table-compact w-full" {...getTableProps()}>
+      <table className="table w-full collators-list-table bg-base-100" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
-                  <span style={{ float: "right" }}>
+                  <span ssyle={{ float: "right" }}>
                     {column.isSorted ? (
                       column.isSortedDesc ? (
                         <ChevronDownIcon className="w-4 h-4" />

@@ -1,18 +1,18 @@
 import { h } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import Tabs from "../../components/Tabs";
-import TickerChangeTable from "../../components/TickerChangeTable";
 import { useNodeInfoState } from "../../NodeInfoProvider";
 import "./styles.css";
 import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
 import { PalletBalancesAccountData } from "@polkadot/types/lookup";
+import Banner from "../../assets/banner-spacewalk-4x.png";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
   const { walletAccount } = GlobalState;
   const { state } = useNodeInfoState();
   const { api } = state;
+  const { tokenSymbol } = state;
 
   const [accountBalance, setAccountBalance] = useState<
     PalletBalancesAccountData | undefined
@@ -30,29 +30,42 @@ export function Dashboard() {
   }, [api, walletAccount]);
 
   const cachedBalance = useMemo(() => {
-    if (!accountBalance) return "0";
-
+    if (!accountBalance) return undefined;
     return prettyNumbers(nativeToDecimal(accountBalance.free.toString()));
   }, [accountBalance]);
 
   return (
     <div className="mt-10">
-      <div className="dashboard portfolio hidden">
-        <h1>Portfolio</h1>
-        <div className="portfolio">
-          <h4>Total balance</h4>
-          <h2>{cachedBalance} AMPE</h2>
-          <ul className="hidden">
-            <li className="up">+$106.076</li>
-            <li className="up">+36,22%</li>
-          </ul>
-        </div>
-        <span className="hidden">
-          <Tabs />
-          <TickerChangeTable />
-        </span>
+      <div className="card card-compact w-2/3 banner rounded mb-6">
+        <a target="blank" href="https://pendulumchain.org/">
+          <div className="card-body">
+            <div className="card-title block">
+              <h2 className={"float-left"}>Promo</h2>
+              <h2 className={"float-right"}>Join now</h2>
+            </div>
+            <figure> <img src={Banner} /></figure>
+          </div>
+        </a>
       </div>
-      <div className="dashboard graph hidden">
+      <div className="card w-1/3 portfolio rounded">
+        <div className="card-body">
+          <h2 className="card-title float-left">Portfolio</h2>
+          <div className="balance">
+            {cachedBalance &&
+              <div className="self-center">
+                <h2 className="flex justify-center">Total balance</h2>
+                <h1 className="flex justify-center">{cachedBalance} {tokenSymbol}</h1>
+              </div>
+            }
+            {!cachedBalance &&
+              <>
+                <p>You have to connect a wallet to see your available balance. </p>
+              </>
+            }
+          </div>
+        </div>
+      </div>
+      <div className="graph hidden">
         <h1>Total Value Locked</h1>
         <h2>$63.231,98</h2>
         <svg viewBox="0 0 200 200" className="chart">
@@ -116,6 +129,6 @@ export function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

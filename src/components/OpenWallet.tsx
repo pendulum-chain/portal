@@ -28,7 +28,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
 
   const ConnectButton = useMemo(() => {
     if (!state.walletAccount) {
-      return <Button color="primary">Connect to Wallet</Button>;
+      return <Button color="primary" width="100px">Connect wallet</Button>;
     } else {
       const addressForFormat = ss58Format
         ? getAddressForFormat(state.walletAccount.address, ss58Format)

@@ -14,25 +14,31 @@
   --footer-links-dark: #616875;
   --nav-arrow-dark: hsla(271, 25%, 19%, 1);
   --darkner: #1c1c1c;
+  --dark-light: #202020;
 
   /* From daisyUI theme variables*/
   --text-primary: var(--bc);
   --text-secondary: var(--nc);
+  --table-background: "#1c1c1c";
 }
 
 [data-theme="amplitude"] {
+  --background: #202020;
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
   --table-text: "#BBBBBB";
   --table-text-header: "#fff";
-  --table-background: "#1C1C1C";
-  --table-border: #dfe0eb08;
+  --table-background: "#1c1c1c";
+  --table-border: #242424;
   --modal-title: var(--clear-light);
+  --portfolio-bg: var(--dark-light);
+  --portfolio-border:rgba(229, 229, 229, 0.03);
   --selected-nav-item:  hsla(158, 100%, 47%, 0.08);
 }
 
 [data-theme="pendulum"] {
+  --background: #FBFCFE;
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
@@ -41,6 +47,8 @@
   --table-background: "#fff";
   --table-border: "#DFE0EB";
   --modal-title: var(--darkner);
+  --portfolio-bg: var(--clear-light);
+  --portfolio-border: #E5E5E5;
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
 }
 
@@ -50,7 +58,7 @@ body {
 }
 
 #main {
-  background-color: var(--b1);
+  background-color: var(--background);
 }
 
 .pendulum-network-id {
@@ -133,7 +141,9 @@ nav > a.active .nav-arrow-container svg {
 
 #sidebar-wrapper {
   border-right: 1px solid var(--border);
+  background-color: var(--b1);
 }
+
 
 nav > a:hover {
   background-color: var(--selected-nav-item);
