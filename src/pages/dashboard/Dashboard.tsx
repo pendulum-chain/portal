@@ -6,6 +6,7 @@ import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
 import { useGlobalState } from "../../GlobalStateProvider";
 import { PalletBalancesAccountData } from "@polkadot/types/lookup";
 import Banner from "../../assets/banner-spacewalk-4x.png";
+import Swap from "../../components/Swap";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
@@ -37,6 +38,7 @@ export function Dashboard() {
 
   return (
     <div className="mt-10">
+      <Swap />
       <div className="card card-compact w-2/3 banner rounded mb-6">
         <a target="blank" href="https://pendulumchain.org/">
           <div className="card-body">
@@ -44,7 +46,10 @@ export function Dashboard() {
               <h2 className={"float-left"}>Promo</h2>
               <h2 className={"float-right"}>Join now</h2>
             </div>
-            <figure> <img src={Banner} /></figure>
+            <figure>
+              {" "}
+              <img src={Banner} />
+            </figure>
           </div>
         </a>
       </div>
@@ -52,17 +57,21 @@ export function Dashboard() {
         <div className="card-body">
           <h2 className="card-title float-left">Portfolio</h2>
           <div className="balance">
-            {cachedBalance &&
+            {cachedBalance && (
               <div className="self-center">
                 <h2 className="flex justify-center">Total balance</h2>
-                <h1 className="flex justify-center">{cachedBalance} {tokenSymbol}</h1>
+                <h1 className="flex justify-center">
+                  {cachedBalance} {tokenSymbol}
+                </h1>
               </div>
-            }
-            {!cachedBalance &&
+            )}
+            {!cachedBalance && (
               <>
-                <p>You have to connect a wallet to see your available balance. </p>
+                <p>
+                  You have to connect a wallet to see your available balance.{" "}
+                </p>
               </>
-            }
+            )}
           </div>
         </div>
       </div>
@@ -130,6 +139,6 @@ export function Dashboard() {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }

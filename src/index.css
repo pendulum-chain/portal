@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --border-light: #EFF2F5;
-  --nice-light: #907EA0;
+  --border-light: #eff2f5;
+  --nice-light: #907ea0;
   --clear-light: #ffffff;
-  --footer-links-light: #58667E;
+  --footer-links-light: #58667e;
   --nav-arrow-light: var(--clear-light);
 
-  --nice-dark: #09C63E;
+  --nice-dark: #09c63e;
   --border-dark: rgba(239, 242, 245, 0.03);
   --footer-links-dark: #616875;
   --nav-arrow-dark: hsla(271, 25%, 19%, 1);
@@ -32,12 +32,12 @@
   --table-border: #dfe0eb08;
   --modal-title: var(--clear-light);
   --portfolio-bg: var(--dark-light);
-  --portfolio-border:rgba(229, 229, 229, 0.03);
-  --selected-nav-item:  hsla(158, 100%, 47%, 0.08);
+  --portfolio-border: rgba(229, 229, 229, 0.03);
+  --selected-nav-item: hsla(158, 100%, 47%, 0.08);
 }
 
 [data-theme="pendulum"] {
-  --background: #FBFCFE;
+  --background: #fbfcfe;
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
@@ -45,15 +45,33 @@
   --table-text-header: "#9FA2B4";
   --table-background: "#fff";
   --table-border: "#DFE0EB";
-  --portfolio-border: #E5E5E5;
+  --portfolio-border: #e5e5e5;
   --modal-title: var(--darkner);
   --portfolio-bg: var(--clear-light);
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
 }
 
 body {
-  font-family: 'Nunito Sans', sans-serif;
   font-weight: 300;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body,
+input,
+textarea,
+select {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.font-2 {
+  font-family: "Outfit", sans-serif;
 }
 
 #main {
@@ -98,7 +116,6 @@ body {
   display: inline;
   margin-right: 10px;
 }
-
 
 .pendulum-network-id svg {
   margin-top: -2px;
@@ -187,23 +204,20 @@ nav a span {
 
 .pendulum-social-and-terms {
   margin-top: 20px;
-  padding-top: 20px;
+  padding: 20px 0;
   border-top: 1px solid var(--border);
-  padding-left: 30px;
-  padding-bottom: 20px;
   width: 100%;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.pendulum-social-and-terms .social {
-  display: block;
-  min-width: 100%;
-}
-
-.pendulum-social-and-terms .social li {
-  display: inline;
-  float: left;
-  margin-right: 10px;
+.pendulum-social-and-terms .social ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .pendulum-social-and-terms .social li a {
@@ -222,19 +236,13 @@ nav a span {
 }
 
 .pendulum-social-and-terms .terms {
-  padding-top: 40px;
+  margin-top: 1.2rem;
 }
 
 .pendulum-social-and-terms .terms ul {
   display: flex;
   width: 100%;
-}
-
-.pendulum-social-and-terms .terms li {
-  display: inline-flex;
-  flex-wrap: wrap;
-  flex: 1;
-  float: left;
+  gap: 1.2rem;
   font-size: 14px;
   color: var(--text-primary);
 }
@@ -248,4 +256,18 @@ nav a span {
 .pendulum-social-and-terms .terms a:hover {
   cursor: pointer;
   border-bottom: 1px solid var(--footer-links);
+}
+
+/* theme override */
+.btn,
+.input {
+  line-height: 1.5;
+}
+.collapse .collapse-content {
+  padding: 0;
+}
+.collapse-title,
+:where(.collapse > input[type="checkbox"]) {
+  min-height: 0;
+  height: 100%;
 }
