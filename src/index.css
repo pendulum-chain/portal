@@ -19,7 +19,7 @@
   /* From daisyUI theme variables*/
   --text-primary: var(--bc);
   --text-secondary: var(--nc);
-  --table-background: "#1c1c1c";
+  --table-background: #1c1c1c;
 }
 
 [data-theme="amplitude"] {
@@ -27,9 +27,9 @@
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
-  --table-text: "#BBBBBB";
-  --table-text-header: "#fff";
-  --table-background: "#1c1c1c";
+  --table-text: #bbbbbb;
+  --table-text-header: #fff;
+  --table-background: #1c1c1c;
   --table-border: #242424;
   --modal-title: var(--clear-light);
   --portfolio-bg: var(--dark-light);
@@ -42,10 +42,10 @@
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
-  --table-text: "#252733";
-  --table-text-header: "#9FA2B4";
-  --table-background: "#fff";
-  --table-border: "#DFE0EB";
+  --table-text: #252733;
+  --table-text-header: #9FA2B4;
+  --table-background: #fff;
+  --table-border: #DFE0EB;
   --modal-title: var(--darkner);
   --portfolio-bg: var(--clear-light);
   --portfolio-border: #E5E5E5;
