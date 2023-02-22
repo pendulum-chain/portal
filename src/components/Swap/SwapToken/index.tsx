@@ -1,6 +1,7 @@
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Fragment, h } from "preact";
 import pendulumIcon from "../../../assets/pendulum-icon.svg";
+import { Skeleton } from "../../Skeleton";
 
 export interface SwapTokenProps {
   token: string;
@@ -8,6 +9,7 @@ export interface SwapTokenProps {
   onValueSelect?: (val: number) => void;
   className?: string;
   children?: ReactNode;
+  isLoading?: boolean;
 }
 
 const SwapToken = ({
@@ -16,13 +18,26 @@ const SwapToken = ({
   onValueSelect,
   className,
   children,
+  isLoading,
 }: SwapTokenProps): JSX.Element | null => {
   return (
     <div className={`rounded-lg bg-gray-100 px-4 py-3 ${className}`}>
       <div className="flex justify-between">
         <div>
-          <div className="text-4xl font-2">{0.1}</div>
-          <div className="text-sm text-gray-500">{"$124.58"}</div>
+          <div className="text-4xl font-2 mb-px">
+            {isLoading ? (
+              <Skeleton className="bg-gray-200">1000</Skeleton>
+            ) : (
+              0.1
+            )}
+          </div>
+          <div className="text-sm text-gray-500">
+            {isLoading ? (
+              <Skeleton className="bg-gray-200">100.25</Skeleton>
+            ) : (
+              "$124.58"
+            )}
+          </div>
         </div>
         <div className="flex flex-col items-end">
           <button

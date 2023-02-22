@@ -1,15 +1,20 @@
 import {
   ChevronDownIcon,
   Cog8ToothIcon,
+  InformationCircleIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 import { Fragment, h } from "preact";
-import { memo } from "react";
-import { keys } from "../../constants/localStorage";
+import { cacheKeys, inactiveOptions } from "../../constants/cache";
+import { storageKeys } from "../../constants/localStorage";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { SwapSettings } from "../../models/Swap";
+import { get } from "../../services/api/swap";
 import { inputClass } from "./styles";
+import { toast } from "react-toastify";
 import SwapToken from "./SwapToken";
+import useBoolean from "../../hooks/useBoolean";
 
 export interface SwapProps {
   from?: string;
@@ -22,13 +27,23 @@ const defaults: SwapSettings = {
   to: "USDC",
 };
 
-const Swap = memo((props: SwapProps): JSX.Element | null => {
+const Swap = (props: SwapProps): JSX.Element | null => {
+  const [isOpen, { toggle }] = useBoolean();
   const { state = defaults, merge } = useLocalStorage<SwapSettings>({
-    key: keys.SWAP_SETTINGS,
+    key: storageKeys.SWAP_SETTINGS,
     defaultValue: { ...defaults, ...props },
     parse: true,
     debounce: 1000,
   });
+
+  const { data, isLoading } = useQuery([cacheKeys.swapData], get, {
+    ...inactiveOptions[0],
+    onError: (err) => {
+      toast(err || "Error fetching swap rates", { type: "error" });
+    },
+  });
+  const response = data || {};
+
   return (
     <div className="card max-w-xl bg-base-100 shadow-xl border rounded-lg">
       <div className="card-body text-gray-800">
@@ -104,35 +119,50 @@ const Swap = memo((props: SwapProps): JSX.Element | null => {
           onChange={() => console.log("TODO")}
           onValueSelect={() => console.log("TODO")}
         />
-        <SwapToken token={state.to} onChange={() => console.log("TODO")}>
+        <SwapToken
+          isLoading={isLoading}
+          token={state.to}
+          onChange={() => console.log("TODO")}
+        >
           <Fragment>
-            <div className="divider my-0 -mx-4" />
-            <div className="collapse text-gray-500 -mx-4 text-sm">
-              <input type="checkbox" className="none" />
-              <div className="collapse-title flex justify-between px-4 py-1">
-                <div>1 USDC = 0.00 ETH ($1.00)</div>
+            <div className="mt-4 h-px -mx-4 bg-gray-200" />
+            <div
+              className={`collapse text-gray-500 -mx-4 text-sm${
+                isOpen ? " collapse-open" : ""
+              }`}
+            >
+              <div
+                className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0"
+                onClick={toggle}
+              >
+                <div className="flex items-center">
+                  <div className="tooltip" data-tip="! TODO">
+                    <InformationCircleIcon className="w-5 h-5 mr-1" />
+                  </div>
+                  1 USDC = 0.00 ETH ($1.00)
+                </div>
                 <div>
-                  $4.02
+                  ${response.price}
                   <ChevronDownIcon className="w-3 h-3 inline ml-1 -mt-px" />
                 </div>
               </div>
               <div className="collapse-content flex flex-col gap-4">
-                <div className="divider my-0" />
+                <div className="mt-3 h-px -mx-4 bg-gray-200" />
                 <div className="flex justify-between px-4">
                   <div>Expected Output:</div>
-                  <div>124.02 USDC</div>
+                  <div>{response.output} USDC</div>
                 </div>
                 <div className="flex justify-between px-4">
                   <div>Price Impact:</div>
-                  <div>-0.04%</div>
+                  <div>{response.impact}%</div>
                 </div>
                 <div className="flex justify-between px-4">
-                  <div>Minimum received after slippage (0.56%)</div>
-                  <div>4.02 USDC</div>
+                  <div>Minimum received after slippage (0.56%):</div>
+                  <div>{response.receive} USDC</div>
                 </div>
                 <div className="flex justify-between px-4">
                   <div>Network Fee:</div>
-                  <div>-$4.07</div>
+                  <div>{response.fee}</div>
                 </div>
               </div>
             </div>
@@ -142,5 +172,5 @@ const Swap = memo((props: SwapProps): JSX.Element | null => {
       </div>
     </div>
   );
-});
+};
 export default Swap;

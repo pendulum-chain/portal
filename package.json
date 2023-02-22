@@ -11,7 +11,7 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.14",
+    "@heroicons/react": "^2.0.16",
     "@pendulum-chain/api": "^0.1.6",
     "@polkadot/api": "^9.9.1",
     "@polkadot/api-base": "^9.9.1",
@@ -26,6 +26,8 @@
     "@talismn/connect-components": "^1.1.7",
     "@talismn/connect-ui": "^1.1.2",
     "@talismn/connect-wallets": "^1.2.3",
+    "@tanstack/react-query": "^4.24.10",
+    "@tanstack/react-table": "^8.7.9",
     "big.js": "^6.2.1",
     "bn.js": "^5.2.1",
     "luxon": "^3.2.1",

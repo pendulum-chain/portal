@@ -1,3 +1,3 @@
-export const keys = {
+export const storageKeys = {
   SWAP_SETTINGS: "SWAP_SETTINGS",
 };
