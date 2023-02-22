@@ -1,11 +1,11 @@
-import { h } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import "./styles.css";
-import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
-import { useGlobalState } from "../../GlobalStateProvider";
-import { PalletBalancesAccountData } from "@polkadot/types/lookup";
-import Banner from "../../assets/banner-spacewalk-4x.png";
+import { h } from 'preact';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import './styles.css';
+import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
+import Banner from '../../assets/banner-spacewalk-4x.png';
 import Swap from "../../components/Swap";
 
 export function Dashboard() {
@@ -25,7 +25,7 @@ export function Dashboard() {
     api?.query.system
       .account(walletAccount.address)
       .then((data) => {
-        console.log("setting balance");
+        console.log('setting balance');
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
@@ -43,11 +43,11 @@ export function Dashboard() {
         <a target="blank" href="https://pendulumchain.org/">
           <div className="card-body">
             <div className="card-title block">
-              <h2 className={"float-left"}>Promo</h2>
-              <h2 className={"float-right"}>Join now</h2>
+              <h2 className={'float-left'}>Promo</h2>
+              <h2 className={'float-right'}>Join now</h2>
             </div>
             <figure>
-              {" "}
+              {' '}
               <img src={Banner} />
             </figure>
           </div>
@@ -68,7 +68,7 @@ export function Dashboard() {
             {!cachedBalance && (
               <>
                 <p>
-                  You have to connect a wallet to see your available balance.{" "}
+                  You have to connect a wallet to see your available balance.{' '}
                 </p>
               </>
             )}

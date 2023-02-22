@@ -1,4 +1,4 @@
-import * as issue from "./issue";
-import * as vaultRegistry from "./vaultRegistry";
+import * as issue from './issue';
+import * as vaultRegistry from './vaultRegistry';
 
 export { issue, vaultRegistry };

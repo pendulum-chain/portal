@@ -3,18 +3,18 @@ import {
   Cog8ToothIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
-} from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
-import { Fragment, h } from "preact";
-import { cacheKeys, inactiveOptions } from "../../constants/cache";
-import { storageKeys } from "../../constants/localStorage";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { SwapSettings } from "../../models/Swap";
-import { get } from "../../services/api/swap";
-import { inputClass } from "./styles";
-import { toast } from "react-toastify";
-import SwapToken from "./SwapToken";
-import useBoolean from "../../hooks/useBoolean";
+} from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
+import { Fragment, h } from 'preact';
+import { cacheKeys, inactiveOptions } from '../../constants/cache';
+import { storageKeys } from '../../constants/localStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { SwapSettings } from '../../models/Swap';
+import { get } from '../../services/api/swap';
+import { inputClass } from './styles';
+import { toast } from 'react-toastify';
+import SwapToken from './SwapToken';
+import useBoolean from '../../hooks/useBoolean';
 
 export interface SwapProps {
   from?: string;
@@ -23,8 +23,8 @@ export interface SwapProps {
 const defaults: SwapSettings = {
   slippage: 0.5,
   deadline: 30,
-  from: "ETH",
-  to: "USDC",
+  from: 'ETH',
+  to: 'USDC',
 };
 
 const Swap = (props: SwapProps): JSX.Element | null => {
@@ -36,10 +36,12 @@ const Swap = (props: SwapProps): JSX.Element | null => {
     debounce: 1000,
   });
 
+  // TODO: fetch tokens
+  // TODO: fetch swap rates/info
   const { data, isLoading } = useQuery([cacheKeys.swapData], get, {
     ...inactiveOptions[0],
     onError: (err) => {
-      toast(err || "Error fetching swap rates", { type: "error" });
+      toast(err || 'Error fetching swap rates', { type: 'error' });
     },
   });
   const response = data || {};
@@ -116,19 +118,19 @@ const Swap = (props: SwapProps): JSX.Element | null => {
         </div>
         <SwapToken
           token={state.from}
-          onChange={() => console.log("TODO")}
-          onValueSelect={() => console.log("TODO")}
+          onChange={() => console.log('TODO')}
+          onValueSelect={() => console.log('TODO')}
         />
         <SwapToken
           isLoading={isLoading}
           token={state.to}
-          onChange={() => console.log("TODO")}
+          onChange={() => console.log('TODO')}
         >
           <Fragment>
             <div className="mt-4 h-px -mx-4 bg-gray-200" />
             <div
               className={`collapse text-gray-500 -mx-4 text-sm${
-                isOpen ? " collapse-open" : ""
+                isOpen ? ' collapse-open' : ''
               }`}
             >
               <div

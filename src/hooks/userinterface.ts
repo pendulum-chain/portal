@@ -1,5 +1,5 @@
-import { useMemo } from "preact/hooks";
-import { toast } from "react-toastify";
+import { useMemo } from 'preact/hooks';
+import { toast } from 'react-toastify';
 
 export function useClipboard() {
   return useMemo(
@@ -8,12 +8,12 @@ export function useClipboard() {
         try {
           await navigator.clipboard.writeText(value);
           const message = notificationMessage || `Copied ${value} to clipboard`;
-          toast(message, { type: "info" });
+          toast(message, { type: 'info' });
         } catch (error) {
-          toast(error, { type: "error" });
+          toast(error, { type: 'error' });
         }
       },
     }),
-    []
+    [],
   );
 }

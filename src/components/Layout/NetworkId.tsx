@@ -1,12 +1,12 @@
-import { h } from "preact";
-import { memo, FC } from "preact/compat";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { useGlobalState } from "../../GlobalStateProvider";
+import { h } from 'preact';
+import { memo, FC } from 'preact/compat';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { useGlobalState } from '../../GlobalStateProvider';
 
 const NetworkId: FC = memo(() => {
   const lastBlockNumber = useNodeInfoState().state.bestNumberFinalize;
   const tenantRPC = useGlobalState().state.tenantRPC;
-  const encodedRPC = tenantRPC ? encodeURI(tenantRPC) : "";
+  const encodedRPC = tenantRPC ? encodeURI(tenantRPC) : '';
 
   return (
     <div className="pendulum-network-id">
@@ -20,7 +20,7 @@ const NetworkId: FC = memo(() => {
         rel="noreferrer"
         title="Last block number"
       >
-        {lastBlockNumber || "000000"}
+        {lastBlockNumber || '000000'}
       </a>
     </div>
   );

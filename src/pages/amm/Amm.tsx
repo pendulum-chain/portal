@@ -1,9 +1,9 @@
-import { h } from "preact";
-import { Button } from "react-daisyui";
+import { h } from 'preact';
+import { Button } from 'react-daisyui';
 
-import Box from "../../components/Box";
-import usdc from "../../assets/usdc.png";
-import "./styles.css";
+import Box from '../../components/Box';
+import usdc from '../../assets/usdc.png';
+import './styles.css';
 
 export function Amm(): JSX.Element {
   const Dummy = () => (

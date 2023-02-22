@@ -7,10 +7,6 @@ import TelegramLogo from '../../assets/socials-telegram';
 import TwitterLogo from '../../assets/socials-twitter';
 import DiscordLogo from '../../assets/socials-discord';
 
-interface Props {
-  Link: React.FC;
-}
-
 const socialLinks = [
   { href: 'https://discord.gg/wJ2fQh776B', Logo: DiscordLogo },
   { href: 'https://twitter.com/pendulum_chain', Logo: TwitterLogo },
@@ -27,7 +23,7 @@ const socialLinks = [
   },
 ];
 
-const SocialAndTermLinks = ({ Link }: Props): JSX.Element => {
+const SocialAndTermLinks = (): JSX.Element => {
   return (
     <div className="pendulum-social-and-terms">
       <div className="social">

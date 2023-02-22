@@ -129,7 +129,7 @@ export default function Layout(): React.JSX.Element {
           <div className="sidebar-footer">
             <Versions tenantName={network} />
             <NetworkId />
-            <SocialAndTermLinks Link={FooterLink} />
+            <SocialAndTermLinks />
           </div>
         </div>
       </div>
