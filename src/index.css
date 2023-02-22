@@ -23,6 +23,7 @@
 }
 
 [data-theme="amplitude"] {
+  --primary: #4EE59A;
   --background: #202020;
   --border: var(--border-dark);
   --nice: var(--nice-dark);
@@ -38,6 +39,7 @@
 }
 
 [data-theme="pendulum"] {
+  --primary: #907EA0;
   --background: #FBFCFE;
   --border: var(--border-light);
   --nice: var(--nice-dark);

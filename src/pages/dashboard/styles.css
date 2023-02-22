@@ -115,11 +115,12 @@
   color: var(--base-content);
 }
 
-.collators-list-container {
+.collators-box h2 {
+  margin-bottom: 0.5em
 }
 
-.collators-box .card-body {
-  padding: 1rem 1rem 0 1rem;
+.collators-box h4 {
+  color: var(--primary);
 }
 
 .collators-box .card-body h3 {

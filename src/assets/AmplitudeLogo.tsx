@@ -17,7 +17,7 @@ const AmplitudeLogo = ({ className }: Props) => (
         width="607"
         height="597"
         transform="translate(3304 7602)"
-        fill="#131313"
+        fill="none"
       />
       <g
         id="Group_65"

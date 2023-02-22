@@ -158,7 +158,7 @@ export function Collators() {
           <div className="card-body">
             <h2 className="card-title">Collators</h2>
             <div className="flex flex-row">
-              <div className="flex-initial m-auto pr-5">
+              <div className="flex-initial pr-5">
                 <StakedIcon />
               </div>
               <div className="flex-auto">
@@ -169,7 +169,7 @@ export function Collators() {
                 <h3>0.00 AMPE</h3>
                 <p>Free balance</p>
               </div>
-              <div className="flex-auto">
+              <div className="flex flex-auto place-content-end">
                 <button className="btn btn-secondary w-full" disabled>0 AMPE Unboarding</button>
               </div>
             </div>
@@ -178,9 +178,17 @@ export function Collators() {
         <div className="card rounded-lg text-primary-content bg-base-100 w-1/2 ml-4 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking Rewards</h2>
-            <p>placeholder</p>
-            <div className="card-actions justify-end">
-              <button className="btn">Claim</button>
+            <div className="flex flex-row">
+              <div className="flex-initial pt-1 pr-5 pb-0">
+                <RewardsIcon />
+              </div>
+              <div className="flex-auto">
+                <h4>0.00 AMPE</h4>
+                <p>Estimated reward</p>
+              </div>
+              <div className="flex flex-auto place-content-end">
+                <button className="btn btn-primary w-1/3">Claim</button>
+              </div>
             </div>
           </div>
         </div>
@@ -197,7 +205,7 @@ export function Collators() {
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
-                  <span ssyle={{ float: "right" }}>
+                  <span style={{ float: "right" }}>
                     {column.isSorted ? (
                       column.isSortedDesc ? (
                         <ChevronDownIcon className="w-4 h-4" />
