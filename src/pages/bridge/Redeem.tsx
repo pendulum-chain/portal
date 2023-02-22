@@ -19,7 +19,12 @@ import {
   StellarPublicKeyPattern,
 } from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
-import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
+import {
+  decimalToNative,
+  decimalToStellarNative,
+  nativeStellarToDecimal,
+  nativeToDecimal,
+} from "../../helpers/parseNumbers";
 import Big from "big.js";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 import { useGlobalState } from "../../GlobalStateProvider";
@@ -36,7 +41,7 @@ import { Controller, useForm } from "react-hook-form";
 interface FeeBoxProps {
   bridgedAsset?: Asset;
   // The amount of the bridged asset denoted in the smallest unit of the asset
-  amountDecimal: string;
+  amountNative: Big;
   extrinsic?: SubmittableExtrinsic;
   network: string;
   nativeCurrency: string;
@@ -51,13 +56,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     wrappedCurrencyPrefix,
     network,
   } = props;
-  const amount = useMemo(() => {
-    try {
-      return new Big(props.amountDecimal);
-    } catch (e) {
-      return new Big(0);
-    }
-  }, [props.amountDecimal]);
+  const amount = props.amountNative;
 
   const wrappedCurrencyName = bridgedAsset
     ? (wrappedCurrencyPrefix || "") + bridgedAsset.getCode()
@@ -79,7 +78,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [extrinsic, getTransactionFee, setTransactionFee]);
 
   const bridgeFee = useMemo(() => {
-    return amount.mul(fees.redeemFee);
+    return nativeStellarToDecimal(amount.mul(fees.redeemFee));
   }, [amount, fees]);
 
   const totalAmount = useMemo(() => {
@@ -87,7 +86,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return 0;
     }
 
-    return amount.sub(bridgeFee);
+    return nativeStellarToDecimal(amount) - bridgeFee;
   }, [amount, bridgeFee]);
 
   return (
@@ -269,13 +268,14 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
-    return amount ? decimalToNative(amount) : Big(0);
+    return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
     return vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
+        console.log("currency", currency);
         return convertCurrencyToStellarAsset(currency);
       })
       .filter((asset): asset is Asset => {
@@ -386,7 +386,9 @@ function Redeem(props: RedeemProps): JSX.Element {
       )
       .catch((error) => {
         console.error("Transaction submission failed", error);
-        toast("Transaction submission failed", { type: "error" });
+        toast("Transaction submission failed:" + error.toString(), {
+          type: "error",
+        });
         setSubmissionPending(false);
       });
   }, [
@@ -477,7 +479,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             name="stellarAddress"
           />
           <FeeBox
-            amountDecimal={amount}
+            amountNative={amountNative}
             bridgedAsset={selectedAsset}
             extrinsic={requestRedeemExtrinsic}
             network="Stellar"

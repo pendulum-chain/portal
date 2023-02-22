@@ -12,7 +12,13 @@ import {
 import { Asset } from "stellar-sdk";
 import { convertRawHexKeyToPublicKey } from "../../helpers/stellar";
 import { useFeePallet } from "../../hooks/spacewalk/fee";
-import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
+import {
+  decimalToNative,
+  decimalToStellarNative,
+  fixedPointToDecimal,
+  nativeStellarToDecimal,
+  nativeToDecimal,
+} from "../../helpers/parseNumbers";
 import Big from "big.js";
 import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
 import { useGlobalState } from "../../GlobalStateProvider";
@@ -28,7 +34,7 @@ import { AssetSelector, VaultSelector } from "../../components/Selector";
 interface FeeBoxProps {
   bridgedAsset?: Asset;
   // The amount of the bridged asset denoted in the smallest unit of the asset
-  amountDecimal: string;
+  amountNative: Big;
   extrinsic?: SubmittableExtrinsic;
   network: string;
   wrappedCurrencyPrefix?: string;
@@ -44,13 +50,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
     nativeCurrency,
   } = props;
 
-  const amount = useMemo(() => {
-    try {
-      return new Big(props.amountDecimal);
-    } catch (e) {
-      return new Big(0);
-    }
-  }, [props.amountDecimal]);
+  const amount = props.amountNative;
 
   const wrappedCurrencyName = bridgedAsset
     ? (wrappedCurrencyPrefix || "") + bridgedAsset.getCode()
@@ -72,11 +72,11 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [extrinsic, getTransactionFee, setTransactionFee]);
 
   const bridgeFee = useMemo(() => {
-    return amount.mul(fees.issueFee);
+    return nativeStellarToDecimal(amount.mul(fees.issueFee));
   }, [amount, fees]);
 
   const griefingCollateral = useMemo(() => {
-    return amount.mul(fees.issueGriefingCollateral);
+    return nativeStellarToDecimal(amount.mul(fees.issueGriefingCollateral));
   }, [amount, fees]);
 
   const totalAmount = useMemo(() => {
@@ -84,7 +84,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return 0;
     }
 
-    return amount.sub(bridgeFee);
+    return nativeStellarToDecimal(amount) - bridgeFee;
   }, [amount, bridgeFee]);
 
   return (
@@ -132,7 +132,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     useState<string>("");
 
   const totalAmount = issueRequest
-    ? nativeToDecimal(
+    ? nativeStellarToDecimal(
         issueRequest.request.amount.add(issueRequest.request.fee).toString()
       ).toString()
     : "";
@@ -172,6 +172,8 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     return () => clearInterval(interval);
   }, [deadline]);
 
+  console.log("issueRequest", issueRequest?.id);
+
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Deposit</Modal.Header>
@@ -192,10 +194,17 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           <div className="text-sm">
             (issued by{" "}
             {asset && (
-              <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+              <CopyableAddress variant="short" publicKey={asset?.getIssuer()} />
             )}
             )
           </div>
+          <div className="text mt-4">With the hash memo</div>
+          {issueRequest && (
+            <CopyableAddress
+              variant="full"
+              publicKey={issueRequest.id.toString()}
+            />
+          )}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
           <div>Within {remainingDurationString}</div>
@@ -251,7 +260,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
-    return amount ? decimalToNative(amount) : Big(0);
+    return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
@@ -356,7 +365,9 @@ function Issue(props: IssueProps): JSX.Element {
       )
       .catch((error) => {
         console.error("Transaction submission failed", error);
-        toast("Transaction submission failed", { type: "error" });
+        toast("Transaction submission failed: " + error.toString(), {
+          type: "error",
+        });
         setSubmissionPending(false);
       });
   }, [
@@ -413,7 +424,7 @@ function Issue(props: IssueProps): JSX.Element {
             />
           )}
           <FeeBox
-            amountDecimal={amount}
+            amountNative={amountNative}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
             network={network}
