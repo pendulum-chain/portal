@@ -17,6 +17,10 @@ function hex_to_ascii(hexString: string, leading0x = true) {
 export function convertCurrencyToStellarAsset(
   currency: SpacewalkPrimitivesCurrencyId
 ): Asset | null {
+  if (currency.isStellar) {
+    currency = currency.asStellar;
+  }
+
   if (currency.isStellarNative) {
     return Asset.native();
   } else if (currency.isAlphaNum4) {
