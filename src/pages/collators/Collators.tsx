@@ -7,6 +7,9 @@ import { nativeToDecimal } from "../../helpers/parseNumbers";
 import { useSortBy, useTable } from "react-table";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useGlobalState } from "../../GlobalStateProvider";
+import StakedIcon from "../../assets/collators-staked-icon";
+import RewardsIcon from "../../assets/collators-rewards-icon";
+
 import {
   ParachainStakingCandidate,
   useStakingPallet,
@@ -151,12 +154,24 @@ export function Collators() {
   return (
     <div className="overflow-x-auto collators-list-container mt-10">
       <div className="flex mb-8 justify-between">
-        <div className="card rounded-lg text-primary-content bg-base-100 w-1/2 mr-4 collators-box">
+        <div className="card gap-0 rounded-lg text-primary-content bg-base-100 w-1/2 mr-4 collators-box">
           <div className="card-body">
             <h2 className="card-title">Collators</h2>
-            <p>placeholder</p>
-            <div className="card-actions justify-end">
-              <button className="btn">Unbound</button>
+            <div className="flex flex-row">
+              <div className="flex-initial m-auto pr-5">
+                <StakedIcon />
+              </div>
+              <div className="flex-auto">
+                <h3>0.00 AMPE</h3>
+                <p>My Staking</p>
+              </div>
+              <div className="flex-auto">
+                <h3>0.00 AMPE</h3>
+                <p>Free balance</p>
+              </div>
+              <div className="flex-auto">
+                <button className="btn btn-secondary w-full" disabled>0 AMPE Unboarding</button>
+              </div>
             </div>
           </div>
         </div>

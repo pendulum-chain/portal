@@ -118,6 +118,22 @@
 .collators-list-container {
 }
 
+.collators-box .card-body {
+  padding: 1rem 1rem 0 1rem;
+}
+
+.collators-box .card-body h3 {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.collators-box .card-body p {
+  color: var(--table-text);
+}
+
 .collators-list-table th {
   background-color: var(--table-background);
   border-bottom: 1px solid var(--table-border);
