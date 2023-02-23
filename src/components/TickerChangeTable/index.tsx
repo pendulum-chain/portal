@@ -1,12 +1,12 @@
-import { h } from "preact";
-import "./styles.css";
-import usdc from "../../assets/usdc.png";
+import { h } from 'preact';
+import './styles.css';
+import usdc from '../../assets/usdc.png';
 
 const TickerChangeTable = () => (
   <div className="ticker-change-table" style={{ marginTop: 40 }}>
     <div className="row">
       <div className="cell icon">
-        <img src={usdc} alt="Pendulum" style={{ filter: "invert(1)" }} />
+        <img src={usdc} alt="Pendulum" style={{ filter: 'invert(1)' }} />
       </div>
       <div className="cell">
         <span className="bold">PEN</span>

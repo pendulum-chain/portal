@@ -1,6 +1,6 @@
-import { useMemo } from "preact/hooks";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { UnsubscribePromise } from "@polkadot/api-base/types";
+import { useMemo } from 'preact/hooks';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { UnsubscribePromise } from '@polkadot/api-base/types';
 
 export function useSecurityPallet() {
   const { api } = useNodeInfoState().state;
@@ -13,7 +13,7 @@ export function useSecurityPallet() {
         return await api.query.security.activeBlockCount();
       },
       async subscribeActiveBlockNumber(
-        callback: (activeBlockNumber: number) => void
+        callback: (activeBlockNumber: number) => void,
       ) {
         let unsubscribe: UnsubscribePromise = new Promise(() => undefined);
         if (api) {

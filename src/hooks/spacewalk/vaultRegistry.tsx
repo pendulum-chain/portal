@@ -1,8 +1,8 @@
-import type { VaultRegistryVault } from "@polkadot/types/lookup";
-import { useEffect, useMemo, useState } from "preact/hooks";
-import { AccountId32 } from "@polkadot/types/interfaces";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { convertRawHexKeyToPublicKey } from "../../helpers/stellar";
+import type { VaultRegistryVault } from '@polkadot/types/lookup';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { AccountId32 } from '@polkadot/types/interfaces';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 
 export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;

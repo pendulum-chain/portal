@@ -1,10 +1,10 @@
-import { h } from "preact";
-import { Button } from "react-daisyui";
-import { useCallback, useMemo } from "preact/hooks";
-import { WalletAccount } from "@talismn/connect-wallets";
-import { WalletSelect } from "@talismn/connect-components";
-import { GlobalStateInterface, useGlobalState } from "../GlobalStateProvider";
-import addressFormatter from "../helpers/addressFormatter";
+import { h } from 'preact';
+import { Button } from 'react-daisyui';
+import { useCallback, useMemo } from 'preact/hooks';
+import { WalletAccount } from '@talismn/connect-wallets';
+import { WalletSelect } from '@talismn/connect-components';
+import { GlobalStateInterface, useGlobalState } from '../GlobalStateProvider';
+import addressFormatter from '../helpers/addressFormatter';
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const { state, setState } = useGlobalState();
@@ -21,7 +21,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
         return newState;
       });
     },
-    [setState]
+    [setState],
   );
 
   const ConnectButton = useMemo(
@@ -33,9 +33,9 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
           style={{ marginRight: 10 }}
           endIcon={
             <img
-              src={state.walletAccount.wallet?.logo?.src || ""}
+              src={state.walletAccount.wallet?.logo?.src || ''}
               style={{ width: 20 }}
-              alt={state.walletAccount.wallet?.logo?.alt || ""}
+              alt={state.walletAccount.wallet?.logo?.alt || ''}
             />
           }
         >
@@ -44,7 +44,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
       ) : (
         <Button color="primary">Connect to Wallet</Button>
       ),
-    [state.walletAccount]
+    [state.walletAccount],
   );
 
   return (

@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
-import Big from "big.js";
-import { SpacewalkPrimitivesCurrencyId } from "@polkadot/types/lookup";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
-import { nativeToDecimal } from "../../helpers/parseNumbers";
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import Big from 'big.js';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
 
 export function useFeePallet() {
   const [issueFee, setIssueFee] = useState<Big>(new Big(0));
@@ -11,7 +11,7 @@ export function useFeePallet() {
   const [punishmentFee, setPunishmentFee] = useState<Big>(new Big(0));
   const [premiumRedeemFee, setPremiumRedeemFee] = useState<Big>(new Big(0));
   const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(
-    new Big(0)
+    new Big(0),
   );
   const [replaceGriefingCollateral, setReplaceGriefingCollateral] =
     useState<Big>(new Big(0));
@@ -35,7 +35,7 @@ export function useFeePallet() {
     let unsubscribe: () => void = () => undefined;
 
     setGriefingCollateralCurrency(
-      api.consts.vaultRegistry?.getGriefingCollateralCurrencyId
+      api.consts.vaultRegistry?.getGriefingCollateralCurrencyId,
     );
 
     Promise.all([
@@ -91,7 +91,7 @@ export function useFeePallet() {
         }
 
         // Can be any address because we don't care about executing it here
-        const dummyAddress = "5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS";
+        const dummyAddress = '5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS';
         const sender = dummyAddress;
         const info = await extrinsic.paymentInfo(sender);
 

@@ -1,5 +1,7 @@
-import { Select } from "react-daisyui";
-import { h } from "preact";
+import { Select } from 'react-daisyui';
+import { h } from 'preact';
+import { ofSelect } from '../../helpers/general';
+import { ChangeEvent } from 'preact/compat';
 
 interface Props<T> {
   items: T[];
@@ -9,6 +11,7 @@ interface Props<T> {
   style?: React.CSSProperties;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
   const { label, items, onChange, value } = props;
 
@@ -21,7 +24,8 @@ function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
       )}
       <Select
         className="w-fit max-w-full h-10 border border-gray-500 rounded-md bg-transparent"
-        onChange={(e) => {
+        onChange={(e: ChangeEvent) => {
+          if (!ofSelect(e.target)) return;
           const id = e.target.value;
           const item = items.find((i) => i.id === id);
           if (item) {

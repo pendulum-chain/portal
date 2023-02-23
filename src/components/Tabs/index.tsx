@@ -1,7 +1,7 @@
-import { FC } from "preact/compat";
-import { h } from "preact";
+import { FC } from 'preact/compat';
+import { h } from 'preact';
 
-import "./styles.css";
+import './styles.css';
 
 const Tabs: FC = () => {
   return (

@@ -1,4 +1,4 @@
-import { Input, InputProps } from "react-daisyui";
+import { Input, InputProps } from 'react-daisyui';
 
 interface Props {
   autoSelect?: boolean;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 function LabelledInputField(props: Props & InputProps) {
-  const { autoSelect, label, onChange, ...rest } = props;
+  const { label, onChange, ...rest } = props;
 
   return (
     <div
