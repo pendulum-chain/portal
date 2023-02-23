@@ -1,4 +1,4 @@
-import { FC, memo, useRef } from 'preact/compat';
+import { memo, useRef } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useTheme } from 'react-daisyui';
 import { Outlet, useParams } from 'react-router-dom';
@@ -48,7 +48,7 @@ export default function Layout(): React.JSX.Element {
 
   const sidebar = useRef<HTMLDivElement>(null);
 
-  const FooterLink: FC = memo(() => {
+  const FooterLink = memo(() => {
     return isPendulum ? (
       <span onClick={() => (window.location.href = '/amplitude')}>
         Amplitude
