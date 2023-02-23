@@ -160,11 +160,11 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </button>
         </div>
       </div>
-      <div className={`modal${modalType ? ' modal-open' : ''}`}>
-        <div className="modal-box relative">
+      <div className={`modal modal-top${modalType ? ' modal-open' : ''}`}>
+        <div className="modal-box relative mt-8 md:mt-16 lg:mt-20">
           <button
             className="btn btn-sm absolute right-2 top-2"
-            onClick={() => setModalType()}
+            onClick={() => setModalType(undefined)}
           >
             ✕
           </button>
@@ -173,6 +173,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             <TokenSelector
               tokens={[]}
               onSelect={modalType === 'from' ? onFromChange : onToChange}
+              selected={modalType === 'from' ? state.from : state.to}
             />
           </div>
         </div>

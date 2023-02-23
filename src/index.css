@@ -285,3 +285,6 @@ nav a span {
   min-height: 0;
   height: 100%;
 }
+.modal.modal-top {
+  align-items: flex-start;
+}

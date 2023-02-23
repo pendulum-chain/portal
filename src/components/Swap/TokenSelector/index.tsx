@@ -4,12 +4,14 @@ import { useMemo, useState } from 'preact/compat';
 export interface TokenSelectorProps {
   tokens?: any[];
   onSelect: (token: string) => void;
+  selected?: string;
 }
 
 // TODO: complete
 const TokenSelector = ({
   tokens,
   onSelect,
+  selected,
 }: TokenSelectorProps): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
@@ -27,7 +29,11 @@ const TokenSelector = ({
       />
       <div>
         {filteredTokens?.map((token) => (
-          <div key={String(token)} onClick={() => onSelect(token)}>
+          <div
+            key={String(token)}
+            onClick={() => onSelect(token)}
+            className={`${selected === token ? 'bg-gray-100' : ''}`}
+          >
             {String(token)}
           </div>
         ))}
