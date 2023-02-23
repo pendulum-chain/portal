@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState } from "react";
-import { debounce } from "../helpers/function";
-import { storageService } from "../services/storage/local";
-import { Storage } from "../services/storage/types";
+import { useCallback, useMemo, useState } from 'react';
+import { debounce } from '../helpers/function';
+import { storageService } from '../services/storage/local';
+import { Storage } from '../services/storage/types';
 
 export interface UseLocalStorageProps<T> {
   key: string;
@@ -23,12 +23,12 @@ export const useLocalStorage = <T>({
   debounce: debounceTime,
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
   type Def = UseLocalStorageResponse<T>;
-  const storageSet = useMemo<Storage["set"]>(
+  const storageSet = useMemo<Storage['set']>(
     () =>
       debounceTime
         ? debounce(storageService.set, debounceTime)
         : storageService.set,
-    [debounceTime]
+    [debounceTime],
   );
 
   const [state, setState] = useState<T | undefined>(() =>
@@ -37,31 +37,31 @@ export const useLocalStorage = <T>({
           ...defaultValue,
           ...storageService.getParsed<T>(key, defaultValue as T),
         } as T)
-      : (storageService.get(key) as T | undefined) ?? (defaultValue as T)
+      : (storageService.get(key) as T | undefined) ?? (defaultValue as T),
   );
-  const set = useCallback<Def["set"]>(
+  const set = useCallback<Def['set']>(
     (value) => {
       storageSet(key, value);
       setState(value);
     },
-    [key, storageSet]
+    [key, storageSet],
   );
-  const clear = useCallback<Def["clear"]>(() => {
+  const clear = useCallback<Def['clear']>(() => {
     storageService.remove(key);
     setState(undefined);
   }, [key]);
-  const merge = useCallback<Def["merge"]>(
+  const merge = useCallback<Def['merge']>(
     (value) => {
       setState((prev) => {
         const newVal =
-          typeof value === "function"
+          typeof value === 'function'
             ? value(prev)
             : ({ ...prev, ...value } as T);
         storageSet(key, newVal);
         return newVal;
       });
     },
-    [key, storageSet]
+    [key, storageSet],
   );
   return { state, set, merge, clear };
 };

@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useState } from 'preact/compat';
 import { toast } from 'react-toastify';
+import { config } from '../../config';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
 import { emptyFn } from '../../helpers/general';
@@ -12,29 +14,38 @@ import { getSwapTokens } from '../../services/api/tokens';
 export interface UseSwapComponentProps {
   from?: string;
   to?: string;
+  onChange?: (from: string, to: string) => void;
 }
 
 export const defaults: SwapSettings = {
   slippage: 0.5,
   deadline: 30,
-  from: 'ETH',
-  to: 'USDC',
+  ...config.swap.defaults,
 };
 
-export const useSwapComponent = (props: UseSwapComponentProps) => {
+export const useSwapComponent = ({
+  from,
+  to,
+  onChange,
+}: UseSwapComponentProps) => {
   const {
     state: { api },
   } = useNodeInfoState();
 
+  const modalState = useState<undefined | 'from' | 'to'>();
   const dropdown = useBoolean();
   const storage = useLocalStorage<SwapSettings>({
     key: storageKeys.SWAP_SETTINGS,
-    defaultValue: { ...defaults, ...props },
+    defaultValue: defaults,
     parse: true,
     debounce: 1000,
   });
+  const { merge } = storage;
 
-  // TODO: fetch swap rates/info
+  // TODO: fetch tokens
+  // TODO: fetch wallet token balances
+  // TODO: fetch swap rates and other info, update everytime token changes, refetch interval
+
   const swapQuery = useQuery([cacheKeys.swapData], emptyFn, {
     ...inactiveOptions[0],
     //refetchInterval: 10000,
@@ -42,7 +53,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
       toast(err || 'Error fetching swap rates', { type: 'error' });
     },
   });
-  // TODO: fetch tokens
   const tokensQuery = useQuery(
     api ? [cacheKeys.tokens] : [],
     getSwapTokens(api),
@@ -55,5 +65,53 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     },
   );
 
-  return { swapQuery, tokensQuery, dropdown, storage };
+  const onFromChange = useCallback(
+    (f: string) => {
+      merge((prev) => {
+        const updated = {
+          ...defaults,
+          ...prev,
+          from: f,
+          to: (prev?.to === f ? prev?.from : prev?.to) || defaults.to,
+        };
+        if (onChange) onChange(updated.from, updated.to);
+        return updated;
+      });
+      // TODO: update queries, rates
+    },
+    [merge, onChange],
+  );
+
+  const onToChange = useCallback(
+    (t: string) => {
+      merge((prev) => {
+        const updated = {
+          ...defaults,
+          ...prev,
+          to: t,
+          from: (prev?.from === t ? prev?.to : prev?.from) || defaults.from,
+        };
+        if (onChange) onChange(updated.from, updated.to);
+        return updated;
+      });
+      // TODO: update queries, rates
+    },
+    [merge, onChange],
+  );
+
+  // when props change (url updated)
+  useEffect(() => {
+    if (from) onFromChange(from);
+    if (to) onToChange(to);
+  }, [from, to, onFromChange, onToChange]);
+
+  return {
+    swapQuery,
+    tokensQuery,
+    dropdown,
+    storage,
+    modalState,
+    onFromChange,
+    onToChange,
+  };
 };

@@ -7,6 +7,7 @@ export interface SwapTokenProps {
   token: string;
   onChange: (val: string) => void;
   onValueSelect?: (val: number) => void;
+  onOpenSelector: () => void;
   className?: string;
   children?: ReactNode;
   isLoading?: boolean;
@@ -16,6 +17,7 @@ const SwapToken = ({
   token,
   //onChange,
   onValueSelect,
+  onOpenSelector,
   className,
   children,
   isLoading,
@@ -41,10 +43,9 @@ const SwapToken = ({
             </div>
           </div>
           <div className="flex flex-col items-end">
-            <label
-              htmlFor="tokens-modal"
+            <button
               className="btn btn-xs h-4 min-h-none bg-gray-200 rounded-full pl-0 pr-1 flex items-center"
-              onClick={() => console.log('TODO')}
+              onClick={onOpenSelector}
             >
               <span className="rounded-full bg-gray-300 h-full p-px mr-1">
                 <img
@@ -55,7 +56,7 @@ const SwapToken = ({
               </span>
               <strong className="font-bold">{token}</strong>
               <ChevronDownIcon className="w-4 h-4 inline ml-px" />
-            </label>
+            </button>
             <div className="flex gap-1 mt-3 text-sm text-gray-500">
               {'Balance: 0.01'}
               {onValueSelect && (

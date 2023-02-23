@@ -7,6 +7,7 @@ import {
 import { Fragment } from 'preact';
 import { inputClass } from './styles';
 import SwapToken from './SwapToken';
+import TokenSelector from './TokenSelector';
 import {
   defaults,
   useSwapComponent,
@@ -14,10 +15,17 @@ import {
 } from './useSwapComponent';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
-  const { storage, dropdown, swapQuery /* tokensQuery */ } =
-    useSwapComponent(props);
+  const {
+    storage,
+    dropdown,
+    modalState,
+    onFromChange,
+    onToChange,
+    swapQuery /* tokensQuery */,
+  } = useSwapComponent(props);
   const { state = defaults, merge } = storage;
   const [isOpen, { toggle }] = dropdown;
+  const [modalType, setModalType] = modalState;
   const swapData = swapQuery.data || {};
 
   return (
@@ -25,7 +33,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
       <div className="card w-full max-w-xl bg-base-100 shadow-xl border rounded-lg">
         <div className="card-body text-gray-800">
           <div className="flex justify-between mb-2">
-            <h2 className="card-title text-3xl">Swap</h2>
+            <h2 className="card-title text-3xl font-normal">Swap</h2>
             <div className="dropdown dropdown-end">
               <button className="btn btn-ghost btn-circle text-gray-600">
                 <Cog8ToothIcon className="h-8 w-8" />
@@ -95,11 +103,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             token={state.from}
             onChange={() => console.log('TODO')}
             onValueSelect={() => console.log('TODO')}
+            onOpenSelector={() => setModalType('from')}
           />
           <SwapToken
             isLoading={swapQuery.isLoading}
             token={state.to}
             onChange={() => console.log('TODO')}
+            onOpenSelector={() => setModalType('to')}
           >
             <Fragment>
               <div className="mt-4 h-px -mx-4 bg-gray-200" />
@@ -150,17 +160,21 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </button>
         </div>
       </div>
-      <input type="checkbox" id="tokens-modal" className="modal-toggle" />
-      <div className="modal">
+      <div className={`modal${modalType ? ' modal-open' : ''}`}>
         <div className="modal-box relative">
-          <label
-            htmlFor="tokens-modal"
+          <button
             className="btn btn-sm absolute right-2 top-2"
+            onClick={() => setModalType()}
           >
             ✕
-          </label>
+          </button>
           <h3 className="text-lg font-bold">Select a token</h3>
-          <div className="py-4">Tokens...</div>
+          <div className="py-4">
+            <TokenSelector
+              tokens={[]}
+              onSelect={modalType === 'from' ? onFromChange : onToChange}
+            />
+          </div>
         </div>
       </div>
     </>

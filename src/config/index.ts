@@ -33,4 +33,11 @@ export const config = {
       theme: ThemeName.Amplitude,
     },
   } as Tenants,
+  swap: {
+    defaults: {
+      // TODO: update
+      from: 'ETH',
+      to: 'USDC',
+    },
+  },
 };
