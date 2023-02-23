@@ -14,7 +14,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll=true",
     "format": "prettier . --write",
-    "version": "semantic-release"
+    "release": "semantic-release"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
