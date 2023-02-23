@@ -7,3 +7,5 @@ export const ofInput = instanceOf<HTMLInputElement>(HTMLInputElement);
 export const ofTextArea = instanceOf<HTMLTextAreaElement>(HTMLTextAreaElement);
 export const ofSelect = instanceOf<HTMLSelectElement>(HTMLSelectElement);
 export const ofAnchor = instanceOf<HTMLAnchorElement>(HTMLAnchorElement);
+
+export const emptyFn = () => null;

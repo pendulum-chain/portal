@@ -2,10 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
+import { emptyFn } from '../../helpers/general';
 import useBoolean from '../../hooks/useBoolean';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { SwapSettings } from '../../models/Swap';
-import { get, getTokens } from '../../services/api/swap';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { getSwapTokens } from '../../services/api/tokens';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -20,6 +22,10 @@ export const defaults: SwapSettings = {
 };
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
+  const {
+    state: { api },
+  } = useNodeInfoState();
+
   const dropdown = useBoolean();
   const storage = useLocalStorage<SwapSettings>({
     key: storageKeys.SWAP_SETTINGS,
@@ -29,7 +35,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   });
 
   // TODO: fetch swap rates/info
-  const swapQuery = useQuery([cacheKeys.swapData], get, {
+  const swapQuery = useQuery([cacheKeys.swapData], emptyFn, {
     ...inactiveOptions[0],
     //refetchInterval: 10000,
     onError: (err) => {
@@ -37,11 +43,17 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     },
   });
   // TODO: fetch tokens
-  const tokensQuery = useQuery([cacheKeys.tokens], getTokens, {
-    ...inactiveOptions[0],
-    onError: (err) => {
-      toast(err || 'Error fetching swap rates', { type: 'error' });
+  const tokensQuery = useQuery(
+    api ? [cacheKeys.tokens] : [],
+    getSwapTokens(api),
+    {
+      ...inactiveOptions[0],
+      enabled: !!api,
+      onError: (err) => {
+        toast(err || 'Error fetching swap rates', { type: 'error' });
+      },
     },
-  });
+  );
+
   return { swapQuery, tokensQuery, dropdown, storage };
 };

@@ -17,3 +17,6 @@ type ReactNode =
   | boolean
   | null
   | undefined;
+
+type Dict<T = unknown> = Record<string | number | symbol, T>;
+type AnyFn = (...args: any) => any;

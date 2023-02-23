@@ -67,11 +67,11 @@ body,
 input,
 textarea,
 select {
-  font-family: "Nunito Sans", sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 .font-2 {
-  font-family: "Outfit", sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
 body,
@@ -265,6 +265,13 @@ nav a span {
   border-bottom: 1px solid var(--footer-links);
 }
 
+/* utility classes */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* theme override */
 .btn,
 .input {
@@ -274,7 +281,7 @@ nav a span {
   padding: 0;
 }
 .collapse-title,
-:where(.collapse > input[type="checkbox"]) {
+:where(.collapse > input[type='checkbox']) {
   min-height: 0;
   height: 100%;
 }

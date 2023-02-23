@@ -41,7 +41,8 @@ const SwapToken = ({
             </div>
           </div>
           <div className="flex flex-col items-end">
-            <button
+            <label
+              htmlFor="tokens-modal"
               className="btn btn-xs h-4 min-h-none bg-gray-200 rounded-full pl-0 pr-1 flex items-center"
               onClick={() => console.log('TODO')}
             >
@@ -54,7 +55,7 @@ const SwapToken = ({
               </span>
               <strong className="font-bold">{token}</strong>
               <ChevronDownIcon className="w-4 h-4 inline ml-px" />
-            </button>
+            </label>
             <div className="flex gap-1 mt-3 text-sm text-gray-500">
               {'Balance: 0.01'}
               {onValueSelect && (
@@ -77,20 +78,6 @@ const SwapToken = ({
           </div>
         </div>
         {children}
-      </div>
-
-      <input type="checkbox" id="tokens-modal" className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box relative">
-          <label
-            htmlFor="tokens-modal"
-            className="btn btn-sm absolute right-2 top-2"
-          >
-            ✕
-          </label>
-          <h3 className="text-lg font-bold">Select a token</h3>
-          <div className="py-4"></div>
-        </div>
       </div>
     </>
   );

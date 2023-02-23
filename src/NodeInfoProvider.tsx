@@ -1,8 +1,8 @@
-import { createContext, h } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { createContext } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -63,13 +63,11 @@ const NodeInfoProvider = ({
 
       setState((prevState) => ({
         ...prevState,
-        ...{
-          bestNumberFinalize: Number(bestNumberFinalize),
-          ss58Format: Number(ss58Format),
-          tokenDecimals,
-          tokenSymbol,
-          api,
-        },
+        bestNumberFinalize: Number(bestNumberFinalize),
+        ss58Format: Number(ss58Format),
+        tokenDecimals,
+        tokenSymbol,
+        api,
       }));
 
       const [chain, nodeName, nodeVersion] = await Promise.all([
@@ -80,11 +78,9 @@ const NodeInfoProvider = ({
 
       setState((prevState) => ({
         ...prevState,
-        ...{
-          chain: chain.toString(),
-          nodeName: nodeName.toString(),
-          nodeVersion: nodeVersion.toString(),
-        },
+        chain: chain.toString(),
+        nodeName: nodeName.toString(),
+        nodeVersion: nodeVersion.toString(),
       }));
 
       disconnect = () => {
