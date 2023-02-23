@@ -1,4 +1,4 @@
-import { Input, InputProps } from "react-daisyui";
+import { Input, InputProps } from 'react-daisyui';
 import { forwardRef } from "react";
 
 interface Props {

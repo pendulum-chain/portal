@@ -1,8 +1,8 @@
-import { createContext, h } from "preact";
-import { useContext, useEffect, useState } from "preact/hooks";
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { options } from "@pendulum-chain/api";
-import { rpc } from "@pendulum-chain/types";
+import { createContext, h } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { options } from '@pendulum-chain/api';
+import { rpc } from '@pendulum-chain/types';
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -25,7 +25,7 @@ const NodeInfoProvider = ({
   tenantRPC,
   value = {},
 }: {
-  children: any;
+  children: ReactNode;
   tenantRPC: string;
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
@@ -38,32 +38,28 @@ const NodeInfoProvider = ({
   useEffect(() => {
     let disconnect: () => void = () => undefined;
 
-    if (tenantRPC === currentTenantRPC) {
-      return;
-    }
-
     const connect = async () => {
       const provider = new WsProvider(tenantRPC);
       const api = await ApiPromise.create(
         options({
           provider,
           rpc,
-        })
+        }),
       );
 
       const bestNumberFinalize = await api.derive.chain.bestNumber();
       const chainProperties = await api.registry.getChainProperties();
-      const ss58Format = chainProperties?.get("ss58Format").toString();
+      const ss58Format = chainProperties?.get('ss58Format').toString();
       const tokenDecimals = Number(
         chainProperties
-          ?.get("tokenDecimals")
+          ?.get('tokenDecimals')
           .toString()
-          .replace(/[\\[\]]/g, "")
+          .replace(/[\\[\]]/g, ''),
       );
       const tokenSymbol = chainProperties
-        ?.get("tokenSymbol")
+        ?.get('tokenSymbol')
         .toString()
-        .replace(/[\\[\]]/g, "");
+        .replace(/[\\[\]]/g, '');
 
       setState((prevState) => ({
         ...prevState,
@@ -73,6 +69,21 @@ const NodeInfoProvider = ({
           tokenDecimals,
           tokenSymbol,
           api,
+        },
+      }));
+
+      const [chain, nodeName, nodeVersion] = await Promise.all([
+        api.rpc.system.chain(),
+        api.rpc.system.name(),
+        api.rpc.system.version(),
+      ]);
+
+      setState((prevState) => ({
+        ...prevState,
+        ...{
+          chain: chain.toString(),
+          nodeName: nodeName.toString(),
+          nodeVersion: nodeVersion.toString(),
         },
       }));
 

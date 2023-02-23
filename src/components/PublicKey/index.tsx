@@ -1,12 +1,12 @@
-import React from "react";
-import { useClipboard } from "../../hooks/userinterface";
-import { Button } from "react-daisyui";
-import { DocumentDuplicateIcon } from "@heroicons/react/20/solid";
+import React from 'react';
+import { useClipboard } from '../../hooks/userinterface';
+import { Button } from 'react-daisyui';
+import { DocumentDuplicateIcon } from '@heroicons/react/20/solid';
 
-type Variant = "full" | "short" | "shorter";
+type Variant = 'full' | 'short' | 'shorter';
 
 function getDigitCounts(variant?: Variant) {
-  if (variant === "short") {
+  if (variant === 'short') {
     return {
       leading: 6,
       trailing: 6,
@@ -19,13 +19,13 @@ function getDigitCounts(variant?: Variant) {
   }
 }
 
-function shortenName(name: string, intendedLength: number) {
+export function shortenName(name: string, intendedLength: number) {
   if (name.length <= intendedLength) {
     return name;
   } else {
     return (
       name.substr(0, intendedLength - 3).trim() +
-      "…" +
+      '…' +
       name
         .substr(intendedLength - 3)
         .substr(-3)
@@ -43,16 +43,16 @@ interface PublicKeyProps {
 
 // tslint:disable-next-line no-shadowed-variable
 export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
-  const { variant = "full" } = props;
+  const { variant = 'full' } = props;
   const digits = getDigitCounts(props.variant);
 
   const style: React.CSSProperties = {
-    display: "inline",
-    fontSize: "inherit",
-    fontWeight: "bold",
-    userSelect: "text",
-    WebkitUserSelect: "text",
-    whiteSpace: variant !== "full" ? "pre" : undefined,
+    display: 'inline',
+    fontSize: 'inherit',
+    fontWeight: 'bold',
+    userSelect: 'text',
+    WebkitUserSelect: 'text',
+    whiteSpace: variant !== 'full' ? 'pre' : undefined,
     ...props.style,
   };
 
@@ -61,10 +61,10 @@ export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
   } else {
     return (
       <span style={style}>
-        {props.variant === "full" || !props.variant
+        {props.variant === 'full' || !props.variant
           ? props.publicKey
           : props.publicKey.substr(0, digits.leading) +
-            "…" +
+            '…' +
             props.publicKey.substr(-digits.trailing)}
       </span>
     );
@@ -81,16 +81,16 @@ interface AddressProps {
 
 // tslint:disable-next-line no-shadowed-variable
 export const ClickableAddress = React.memo(function ClickableAddress(
-  props: AddressProps
+  props: AddressProps,
 ) {
   return (
     <Button
       color="ghost"
       onClick={props.onClick}
       style={{
-        fontSize: "inherit",
-        fontWeight: "inherit",
-        textAlign: "inherit",
+        fontSize: 'inherit',
+        fontWeight: 'inherit',
+        textAlign: 'inherit',
       }}
     >
       {props.icon ? (
@@ -110,7 +110,7 @@ interface CopyableAddressProps extends AddressProps {
 
 // tslint:disable-next-line no-shadowed-variable
 export const CopyableAddress = React.memo(function CopyableAddress(
-  props: CopyableAddressProps
+  props: CopyableAddressProps,
 ) {
   const { onClick } = props;
   const clipboard = useClipboard();

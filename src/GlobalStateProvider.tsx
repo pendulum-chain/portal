@@ -1,19 +1,19 @@
-import { createContext, h } from "preact";
-import { useContext, useState } from "preact/hooks";
-import { WalletAccount } from "@talismn/connect-wallets";
+import { createContext, h } from 'preact';
+import { useContext, useState } from 'preact/hooks';
+import { WalletAccount } from '@talismn/connect-wallets';
 
 export enum TenantName {
-  Amplitude = "amplitude",
-  Pendulum = "pendulum",
-  Foucoco = "foucoco",
-  Local = "local",
+  Amplitude = 'amplitude',
+  Pendulum = 'pendulum',
+  Foucoco = 'foucoco',
+  Local = 'local',
 }
 
 export enum TenantRPC {
-  Amplitude = "wss://rpc-amplitude.pendulumchain.tech",
-  Pendulum = "wss://rpc-pendulum.pendulumchain.tech",
-  Foucoco = "wss://rpc-foucoco.pendulumchain.tech",
-  Local = "ws://localhost:9944",
+  Amplitude = 'wss://rpc-amplitude.pendulumchain.tech',
+  Pendulum = 'wss://rpc-pendulum.prd.pendulumchain.tech',
+  Foucoco = 'wss://rpc-foucoco.pendulumchain.tech',
+  Local = 'ws://localhost:9944',
 }
 
 export interface GlobalStateInterface {
@@ -23,8 +23,8 @@ export interface GlobalStateInterface {
 }
 
 const enum ThemeName {
-  Amplitude = "amplitude",
-  Pendulum = "pendulum",
+  Amplitude = 'amplitude',
+  Pendulum = 'pendulum',
 }
 
 const DefaultGlobalState: GlobalStateInterface = {

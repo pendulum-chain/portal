@@ -1,14 +1,14 @@
-import { h } from "preact";
-import { Card, Tabs } from "react-daisyui";
-import { useMemo, useState } from "preact/hooks";
-import Redeem from "./Redeem";
-import Issue from "./Issue";
+import { h } from 'preact';
+import { Card, Tabs } from 'react-daisyui';
+import { useMemo, useState } from 'preact/hooks';
+import Redeem from './Redeem';
+import Issue from './Issue';
 
 function Bridge(): JSX.Element {
   const [tabValue, setTabValue] = useState(0);
 
   // TODO - get the network from somewhere
-  const parachainNetwork = "Amplitude";
+  const parachainNetwork = 'Amplitude';
   const nativeCurrency = parachainNetwork === "Amplitude" ? "AMPE" : "PEN";
   const wrappedCurrencyPrefix = parachainNetwork === "Amplitude" ? "a" : "p";
 
