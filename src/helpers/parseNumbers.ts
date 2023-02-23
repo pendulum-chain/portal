@@ -1,4 +1,4 @@
-import BigNumber from "big.js";
+import BigNumber from 'big.js';
 
 // These are the decimals used for the native currency on the Amplitude network
 export const AmplitudeDecimals = 12;
@@ -56,7 +56,7 @@ export const nativeStellarToDecimal = (value: BigNumber | number | string) => {
   return quotient.toNumber();
 };
 
-export const prettyNumbers = (number: number, lang = "en-US") =>
+export const prettyNumbers = (number: number, lang = 'en-US') =>
   number.toLocaleString(lang, {
     minimumFractionDigits: 2,
   });

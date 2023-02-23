@@ -1,5 +1,5 @@
-import { Select } from "react-daisyui";
-import { h } from "preact";
+import { Select } from 'react-daisyui';
+import { h } from 'preact';
 
 interface Props<T> {
   items: T[];
@@ -9,7 +9,9 @@ interface Props<T> {
   style?: React.CSSProperties;
 }
 
-function LabelledSelector<T extends { id: any; displayName: string }>(props: Props<T>) {
+function LabelledSelector<T extends { id: any; displayName: string }>(
+  props: Props<T>,
+) {
   const { label, items, onChange, value } = props;
 
   return (

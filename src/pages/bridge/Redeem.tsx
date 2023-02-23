@@ -1,42 +1,42 @@
-import { h } from "preact";
-import { Button, Checkbox, Divider, Modal } from "react-daisyui";
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import LabelledInputField from "../../components/LabelledInputField";
+import { h } from 'preact';
+import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import LabelledInputField from '../../components/LabelledInputField';
 import {
   RichRedeemRequest,
   useRedeemPallet,
-} from "../../hooks/spacewalk/redeem";
-import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
-import { VaultRegistryVault } from "@polkadot/types/lookup";
+} from '../../hooks/spacewalk/redeem';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { VaultRegistryVault } from '@polkadot/types/lookup';
 import {
   calculateDeadline,
   convertCurrencyToStellarAsset,
-} from "../../helpers/spacewalk";
-import { Asset } from "stellar-sdk";
+} from '../../helpers/spacewalk';
+import { Asset } from 'stellar-sdk';
 import {
   convertRawHexKeyToPublicKey,
   isPublicKey,
   StellarPublicKeyPattern,
-} from "../../helpers/stellar";
-import { useFeePallet } from "../../hooks/spacewalk/fee";
+} from '../../helpers/stellar';
+import { useFeePallet } from '../../hooks/spacewalk/fee';
 import {
   decimalToNative,
   decimalToStellarNative,
   nativeStellarToDecimal,
   nativeToDecimal,
-} from "../../helpers/parseNumbers";
-import Big from "big.js";
-import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
-import { useGlobalState } from "../../GlobalStateProvider";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { getErrors, getEventBySectionAndMethod } from "../../helpers/substrate";
-import { toast } from "react-toastify";
-import { CopyableAddress, PublicKey } from "../../components/PublicKey";
-import { useSecurityPallet } from "../../hooks/spacewalk/security";
-import { VoidFn } from "@polkadot/api-base/types";
-import { DateTime } from "luxon";
-import { AssetSelector, VaultSelector } from "../../components/Selector";
-import { Controller, useForm } from "react-hook-form";
+} from '../../helpers/parseNumbers';
+import Big from 'big.js';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { toast } from 'react-toastify';
+import { CopyableAddress, PublicKey } from '../../components/PublicKey';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { VoidFn } from '@polkadot/api-base/types';
+import { DateTime } from 'luxon';
+import { AssetSelector, VaultSelector } from '../../components/Selector';
+import { Controller, useForm } from 'react-hook-form';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -59,8 +59,8 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   const amount = props.amountNative;
 
   const wrappedCurrencyName = bridgedAsset
-    ? (wrappedCurrencyPrefix || "") + bridgedAsset.getCode()
-    : "";
+    ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode()
+    : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -125,20 +125,20 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [remainingDurationString, setRemainingDurationString] =
-    useState<string>("");
+    useState<string>('');
 
   const totalAmount = redeemRequest
     ? nativeToDecimal(
-        redeemRequest.request.amount.add(redeemRequest.request.fee).toString()
+        redeemRequest.request.amount.add(redeemRequest.request.fee).toString(),
       ).toString()
-    : "";
+    : '';
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
   const rawDestinationAddress = redeemRequest?.request.stellarAddress;
   const destination = rawDestinationAddress
     ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-    : "";
+    : '';
 
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
@@ -161,7 +161,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     const interval = setInterval(() => {
       const newDeadlineString = deadline
         .diff(DateTime.now())
-        .toFormat("hh:mm:ss");
+        .toFormat('hh:mm:ss');
       setRemainingDurationString(newDeadlineString);
     });
 
@@ -186,7 +186,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             Send {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by{" "}
+            (issued by{' '}
             {asset && (
               <PublicKey variant="short" publicKey={asset?.getIssuer()} />
             )}
@@ -253,15 +253,15 @@ function Redeem(props: RedeemProps): JSX.Element {
     watch,
   } = useForm<RedeemFormInputs>({
     defaultValues: {
-      amount: "0",
-      stellarAddress: "",
+      amount: '0',
+      stellarAddress: '',
     },
   });
 
   const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
-  const amount = watch("amount");
+  const amount = watch('amount');
   const { stellarAddress } = getValues();
 
   const vaults = getVaults();
@@ -275,7 +275,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     return vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
-        console.log("currency", currency);
+        console.log('currency', currency);
         return convertCurrencyToStellarAsset(currency);
       })
       .filter((asset): asset is Asset => {
@@ -290,7 +290,7 @@ function Redeem(props: RedeemProps): JSX.Element {
       }
 
       const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(
-        vault.id.currencies.wrapped
+        vault.id.currencies.wrapped,
       );
       return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
     });
@@ -321,7 +321,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     return createRedeemRequestExtrinsic(
       amountNative.toString(),
       stellarAddress,
-      selectedVault.id
+      selectedVault.id,
     );
   }, [
     amountNative,
@@ -337,7 +337,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     }
 
     if (!walletAccount) {
-      toast("No wallet connected", { type: "error" });
+      toast('No wallet connected', { type: 'error' });
       return;
     }
 
@@ -354,16 +354,16 @@ function Redeem(props: RedeemProps): JSX.Element {
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join(
-                "\n"
+                '\n',
               )}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: "error" });
+              toast(errorMessage, { type: 'error' });
             }
           } else if (status.isFinalized) {
             const requestRedeemEvents = getEventBySectionAndMethod(
               events,
-              "redeem",
-              "RequestRedeem"
+              'redeem',
+              'RequestRedeem',
             );
 
             // We only expect one event but loop over all of them just in case
@@ -382,12 +382,12 @@ function Redeem(props: RedeemProps): JSX.Element {
               setConfirmationDialogVisible(true);
             }
           }
-        }
+        },
       )
       .catch((error) => {
-        console.error("Transaction submission failed", error);
-        toast("Transaction submission failed:" + error.toString(), {
-          type: "error",
+        console.error('Transaction submission failed', error);
+        toast('Transaction submission failed:' + error.toString(), {
+          type: 'error',
         });
         setSubmissionPending(false);
       });
@@ -414,7 +414,7 @@ function Redeem(props: RedeemProps): JSX.Element {
           <div className="flex items-center">
             <Controller
               control={control}
-              rules={{ required: "Amount is required" }}
+              rules={{ required: 'Amount is required' }}
               render={({ field }) => (
                 <LabelledInputField
                   autoSelect
@@ -459,10 +459,10 @@ function Redeem(props: RedeemProps): JSX.Element {
           <Controller
             control={control}
             rules={{
-              required: "Stellar address is required",
+              required: 'Stellar address is required',
               pattern: {
                 value: StellarPublicKeyPattern,
-                message: "Stellar address is invalid",
+                message: 'Stellar address is invalid',
               },
             }}
             render={({ field }) => (

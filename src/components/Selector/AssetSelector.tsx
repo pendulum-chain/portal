@@ -1,7 +1,7 @@
-import { Asset } from "stellar-sdk";
-import { stringifyStellarAsset } from "../../helpers/stellar";
-import LabelledSelector from "./LabelledSelector";
-import { h } from "preact";
+import { Asset } from 'stellar-sdk';
+import { stringifyStellarAsset } from '../../helpers/stellar';
+import LabelledSelector from './LabelledSelector';
+import { h } from 'preact';
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -12,7 +12,7 @@ interface AssetSelectorProps {
 }
 
 function getDisplayName(asset: Asset, assetPrefix?: string): string {
-  return `${assetPrefix || ""}${asset.getCode()}`;
+  return `${assetPrefix || ''}${asset.getCode()}`;
 }
 
 function AssetSelector(props: AssetSelectorProps): JSX.Element {

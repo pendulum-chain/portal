@@ -20,7 +20,7 @@ export function convertRawHexKeyToPublicKey(rawPublicKeyHex: string): Keypair {
 
 export function convertPublicKeyToRaw(pubKey: string): string {
   const raw = StrKey.decodeEd25519PublicKey(pubKey);
-  return `0x${raw.toString("hex")}`;
+  return `0x${raw.toString('hex')}`;
 }
 
 export function stringifyStellarAsset(asset: Asset): string {

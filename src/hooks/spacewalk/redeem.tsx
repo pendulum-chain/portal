@@ -1,11 +1,11 @@
 import type {
   SpacewalkPrimitivesRedeemRedeemRequest,
   SpacewalkPrimitivesVaultId,
-} from "@polkadot/types/lookup";
-import { useMemo } from "preact/hooks";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { H256 } from "@polkadot/types/interfaces";
-import { convertPublicKeyToRaw } from "../../helpers/stellar";
+} from '@polkadot/types/lookup';
+import { useMemo } from 'preact/hooks';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { H256 } from '@polkadot/types/interfaces';
+import { convertPublicKeyToRaw } from '../../helpers/stellar';
 
 export interface RichRedeemRequest {
   id: H256;
@@ -48,7 +48,7 @@ export function useRedeemPallet() {
       createRedeemRequestExtrinsic(
         amount: string,
         stellarAddress: string,
-        vaultId: SpacewalkPrimitivesVaultId
+        vaultId: SpacewalkPrimitivesVaultId,
       ) {
         if (!api) {
           return undefined;

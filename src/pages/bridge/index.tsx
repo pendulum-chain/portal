@@ -9,8 +9,8 @@ function Bridge(): JSX.Element {
 
   // TODO - get the network from somewhere
   const parachainNetwork = 'Amplitude';
-  const nativeCurrency = parachainNetwork === "Amplitude" ? "AMPE" : "PEN";
-  const wrappedCurrencyPrefix = parachainNetwork === "Amplitude" ? "a" : "p";
+  const nativeCurrency = parachainNetwork === 'Amplitude' ? 'AMPE' : 'PEN';
+  const wrappedCurrencyPrefix = parachainNetwork === 'Amplitude' ? 'a' : 'p';
 
   const Content = useMemo(() => {
     switch (tabValue) {

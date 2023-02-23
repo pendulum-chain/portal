@@ -1,5 +1,5 @@
 import { Input, InputProps } from 'react-daisyui';
-import { forwardRef } from "react";
+import { forwardRef } from 'react';
 
 interface Props {
   autoSelect?: boolean;
@@ -15,7 +15,7 @@ interface Props {
 const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
   const { autoSelect, color, error, label, onChange, style, ...rest } = props;
 
-  const inputColor = error ? "error" : color;
+  const inputColor = error ? 'error' : color;
 
   return (
     <div

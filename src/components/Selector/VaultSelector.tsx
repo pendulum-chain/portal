@@ -1,6 +1,6 @@
-import { VaultRegistryVault } from "@polkadot/types/lookup";
-import LabelledSelector from "./LabelledSelector";
-import { h } from "preact";
+import { VaultRegistryVault } from '@polkadot/types/lookup';
+import LabelledSelector from './LabelledSelector';
+import { h } from 'preact';
 
 interface VaultSelectorProps {
   vaults: VaultRegistryVault[];
@@ -36,7 +36,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
         newVault && props.onChange(newVault);
       }}
       value={selectedVaultItem}
-      style={{ marginTop: "8px" }}
+      style={{ marginTop: '8px' }}
     />
   );
 }
