@@ -131,18 +131,29 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const [remainingDurationString, setRemainingDurationString] =
     useState<string>('');
 
-  const totalAmount = issueRequest
-    ? nativeStellarToDecimal(
-        issueRequest.request.amount.add(issueRequest.request.fee).toString(),
-      ).toString()
-    : '';
-  const currency = issueRequest?.request.asset;
-  const asset = currency && convertCurrencyToStellarAsset(currency);
+  const totalAmount = useMemo(
+    () =>
+      issueRequest
+        ? nativeStellarToDecimal(
+            issueRequest.request.amount
+              .add(issueRequest.request.fee)
+              .toString(),
+          ).toString()
+        : '',
+    [issueRequest],
+  );
 
-  const rawDestinationAddress = issueRequest?.request.stellarAddress;
-  const destination = rawDestinationAddress
-    ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-    : '';
+  const asset = useMemo(() => {
+    const currency = issueRequest?.request.asset;
+    return currency && convertCurrencyToStellarAsset(currency);
+  }, [issueRequest?.request.asset]);
+
+  const destination = useMemo(() => {
+    const rawDestinationAddress = issueRequest?.request.stellarAddress;
+    return rawDestinationAddress
+      ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
+      : '';
+  }, [issueRequest?.request.stellarAddress]);
 
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
@@ -171,8 +182,6 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
     return () => clearInterval(interval);
   }, [deadline]);
-
-  console.log('issueRequest', issueRequest?.id);
 
   return (
     <Modal open={visible}>
