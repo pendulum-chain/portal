@@ -1,12 +1,10 @@
-import { h } from 'preact';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import Banner from '../../assets/banner-spacewalk-4x.png';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
-import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
-import Banner from '../../assets/banner-spacewalk-4x.png';
-import Swap from "../../components/Swap";
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
@@ -38,7 +36,6 @@ export function Dashboard() {
 
   return (
     <div className="mt-10">
-      <Swap />
       <div className="card card-compact w-2/3 banner rounded mb-6">
         <a target="blank" href="https://pendulumchain.org/">
           <div className="card-body">

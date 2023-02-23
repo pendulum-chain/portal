@@ -1,13 +1,12 @@
-import { h } from 'preact';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { NotFound } from './components/NotFound';
-import { Dashboard } from './pages/dashboard/Dashboard';
-import Bridge from './pages/bridge';
-import { Amm } from './pages/amm/Amm';
-import { Collators } from './pages/collators/Collators';
 import Layout from './components/Layout';
+import { NotFound } from './components/NotFound';
+import { Amm } from './pages/amm/Amm';
+import Bridge from './pages/bridge';
+import { Collators } from './pages/collators/Collators';
+import { Dashboard } from './pages/dashboard/Dashboard';
 
 export function App() {
   return (
@@ -24,6 +23,7 @@ export function App() {
           <Route path="collators" element={<Collators />} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer />
     </div>

@@ -1,21 +1,18 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
 import { FC, memo, useRef } from 'preact/compat';
-import { h } from 'preact';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useTheme } from 'react-daisyui';
 import { Outlet, useParams } from 'react-router-dom';
-import PendulumLogo from '../../assets/pendulum-logo.png';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
+import PendulumLogo from '../../assets/pendulum-logo.png';
+import { config } from '../../config';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { TenantName } from '../../models/Tenant';
 import OpenWallet from '../OpenWallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import './styles.sass';
 import Versions from './Versions';
-import {
-  TenantName,
-  TenantRPC,
-  useGlobalState,
-} from '../../GlobalStateProvider';
-import { useTheme } from 'react-daisyui';
 
 export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState(false);
@@ -23,6 +20,7 @@ export default function Layout(): React.JSX.Element {
   const { setTheme } = useTheme();
   const { state, setState } = useGlobalState();
 
+  // ? TODO: should redirect in case of wrong network
   const network: TenantName = useMemo(() => {
     return params.network &&
       Object.values<string>(TenantName).includes(params.network)
@@ -33,31 +31,11 @@ export default function Layout(): React.JSX.Element {
   useEffect(() => {
     // Only change state if network is different
     if (state.tenantName !== network) {
-      let newTenantRPC: TenantRPC;
-      switch (network) {
-        case 'pendulum':
-          newTenantRPC = TenantRPC.Pendulum;
-          setTheme('pendulum');
-          break;
-        case 'foucoco':
-          newTenantRPC = TenantRPC.Foucoco;
-          setTheme('amplitude');
-          break;
-        case 'local':
-          newTenantRPC = TenantRPC.Local;
-          setTheme('pendulum');
-          break;
-        case 'amplitude':
-        default:
-          newTenantRPC = TenantRPC.Amplitude;
-          setTheme('amplitude');
-          break;
-      }
-
+      setTheme(network);
       setState((prevState) => ({
         ...prevState,
         tenantName: network,
-        tenantRPC: newTenantRPC,
+        tenantRPC: config.tenants[network].rpc,
       }));
     }
   }, [network, setState, setTheme, state.tenantName]);

@@ -4,47 +4,21 @@ import {
   InformationCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
-import { useQuery } from '@tanstack/react-query';
-import { Fragment, h } from 'preact';
-import { cacheKeys, inactiveOptions } from '../../constants/cache';
-import { storageKeys } from '../../constants/localStorage';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { SwapSettings } from '../../models/Swap';
-import { get } from '../../services/api/swap';
+import { Fragment } from 'preact';
 import { inputClass } from './styles';
-import { toast } from 'react-toastify';
 import SwapToken from './SwapToken';
-import useBoolean from '../../hooks/useBoolean';
+import {
+  defaults,
+  useSwapComponent,
+  UseSwapComponentProps,
+} from './useSwapComponent';
 
-export interface SwapProps {
-  from?: string;
-  to?: string;
-}
-const defaults: SwapSettings = {
-  slippage: 0.5,
-  deadline: 30,
-  from: 'ETH',
-  to: 'USDC',
-};
-
-const Swap = (props: SwapProps): JSX.Element | null => {
-  const [isOpen, { toggle }] = useBoolean();
-  const { state = defaults, merge } = useLocalStorage<SwapSettings>({
-    key: storageKeys.SWAP_SETTINGS,
-    defaultValue: { ...defaults, ...props },
-    parse: true,
-    debounce: 1000,
-  });
-
-  // TODO: fetch tokens
-  // TODO: fetch swap rates/info
-  const { data, isLoading } = useQuery([cacheKeys.swapData], get, {
-    ...inactiveOptions[0],
-    onError: (err) => {
-      toast(err || 'Error fetching swap rates', { type: 'error' });
-    },
-  });
-  const response = data || {};
+const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
+  const { storage, dropdown, swapQuery /* tokensQuery */ } =
+    useSwapComponent(props);
+  const { state = defaults, merge } = storage;
+  const [isOpen, { toggle }] = dropdown;
+  const swapData = swapQuery.data || {};
 
   return (
     <div className="card max-w-xl bg-base-100 shadow-xl border rounded-lg">
@@ -122,7 +96,7 @@ const Swap = (props: SwapProps): JSX.Element | null => {
           onValueSelect={() => console.log('TODO')}
         />
         <SwapToken
-          isLoading={isLoading}
+          isLoading={swapQuery.isLoading}
           token={state.to}
           onChange={() => console.log('TODO')}
         >
@@ -138,13 +112,13 @@ const Swap = (props: SwapProps): JSX.Element | null => {
                 onClick={toggle}
               >
                 <div className="flex items-center">
-                  <div className="tooltip" data-tip="! TODO">
+                  <div className="tooltip" data-tip="! TODO" title="! TODO">
                     <InformationCircleIcon className="w-5 h-5 mr-1" />
                   </div>
                   1 USDC = 0.00 ETH ($1.00)
                 </div>
                 <div>
-                  ${response.price}
+                  ${swapData.price}
                   <ChevronDownIcon className="w-3 h-3 inline ml-1 -mt-px" />
                 </div>
               </div>
@@ -152,19 +126,19 @@ const Swap = (props: SwapProps): JSX.Element | null => {
                 <div className="mt-3 h-px -mx-4 bg-gray-200" />
                 <div className="flex justify-between px-4">
                   <div>Expected Output:</div>
-                  <div>{response.output} USDC</div>
+                  <div>{swapData.output} USDC</div>
                 </div>
                 <div className="flex justify-between px-4">
                   <div>Price Impact:</div>
-                  <div>{response.impact}%</div>
+                  <div>{swapData.impact}%</div>
                 </div>
                 <div className="flex justify-between px-4">
                   <div>Minimum received after slippage (0.56%):</div>
-                  <div>{response.receive} USDC</div>
+                  <div>{swapData.receive} USDC</div>
                 </div>
                 <div className="flex justify-between px-4">
                   <div>Network Fee:</div>
-                  <div>{response.fee}</div>
+                  <div>{swapData.fee}</div>
                 </div>
               </div>
             </div>
