@@ -1,5 +1,4 @@
 import './styles.css';
-import { h } from 'preact';
 
 type Props = {
   title?: string;
