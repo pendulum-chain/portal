@@ -30,13 +30,20 @@ const NodeInfoProvider = ({
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
-  const [currentTenantRPC, setCurrentTenantRPC] = useState(tenantRPC);
+  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(
+    undefined,
+  );
   const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
     Promise<unknown>
   >(Promise.resolve());
 
   useEffect(() => {
     let disconnect: () => void = () => undefined;
+
+    // If the tenantRPC is the same as the currentTenantRPC, we don't need to do anything.
+    if (currentTenantRPC && currentTenantRPC === tenantRPC) {
+      return disconnect;
+    }
 
     const connect = async () => {
       const provider = new WsProvider(tenantRPC);
