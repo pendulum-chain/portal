@@ -45,7 +45,7 @@ export default function Layout(): React.JSX.Element {
           break;
         case 'local':
           newTenantRPC = TenantRPC.Local;
-          setTheme('pendulum');
+          setTheme('amplitude');
           break;
         case 'amplitude':
         default:
