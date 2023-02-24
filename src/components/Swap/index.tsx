@@ -5,6 +5,8 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Fragment } from 'preact';
+import { repeat } from '../../helpers/general';
+import { Skeleton } from '../Skeleton';
 import { inputClass } from './styles';
 import SwapToken from './SwapToken';
 import TokenSelector from './TokenSelector';
@@ -16,12 +18,14 @@ import {
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
+    walletAccount,
     storage,
     dropdown,
     modalState,
     onFromChange,
     onToChange,
-    swapQuery /* tokensQuery */,
+    swapQuery,
+    tokensQuery,
   } = useSwapComponent(props);
   const { state = defaults, merge } = storage;
   const [isOpen, { toggle }] = dropdown;
@@ -155,7 +159,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               </div>
             </Fragment>
           </SwapToken>
-          <button className="btn btn-primary w-full mt-6 text-base">
+          <button
+            className="btn btn-primary w-full mt-6 text-base"
+            disabled={!walletAccount?.wallet}
+          >
             Swap
           </button>
         </div>
@@ -170,11 +177,15 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </button>
           <h3 className="text-lg font-bold">Select a token</h3>
           <div className="py-4">
-            <TokenSelector
-              tokens={[]}
-              onSelect={modalType === 'from' ? onFromChange : onToChange}
-              selected={modalType === 'from' ? state.from : state.to}
-            />
+            {tokensQuery.isLoading ? (
+              repeat(<Skeleton className="w-full h-10 mb-2" />)
+            ) : (
+              <TokenSelector
+                tokens={[]}
+                onSelect={modalType === 'from' ? onFromChange : onToChange}
+                selected={modalType === 'from' ? state.from : state.to}
+              />
+            )}
           </div>
         </div>
       </div>

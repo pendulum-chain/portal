@@ -4,12 +4,15 @@ import { toast } from 'react-toastify';
 import { config } from '../../config';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
+import { useGlobalState } from '../../GlobalStateProvider';
 import { emptyFn } from '../../helpers/general';
 import useBoolean from '../../hooks/useBoolean';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { SwapSettings } from '../../models/Swap';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { isApiConnected } from '../../services/api/helpers';
 import { getSwapTokens } from '../../services/api/tokens';
+import { getWalletBalances } from '../../services/api/wallet';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -29,6 +32,9 @@ export const useSwapComponent = ({
   onChange,
 }: UseSwapComponentProps) => {
   const {
+    state: { walletAccount },
+  } = useGlobalState();
+  const {
     state: { api },
   } = useNodeInfoState();
 
@@ -41,26 +47,48 @@ export const useSwapComponent = ({
     debounce: 1000,
   });
   const { merge } = storage;
+  const isConnected = isApiConnected(api);
 
   // TODO: fetch tokens
   // TODO: fetch wallet token balances
   // TODO: fetch swap rates and other info, update everytime token changes, refetch interval
 
-  const swapQuery = useQuery([cacheKeys.swapData], emptyFn, {
-    ...inactiveOptions[0],
-    //refetchInterval: 10000,
-    onError: (err) => {
-      toast(err || 'Error fetching swap rates', { type: 'error' });
-    },
-  });
-  const tokensQuery = useQuery(
-    api ? [cacheKeys.tokens] : [],
-    getSwapTokens(api),
+  const balancesQuery = useQuery(
+    walletAccount?.address && isConnected
+      ? [cacheKeys.swapData, walletAccount.address]
+      : [],
+    walletAccount?.address && isConnected
+      ? () => getWalletBalances(api, walletAccount.address)
+      : emptyFn,
     {
       ...inactiveOptions[0],
-      enabled: !!api,
+      //refetchInterval: 10000,
+      enabled: !!walletAccount?.address && isConnected,
+      onError: (err) => {
+        toast(err || 'Error fetching wallet balances', { type: 'error' });
+      },
+    },
+  );
+  const swapQuery = useQuery(
+    [cacheKeys.swapData, storage.state?.from, storage.state?.to],
+    emptyFn,
+    {
+      ...inactiveOptions[0],
+      //refetchInterval: 10000,
+      enabled: false,
       onError: (err) => {
         toast(err || 'Error fetching swap rates', { type: 'error' });
+      },
+    },
+  );
+  const tokensQuery = useQuery(
+    isConnected ? [cacheKeys.tokens] : [],
+    isConnected ? () => getSwapTokens(api) : emptyFn,
+    {
+      ...inactiveOptions[0],
+      enabled: !!api && api.isConnected,
+      onError: (err) => {
+        toast(err || 'Error fetching tokens', { type: 'error' });
       },
     },
   );
@@ -106,8 +134,10 @@ export const useSwapComponent = ({
   }, [from, to, onFromChange, onToChange]);
 
   return {
+    walletAccount,
     swapQuery,
     tokensQuery,
+    balancesQuery,
     dropdown,
     storage,
     modalState,

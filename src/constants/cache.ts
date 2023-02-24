@@ -3,6 +3,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 export const cacheKeys = {
   swapData: 'swapData',
   tokens: 'tokens',
+  walletBalances: 'walletBalances',
 };
 
 export type QueryOptions = Partial<
