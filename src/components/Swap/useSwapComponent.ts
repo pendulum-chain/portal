@@ -1,5 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'preact/compat';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { config } from '../../config';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
@@ -13,6 +15,8 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import { isApiConnected } from '../../services/api/helpers';
 import { getSwapTokens } from '../../services/api/tokens';
 import { getWalletBalances } from '../../services/api/wallet';
+import schema from './schema';
+import { SwapFormValues } from './types';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -21,7 +25,6 @@ export interface UseSwapComponentProps {
 }
 
 export const defaults: SwapSettings = {
-  slippage: 0.5,
   deadline: 30,
   ...config.swap.defaults,
 };
@@ -46,12 +49,36 @@ export const useSwapComponent = ({
     parse: true,
     debounce: 1000,
   });
-  const { merge } = storage;
+  const { merge, state: storageState } = storage;
   const isConnected = isApiConnected(api);
+
+  const form = useForm<SwapFormValues>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      fromAmount: 0,
+      ...storageState,
+      from: from || storageState?.from,
+      to: to || storageState?.to,
+    },
+  });
+  const { setValue } = form;
 
   // TODO: fetch tokens
   // TODO: fetch wallet token balances
   // TODO: fetch swap rates and other info, update everytime token changes, refetch interval
+  // TODO: submit transaction
+
+  // submit
+  const submitMutation = useMutation<any, any, SwapFormValues>(
+    async (data) => {
+      console.log(data);
+    },
+    {
+      // TODO: display response and update balances and rest form
+      onError: () => undefined,
+      onSuccess: () => undefined,
+    },
+  );
 
   // ? might make sense to move queries into custom hooks that can be reused
   const balancesQuery = useQuery(
@@ -103,12 +130,14 @@ export const useSwapComponent = ({
           from: f,
           to: (prev?.to === f ? prev?.from : prev?.to) || defaults.to,
         };
+        setValue('from', updated.from);
+        setValue('to', updated.to);
         if (onChange) onChange(updated.from, updated.to);
         return updated;
       });
       // TODO: update queries, rates
     },
-    [merge, onChange],
+    [merge, onChange, setValue],
   );
 
   const onToChange = useCallback(
@@ -120,12 +149,14 @@ export const useSwapComponent = ({
           to: t,
           from: (prev?.from === t ? prev?.to : prev?.from) || defaults.from,
         };
+        setValue('from', updated.from);
+        setValue('to', updated.to);
         if (onChange) onChange(updated.from, updated.to);
         return updated;
       });
       // TODO: update queries, rates
     },
-    [merge, onChange],
+    [merge, onChange, setValue],
   );
 
   // when props change (url updated)
@@ -135,10 +166,12 @@ export const useSwapComponent = ({
   }, [from, to, onFromChange, onToChange]);
 
   return {
+    form,
     walletAccount,
     swapQuery,
     tokensQuery,
     balancesQuery,
+    submitMutation,
     dropdown,
     storage,
     modalState,

@@ -288,3 +288,8 @@ nav a span {
 .modal.modal-top {
   align-items: flex-start;
 }
+.input-ghost {
+  background-color: transparent;
+  outline: none;
+  border: 0;
+}

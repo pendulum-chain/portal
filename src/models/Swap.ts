@@ -1,5 +1,5 @@
 export interface SwapSettings {
-  slippage: number | 'auto';
+  slippage?: number;
   deadline: number;
   from: string;
   to: string;

@@ -5,16 +5,13 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Fragment } from 'preact';
+import { errorClass } from '../../helpers/form';
 import { repeat } from '../../helpers/general';
 import { Skeleton } from '../Skeleton';
 import { inputClass } from './styles';
 import SwapToken from './SwapToken';
 import TokenSelector from './TokenSelector';
-import {
-  defaults,
-  useSwapComponent,
-  UseSwapComponentProps,
-} from './useSwapComponent';
+import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -26,8 +23,15 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     onToChange,
     swapQuery,
     tokensQuery,
+    submitMutation,
+    form,
   } = useSwapComponent(props);
-  const { state = defaults, merge } = storage;
+  const {
+    setValue,
+    register,
+    formState: { errors },
+  } = form;
+  const { merge } = storage;
   const [isOpen, { toggle }] = dropdown;
   const [modalType, setModalType] = modalState;
   const swapData = swapQuery.data || {};
@@ -35,7 +39,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   return (
     <>
       <div className="card w-full max-w-xl bg-base-100 shadow-xl border rounded-lg">
-        <div className="card-body text-gray-800">
+        <form
+          className="card-body text-gray-800"
+          onSubmit={form.handleSubmit((data) => submitMutation.mutate(data))}
+        >
           <div className="flex justify-between mb-2">
             <h2 className="card-title text-3xl font-normal">Swap</h2>
             <div className="dropdown dropdown-end">
@@ -58,7 +65,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                     <div className="flex gap-2 mt-2">
                       <button
                         className="btn btn-sm px-3 btn-primary"
-                        onClick={() => merge({ slippage: 'auto' })}
+                        onClick={() => {
+                          setValue('slippage', undefined);
+                          merge({ slippage: undefined });
+                        }}
                       >
                         Auto
                       </button>
@@ -67,11 +77,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                           className={`${inputClass} pr-6 w-full`}
                           type="number"
                           step=".1"
-                          defaultValue={String(state.slippage)}
-                          placeholder="0.5"
-                          onChange={(ev) =>
-                            merge({ slippage: Number(ev.currentTarget.value) })
-                          }
+                          placeholder="Auto"
+                          {...register('slippage', {
+                            onChange: (ev) =>
+                              merge({
+                                slippage: Number(ev.currentTarget.value),
+                              }),
+                          })}
                         />
                         <div className="absolute right-0 top-0 w-5 h-full flex items-center">
                           %
@@ -90,11 +102,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                       <input
                         className={`${inputClass} w-20 pr-0`}
                         type="number"
-                        defaultValue={String(state.deadline)}
                         placeholder="30"
-                        onChange={(ev) =>
-                          merge({ deadline: Number(ev.currentTarget.value) })
-                        }
+                        {...register('deadline', {
+                          onChange: (ev) =>
+                            merge({
+                              deadline: Number(ev.currentTarget.value),
+                            }),
+                        })}
                       />
                       <span className="text-gray-600">minutes</span>
                     </div>
@@ -104,16 +118,33 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             </div>
           </div>
           <SwapToken
-            token={state.from}
-            onChange={() => console.log('TODO')}
+            token="ETH"
             onValueSelect={() => console.log('TODO')}
             onOpenSelector={() => setModalType('from')}
+            className={`border ${errorClass(
+              errors.fromAmount,
+              'border-red-600',
+              'border-transparent',
+            )}`}
+            value={
+              <input
+                autoFocus
+                className="input-ghost w-full text-4xl font-2"
+                {...register('fromAmount', { onChange: () => undefined })}
+              />
+            }
           />
+
           <SwapToken
-            isLoading={swapQuery.isLoading}
-            token={state.to}
-            onChange={() => console.log('TODO')}
+            token="USDC"
             onOpenSelector={() => setModalType('to')}
+            isLoading={swapQuery.isLoading}
+            className={`border ${errorClass(
+              errors.to,
+              'border-red-600',
+              'border-transparent',
+            )}`}
+            value={120}
           >
             <Fragment>
               <div className="mt-4 h-px -mx-4 bg-gray-200" />
@@ -159,13 +190,16 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               </div>
             </Fragment>
           </SwapToken>
-          <button
-            className="btn btn-primary w-full mt-6 text-base"
-            disabled={!walletAccount?.wallet}
-          >
-            Swap
-          </button>
-        </div>
+          <div className="mt-6">
+            {/* <Validation errors={errors} className="mb-2" /> */}
+            <button
+              className="btn btn-primary w-full text-base"
+              disabled={!walletAccount?.wallet}
+            >
+              Swap
+            </button>
+          </div>
+        </form>
       </div>
       <div className={`modal modal-top${modalType ? ' modal-open' : ''}`}>
         <div className="modal-box relative mt-8 md:mt-16 lg:mt-20">
@@ -183,7 +217,11 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               <TokenSelector
                 tokens={[]}
                 onSelect={modalType === 'from' ? onFromChange : onToChange}
-                selected={modalType === 'from' ? state.from : state.to}
+                selected={
+                  modalType === 'from'
+                    ? form.getValues().from
+                    : form.getValues().to
+                }
               />
             )}
           </div>
