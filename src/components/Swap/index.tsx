@@ -170,7 +170,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
       <div className={`modal modal-top${modalType ? ' modal-open' : ''}`}>
         <div className="modal-box relative mt-8 md:mt-16 lg:mt-20">
           <button
-            className="btn btn-sm absolute right-2 top-2"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
             onClick={() => setModalType(undefined)}
           >
             ✕

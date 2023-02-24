@@ -53,6 +53,7 @@ export const useSwapComponent = ({
   // TODO: fetch wallet token balances
   // TODO: fetch swap rates and other info, update everytime token changes, refetch interval
 
+  // ? might make sense to move queries into custom hooks that can be reused
   const balancesQuery = useQuery(
     walletAccount?.address && isConnected
       ? [cacheKeys.swapData, walletAccount.address]
