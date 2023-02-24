@@ -58,7 +58,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                     <div className="flex gap-2 mt-2">
                       <button
                         className="btn btn-sm px-3 btn-primary"
-                        onClick={() => merge({ slippage: defaults.slippage })}
+                        onClick={() => merge({ slippage: 'auto' })}
                       >
                         Auto
                       </button>
