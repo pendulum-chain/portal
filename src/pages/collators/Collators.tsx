@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { nativeToDecimal } from "../../helpers/parseNumbers";
+import { nativeToBN, nativeToDecimal } from "../../helpers/parseNumbers";
 import { useSortBy, useTable } from "react-table";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useGlobalState } from "../../GlobalStateProvider";
@@ -12,14 +13,21 @@ import RewardsIcon from "../../assets/collators-rewards-icon";
 
 import {
   ParachainStakingCandidate,
+  ParachainStakingInflationInflationInfo,
   useStakingPallet,
 } from "../../hooks/staking/staking";
 import { getAddressForFormat } from "../../helpers/addressFormatter";
 import UnlinkIcon from "../../assets/UnlinkIcon";
 import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
+import { useCallback } from "react";
+
+interface UserStaking {
+  candidateId: string;
+  amount: string;
+}
 
 export function Collators() {
-  const { api, tokenSymbol, chain, ss58Format } = useNodeInfoState().state;
+  const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
 
   const { candidates, inflationInfo } = useStakingPallet();
@@ -28,14 +36,31 @@ export function Collators() {
   const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
     useState<ParachainStakingCandidate | undefined>(undefined);
 
-  const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0");
+  const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0.00");
+  const [userStaking, setUserStaking] = useState<UserStaking>();
+
+  const userAccountAddress = useMemo(() => {
+    return walletAccount && ss58Format
+      ? getAddressForFormat(walletAccount?.address, ss58Format)
+      : "";
+  }, [walletAccount, ss58Format]);
+
+  useMemo(() => {
+    return candidates.forEach((candidate) => {
+      const isDelegator = candidate.delegators.find(
+        (delegator) => delegator.owner === userAccountAddress
+      );
+      if (isDelegator) {
+        setUserStaking({ candidateId: candidate.id, amount: isDelegator.amount });
+      }
+    });
+  }, [candidates, userAccountAddress, setUserStaking])
 
   useEffect(() => {
     const fetchAvailableBalance = async () => {
       if (!api || !walletAccount) {
         return "0";
       }
-
       const { data: balance } = await api.query.system.account(
         walletAccount?.address
       );
@@ -62,88 +87,72 @@ export function Collators() {
   );
 
   const columns = useMemo(
-    () => [
-      {
-        Header: "Collator",
-        accessor: "collator",
-      },
-      {
-        Header: "Total Staked",
-        accessor: "totalStaked",
-      },
-      {
-        Header: "Delegators",
-        accessor: "delegators",
-      },
-      {
-        Header: "APY",
-        accessor: "apy",
-      },
-      {
-        Header: "My Staked",
-        accessor: "myStaked",
-        Cell: ({ row }) => {
-          const ss58Address =
-            walletAccount && ss58Format
-              ? getAddressForFormat(walletAccount?.address, ss58Format)
-              : "";
+    () => {
+      const getAmountDelegated = (candidate: ParachainStakingCandidate) =>
+        candidate.delegators.find(({ owner }) => owner === userAccountAddress)?.amount;
 
-          const isDelegator = row.original.candidate.delegators.find(
-            (delegator) => delegator.owner === ss58Address
-          );
-          return isDelegator ? (
-            <div>
-              {nativeToDecimal(isDelegator.amount)} {tokenSymbol}
-            </div>
-          ) : (
-            <div />
-          );
+      return [
+        {
+          Header: "Collator",
+          accessor: "collator",
         },
-      },
-      {
-        Header: "",
-        accessor: "actions",
-        Cell: ({ row }) => {
-          const ss58Address =
-            walletAccount && ss58Format
-              ? getAddressForFormat(walletAccount?.address, ss58Format)
-              : "";
-
-          const isDelegator = row.original.candidate.delegators.find(
-            (delegator) => delegator.owner === ss58Address
-          );
-
-          const showUnbond = Boolean(isDelegator);
-
-          return (
-            <div className="flex flex-row justify-center">
-              <Button
-                className="mr-2 text-primary"
-                size="sm"
-                color="ghost"
-                onClick={() => undefined}
-                startIcon={<UnlinkIcon className="w-4 h-4" />}
-                style={{ visibility: showUnbond ? "visible" : "hidden" }}
-              >
-                Unbond
-              </Button>
-              <Button
-                size="sm"
-                color="primary"
-                variant="outline"
-                onClick={() => {
-                  // eslint-disable-next-line react/prop-types
-                  setSelectedCandidateForDelegation(row.original.candidate);
-                }}
-              >
-                Delegate
-              </Button>
-            </div>
-          );
+        {
+          Header: "Total Staked",
+          accessor: "totalStaked",
         },
-      },
-    ],
-    [ss58Format, tokenSymbol, walletAccount]
+        {
+          Header: "Delegators",
+          accessor: "delegators",
+        },
+        {
+          Header: "APY",
+          accessor: "apy",
+        },
+        {
+          Header: "My Staked",
+          accessor: "myStaked",
+          Cell: ({ row }) => {
+            const amountDelegated = getAmountDelegated(row.original.candidate);
+            return <div>
+              {amountDelegated ? nativeToDecimal(amountDelegated) + " " + tokenSymbol : ""}
+            </div>
+          },
+        },
+        {
+          Header: "",
+          accessor: "actions",
+          Cell: ({ row }) => {
+            const showUnbond = Boolean(getAmountDelegated(row.original.candidate));
+            return (
+              <div className="flex flex-row justify-center">
+                <Button
+                  className="mr-2 text-primary"
+                  size="sm"
+                  color="ghost"
+                  onClick={() => undefined}
+                  startIcon={<UnlinkIcon className="w-4 h-4" />}
+                  style={{ visibility: showUnbond ? "visible" : "hidden" }}
+                >
+                  Unbond
+                </Button>
+                <Button
+                  size="sm"
+                  color="primary"
+                  variant="outline"
+                  onClick={() => {
+                    // eslint-disable-next-line react/prop-types
+                    setSelectedCandidateForDelegation(row.original.candidate);
+                  }}
+                >
+                  Delegate
+                </Button>
+              </div>
+            );
+          },
+        },
+      ]
+    },
+    [tokenSymbol, userAccountAddress]
   );
 
   const tableInstance = useTable({ columns, data }, useSortBy);
@@ -162,15 +171,15 @@ export function Collators() {
                 <StakedIcon />
               </div>
               <div className="flex-auto">
-                <h3>0.00 AMPE</h3>
+                <h3>{nativeToDecimal(userStaking?.amount || "0.00")} {tokenSymbol}</h3>
                 <p>My Staking</p>
               </div>
               <div className="flex-auto">
-                <h3>0.00 AMPE</h3>
+                <h3>{nativeToDecimal(userAvailableBalance).toFixed(2)} {tokenSymbol}</h3>
                 <p>Free balance</p>
               </div>
               <div className="flex flex-auto place-content-end">
-                <button className="btn btn-secondary w-full" disabled>0 AMPE Unboarding</button>
+                <button className="btn btn-secondary w-full" disabled>0 {tokenSymbol} Unboarding</button>
               </div>
             </div>
           </div>
@@ -183,7 +192,10 @@ export function Collators() {
                 <RewardsIcon />
               </div>
               <div className="flex-auto">
-                <h4>0.00 AMPE</h4>
+                <h4>
+                  {inflationInfo && userStaking ?
+                    estimateReward(inflationInfo, userStaking) : " 0.00"
+                  } {tokenSymbol}</h4>
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto place-content-end">
@@ -239,3 +251,6 @@ export function Collators() {
     </div>
   );
 }
+
+const estimateReward = (inflationInfo: ParachainStakingInflationInflationInfo, userStaking: UserStaking) =>
+  parseFloat(inflationInfo.collator.rewardRate.annual) * parseFloat(userStaking.amount) / 100
