@@ -30,6 +30,7 @@ import { toast } from 'react-toastify';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { Controller, useForm } from 'react-hook-form';
+import OpenWallet from '../../components/OpenWallet';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -217,7 +218,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     },
   });
 
-  const { wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
@@ -443,14 +444,18 @@ function Redeem(props: RedeemProps): JSX.Element {
             network="Stellar"
             nativeCurrency={nativeCurrency}
           />
-          <Button
-            className="w-full"
-            color="primary"
-            loading={submissionPending}
-            type="submit"
-          >
-            Bridge
-          </Button>
+          {walletAccount ? (
+            <Button
+              className="w-full"
+              color="primary"
+              loading={submissionPending}
+              type="submit"
+            >
+              Bridge
+            </Button>
+          ) : (
+            <OpenWallet networkName={network} />
+          )}
         </form>
       </div>
     </div>

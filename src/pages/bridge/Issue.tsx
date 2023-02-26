@@ -23,11 +23,12 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { toast } from 'react-toastify';
-import { CopyableAddress } from '../../components/PublicKey';
+import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
+import OpenWallet from '../../components/OpenWallet';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -153,6 +154,15 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
       : '';
   }, [issueRequest?.request.stellarAddress]);
 
+  const expectedStellarMemo = useMemo(() => {
+    if (!issueRequest) {
+      return '';
+    }
+    const requestID = issueRequest.id.toString();
+    // Trim first 2 characters to remove the 0x prefix
+    return requestID.slice(2);
+  }, [issueRequest]);
+
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
     subscribeActiveBlockNumber((blockNumber) => {
@@ -201,20 +211,17 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           <div className="text-sm">
             (issued by{' '}
             {asset && (
-              <CopyableAddress variant="short" publicKey={asset?.getIssuer()} />
+              <PublicKey variant="short" publicKey={asset?.getIssuer()} />
             )}
             )
           </div>
           <div className="text mt-4">With the hash memo</div>
           {issueRequest && (
-            <CopyableAddress
-              variant="full"
-              publicKey={issueRequest.id.toString()}
-            />
+            <CopyableAddress variant="short" publicKey={expectedStellarMemo} />
           )}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
-          <div>Within {remainingDurationString}</div>
+          <div className="mt-4">Within {remainingDurationString}</div>
         </div>
         <Divider />
         <div>
@@ -438,14 +445,18 @@ function Issue(props: IssueProps): JSX.Element {
             wrappedCurrencyPrefix={wrappedCurrencyPrefix}
             nativeCurrency={nativeCurrency}
           />
-          <Button
-            className="w-full"
-            color="primary"
-            loading={submissionPending}
-            onClick={submitRequestIssueExtrinsic}
-          >
-            Bridge
-          </Button>
+          {walletAccount ? (
+            <Button
+              className="w-full"
+              color="primary"
+              loading={submissionPending}
+              onClick={submitRequestIssueExtrinsic}
+            >
+              Bridge
+            </Button>
+          ) : (
+            <OpenWallet networkName={network} />
+          )}
         </div>
       </div>
     </div>
