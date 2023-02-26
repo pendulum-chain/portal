@@ -13,9 +13,7 @@ import { Asset } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import {
-  decimalToNative,
   decimalToStellarNative,
-  fixedPointToDecimal,
   nativeStellarToDecimal,
   nativeToDecimal,
 } from '../../helpers/parseNumbers';
@@ -25,7 +23,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { toast } from 'react-toastify';
-import { CopyableAddress, PublicKey } from '../../components/PublicKey';
+import { CopyableAddress } from '../../components/PublicKey';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
@@ -59,7 +57,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
 
-  const [transactionFee, setTransactionFee] = useState<number>(0);
+  const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
 
   useEffect(() => {
     if (!extrinsic) {
@@ -84,7 +82,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return 0;
     }
 
-    return nativeStellarToDecimal(amount) - bridgeFee;
+    return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
 
   return (

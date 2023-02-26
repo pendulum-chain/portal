@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
+import { Button, Checkbox, Modal } from 'react-daisyui';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import LabelledInputField from '../../components/LabelledInputField';
 import {
@@ -8,10 +8,7 @@ import {
 } from '../../hooks/spacewalk/redeem';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
-import {
-  calculateDeadline,
-  convertCurrencyToStellarAsset,
-} from '../../helpers/spacewalk';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Asset } from 'stellar-sdk';
 import {
   convertRawHexKeyToPublicKey,
@@ -20,7 +17,6 @@ import {
 } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import {
-  decimalToNative,
   decimalToStellarNative,
   nativeStellarToDecimal,
   nativeToDecimal,
@@ -32,9 +28,6 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { toast } from 'react-toastify';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { VoidFn } from '@polkadot/api-base/types';
-import { DateTime } from 'luxon';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -65,7 +58,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
 
-  const [transactionFee, setTransactionFee] = useState<number>(0);
+  const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
 
   useEffect(() => {
     if (!extrinsic) {
@@ -86,7 +79,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return 0;
     }
 
-    return nativeStellarToDecimal(amount) - bridgeFee;
+    return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
 
   return (
@@ -122,55 +115,22 @@ interface ConfirmationDialogProps {
 function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { redeemRequest, visible, onClose } = props;
 
-  const { subscribeActiveBlockNumber } = useSecurityPallet();
-  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [remainingDurationString, setRemainingDurationString] =
-    useState<string>('');
-
   const totalAmount = redeemRequest
-    ? nativeToDecimal(
-        redeemRequest.request.amount.add(redeemRequest.request.fee).toString(),
-      ).toString()
+    ? nativeStellarToDecimal(redeemRequest.request.amount.toString()).toString()
     : '';
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
   const rawDestinationAddress = redeemRequest?.request.stellarAddress;
+  console.log('rawDestinationAddress', redeemRequest?.request.stellarAddress);
   const destination = rawDestinationAddress
     ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
     : '';
-
-  useEffect(() => {
-    let unsub: VoidFn = () => undefined;
-    subscribeActiveBlockNumber((blockNumber) => {
-      setActiveBlockNumber(blockNumber);
-    }).then((u) => (unsub = u));
-
-    return unsub;
-  }, [subscribeActiveBlockNumber]);
-
-  const deadline = useMemo(() => {
-    const openTime = redeemRequest?.request.opentime.toNumber() || 0;
-    const period = redeemRequest?.request.period.toNumber() || 0;
-    const end = calculateDeadline(activeBlockNumber, openTime, period, 6);
-
-    return end;
-  }, [activeBlockNumber, redeemRequest]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newDeadlineString = deadline
-        .diff(DateTime.now())
-        .toFormat('hh:mm:ss');
-      setRemainingDurationString(newDeadlineString);
-    });
-
-    return () => clearInterval(interval);
-  }, [deadline]);
+  console.log('destination', destination);
 
   return (
     <Modal open={visible}>
-      <Modal.Header className="font-bold">Deposit</Modal.Header>
+      <Modal.Header className="font-bold">Back to Stellar</Modal.Header>
       <Button
         color="ghost"
         size="md"
@@ -183,7 +143,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
       <Modal.Body>
         <div className="text-center">
           <div className="text-xl">
-            Send {totalAmount} {asset?.getCode()}
+            You will receive {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
             (issued by{' '}
@@ -192,26 +152,25 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             )}
             )
           </div>
-          <div className="text mt-4">In a single transaction to</div>
-          <CopyableAddress variant="short" publicKey={destination} />
-          <div>Within {remainingDurationString}</div>
-        </div>
-        <Divider />
-        <div>
-          <div className="text-sm">
-            Warning: Make sure that the USDC you are sending are issued by the
-            correct issuer.
+          <div className="text-sm text-secondary mt-4">
+            Your request is being processed
           </div>
         </div>
-        <div className="text-sm mt-4">
-          Note: If you have already made the payment, please wait for a few
-          minutes for it to be confirmed.
+        <div className="mt-6 text-secondary">
+          <div className="flex items-center justify-between">
+            <span>Stellar destination address</span>
+            <CopyableAddress variant="short" publicKey={destination} />
+          </div>
+          <div className="text-sm mt-2">
+            We will inform you when the PEN payment is executed. This typically
+            takes only a few minutes but may sometimes take up to 6 hours.
+          </div>
         </div>
       </Modal.Body>
 
       <Modal.Actions className="justify-center">
         <Button color="primary" onClick={onClose}>
-          I have made the payment
+          View Progress
         </Button>
       </Modal.Actions>
     </Modal>
@@ -258,7 +217,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     },
   });
 
-  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { wrappedCurrencyPrefix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
@@ -421,9 +380,9 @@ function Redeem(props: RedeemProps): JSX.Element {
                   error={errors.amount?.message}
                   label="From Amplitude"
                   type="number"
+                  step="any"
                   style={{ flexGrow: 2 }}
-                  onChange={(value: string) => field.onChange(value)}
-                  value={field.value}
+                  {...field}
                 />
               )}
               name="amount"
@@ -471,8 +430,7 @@ function Redeem(props: RedeemProps): JSX.Element {
                 error={errors.stellarAddress?.message}
                 placeholder="Enter target Stellar address"
                 type="text"
-                value={field.value}
-                onChange={(value: string) => field.onChange(value)}
+                {...field}
                 style={{ marginTop: 8 }}
               />
             )}
