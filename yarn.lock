@@ -2649,10 +2649,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.13.0.tgz#0400d1e6ce87e9d3032c19eb6c58205b0d3f7850"
   integrity sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==
 
-"@types/node@^18.14.0":
-  version "18.14.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.0.tgz#94c47b9217bbac49d4a67a967fdcdeed89ebb7d0"
-  integrity sha512-5EWrvLmglK+imbCJY0+INViFWUHg1AHel1sq4ZVSfdcNqGy9Edv3UB9IIzzg+xPaUcAgZYcfVs2fBcwDeZzU0A==
+"@types/node@^18.14.1":
+  version "18.14.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.1.tgz#90dad8476f1e42797c49d6f8b69aaf9f876fc69f"
+  integrity sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==
 
 "@types/normalize-package-data@^2.4.0", "@types/normalize-package-data@^2.4.1":
   version "2.4.1"
@@ -2753,7 +2753,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^5.52.0":
+"@typescript-eslint/eslint-plugin@^5.53.0":
   version "5.53.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.53.0.tgz#24b8b4a952f3c615fe070e3c461dd852b5056734"
   integrity sha512-alFpFWNucPLdUOySmXCJpzr6HKC3bu7XooShWM+3w/EL6J2HIoB2PFxpLnq4JauWVk6DiVeNKzQlFEaE+X9sGw==
@@ -2769,7 +2769,7 @@
     semver "^7.3.7"
     tsutils "^3.21.0"
 
-"@typescript-eslint/parser@^5.52.0":
+"@typescript-eslint/parser@^5.53.0":
   version "5.53.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.53.0.tgz#a1f2b9ae73b83181098747e96683f1b249ecab52"
   integrity sha512-MKBw9i0DLYlmdOb3Oq/526+al20AJZpANdT6Ct9ffxcV8nKCHz63t/S0IhlTFNsBIHJv+GY5SFJ0XfqVeydQrQ==
@@ -3919,10 +3919,10 @@ d@1, d@^1.0.1:
     es5-ext "^0.10.50"
     type "^1.0.1"
 
-daisyui@^2.50.2:
-  version "2.50.2"
-  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-2.50.2.tgz#231bfffb9bcc9c7cd9ce47db0ddad6f25d5899b9"
-  integrity sha512-CzyTsqdkpP2Zwk5Fl+1pFfL7XewRn/COm4TyKx4DbdITpzADMe01j6YZRG/D0kAOyd7t4rXA3zvkqNc7Ak9ukQ==
+daisyui@^2.51.1:
+  version "2.51.1"
+  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-2.51.1.tgz#20fe01f3f3caa8628ebb30fcc1b99341183d1702"
+  integrity sha512-rMtdB8Rh8Ghd3+FDlMe63Caw+IopKIf7tviJGEx8gkjj5H+RCvU1bEbjx6DHsMsu477Gv5aafrLIdoUL+iMRrw==
   dependencies:
     color "^4.2"
     css-selector-tokenizer "^0.8.0"
@@ -8257,7 +8257,7 @@ rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-daisyui@^3.0.2:
+react-daisyui@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/react-daisyui/-/react-daisyui-3.0.3.tgz#ebaff595cadec8b859ae7c2457f94074ddabdb71"
   integrity sha512-H7oxd3W6VmHZvQk6Yenjxxzl9/P75PVON69TMhaVFcJ8e6GV7BdG0lggCOfsxq1bHPr9JFRW85hglStTofJf5w==
@@ -9996,10 +9996,10 @@ yocto-queue@^1.0.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-1.0.0.tgz#7f816433fb2cbc511ec8bf7d263c3b58a1a3c251"
   integrity sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==
 
-yup@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/yup/-/yup-1.0.0.tgz#de4e32f9d2e45b1ab428076fc916c84db861b8ce"
-  integrity sha512-bRZIyMkoe212ahGJTE32cr2dLkJw53Va+Uw5mzsBKpcef9zCGQ23k/xtpQUfGwdWPKvCIlR8CzFwchs2rm2XpQ==
+yup@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/yup/-/yup-1.0.1.tgz#afd3453adc9527c4e3ba00eb7d8f843c99fdbc80"
+  integrity sha512-nZPCUOowoJYjNUxajzFQvfZv+z68Bv9u+2Tv5Ay5oXmn9jahfbd0JPaQ7zD/421ihvYqwMJc73fgdY8gyPKBhg==
   dependencies:
     property-expr "^2.0.5"
     tiny-case "^1.0.3"

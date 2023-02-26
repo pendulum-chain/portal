@@ -46,7 +46,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           <div className="flex justify-between mb-2">
             <h2 className="card-title text-3xl font-normal">Swap</h2>
             <div className="dropdown dropdown-end">
-              <button className="btn btn-ghost btn-circle text-gray-600">
+              <button
+                className="btn btn-ghost btn-circle text-gray-600"
+                type="button"
+              >
                 <Cog8ToothIcon className="h-8 w-8" />
               </button>
               <div
