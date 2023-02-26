@@ -31,6 +31,7 @@ const SwapToken = ({
           <button
             className="btn btn-xs h-4 min-h-none bg-gray-200 rounded-full pl-0 pr-1 flex items-center mt-0.5"
             onClick={onOpenSelector}
+            type="button"
           >
             <span className="rounded-full bg-gray-300 h-full p-px mr-1">
               <img
@@ -58,12 +59,14 @@ const SwapToken = ({
                 <button
                   className="text-primary hover:underline"
                   onClick={() => onValueSelect(100)}
+                  type="button"
                 >
                   MAX
                 </button>
                 <button
                   className="text-primary hover:underline"
                   onClick={() => onValueSelect(50)}
+                  type="button"
                 >
                   50%
                 </button>

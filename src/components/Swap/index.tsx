@@ -72,6 +72,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                           setValue('slippage', undefined);
                           merge({ slippage: undefined });
                         }}
+                        type="button"
                       >
                         Auto
                       </button>
@@ -198,6 +199,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             <button
               className="btn btn-primary w-full text-base"
               disabled={!walletAccount?.wallet}
+              type="submit"
             >
               Swap
             </button>
@@ -209,6 +211,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           <button
             className="btn btn-sm btn-circle absolute right-2 top-2"
             onClick={() => setModalType(undefined)}
+            type="button"
           >
             ✕
           </button>
