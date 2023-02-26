@@ -33,27 +33,21 @@ export const fixedPointToDecimal = (value: BigNumber | number | string) => {
   const bigIntValue = new BigNumber(value);
   const divisor = new BigNumber(10).pow(FixedU128Decimals);
 
-  const quotient = bigIntValue.div(divisor);
-
-  return quotient.toNumber();
+  return bigIntValue.div(divisor);
 };
 
 export const nativeToDecimal = (value: BigNumber | number | string) => {
   const bigIntValue = new BigNumber(value);
   const divisor = new BigNumber(10).pow(AmplitudeDecimals);
 
-  const quotient = bigIntValue.div(divisor);
-
-  return quotient.toNumber();
+  return bigIntValue.div(divisor);
 };
 
 export const nativeStellarToDecimal = (value: BigNumber | number | string) => {
   const bigIntValue = new BigNumber(value);
   const divisor = new BigNumber(10).pow(StellarDecimals);
 
-  const quotient = bigIntValue.div(divisor);
-
-  return quotient.toNumber();
+  return bigIntValue.div(divisor);
 };
 
 export const prettyNumbers = (number: number, lang = 'en-US') =>

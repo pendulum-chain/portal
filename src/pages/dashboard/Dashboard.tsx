@@ -32,7 +32,9 @@ export function Dashboard() {
 
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return undefined;
-    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()));
+    return prettyNumbers(
+      nativeToDecimal(accountBalance.free.toString()).toNumber(),
+    );
   }, [accountBalance]);
 
   return (

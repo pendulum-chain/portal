@@ -51,7 +51,7 @@ export function Collators() {
           // @ts-ignore
           candidates.forEach((candidate: Map[Candidate]) => {
             state.push({
-              amount: nativeToDecimal(candidate.get('amount')),
+              amount: nativeToDecimal(candidate.get('amount')).toNumber(),
               owner: candidate.get('owner').toString(),
             });
           });
