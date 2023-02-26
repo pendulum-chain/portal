@@ -1,7 +1,7 @@
 import React from 'react';
 import { useClipboard } from '../../hooks/userinterface';
 import { Button } from 'react-daisyui';
-import { DocumentDuplicateIcon } from '@heroicons/react/20/solid';
+import CopyIcon from '../../assets/CopyIcon';
 
 type Variant = 'full' | 'short' | 'shorter';
 
@@ -85,6 +85,7 @@ export const ClickableAddress = React.memo(function ClickableAddress(
 ) {
   return (
     <Button
+      className="px-1 h-1"
       color="ghost"
       onClick={props.onClick}
       style={{
@@ -126,7 +127,7 @@ export const CopyableAddress = React.memo(function CopyableAddress(
     <ClickableAddress
       {...props}
       onClick={handleClick}
-      icon={<DocumentDuplicateIcon className="w-5 h-5" />}
+      icon={<CopyIcon className="w-4 h-4" />}
     />
   );
 });
