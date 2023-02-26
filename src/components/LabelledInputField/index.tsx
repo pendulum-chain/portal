@@ -7,6 +7,7 @@ interface Props {
   color?: string;
   error?: string;
   type: string;
+  step?: string;
   value: string;
   onChange?: (value: string) => void;
   style?: React.CSSProperties;
