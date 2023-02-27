@@ -4,7 +4,7 @@ import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { nativeToBN, nativeToDecimal } from "../../helpers/parseNumbers";
+import { nativeToDecimal } from "../../helpers/parseNumbers";
 import { useSortBy, useTable } from "react-table";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useGlobalState } from "../../GlobalStateProvider";
@@ -19,7 +19,6 @@ import {
 import { getAddressForFormat } from "../../helpers/addressFormatter";
 import UnlinkIcon from "../../assets/UnlinkIcon";
 import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
-import { useCallback } from "react";
 
 interface UserStaking {
   candidateId: string;

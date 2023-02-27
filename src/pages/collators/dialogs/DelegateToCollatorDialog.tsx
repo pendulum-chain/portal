@@ -58,6 +58,8 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     [collator, inflationInfo, minDelegatorStake, tokenSymbol]
   );
 
+  const available = nativeToDecimal(availableBalance).toFixed(4);
+
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Delegate</Modal.Header>
@@ -78,10 +80,10 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           value={amount}
           onChange={setAmount}
           label="Amount"
-          secondaryLabel={`Available: ${nativeToDecimal(
-            availableBalance
-          ).toFixed(4)} ${tokenSymbol}`}
+          secondaryLabel={`Available: ${available} ${tokenSymbol}`}
           placeholder="Enter amount..."
+          extraBtnText="Max"
+          extraBtnAction={() => setAmount(available)}
         />
       </Modal.Body>
 
