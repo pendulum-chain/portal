@@ -89,7 +89,6 @@ export function Collators() {
     () => {
       const getAmountDelegated = (candidate: ParachainStakingCandidate) =>
         candidate.delegators.find(({ owner }) => owner === userAccountAddress)?.amount;
-
       return [
         {
           Header: "Collator",
@@ -207,6 +206,7 @@ export function Collators() {
       <ExecuteDelegationDialogs
         userAvailableBalance={userAvailableBalance}
         selectedCandidateForDelegation={selectedCandidateForDelegation}
+        isDelegatingMore={userStaking?.candidateId === selectedCandidateForDelegation?.id}
         onClose={() => setSelectedCandidateForDelegation(undefined)}
       />
       <table className="table w-full collators-list-table bg-base-100" {...getTableProps()}>

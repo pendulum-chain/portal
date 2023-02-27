@@ -102,7 +102,7 @@ export function useStakingPallet() {
     if (api.consts.parachainStaking?.minDelegatorStake) {
       setMinDelegatorStake(
         (api.consts.parachainStaking.minDelegatorStake.toHuman() as string) ||
-          "0"
+        "0"
       );
     }
   }, [api, walletAccount, walletAccount?.address]);
@@ -124,6 +124,17 @@ export function useStakingPallet() {
         const info = await extrinsic.paymentInfo(sender);
 
         return new Big(info.partialFee.toString());
+      },
+      createDelegateMoreExtrinsic(
+        moreAmountNative: string
+      ) {
+        if (!api) {
+          return undefined;
+        }
+
+        return api.tx.parachainStaking?.candidateStakeMore(
+          moreAmountNative
+        );
       },
       createJoinDelegatorsExtrinsic(
         collatorAddress: string,

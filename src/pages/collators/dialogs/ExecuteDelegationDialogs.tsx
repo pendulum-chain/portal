@@ -16,11 +16,12 @@ import { h } from "preact";
 interface ExecuteDelegationDialogsProps {
   userAvailableBalance: string;
   selectedCandidateForDelegation: ParachainStakingCandidate | undefined;
+  isDelegatingMore: boolean;
   onClose: () => void;
 }
 
 function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
-  const { userAvailableBalance, selectedCandidateForDelegation, onClose } =
+  const { userAvailableBalance, selectedCandidateForDelegation, isDelegatingMore, onClose } =
     props;
 
   const { api, tokenSymbol } = useNodeInfoState().state;
@@ -30,6 +31,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     inflationInfo,
     minDelegatorStake,
     createJoinDelegatorsExtrinsic,
+    createDelegateMoreExtrinsic,
     joinDelegatorsTransactionFee,
   } = useStakingPallet();
 
@@ -52,14 +54,16 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     }
 
     const amount = decimalToNative(delegationAmount);
-    const joinDelegatorsExtrinsic = createJoinDelegatorsExtrinsic(
-      selectedCandidateForDelegation.id,
-      amount.toString()
-    );
+    const extrinsic = isDelegatingMore ?
+      createDelegateMoreExtrinsic(amount.toString()) :
+      createJoinDelegatorsExtrinsic(
+        selectedCandidateForDelegation.id,
+        amount.toString()
+      );
 
     setSubmissionPending(true);
 
-    joinDelegatorsExtrinsic
+    extrinsic
       ?.signAndSend(
         walletAccount.address,
         { signer: walletAccount.signer as any },
@@ -90,11 +94,9 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         setSubmissionPending(false);
       });
   }, [
-    api,
-    createJoinDelegatorsExtrinsic,
-    delegationAmount,
-    selectedCandidateForDelegation,
-    walletAccount,
+    walletAccount, api, delegationAmount,
+    selectedCandidateForDelegation, isDelegatingMore,
+    createJoinDelegatorsExtrinsic, createDelegateMoreExtrinsic
   ]);
 
   return (
