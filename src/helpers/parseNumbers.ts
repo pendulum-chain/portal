@@ -1,4 +1,6 @@
+import { pow } from "@polkadot/types/interfaces/definitions";
 import BigNumber from "big.js";
+import { on } from "events";
 
 export const TOKEN_DECIMALS = 12;
 
@@ -27,7 +29,41 @@ export const nativeToDecimal = (value: BigNumber | number | string) => {
   return quotient.toNumber();
 };
 
-export const prettyNumbers = (number: number, lang = "en-US") =>
-  number.toLocaleString(lang, {
+const units = [
+  { divider: 1e9, prefix: "billion", char: "B" },
+  { divider: 1e6, prefix: "million", char: "M" },
+  { divider: 1, prefix: "", char: "" },
+  { divider: 1e-3, prefix: "milli", char: "m" },
+  { divider: 1e-6, prefix: "micro", char: "u" },
+  { divider: 1e-9, prefix: "nano", char: "n" },
+  { divider: 1e-12, prefix: "pico", char: "p" },
+];
+
+export const format = (
+  n: number,
+  tokenSymbol: string | undefined,
+  oneCharOnly = false
+) => {
+  for (let i = 0; i < units.length; i++) {
+    if (n >= units[i].divider) {
+      return (
+        prettyNumbers(n / units[i].divider) +
+        " " +
+        (oneCharOnly ? units[i].char : units[i].prefix + " ") +
+        tokenSymbol
+      );
+    }
+  }
+  return prettyNumbers(n);
+};
+
+export const nativeToFormat = (
+  value: BigNumber | number | string,
+  tokenSymbol: string | undefined,
+  oneCharOnly = false
+) => format(nativeToDecimal(value), tokenSymbol, oneCharOnly);
+
+export const prettyNumbers = (number: number, lang?: string) =>
+  number.toLocaleString(lang || navigator.language, {
     minimumFractionDigits: 2,
   });
