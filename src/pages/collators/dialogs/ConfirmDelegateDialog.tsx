@@ -2,6 +2,7 @@ import Big from "big.js";
 import { nativeToDecimal } from "../../../helpers/parseNumbers";
 import { Button, Modal } from "react-daisyui";
 import { h } from "preact";
+import { CloseButton } from "../../../components/CloseButton";
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;
@@ -39,15 +40,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Settlement Confirmation</Modal.Header>
-      <Button
-        color="ghost"
-        size="md"
-        shape="circle"
-        className="absolute right-4 top-4"
-        onClick={onClose}
-      >
-        ✕
-      </Button>
+      <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
           <div className="text-md text-neutral-content">Delegate</div>
