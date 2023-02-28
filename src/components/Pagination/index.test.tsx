@@ -27,4 +27,16 @@ describe('Pagination', () => {
     render(<Pagination {...props} />);
     expect(screen.getByText('1 - 0 of 0')).toBeInTheDocument();
   });
+
+  test('should display correct pagination without pageCount', () => {
+    const props = {
+      currentIndex: 0,
+      pageSize: 10,
+      totalCount: 35,
+      onPrev: () => undefined,
+      onNext: () => undefined,
+    };
+    render(<Pagination {...props} />);
+    expect(screen.getByText('1 - 10 of 35')).toBeInTheDocument();
+  });
 });
