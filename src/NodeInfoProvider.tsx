@@ -40,6 +40,11 @@ const NodeInfoProvider = ({
   useEffect(() => {
     let disconnect: () => void = () => undefined;
 
+    // If the tenantRPC is the same as the currentTenantRPC, we don't need to do anything.
+    if (currentTenantRPC && currentTenantRPC === tenantRPC) {
+      return disconnect;
+    }
+
     const connect = async () => {
       const provider = new WsProvider(tenantRPC);
       const api = await ApiPromise.create(
