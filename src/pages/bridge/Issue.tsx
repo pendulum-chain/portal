@@ -1,32 +1,32 @@
-import { h } from "preact";
-import { Button, Checkbox, Divider, Modal } from "react-daisyui";
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
-import LabelledInputField from "../../components/LabelledInputField";
-import LabelledSelector from "../../components/LabelledSelector";
-import { RichIssueRequest, useIssuePallet } from "../../hooks/spacewalk/issue";
-import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
-import { VaultRegistryVault } from "@polkadot/types/lookup";
+import { h } from 'preact';
+import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import LabelledInputField from '../../components/LabelledInputField';
+import LabelledSelector from '../../components/LabelledSelector';
+import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { VaultRegistryVault } from '@polkadot/types/lookup';
 import {
   calculateDeadline,
   convertCurrencyToStellarAsset,
-} from "../../helpers/spacewalk";
-import { Asset } from "stellar-sdk";
+} from '../../helpers/spacewalk';
+import { Asset } from 'stellar-sdk';
 import {
   convertRawHexKeyToPublicKey,
   stringifyStellarAsset,
-} from "../../helpers/stellar";
-import { useFeePallet } from "../../hooks/spacewalk/fee";
-import { decimalToNative, nativeToDecimal } from "../../helpers/parseNumbers";
-import Big from "big.js";
-import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
-import { useGlobalState } from "../../GlobalStateProvider";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { getErrors, getEventBySectionAndMethod } from "../../helpers/substrate";
-import { toast } from "react-toastify";
-import { CopyableAddress, PublicKey } from "../../components/PublicKey";
-import { useSecurityPallet } from "../../hooks/spacewalk/security";
-import { VoidFn } from "@polkadot/api-base/types";
-import { DateTime } from "luxon";
+} from '../../helpers/stellar';
+import { useFeePallet } from '../../hooks/spacewalk/fee';
+import { decimalToNative, nativeToDecimal } from '../../helpers/parseNumbers';
+import Big from 'big.js';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { toast } from 'react-toastify';
+import { CopyableAddress, PublicKey } from '../../components/PublicKey';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { VoidFn } from '@polkadot/api-base/types';
+import { DateTime } from 'luxon';
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
@@ -102,7 +102,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
         newVault && props.onChange(newVault);
       }}
       value={selectedVaultItem}
-      style={{ marginTop: "8px" }}
+      style={{ marginTop: '8px' }}
     />
   );
 }
@@ -126,13 +126,13 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [props.amountDecimal]);
 
   // TODO - get this from somewhere
-  const network = "Amplitude"; // or Pendulum
-  const nativeCurrency = network === "Amplitude" ? "AMPE" : "PEN";
-  const wrappedCurrencyPrefix = network === "Amplitude" ? "a" : "p";
+  const network = 'Amplitude'; // or Pendulum
+  const nativeCurrency = network === 'Amplitude' ? 'AMPE' : 'PEN';
+  const wrappedCurrencyPrefix = network === 'Amplitude' ? 'a' : 'p';
 
   const wrappedCurrencyName = bridgedAsset
     ? wrappedCurrencyPrefix + bridgedAsset.getCode()
-    : "";
+    : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -207,20 +207,20 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [remainingDurationString, setRemainingDurationString] =
-    useState<string>("");
+    useState<string>('');
 
   const totalAmount = issueRequest
     ? nativeToDecimal(
-        issueRequest.request.amount.add(issueRequest.request.fee).toString()
+        issueRequest.request.amount.add(issueRequest.request.fee).toString(),
       ).toString()
-    : "";
+    : '';
   const currency = issueRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
   const rawDestinationAddress = issueRequest?.request.stellarAddress;
   const destination = rawDestinationAddress
     ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-    : "";
+    : '';
 
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
@@ -243,7 +243,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     const interval = setInterval(() => {
       const newDeadlineString = deadline
         .diff(DateTime.now())
-        .toFormat("hh:mm:ss");
+        .toFormat('hh:mm:ss');
       setRemainingDurationString(newDeadlineString);
     });
 
@@ -268,7 +268,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             Send {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by{" "}
+            (issued by{' '}
             {asset && (
               <PublicKey variant="short" publicKey={asset?.getIssuer()} />
             )}
@@ -301,7 +301,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 }
 
 function Issue(): JSX.Element {
-  const [amount, setAmount] = useState<string>("0");
+  const [amount, setAmount] = useState<string>('0');
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
@@ -342,7 +342,7 @@ function Issue(): JSX.Element {
       }
 
       const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(
-        vault.id.currencies.wrapped
+        vault.id.currencies.wrapped,
       );
       return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
     });
@@ -367,7 +367,7 @@ function Issue(): JSX.Element {
 
     return createIssueRequestExtrinsic(
       amountNative.toString(),
-      selectedVault.id
+      selectedVault.id,
     );
   }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
@@ -381,6 +381,7 @@ function Issue(): JSX.Element {
     requestIssueExtrinsic
       .signAndSend(
         walletAccount.address,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         { signer: walletAccount.signer as any },
         (result) => {
           const { status, events } = result;
@@ -389,21 +390,22 @@ function Issue(): JSX.Element {
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join(
-                "\n"
+                '\n',
               )}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: "error" });
+              toast(errorMessage, { type: 'error' });
             }
           } else if (status.isFinalized) {
             const requestIssueEvents = getEventBySectionAndMethod(
               events,
-              "issue",
-              "RequestIssue"
+              'issue',
+              'RequestIssue',
             );
 
             // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const issueId = (requestIssueEvent.data as any).issueId;
 
               getIssueRequest(issueId).then((issueRequest) => {
@@ -417,11 +419,11 @@ function Issue(): JSX.Element {
               setConfirmationDialogVisible(true);
             }
           }
-        }
+        },
       )
       .catch((error) => {
-        console.error("Transaction submission failed", error);
-        toast("Transaction submission failed", { type: "error" });
+        console.error('Transaction submission failed', error);
+        toast('Transaction submission failed', { type: 'error' });
         setSubmissionPending(false);
       });
   }, [

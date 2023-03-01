@@ -23,7 +23,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
         return newState;
       });
     },
-    [setState]
+    [setState],
   );
 
   const ConnectButton = useMemo(() => {
@@ -41,9 +41,9 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
           style={{ marginRight: 10 }}
           endIcon={
             <img
-              src={state.walletAccount.wallet?.logo?.src || ""}
+              src={state.walletAccount.wallet?.logo?.src || ''}
               style={{ width: 20 }}
-              alt={state.walletAccount.wallet?.logo?.alt || ""}
+              alt={state.walletAccount.wallet?.logo?.alt || ''}
             />
           }
         >

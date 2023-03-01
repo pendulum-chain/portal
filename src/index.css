@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --border-light: #EFF2F5;
-  --nice-light: #907EA0;
+  --border-light: #eff2f5;
+  --nice-light: #907ea0;
   --clear-light: #ffffff;
-  --footer-links-light: #58667E;
+  --footer-links-light: #58667e;
   --nav-arrow-light: var(--clear-light);
 
-  --nice-dark: #09C63E;
+  --nice-dark: #09c63e;
   --border-dark: rgba(239, 242, 245, 0.03);
   --footer-links-dark: #616875;
   --nav-arrow-dark: hsla(271, 25%, 19%, 1);
@@ -101,7 +101,6 @@ body {
   display: inline;
   margin-right: 10px;
 }
-
 
 .pendulum-network-id svg {
   margin-top: -2px;

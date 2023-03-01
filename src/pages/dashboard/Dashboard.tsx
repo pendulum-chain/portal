@@ -1,11 +1,11 @@
-import { h } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import "./styles.css";
-import { prettyNumbers, nativeToDecimal } from "../../helpers/parseNumbers";
-import { useGlobalState } from "../../GlobalStateProvider";
-import { PalletBalancesAccountData } from "@polkadot/types/lookup";
-import Banner from "../../assets/banner-spacewalk-4x.png";
+import { h } from 'preact';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import './styles.css';
+import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
+import Banner from '../../assets/banner-spacewalk-4x.png';
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
@@ -24,6 +24,7 @@ export function Dashboard() {
     api?.query.system
       .account(walletAccount.address)
       .then((data) => {
+        console.log('setting balance');
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
@@ -40,31 +41,35 @@ export function Dashboard() {
         <a target="blank" href="https://pendulumchain.org/">
           <div className="card-body">
             <div className="card-title block">
-              <h2 className={"float-left"}>Promo</h2>
-              <h2 className={"float-right"}>Join now</h2>
-            </div>
+              <h2 className={'float-left'}>Promo</h2>
+              <h2 className={'float-right'}>Join now</h2>
+            </div >
             <figure> <img src={Banner} /></figure>
-          </div>
-        </a>
-      </div>
+          </div >
+        </a >
+      </div >
       <div className="card w-1/3 portfolio rounded">
         <div className="card-body">
           <h2 className="card-title float-left">Portfolio</h2>
           <div className="balance">
-            {cachedBalance &&
+            {cachedBalance && (
               <div className="self-center">
                 <h2 className="flex justify-center">Total balance</h2>
-                <h1 className="flex justify-center">{cachedBalance} {tokenSymbol}</h1>
+                <h1 className="flex justify-center">
+                  {cachedBalance} {tokenSymbol}
+                </h1>
               </div>
-            }
-            {!cachedBalance &&
+            )}
+            {!cachedBalance && (
               <>
-                <p>You have to connect a wallet to see your available balance. </p>
+                <p>
+                  You have to connect a wallet to see your available balance.{' '}
+                </p>
               </>
-            }
-          </div>
-        </div>
-      </div>
+            )}
+          </div >
+        </div >
+      </div >
       <div className="graph hidden">
         <h1>Total Value Locked</h1>
         <h2>$63.231,98</h2>

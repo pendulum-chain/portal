@@ -58,13 +58,17 @@
   text-align: center;
 }
 
-.portfolio>.portfolio li {
-  padding-left: 10px;
-  padding-right: 10px;
+.banner.card-compact .card-title {
+  padding: 1rem;
+  margin: 0;
 }
 
-.portfolio>.portfolio li.down {
-  color: var(--dark-red);
+.card figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .portfolio>ul li {

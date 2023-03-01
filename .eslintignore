@@ -1,2 +1,10 @@
-node_modules
-dist
+node_modules/
+dist/
+build/
+lib/
+types/
+coverage/
+
+*.d.ts
+*.config.*
+.eslintrc.*

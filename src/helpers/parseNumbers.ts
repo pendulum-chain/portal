@@ -1,6 +1,4 @@
-import { pow } from "@polkadot/types/interfaces/definitions";
-import BigNumber from "big.js";
-import { on } from "events";
+import BigNumber from 'big.js';
 
 export const TOKEN_DECIMALS = 12;
 

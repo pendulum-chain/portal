@@ -1,9 +1,9 @@
-import { h } from "preact";
-import { Button, Modal } from "react-daisyui";
-import { NavLink } from "react-router-dom";
-import { useState } from "preact/hooks";
-import { useIssuePallet } from "../../hooks/spacewalk/issue";
-import { useVaultRegistryPallet } from "../../hooks/spacewalk/vaultRegistry";
+import { h } from 'preact';
+import { Button, Modal } from 'react-daisyui';
+import { NavLink } from 'react-router-dom';
+import { useState } from 'preact/hooks';
+import { useIssuePallet } from '../../hooks/spacewalk/issue';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 function Redeem(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
@@ -15,17 +15,17 @@ function Redeem(): JSX.Element {
   const issueHelpers = useIssuePallet();
   const vaultRegistryHelpers = useVaultRegistryPallet();
 
-  console.log("issue requests", issueHelpers.getIssueRequests());
-  console.log("vaults", vaultRegistryHelpers.getVaults());
+  console.log('issue requests', issueHelpers.getIssueRequests());
+  console.log('vaults', vaultRegistryHelpers.getVaults());
 
   const vaults = vaultRegistryHelpers.getVaults();
   vaults.forEach((vault) => {
-    console.log("vault", vault);
-    console.log("collateral", vault.id.currencies.collateral);
+    console.log('vault', vault);
+    console.log('collateral', vault.id.currencies.collateral);
     vaultRegistryHelpers
       .getVaultStellarPublicKey(vault.id.accountId)
       .then((key) => {
-        console.log("key", key?.publicKey());
+        console.log('key', key?.publicKey());
       });
   });
 
@@ -34,7 +34,7 @@ function Redeem(): JSX.Element {
       className="flex items-center justify-center h-full space-walk grid place-items-center"
       style={{ minHeight: 600 }}
     >
-      <Modal open={visible} style={{ textAlign: "center" }}>
+      <Modal open={visible} style={{ textAlign: 'center' }}>
         <Modal.Header className="font-bold">Deposit</Modal.Header>
 
         <Modal.Body>
@@ -47,11 +47,11 @@ function Redeem(): JSX.Element {
           <p>Receipt address 5Bsdka...3a10b0</p>
         </Modal.Body>
 
-        <Modal.Actions style={{ display: "flex", justifyContent: "center" }}>
+        <Modal.Actions style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             style={{
-              textTransform: "uppercase",
-              backgroundColor: "#5defa7",
+              textTransform: 'uppercase',
+              backgroundColor: '#5defa7',
               borderRadius: 50,
               paddingLeft: 30,
               paddingRight: 30,

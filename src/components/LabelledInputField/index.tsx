@@ -1,6 +1,5 @@
-import { Input, InputProps } from "react-daisyui";
-import "./styles.css";
-
+import { Input, InputProps } from 'react-daisyui';
+import './styles.css';
 interface Props {
   autoSelect?: boolean;
   label?: string;
