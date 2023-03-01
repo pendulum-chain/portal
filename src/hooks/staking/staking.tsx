@@ -138,14 +138,11 @@ export function useStakingPallet() {
 
         return new Big(info.partialFee.toString());
       },
-      createClaimExtrinsic(claimAmount: string) {
+      createClaimRewardExtrinsic(claimAmount: string) {
         if (!api) {
           return undefined;
         }
-
-        return api.tx.parachainStaking?.claimRewards(
-          claimAmount
-        );
+        return api.tx.parachainStaking?.claimRewards();
       },
       createDelegateMoreExtrinsic(
         moreAmountNative: string

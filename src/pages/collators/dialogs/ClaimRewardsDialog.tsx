@@ -100,13 +100,14 @@ function ClaimRewardsDialog(props: Props) {
         return (
           <LabelledInputField
             type="number"
-            value={amount}
+            value={available.toString()}
             onChange={setAmount}
             label="Amount"
             secondaryLabel={`Rewards Balance: ${format(available, tokenSymbol)}`}
             placeholder="Enter amount..."
             extraBtnText="Max"
             extraBtnAction={() => setAmount(available.toString())}
+            disabled={true}
           />
         )
       case ClaimStep.Confirm:
