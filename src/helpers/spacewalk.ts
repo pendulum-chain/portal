@@ -17,22 +17,24 @@ function hex_to_ascii(hexString: string, leading0x = true) {
 export function convertCurrencyToStellarAsset(
   currency: SpacewalkPrimitivesCurrencyId,
 ): Asset | null {
-  if (currency.isStellar) {
-    currency = currency.asStellar;
+  if (!currency.isStellar) {
+    return null;
   }
 
-  if (currency.isStellarNative) {
+  const stellarAsset = currency.asStellar;
+
+  if (stellarAsset.isStellarNative) {
     return Asset.native();
-  } else if (currency.isAlphaNum4) {
-    const code = hex_to_ascii(currency.asAlphaNum4.code.toHex());
+  } else if (stellarAsset.isAlphaNum4) {
+    const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
     const issuer = convertRawHexKeyToPublicKey(
-      currency.asAlphaNum4.issuer.toHex(),
+      stellarAsset.asAlphaNum4.issuer.toHex(),
     );
     return new Asset(code, issuer.publicKey());
-  } else if (currency.isAlphaNum12) {
-    const code = hex_to_ascii(currency.asAlphaNum12.code.toHex());
+  } else if (stellarAsset.isAlphaNum12) {
+    const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
     const issuer = convertRawHexKeyToPublicKey(
-      currency.asAlphaNum12.issuer.toHex(),
+      stellarAsset.asAlphaNum12.issuer.toHex(),
     );
     return new Asset(code, issuer.publicKey());
   } else {

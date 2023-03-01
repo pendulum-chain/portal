@@ -23,7 +23,7 @@ function LabelledSelector<T extends { id: any; displayName: string }>(
       )}
       <Select
         className="w-fit max-w-full h-10 border border-gray-500 rounded-md bg-transparent"
-        onChange={(e) => {
+        onChange={(e: any) => {
           const id = e.target.value;
           const item = items.find((i) => i.id === id);
           if (item) {
