@@ -44,14 +44,14 @@ export const aprColumn: ColumnDef<any> = {
 
 export const actionsColumn: ColumnDef<any> = {
   header: '',
-  accessorKey: 'id',
+  accessorKey: 'address',
   enableSorting: false,
   enableGlobalFilter: false,
   enableColumnFilter: false,
   size: 150,
   cell: ({ row: { original } }): JSX.Element => (
     <div className="text-right">
-      <Link className="btn btn-sm btn-outline px-3" to={`/${original.id}`}>
+      <Link className="btn btn-sm btn-outline px-3" to={`${original.address}`}>
         Manage
       </Link>
     </div>

@@ -81,6 +81,10 @@ select {
   font-family: 'Nunito Sans', sans-serif;
 }
 
+strong {
+  font-weight: 600;
+}
+
 #main {
   background-color: var(--background);
 }

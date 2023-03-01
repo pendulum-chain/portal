@@ -23,13 +23,13 @@ export type PoolsProps = {
 
 const mockData = [
   {
-    id: 123,
+    address: 1,
     name: 'TEST',
     apr: 20,
     coverage: 5,
   },
   {
-    id: 124,
+    address: 2,
     name: 'TEST 2',
     apr: 17,
   },
