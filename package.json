@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
-    "@pendulum-chain/api": "^0.2.1",
+    "@pendulum-chain/api": "^0.2.3",
     "@polkadot/api": "^9.9.1",
     "@polkadot/api-base": "^9.9.1",
     "@polkadot/api-derive": "^9.9.1",
@@ -51,7 +51,7 @@
     "@babel/preset-typescript": "^7.18.6",
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
-    "@pendulum-chain/types": "^0.2.1",
+    "@pendulum-chain/types": "^0.2.3",
     "@polkadot/types-augment": "^9.9.1",
     "@polkadot/types-codec": "^9.9.1",
     "@polkadot/types-create": "^9.9.1",

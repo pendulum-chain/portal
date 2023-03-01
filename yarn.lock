@@ -2236,55 +2236,55 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pendulum-chain/api-derive@npm:0.2.1":
-  version: 0.2.1
-  resolution: "@pendulum-chain/api-derive@npm:0.2.1"
+"@pendulum-chain/api-derive@npm:0.2.3":
+  version: 0.2.3
+  resolution: "@pendulum-chain/api-derive@npm:0.2.3"
   dependencies:
     "@babel/runtime": "npm:^7.10.2"
     "@open-web3/orml-types": "npm:^1.1.4"
-    "@pendulum-chain/types": "npm:0.2.1"
+    "@pendulum-chain/types": "npm:0.2.3"
     "@polkadot/api-derive": "npm:^9.9.1"
-  checksum: d9176907e60077ce59ef4503d830323a4d23ab1515e0e074e2c343092c5d773188a7e7da263e4d682ce76e112c9c88d91976f8e0b0468ceee6d64ad3ec2d74d2
+  checksum: 2eecfeaf293d8f3b852614263705e7fec58f39242c52a5c3943ab53e670418b904269e2b857a8ad803c4d478e956639f4c1118a96c2c597d24687a571dbf8ec5
   languageName: node
   linkType: hard
 
-"@pendulum-chain/api@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@pendulum-chain/api@npm:0.2.1"
+"@pendulum-chain/api@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "@pendulum-chain/api@npm:0.2.3"
   dependencies:
     "@babel/runtime": "npm:^7.10.2"
     "@open-web3/orml-api-derive": "npm:^1.1.4"
-    "@pendulum-chain/api-derive": "npm:0.2.1"
-    "@pendulum-chain/types": "npm:^0.2.1"
+    "@pendulum-chain/api-derive": "npm:0.2.3"
+    "@pendulum-chain/types": "npm:^0.2.3"
     "@polkadot/api": "npm:^9.9.1"
   peerDependencies:
     "@polkadot/api": ">=9"
     "@polkadot/types": ">=9"
-  checksum: fec8dbd4de1cbe7615dd7dbb81f7e10ffd67b1e6d23df1795c0ba24fc42cac495ea03064325c786b1b60dc7251576b2746ad2fa74ffd3892b75237fcf264b16b
+  checksum: 2cb0e0bdc29aefd8ac99027d79b75a28ca6e9991e2ffca588f916371a250e0af3ed6582c34051607388c3c1840cb68c535ada61585683f8a6f1a1865794695d1
   languageName: node
   linkType: hard
 
-"@pendulum-chain/type-definitions@npm:0.2.1":
-  version: 0.2.1
-  resolution: "@pendulum-chain/type-definitions@npm:0.2.1"
+"@pendulum-chain/type-definitions@npm:0.2.3":
+  version: 0.2.3
+  resolution: "@pendulum-chain/type-definitions@npm:0.2.3"
   dependencies:
     "@babel/runtime": "npm:^7.10.2"
     "@open-web3/orml-type-definitions": "npm:^1.1.4"
-  checksum: e287c798e6e11a419dd25d5424272d6fe200182f502432a878ae1a5a28351bb011bf0527a33e20fd5cf4feb1e02018203c117dc7770fec2247fc4c9accc722b0
+  checksum: 264be331a562fd294c7444d753440015da979157e8233a6d22a033a0460bae5e7f392b40229d228ddef392d8967a6320d53ef47c488318d9a774534426e4bbc5
   languageName: node
   linkType: hard
 
-"@pendulum-chain/types@npm:0.2.1, @pendulum-chain/types@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@pendulum-chain/types@npm:0.2.1"
+"@pendulum-chain/types@npm:0.2.3, @pendulum-chain/types@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "@pendulum-chain/types@npm:0.2.3"
   dependencies:
     "@babel/runtime": "npm:^7.10.2"
     "@open-web3/api-mobx": "npm:^1.1.4"
     "@open-web3/orml-types": "npm:^1.1.4"
-    "@pendulum-chain/type-definitions": "npm:0.2.1"
+    "@pendulum-chain/type-definitions": "npm:0.2.3"
   peerDependencies:
     "@polkadot/api": ">=8"
-  checksum: bace63a5f04af18a02b6da39d6ea1715801d8c94d40ca424ba880bcbc69a4e9d4b88ecb6a5c4a141a03f46a85e2a5eaf2b05f1f289c5d8418f5cd7ceec07e4ac
+  checksum: 26618020bd56f37f370b85164317dac013893229f7ece2e92aadb58edda96dd3e05f4aab514c4fe37c15d595798f91238de9d6faed2b8f3fcc3fb1871443c25f
   languageName: node
   linkType: hard
 
@@ -10091,8 +10091,8 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": "npm:^0.1.1"
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.1.4"
     "@heroicons/react": "npm:^2.0.16"
-    "@pendulum-chain/api": "npm:^0.2.1"
-    "@pendulum-chain/types": "npm:^0.2.1"
+    "@pendulum-chain/api": "npm:^0.2.3"
+    "@pendulum-chain/types": "npm:^0.2.3"
     "@polkadot/api": "npm:^9.9.1"
     "@polkadot/api-base": "npm:^9.9.1"
     "@polkadot/api-derive": "npm:^9.9.1"
