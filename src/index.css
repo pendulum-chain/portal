@@ -248,3 +248,11 @@ nav a span {
   cursor: pointer;
   border-bottom: 1px solid var(--footer-links);
 }
+
+table th .sort:not(.desc):not(.asc) {
+  transition: opacity 0.15s ease-out;
+  opacity: 0;
+}
+table th:hover .sort {
+  opacity: 0.8 !important;
+}

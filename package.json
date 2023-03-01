@@ -33,6 +33,7 @@
     "@talismn/connect-ui": "^1.1.2",
     "@talismn/connect-wallets": "^1.2.3",
     "@tanstack/react-query": "^4.24.9",
+    "@tanstack/react-table": "^8.7.9",
     "big.js": "^6.2.1",
     "bn.js": "^5.2.1",
     "luxon": "^3.2.1",
