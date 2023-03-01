@@ -4,7 +4,7 @@ import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
 import { useNodeInfoState } from "../../NodeInfoProvider";
-import { nativeToDecimal } from "../../helpers/parseNumbers";
+import { format, nativeToDecimal, nativeToFormat } from "../../helpers/parseNumbers";
 import { useSortBy, useTable } from "react-table";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useGlobalState } from "../../GlobalStateProvider";
@@ -19,6 +19,7 @@ import {
 import { getAddressForFormat } from "../../helpers/addressFormatter";
 import UnlinkIcon from "../../assets/UnlinkIcon";
 import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
+import ClaimRewardsDialog from "./dialogs/ClaimRewardsDialog";
 
 interface UserStaking {
   candidateId: string;
@@ -29,7 +30,7 @@ export function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
 
-  const { candidates, inflationInfo } = useStakingPallet();
+  const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 
   // Holds the candidate for which the delegation modal is to be shown
   const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
@@ -37,6 +38,7 @@ export function Collators() {
 
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0.00");
   const [userStaking, setUserStaking] = useState<UserStaking>();
+  const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format
@@ -76,7 +78,7 @@ export function Collators() {
         const rowItem = {
           candidate: candidate,
           collator: candidate.id,
-          totalStaked: totalStaked.toFixed(2) + ` ${tokenSymbol}`,
+          totalStaked: format(totalStaked, tokenSymbol),
           delegators: candidate.delegators.length,
           apy: inflationInfo?.collator.rewardRate.annual || "0.00%",
         };
@@ -112,7 +114,7 @@ export function Collators() {
           Cell: ({ row }) => {
             const amountDelegated = getAmountDelegated(row.original.candidate);
             return <div>
-              {amountDelegated ? nativeToDecimal(amountDelegated) + " " + tokenSymbol : ""}
+              {amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ""}
             </div>
           },
         },
@@ -191,13 +193,11 @@ export function Collators() {
               </div>
               <div className="flex-auto">
                 <h4>
-                  {inflationInfo && userStaking ?
-                    estimateReward(inflationInfo, userStaking) : " 0.00"
-                  } {tokenSymbol}</h4>
+                  {nativeToFormat(estimatedRewards, tokenSymbol)}</h4>
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto place-content-end">
-                <button className="btn btn-primary w-1/3">Claim</button>
+                <button onClick={() => setClaimDialogOpen(true)} className="btn btn-primary w-1/3" disabled={Boolean(!walletAccount)}>Claim</button>
               </div>
             </div>
           </div>
@@ -208,6 +208,12 @@ export function Collators() {
         selectedCandidateForDelegation={selectedCandidateForDelegation}
         isDelegatingMore={userStaking?.candidateId === selectedCandidateForDelegation?.id}
         onClose={() => setSelectedCandidateForDelegation(undefined)}
+      />
+      <ClaimRewardsDialog
+        userRewardsBalance={estimatedRewards}
+        tokenSymbol={tokenSymbol}
+        visible={claimDialogOpen}
+        onClose={() => setClaimDialogOpen(false)}
       />
       <table className="table w-full collators-list-table bg-base-100" {...getTableProps()}>
         <thead>
@@ -251,5 +257,5 @@ export function Collators() {
   );
 }
 
-const estimateReward = (inflationInfo: ParachainStakingInflationInflationInfo, userStaking: UserStaking) =>
-  parseFloat(inflationInfo.collator.rewardRate.annual) * parseFloat(userStaking.amount) / 100
+const estimateReward = (inflationInfo: ParachainStakingInflationInflationInfo | undefined, userStaking: UserStaking | undefined) =>
+  inflationInfo && userStaking ? parseFloat(inflationInfo.collator.rewardRate.annual) * parseFloat(userStaking.amount) / 100 : 0
