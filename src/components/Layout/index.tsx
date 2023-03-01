@@ -20,6 +20,7 @@ import { useTheme } from "react-daisyui";
 export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const params = useParams();
+  const params = useParams();
   const { setTheme } = useTheme();
   const { state, setState } = useGlobalState();
 
@@ -122,6 +123,13 @@ export default function Layout(): React.JSX.Element {
             <SocialAndTermLinks Link={FooterLink} />
           </div>
         </div>
+          <Nav />
+          <div className="sidebar-footer">
+            <Versions tenantName={network} />
+            <NetworkId />
+            <SocialAndTermLinks Link={FooterLink} />
+          </div>
+        </div>
 
         <div className="mobile-menu">
           <button className="menu" onClick={() => toggleMenu()} />
@@ -133,6 +141,7 @@ export default function Layout(): React.JSX.Element {
             <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
+                <span className={`${isPendulum ? "text-white" : ""}  text-md`}>
                 <span className={`${isPendulum ? "text-white" : ""}  text-md`}>
                   {isPendulum ? "Pendulum" : "Amplitude"}
                 </span>
@@ -154,6 +163,7 @@ export default function Layout(): React.JSX.Element {
               </button>
               <ul
                 tabIndex={0}
+                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
                 className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
