@@ -43,7 +43,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
     useState<boolean>(false);
 
-  const submitJoinDelegatorsExtrinsic = useCallback(() => {
+  const submitDelegationExtrinsic = useCallback(() => {
     if (
       !walletAccount ||
       !api ||
@@ -116,7 +116,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         availableBalance={userAvailableBalance}
         transactionFee={joinDelegatorsTransactionFee}
         submissionPending={submissionPending}
-        onConfirm={submitJoinDelegatorsExtrinsic}
+        onConfirm={submitDelegationExtrinsic}
         onCancel={() => setDelegationAmount(undefined)}
         onClose={() => {
           setDelegationAmount(undefined);
