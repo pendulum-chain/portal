@@ -45,7 +45,7 @@ jobs:
 
       - name: 🧩 Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --prefer-offline --frozen-lockfile
+        run: yarn install
 
       - name: 📋 Yarn Lock Changes
         uses: Simek/yarn-lock-changes@main 
