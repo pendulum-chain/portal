@@ -18,6 +18,7 @@ interface DelegateToCollatorDialogProps {
   minDelegatorStake: string;
   tokenSymbol: string;
   visible: boolean;
+  isDelegatingMore: boolean;
   onClose?: () => void;
   onSubmit?: (amount: string) => void;
 }
@@ -32,6 +33,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     visible,
     onClose,
     onSubmit,
+    isDelegatingMore
   } = props;
 
   const [amount, setAmount] = useState<string>("");
@@ -48,7 +50,10 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
             <div className="text-lg">
               APR {inflationInfo?.delegator.rewardRate.annual || "0.00%"}
             </div>
-            <div className="text-sm text-neutral-content">
+            <div
+              className="text-sm text-neutral-content"
+              hidden={isDelegatingMore}
+            >
               Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
             </div>
           </div>

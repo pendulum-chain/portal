@@ -107,6 +107,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         inflationInfo={inflationInfo}
         minDelegatorStake={minDelegatorStake}
         tokenSymbol={tokenSymbol || ""}
+        isDelegatingMore={isDelegatingMore}
         visible={Boolean(selectedCandidateForDelegation && !delegationAmount)}
         onClose={onClose}
         onSubmit={(amount) => setDelegationAmount(amount)}
