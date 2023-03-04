@@ -1,5 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
+// @ts-nocheck
+/**
+ * FIXME remove @ts-nocheck, it was specifically added because of some errors in react-table.
+ * Probably fixed in https://github.com/pendulum-chain/portal/pull/64
+*/ 
 import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
@@ -20,6 +25,14 @@ import { getAddressForFormat } from "../../helpers/addressFormatter";
 import UnlinkIcon from "../../assets/UnlinkIcon";
 import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
 import ClaimRewardsDialog from "./dialogs/ClaimRewardsDialog";
+
+interface CollatorColumnProps {
+  candidate: ParachainStakingCandidate;
+  collator: string;
+  totalStaked: string;
+  delegators: number;
+  apy: string;
+}
 
 interface UserStaking {
   candidateId: string;
@@ -71,7 +84,7 @@ export function Collators() {
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
   }, [api, walletAccount]);
 
-  const data = useMemo(
+  const data: any[] = useMemo(
     () =>
       candidates.map((candidate) => {
         const totalStaked = nativeToDecimal(candidate.total);
@@ -111,7 +124,7 @@ export function Collators() {
         {
           Header: "My Staked",
           accessor: "myStaked",
-          Cell: ({ row }) => {
+          Cell: ({ row } : {row: any}) => {
             const amountDelegated = getAmountDelegated(row.original.candidate);
             return <div>
               {amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ""}
@@ -121,7 +134,7 @@ export function Collators() {
         {
           Header: "",
           accessor: "actions",
-          Cell: ({ row }) => {
+          Cell: ({ row } : {row: any}) => {
             const showUnbond = Boolean(getAmountDelegated(row.original.candidate));
             return (
               <div className="flex flex-row justify-center">
@@ -154,6 +167,7 @@ export function Collators() {
     },
     [tokenSymbol, userAccountAddress]
   );
+
 
   const tableInstance = useTable({ columns, data }, useSortBy);
 
@@ -217,9 +231,9 @@ export function Collators() {
       />
       <table className="table w-full collators-list-table bg-base-100" {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup) => (
+          {headerGroups.map((headerGroup: any) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
+              {headerGroup.headers.map((column: any) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
                   <span style={{ float: "right" }}>
