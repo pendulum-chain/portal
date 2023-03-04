@@ -7,13 +7,13 @@ import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import ArrowIcon from '../../assets/nav-arrow';
 import SwapIcon from '../../assets/swap';
-import { useGlobalState } from '../../GlobalStateProvider';
+import { TenantName, useGlobalState } from '../../GlobalStateProvider';
 
 type LinkParameter = { isActive: boolean };
 
 const Nav = memo(() => {
   const {
-    state: { tenantName },
+    state: { tenantName = TenantName.Amplitude },
   } = useGlobalState();
   return (
     <nav>
