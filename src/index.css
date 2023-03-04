@@ -36,6 +36,7 @@
   --portfolio-bg: var(--dark-light);
   --portfolio-border:rgba(229, 229, 229, 0.03);
   --selected-nav-item:  hsla(158, 100%, 47%, 0.08);
+  --subtitle-collator-box: #fff;
 }
 
 [data-theme="pendulum"] {
@@ -51,6 +52,7 @@
   --modal-title: var(--darkner);
   --portfolio-bg: var(--clear-light);
   --portfolio-border: #E5E5E5;
+  --subtitle-collator-box: #828282;
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
 }
 

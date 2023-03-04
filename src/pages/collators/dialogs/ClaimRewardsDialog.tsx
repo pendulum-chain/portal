@@ -107,7 +107,8 @@ function ClaimRewardsDialog(props: Props) {
             placeholder="Enter amount..."
             extraBtnText="Max"
             extraBtnAction={() => setAmount(available.toString())}
-            disabled={true}
+            title="For the time being, you cannot specify the amount to claim, it'll has to be all your rewards at once."
+            readonly
           />
         )
       case ClaimStep.Confirm:
@@ -162,12 +163,13 @@ function ClaimRewardsDialog(props: Props) {
         <div className="mt-4" />
         {getContentForStep(step)}
       </Modal.Body>
-      <Modal.Actions className="justify-center">
+      <Modal.Actions className="justify-center mt-10">
         <Button
-          className="px-6 text-thin"
+          className="px-12 text-thin"
           color="primary"
           loading={loading}
           onClick={getButtonAction(step)}
+          disabled={!!walletAccount}
         >
           {getButtonText(step)}
         </Button>

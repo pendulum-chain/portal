@@ -115,8 +115,8 @@
   color: var(--table-text);
 }
 
-.collators-box h2, .collators-box h1 {
-  color: var(--base-content);
+.collators-box h1, .collators-box h2, .collators-box h3 {
+  color: var(--table-text);
 }
 
 .collators-box h2 {
@@ -135,7 +135,7 @@
 }
 
 .collators-box .card-body p {
-  color: var(--table-text);
+  color: var(--subtitle-collator-box);
 }
 
 .collators-list-table th {

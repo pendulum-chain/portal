@@ -25,6 +25,7 @@ import { getAddressForFormat } from "../../helpers/addressFormatter";
 import UnlinkIcon from "../../assets/UnlinkIcon";
 import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
 import ClaimRewardsDialog from "./dialogs/ClaimRewardsDialog";
+import { Balance } from "@polkadot/types/interfaces";
 
 interface CollatorColumnProps {
   candidate: ParachainStakingCandidate;
@@ -60,6 +61,7 @@ export function Collators() {
   }, [walletAccount, ss58Format]);
 
   useMemo(() => {
+    setUserStaking(undefined);
     return candidates.forEach((candidate) => {
       const isDelegator = candidate.delegators.find(
         (delegator) => delegator.owner === userAccountAddress
@@ -78,7 +80,7 @@ export function Collators() {
       const { data: balance } = await api.query.system.account(
         walletAccount?.address
       );
-      return balance.free.toHuman() as string;
+      return balance.free.sub(balance.miscFrozen).toString();
     };
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
@@ -136,6 +138,7 @@ export function Collators() {
           accessor: "actions",
           Cell: ({ row } : {row: any}) => {
             const showUnbond = Boolean(getAmountDelegated(row.original.candidate));
+            const showDelegate = walletAccount && (!userStaking || showUnbond);
             return (
               <div className="flex flex-row justify-center">
                 <Button
@@ -156,6 +159,7 @@ export function Collators() {
                     // eslint-disable-next-line react/prop-types
                     setSelectedCandidateForDelegation(row.original.candidate);
                   }}
+                  disabled={!showDelegate}
                 >
                   Delegate
                 </Button>
@@ -211,7 +215,7 @@ export function Collators() {
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto place-content-end">
-                <button onClick={() => setClaimDialogOpen(true)} className="btn btn-primary w-1/3" disabled={Boolean(!walletAccount)}>Claim</button>
+                <button onClick={() => setClaimDialogOpen(true)} className="btn btn-primary w-1/3" disabled={!walletAccount}>Claim</button>
               </div>
             </div>
           </div>
