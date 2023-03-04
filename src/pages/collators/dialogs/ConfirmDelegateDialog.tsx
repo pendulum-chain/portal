@@ -69,8 +69,8 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
             {resultingBalance} {tokenSymbol}
           </span>
         </div>
+        <p className="text-slate-400 mt-6 mb-4 mx-auto w-fit"> This transaction might take a while to complete. </p>
       </Modal.Body>
-
       <Modal.Actions className="justify-center">
         <Button className="px-6" color="ghost" onClick={onCancel}>
           Cancel

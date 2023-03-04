@@ -145,13 +145,15 @@ export function useStakingPallet() {
         return api.tx.parachainStaking?.claimRewards();
       },
       createDelegateMoreExtrinsic(
+        collatorAddress: string,
         moreAmountNative: string
       ) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.candidateStakeMore(
+        return api.tx.parachainStaking?.delegatorStakeMore(
+          collatorAddress,
           moreAmountNative
         );
       },
