@@ -79,6 +79,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           extraBtnAction={() => setAmount(available)}
         />
       </Modal.Body>
+      <p className="text-slate-400 mt-2 mb-4 mx-auto w-fit"> This transaction might take a while to complete. </p>
 
       <Modal.Actions className="justify-center">
         <Button
@@ -89,6 +90,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           Delegate
         </Button>
       </Modal.Actions>
+
     </Modal>
   );
 }
