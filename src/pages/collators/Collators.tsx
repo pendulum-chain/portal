@@ -189,11 +189,11 @@ export function Collators() {
                 <StakedIcon />
               </div>
               <div className="flex-auto">
-                <h3>{nativeToDecimal(userStaking?.amount || "0.00")} {tokenSymbol}</h3>
+                <h3>{nativeToFormat(userStaking?.amount || "0.00", tokenSymbol)}</h3>
                 <p>My Staking</p>
               </div>
               <div className="flex-auto">
-                <h3>{nativeToDecimal(userAvailableBalance).toFixed(2)} {tokenSymbol}</h3>
+                <h3>{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
                 <p>Free balance</p>
               </div>
               <div className="flex flex-auto place-content-end">

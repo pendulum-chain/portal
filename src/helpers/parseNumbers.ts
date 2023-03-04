@@ -64,4 +64,5 @@ export const nativeToFormat = (
 export const prettyNumbers = (number: number, lang?: string) =>
   number.toLocaleString(lang || navigator.language, {
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2
   });
