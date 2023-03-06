@@ -2,10 +2,8 @@ import {
   ParachainStakingInflationInflationInfo, useStakingPallet,
 } from "../../../hooks/staking/staking";
 import { useCallback, useMemo, useState } from "preact/hooks";
-import { nativeToDecimal, format } from "../../../helpers/parseNumbers";
+import { format } from "../../../helpers/parseNumbers";
 import { Button, Modal } from "react-daisyui";
-import LabelledInputField from "../../../components/LabelledInputField";
-import { h } from "preact";
 import SuccessDialogIcon from "../../../assets/success-dialog";
 import { CloseButton } from "../../../components/CloseButton";
 import { useGlobalState } from "../../../GlobalStateProvider";
@@ -14,7 +12,6 @@ import { getErrors } from "../../../helpers/substrate";
 import { toast } from "react-toastify";
 
 interface Props {
-  userRewardsBalance?: string;
   inflationInfo?: ParachainStakingInflationInflationInfo;
   tokenSymbol?: string;
   visible?: boolean;
@@ -23,14 +20,12 @@ interface Props {
 }
 
 enum ClaimStep {
-  Start = 0,
-  Confirm = 1,
-  Success = 2
+  Confirm = 0,
+  Success = 1
 }
 
 function ClaimRewardsDialog(props: Props) {
   const {
-    userRewardsBalance = "0",
     tokenSymbol,
     visible,
     onClose,
@@ -40,16 +35,14 @@ function ClaimRewardsDialog(props: Props) {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
   const [loading, setLoading] = useState<boolean>(false);
-  const [amount, setAmount] = useState<string>("");
-  const [step, setStep] = useState<ClaimStep>(ClaimStep.Start);
-  const available = nativeToDecimal(userRewardsBalance);
-  const nextStep = step == ClaimStep.Success ? undefined : step + 1;
+  const [amount, setAmount] = useState<string>("0");
+  const [step, setStep] = useState<ClaimStep>(ClaimStep.Confirm);
 
   useMemo(() => {
     if (!visible)
       setTimeout(() => {
-        setStep(ClaimStep.Start)
-        setAmount("")
+        setStep(ClaimStep.Confirm)
+        setAmount("0")
       }, 500)
   }, [visible])
 
@@ -96,21 +89,6 @@ function ClaimRewardsDialog(props: Props) {
 
   const getContentForStep = (step: ClaimStep) => {
     switch (step) {
-      case ClaimStep.Start:
-        return (
-          <LabelledInputField
-            type="number"
-            value={available.toString()}
-            onChange={setAmount}
-            label="Amount"
-            secondaryLabel={`Rewards Balance: ${format(available, tokenSymbol)}`}
-            placeholder="Enter amount..."
-            extraBtnText="Max"
-            extraBtnAction={() => setAmount(available.toString())}
-            title="For the time being, you cannot specify the amount to claim, it'll has to be all your rewards at once."
-            readonly
-          />
-        )
       case ClaimStep.Confirm:
         return (
           <div className="rounded-lg bg-base-200 flex flex-col p-8 items-center w-fit center m-auto">
@@ -132,10 +110,8 @@ function ClaimRewardsDialog(props: Props) {
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {
-      case ClaimStep.Start:
-        return "Claim"
       case ClaimStep.Confirm:
-        return "Confirm"
+        return "Claim"
       case ClaimStep.Success:
         return "Ok"
     }
@@ -143,8 +119,6 @@ function ClaimRewardsDialog(props: Props) {
 
   const getButtonAction = (step: ClaimStep) => {
     switch (step) {
-      case ClaimStep.Start:
-        return () => setStep(ClaimStep.Confirm)
       case ClaimStep.Confirm:
         return () => {
           submitExtrinsic();
@@ -169,7 +143,7 @@ function ClaimRewardsDialog(props: Props) {
           color="primary"
           loading={loading}
           onClick={getButtonAction(step)}
-          disabled={!!walletAccount}
+          disabled={!walletAccount || parseFloat(amount) <= 0}
         >
           {getButtonText(step)}
         </Button>

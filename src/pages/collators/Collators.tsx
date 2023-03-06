@@ -215,7 +215,10 @@ export function Collators() {
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto place-content-end">
-                <button onClick={() => setClaimDialogOpen(true)} className="btn btn-primary w-1/3" disabled={!walletAccount}>Claim</button>
+                <button onClick={() => setClaimDialogOpen(true)} className="btn btn-primary w-1/3" disabled={!walletAccount
+                  || parseFloat(estimatedRewards) <= 0}>
+                  Claim
+                </button>
               </div>
             </div>
           </div>
