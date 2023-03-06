@@ -37,18 +37,18 @@ export function Dashboard() {
 
   return (
     <div className="mt-10">
-      <div className="card card-compact w-2/3 banner rounded mb-6">
+      <div className="card card-compact w-2/3 banner rounded-md mb-6 bg-base-200">
         <a target="blank" href="https://pendulumchain.org/">
           <div className="card-body">
             <div className="card-title block">
               <h2 className={'float-left'}>Promo</h2>
               <h2 className={'float-right'}>Join now</h2>
-            </div >
+            </div>
             <figure> <img src={Banner} /></figure>
-          </div >
+          </div>
         </a >
-      </div >
-      <div className="card w-1/3 portfolio rounded">
+      </div>
+      <div className="card w-1/3 portfolio rounded-md bg-base-200">
         <div className="card-body">
           <h2 className="card-title float-left">Portfolio</h2>
           <div className="balance">
@@ -67,9 +67,9 @@ export function Dashboard() {
                 </p>
               </>
             )}
-          </div >
-        </div >
-      </div >
+          </div>
+        </div>
+      </div>
       <div className="graph hidden">
         <h1>Total Value Locked</h1>
         <h2>$63.231,98</h2>
@@ -134,6 +134,6 @@ export function Dashboard() {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
