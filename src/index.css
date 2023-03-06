@@ -24,7 +24,6 @@
 
 [data-theme="amplitude"] {
   --primary: #4EE59A;
-  --background: #202020;
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
@@ -34,14 +33,13 @@
   --table-border: #242424;
   --modal-title: var(--clear-light);
   --portfolio-bg: var(--dark-light);
-  --portfolio-border:rgba(229, 229, 229, 0.03);
-  --selected-nav-item:  hsla(158, 100%, 47%, 0.08);
+  --portfolio-border: rgba(229, 229, 229, 0.03);
+  --selected-nav-item: hsla(158, 100%, 47%, 0.08);
   --subtitle-collator-box: #fff;
 }
 
 [data-theme="pendulum"] {
   --primary: #907EA0;
-  --background: #FBFCFE;
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
@@ -59,10 +57,6 @@
 body {
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 300;
-}
-
-#main {
-  background-color: var(--background);
 }
 
 .pendulum-network-id {
@@ -115,7 +109,7 @@ nav {
   margin-bottom: auto;
 }
 
-nav > a {
+nav>a {
   color: var(--text-primary);
   font-weight: 600;
   display: flex;
@@ -130,7 +124,7 @@ nav > a {
   border-radius: 9px;
 }
 
-nav > a .nav-arrow-container svg {
+nav>a .nav-arrow-container svg {
   font-weight: 400;
   width: 5px;
   height: 9px;
@@ -138,21 +132,20 @@ nav > a .nav-arrow-container svg {
   margin-left: 0;
 }
 
-nav > a.active .nav-arrow-container svg {
+nav>a.active .nav-arrow-container svg {
   visibility: visible;
 }
 
 #sidebar-wrapper {
   border-right: 1px solid var(--border);
-  background-color: var(--b1);
 }
 
 
-nav > a:hover {
+nav>a:hover {
   background-color: var(--selected-nav-item);
 }
 
-nav > .active {
+nav>.active {
   background-color: var(--selected-nav-item);
 }
 

@@ -5,7 +5,6 @@
 .amm-wrapper {
   width: 100%;
   border-radius: 30px;
-  background-color: var(--background);
   position: relative;
   min-height: auto;
   color: var(--primary-content);
@@ -46,6 +45,7 @@
 .box .max hr {
   width: 100%;
 }
+
 .box .max {
   width: 100%;
   display: flex;
@@ -62,9 +62,6 @@
   line-height: 35px;
   background-color: var(--primary-content);
   position: absolute;
-}
-
-.box .max {
 }
 
 .box .parity p {

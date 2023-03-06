@@ -8,7 +8,6 @@
 }
 
 .banner {
-  border-radius: 5px;
   border: 1px solid var(--portfolio-border);
   background-color: var(--portfolio-bg);
 }
@@ -115,7 +114,9 @@
   color: var(--table-text);
 }
 
-.collators-box h1, .collators-box h2, .collators-box h3 {
+.collators-box h1,
+.collators-box h2,
+.collators-box h3 {
   color: var(--table-text);
 }
 

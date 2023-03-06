@@ -99,7 +99,7 @@ export default function Layout(): React.JSX.Element {
 
   return (
     <div className="flex">
-      <div id="sidebar-wrapper" className="flex flex-wrap">
+      <div id="sidebar-wrapper" className="flex flex-wrap bg-base-200">
         <div
           className="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar"
           id="sidebar"

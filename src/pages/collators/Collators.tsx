@@ -4,7 +4,7 @@
 /**
  * FIXME remove @ts-nocheck, it was specifically added because of some errors in react-table.
  * Probably fixed in https://github.com/pendulum-chain/portal/pull/64
-*/ 
+*/
 import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
@@ -126,7 +126,7 @@ export function Collators() {
         {
           Header: "My Staked",
           accessor: "myStaked",
-          Cell: ({ row } : {row: any}) => {
+          Cell: ({ row }: { row: any }) => {
             const amountDelegated = getAmountDelegated(row.original.candidate);
             return <div>
               {amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ""}
@@ -136,7 +136,7 @@ export function Collators() {
         {
           Header: "",
           accessor: "actions",
-          Cell: ({ row } : {row: any}) => {
+          Cell: ({ row }: { row: any }) => {
             const showUnbond = Boolean(getAmountDelegated(row.original.candidate));
             const showDelegate = walletAccount && (!userStaking || showUnbond);
             return (
@@ -181,7 +181,7 @@ export function Collators() {
   return (
     <div className="overflow-x-auto collators-list-container mt-10">
       <div className="flex mb-8 justify-between">
-        <div className="card gap-0 rounded-lg text-primary-content bg-base-100 w-1/2 mr-4 collators-box">
+        <div className="card gap-0 rounded-lg text-primary-content bg-base-200 w-1/2 mr-4 collators-box">
           <div className="card-body">
             <h2 className="card-title">Collators</h2>
             <div className="flex flex-row">
@@ -202,7 +202,7 @@ export function Collators() {
             </div>
           </div>
         </div>
-        <div className="card rounded-lg text-primary-content bg-base-100 w-1/2 ml-4 collators-box">
+        <div className="card rounded-lg text-primary-content bg-base-200 w-1/2 ml-4 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking Rewards</h2>
             <div className="flex flex-row">
