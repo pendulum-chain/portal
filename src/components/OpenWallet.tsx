@@ -1,13 +1,20 @@
-import { h } from 'preact';
-import { Button } from 'react-daisyui';
-import { useCallback, useMemo } from 'preact/hooks';
-import { WalletAccount } from '@talismn/connect-wallets';
+import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
 import { WalletSelect } from '@talismn/connect-components';
-import { GlobalStateInterface, useGlobalState } from '../GlobalStateProvider';
+import { WalletAccount } from '@talismn/connect-wallets';
+import { useCallback, useMemo } from 'preact/hooks';
+import { Button } from 'react-daisyui';
+import { GlobalStateInterface } from '../GlobalStateProvider';
 import addressFormatter from '../helpers/addressFormatter';
+import { useAccountBalance } from '../hooks/useAccountBalance';
+import { useNodeInfoState } from '../NodeInfoProvider';
+import { Skeleton } from './Skeleton';
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
-  const { state, setState } = useGlobalState();
+  const { state: infoState } = useNodeInfoState();
+  const { query, balance, globalState } = useAccountBalance();
+  const { tokenSymbol } = infoState;
+  const { state, setState } = globalState;
+  const { address, wallet } = state.walletAccount || {};
 
   const updateGlobalAccount = useCallback(
     (account: WalletAccount) => {
@@ -26,25 +33,35 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
 
   const ConnectButton = useMemo(
     () =>
-      state.walletAccount ? (
+      address ? (
         <Button
-          color="primary"
-          title={state.walletAccount.wallet?.title}
-          style={{ marginRight: 10 }}
+          size="sm"
+          className="text-sm h-10 border-1 border-gray-200 bg-white"
+          title={wallet?.title}
           endIcon={
             <img
-              src={state.walletAccount.wallet?.logo?.src || ''}
+              src={wallet?.logo?.src || ''}
               style={{ width: 20 }}
-              alt={state.walletAccount.wallet?.logo?.alt || ''}
+              alt={wallet?.logo?.alt || ''}
             />
           }
         >
-          {addressFormatter(state.walletAccount.address, 4)}
+          {query.isLoading ? (
+            <Skeleton className="bg-gray-100 px-2 py-1">10000.00 TKN</Skeleton>
+          ) : (
+            <span className="flex items-center bg-gray-100 px-2 py-1 rounded-lg">
+              <ArrowTrendingUpIcon className="w-5 h-5 mr-1 text-primary" />{' '}
+              {balance} {tokenSymbol}
+            </span>
+          )}
+          {addressFormatter(address, 3)}
         </Button>
       ) : (
-        <Button color="primary">Connect to Wallet</Button>
+        <Button size="sm" color="primary">
+          Connect to Wallet
+        </Button>
       ),
-    [state.walletAccount],
+    [address, balance, query.isLoading, tokenSymbol, wallet],
   );
 
   return (

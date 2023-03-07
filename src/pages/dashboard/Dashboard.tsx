@@ -1,38 +1,12 @@
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
-import { useEffect, useMemo, useState } from 'preact/hooks';
 import Banner from '../../assets/banner-spacewalk-4x.png';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
+import { useAccountBalance } from '../../hooks/useAccountBalance';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
 
 export function Dashboard() {
-  const { state: GlobalState } = useGlobalState();
-  const { walletAccount } = GlobalState;
   const { state } = useNodeInfoState();
-  const { api } = state;
   const { tokenSymbol } = state;
-
-  const [accountBalance, setAccountBalance] = useState<
-    PalletBalancesAccountData | undefined
-  >(undefined);
-
-  useEffect(() => {
-    if (!walletAccount?.address) return;
-
-    api?.query.system
-      .account(walletAccount.address)
-      .then((data) => {
-        console.log('setting balance');
-        setAccountBalance(data.data);
-      })
-      .catch((e) => console.error(e));
-  }, [api, walletAccount]);
-
-  const cachedBalance = useMemo(() => {
-    if (!accountBalance) return undefined;
-    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()));
-  }, [accountBalance]);
+  const { balance } = useAccountBalance();
 
   return (
     <div className="mt-10">
@@ -54,15 +28,15 @@ export function Dashboard() {
         <div className="card-body">
           <h2 className="card-title float-left">Portfolio</h2>
           <div className="balance">
-            {cachedBalance && (
+            {balance && (
               <div className="self-center">
                 <h2 className="flex justify-center">Total balance</h2>
                 <h1 className="flex justify-center">
-                  {cachedBalance} {tokenSymbol}
+                  {balance} {tokenSymbol}
                 </h1>
               </div>
             )}
-            {!cachedBalance && (
+            {!balance && (
               <>
                 <p>
                   You have to connect a wallet to see your available balance.{' '}
