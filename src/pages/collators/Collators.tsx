@@ -1,304 +1,282 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Button, Table } from 'react-daisyui';
-import { useEffect, useState } from 'preact/hooks';
-import { h } from 'preact';
-import dummy_collator from '../../../collator';
-import { useNodeInfoState } from '../../NodeInfoProvider';
-import addressFormatter from '../../helpers/addressFormatter';
-import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
+/* eslint-disable react/prop-types */
+/* eslint-disable react/jsx-key */
+// @ts-nocheck
+/**
+ * FIXME remove @ts-nocheck, it was specifically added because of some errors in react-table.
+ * Probably fixed in https://github.com/pendulum-chain/portal/pull/64
+*/
+import { Button } from "react-daisyui";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { h } from "preact";
+import { useNodeInfoState } from "../../NodeInfoProvider";
+import { format, nativeToDecimal, nativeToFormat } from "../../helpers/parseNumbers";
+import { useSortBy, useTable } from "react-table";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { useGlobalState } from "../../GlobalStateProvider";
+import StakedIcon from "../../assets/collators-staked-icon";
+import RewardsIcon from "../../assets/collators-rewards-icon";
 
-enum filters {
-  collators,
-  bounded,
-  delegations,
-  apr,
+import {
+  ParachainStakingCandidate,
+  ParachainStakingInflationInflationInfo,
+  useStakingPallet,
+} from "../../hooks/staking/staking";
+import { getAddressForFormat } from "../../helpers/addressFormatter";
+import UnlinkIcon from "../../assets/UnlinkIcon";
+import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
+import ClaimRewardsDialog from "./dialogs/ClaimRewardsDialog";
+import { Balance } from "@polkadot/types/interfaces";
+
+interface CollatorColumnProps {
+  candidate: ParachainStakingCandidate;
+  collator: string;
+  totalStaked: string;
+  delegators: number;
+  apy: string;
 }
 
-type Candidate = {
-  owner: string;
-  amount: number;
-  delegators?: number;
-};
-
-type CandidateProps = {
-  owner: string;
-  delegators: number;
-};
-
-type DelegatorData = {
-  owner: string[];
-  delegators: string[];
-  id: string;
-  status: string;
-  total: string;
-};
+interface UserStaking {
+  candidateId: string;
+  amount: string;
+}
 
 export function Collators() {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [candidatePool, setCandidatePool] = useState<CandidateProps[]>([]);
-  const [combined, setCombined] = useState<Candidate[]>([]);
-  const [apy, setApy] = useState<string>('');
-  const { state } = useNodeInfoState();
-  const { api } = state;
+  const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
+  const { walletAccount } = useGlobalState().state;
 
-  useEffect(() => {
-    (async () => {
-      if (api) {
-        const candidates = await api.query.parachainStaking.topCandidates();
-        const state: Candidate[] = [];
+  const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 
-        candidates &&
-          // @ts-ignore
-          candidates.forEach((candidate: Map[Candidate]) => {
-            state.push({
-              amount: nativeToDecimal(candidate.get('amount')),
-              owner: candidate.get('owner').toString(),
-            });
-          });
+  // Holds the candidate for which the delegation modal is to be shown
+  const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
+    useState<ParachainStakingCandidate | undefined>(undefined);
 
-        setCandidates(state);
-      }
-    })();
-  }, [api]);
+  const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0.00");
+  const [userStaking, setUserStaking] = useState<UserStaking>();
+  const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    (async () => {
-      if (api) {
-        const state: CandidateProps[] = [];
+  const userAccountAddress = useMemo(() => {
+    return walletAccount && ss58Format
+      ? getAddressForFormat(walletAccount?.address, ss58Format)
+      : "";
+  }, [walletAccount, ss58Format]);
 
-        const entries =
-          await api.query.parachainStaking.candidatePool.entries();
-
-        entries &&
-          entries.forEach((item) => {
-            const identity = item[0].toHuman() as string;
-            const delegatorData = item[1].toHuman() as DelegatorData;
-
-            // const stackedValue = delegatorData.stake.replaceAll(",", "");
-            // const stacked = prettyNumbers(toUnit(BigInt(stackedValue)));
-
-            state.push({
-              owner: identity[0],
-              delegators: delegatorData.delegators.length,
-            });
-          });
-
-        setCandidatePool(state);
-      }
-    })();
-  }, [api]);
-
-  useEffect(() => {
-    (async () => {
-      if (api) {
-        const apy = await api.query.parachainStaking.inflationConfig();
-        // @ts-ignore
-        const { annual } = apy.toHuman().collator.rewardRate;
-
-        setApy(annual);
-      }
-    })();
-  });
-
-  useEffect(() => {
-    const candidatesCombined: Candidate[] = [];
-    candidatePool &&
-      candidatePool.forEach((candidate) => {
-        const o: Candidate = {
-          ...candidate,
-          amount:
-            candidates.find((c) => candidate.owner === c.owner)?.amount || 0,
-        };
-
-        candidatesCombined.push(o);
-      });
-    setCombined(candidatesCombined);
-  }, [candidatePool, candidates]);
-
-  // @ts-ignore
-  const sortData = (sortable: filters, asc = false) => {
-    let a;
-    if (sortable === filters.collators) {
-      // @ts-ignore | not final data
-      a = dummy_collator.sort((a, b) => {
-        if (asc) {
-          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-        } else {
-          return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1;
-        }
-      });
-    }
-    if (sortable === filters.bounded) {
-      // @ts-ignore | not final data
-      a = dummy_collator.sort((a, b) =>
-        asc ? a.bonded > b.bonded : a.bonded < b.bonded,
+  useMemo(() => {
+    setUserStaking(undefined);
+    return candidates.forEach((candidate) => {
+      const isDelegator = candidate.delegators.find(
+        (delegator) => delegator.owner === userAccountAddress
       );
-    }
-    // @ts-ignore
-    setData(a);
-  };
+      if (isDelegator) {
+        setUserStaking({ candidateId: candidate.id, amount: isDelegator.amount });
+      }
+    });
+  }, [candidates, userAccountAddress, setUserStaking])
 
-  const renderIcon = (type: filters, asc = false) => {
-    if (type === filters.collators) {
-      return asc ? '↑' : '↓';
-    } else if (type === filters.bounded) {
-      return asc ? '↑' : '↓';
-    } else if (type === filters.delegations) {
-      return asc ? '↑' : '↓';
-    } else if (type === filters.apr) {
-      return asc ? '↑' : '↓';
-    } else {
-      return '↕';
-    }
-  };
+  useEffect(() => {
+    const fetchAvailableBalance = async () => {
+      if (!api || !walletAccount) {
+        return "0";
+      }
+      const { data: balance } = await api.query.system.account(
+        walletAccount?.address
+      );
+      return balance.free.sub(balance.miscFrozen).toString();
+    };
 
-  const [, setData] = useState(dummy_collator);
-  const [asc, setAsc] = useState(false);
+    fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
+  }, [api, walletAccount]);
+
+  const data: any[] = useMemo(
+    () =>
+      candidates.map((candidate) => {
+        const totalStaked = nativeToDecimal(candidate.total);
+        const rowItem = {
+          candidate: candidate,
+          collator: candidate.id,
+          totalStaked: format(totalStaked, tokenSymbol),
+          delegators: candidate.delegators.length,
+          apy: inflationInfo?.delegator.rewardRate.annual || "0.00%",
+        };
+        return rowItem;
+      }),
+    [candidates, inflationInfo?.delegator.rewardRate.annual, tokenSymbol]
+  );
+
+  const columns = useMemo(
+    () => {
+      const getAmountDelegated = (candidate: ParachainStakingCandidate) =>
+        candidate.delegators.find(({ owner }) => owner === userAccountAddress)?.amount;
+      return [
+        {
+          Header: "Collator",
+          accessor: "collator",
+        },
+        {
+          Header: "Total Staked",
+          accessor: "totalStaked",
+        },
+        {
+          Header: "Delegators",
+          accessor: "delegators",
+        },
+        {
+          Header: "APY",
+          accessor: "apy",
+        },
+        {
+          Header: "My Staked",
+          accessor: "myStaked",
+          Cell: ({ row }: { row: any }) => {
+            const amountDelegated = getAmountDelegated(row.original.candidate);
+            return <div>
+              {amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ""}
+            </div>
+          },
+        },
+        {
+          Header: "",
+          accessor: "actions",
+          Cell: ({ row }: { row: any }) => {
+            const showUnbond = Boolean(getAmountDelegated(row.original.candidate));
+            const showDelegate = walletAccount && (!userStaking || showUnbond);
+            return (
+              <div className="flex flex-row justify-center">
+                <Button
+                  className="mr-2 text-primary"
+                  size="sm"
+                  color="ghost"
+                  onClick={() => undefined}
+                  startIcon={<UnlinkIcon className="w-4 h-4" />}
+                  style={{ visibility: showUnbond ? "visible" : "hidden" }}
+                >
+                  Unbond
+                </Button>
+                <Button
+                  size="sm"
+                  color="primary"
+                  variant="outline"
+                  onClick={() => {
+                    // eslint-disable-next-line react/prop-types
+                    setSelectedCandidateForDelegation(row.original.candidate);
+                  }}
+                  disabled={!showDelegate}
+                >
+                  Delegate
+                </Button>
+              </div>
+            );
+          },
+        },
+      ]
+    },
+    [tokenSymbol, userAccountAddress]
+  );
+
+
+  const tableInstance = useTable({ columns, data }, useSortBy);
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    tableInstance;
 
   return (
-    <div className="w-3/4 mx-auto">
-      <div className="pt-40 -mt-32 mb-48 mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 hidden">
-          <div
-            className="flex flex-col space-y-6 rounded-xl shadow6_18_3 px-4 py-3 md:px-8 md:py-6 bg-white-opacity100"
-            style={{ backgroundColor: '#0d0d0d' }}
-          >
-            <div className="flex items-center flex-row space-x-1.5">
-              <div className="font-bold text-lg leading-7 text-grey-darkest">
-                Collator
+    <div className="overflow-x-auto collators-list-container mt-10">
+      <div className="flex mb-8 justify-between">
+        <div className="card gap-0 rounded-lg text-primary-content bg-base-200 w-1/2 mr-4 collators-box">
+          <div className="card-body">
+            <h2 className="card-title">Collators</h2>
+            <div className="flex flex-row">
+              <div className="flex-initial pr-5">
+                <StakedIcon />
               </div>
-            </div>
-            <div className="flex flex-row items-center h-16">
-              <div className="mr-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  className="h-14 w-14 fill-green-500"
-                  style={{ fill: '#5defa7' }}
-                >
-                  {/* Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */}
-                  <path d="M448 80v48c0 44.2-100.3 80-224 80S0 172.2 0 128V80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6V288c0 44.2-100.3 80-224 80S0 332.2 0 288V186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM0 346.1c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6V432c0 44.2-100.3 80-224 80S0 476.2 0 432V346.1z" />
-                </svg>
+              <div className="flex-auto">
+                <h3>{nativeToFormat(userStaking?.amount || "0.00", tokenSymbol)}</h3>
+                <p>My Staking</p>
               </div>
-              <div className="flex flex-col items-start space-y-1 mr-auto md:mr-16">
-                <div className="font-bold text-sm md:text-base text-grey-dark">
-                  0.0000 AMPE
-                </div>
-                <div className="font-medium text-sm text-grey-normal">
-                  My Staking
-                </div>
+              <div className="flex-auto">
+                <h3>{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
+                <p>Free balance</p>
               </div>
-              <div className="flex flex-col items-start space-y-1">
-                <div className="font-bold text-sm md:text-base text-grey-normal">
-                  0.0000 AMPE
-                </div>
-                <div className="font-medium text-sm text-grey-normal">
-                  FreeBalance
-                </div>
-              </div>
-            </div>
-            <div className="px-3 flex flex-row justify-between py-1.5 bg-grey-default rounded-lg h-8 items-center">
-              <div className="flex flex-row space-x-2 items-center text-grey-normal font-medium text-xs">
-                0 AMPE Unbonding
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="flex flex-col space-y-6 rounded-xl shadow6_18_3 px-4 md:px-8 py-3 md:py-6 bg-white-opacity100"
-            style={{ backgroundColor: '#0d0d0d' }}
-          >
-            <div className="flex items-center flex-row space-x-1.5">
-              <div className="font-bold text-lg leading-7 text-grey-darkest">
-                Staking rewards
-              </div>
-            </div>
-            <div className="flex flex-row items-center h-16">
-              <div className="flex flex-col justify-start space-y-1 mr-16">
-                <div className="flex flex-row">
-                  <div className="mr-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 576 512"
-                      className="h-14 w-14 fill-green-500"
-                      style={{ fill: '#5defa7' }}
-                    >
-                      {/* Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */}
-                      <path d="M400 0H176c-26.5 0-48.1 21.8-47.1 48.2c.2 5.3 .4 10.6 .7 15.8H24C10.7 64 0 74.7 0 88c0 92.6 33.5 157 78.5 200.7c44.3 43.1 98.3 64.8 138.1 75.8c23.4 6.5 39.4 26 39.4 45.6c0 20.9-17 37.9-37.9 37.9H192c-17.7 0-32 14.3-32 32s14.3 32 32 32H384c17.7 0 32-14.3 32-32s-14.3-32-32-32H357.9C337 448 320 431 320 410.1c0-19.6 15.9-39.2 39.4-45.6c39.9-11 93.9-32.7 138.2-75.8C542.5 245 576 180.6 576 88c0-13.3-10.7-24-24-24H446.4c.3-5.2 .5-10.4 .7-15.8C448.1 21.8 426.5 0 400 0zM48.9 112h84.4c9.1 90.1 29.2 150.3 51.9 190.6c-24.9-11-50.8-26.5-73.2-48.3c-32-31.1-58-76-63-142.3zM464.1 254.3c-22.4 21.8-48.3 37.3-73.2 48.3c22.7-40.3 42.8-100.5 51.9-190.6h84.4c-5.1 66.3-31.1 111.2-63 142.3z" />
-                    </svg>
-                  </div>
-                  <div className="flex flex-col items-start space-y-1 mr-auto">
-                    <div className="font-bold text-sm md:text-base text-grey-dark">
-                      0.00000000 AMPE / Day
-                    </div>
-                    <div className="font-medium text-sm text-grey-normal">
-                      Estimated reward
-                    </div>
-                  </div>
-                </div>
+              <div className="flex flex-auto place-content-end">
+                <button className="btn btn-secondary w-full" disabled>0 {tokenSymbol} Unboarding</button>
               </div>
             </div>
           </div>
         </div>
-
-        <div className="collators-list-container">
-          <Table className="collators-list-table">
-            <Table.Head className="cursor-pointer collators-list-header">
-              <span
-                className="block w-1/5"
-                onClick={() => {
-                  sortData(filters.collators, asc);
-                  setAsc(!asc);
-                }}
-              >
-                Collator {renderIcon(filters.collators, asc)}
-              </span>
-              <span
-                className="block w-1/5"
-                onClick={() => {
-                  sortData(filters.bounded, asc);
-                  setAsc(!asc);
-                }}
-              >
-                Total staked {renderIcon(filters.bounded, asc)}
-              </span>
-              <span className="block w-1/5">Delegators</span>
-              <span className="block w-1/5">APY</span>
-              <span className="block w-1/5">Last block</span>
-              <span className="block w-1/5">My staked</span>
-            </Table.Head>
-
-            <Table.Body>
-              {combined.length > 0 &&
-                combined.map((item, index: number) => (
-                  <Table.Row key={`collator_table_${index}`}>
-                    <span title={item.owner}>
-                      {addressFormatter(item.owner)}
-                    </span>
-                    <span>{prettyNumbers(item.amount)}</span>
-                    <span>{item.delegators}</span>
-                    <span>{apy}</span>
-                    <span>-</span>
-                    <span className="hidden">
-                      <Button size="sm" animation={false}>
-                        Delegate
-                      </Button>
-                    </span>
-                  </Table.Row>
-                ))}
-              {combined.length === 0 && (
-                <Table.Row>
-                  <span />
-                  <span />
-                  <span>Fetching collators...</span>
-                  <span />
-                  <span />
-                </Table.Row>
-              )}
-            </Table.Body>
-          </Table>
+        <div className="card rounded-lg text-primary-content bg-base-200 w-1/2 ml-4 collators-box">
+          <div className="card-body">
+            <h2 className="card-title">Staking Rewards</h2>
+            <div className="flex flex-row">
+              <div className="flex-initial pt-1 pr-5 pb-0">
+                <RewardsIcon />
+              </div>
+              <div className="flex-auto">
+                <h4>
+                  {nativeToFormat(estimatedRewards, tokenSymbol)}</h4>
+                <p>Estimated reward</p>
+              </div>
+              <div className="flex flex-auto place-content-end">
+                <button onClick={() => setClaimDialogOpen(true)} className="btn btn-primary w-1/3" disabled={!walletAccount
+                  || parseFloat(estimatedRewards) <= 0}>
+                  Claim
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      <ExecuteDelegationDialogs
+        userAvailableBalance={userAvailableBalance}
+        selectedCandidateForDelegation={selectedCandidateForDelegation}
+        isDelegatingMore={userStaking?.candidateId === selectedCandidateForDelegation?.id}
+        onClose={() => setSelectedCandidateForDelegation(undefined)}
+      />
+      <ClaimRewardsDialog
+        userRewardsBalance={estimatedRewards}
+        tokenSymbol={tokenSymbol}
+        visible={claimDialogOpen}
+        onClose={() => setClaimDialogOpen(false)}
+      />
+      <table className="table w-full collators-list-table bg-base-100" {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup: any) => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column: any) => (
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render("Header")}
+                  <span style={{ float: "right" }}>
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <ChevronDownIcon className="w-4 h-4" />
+                      ) : (
+                        <ChevronUpIcon className="w-4 h-4" />
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row);
+            return (
+              <tr {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return (
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
+
+const estimateReward = (inflationInfo: ParachainStakingInflationInflationInfo | undefined, userStaking: UserStaking | undefined) =>
+  inflationInfo && userStaking ? parseFloat(inflationInfo.collator.rewardRate.annual) * parseFloat(userStaking.amount) / 100 : 0
