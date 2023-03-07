@@ -95,11 +95,11 @@ export function Collators() {
           collator: candidate.id,
           totalStaked: format(totalStaked, tokenSymbol),
           delegators: candidate.delegators.length,
-          apy: inflationInfo?.collator.rewardRate.annual || "0.00%",
+          apy: inflationInfo?.delegator.rewardRate.annual || "0.00%",
         };
         return rowItem;
       }),
-    [candidates, inflationInfo?.collator.rewardRate.annual, tokenSymbol]
+    [candidates, inflationInfo?.delegator.rewardRate.annual, tokenSymbol]
   );
 
   const columns = useMemo(
