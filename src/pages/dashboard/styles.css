@@ -8,7 +8,6 @@
 }
 
 .banner {
-  border-radius: 5px;
   border: 1px solid var(--portfolio-border);
   background-color: var(--portfolio-bg);
 }
@@ -52,22 +51,26 @@
   font-size: 20px;
 }
 
-.portfolio > .balance {
+.portfolio>.balance {
   padding-top: 20px;
   padding-bottom: 15px;
   text-align: center;
 }
 
-.portfolio > .portfolio li {
-  padding-left: 10px;
-  padding-right: 10px;
+.banner.card-compact .card-title {
+  padding: 1rem;
+  margin: 0;
 }
 
-.portfolio > .portfolio li.down {
-  color: var(--dark-red);
+.card figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
-.portfolio > ul li {
+.portfolio>ul li {
   display: inline;
 }
 
@@ -99,46 +102,63 @@
   font-weight: 500;
 }
 
-.collators-list-container {
-  overflow-y: auto;
-  display: inline-block;
-  max-height: 80vh;
-  min-height: 400;
+.dashboard {
+  background-color: var(--clear)
+}
+
+.collators-box {
+  border: 1px solid var(--table-border);
+}
+
+.collators-box span {
   color: var(--table-text);
 }
 
-.collators-list-table {
-  position: relative;
-  border: 1px solid var(--table-border);
-  border-radius: 8px;
-  border-collapse: unset;
+.collators-box h1,
+.collators-box h2,
+.collators-box h3 {
+  color: var(--table-text);
 }
 
-.collators-list-table span {
+.collators-box h2 {
+  margin-bottom: 0.5em
+}
+
+.collators-box h4 {
+  color: var(--primary);
+}
+
+.collators-box .card-body h3 {
   font-family: 'Nunito';
   font-style: normal;
-  font-weight: 500;
   font-size: 14px;
   line-height: 19px;
-  color: var(--table-text);
 }
 
-.collators-list-table td,
+.collators-box .card-body p {
+  color: var(--subtitle-collator-box);
+}
+
 .collators-list-table th {
   background-color: var(--table-background);
   border-bottom: 1px solid var(--table-border);
-  color: var(--table-text);
-}
-
-.collators-list-header tbody th {
-  background-color: var(--table-background);
-  color: var(--table-text-header);
-  text-transform: none;
-  font-weight: 400;
+  color: var(--table-header-text);
+  font-family: 'Nunito';
   font-size: 14px;
 }
 
-.collators-list-header {
-  z-index: 12;
+.collators-list-table {
+  border: 1px solid var(--table-border);
+  border-radius: 10px;
+  border-collapse: collapse;
+}
+
+.collators-list-table thead svg {
+  display: inline
+}
+
+.collators-list-table td {
+  background-color: var(--table-background);
   border-bottom: 1px solid var(--table-border);
+  color: var(--table-text);
 }

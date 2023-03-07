@@ -1,12 +1,11 @@
 import { FC } from 'preact/compat';
-import { h } from 'preact';
+import DiscordLogo from '../../assets/socials-discord';
 import GithubLogo from '../../assets/socials-github';
 import LinkedinLogo from '../../assets/socials-linkedin';
 import MediumLogo from '../../assets/socials-medium';
 import RedditLogo from '../../assets/socials-reddit';
 import TelegramLogo from '../../assets/socials-telegram';
 import TwitterLogo from '../../assets/socials-twitter';
-import DiscordLogo from '../../assets/socials-discord';
 
 interface Props {
   Link: React.FC;
@@ -21,7 +20,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://discord.gg/wJ2fQh776B"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <DiscordLogo />
             </a>
@@ -30,7 +29,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://twitter.com/pendulum_chain"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <TwitterLogo />
             </a>
@@ -39,7 +38,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://t.me/pendulum_chain"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <TelegramLogo />
             </a>
@@ -48,7 +47,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://github.com/pendulum-chain/pendulum-prototype"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <GithubLogo />
             </a>
@@ -57,7 +56,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://pendulum-chain.medium.com/"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <MediumLogo />
             </a>
@@ -66,7 +65,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://www.reddit.com/r/Pendulum_Chain/"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <RedditLogo />
             </a>
@@ -75,7 +74,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://www.linkedin.com/company/pendulum-chain/"
               target="_blank"
-              rel="nofollow noreferrer"
+              rel="nofollow noopener noreferrer"
             >
               <LinkedinLogo />
             </a>
@@ -86,9 +85,9 @@ const SocialAndTermLinks: FC<Props> = () => {
         <ul>
           <li>
             <a
-              href="https://pendulumchain.org/legal/terms-and-conditions"
+              href="https://pendulumchain.org/legal/portal-terms-and-conditions"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Terms
             </a>
@@ -97,7 +96,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://pendulumchain.org/legal/privacy-policy"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Privacy
             </a>
@@ -106,7 +105,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             <a
               href="https://pendulum.gitbook.io/pendulum-docs/get-started/readme"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Wiki
             </a>
