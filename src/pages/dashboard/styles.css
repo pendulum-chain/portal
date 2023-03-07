@@ -150,7 +150,7 @@
 .collators-list-table {
   border: 1px solid var(--table-border);
   border-radius: 10px;
-  border-collapse: separate;
+  border-collapse: collapse;
 }
 
 .collators-list-table thead svg {
