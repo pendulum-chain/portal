@@ -32,7 +32,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     minDelegatorStake,
     createJoinDelegatorsExtrinsic,
     createDelegateMoreExtrinsic,
-    joinDelegatorsTransactionFee,
+    fees,
   } = useStakingPallet();
 
   // Holds the amount that is to be delegated to the candidate
@@ -117,7 +117,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       <ConfirmDelegateDialog
         delegationAmountDecimal={delegationAmount}
         availableBalance={userAvailableBalance}
-        transactionFee={joinDelegatorsTransactionFee}
+        transactionFee={isDelegatingMore ? fees.delegatorStakeMore : fees.joinDelegators}
         submissionPending={submissionPending}
         onConfirm={submitDelegationExtrinsic}
         onCancel={() => setDelegationAmount(undefined)}
