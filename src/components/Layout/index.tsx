@@ -1,4 +1,4 @@
-import { memo, useRef } from 'preact/compat';
+import { memo } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useTheme } from 'react-daisyui';
 import { Outlet, useParams } from 'react-router-dom';
@@ -46,8 +46,6 @@ export default function Layout(): React.JSX.Element {
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
 
-  const sidebar = useRef<HTMLDivElement>(null);
-
   const FooterLink = memo(() => {
     return isPendulum ? (
       <span onClick={() => (window.location.href = '/amplitude')}>
@@ -63,22 +61,6 @@ export default function Layout(): React.JSX.Element {
     );
   });
 
-  const toggleMenu = () => {
-    const theSidebar = sidebar.current;
-    if (!theSidebar) return;
-
-    if (visible) {
-      theSidebar.style.display = 'none';
-      theSidebar.style.position = 'relative';
-      theSidebar.style.top = '0';
-    } else {
-      theSidebar.style.display = 'flex';
-      theSidebar.style.position = 'absolute';
-      theSidebar.style.top = '0';
-    }
-    setVisible(!visible);
-  };
-
   return (
     <div className="flex">
       <div id="sidebar-wrapper" className="flex flex-wrap z-50">
@@ -87,11 +69,10 @@ export default function Layout(): React.JSX.Element {
             ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
             ...{ boxShadow: '7px 0 10px rgba(0,0,0,0.1)' },
           }}
-          className={`self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen ${bgColor} ${
-            visible ? 'open' : 'closed'
-          }`}
           id="sidebar"
-          ref={sidebar}
+          className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
+            visible ? 'open left-0' : 'closed -left-full'
+          }`}
         >
           <img
             className="pendulum-logo"
@@ -115,7 +96,10 @@ export default function Layout(): React.JSX.Element {
         <div className="container flex-wrap">
           <div className="flex flex-row-reverse h-15 gap-2">
             <div className="mobile-menu">
-              <button className="menu" onClick={() => toggleMenu()} />
+              <button
+                className="menu"
+                onClick={() => setVisible((prev) => !prev)}
+              />
             </div>
             <OpenWallet networkName={isPendulum ? 'Pendulum' : 'Amplitude'} />
             <div className="dropdown dropdown-end mr-2 hidden">
