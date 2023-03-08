@@ -1,15 +1,14 @@
+import { useMemo, useState } from 'preact/hooks';
+import { Button, Modal } from 'react-daisyui';
+import AmplitudeLogo from '../../../assets/AmplitudeLogo';
+import { CloseButton } from '../../../components/CloseButton';
+import LabelledInputField from '../../../components/LabelledInputField';
+import { PublicKey } from '../../../components/PublicKey';
+import { nativeToDecimal } from '../../../helpers/parseNumbers';
 import {
   ParachainStakingCandidate,
   ParachainStakingInflationInflationInfo,
-} from "../../../hooks/staking/staking";
-import { useMemo, useState } from "preact/hooks";
-import AmplitudeLogo from "../../../assets/AmplitudeLogo";
-import { PublicKey } from "../../../components/PublicKey";
-import { nativeToDecimal } from "../../../helpers/parseNumbers";
-import { Button, Modal } from "react-daisyui";
-import LabelledInputField from "../../../components/LabelledInputField";
-import { h } from "preact";
-import { CloseButton } from "../../../components/CloseButton";
+} from '../../../hooks/staking/staking';
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;
@@ -25,7 +24,7 @@ interface DelegateToCollatorDialogProps {
 
 function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   const {
-    availableBalance = "0",
+    availableBalance = '0',
     collator,
     inflationInfo,
     minDelegatorStake,
@@ -33,10 +32,10 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     visible,
     onClose,
     onSubmit,
-    isDelegatingMore
+    isDelegatingMore,
   } = props;
 
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>('');
 
   const CollatorInfo = useMemo(
     () =>
@@ -48,7 +47,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           </div>
           <div>
             <div className="text-lg">
-              APR {inflationInfo?.delegator.rewardRate.annual || "0.00%"}
+              APR {inflationInfo?.delegator.rewardRate.annual || '0.00%'}
             </div>
             <div
               className="text-sm text-neutral-content"
@@ -61,7 +60,13 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
       ) : (
         <div />
       ),
-    [collator, inflationInfo, minDelegatorStake, tokenSymbol]
+    [
+      collator,
+      inflationInfo?.delegator.rewardRate.annual,
+      isDelegatingMore,
+      minDelegatorStake,
+      tokenSymbol,
+    ],
   );
 
   const available = nativeToDecimal(availableBalance).toFixed(4);
@@ -93,7 +98,6 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           Delegate
         </Button>
       </Modal.Actions>
-
     </Modal>
   );
 }

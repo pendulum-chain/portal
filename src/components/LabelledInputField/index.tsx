@@ -14,8 +14,14 @@ interface Props {
 }
 
 function LabelledInputField(props: Props & InputProps) {
-  const { label, secondaryLabel, onChange, extraBtnAction,
-    extraBtnText, errorMessage, ...rest } = props;
+  const {
+    label,
+    secondaryLabel,
+    onChange,
+    extraBtnAction,
+    extraBtnText,
+    ...rest
+  } = props;
 
   return (
     <div
@@ -45,9 +51,14 @@ function LabelledInputField(props: Props & InputProps) {
               }
             }}
           />
-          {extraBtnText && extraBtnAction &&
-            <button className="rounded-md max-button bg-base-200" onClick={extraBtnAction}>{extraBtnText}</button>
-          }
+          {extraBtnText && extraBtnAction && (
+            <button
+              className="rounded-md max-button bg-base-200"
+              onClick={extraBtnAction}
+            >
+              {extraBtnText}
+            </button>
+          )}
         </div>
       </div>
     </div>
