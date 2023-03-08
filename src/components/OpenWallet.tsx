@@ -1,11 +1,10 @@
-import { h } from "preact";
-import { Button } from "react-daisyui";
-import { useCallback, useMemo } from "preact/hooks";
-import { WalletAccount } from "@talismn/connect-wallets";
-import { WalletSelect } from "@talismn/connect-components";
-import { GlobalStateInterface, useGlobalState } from "../GlobalStateProvider";
-import { getAddressForFormat, trimAddress } from "../helpers/addressFormatter";
-import { useNodeInfoState } from "../NodeInfoProvider";
+import { WalletSelect } from '@talismn/connect-components';
+import { WalletAccount } from '@talismn/connect-wallets';
+import { useCallback, useMemo } from 'preact/hooks';
+import { Button } from 'react-daisyui';
+import { GlobalStateInterface, useGlobalState } from '../GlobalStateProvider';
+import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
+import { useNodeInfoState } from '../NodeInfoProvider';
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const { state, setState } = useGlobalState();
@@ -28,7 +27,11 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
 
   const ConnectButton = useMemo(() => {
     if (!state.walletAccount) {
-      return <Button color="primary" width="100px">Connect wallet</Button>;
+      return (
+        <Button color="primary" width="100px">
+          Connect wallet
+        </Button>
+      );
     } else {
       const addressForFormat = ss58Format
         ? getAddressForFormat(state.walletAccount.address, ss58Format)
