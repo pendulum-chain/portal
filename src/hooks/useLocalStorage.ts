@@ -3,23 +3,30 @@ import { debounce } from '../helpers/function';
 import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';
 
-export interface UseLocalStorageProps<T> {
+export type UseLocalStorageProps<T> = {
   /** Storage key */
   key: string;
-  /** Default/fallback value */
-  defaultValue?: T;
   /** Should the value be parsed (eg.: in case of objects) */
   parse?: boolean;
   /** Should the value updating be debounced (eg.: for quickly changing values) */
   debounce?: number;
-}
+} & (T extends undefined
+  ? {
+      /** Default/fallback value */
+      defaultValue?: T;
+    }
+  : {
+      /** Default/fallback value */
+      defaultValue: T;
+    });
+
 export interface UseLocalStorageResponse<T> {
   /** Storage state/value */
-  state: T | undefined;
+  state: T;
   /** Set storage value */
-  set: (data: T | undefined) => void;
+  set: (data: T) => void;
   /** Merge storage value with existing (eg.: updating part of an object) */
-  merge: (data: Partial<T> | ((data?: T) => T) | undefined) => void;
+  merge: (data: Partial<T> | ((data: T) => T)) => void;
   /** Clear storage value */
   clear: () => void;
 }
@@ -30,7 +37,7 @@ export const useLocalStorage = <T>({
   parse = false,
   debounce: debounceTime,
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
-  type Def = UseLocalStorageResponse<T>;
+  type TResponse = UseLocalStorageResponse<T>;
   const storageSet = useMemo<Storage['set']>(
     () =>
       debounceTime
@@ -39,26 +46,26 @@ export const useLocalStorage = <T>({
     [debounceTime],
   );
 
-  const [state, setState] = useState<T | undefined>(() =>
+  const [state, setState] = useState<T>(() =>
     parse
       ? ({
           ...defaultValue,
-          ...storageService.getParsed<T>(key, defaultValue as T),
+          ...storageService.getParsed<T>(key, defaultValue),
         } as T)
-      : (storageService.get(key) as T | undefined) ?? (defaultValue as T),
+      : (storageService.get(key) as T) ?? (defaultValue as T),
   );
-  const set = useCallback<Def['set']>(
+  const set = useCallback<TResponse['set']>(
     (value) => {
       storageSet(key, value);
       setState(value);
     },
     [key, storageSet],
   );
-  const clear = useCallback<Def['clear']>(() => {
+  const clear = useCallback<TResponse['clear']>(() => {
     storageService.remove(key);
-    setState(undefined);
-  }, [key]);
-  const merge = useCallback<Def['merge']>(
+    setState(defaultValue as T);
+  }, [defaultValue, key]);
+  const merge = useCallback<TResponse['merge']>(
     (value) => {
       setState((prev) => {
         const newVal =

@@ -1,11 +1,10 @@
-import { h } from 'preact';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import Banner from '../../assets/banner-spacewalk-4x.png';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
-import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
-import Banner from '../../assets/banner-spacewalk-4x.png';
 
 export function Dashboard() {
   const { state: GlobalState } = useGlobalState();
@@ -44,9 +43,11 @@ export function Dashboard() {
               <h2 className={'float-left'}>Promo</h2>
               <h2 className={'float-right'}>Join now</h2>
             </div>
-            <figure> <img src={Banner} /></figure>
+            <figure>
+              <img src={Banner} />
+            </figure>
           </div>
-        </a >
+        </a>
       </div>
       <div className="card w-1/3 portfolio rounded-md bg-base-200">
         <div className="card-body">
