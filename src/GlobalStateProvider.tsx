@@ -1,6 +1,12 @@
 import { WalletAccount } from '@talismn/connect-wallets';
 import { createContext } from 'preact';
-import { useCallback, useContext, useMemo } from 'preact/compat';
+import {
+  StateUpdater,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'preact/compat';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
@@ -18,21 +24,16 @@ export enum TenantRPC {
   Local = 'ws://localhost:9944',
 }
 
-export interface GlobalStateValues {
-  walletAccount?: WalletAccount;
+export interface TenantStateValues {
   tenantName: TenantName;
   tenantRPC: TenantRPC;
 }
-
 export interface GlobalState {
-  state: GlobalStateValues;
-  set: (data: GlobalStateValues) => void;
-  merge: (
-    data:
-      | Partial<GlobalStateValues>
-      | ((data: GlobalStateValues) => GlobalStateValues),
-  ) => void;
-  clear: () => void;
+  state: Partial<TenantStateValues>;
+  setState: StateUpdater<Partial<TenantStateValues>>;
+  walletAccount: WalletAccount | undefined;
+  setWalletAccount: (data: WalletAccount) => void;
+  removeWalletAccount: () => void;
   getThemeName: () => ThemeName;
 }
 
@@ -41,7 +42,7 @@ const enum ThemeName {
   Pendulum = 'pendulum',
 }
 
-const DefaultGlobalState: GlobalStateValues = {
+export const defaultState: TenantStateValues = {
   tenantName: TenantName.Amplitude,
   tenantRPC: TenantRPC.Amplitude,
 };
@@ -50,24 +51,19 @@ const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
 const GlobalStateProvider = ({
   children,
-  value,
+  value = defaultState,
 }: {
   children: ReactNode;
-  value?: Partial<GlobalStateValues>;
+  value?: Partial<TenantStateValues>;
 }) => {
-  const defaultValue = useMemo(
-    () => ({ ...DefaultGlobalState, ...value }),
-    [value],
-  );
+  const [state, setState] = useState(value);
   const {
-    state = defaultValue,
-    set,
-    merge,
-    clear,
-  } = useLocalStorage<GlobalStateValues>({
-    key: storageKeys.GLOBAL,
+    state: walletAccount,
+    set: setWalletAccount,
+    clear: removeWalletAccount,
+  } = useLocalStorage<WalletAccount | undefined>({
+    key: `${storageKeys.GLOBAL}-${state.tenantName}`,
     parse: true,
-    defaultValue,
   });
 
   const getThemeName = useCallback(() => {
@@ -80,8 +76,15 @@ const GlobalStateProvider = ({
   }, [state?.tenantName]);
 
   const providerValue = useMemo(
-    () => ({ state, set, merge, clear, getThemeName }),
-    [clear, getThemeName, merge, set, state],
+    () => ({
+      state,
+      setState,
+      walletAccount,
+      setWalletAccount,
+      removeWalletAccount,
+      getThemeName,
+    }),
+    [getThemeName, removeWalletAccount, setWalletAccount, state, walletAccount],
   );
 
   return (

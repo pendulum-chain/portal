@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'preact/compat';
 import { debounce } from '../helpers/function';
 import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';
@@ -31,6 +37,17 @@ export interface UseLocalStorageResponse<T> {
   clear: () => void;
 }
 
+const getState = <T>(key: string, defaultValue: T, parse = false): T => {
+  if (!parse) return (storageService.get(key) as T) ?? defaultValue;
+  const parsed = storageService.getParsed<T>(key, defaultValue) as T;
+  return defaultValue !== undefined
+    ? ({
+        ...defaultValue,
+        ...parsed,
+      } as T)
+    : parsed;
+};
+
 export const useLocalStorage = <T>({
   key,
   defaultValue,
@@ -38,6 +55,7 @@ export const useLocalStorage = <T>({
   debounce: debounceTime,
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
   type TResponse = UseLocalStorageResponse<T>;
+  const firstRef = useRef(false);
   const storageSet = useMemo<Storage['set']>(
     () =>
       debounceTime
@@ -47,12 +65,7 @@ export const useLocalStorage = <T>({
   );
 
   const [state, setState] = useState<T>(() =>
-    parse
-      ? ({
-          ...defaultValue,
-          ...storageService.getParsed<T>(key, defaultValue),
-        } as T)
-      : (storageService.get(key) as T) ?? (defaultValue as T),
+    getState<T>(key, defaultValue as T, parse),
   );
   const set = useCallback<TResponse['set']>(
     (value) => {
@@ -78,5 +91,13 @@ export const useLocalStorage = <T>({
     },
     [key, storageSet],
   );
+
+  useEffect(() => {
+    if (firstRef.current) {
+      setState(getState<T>(key, defaultValue as T, parse));
+    }
+    firstRef.current = true;
+  }, [defaultValue, key, parse]);
+
   return { state, set, merge, clear };
 };

@@ -20,7 +20,7 @@ export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const params = useParams();
   const { setTheme } = useTheme();
-  const { state, merge } = useGlobalState();
+  const { state, setState } = useGlobalState();
 
   const network: TenantName = useMemo(() => {
     return params.network &&
@@ -53,13 +53,13 @@ export default function Layout(): React.JSX.Element {
           break;
       }
 
-      merge((prevState) => ({
+      setState((prevState) => ({
         ...prevState,
         tenantName: network,
         tenantRPC: newTenantRPC,
       }));
     }
-  }, [network, merge, setTheme, state.tenantName]);
+  }, [network, setState, setTheme, state.tenantName]);
 
   const isPendulum = network === 'pendulum';
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;

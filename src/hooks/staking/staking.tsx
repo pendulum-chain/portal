@@ -42,7 +42,7 @@ export interface ParachainStakingInflationInflationInfo {
 
 export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>([]);
   const [inflationInfo, setInflationInfo] = useState<

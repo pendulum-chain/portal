@@ -7,11 +7,10 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
 
 export function Dashboard() {
-  const { state: GlobalState } = useGlobalState();
-  const { walletAccount } = GlobalState;
-  const { state } = useNodeInfoState();
-  const { api } = state;
-  const { tokenSymbol } = state;
+  const { walletAccount } = useGlobalState();
+  const {
+    state: { api, tokenSymbol },
+  } = useNodeInfoState();
 
   const [accountBalance, setAccountBalance] = useState<
     PalletBalancesAccountData | undefined

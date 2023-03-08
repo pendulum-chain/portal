@@ -1,17 +1,16 @@
+import { useCallback, useState } from 'preact/hooks';
+import { toast } from 'react-toastify';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { decimalToNative } from '../../../helpers/parseNumbers';
+import { getErrors } from '../../../helpers/substrate';
 import {
   ParachainStakingCandidate,
   useStakingPallet,
-} from "../../../hooks/staking/staking";
-import { useNodeInfoState } from "../../../NodeInfoProvider";
-import { useGlobalState } from "../../../GlobalStateProvider";
-import { useCallback, useState } from "preact/hooks";
-import { decimalToNative } from "../../../helpers/parseNumbers";
-import { getErrors } from "../../../helpers/substrate";
-import { toast } from "react-toastify";
-import DelegateToCollatorDialog from "./DelegateToCollatorDialog";
-import ConfirmDelegateDialog from "./ConfirmDelegateDialog";
-import DelegationSuccessfulDialog from "./DelegationSuccessfulDialog";
-import { h } from "preact";
+} from '../../../hooks/staking/staking';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
+import ConfirmDelegateDialog from './ConfirmDelegateDialog';
+import DelegateToCollatorDialog from './DelegateToCollatorDialog';
+import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';
 
 interface ExecuteDelegationDialogsProps {
   userAvailableBalance: string;
@@ -21,11 +20,15 @@ interface ExecuteDelegationDialogsProps {
 }
 
 function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
-  const { userAvailableBalance, selectedCandidateForDelegation, isDelegatingMore, onClose } =
-    props;
+  const {
+    userAvailableBalance,
+    selectedCandidateForDelegation,
+    isDelegatingMore,
+    onClose,
+  } = props;
 
   const { api, tokenSymbol } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const {
     inflationInfo,
@@ -37,7 +40,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
 
   // Holds the amount that is to be delegated to the candidate
   const [delegationAmount, setDelegationAmount] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [submissionPending, setSubmissionPending] = useState<boolean>(false);
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
@@ -54,14 +57,15 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     }
 
     const amount = decimalToNative(delegationAmount);
-    const extrinsic = isDelegatingMore ?
-      createDelegateMoreExtrinsic(
-        selectedCandidateForDelegation.id,
-        amount.toString()) :
-      createJoinDelegatorsExtrinsic(
-        selectedCandidateForDelegation.id,
-        amount.toString()
-      );
+    const extrinsic = isDelegatingMore
+      ? createDelegateMoreExtrinsic(
+          selectedCandidateForDelegation.id,
+          amount.toString(),
+        )
+      : createJoinDelegatorsExtrinsic(
+          selectedCandidateForDelegation.id,
+          amount.toString(),
+        );
 
     setSubmissionPending(true);
 
@@ -76,10 +80,10 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join(
-                "\n"
+                '\n',
               )}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: "error" });
+              toast(errorMessage, { type: 'error' });
             }
           } else if (status.isFinalized) {
             setSubmissionPending(false);
@@ -88,17 +92,21 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
               setConfirmationDialogVisible(true);
             }
           }
-        }
+        },
       )
       .catch((error) => {
-        console.error("Transaction submission failed", error);
-        toast("Transaction submission failed", { type: "error" });
+        console.error('Transaction submission failed', error);
+        toast('Transaction submission failed', { type: 'error' });
         setSubmissionPending(false);
       });
   }, [
-    walletAccount, api, delegationAmount,
-    selectedCandidateForDelegation, isDelegatingMore,
-    createJoinDelegatorsExtrinsic, createDelegateMoreExtrinsic
+    walletAccount,
+    api,
+    delegationAmount,
+    selectedCandidateForDelegation,
+    isDelegatingMore,
+    createJoinDelegatorsExtrinsic,
+    createDelegateMoreExtrinsic,
   ]);
 
   return (
@@ -108,7 +116,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         collator={selectedCandidateForDelegation}
         inflationInfo={inflationInfo}
         minDelegatorStake={minDelegatorStake}
-        tokenSymbol={tokenSymbol || ""}
+        tokenSymbol={tokenSymbol || ''}
         isDelegatingMore={isDelegatingMore}
         visible={Boolean(selectedCandidateForDelegation && !delegationAmount)}
         onClose={onClose}
@@ -125,7 +133,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
           setDelegationAmount(undefined);
           onClose();
         }}
-        tokenSymbol={tokenSymbol || ""}
+        tokenSymbol={tokenSymbol || ''}
         visible={Boolean(selectedCandidateForDelegation && delegationAmount)}
       />
       <DelegationSuccessfulDialog

@@ -31,7 +31,7 @@ function ClaimRewardsDialog(props: Props) {
 
   const { createClaimRewardExtrinsic } = useStakingPallet();
   const { api } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
   const [loading, setLoading] = useState<boolean>(false);
   const [step, setStep] = useState<ClaimStep>(ClaimStep.Confirm);
   const amount = nativeToDecimal(userRewardsBalance);

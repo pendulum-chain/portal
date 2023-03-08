@@ -1,8 +1,8 @@
-import { createContext, h } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { createContext } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;
@@ -31,7 +31,7 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
   const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
     Promise<unknown>
@@ -54,7 +54,7 @@ const NodeInfoProvider = ({
         }),
       );
 
-      console.log("connected to", tenantRPC, "with chain", api);
+      console.log('connected to', tenantRPC, 'with chain', api);
 
       const bestNumberFinalize = await api.derive.chain.bestNumber();
       const chainProperties = await api.registry.getChainProperties();
