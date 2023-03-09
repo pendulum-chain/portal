@@ -174,6 +174,19 @@ export function useStakingPallet() {
           moreAmountNative
         );
       },
+      createDelegateLessExtrinsic(
+        collatorAddress: string,
+        lessAmountNative: string
+      ) {
+        if (!api) {
+          return undefined;
+        }
+
+        return api.tx.parachainStaking?.delegatorStakeLess(
+          collatorAddress,
+          lessAmountNative
+        );
+      },
       createJoinDelegatorsExtrinsic(
         collatorAddress: string,
         amountNative: string

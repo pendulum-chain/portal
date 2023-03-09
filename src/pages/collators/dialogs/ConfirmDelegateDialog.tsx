@@ -8,7 +8,9 @@ interface ConfirmDelegateDialogProps {
   availableBalance?: string;
   delegationAmountDecimal?: string;
   submissionPending?: boolean;
-  tokenSymbol: string;
+  tokenSymbol?: string;
+  isDelegatingMore: boolean;
+  isDelegatingLess: boolean;
   transactionFee?: Big;
   visible: boolean;
   onCancel?: () => void;
@@ -20,6 +22,8 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const {
     availableBalance = "0",
     delegationAmountDecimal = "0",
+    isDelegatingMore,
+    isDelegatingLess,
     tokenSymbol,
     visible,
     transactionFee = Big(0),
@@ -32,14 +36,19 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const balanceDecimal = nativeToDecimal(availableBalance);
   const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
 
-  const resultingBalance = Big(balanceDecimal)
-    .minus(delegationAmountDecimal)
-    .minus(transactionFeeDecimal)
-    .toString();
+  const resultingBalance = isDelegatingLess ?
+    Big(balanceDecimal)
+      .plus(delegationAmountDecimal)
+      .minus(transactionFeeDecimal)
+      .toString() :
+    Big(balanceDecimal)
+      .minus(delegationAmountDecimal)
+      .minus(transactionFeeDecimal)
+      .toString();
 
   return (
     <Modal open={visible}>
-      <Modal.Header className="font-bold">Settlement Confirmation</Modal.Header>
+      <Modal.Header className="text-2xl">Settlement Confirmation</Modal.Header>
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
@@ -49,7 +58,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
           </div>
         </div>
 
-        <div className="px-4 bg-base-100 mt-8">
+        <div className="rounded-md px-4 py-4 mt-8 bg-slate-50 bg-opacity-5">
           <div className="flex justify-between">
             <span className="text-neutral-content">Available Balance</span>
             <span>
