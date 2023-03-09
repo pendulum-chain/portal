@@ -71,18 +71,15 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     const amount = decimalToNative(delegationAmount);
 
     const getExtrinsic = () => {
-      if (isDelegatingMore) {
-        console.log("delegating more");
-        return createDelegateMoreExtrinsic(
-          selectedCandidate.id,
-          amount.toString());
-      } else if (isDelegatingLess) {
-        console.log("delegating less");
+      if (isDelegatingLess) {
         return createDelegateLessExtrinsic(
           selectedCandidate.id,
           amount.toString());
+      } else if (isDelegatingMore) {
+        return createDelegateMoreExtrinsic(
+          selectedCandidate.id,
+          amount.toString());
       } else {
-        console.log("join");
         return createJoinDelegatorsExtrinsic(
           selectedCandidate.id,
           amount.toString()
