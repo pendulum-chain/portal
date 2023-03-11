@@ -1,11 +1,10 @@
-import { h } from 'preact';
+import DiscordLogo from '../../assets/socials-discord';
 import GithubLogo from '../../assets/socials-github';
 import LinkedinLogo from '../../assets/socials-linkedin';
 import MediumLogo from '../../assets/socials-medium';
 import RedditLogo from '../../assets/socials-reddit';
 import TelegramLogo from '../../assets/socials-telegram';
 import TwitterLogo from '../../assets/socials-twitter';
-import DiscordLogo from '../../assets/socials-discord';
 
 const socialLinks = [
   { href: 'https://discord.gg/wJ2fQh776B', Logo: DiscordLogo },
@@ -41,9 +40,9 @@ const SocialAndTermLinks = (): JSX.Element => {
         <ul>
           <li>
             <a
-              href="https://pendulumchain.org/legal/terms-and-conditions"
+              href="https://pendulumchain.org/legal/portal-terms-and-conditions"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Terms
             </a>
@@ -52,7 +51,7 @@ const SocialAndTermLinks = (): JSX.Element => {
             <a
               href="https://pendulumchain.org/legal/privacy-policy"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Privacy
             </a>
@@ -61,7 +60,7 @@ const SocialAndTermLinks = (): JSX.Element => {
             <a
               href="https://pendulum.gitbook.io/pendulum-docs/get-started/readme"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               Wiki
             </a>

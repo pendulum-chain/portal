@@ -6,6 +6,7 @@ import GovernanceIcon from '../../assets/governance';
 import ArrowIcon from '../../assets/nav-arrow';
 import SwapIcon from '../../assets/swap';
 import SwapPoolsIcon from '../../assets/swap-pools';
+import { GlobalStateInterface } from '../../GlobalStateProvider';
 // TODO: some links can be shared
 
 type LinkParameter = { isActive: boolean };
@@ -16,7 +17,7 @@ const arrow = (
   </div>
 );
 
-export const links = [
+export const links = ({ tenantName }: Partial<GlobalStateInterface>) => [
   {
     link: './dashboard',
     title: 'Dashboard',
@@ -56,7 +57,7 @@ export const links = [
     suffix: arrow,
   },
   {
-    link: 'https://amplitude.polkassembly.io/',
+    link: `https://${tenantName}.polkassembly.io/`,
     title: 'Governance',
     props: {
       target: '_blank',
@@ -75,7 +76,7 @@ export const links = [
   },
 ];
 
-export const amberLinks = [
+export const amberLinks = () => [
   {
     link: './swap',
     title: 'Swap',

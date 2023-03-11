@@ -4,7 +4,7 @@ import { WalletAccount } from '@talismn/connect-wallets';
 import { useCallback, useMemo } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { GlobalStateInterface } from '../GlobalStateProvider';
-import addressFormatter from '../helpers/addressFormatter';
+import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
 import { useAccountBalance } from '../hooks/useAccountBalance';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { Skeleton } from './Skeleton';
@@ -12,7 +12,7 @@ import { Skeleton } from './Skeleton';
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const { state: infoState } = useNodeInfoState();
   const { query, balance, globalState } = useAccountBalance();
-  const { tokenSymbol } = infoState;
+  const { tokenSymbol, ss58Format } = infoState;
   const { state, setState } = globalState;
   const { address, wallet } = state.walletAccount || {};
 
@@ -54,14 +54,17 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
               {balance} {tokenSymbol}
             </span>
           )}
-          {addressFormatter(address, 3)}
+          {trimAddress(
+            ss58Format ? getAddressForFormat(address, ss58Format) : address,
+            4,
+          )}
         </Button>
       ) : (
         <Button size="sm" color="primary">
           Connect to Wallet
         </Button>
       ),
-    [address, balance, query.isLoading, tokenSymbol, wallet],
+    [address, balance, query.isLoading, ss58Format, tokenSymbol, wallet],
   );
 
   return (

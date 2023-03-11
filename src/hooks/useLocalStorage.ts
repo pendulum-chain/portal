@@ -4,15 +4,23 @@ import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';
 
 export interface UseLocalStorageProps<T> {
+  /** Storage key */
   key: string;
+  /** Default/fallback value */
   defaultValue?: T;
+  /** Should the value be parsed (eg.: in case of objects) */
   parse?: boolean;
+  /** Should the value updating be debounced (eg.: for quickly changing values) */
   debounce?: number;
 }
 export interface UseLocalStorageResponse<T> {
+  /** Storage state/value */
   state: T | undefined;
+  /** Set storage value */
   set: (data: T | undefined) => void;
+  /** Merge storage value with existing (eg.: updating part of an object) */
   merge: (data: Partial<T> | ((data?: T) => T) | undefined) => void;
+  /** Clear storage value */
   clear: () => void;
 }
 

@@ -19,35 +19,38 @@
   /* From daisyUI theme variables*/
   --text-primary: var(--bc);
   --text-secondary: var(--nc);
+  --table-background: #1c1c1c;
 }
 
 [data-theme='amplitude'] {
-  --background: var(--darkner);
+  --primary: #4ee59a;
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
-  --table-text: '#BBBBBB';
-  --table-text-header: '#fff';
-  --table-background: var(--dark-light);
-  --table-border: #dfe0eb08;
+  --table-text: #bbbbbb;
+  --table-text-header: #fff;
+  --table-background: #1c1c1c;
+  --table-border: #242424;
   --modal-title: var(--clear-light);
   --portfolio-bg: var(--dark-light);
   --portfolio-border: rgba(229, 229, 229, 0.03);
   --selected-nav-item: hsla(158, 100%, 47%, 0.08);
+  --subtitle-collator-box: #fff;
 }
 
 [data-theme='pendulum'] {
-  --background: #fbfcfe;
+  --primary: #907ea0;
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
-  --table-text: '#252733';
-  --table-text-header: '#9FA2B4';
-  --table-background: '#fff';
-  --table-border: '#DFE0EB';
-  --portfolio-border: #e5e5e5;
+  --table-text: #252733;
+  --table-text-header: #9fa2b4;
+  --table-background: #fff;
+  --table-border: #dfe0eb;
   --modal-title: var(--darkner);
   --portfolio-bg: var(--clear-light);
+  --portfolio-border: #e5e5e5;
+  --subtitle-collator-box: #828282;
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
 }
 
@@ -79,10 +82,6 @@ input,
 textarea,
 select {
   font-family: 'Nunito Sans', sans-serif;
-}
-
-#main {
-  background-color: var(--background);
 }
 
 .pendulum-network-id {
@@ -265,6 +264,25 @@ nav a span {
   border-bottom: 1px solid var(--footer-links);
 }
 
+table th .sort:not(.desc):not(.asc) {
+  transition: opacity 0.15s ease-out;
+  opacity: 0;
+}
+table th:hover .sort {
+  opacity: 0.8 !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  --moz-appearance: textfield;
+}
+
 /* utility classes */
 .center {
   display: flex;
@@ -277,9 +295,11 @@ nav a span {
 .input {
   line-height: 1.5;
 }
+
 .collapse .collapse-content {
   padding: 0;
 }
+
 .collapse-title,
 :where(.collapse > input[type='checkbox']) {
   min-height: 0;
@@ -288,6 +308,7 @@ nav a span {
 .modal.modal-top {
   align-items: flex-start;
 }
+
 .input-ghost {
   background-color: transparent;
   outline: none;
