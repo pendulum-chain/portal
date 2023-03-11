@@ -61,7 +61,7 @@ export const useSwapComponent = ({
       to: to || storageState?.to,
     },
   });
-  const { setValue } = form;
+  const { setValue, reset } = form;
 
   // TODO: fetch tokens
   // TODO: fetch wallet token balances
@@ -74,9 +74,13 @@ export const useSwapComponent = ({
       console.log(data);
     },
     {
-      // TODO: display response and update balances and rest form
-      onError: () => undefined,
-      onSuccess: () => undefined,
+      onError: () => {
+        // TODO: display error to user
+      },
+      onSuccess: () => {
+        reset();
+        // TODO: display response and update balances
+      },
     },
   );
 

@@ -15,12 +15,14 @@ export function Amm(): JSX.Element {
   );
 
   return (
-    <div id="amm" className="center mt-8">
-      <Swap
-        from={params.get('from') || undefined}
-        to={params.get('to') || undefined}
-        onChange={onChange}
-      />
-    </div>
+    <>
+      <div id="amm" className="center mt-8">
+        <Swap
+          from={params.get('from') || undefined}
+          to={params.get('to') || undefined}
+          onChange={onChange}
+        />
+      </div>
+    </>
   );
 }

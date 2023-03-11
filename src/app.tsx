@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Layout from "./components/Layout";
 import { NotFound } from "./components/NotFound";
 import { Amm } from "./pages/amm/Amm";
+import PoolsPage from './pages/amm/pools/Pools';
 import Bridge from "./pages/bridge";
 import { Collators } from "./pages/collators/Collators";
 import { Dashboard } from "./pages/dashboard/Dashboard";
@@ -19,6 +20,7 @@ export function App() {
         <Route path="/:network/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="amm" element={<Amm />} />
+          <Route path="amm/pools/*" element={<PoolsPage />} />
           <Route path="bridge/:to?" element={<Bridge />} />
           <Route path="collators" element={<Collators />} />
           <Route path="*" element={<NotFound />} />

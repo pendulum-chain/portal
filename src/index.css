@@ -84,6 +84,10 @@ select {
   font-family: 'Nunito Sans', sans-serif;
 }
 
+strong {
+  font-weight: 600;
+}
+
 .pendulum-network-id {
   background-color: hsla(0, 0%, 0%, 0.04);
   border-radius: 4px;
@@ -313,4 +317,11 @@ input[type='number'] {
   background-color: transparent;
   outline: none;
   border: 0;
+}
+table th .sort:not(.desc):not(.asc) {
+  transition: opacity 0.15s ease-out;
+  opacity: 0;
+}
+table th:hover .sort {
+  opacity: 0.8 !important;
 }

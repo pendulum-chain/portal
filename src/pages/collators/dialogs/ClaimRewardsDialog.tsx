@@ -1,15 +1,16 @@
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { Button, Modal } from 'react-daisyui';
+import { toast } from 'react-toastify';
+import SuccessDialogIcon from '../../../assets/success-dialog';
+import { CloseButton } from '../../../components/CloseButton';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { format, nativeToDecimal } from '../../../helpers/parseNumbers';
+import { getErrors } from '../../../helpers/substrate';
 import {
-  ParachainStakingInflationInflationInfo, useStakingPallet,
-} from "../../../hooks/staking/staking";
-import { useCallback, useMemo, useState } from "preact/hooks";
-import { format, nativeToDecimal } from "../../../helpers/parseNumbers";
-import { Button, Modal } from "react-daisyui";
-import SuccessDialogIcon from "../../../assets/success-dialog";
-import { CloseButton } from "../../../components/CloseButton";
-import { useGlobalState } from "../../../GlobalStateProvider";
-import { useNodeInfoState } from "../../../NodeInfoProvider";
-import { getErrors } from "../../../helpers/substrate";
-import { toast } from "react-toastify";
+  ParachainStakingInflationInflationInfo,
+  useStakingPallet,
+} from '../../../hooks/staking/staking';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 
 interface Props {
   userRewardsBalance?: string;
@@ -22,16 +23,11 @@ interface Props {
 
 enum ClaimStep {
   Confirm = 0,
-  Success = 1
+  Success = 1,
 }
 
 function ClaimRewardsDialog(props: Props) {
-  const {
-    userRewardsBalance = "0",
-    tokenSymbol,
-    visible,
-    onClose,
-  } = props;
+  const { userRewardsBalance = '0', tokenSymbol, visible, onClose } = props;
 
   const { createClaimRewardExtrinsic } = useStakingPallet();
   const { api } = useNodeInfoState().state;
@@ -43,14 +39,12 @@ function ClaimRewardsDialog(props: Props) {
   useMemo(() => {
     if (!visible)
       setTimeout(() => {
-        setStep(ClaimStep.Confirm)
-      }, 500)
-  }, [visible])
-
+        setStep(ClaimStep.Confirm);
+      }, 500);
+  }, [visible]);
 
   const submitExtrinsic = useCallback(() => {
-    if (!walletAccount || !api || !amount)
-      return;
+    if (!walletAccount || !api || !amount) return;
 
     const extrinsic = createClaimRewardExtrinsic(userRewardsBalance);
 
@@ -65,28 +59,32 @@ function ClaimRewardsDialog(props: Props) {
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join(
-                "\n"
+                '\n',
               )}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: "error" });
+              toast(errorMessage, { type: 'error' });
             }
           } else if (status.isFinalized) {
-            setLoading(true)
+            setLoading(true);
 
             if (errors.length === 0) {
-              setStep(ClaimStep.Success)
+              setStep(ClaimStep.Success);
             }
           }
-        }
+        },
       )
       .catch((error) => {
-        console.error("Transaction submission failed", error);
-        toast("Transaction submission failed", { type: "error" });
+        console.error('Transaction submission failed', error);
+        toast('Transaction submission failed', { type: 'error' });
         setLoading(false);
       });
-  }, [api, amount, createClaimRewardExtrinsic,
-    walletAccount, setLoading, setStep]);
-
+  }, [
+    walletAccount,
+    api,
+    amount,
+    createClaimRewardExtrinsic,
+    userRewardsBalance,
+  ]);
 
   const content = useMemo(() => {
     switch (step) {
@@ -94,41 +92,41 @@ function ClaimRewardsDialog(props: Props) {
         return (
           <div className="rounded-lg bg-base-200 flex flex-col p-8 items-center w-fit center m-auto">
             <p className="flex">Amount</p>
-            <h1 className="flex text-4xl">{format(amount, tokenSymbol, true)}</h1>
+            <h1 className="flex text-4xl">
+              {format(amount, tokenSymbol, true)}
+            </h1>
           </div>
-        )
+        );
       case ClaimStep.Success:
         return (
           <div className="flex flex-col items-center justify-between">
             <SuccessDialogIcon />
             <div className="mt-4" />
-            <h2 className="text-xl">
-              Rewards succesfully claimed!
-            </h2>
-          </div>)
+            <h2 className="text-xl">Rewards succesfully claimed!</h2>
+          </div>
+        );
     }
-  }, [step]);
+  }, [amount, step, tokenSymbol]);
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {
       case ClaimStep.Confirm:
-        return "Claim"
+        return 'Claim';
       case ClaimStep.Success:
-        return "Ok"
+        return 'Ok';
     }
-  }
+  };
 
   const getButtonAction = (step: ClaimStep) => {
     switch (step) {
       case ClaimStep.Confirm:
         return () => {
           submitExtrinsic();
-        }
+        };
       case ClaimStep.Success:
-        return onClose
+        return onClose;
     }
-  }
-
+  };
 
   return (
     <Modal open={visible}>
@@ -149,7 +147,7 @@ function ClaimRewardsDialog(props: Props) {
           {getButtonText(step)}
         </Button>
       </Modal.Actions>
-    </Modal >
+    </Modal>
   );
 }
 
