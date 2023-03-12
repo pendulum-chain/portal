@@ -1,6 +1,7 @@
 import { WalletAccount } from '@talismn/connect-wallets';
 import { createContext } from 'preact';
-import { useContext, useState } from 'preact/hooks';
+import { useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { useParams } from 'react-router-dom';
 import { config } from './config';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
@@ -17,19 +18,47 @@ const DefaultGlobalState: GlobalStateInterface = {
 };
 
 const GlobalStateContext = createContext({
-  state: {} as Partial<GlobalStateInterface>,
-  setState: {} as Dispatch<SetStateAction<Partial<GlobalStateInterface>>>,
+  state: {} as GlobalStateInterface,
+  setState: {} as Dispatch<SetStateAction<GlobalStateInterface>>,
   getThemeName: (): ThemeName => ThemeName.Pendulum,
 });
 
 const GlobalStateProvider = ({
   children,
-  value = DefaultGlobalState,
+  value,
 }: {
   children: ReactNode;
-  value?: Partial<GlobalStateInterface>;
+  value?: GlobalStateInterface;
 }) => {
-  const [state, setState] = useState(value);
+  const params = useParams();
+  // ? TODO: should redirect in case of wrong network
+  const network = useMemo(() => {
+    return params.network &&
+      Object.values<string>(TenantName).includes(params.network)
+      ? (params.network as TenantName)
+      : TenantName.Pendulum;
+  }, [params.network]);
+
+  const [state, setState] = useState(() => {
+    if (value) return value;
+    if (network) {
+      return {
+        tenantName: network,
+        tenantRPC: config.tenants[network].rpc,
+      };
+    }
+    return DefaultGlobalState;
+  });
+
+  useEffect(() => {
+    if (network !== state.tenantName)
+      setState((prev) => ({
+        ...prev,
+        tenantName: network,
+        tenantRPC: config.tenants[network].rpc,
+      }));
+  }, [network, state.tenantName]);
+
   const getThemeName = () =>
     state.tenantName
       ? config.tenants[state.tenantName]?.theme || ThemeName.Amplitude

@@ -1,6 +1,6 @@
-import { Button, Modal } from "react-daisyui";
-import { h } from "preact";
-import { CloseButton } from "../../../components/CloseButton";
+import { Button, Modal } from 'react-daisyui';
+import { h } from 'preact';
+import { CloseButton } from '../../../components/CloseButton';
 
 interface DelegationSuccessfulDialogProps {
   visible: boolean;

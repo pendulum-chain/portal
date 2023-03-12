@@ -30,7 +30,7 @@ import {
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
-interface CollatorColumnProps {
+export interface CollatorColumnProps {
   candidate: ParachainStakingCandidate;
   collator: string;
   totalStaked: string;

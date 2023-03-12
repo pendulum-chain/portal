@@ -1,15 +1,17 @@
 $small: 300px
-$medium: 900px
-$menu: 48px
+$medium: 1023px
+$menu: 32px
 
 .mobile-menu
   display: none
   width: $menu
   height: $menu
-  padding: 12px
+  padding: 4px
+  margin-left: 4px
   transition: opacity .2s ease-out
+  opacity: .8
   :hover
-    opacity: .9
+    opacity: .75
   @media screen and (max-width: $medium)
     display: block
 
@@ -31,18 +33,18 @@ $menu: 48px
     position: absolute !important
     top: 0 !important
 
-#main
-  height: 100vh
+#main-wrapper
+  > section
+    width: 100%
+    height: 100vh
+    overflow: auto
+
+    > header
+      position: sticky
+      top: 0
+      padding: 1rem
+      z-index: 100
+
+main
   width: 100%
-  overflow: hidden
-  .container
-    padding: 1rem 10rem
-    max-width: inherit
-    @media screen and (min-width: $small)
-      width: 100% !important
-
-  @media screen and (min-width: $small)
-    width: 100%
-
-  @media screen and (min-width: $medium)
-    width: 100%
+  padding: 1rem

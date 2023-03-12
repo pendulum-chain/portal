@@ -1,3 +1,6 @@
-import { AssetDetails } from '@polkadot/types/interfaces';
-
-export type Asset = AssetDetails;
+export interface Asset {
+  address: string;
+  decimals: number;
+  symbol: string;
+  name: string;
+}

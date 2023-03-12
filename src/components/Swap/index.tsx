@@ -5,12 +5,11 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Fragment } from 'preact';
+import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { errorClass } from '../../helpers/form';
-import { repeat } from '../../helpers/general';
-import { Skeleton } from '../Skeleton';
-import { inputClass } from './styles';
+import Progress from './Progress';
 import SwapToken from './SwapToken';
-import TokenSelector from './TokenSelector';
+import { TokenSelectorModal } from './TokenSelector';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
@@ -25,6 +24,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     tokensQuery,
     submitMutation,
     form,
+    progress,
   } = useSwapComponent(props);
   const {
     setValue,
@@ -38,23 +38,27 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   return (
     <>
-      <div className="card w-full max-w-xl bg-base-100 shadow-xl border rounded-lg">
+      <Card bordered className="w-full max-w-xl bg-base-100 shadow-xl">
         <form
           className="card-body text-gray-800"
           onSubmit={form.handleSubmit((data) => submitMutation.mutate(data))}
         >
           <div className="flex justify-between mb-2">
-            <h2 className="card-title text-3xl font-normal">Swap</h2>
-            <div className="dropdown dropdown-end">
-              <button
-                className="btn btn-ghost btn-circle text-gray-600"
+            <Card.Title tag="h2" className="text-3xl font-normal">
+              Swap
+            </Card.Title>
+            <Dropdown vertical="end">
+              <Button
+                color="ghost"
+                shape="circle"
+                className="text-gray-600"
                 type="button"
               >
                 <Cog8ToothIcon className="h-8 w-8" />
-              </button>
-              <div
+              </Button>
+              <Dropdown.Menu
                 tabIndex={0}
-                className="dropdown-content menu p-4 shadow-lg bg-base-100 border rounded-lg w-64"
+                className="p-4 shadow-lg bg-base-100 border rounded-lg w-64"
               >
                 <div className="w-full">
                   <h4 className="font-semibold">Settings</h4>
@@ -66,8 +70,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-2">
-                      <button
-                        className="btn btn-sm px-3 btn-primary"
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        className="px-3"
                         onClick={() => {
                           setValue('slippage', undefined);
                           merge({ slippage: undefined });
@@ -75,10 +81,12 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                         type="button"
                       >
                         Auto
-                      </button>
+                      </Button>
                       <div className="relative flex text-gray-600">
-                        <input
-                          className={`${inputClass} pr-6 w-full`}
+                        <Input
+                          size="sm"
+                          bordered
+                          className={`bg-gray-100 text-right text-gray-600 pr-6 w-full`}
                           type="number"
                           step=".1"
                           placeholder="Auto"
@@ -103,8 +111,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mt-2">
-                      <input
-                        className={`${inputClass} w-20 pr-0`}
+                      <Input
+                        size="sm"
+                        bordered
+                        className={`bg-gray-100 text-right text-gray-600 w-20 pr-2`}
                         type="number"
                         placeholder="30"
                         {...register('deadline', {
@@ -118,12 +128,12 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
           <SwapToken
             token="ETH"
-            onValueSelect={() => console.log('TODO')}
+            onValueSelect={() => console.log('! TODO')}
             onOpenSelector={() => setModalType('from')}
             className={`border ${errorClass(
               errors.fromAmount,
@@ -196,43 +206,35 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </SwapToken>
           <div className="mt-6">
             {/* <Validation errors={errors} className="mb-2" /> */}
-            <button
-              className="btn btn-primary w-full text-base"
+            <Button
+              variant="primary"
+              className="w-full text-base"
               disabled={!walletAccount?.wallet}
               type="submit"
             >
               Swap
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-      <div className={`modal modal-top${modalType ? ' modal-open' : ''}`}>
-        <div className="modal-box relative mt-8 md:mt-16 lg:mt-20">
-          <button
-            className="btn btn-sm btn-circle absolute right-2 top-2"
-            onClick={() => setModalType(undefined)}
-            type="button"
-          >
-            ✕
-          </button>
-          <h3 className="text-lg font-bold">Select a token</h3>
-          <div className="py-4">
-            {tokensQuery.isLoading ? (
-              repeat(<Skeleton className="w-full h-10 mb-2" />)
-            ) : (
-              <TokenSelector
-                tokens={[]}
-                onSelect={modalType === 'from' ? onFromChange : onToChange}
-                selected={
-                  modalType === 'from'
-                    ? form.getValues().from
-                    : form.getValues().to
-                }
-              />
-            )}
-          </div>
-        </div>
-      </div>
+      </Card>
+      <TokenSelectorModal
+        open={!!modalType}
+        className="modal-top"
+        tokens={tokensQuery.data}
+        onSelect={modalType === 'from' ? onFromChange : onToChange}
+        selected={
+          modalType === 'from' ? form.getValues().from : form.getValues().to
+        }
+        onClose={() => setModalType(undefined)}
+        isLoading={tokensQuery.isLoading}
+      />
+      <Progress
+        open={!!progress[0]}
+        className="modal-top"
+        onClose={() => progress[1](undefined)}
+        status={submitMutation.status}
+        transaction={progress[0]}
+      />
     </>
   );
 };

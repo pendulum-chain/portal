@@ -19,7 +19,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
   const updateGlobalAccount = useCallback(
     (account: WalletAccount) => {
       setState((prevState) => {
-        const newState: Partial<GlobalStateInterface> = {
+        const newState: GlobalStateInterface = {
           ...prevState,
           ...{
             walletAccount: account,

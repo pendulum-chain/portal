@@ -2,10 +2,11 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Link, useParams } from 'react-router-dom';
 
 export interface PoolOverviewProps {
-  data?: any;
+  data?: unknown;
 }
 
 const PoolOverview = ({ data }: PoolOverviewProps): JSX.Element | null => {
+  console.log(data);
   const { network } = useParams();
   const totalBalance = '$0.78';
 

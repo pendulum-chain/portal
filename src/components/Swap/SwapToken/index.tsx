@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
+import { Button } from 'react-daisyui';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { Skeleton } from '../../Skeleton';
 
@@ -28,8 +29,9 @@ const SwapToken = ({
       <div className={`rounded-lg bg-gray-100 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl font-2">{value}</div>
-          <button
-            className="btn btn-xs h-4 min-h-none bg-gray-200 rounded-full pl-0 pr-1 flex items-center mt-0.5"
+          <Button
+            size="xs"
+            className="rounded-full h-4 min-h-none bg-gray-200 pl-0 pr-1 flex items-center mt-0.5"
             onClick={onOpenSelector}
             type="button"
           >
@@ -42,7 +44,7 @@ const SwapToken = ({
             </span>
             <strong className="font-bold">{token}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
-          </button>
+          </Button>
         </div>
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-500 mt-px">

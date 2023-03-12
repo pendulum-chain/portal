@@ -1,5 +1,6 @@
 import { useCallback } from 'preact/compat';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import Pools from '../../components/Pools';
 import Swap from '../../components/Swap';
 
 export function Amm(): JSX.Element {
@@ -22,6 +23,11 @@ export function Amm(): JSX.Element {
           to={params.get('to') || undefined}
           onChange={onChange}
         />
+      </div>
+      <div className="mt-12">
+        <Pools />
+        <Pools />
+        <Pools />
       </div>
     </>
   );

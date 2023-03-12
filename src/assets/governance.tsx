@@ -1,5 +1,3 @@
-import { h } from 'preact';
-
 const GovernanceIcon = () => (
   <svg
     width="18"

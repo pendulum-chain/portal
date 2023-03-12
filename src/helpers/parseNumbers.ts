@@ -16,9 +16,9 @@ export const decimalToNative = (value: BigNumber | number | string) => {
 };
 
 export const nativeToDecimal = (value: BigNumber | number | string) => {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     // Replace the unnecessary ',' with '' to prevent BigNumber from throwing an error
-    value = new BigNumber(value.replaceAll(",", ""));
+    value = new BigNumber(value.replaceAll(',', ''));
   }
   const bigIntValue = new BigNumber(value);
   const divisor = new BigNumber(10).pow(TOKEN_DECIMALS);
@@ -28,26 +28,26 @@ export const nativeToDecimal = (value: BigNumber | number | string) => {
 };
 
 const units = [
-  { divider: 1e9, prefix: "billion", char: "B" },
-  { divider: 1e6, prefix: "million", char: "M" },
-  { divider: 1, prefix: "", char: "" },
-  { divider: 1e-3, prefix: "milli", char: "m" },
-  { divider: 1e-6, prefix: "micro", char: "μ" },
-  { divider: 1e-9, prefix: "nano", char: "n" },
-  { divider: 1e-12, prefix: "pico", char: "p" },
+  { divider: 1e9, prefix: 'billion', char: 'B' },
+  { divider: 1e6, prefix: 'million', char: 'M' },
+  { divider: 1, prefix: '', char: '' },
+  { divider: 1e-3, prefix: 'milli', char: 'm' },
+  { divider: 1e-6, prefix: 'micro', char: 'μ' },
+  { divider: 1e-9, prefix: 'nano', char: 'n' },
+  { divider: 1e-12, prefix: 'pico', char: 'p' },
 ];
 
 export const format = (
   n: number,
   tokenSymbol: string | undefined,
-  oneCharOnly = false
+  oneCharOnly = false,
 ) => {
   for (let i = 0; i < units.length; i++) {
     if (n >= units[i].divider) {
       return (
         prettyNumbers(n / units[i].divider) +
-        " " +
-        (oneCharOnly ? units[i].char : units[i].prefix + " ") +
+        ' ' +
+        (oneCharOnly ? units[i].char : units[i].prefix + ' ') +
         tokenSymbol
       );
     }
@@ -58,11 +58,11 @@ export const format = (
 export const nativeToFormat = (
   value: BigNumber | number | string,
   tokenSymbol: string | undefined,
-  oneCharOnly = false
+  oneCharOnly = false,
 ) => format(nativeToDecimal(value), tokenSymbol, oneCharOnly);
 
 export const prettyNumbers = (number: number, lang?: string) =>
   number.toLocaleString(lang || navigator.language, {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   });

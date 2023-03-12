@@ -1,8 +1,7 @@
-import { h } from 'preact';
-import { Card, Tabs } from 'react-daisyui';
 import { useMemo, useState } from 'preact/hooks';
-import Redeem from './Redeem';
+import { Card, Tabs } from 'react-daisyui';
 import Issue from './Issue';
+import Redeem from './Redeem';
 
 function Bridge(): JSX.Element {
   const [tabValue, setTabValue] = useState(0);

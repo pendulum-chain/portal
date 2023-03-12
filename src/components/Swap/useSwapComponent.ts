@@ -10,7 +10,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { emptyFn } from '../../helpers/general';
 import useBoolean from '../../hooks/useBoolean';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { SwapSettings } from '../../models/Swap';
+import { SwapSettings, SwapTransaction } from '../../models/Swap';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { isApiConnected } from '../../services/api/helpers';
 import { getSwapTokens } from '../../services/api/tokens';
@@ -42,6 +42,7 @@ export const useSwapComponent = ({
   } = useNodeInfoState();
 
   const modalState = useState<undefined | 'from' | 'to'>();
+  const progress = useState<SwapTransaction>();
   const dropdown = useBoolean();
   const storage = useLocalStorage<SwapSettings>({
     key: storageKeys.SWAP_SETTINGS,
@@ -63,23 +64,23 @@ export const useSwapComponent = ({
   });
   const { setValue, reset } = form;
 
-  // TODO: fetch tokens
-  // TODO: fetch wallet token balances
-  // TODO: fetch swap rates and other info, update everytime token changes, refetch interval
-  // TODO: submit transaction
+  // ! TODO: fetch tokens
+  // ! TODO: fetch wallet token balances
+  // ! TODO: fetch swap rates and other info, update everytime token changes, refetch interval
+  // ! TODO: submit transaction
 
   // submit
-  const submitMutation = useMutation<any, any, SwapFormValues>(
+  const submitMutation = useMutation<unknown, unknown, SwapFormValues>(
     async (data) => {
       console.log(data);
     },
     {
       onError: () => {
-        // TODO: display error to user
+        // ! TODO: display error to user
       },
       onSuccess: () => {
         reset();
-        // TODO: display response and update balances
+        // ! TODO: display response and update balances
       },
     },
   );
@@ -139,7 +140,7 @@ export const useSwapComponent = ({
         if (onChange) onChange(updated.from, updated.to);
         return updated;
       });
-      // TODO: update queries, rates
+      // ! TODO: update queries, rates
     },
     [merge, onChange, setValue],
   );
@@ -158,7 +159,7 @@ export const useSwapComponent = ({
         if (onChange) onChange(updated.from, updated.to);
         return updated;
       });
-      // TODO: update queries, rates
+      // ! TODO: update queries, rates
     },
     [merge, onChange, setValue],
   );
@@ -177,6 +178,7 @@ export const useSwapComponent = ({
     balancesQuery,
     submitMutation,
     dropdown,
+    progress,
     storage,
     modalState,
     onFromChange,

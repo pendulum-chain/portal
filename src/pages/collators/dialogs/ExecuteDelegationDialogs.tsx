@@ -1,3 +1,4 @@
+import type { Signer } from '@polkadot/types/types';
 import { useCallback, useState } from 'preact/hooks';
 import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
@@ -72,7 +73,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     extrinsic
       ?.signAndSend(
         walletAccount.address,
-        { signer: walletAccount.signer as any },
+        { signer: walletAccount.signer as Signer },
         (result) => {
           const { status, events } = result;
 

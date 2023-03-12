@@ -2,10 +2,11 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Link, useParams } from 'react-router-dom';
 
 export interface AddLiquidityProps {
-  data?: any;
+  data?: unknown;
 }
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
+  console.log(data);
   const { network, address } = useParams();
   return (
     <>

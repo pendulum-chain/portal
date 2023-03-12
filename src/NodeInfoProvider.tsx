@@ -31,7 +31,7 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
   const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
     Promise<unknown>
@@ -54,7 +54,7 @@ const NodeInfoProvider = ({
         }),
       );
 
-      console.log("connected to", tenantRPC, "with chain", api);
+      console.log('connected to', tenantRPC, 'with chain', api);
 
       const bestNumberFinalize = await api.derive.chain.bestNumber();
       const chainProperties = await api.registry.getChainProperties();

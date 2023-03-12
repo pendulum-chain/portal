@@ -1,14 +1,17 @@
 import { memo } from 'preact/compat';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { links } from './links';
 
 const Nav = memo(() => {
-  // ? TODO: different links based on path
+  // ?! TODO: different links based on path
   const { state } = useGlobalState();
+  const { pathname } = useLocation();
+  const linksArr = pathname.includes('amber') ? links.amber : links.default;
+
   return (
     <nav>
-      {links(state).map(({ link, prefix, suffix, title, props }, i) => {
+      {linksArr(state).map(({ link, prefix, suffix, title, props }, i) => {
         const isExternal = link.startsWith('http');
         const linkUi = (
           <>
@@ -22,7 +25,7 @@ const Nav = memo(() => {
             key={i}
             href={link}
             {...props}
-            className={String(props.className || '')}
+            className={props?.className?.() || ''}
           >
             {linkUi}
           </a>

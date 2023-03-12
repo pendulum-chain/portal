@@ -1,3 +1,5 @@
+import { ComponentChildren } from 'preact';
+import { HTMLAttributes } from 'preact/compat';
 import BackstopPoolIcon from '../../assets/backstop-pool';
 import BridgeIcon from '../../assets/bridge';
 import CollatorsIcon from '../../assets/collators';
@@ -7,9 +9,17 @@ import ArrowIcon from '../../assets/nav-arrow';
 import SwapIcon from '../../assets/swap';
 import SwapPoolsIcon from '../../assets/swap-pools';
 import { GlobalStateInterface } from '../../GlobalStateProvider';
-// TODO: some links can be shared
 
-type LinkParameter = { isActive: boolean };
+export type LinkItem = {
+  link: string;
+  title: ComponentChildren;
+  props?: Omit<HTMLAttributes<HTMLAnchorElement>, 'className'> & {
+    className?: (params?: LinkParameter) => string;
+  };
+  prefix?: ComponentChildren;
+  suffix?: ComponentChildren;
+};
+export type LinkParameter = { isActive?: boolean };
 
 const arrow = (
   <div className="nav-arrow-container">
@@ -17,12 +27,14 @@ const arrow = (
   </div>
 );
 
-export const links = ({ tenantName }: Partial<GlobalStateInterface>) => [
+const defaultLinks = ({
+  tenantName,
+}: Partial<GlobalStateInterface>): LinkItem[] => [
   {
     link: './dashboard',
     title: 'Dashboard',
     props: {
-      className: ({ isActive }: LinkParameter) => (isActive ? 'active' : ''),
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
     prefix: <DashboardIcon />,
     suffix: arrow,
@@ -31,8 +43,7 @@ export const links = ({ tenantName }: Partial<GlobalStateInterface>) => [
     link: './amm',
     title: 'Amm',
     props: {
-      className: ({ isActive }: LinkParameter) =>
-        isActive ? 'active' : 'hidden',
+      className: ({ isActive } = {}) => (isActive ? 'active' : 'hidden'),
     },
     prefix: <SwapIcon />,
     suffix: arrow,
@@ -41,8 +52,7 @@ export const links = ({ tenantName }: Partial<GlobalStateInterface>) => [
     link: './bridge',
     title: 'Bridge',
     props: {
-      className: ({ isActive }: LinkParameter) =>
-        isActive ? 'active' : 'hidden',
+      className: ({ isActive } = {}) => (isActive ? 'active' : 'hidden'),
     },
     prefix: <BridgeIcon />,
     suffix: arrow,
@@ -51,7 +61,7 @@ export const links = ({ tenantName }: Partial<GlobalStateInterface>) => [
     link: './collators',
     title: 'Collators',
     props: {
-      className: ({ isActive }: LinkParameter) => (isActive ? 'active' : ''),
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
     prefix: <CollatorsIcon />,
     suffix: arrow,
@@ -76,7 +86,7 @@ export const links = ({ tenantName }: Partial<GlobalStateInterface>) => [
   },
 ];
 
-export const amberLinks = () => [
+const amberLinks = (): LinkItem[] => [
   {
     link: './swap',
     title: 'Swap',
@@ -96,3 +106,8 @@ export const amberLinks = () => [
     suffix: arrow,
   },
 ];
+
+export const links = {
+  default: defaultLinks,
+  amber: amberLinks,
+};

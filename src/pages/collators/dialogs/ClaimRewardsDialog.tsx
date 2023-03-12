@@ -1,3 +1,4 @@
+import type { Signer } from '@polkadot/types/types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button, Modal } from 'react-daisyui';
 import { toast } from 'react-toastify';
@@ -51,7 +52,7 @@ function ClaimRewardsDialog(props: Props) {
     extrinsic
       ?.signAndSend(
         walletAccount.address,
-        { signer: walletAccount.signer as any },
+        { signer: walletAccount.signer as Signer },
         (result) => {
           const { status, events } = result;
 

@@ -12,11 +12,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { columns } from './columns';
+import { columns, SwapPoolColumn } from './columns';
 import { GlobalFilter } from './GlobalFilter';
 
 export type PoolsProps = {
-  data?: any[];
+  data?: SwapPoolColumn[];
   pageSize?: number;
   search?: boolean;
 };

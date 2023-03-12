@@ -49,7 +49,7 @@
   font-size: 20px;
 }
 
-.portfolio>.balance {
+.portfolio > .balance {
   padding-top: 20px;
   padding-bottom: 15px;
   text-align: center;
@@ -68,7 +68,7 @@
   border-bottom-right-radius: 5px;
 }
 
-.portfolio>ul li {
+.portfolio > ul li {
   display: inline;
 }
 
@@ -101,7 +101,7 @@
 }
 
 .dashboard {
-  background-color: var(--clear)
+  background-color: var(--clear);
 }
 
 .collators-box {
@@ -119,7 +119,7 @@
 }
 
 .collators-box h2 {
-  margin-bottom: 0.5em
+  margin-bottom: 0.5em;
 }
 
 .collators-box h4 {
@@ -151,7 +151,7 @@
 }
 
 .collators-list-table thead svg {
-  display: inline
+  display: inline;
 }
 
 .collators-list-table td {

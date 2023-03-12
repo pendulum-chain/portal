@@ -17,9 +17,12 @@ export function Dashboard() {
               <h2 className={'float-left'}>Promo</h2>
               <h2 className={'float-right'}>Join now</h2>
             </div>
-            <figure> <img src={Banner} /></figure>
+            <figure>
+              {' '}
+              <img src={Banner} />
+            </figure>
           </div>
-        </a >
+        </a>
       </div>
       <div className="card w-1/3 portfolio rounded-md bg-base-200">
         <div className="card-body">

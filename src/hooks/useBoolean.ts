@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "preact/compat";
+import { useCallback, useMemo, useState } from 'preact/compat';
 
 export type UseBooleanActions = {
   setValue: (val: boolean) => void;
@@ -15,7 +15,7 @@ export function useBoolean(initial = false): UseBoolean {
   const setFalse = useCallback(() => setValue(false), []);
   const actions = useMemo(
     () => ({ setValue, toggle, setTrue, setFalse }),
-    [setFalse, setTrue, toggle]
+    [setFalse, setTrue, toggle],
   );
   return useMemo(() => [value, actions], [actions, value]);
 }

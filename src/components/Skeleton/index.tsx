@@ -1,9 +1,9 @@
-import type { HTMLAttributes } from "react";
-import type { CSSProperties } from "react";
+import type { HTMLAttributes } from 'react';
+import type { CSSProperties } from 'react';
 
 export type SkeletonProps = {
   style?: CSSProperties;
-} & Omit<HTMLAttributes<HTMLDivElement>, "style">;
+} & Omit<HTMLAttributes<HTMLDivElement>, 'style'>;
 
 export const Skeleton = ({ className, children, ...rest }: SkeletonProps) => (
   <div

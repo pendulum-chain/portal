@@ -4,13 +4,12 @@
 
 :root {
   --border-light: #eff2f5;
+  --border-dark: rgba(0, 0, 0, 0.1);
   --nice-light: #907ea0;
   --clear-light: #ffffff;
   --footer-links-light: #58667e;
   --nav-arrow-light: var(--clear-light);
-
   --nice-dark: #09c63e;
-  --border-dark: rgba(239, 242, 245, 0.03);
   --footer-links-dark: #616875;
   --nav-arrow-dark: hsla(271, 25%, 19%, 1);
   --darkner: #1c1c1c;
@@ -27,6 +26,7 @@
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
+  --card-border: var(--border-dark);
   --table-text: #bbbbbb;
   --table-text-header: #fff;
   --table-background: #1c1c1c;
@@ -43,6 +43,7 @@
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
+  --card-border: var(--border-dark);
   --table-text: #252733;
   --table-text-header: #9fa2b4;
   --table-background: #fff;
@@ -295,6 +296,13 @@ input[type='number'] {
 }
 
 /* theme override */
+.card {
+  border-radius: 0.75rem;
+}
+.card.card-bordered {
+  border: 1px solid var(--card-border);
+}
+
 .btn,
 .input {
   line-height: 1.5;

@@ -1,8 +1,8 @@
-import Big from "big.js";
-import { nativeToDecimal } from "../../../helpers/parseNumbers";
-import { Button, Modal } from "react-daisyui";
-import { h } from "preact";
-import { CloseButton } from "../../../components/CloseButton";
+import Big from 'big.js';
+import { nativeToDecimal } from '../../../helpers/parseNumbers';
+import { Button, Modal } from 'react-daisyui';
+import { h } from 'preact';
+import { CloseButton } from '../../../components/CloseButton';
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;
@@ -18,8 +18,8 @@ interface ConfirmDelegateDialogProps {
 
 function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const {
-    availableBalance = "0",
-    delegationAmountDecimal = "0",
+    availableBalance = '0',
+    delegationAmountDecimal = '0',
     tokenSymbol,
     visible,
     transactionFee = Big(0),
@@ -69,7 +69,10 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
             {resultingBalance} {tokenSymbol}
           </span>
         </div>
-        <p className="text-slate-400 mt-6 mb-4 mx-auto w-fit"> This transaction might take a while to complete. </p>
+        <p className="text-slate-400 mt-6 mb-4 mx-auto w-fit">
+          {' '}
+          This transaction might take a while to complete.{' '}
+        </p>
       </Modal.Body>
       <Modal.Actions className="justify-center">
         <Button className="px-6" color="ghost" onClick={onCancel}>

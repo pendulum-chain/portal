@@ -1,10 +1,8 @@
 import { memo } from 'preact/compat';
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import { useTheme } from 'react-daisyui';
-import { Outlet, useParams } from 'react-router-dom';
+import { useState } from 'preact/hooks';
+import { Outlet } from 'react-router-dom';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
-import { config } from '../../config';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import OpenWallet from '../OpenWallet';
@@ -16,32 +14,8 @@ import Versions from './Versions';
 
 export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState(false);
-  const params = useParams();
-  const { setTheme } = useTheme();
-  const { state, setState } = useGlobalState();
-
-  // ? TODO: should redirect in case of wrong network
-  const network: TenantName = useMemo(() => {
-    return params.network &&
-      Object.values<string>(TenantName).includes(params.network)
-      ? (params.network as TenantName)
-      : TenantName.Pendulum;
-  }, [params.network]);
-
-  useEffect(() => {
-    // Only change state if network is different
-    if (state.tenantName !== network) {
-      setTheme(network);
-      setState((prevState) => ({
-        ...prevState,
-        tenantName: network,
-        tenantRPC: config.tenants[network].rpc,
-      }));
-    }
-  }, [network, setState, setTheme, state.tenantName]);
-
-  const isPendulum = network === 'pendulum';
-
+  const { state } = useGlobalState();
+  const isPendulum = state.tenantName === TenantName.Pendulum;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
@@ -62,7 +36,7 @@ export default function Layout(): React.JSX.Element {
   });
 
   return (
-    <div className="flex">
+    <div id="main-wrapper" className="flex">
       <div id="sidebar-wrapper" className="flex flex-wrap z-50">
         <div
           style={{
@@ -86,15 +60,15 @@ export default function Layout(): React.JSX.Element {
           />
           <Nav />
           <div className="sidebar-footer">
-            <Versions tenantName={network} />
+            <Versions tenantName={state.tenantName} />
             <NetworkId />
             <SocialAndTermLinks />
           </div>
         </div>
       </div>
-      <div id="main" className="flex-wrap">
-        <div className="container flex-wrap">
-          <div className="flex flex-row-reverse h-15 gap-2">
+      <section>
+        <header>
+          <div className="flex items-center flex-row-reverse h-15 gap-2">
             <div className="mobile-menu">
               <button
                 className="menu"
@@ -133,9 +107,11 @@ export default function Layout(): React.JSX.Element {
               </ul>
             </div>
           </div>
+        </header>
+        <main className="flex-wrap">
           <Outlet />
-        </div>
-      </div>
+        </main>
+      </section>
     </div>
   );
 }
