@@ -1,23 +1,34 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { Link, useParams } from 'react-router-dom';
+import { VNode } from 'preact';
+import { Button } from 'react-daisyui';
+import { useModalToggle } from '../../../services/modal';
+import { ModalTypes } from '../Modals';
 
 export interface AddLiquidityProps {
   data?: unknown;
 }
 
-const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
+const AddLiquidity = ({ data }: AddLiquidityProps): VNode | null => {
   console.log(data);
-  const { network, address } = useParams();
+  const toggle = useModalToggle();
+
   return (
     <>
-      <div className="flex justify-between mb-8 text-3xl font-normal text-gray-800">
+      <div className="flex justify-between mb-8 text-3xl font-normal text-gray-800 mt-2">
         <div className="flex items-center">
-          <Link
-            className="btn btn-sm px-2 btn-ghost mr-2"
-            to={`/${network}/amm/pools/${address}`}
+          <Button
+            size="sm"
+            color="ghost"
+            className="px-2 mr-2"
+            onClick={() =>
+              toggle({
+                type: ModalTypes.Overview,
+                props: { data },
+              })
+            }
           >
             <ArrowLeftIcon className="w-4 h-4" />
-          </Link>
+          </Button>
           <h2>Add Liquidity</h2>
         </div>
       </div>

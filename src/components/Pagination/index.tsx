@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { VNode } from 'preact';
 
 export interface PaginationProps {
   className?: string;
@@ -18,7 +19,7 @@ const Pagination = ({
   onPrev,
   onNext,
   className,
-}: PaginationProps): JSX.Element => {
+}: PaginationProps): VNode | null => {
   const totalPages =
     pageCount !== undefined ? pageCount : Math.ceil(totalCount / pageSize);
   return (

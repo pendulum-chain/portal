@@ -1,4 +1,5 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { VNode } from 'preact';
 import { TargetedEvent, useCallback, useRef } from 'preact/compat';
 
 export interface GlobalFilterProps {
@@ -8,7 +9,7 @@ export interface GlobalFilterProps {
 export const GlobalFilter = ({
   globalFilter,
   setGlobalFilter,
-}: GlobalFilterProps): JSX.Element | null => {
+}: GlobalFilterProps): VNode | null => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSearch = useCallback(
     (ev: TargetedEvent<HTMLFormElement>) => {

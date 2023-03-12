@@ -1,6 +1,9 @@
-import { ColumnDef } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
+import { VNode } from 'preact';
+import { Button } from 'react-daisyui';
 import { SwapPool } from '../../models/SwapPool';
+import { useModalToggle } from '../../services/modal';
+import { ModalTypes } from './Modals';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SwapPoolColumn = SwapPool & any;
@@ -46,6 +49,26 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   enableSorting: true,
 } as const;
 
+const ActionsColumn = ({
+  row: { original },
+}: CellContext<SwapPoolColumn, unknown>): VNode | null => {
+  const toggle = useModalToggle();
+  return (
+    <div className="text-right">
+      <Button
+        onClick={() =>
+          toggle({ type: ModalTypes.Overview, props: { data: original } })
+        }
+        size="sm"
+        variant="outline"
+        className="px-3"
+      >
+        Manage
+      </Button>
+    </div>
+  );
+};
+
 export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   header: '',
   accessorKey: 'address',
@@ -53,13 +76,7 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   enableGlobalFilter: false,
   enableColumnFilter: false,
   size: 150,
-  cell: ({ row: { original } }): JSX.Element => (
-    <div className="text-right">
-      <Link className="btn btn-sm btn-outline px-3" to={`${original.address}`}>
-        Manage
-      </Link>
-    </div>
-  ),
+  cell: (props): VNode | null => <ActionsColumn {...props} />,
 } as const;
 
 export const columns = [

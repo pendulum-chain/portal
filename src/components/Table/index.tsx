@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { VNode } from 'preact';
 import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
@@ -39,7 +40,7 @@ const Table = <T,>({
   search = true,
   isLoading,
   className,
-}: TableProps<T>): JSX.Element | null => {
+}: TableProps<T>): VNode | null => {
   const totalCount = data.length;
   const {
     getHeaderGroups,

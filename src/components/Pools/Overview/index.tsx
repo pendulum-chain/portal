@@ -1,24 +1,20 @@
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { Link, useParams } from 'react-router-dom';
+import { VNode } from 'preact';
+import { Button } from 'react-daisyui';
+import { useModalToggle } from '../../../services/modal';
+import { ModalTypes } from '../Modals';
 
 export interface PoolOverviewProps {
   data?: unknown;
 }
 
-const PoolOverview = ({ data }: PoolOverviewProps): JSX.Element | null => {
+const PoolOverview = ({ data }: PoolOverviewProps): VNode | null => {
   console.log(data);
-  const { network } = useParams();
+  const toggle = useModalToggle();
   const totalBalance = '$0.78';
 
   return (
     <>
-      <div className="flex items-center mb-8 text-3xl font-normal text-gray-800">
-        <Link
-          className="btn btn-sm px-2 btn-ghost mr-2"
-          to={`/${network}/amm/pools`}
-        >
-          <ArrowLeftIcon className="w-4 h-4" />
-        </Link>
+      <div className="flex items-center mb-8 text-3xl font-normal text-gray-800 mt-2">
         <h2>My Pool Balance</h2>
       </div>
       <div className="center mb-6">
@@ -29,16 +25,32 @@ const PoolOverview = ({ data }: PoolOverviewProps): JSX.Element | null => {
           <strong>{totalBalance}</strong>
         </div>
       </div>
-      <Link to="add" className="btn btn-primary w-full text-base" role="button">
+      <Button
+        variant="primary"
+        className="w-full text-base"
+        onClick={() =>
+          toggle({
+            type: ModalTypes.AddLiquidity,
+            props: { data },
+          })
+        }
+        role="button"
+      >
         Add Liquidity
-      </Link>
-      <Link
-        to="withdraw"
-        className="btn btn-secondary w-full text-base"
+      </Button>
+      <Button
+        variant="secondary"
+        className="w-full text-base mt-2"
+        onClick={() =>
+          toggle({
+            type: ModalTypes.WithdrawLiquidity,
+            props: { data },
+          })
+        }
         role="button"
       >
         Withdraw
-      </Link>
+      </Button>
     </>
   );
 };

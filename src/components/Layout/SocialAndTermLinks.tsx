@@ -1,3 +1,4 @@
+import { VNode } from 'preact';
 import DiscordLogo from '../../assets/socials-discord';
 import GithubLogo from '../../assets/socials-github';
 import LinkedinLogo from '../../assets/socials-linkedin';
@@ -22,7 +23,7 @@ const socialLinks = [
   },
 ];
 
-const SocialAndTermLinks = (): JSX.Element => {
+const SocialAndTermLinks = (): VNode | null => {
   return (
     <div className="pendulum-social-and-terms">
       <div className="social">

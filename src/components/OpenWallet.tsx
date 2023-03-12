@@ -1,6 +1,7 @@
 import { ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
 import { WalletSelect } from '@talismn/connect-components';
 import { WalletAccount } from '@talismn/connect-wallets';
+import { VNode } from 'preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { GlobalStateInterface } from '../GlobalStateProvider';
@@ -9,7 +10,7 @@ import { useAccountBalance } from '../hooks/useAccountBalance';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { Skeleton } from './Skeleton';
 
-const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
+const OpenWallet = ({ networkName }: { networkName: string }): VNode | null => {
   const { state: infoState } = useNodeInfoState();
   const { query, balance, globalState } = useAccountBalance();
   const { tokenSymbol, ss58Format } = infoState;

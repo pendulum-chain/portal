@@ -1,9 +1,10 @@
+import { ComponentChildren } from 'preact';
 import './styles.css';
 
 type Props = {
   title?: string;
   subTitle?: string;
-  children?: JSX.Element | JSX.Element[];
+  children?: ComponentChildren;
 };
 
 const Box = ({ title, subTitle, children }: Props) => {

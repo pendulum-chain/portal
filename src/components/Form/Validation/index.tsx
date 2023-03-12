@@ -1,3 +1,4 @@
+import { VNode } from 'preact';
 import { FieldErrors } from 'react-hook-form';
 
 export interface ValidationProps {
@@ -8,7 +9,7 @@ export interface ValidationProps {
 const Validation = ({
   errors = {},
   className,
-}: ValidationProps): JSX.Element | null => {
+}: ValidationProps): VNode | null => {
   const keys = Object.keys(errors);
   if (keys.length === 0) return null;
   return (

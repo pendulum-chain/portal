@@ -1,9 +1,9 @@
-import { h } from 'preact';
-import { NavLink } from 'react-router-dom';
+import { VNode } from 'preact';
 import { Table } from 'react-daisyui';
+import { NavLink } from 'react-router-dom';
 import './styles.css';
 
-export function Transfers(): JSX.Element {
+export function Transfers(): VNode | null {
   return (
     <div
       className="flex items-center justify-center h-full space-walk grid place-items-center"

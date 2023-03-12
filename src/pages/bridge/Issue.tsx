@@ -3,6 +3,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
 import { DateTime } from 'luxon';
+import { VNode } from 'preact';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
 import { toast } from 'react-toastify';
@@ -34,7 +35,7 @@ interface AssetSelectorProps {
   style?: React.CSSProperties;
 }
 
-function AssetSelector(props: AssetSelectorProps): JSX.Element {
+function AssetSelector(props: AssetSelectorProps): VNode | null {
   const { assets, selectedAsset } = props;
 
   const items = assets.map((asset) => {
@@ -73,7 +74,7 @@ interface VaultSelectorProps {
   onChange: (vault: VaultRegistryVault) => void;
 }
 
-function VaultSelector(props: VaultSelectorProps): JSX.Element {
+function VaultSelector(props: VaultSelectorProps): VNode | null {
   const { vaults, selectedVault } = props;
 
   const items = vaults.map((vault) => {
@@ -113,7 +114,7 @@ interface FeeBoxProps {
   extrinsic?: SubmittableExtrinsic;
 }
 
-function FeeBox(props: FeeBoxProps): JSX.Element {
+function FeeBox(props: FeeBoxProps): VNode | null {
   const { bridgedAsset, extrinsic } = props;
 
   const amount = useMemo(() => {
@@ -200,7 +201,7 @@ interface ConfirmationDialogProps {
   visible: boolean;
 }
 
-function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
+function ConfirmationDialog(props: ConfirmationDialogProps): VNode | null {
   const { issueRequest, visible, onClose } = props;
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
@@ -299,7 +300,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   );
 }
 
-function Issue(): JSX.Element {
+function Issue(): VNode | null {
   const [amount, setAmount] = useState<string>('0');
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
