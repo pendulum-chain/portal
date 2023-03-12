@@ -140,7 +140,6 @@
   background-color: var(--table-background);
   border-bottom: 1px solid var(--table-border);
   color: var(--table-header-text);
-  font-family: 'Nunito';
   font-size: 14px;
 }
 

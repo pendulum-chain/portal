@@ -44,7 +44,7 @@ export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
 
-  const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>([]);
+  const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
   const [inflationInfo, setInflationInfo] = useState<
     ParachainStakingInflationInflationInfo | undefined
   >(undefined);

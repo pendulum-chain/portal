@@ -1,5 +1,4 @@
-import type { HTMLAttributes } from 'react';
-import type { CSSProperties } from 'react';
+import { CSSProperties, HTMLAttributes } from 'preact/compat';
 
 export type SkeletonProps = {
   style?: CSSProperties;
