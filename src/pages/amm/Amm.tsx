@@ -26,8 +26,6 @@ export function Amm(): JSX.Element {
       </div>
       <div className="mt-12">
         <Pools />
-        <Pools />
-        <Pools />
       </div>
     </>
   );
