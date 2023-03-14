@@ -61,8 +61,8 @@ export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
       {props.variant === 'full' || !props.variant
         ? props.publicKey
         : props.publicKey.substr(0, digits.leading) +
-          '…' +
-          props.publicKey.substr(-digits.trailing)}
+        '…' +
+        props.publicKey.substr(-digits.trailing)}
     </span>
   );
 });

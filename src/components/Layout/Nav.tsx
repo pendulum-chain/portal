@@ -1,17 +1,20 @@
-import { NavLink } from 'react-router-dom';
-import { h } from 'preact';
 import { memo } from 'preact/compat';
+import { NavLink } from 'react-router-dom';
 
 import BridgeIcon from '../../assets/bridge';
+import CollatorsIcon from '../../assets/collators';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
-import SwapIcon from '../../assets/swap';
-import CollatorsIcon from '../../assets/collators';
 import ArrowIcon from '../../assets/nav-arrow';
+import SwapIcon from '../../assets/swap';
+import { TenantName, useGlobalState } from '../../GlobalStateProvider';
 
 type LinkParameter = { isActive: boolean };
 
 const Nav = memo(() => {
+  const {
+    state: { tenantName = TenantName.Amplitude },
+  } = useGlobalState();
   return (
     <nav>
       <NavLink
@@ -63,7 +66,7 @@ const Nav = memo(() => {
         </div>
       </NavLink>
       <a
-        href="https://amplitude.polkassembly.io/"
+        href={`https://${tenantName}.polkassembly.io/`}
         target="_blank"
         rel="nofollow noreferrer"
       >
