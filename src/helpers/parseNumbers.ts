@@ -1,7 +1,7 @@
 import BigNumber from 'big.js';
 
 // These are the decimals used for the native currency on the Amplitude network
-export const AmplitudeDecimals = 12;
+export const ChainDecimals = 12;
 
 // These are the decimals used by the Stellar network
 export const StellarDecimals = 7;
@@ -17,7 +17,7 @@ BigNumber.NE = -20;
 // Converts a decimal number to the native representation (a large integer)
 export const decimalToNative = (value: BigNumber | number | string) => {
   const bigIntValue = new BigNumber(value);
-  const multiplier = new BigNumber(10).pow(AmplitudeDecimals);
+  const multiplier = new BigNumber(10).pow(ChainDecimals);
 
   return bigIntValue.times(multiplier);
 };
@@ -42,7 +42,7 @@ export const nativeToDecimal = (value: BigNumber | number | string) => {
     value = new BigNumber(value.replaceAll(",", ""));
   }
   const bigIntValue = new BigNumber(value);
-  const divisor = new BigNumber(10).pow(AmplitudeDecimals);
+  const divisor = new BigNumber(10).pow(ChainDecimals);
 
   return bigIntValue.div(divisor);
 };
