@@ -1,16 +1,19 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { VNode } from 'preact';
 import { Button } from 'react-daisyui';
-import { SwapPool } from '../../models/SwapPool';
-import { useModalToggle } from '../../services/modal';
-import { ModalTypes } from './Modals';
+import { SwapPool } from '../../../models/SwapPool';
+import { useModalToggle } from '../../../services/modal';
+import { ModalTypes } from './Modals/types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SwapPoolColumn = SwapPool & any;
+export type SwapPoolColumn = SwapPool & {
+  wallet: unknown;
+  myAmount: unknown;
+  coverage: unknown;
+};
 
 export const nameColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Name',
   accessorKey: 'name',
+  accessorFn: (row) => row.asset?.name || '',
   enableSorting: true,
 } as const;
 
@@ -51,7 +54,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
 
 const ActionsColumn = ({
   row: { original },
-}: CellContext<SwapPoolColumn, unknown>): VNode | null => {
+}: CellContext<SwapPoolColumn, unknown>): JSX.Element | null => {
   const toggle = useModalToggle();
   return (
     <div className="text-right">
@@ -76,7 +79,7 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   enableGlobalFilter: false,
   enableColumnFilter: false,
   size: 150,
-  cell: (props): VNode | null => <ActionsColumn {...props} />,
+  cell: (props): JSX.Element | null => <ActionsColumn {...props} />,
 } as const;
 
 export const columns = [

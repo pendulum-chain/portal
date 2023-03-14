@@ -1,11 +1,10 @@
-import { VNode } from 'preact';
 import { useState } from 'preact/hooks';
 import { Button, Modal } from 'react-daisyui';
 import { NavLink } from 'react-router-dom';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
-function Redeem(): VNode | null {
+function Redeem(): JSX.Element | null {
   const [visible, setVisible] = useState<boolean>(false);
 
   const toggleVisible = () => {

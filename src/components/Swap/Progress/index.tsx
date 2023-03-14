@@ -3,7 +3,6 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { UseMutationResult } from '@tanstack/react-query';
-import { VNode } from 'preact';
 import { Button, Modal, ModalProps } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
 import { SwapTransaction } from '../../../models/Swap';
@@ -19,7 +18,7 @@ const Progress = ({
   status,
   onClose,
   ...rest
-}: ProgressProps): VNode | null => {
+}: ProgressProps): JSX.Element | null => {
   let ui = null;
   if (transaction) {
     if (status === 'idle' || status === 'loading') {

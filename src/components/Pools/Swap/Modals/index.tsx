@@ -1,15 +1,10 @@
-import { FunctionalComponent, VNode } from 'preact';
+import { FunctionalComponent } from 'preact';
 import { Button, Modal } from 'react-daisyui';
-import { useModal } from '../../../services/modal';
+import { useModal } from '../../../../services/modal';
 import AddLiquidity from '../AddLiquidity';
+import { SwapPoolColumn } from '../columns';
 import PoolOverview from '../Overview';
 import WithdrawLiquidity from '../WithdrawLiquidity';
-
-export const ModalTypes = {
-  Overview: 1,
-  AddLiquidity: 2,
-  WithdrawLiquidity: 3,
-};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const modalsUi: Record<number, FunctionalComponent<any>> = {
@@ -18,8 +13,10 @@ const modalsUi: Record<number, FunctionalComponent<any>> = {
   3: WithdrawLiquidity,
 };
 
-const PoolsModals = (): VNode | null => {
-  const [{ type, props }, setModal] = useModal();
+const PoolsModals = () => {
+  const [{ type, props }, setModal] = useModal<{
+    data: SwapPoolColumn | undefined;
+  }>();
 
   const Component = type ? modalsUi[type] : undefined;
   return (
@@ -36,7 +33,7 @@ const PoolsModals = (): VNode | null => {
             ✕
           </Button>
         </Modal.Header>
-        <Modal.Body>{Component && <Component {...props} />}</Modal.Body>
+        <Modal.Body>{Component ? <Component {...props} /> : null}</Modal.Body>
       </Modal>
     </>
   );

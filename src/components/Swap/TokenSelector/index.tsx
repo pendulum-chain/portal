@@ -1,5 +1,4 @@
 import { matchSorter } from 'match-sorter';
-import { VNode } from 'preact';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, Button, Input, Modal, ModalProps } from 'react-daisyui';
 import { repeat } from '../../../helpers/general';
@@ -17,7 +16,7 @@ const TokenSelector = ({
   tokens,
   onSelect,
   selected,
-}: TokenSelectorProps): VNode | null => {
+}: TokenSelectorProps): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(

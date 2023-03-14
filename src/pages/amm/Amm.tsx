@@ -1,10 +1,9 @@
-import { VNode } from 'preact';
 import { useCallback } from 'preact/compat';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Pools from '../../components/Pools';
+import Pools from '../../components/Pools/Swap';
 import Swap from '../../components/Swap';
 
-export function Amm(): VNode | null {
+export function Amm(): JSX.Element | null {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const onChange = useCallback(

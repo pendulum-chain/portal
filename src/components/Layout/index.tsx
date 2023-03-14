@@ -1,4 +1,3 @@
-import { VNode } from 'preact';
 import { memo } from 'preact/compat';
 import { useState } from 'preact/hooks';
 import { Outlet } from 'react-router-dom';
@@ -13,7 +12,7 @@ import SocialAndTermLinks from './SocialAndTermLinks';
 import './styles.sass';
 import Versions from './Versions';
 
-export default function Layout(): VNode | null {
+export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
   const { state } = useGlobalState();
   const isPendulum = state.tenantName === TenantName.Pendulum;

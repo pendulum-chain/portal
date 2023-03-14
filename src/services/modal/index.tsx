@@ -1,4 +1,5 @@
-import { ComponentChildren, VNode } from 'preact';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ComponentChildren } from 'preact';
 import {
   createContext,
   useCallback,
@@ -6,27 +7,34 @@ import {
   useState,
 } from 'preact/compat';
 
-export type ModalState = { type?: number; props?: Dict };
-export type ToggleModal = (type?: number | ModalState) => void;
+export type ModalState<T extends Dict<any> = Dict<any>> = {
+  type?: number;
+  props?: T;
+};
+export type ToggleModal<T extends Dict<any> = Dict<any>> = (
+  type?: number | ModalState<T>,
+) => void;
 
 const ModalStateContext = createContext<ModalState | undefined>(undefined);
 const ModalToggleContext = createContext<ToggleModal | undefined>(undefined);
 
-export const useModalState = (): ModalState => {
-  return useContext(ModalStateContext) as ModalState;
+export const useModalState = <T extends Dict<any>>(): ModalState<T> => {
+  return useContext(ModalStateContext) as ModalState<T>;
 };
-export const useModalToggle = (): ToggleModal => {
-  return useContext(ModalToggleContext) as ToggleModal;
+export const useModalToggle = <T extends Dict<any>>(): ToggleModal<T> => {
+  return useContext(ModalToggleContext) as ToggleModal<T>;
 };
-export const useModal = (): [ModalState, ToggleModal] => [
-  useModalState(),
-  useModalToggle(),
-];
+export const useModal = <T extends Dict<any>>(): [
+  ModalState<T>,
+  ToggleModal<T>,
+] => [useModalState(), useModalToggle()];
 
 export interface ModalProviderProps {
   children: ComponentChildren;
 }
-const ModalProvider = ({ children }: ModalProviderProps): VNode | null => {
+const ModalProvider = ({
+  children,
+}: ModalProviderProps): JSX.Element | null => {
   const [state, setModalState] = useState<ModalState>({});
 
   const toggleModal: ToggleModal = useCallback((type = {}) => {

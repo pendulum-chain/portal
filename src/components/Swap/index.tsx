@@ -4,7 +4,7 @@ import {
   InformationCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
-import { Fragment, VNode } from 'preact';
+import { Fragment } from 'preact';
 import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { errorClass } from '../../helpers/form';
 import Progress from './Progress';
@@ -12,7 +12,7 @@ import SwapToken from './SwapToken';
 import { TokenSelectorModal } from './TokenSelector';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 
-const Swap = (props: UseSwapComponentProps): VNode | null => {
+const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
     walletAccount,
     storage,

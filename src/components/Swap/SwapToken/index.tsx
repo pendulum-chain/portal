@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Fragment, VNode } from 'preact';
+import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { Skeleton } from '../../Skeleton';
@@ -23,7 +23,7 @@ const SwapToken = ({
   children,
   isLoading,
   value,
-}: SwapTokenProps): VNode | null => {
+}: SwapTokenProps): JSX.Element | null => {
   return (
     <>
       <div className={`rounded-lg bg-gray-100 px-4 py-3 ${className}`}>

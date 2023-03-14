@@ -1,21 +1,27 @@
-import { VNode } from 'preact';
-import { Button } from 'react-daisyui';
-import { useModalToggle } from '../../../services/modal';
-import { ModalTypes } from '../Modals';
+import { Avatar, Button } from 'react-daisyui';
+import { useModalToggle } from '../../../../services/modal';
+import { SwapPoolColumn } from '../columns';
+import { ModalTypes } from '../Modals/types';
 
-export interface PoolOverviewProps {
-  data?: unknown;
-}
+export type PoolOverviewProps = {
+  data: SwapPoolColumn;
+};
 
-const PoolOverview = ({ data }: PoolOverviewProps): VNode | null => {
-  console.log(data);
+const PoolOverview = ({ data }: PoolOverviewProps) => {
   const toggle = useModalToggle();
   const totalBalance = '$0.78';
 
   return (
     <>
-      <div className="flex items-center mb-8 text-3xl font-normal text-gray-800 mt-2">
-        <h2>My Pool Balance</h2>
+      <div className="flex items-center mb-8 text-3xl font-normal text-gray-800 gap-3 mt-2">
+        <Avatar
+          size="sm"
+          letters={data.asset?.symbol}
+          shape="circle"
+          color="gray-200"
+          className="text-xs"
+        />
+        <h3 className="text-2xl">My Pool Balance</h3>
       </div>
       <div className="center mb-6">
         <div
@@ -24,6 +30,9 @@ const PoolOverview = ({ data }: PoolOverviewProps): VNode | null => {
         >
           <strong>{totalBalance}</strong>
         </div>
+      </div>
+      <div className="my-6">
+        TODO: name, logo, stats - earned fees, deposited date, TVL, APR
       </div>
       <Button
         variant="primary"

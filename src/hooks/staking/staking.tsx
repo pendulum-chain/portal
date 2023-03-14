@@ -67,6 +67,7 @@ export function useStakingPallet() {
       const entries = await api.query.parachainStaking.candidatePool.entries();
 
       const newCandidates = entries.map(([_, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const candidate = (value as Option<any>)
           .unwrap()
           .toHuman() as ParachainStakingCandidate;

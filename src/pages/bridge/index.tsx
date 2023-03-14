@@ -1,10 +1,9 @@
-import { VNode } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
 import { Card, Tabs } from 'react-daisyui';
 import Issue from './Issue';
 import Redeem from './Redeem';
 
-function Bridge(): VNode | null {
+function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(0);
 
   // TODO - get the network from somewhere
