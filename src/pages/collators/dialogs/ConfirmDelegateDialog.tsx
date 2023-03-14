@@ -3,16 +3,16 @@ import { nativeToDecimal } from "../../../helpers/parseNumbers";
 import { Button, Modal } from "react-daisyui";
 import { h } from "preact";
 import { CloseButton } from "../../../components/CloseButton";
+import { DelegationMode } from "./ExecuteDelegationDialogs";
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;
   delegationAmountDecimal?: string;
   submissionPending?: boolean;
   tokenSymbol?: string;
-  isDelegatingMore: boolean;
-  isDelegatingLess: boolean;
   transactionFee?: Big;
   visible: boolean;
+  mode: DelegationMode;
   onCancel?: () => void;
   onClose?: () => void;
   onConfirm?: () => void;
@@ -22,8 +22,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const {
     availableBalance = "0",
     delegationAmountDecimal = "0",
-    isDelegatingMore,
-    isDelegatingLess,
+    mode,
     tokenSymbol,
     visible,
     transactionFee = Big(0),
@@ -36,7 +35,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const balanceDecimal = nativeToDecimal(availableBalance);
   const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
 
-  const resultingBalance = isDelegatingLess ?
+  const resultingBalance = mode === 'undelegating' ?
     Big(balanceDecimal)
       .plus(delegationAmountDecimal)
       .minus(transactionFeeDecimal)
@@ -52,7 +51,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
-          <div className="text-md text-neutral-content">Delegate</div>
+          <div className="text-md text-neutral-content">{mode === 'undelegating' ? 'Unbond' : 'Delegate'}</div>
           <div className="text-xl mt-2">
             {delegationAmountDecimal} {tokenSymbol}
           </div>

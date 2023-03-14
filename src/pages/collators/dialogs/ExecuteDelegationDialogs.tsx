@@ -13,12 +13,13 @@ import DelegationSuccessfulDialog from "./DelegationSuccessfulDialog";
 import { h } from "preact";
 import { doSubmitExtrinsic } from "./helpers";
 
+export type DelegationMode = 'joining' | 'delegatingMore' | 'undelegating';
+
 interface ExecuteDelegationDialogsProps {
   userAvailableBalance: string;
   userStake: string;
   selectedCandidate: ParachainStakingCandidate | undefined;
-  isDelegatingMore?: boolean;
-  isDelegatingLess?: boolean;
+  mode: DelegationMode;
   onClose: () => void;
 }
 
@@ -28,8 +29,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     userAvailableBalance,
     userStake,
     selectedCandidate,
-    isDelegatingMore = false,
-    isDelegatingLess = false,
+    mode,
     onClose
   } = props;
 
@@ -54,9 +54,12 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     useState<boolean>(false);
 
   const totalFee = useMemo(() => {
-    return isDelegatingLess ? fees.delegatorStakeLess :
-      isDelegatingMore ? fees.delegatorStakeMore : fees.joinDelegators
-  }, [isDelegatingMore, isDelegatingLess]);
+    switch (mode) {
+      case 'undelegating': return fees.delegatorStakeLess;
+      case 'delegatingMore': return fees.delegatorStakeMore;
+      case 'joining': return fees.joinDelegators;
+    }
+  }, [mode]);
 
   const submitExtrinsic = useCallback(() => {
     if (
@@ -71,15 +74,15 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     const amount = decimalToNative(delegationAmount);
 
     const getExtrinsic = () => {
-      if (isDelegatingLess) {
+      if (mode === 'undelegating') {
         return createDelegateLessExtrinsic(
           selectedCandidate.id,
           amount.toString());
-      } else if (isDelegatingMore) {
+      } else if (mode === 'delegatingMore') {
         return createDelegateMoreExtrinsic(
           selectedCandidate.id,
           amount.toString());
-      } else {
+      } else if (mode === 'joining') {
         return createJoinDelegatorsExtrinsic(
           selectedCandidate.id,
           amount.toString()
@@ -90,20 +93,19 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     doSubmitExtrinsic(api, getExtrinsic(), walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }, [
     walletAccount, api, delegationAmount,
-    selectedCandidate, isDelegatingMore,
+    selectedCandidate, mode,
     createJoinDelegatorsExtrinsic, createDelegateMoreExtrinsic
   ]);
 
   return (
     <>
       <DelegateToCollatorDialog
-        availableBalance={isDelegatingLess ? userStake : userAvailableBalance}
+        availableBalance={mode === 'undelegating' ? userStake : userAvailableBalance}
         collator={selectedCandidate}
         inflationInfo={inflationInfo}
         minDelegatorStake={minDelegatorStake}
         tokenSymbol={tokenSymbol || ""}
-        isDelegatingMore={isDelegatingMore}
-        isDelegatingLess={isDelegatingLess}
+        mode={mode}
         visible={Boolean(selectedCandidate && !delegationAmount)}
         onClose={() => {
           setDelegationAmount(undefined);
@@ -116,8 +118,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         availableBalance={userAvailableBalance}
         transactionFee={totalFee}
         submissionPending={submissionPending}
-        isDelegatingMore={isDelegatingMore}
-        isDelegatingLess={isDelegatingLess}
+        mode={mode}
         onConfirm={submitExtrinsic}
         tokenSymbol={tokenSymbol}
         onCancel={() => setDelegationAmount(undefined)}
@@ -129,7 +130,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       />
       <DelegationSuccessfulDialog
         visible={confirmationDialogVisible}
-        message={isDelegatingLess ? "Successfully unbonded." : "Successfully delegated."}
+        message={mode === 'undelegating' ? "Successfully unbonded." : "Successfully delegated."}
         onClose={() => {
           setConfirmationDialogVisible(false);
           onClose();

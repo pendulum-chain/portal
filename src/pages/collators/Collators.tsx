@@ -233,8 +233,10 @@ export function Collators() {
         userAvailableBalance={userAvailableBalance}
         userStake={userStaking?.amount}
         selectedCandidate={selectedCandidate}
-        isDelegatingMore={userStaking?.candidateId === selectedCandidate?.id}
-        isDelegatingLess={unbonding}
+        mode={unbonding
+          ? 'undelegating'
+          : userStaking?.candidateId === selectedCandidate?.id
+            ? 'delegatingMore' : 'joining'}
         onClose={() => {
           setSelectedCandidate(undefined)
           setUnbonding(false);

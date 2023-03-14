@@ -10,6 +10,7 @@ import { Button, Modal } from "react-daisyui";
 import LabelledInputField from "../../../components/LabelledInputField";
 import { h } from "preact";
 import { CloseButton } from "../../../components/CloseButton";
+import { DelegationMode } from "./ExecuteDelegationDialogs";
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;
@@ -18,8 +19,7 @@ interface DelegateToCollatorDialogProps {
   minDelegatorStake: string;
   tokenSymbol: string;
   visible: boolean;
-  isDelegatingMore: boolean;
-  isDelegatingLess: boolean;
+  mode: DelegationMode;
   onClose?: () => void;
   onSubmit?: (amount: string) => void;
 }
@@ -34,8 +34,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     visible,
     onClose,
     onSubmit,
-    isDelegatingMore = false,
-    isDelegatingLess = false
+    mode = 'joining',
   } = props;
 
   const [amount, setAmount] = useState<string>("");
@@ -54,7 +53,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
             </div>
             <div
               className="text-sm text-neutral-content"
-              hidden={isDelegatingMore}
+              hidden={mode === 'delegatingMore'}
             >
               Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
             </div>
@@ -66,7 +65,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     [collator, inflationInfo, minDelegatorStake, tokenSymbol]
   );
 
-  const titleAction = useMemo(() => isDelegatingLess ? "Unbond" : "Delegate", [isDelegatingLess]);
+  const titleAction = useMemo(() => mode === 'undelegating' ? "Unbond" : "Delegate", [mode]);
   const available = nativeToDecimal(availableBalance).toFixed(4);
 
   return (
