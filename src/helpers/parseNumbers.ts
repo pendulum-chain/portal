@@ -86,7 +86,7 @@ export const nativeToFormat = (
   value: BigNumber | number | string,
   tokenSymbol: string | undefined,
   oneCharOnly = false
-) => format(nativeToDecimal(value), tokenSymbol, oneCharOnly);
+) => format(nativeToDecimal(value).toNumber(), tokenSymbol, oneCharOnly);
 
 export const prettyNumbers = (number: number, lang?: string) =>
   number.toLocaleString(lang || navigator.language, {
