@@ -17,7 +17,7 @@ export type DelegationMode = 'joining' | 'delegatingMore' | 'undelegating';
 
 interface ExecuteDelegationDialogsProps {
   userAvailableBalance: string;
-  userStake: string;
+  userStake?: string;
   selectedCandidate: ParachainStakingCandidate | undefined;
   mode: DelegationMode;
   onClose: () => void;

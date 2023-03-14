@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
-import Big from "big.js";
-import { useNodeInfoState } from "../../NodeInfoProvider";
-import { SubmittableExtrinsic } from "@polkadot/api/promise/types";
-import { Option, U128 } from "@polkadot/types-codec";
-import { useGlobalState } from "../../GlobalStateProvider";
-import { nativeToDecimal } from "../../helpers/parseNumbers";
-import { SubmittableModuleExtrinsics } from "@polkadot/api-base/types";
-import { ApiBase } from "@polkadot/api/base";
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import Big from 'big.js';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { Option, U128 } from '@polkadot/types-codec';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { SubmittableModuleExtrinsics } from '@polkadot/api-base/types';
+import { ApiBase } from '@polkadot/api/base';
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -56,12 +56,12 @@ export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
 
-  const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>([]);
+  const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
   const [inflationInfo, setInflationInfo] = useState<
     ParachainStakingInflationInflationInfo | undefined
   >(undefined);
-  const [minDelegatorStake, setMinDelegatorStake] = useState<string>("0");
-  const [estimatedRewards, setEstimatedRewards] = useState<string>("0");
+  const [minDelegatorStake, setMinDelegatorStake] = useState<string>('0');
+  const [estimatedRewards, setEstimatedRewards] = useState<string>('0');
   const [fees, setFees] = useState<ParachainStakingFees>(defaultTransactionFees);
 
   useEffect(() => {
@@ -94,18 +94,20 @@ export function useStakingPallet() {
     };
 
     const fetchEstimatedReward = async () => {
-      if (!walletAccount) return "0";
-      return (await api.query.parachainStaking.rewards(walletAccount?.address)).toString();
+      if (!walletAccount) return '0';
+      return (
+        await api.query.parachainStaking.rewards(walletAccount?.address)
+      ).toString();
     };
 
     const fetchFees = async () => {
-      const dummyAddress = "5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS";
+      const dummyAddress = '5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS';
       const sender = dummyAddress;
       const pallet = api.tx.parachainStaking;
 
-      const jdi = await pallet.joinDelegators(dummyAddress, "0").paymentInfo(sender);
-      const dsmi = await pallet.delegatorStakeMore(dummyAddress, "0").paymentInfo(sender);
-      const dsli = await pallet.delegatorStakeLess(dummyAddress, "0").paymentInfo(sender);
+      const jdi = await pallet.joinDelegators(dummyAddress, '0').paymentInfo(sender);
+      const dsmi = await pallet.delegatorStakeMore(dummyAddress, '0').paymentInfo(sender);
+      const dsli = await pallet.delegatorStakeLess(dummyAddress, '0').paymentInfo(sender);
 
       fees.joinDelegators = new Big(jdi.partialFee.toString());
       fees.delegatorStakeMore = new Big(dsmi.partialFee.toString());
@@ -116,12 +118,10 @@ export function useStakingPallet() {
 
     fetchCandidatePool().then((candidates) => setCandidates(candidates));
 
-    fetchEstimatedReward().then((reward) =>
-      setEstimatedRewards(reward)
-    );
+    fetchEstimatedReward().then((reward) => setEstimatedRewards(reward));
 
     fetchInflationInfo().then((inflationInfo) =>
-      setInflationInfo(inflationInfo)
+      setInflationInfo(inflationInfo),
     );
 
     fetchFees().then((newFees) =>
@@ -131,7 +131,7 @@ export function useStakingPallet() {
     if (api.consts.parachainStaking?.minDelegatorStake) {
       setMinDelegatorStake(
         (api.consts.parachainStaking.minDelegatorStake.toHuman() as string) ||
-        "0"
+        '0',
       );
     }
   }, [api, walletAccount, walletAccount?.address]);
@@ -149,7 +149,7 @@ export function useStakingPallet() {
         }
 
         // Can be any address because we don't care about executing it here
-        const dummyAddress = "5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS";
+        const dummyAddress = '5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS';
         const sender = dummyAddress;
         const info = await extrinsic.paymentInfo(sender);
 
@@ -163,7 +163,7 @@ export function useStakingPallet() {
       },
       createDelegateMoreExtrinsic(
         collatorAddress: string,
-        moreAmountNative: string
+        moreAmountNative: string,
       ) {
         if (!api) {
           return undefined;
@@ -171,7 +171,7 @@ export function useStakingPallet() {
 
         return api.tx.parachainStaking?.delegatorStakeMore(
           collatorAddress,
-          moreAmountNative
+          moreAmountNative,
         );
       },
       createDelegateLessExtrinsic(
@@ -189,7 +189,7 @@ export function useStakingPallet() {
       },
       createJoinDelegatorsExtrinsic(
         collatorAddress: string,
-        amountNative: string
+        amountNative: string,
       ) {
         if (!api) {
           return undefined;
@@ -197,7 +197,7 @@ export function useStakingPallet() {
 
         return api.tx.parachainStaking?.joinDelegators(
           collatorAddress,
-          amountNative
+          amountNative,
         );
       },
     };
@@ -207,7 +207,7 @@ export function useStakingPallet() {
     inflationInfo,
     fees,
     minDelegatorStake,
-    estimatedRewards
+    estimatedRewards,
   ]);
 
   return memo;
