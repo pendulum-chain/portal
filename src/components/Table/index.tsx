@@ -81,7 +81,7 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className="border rounded-lg overflow-x-auto">
+      <div className="rounded-lg overflow-x-auto">
         <table className={`table w-full ${className}`}>
           <thead>
             {getHeaderGroups().map((headerGroup) => (
