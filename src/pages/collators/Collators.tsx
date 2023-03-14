@@ -162,7 +162,6 @@ export function Collators() {
                   variant="outline"
                   onClick={() => {
                     setUnbonding(false);
-                    console.log("unbonding", unbonding);
                     setSelectedCandidate(row.original.candidate);
                   }}
                   disabled={!showDelegate}
