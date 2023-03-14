@@ -1,10 +1,5 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
-// @ts-nocheck
-/**
- * FIXME remove @ts-nocheck, it was specifically added because of some errors in react-table.
- * Probably fixed in https://github.com/pendulum-chain/portal/pull/64
-*/
 import { Button } from "react-daisyui";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { h } from "preact";
@@ -89,11 +84,10 @@ export function Collators() {
   const data: any[] = useMemo(
     () =>
       candidates.map((candidate) => {
-        const totalStaked = nativeToDecimal(candidate.total);
         const rowItem = {
           candidate: candidate,
           collator: candidate.id,
-          totalStaked: format(totalStaked, tokenSymbol),
+          totalStaked: nativeToFormat(candidate.total, tokenSymbol),
           delegators: candidate.delegators.length,
           apy: inflationInfo?.delegator.rewardRate.annual || "0.00%",
         };
@@ -169,7 +163,7 @@ export function Collators() {
         },
       ]
     },
-    [tokenSymbol, userAccountAddress]
+    [tokenSymbol, walletAccount, userStaking, userAccountAddress]
   );
 
 

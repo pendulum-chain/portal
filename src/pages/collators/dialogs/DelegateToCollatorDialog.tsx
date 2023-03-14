@@ -61,7 +61,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
       ) : (
         <div />
       ),
-    [collator, inflationInfo, minDelegatorStake, tokenSymbol]
+    [collator, inflationInfo, minDelegatorStake, tokenSymbol, isDelegatingMore]
   );
 
   const available = nativeToDecimal(availableBalance).toFixed(4);
