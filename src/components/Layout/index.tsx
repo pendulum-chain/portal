@@ -1,21 +1,20 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
-import { FC, memo, useRef } from "preact/compat";
-import { h } from "preact";
-import { Outlet, useParams } from "react-router-dom";
-import PendulumLogo from "../../assets/pendulum-logo.png";
-import AmplitudeLogo from "../../assets/amplitud-logo.svg";
-import OpenWallet from "../OpenWallet";
-import Nav from "./Nav";
-import NetworkId from "./NetworkId";
-import SocialAndTermLinks from "./SocialAndTermLinks";
-import "./styles.sass";
-import Versions from "./Versions";
+import { FC, memo, useRef } from 'preact/compat';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useTheme } from 'react-daisyui';
+import { Outlet, useParams } from 'react-router-dom';
+import AmplitudeLogo from '../../assets/amplitud-logo.svg';
+import PendulumLogo from '../../assets/pendulum-logo.png';
 import {
   TenantName,
   TenantRPC,
   useGlobalState,
-} from "../../GlobalStateProvider";
-import { useTheme } from "react-daisyui";
+} from '../../GlobalStateProvider';
+import OpenWallet from '../OpenWallet';
+import Nav from './Nav';
+import NetworkId from './NetworkId';
+import SocialAndTermLinks from './SocialAndTermLinks';
+import './styles.sass';
+import Versions from './Versions';
 
 export default function Layout(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
@@ -35,22 +34,22 @@ export default function Layout(): React.JSX.Element {
     if (state.tenantName !== network) {
       let newTenantRPC: TenantRPC;
       switch (network) {
-        case "pendulum":
+        case 'pendulum':
           newTenantRPC = TenantRPC.Pendulum;
-          setTheme("pendulum");
+          setTheme('pendulum');
           break;
-        case "foucoco":
+        case 'foucoco':
           newTenantRPC = TenantRPC.Foucoco;
-          setTheme("amplitude");
+          setTheme('amplitude');
           break;
-        case "local":
+        case 'local':
           newTenantRPC = TenantRPC.Local;
-          setTheme("pendulum");
+          setTheme('pendulum');
           break;
-        case "amplitude":
+        case 'amplitude':
         default:
           newTenantRPC = TenantRPC.Amplitude;
-          setTheme("amplitude");
+          setTheme('amplitude');
           break;
       }
 
@@ -62,18 +61,18 @@ export default function Layout(): React.JSX.Element {
     }
   }, [network, setState, setTheme, state.tenantName]);
 
-  const isPendulum = network === "pendulum";
+  const isPendulum = network === 'pendulum';
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const sidebar = useRef<HTMLDivElement>(null);
 
   const FooterLink: FC = memo(() => {
     return isPendulum ? (
-      <span onClick={() => (window.location.href = "/amplitude")}>
+      <span onClick={() => (window.location.href = '/amplitude')}>
         Amplitude
       </span>
     ) : (
       <span
-        onClick={() => (window.location.href = "/pendulum")}
+        onClick={() => (window.location.href = '/pendulum')}
         className="hidden"
       >
         Pendulum
@@ -86,13 +85,13 @@ export default function Layout(): React.JSX.Element {
     if (!theSidebar) return;
 
     if (visible) {
-      theSidebar.style.display = "none";
-      theSidebar.style.position = "relative";
-      theSidebar.style.top = "0";
+      theSidebar.style.display = 'none';
+      theSidebar.style.position = 'relative';
+      theSidebar.style.top = '0';
     } else {
-      theSidebar.style.display = "flex";
-      theSidebar.style.position = "absolute";
-      theSidebar.style.top = "0";
+      theSidebar.style.display = 'flex';
+      theSidebar.style.position = 'absolute';
+      theSidebar.style.top = '0';
     }
     setVisible(!visible);
   };
@@ -130,11 +129,11 @@ export default function Layout(): React.JSX.Element {
       <div id="main" className="flex-wrap bg-base-100">
         <div className="container flex-wrap">
           <div className="flex flex-row-reverse h-15">
-            <OpenWallet networkName={isPendulum ? "Pendulum" : "Amplitude"} />
+            <OpenWallet networkName={isPendulum ? 'Pendulum' : 'Amplitude'} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
-                <span className={`${isPendulum ? "text-white" : ""}  text-md`}>
-                  {isPendulum ? "Pendulum" : "Amplitude"}
+                <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
+                  {isPendulum ? 'Pendulum' : 'Amplitude'}
                 </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +146,7 @@ export default function Layout(): React.JSX.Element {
                   viewBox="0 0 448 512"
                 >
                   <path
-                    fill={isPendulum ? "white" : "grey"}
+                    fill={isPendulum ? 'white' : 'grey'}
                     d="M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z"
                   />
                 </svg>

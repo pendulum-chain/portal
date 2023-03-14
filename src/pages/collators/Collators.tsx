@@ -185,6 +185,7 @@ export function Collators() {
         columns={columns}
         isLoading={!candidates}
         search={false}
+        pageSize={8}
       />
     </div>
   );
