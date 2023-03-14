@@ -90,9 +90,8 @@ const Table = <T,>({
                   <th
                     key={header.id}
                     colSpan={header.colSpan}
-                    className={`${
-                      header.column.getCanSort() ? ' cursor-pointer' : ''
-                    }`}
+                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''
+                      }`}
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     <div className="flex flex-row items-center font-sm text-gray-400 normal-case font-semibold">

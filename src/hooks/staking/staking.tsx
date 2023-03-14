@@ -1,9 +1,12 @@
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { Option } from '@polkadot/types-codec';
-import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { useGlobalState } from '../../GlobalStateProvider';
+import Big from 'big.js';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { Option, U128 } from '@polkadot/types-codec';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { SubmittableModuleExtrinsics } from '@polkadot/api-base/types';
+import { ApiBase } from '@polkadot/api/base';
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -40,6 +43,15 @@ export interface ParachainStakingInflationInflationInfo {
   };
 }
 
+const defaultTransactionFees = {
+  "joinDelegators": Big(0),
+  "delegatorStakeMore": Big(0),
+  "delegatorStakeLess": Big(0)
+}
+
+type ParachainStakingFees = typeof defaultTransactionFees;
+type ParachainStakingExtrinsics = keyof typeof defaultTransactionFees;
+
 export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
@@ -50,8 +62,7 @@ export function useStakingPallet() {
   >(undefined);
   const [minDelegatorStake, setMinDelegatorStake] = useState<string>('0');
   const [estimatedRewards, setEstimatedRewards] = useState<string>('0');
-  const [joinDelegatorsTransactionFee, setJoinDelegatorsTransactionFee] =
-    useState<Big>(new Big(0));
+  const [fees, setFees] = useState<ParachainStakingFees>(defaultTransactionFees);
 
   useEffect(() => {
     if (!api) {
@@ -89,13 +100,20 @@ export function useStakingPallet() {
       ).toString();
     };
 
-    const fetchJoinDelegatorsTransactionFee = async () => {
+    const fetchFees = async () => {
       const dummyAddress = '5D4tzEZy9XeNSwsAXgtZrRrs1bTfpPTWGqwb1PwCYjRTKYYS';
       const sender = dummyAddress;
-      const info = await api.tx.parachainStaking
-        ?.joinDelegators(dummyAddress, '0')
-        .paymentInfo(sender);
-      return new Big(info.partialFee.toString());
+      const pallet = api.tx.parachainStaking;
+
+      const jdi = await pallet.joinDelegators(dummyAddress, '0').paymentInfo(sender);
+      const dsmi = await pallet.delegatorStakeMore(dummyAddress, '0').paymentInfo(sender);
+      const dsli = await pallet.delegatorStakeLess(dummyAddress, '0').paymentInfo(sender);
+
+      fees.joinDelegators = new Big(jdi.partialFee.toString());
+      fees.delegatorStakeMore = new Big(dsmi.partialFee.toString());
+      fees.delegatorStakeLess = new Big(dsli.partialFee.toString());
+
+      return fees;
     };
 
     fetchCandidatePool().then((candidates) => setCandidates(candidates));
@@ -106,14 +124,14 @@ export function useStakingPallet() {
       setInflationInfo(inflationInfo),
     );
 
-    fetchJoinDelegatorsTransactionFee().then((fee) =>
-      setJoinDelegatorsTransactionFee(fee),
+    fetchFees().then((newFees) =>
+      setFees(newFees)
     );
 
     if (api.consts.parachainStaking?.minDelegatorStake) {
       setMinDelegatorStake(
         (api.consts.parachainStaking.minDelegatorStake.toHuman() as string) ||
-          '0',
+        '0',
       );
     }
   }, [api, walletAccount, walletAccount?.address]);
@@ -124,7 +142,7 @@ export function useStakingPallet() {
       inflationInfo,
       minDelegatorStake,
       estimatedRewards,
-      joinDelegatorsTransactionFee,
+      fees,
       async getTransactionFee(extrinsic: SubmittableExtrinsic) {
         if (!api || !extrinsic.hasPaymentInfo) {
           return new Big(0);
@@ -156,6 +174,19 @@ export function useStakingPallet() {
           moreAmountNative,
         );
       },
+      createDelegateLessExtrinsic(
+        collatorAddress: string,
+        lessAmountNative: string
+      ) {
+        if (!api) {
+          return undefined;
+        }
+
+        return api.tx.parachainStaking?.delegatorStakeLess(
+          collatorAddress,
+          lessAmountNative
+        );
+      },
       createJoinDelegatorsExtrinsic(
         collatorAddress: string,
         amountNative: string,
@@ -174,7 +205,7 @@ export function useStakingPallet() {
     api,
     candidates,
     inflationInfo,
-    joinDelegatorsTransactionFee,
+    fees,
     minDelegatorStake,
     estimatedRewards,
   ]);
