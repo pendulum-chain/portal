@@ -134,10 +134,10 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     () =>
       issueRequest
         ? nativeStellarToDecimal(
-            issueRequest.request.amount
-              .add(issueRequest.request.fee)
-              .toString(),
-          ).toString()
+          issueRequest.request.amount
+            .add(issueRequest.request.fee)
+            .toString(),
+        ).toString()
         : '',
     [issueRequest],
   );
@@ -175,7 +175,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const deadline = useMemo(() => {
     const openTime = issueRequest?.request.opentime.toNumber() || 0;
     const period = issueRequest?.request.period.toNumber() || 0;
-    const end = calculateDeadline(activeBlockNumber, openTime, period, 6);
+    const end = calculateDeadline(activeBlockNumber, openTime, period, 12);
 
     return end;
   }, [activeBlockNumber, issueRequest]);
