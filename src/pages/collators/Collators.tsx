@@ -26,6 +26,7 @@ import UnlinkIcon from "../../assets/UnlinkIcon";
 import ExecuteDelegationDialogs from "./dialogs/ExecuteDelegationDialogs";
 import ClaimRewardsDialog from "./dialogs/ClaimRewardsDialog";
 import { Balance } from "@polkadot/types/interfaces";
+import { fees } from "@polkadot/api-derive/contracts";
 
 interface CollatorColumnProps {
   candidate: ParachainStakingCandidate;
@@ -47,12 +48,13 @@ export function Collators() {
   const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 
   // Holds the candidate for which the delegation modal is to be shown
-  const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
+  const [selectedCandidate, setSelectedCandidate] =
     useState<ParachainStakingCandidate | undefined>(undefined);
 
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>("0.00");
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
+  const [unbonding, setUnbonding] = useState<boolean>(false);
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format
@@ -145,7 +147,10 @@ export function Collators() {
                   className="mr-2 text-primary"
                   size="sm"
                   color="ghost"
-                  onClick={() => undefined}
+                  onClick={() => {
+                    setUnbonding(true);
+                    setSelectedCandidate(row.original.candidate);
+                  }}
                   startIcon={<UnlinkIcon className="w-4 h-4" />}
                   style={{ visibility: showUnbond ? "visible" : "hidden" }}
                 >
@@ -156,8 +161,8 @@ export function Collators() {
                   color="primary"
                   variant="outline"
                   onClick={() => {
-                    // eslint-disable-next-line react/prop-types
-                    setSelectedCandidateForDelegation(row.original.candidate);
+                    setUnbonding(false);
+                    setSelectedCandidate(row.original.candidate);
                   }}
                   disabled={!showDelegate}
                 >
@@ -226,9 +231,16 @@ export function Collators() {
       </div>
       <ExecuteDelegationDialogs
         userAvailableBalance={userAvailableBalance}
-        selectedCandidateForDelegation={selectedCandidateForDelegation}
-        isDelegatingMore={userStaking?.candidateId === selectedCandidateForDelegation?.id}
-        onClose={() => setSelectedCandidateForDelegation(undefined)}
+        userStake={userStaking?.amount}
+        selectedCandidate={selectedCandidate}
+        mode={unbonding
+          ? 'undelegating'
+          : userStaking?.candidateId === selectedCandidate?.id
+            ? 'delegatingMore' : 'joining'}
+        onClose={() => {
+          setSelectedCandidate(undefined)
+          setUnbonding(false);
+        }}
       />
       <ClaimRewardsDialog
         userRewardsBalance={estimatedRewards}
