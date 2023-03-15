@@ -51,6 +51,7 @@ function ClaimRewardsDialog(props: Props) {
     extrinsic
       ?.signAndSend(
         walletAccount.address,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         { signer: walletAccount.signer as any },
         (result) => {
           const { status, events } = result;

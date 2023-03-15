@@ -22,8 +22,8 @@
   --table-background: #1c1c1c;
 }
 
-[data-theme="amplitude"] {
-  --primary: #4EE59A;
+[data-theme='amplitude'] {
+  --primary: #4ee59a;
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
@@ -38,25 +38,43 @@
   --subtitle-collator-box: #fff;
 }
 
-[data-theme="pendulum"] {
-  --primary: #907EA0;
+[data-theme='pendulum'] {
+  --primary: #907ea0;
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
   --table-text: #252733;
-  --table-text-header: #9FA2B4;
+  --table-text-header: #9fa2b4;
   --table-background: #fff;
-  --table-border: #DFE0EB;
+  --table-border: #dfe0eb;
   --modal-title: var(--darkner);
   --portfolio-bg: var(--clear-light);
-  --portfolio-border: #E5E5E5;
+  --portfolio-border: #e5e5e5;
   --subtitle-collator-box: #828282;
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
 }
 
 body {
-  font-family: 'Nunito Sans', sans-serif;
   font-weight: 300;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body,
+input,
+textarea,
+select {
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.font-2 {
+  font-family: 'Outfit', sans-serif;
 }
 
 .pendulum-network-id {
@@ -109,7 +127,7 @@ nav {
   margin-bottom: auto;
 }
 
-nav>a {
+nav > a {
   color: var(--text-primary);
   font-weight: 600;
   display: flex;
@@ -124,7 +142,7 @@ nav>a {
   border-radius: 9px;
 }
 
-nav>a .nav-arrow-container svg {
+nav > a .nav-arrow-container svg {
   font-weight: 400;
   width: 5px;
   height: 9px;
@@ -132,7 +150,7 @@ nav>a .nav-arrow-container svg {
   margin-left: 0;
 }
 
-nav>a.active .nav-arrow-container svg {
+nav > a.active .nav-arrow-container svg {
   visibility: visible;
 }
 
@@ -140,12 +158,11 @@ nav>a.active .nav-arrow-container svg {
   border-right: 1px solid var(--border);
 }
 
-
-nav>a:hover {
+nav > a:hover {
   background-color: var(--selected-nav-item);
 }
 
-nav>.active {
+nav > .active {
   background-color: var(--selected-nav-item);
 }
 
@@ -264,6 +281,6 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   --moz-appearance: textfield;
 }

@@ -9,6 +9,7 @@ import {
   ParachainStakingCandidate,
   ParachainStakingInflationInflationInfo,
 } from '../../../hooks/staking/staking';
+import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;
@@ -17,7 +18,7 @@ interface DelegateToCollatorDialogProps {
   minDelegatorStake: string;
   tokenSymbol: string;
   visible: boolean;
-  isDelegatingMore: boolean;
+  mode: DelegationMode;
   onClose?: () => void;
   onSubmit?: (amount: string) => void;
 }
@@ -32,7 +33,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     visible,
     onClose,
     onSubmit,
-    isDelegatingMore,
+    mode = 'joining',
   } = props;
 
   const [amount, setAmount] = useState<string>('');
@@ -51,7 +52,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
             </div>
             <div
               className="text-sm text-neutral-content"
-              hidden={isDelegatingMore}
+              hidden={mode === 'delegatingMore'}
             >
               Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
             </div>
@@ -63,18 +64,27 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     [
       collator,
       inflationInfo?.delegator.rewardRate.annual,
-      isDelegatingMore,
       minDelegatorStake,
+      mode,
       tokenSymbol,
     ],
   );
 
+  const titleAction = useMemo(
+    () => (mode === 'undelegating' ? 'Unbond' : 'Delegate'),
+    [mode],
+  );
   const available = nativeToDecimal(availableBalance).toFixed(4);
 
   return (
     <Modal open={visible}>
-      <Modal.Header className="font-bold">Delegate</Modal.Header>
-      <CloseButton onClick={onClose} />
+      <Modal.Header className="font-bold">{titleAction}</Modal.Header>
+      <CloseButton
+        onClick={() => {
+          setAmount('');
+          if (onClose) onClose();
+        }}
+      />
       <Modal.Body>
         {CollatorInfo}
         <div className="mt-4" />
@@ -95,7 +105,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           color="primary"
           onClick={() => onSubmit && onSubmit(amount)}
         >
-          Delegate
+          {titleAction}
         </Button>
       </Modal.Actions>
     </Modal>

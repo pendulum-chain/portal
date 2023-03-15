@@ -31,7 +31,7 @@ export const GlobalFilter = ({
             placeholder="Search..."
             className="input input-sm input-bordered"
           />
-          <button className="btn btn-sm btn-square bg-gray-100" type="submit">
+          <button className="btn btn-sm btn-square btn-secondary" type="submit">
             <MagnifyingGlassIcon className="w-3 h-3" />
           </button>
         </label>

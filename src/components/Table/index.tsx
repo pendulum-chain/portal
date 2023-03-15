@@ -8,7 +8,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
+import { Skeleton } from '../Skeleton';
 import { GlobalFilter } from './GlobalFilter';
 
 export type TableProps<T> = {
@@ -20,13 +22,23 @@ export type TableProps<T> = {
   pageSize?: number;
   /** show global search */
   search?: boolean;
+  /** show loader */
+  isLoading?: boolean;
+  /** table className */
+  className?: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const defaultData: any[] = [];
+const loading = <>{repeat(<Skeleton className="h-8 mb-2" />, 6)}</>;
+
 const Table = <T,>({
-  data = [],
+  data = defaultData,
   columns,
   pageSize: ps = 25,
   search = true,
+  isLoading,
+  className,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
   const {
@@ -56,6 +68,7 @@ const Table = <T,>({
     globalFilter,
   } = getState();
 
+  if (isLoading) return loading;
   return (
     <>
       {search ? (
@@ -68,8 +81,8 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className="border rounded-lg overflow-x-auto">
-        <table className="table w-full">
+      <div className="rounded-lg overflow-x-auto">
+        <table className={`table w-full ${className}`}>
           <thead>
             {getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b">
@@ -77,19 +90,18 @@ const Table = <T,>({
                   <th
                     key={header.id}
                     colSpan={header.colSpan}
-                    className={`${
-                      header.column.getCanSort() ? ' cursor-pointer' : ''
-                    }`}
+                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''
+                      }`}
                     onClick={header.column.getToggleSortingHandler()}
                   >
-                    <div className="flex flex-row font-sm text-gray-400 normal-case font-semibold">
+                    <div className="flex flex-row items-center font-sm text-gray-400 normal-case font-semibold">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
                       {header.column.getCanSort() ? (
                         <div
-                          className={`sort ${header.column.getIsSorted()} ml-2 text-gray-400 mt-0.5`}
+                          className={`sort ${header.column.getIsSorted()} ml-2 text-gray-400 mb-0.5`}
                         >
                           {header.column.getIsSorted() === 'desc' ? (
                             <ChevronDownIcon

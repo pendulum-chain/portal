@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
-    "@pendulum-chain/api": "^0.1.6",
+    "@pendulum-chain/api": "^0.2.3",
     "@polkadot/api": "^9.9.1",
     "@polkadot/api-base": "^9.9.1",
     "@polkadot/api-derive": "^9.9.1",
