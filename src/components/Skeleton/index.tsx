@@ -7,7 +7,7 @@ export type SkeletonProps = {
 export const Skeleton = ({ className, children, ...rest }: SkeletonProps) => (
   <div
     {...rest}
-    className={`bg-gray-100 rounded-lg ${className} animate-pulse`}
+    className={`bg-base-200 dark:bg-base-200 rounded-lg ${className} animate-pulse`}
   >
     <div className="invisible">{children}</div>
   </div>

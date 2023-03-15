@@ -11,6 +11,7 @@ type Tenants = Record<
 >;
 
 export const config = {
+  defaultPage: '/pendulum/dashboard',
   tenants: {
     [TenantName.Amplitude]: {
       name: 'Amplitude',

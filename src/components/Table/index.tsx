@@ -81,7 +81,7 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className="border rounded-lg overflow-x-auto">
+      <div className="rounded-lg overflow-x-auto">
         <table className={`table w-full ${className}`}>
           <thead>
             {getHeaderGroups().map((headerGroup) => (
@@ -90,9 +90,8 @@ const Table = <T,>({
                   <th
                     key={header.id}
                     colSpan={header.colSpan}
-                    className={`${
-                      header.column.getCanSort() ? ' cursor-pointer' : ''
-                    }`}
+                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''
+                      }`}
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     <div className="flex flex-row items-center font-sm text-gray-400 normal-case font-semibold">

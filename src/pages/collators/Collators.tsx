@@ -39,13 +39,15 @@ export function Collators() {
   const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 
   // Holds the candidate for which the delegation modal is to be shown
-  const [selectedCandidateForDelegation, setSelectedCandidateForDelegation] =
-    useState<ParachainStakingCandidate | undefined>(undefined);
+  const [selectedCandidate, setSelectedCandidate] = useState<
+    ParachainStakingCandidate | undefined
+  >(undefined);
 
   const [userAvailableBalance, setUserAvailableBalance] =
     useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
+  const [unbonding, setUnbonding] = useState<boolean>(false);
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format
@@ -108,7 +110,7 @@ export function Collators() {
         userAccountAddress,
         walletAccount,
         userStaking,
-        setSelectedCandidateForDelegation,
+        setSelectedCandidate,
       }),
     ];
   }, [tokenSymbol, userAccountAddress, userStaking, walletAccount]);
@@ -167,11 +169,19 @@ export function Collators() {
       </div>
       <ExecuteDelegationDialogs
         userAvailableBalance={userAvailableBalance}
-        selectedCandidateForDelegation={selectedCandidateForDelegation}
-        isDelegatingMore={
-          userStaking?.candidateId === selectedCandidateForDelegation?.id
+        userStake={userStaking?.amount}
+        selectedCandidate={selectedCandidate}
+        mode={
+          unbonding
+            ? 'undelegating'
+            : userStaking?.candidateId === selectedCandidate?.id
+            ? 'delegatingMore'
+            : 'joining'
         }
-        onClose={() => setSelectedCandidateForDelegation(undefined)}
+        onClose={() => {
+          setSelectedCandidate(undefined);
+          setUnbonding(false);
+        }}
       />
       <ClaimRewardsDialog
         userRewardsBalance={estimatedRewards}
@@ -185,17 +195,8 @@ export function Collators() {
         columns={columns}
         isLoading={!candidates}
         search={false}
+        pageSize={8}
       />
     </div>
   );
 }
-
-/* const estimateReward = (
-  inflationInfo: ParachainStakingInflationInflationInfo | undefined,
-  userStaking: UserStaking | undefined,
-) =>
-  inflationInfo && userStaking
-    ? (parseFloat(inflationInfo.collator.rewardRate.annual) *
-        parseFloat(userStaking.amount)) /
-      100
-    : 0; */

@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './components/Layout';
 import { NotFound } from './components/NotFound';
+import { config } from './config';
 import { Amm } from './pages/amm/Amm';
 import Bridge from './pages/bridge';
 import { Collators } from './pages/collators/Collators';
@@ -14,7 +15,7 @@ export function App() {
       <Routes>
         <Route
           path="/"
-          element={<Navigate to="/amplitude/dashboard" replace />}
+          element={<Navigate to={config.defaultPage} replace />}
         />
         <Route path="/:network/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />

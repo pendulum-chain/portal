@@ -71,12 +71,12 @@ export const actionsColumn = ({
   userAccountAddress,
   walletAccount,
   userStaking,
-  setSelectedCandidateForDelegation,
+  setSelectedCandidate,
 }: {
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidateForDelegation: StateUpdater<
+  setSelectedCandidate: StateUpdater<
     ParachainStakingCandidate | undefined
   >;
 }): ColumnDef<TCollator> => ({
@@ -104,7 +104,7 @@ export const actionsColumn = ({
           color="primary"
           variant="outline"
           onClick={() => {
-            setSelectedCandidateForDelegation(row.original.candidate);
+            setSelectedCandidate(row.original.candidate);
           }}
           disabled={!showDelegate}
         >

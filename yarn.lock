@@ -1668,25 +1668,25 @@
   dependencies:
     "@open-web3/orml-type-definitions" "1.1.4"
 
-"@pendulum-chain/api-derive@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/@pendulum-chain/api-derive/-/api-derive-0.1.6.tgz"
-  integrity sha512-ZZOemb2vadZg/MFCmd0Z8ME1HSW/lAPvYB+1gia2EVn3DuxgpCt/yORk4x5pPxVttZF4H5yb8eoCsUs7Guhp9A==
+"@pendulum-chain/api-derive@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.2.3.tgz#71110e73a10ecc184a7b627c23af3e8f92572d89"
+  integrity sha512-F6rsnobT2yp6g+/5eA32eQLgK/z61/ChLteuEelBKksoPqdm5R3zPTU5Lik0meDOTHcw7SAuoRnTUucl+VVqNA==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-types" "^1.1.4"
-    "@pendulum-chain/types" "0.1.6"
+    "@pendulum-chain/types" "0.2.3"
     "@polkadot/api-derive" "^9.9.1"
 
-"@pendulum-chain/api@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/@pendulum-chain/api/-/api-0.1.6.tgz"
-  integrity sha512-wsx+or1CjAVMISfmfhP4dB7HtDNZhULjpxBIBERTllw6KLf2bgahfBOOxkU6qiJpBt+b2CaGaeML+l5wKe9M1g==
+"@pendulum-chain/api@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api/-/api-0.2.3.tgz#0cfd1d4250722f4393ba303eb6ace8bb320ea60a"
+  integrity sha512-K+ChrUx9t2IK8I6SaVQeCHpy1kp4EpWGq6SS4UHYJoCVOT+9UrI638lPm181721DxuOpPqVoDQefO7Kw6xVVfg==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-api-derive" "^1.1.4"
-    "@pendulum-chain/api-derive" "0.1.6"
-    "@pendulum-chain/types" "^0.1.6"
+    "@pendulum-chain/api-derive" "0.2.3"
+    "@pendulum-chain/types" "^0.2.3"
     "@polkadot/api" "^9.9.1"
 
 "@pendulum-chain/type-definitions@0.1.6":
@@ -1697,7 +1697,25 @@
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-type-definitions" "^1.1.4"
 
-"@pendulum-chain/types@0.1.6", "@pendulum-chain/types@^0.1.6":
+"@pendulum-chain/type-definitions@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/type-definitions/-/type-definitions-0.2.3.tgz#49090071fea6f5154d3e3f1f46eeafdc00f269b5"
+  integrity sha512-ylw+M1LJ/kO3anptQBBZnh+YvhSJA/m0JuXf9uBxRhQkawBV+0spr+hHQwLT7hUkwE8Eo6O/eaOfZuys0MZtmQ==
+  dependencies:
+    "@babel/runtime" "^7.10.2"
+    "@open-web3/orml-type-definitions" "^1.1.4"
+
+"@pendulum-chain/types@0.2.3", "@pendulum-chain/types@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/types/-/types-0.2.3.tgz#efaab90ba235eda5a81a332adefdcebcdeb892f6"
+  integrity sha512-cXnZFuW4sg0PYnn8pdzUaWIao/i9+PO73SCI1N7PtQQ4IjeqymbDDZwcTrufOTtvL9R9hmeuMPrp+vWiaodFnw==
+  dependencies:
+    "@babel/runtime" "^7.10.2"
+    "@open-web3/api-mobx" "^1.1.4"
+    "@open-web3/orml-types" "^1.1.4"
+    "@pendulum-chain/type-definitions" "0.2.3"
+
+"@pendulum-chain/types@^0.1.6":
   version "0.1.6"
   resolved "https://registry.npmjs.org/@pendulum-chain/types/-/types-0.1.6.tgz"
   integrity sha512-ASTVhoBm0Q1PG/J7Ft+gPtKYQP8AXejn5TveuNoFmEFN4C22fMDx7H3lSFCQ6JdP8aVnwGpvWIfInQfVvBiq4g==
