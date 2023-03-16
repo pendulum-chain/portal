@@ -1,4 +1,4 @@
-import { Avatar, Button } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { useModalToggle } from '../../../../services/modal';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
@@ -9,26 +9,18 @@ export type PoolOverviewProps = {
 
 const PoolOverview = ({ data }: PoolOverviewProps) => {
   const toggle = useModalToggle();
-  const totalBalance = '$0.78';
+  const totalBalance = 0.78;
 
   return (
     <>
-      <div className="flex items-center mb-8 text-3xl font-normal text-gray-800 gap-3 mt-2">
-        <Avatar
-          size="sm"
-          letters={data.asset?.symbol}
-          shape="circle"
-          color="gray-200"
-          className="text-xs"
-        />
+      <div className="mb-8 mt-2 font-normal text-gray-800">
         <h3 className="text-2xl">My Pool Balance</h3>
       </div>
       <div className="center mb-6">
-        <div
-          className="bg-gray-100 px-8 py-4 rounded-lg text-3xl sm:text-4xl text-gray-900"
-          title={totalBalance}
-        >
-          <strong>{totalBalance}</strong>
+        <div className="bg-gray-100 px-8 py-4 rounded-lg text-2xl sm:text-4xl text-gray-900">
+          <strong>
+            {totalBalance} {data.asset.symbol}
+          </strong>
         </div>
       </div>
       <div className="my-6">

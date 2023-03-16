@@ -1,8 +1,8 @@
-import { memo } from 'preact/compat';
-import { useState } from 'preact/hooks';
-import { Outlet } from 'react-router-dom';
+import { memo, useEffect, useState } from 'preact/compat';
+import { Outlet, useParams } from 'react-router-dom';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
+import { config } from '../../config';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import OpenWallet from '../OpenWallet';
@@ -14,11 +14,26 @@ import Versions from './Versions';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
-  const { state } = useGlobalState();
+  const params = useParams();
+  const { state, setState } = useGlobalState();
   const isPendulum = state.tenantName === TenantName.Pendulum;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
+
+  useEffect(() => {
+    // Only change state if network is different
+    const network =
+      params.network &&
+      Object.values<string>(TenantName).includes(params.network)
+        ? (params.network as TenantName)
+        : TenantName.Pendulum;
+    setState((prevState) => ({
+      ...prevState,
+      tenantName: network,
+      tenantRPC: config.tenants[network].rpc,
+    }));
+  }, [params.network, setState]);
 
   const FooterLink = memo(() => {
     return isPendulum ? (

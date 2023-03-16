@@ -1,64 +1,131 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { Avatar, Button, Input } from 'react-daisyui';
-import { useModalToggle } from '../../../../services/modal';
+import { Button } from 'react-daisyui';
+import pendulumIcon from '../../../../assets/pendulum-icon.svg';
+import Spinner from '../../../../assets/spinner';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
+import { useAddLiquidity } from './useAddLiquidity';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;
 }
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
-  const toggle = useModalToggle();
-  const balance = 0;
+  const {
+    toggle,
+    mutation,
+    form: { register, handleSubmit, getValues },
+  } = useAddLiquidity(data.asset.address);
+  const deposited = 0;
+  const balance = 120.53;
 
+  const hideCss = mutation.isLoading ? 'hidden' : '';
   return (
-    <>
-      <div className="flex justify-between mb-8 text-3xl font-normal text-gray-800 mt-2">
-        <div className="flex items-center gap-3">
-          <Button
-            size="sm"
-            color="ghost"
-            className="px-2 mr-2"
-            onClick={() =>
-              toggle({
-                type: ModalTypes.Overview,
-                props: { data },
-              })
-            }
-          >
-            <ArrowLeftIcon className="w-4 h-4" />
-          </Button>
-          <Avatar
-            size="sm"
-            letters={data.asset?.symbol}
-            shape="circle"
-            color="gray-200"
-            className="text-xs"
-          />
-          <h3 className="text-2xl">{data.asset?.symbol} - Add Liquidity</h3>
-        </div>
-      </div>
-      <div className="my-3">
-        <p className="text-gray-500 text-right mb-2">
-          Balance: {balance} {data.asset?.symbol}
-        </p>
-        <Input
-          size="md"
-          bordered
-          name="amount"
-          value="0"
-          type="number"
-          step="0.1"
-          max={balance}
-          className="w-full text-right text-lg"
-        />
-        <div className="mt-2">TODO: deposit stats</div>
-        <Button variant="primary" className="mt-6 w-full">
-          Add
+    <div className="text-[initial]">
+      {mutation.isLoading ? (
+        <>
+          <div className="flex flex-col items-center justify-center text-center mt-4 mb-10">
+            <Spinner size={100} color="#ddd" />
+            <h4 className="text-2xl mt-10">Waiting for Confirmation</h4>
+            <p className="text-gray-500 mt-4">
+              Please confirm this transaction in your wallet
+            </p>
+          </div>
+          <div className="flex items-center justify-between rounded-lg bg-gray-100 p-4">
+            <div className="flex items-center gap-2 text-lg">
+              <div className="rounded-full bg-gray-300 w-10 h-10 p-px">
+                <img
+                  src={pendulumIcon}
+                  alt="Pendulum"
+                  className="h-full w-auto"
+                />
+              </div>
+              <div>
+                <strong>{data.asset.symbol}</strong>
+              </div>
+            </div>
+            <div className="text-3xl font-2">{getValues('amount')}</div>
+          </div>
+        </>
+      ) : null}
+      <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
+        <Button
+          size="sm"
+          color="ghost"
+          className="px-2"
+          type="button"
+          onClick={() =>
+            toggle({
+              type: ModalTypes.Overview,
+              props: { data },
+            })
+          }
+        >
+          <ArrowLeftIcon className="w-4 h-4" />
         </Button>
+        <h3 className="text-3xl font-normal">Confirm deposit</h3>
       </div>
-    </>
+      <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
+        <div className={hideCss}>
+          <div className="flex justify-between align-end text-sm text-initial my-3">
+            <p>
+              Deposited: {deposited} {data.asset?.symbol}
+            </p>
+            <p className="text-gray-500 text-right">
+              Balance: {balance} {data.asset?.symbol}
+            </p>
+          </div>
+          <div className="relative rounded-lg bg-gray-100">
+            <input
+              autoFocus
+              className="input-ghost w-full text-4xl font-2 py-7 px-4"
+              placeholder="Amount"
+              {...register('amount', { onChange: () => undefined })}
+            />
+            <Button
+              className="absolute bg-gray-200 px-4 rounded-2xl right-3 top-1/2 -mt-4"
+              size="sm"
+              type="button"
+              onClick={() => console.log('! TODO')}
+            >
+              MAX
+            </Button>
+          </div>
+        </div>
+        <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
+          <div className="flex items-center justify-between">
+            <p>Effective Deposit</p>
+            <p>0.99 USDC</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>Fee / Penalty</p>
+            <p>0.99 USDC</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>My Total Deposits</p>
+            <p>0.99 USDC</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>Pool Share</p>
+            <p>0.99 USDC</p>
+          </div>
+        </div>
+        <div className={hideCss}>
+          <Button variant="primary" className="mt-8 w-full" type="submit">
+            Deposit
+          </Button>
+          <Button
+            variant="secondary"
+            className="mt-2 w-full"
+            type="button"
+            disable={mutation.isLoading}
+            onClick={() => toggle()}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

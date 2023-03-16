@@ -2,7 +2,7 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Button } from 'react-daisyui';
 import { SwapPool } from '../../../models/SwapPool';
 import { useModalToggle } from '../../../services/modal';
-import { ModalTypes } from './Modals/types';
+import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
 export type SwapPoolColumn = SwapPool & {
   wallet: unknown;
@@ -55,18 +55,31 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
 const ActionsColumn = ({
   row: { original },
 }: CellContext<SwapPoolColumn, unknown>): JSX.Element | null => {
-  const toggle = useModalToggle();
+  const toggle = useModalToggle<LiquidityModalProps>();
   return (
-    <div className="text-right">
+    <div className="flex items-center gap-2 text-right">
       <Button
         onClick={() =>
-          toggle({ type: ModalTypes.Overview, props: { data: original } })
+          toggle({ type: ModalTypes.AddLiquidity, props: { data: original } })
         }
         size="sm"
         variant="outline"
         className="px-3"
       >
-        Manage
+        Deposit
+      </Button>
+      <Button
+        onClick={() =>
+          toggle({
+            type: ModalTypes.WithdrawLiquidity,
+            props: { data: original },
+          })
+        }
+        size="sm"
+        variant="outline"
+        className="px-3"
+      >
+        Withdraw
       </Button>
     </div>
   );
