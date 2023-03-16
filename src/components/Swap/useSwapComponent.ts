@@ -10,6 +10,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { emptyFn } from '../../helpers/general';
 import useBoolean from '../../hooks/useBoolean';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { Asset } from '../../models/Asset';
 import { SwapSettings, SwapTransaction } from '../../models/Swap';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { isApiConnected } from '../../services/api/helpers';
@@ -127,7 +128,8 @@ export const useSwapComponent = ({
   );
 
   const onFromChange = useCallback(
-    (f: string) => {
+    (a: string | Asset) => {
+      const f = typeof a === 'string' ? a : a.address;
       merge((prev) => {
         const updated = {
           ...defaults,
@@ -146,7 +148,8 @@ export const useSwapComponent = ({
   );
 
   const onToChange = useCallback(
-    (t: string) => {
+    (a: string | Asset) => {
+      const t = typeof a === 'string' ? a : a.address;
       merge((prev) => {
         const updated = {
           ...defaults,

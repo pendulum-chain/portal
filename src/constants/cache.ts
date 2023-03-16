@@ -5,6 +5,7 @@ export const cacheKeys = {
   tokens: 'tokens',
   walletBalance: 'walletBalance',
   walletBalances: 'walletBalances',
+  backstopPool: 'backstopPool',
 };
 
 export type QueryOptions = Partial<

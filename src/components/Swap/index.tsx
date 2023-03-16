@@ -7,9 +7,9 @@ import {
 import { Fragment } from 'preact';
 import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { errorClass } from '../../helpers/form';
+import { AssetSelectorModal } from '../Asset/Selector/Modal';
 import Progress from './Progress';
 import SwapToken from './SwapToken';
-import { TokenSelectorModal } from './TokenSelector';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
@@ -217,10 +217,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </div>
         </form>
       </Card>
-      <TokenSelectorModal
+      <AssetSelectorModal
         open={!!modalType}
         className="modal-top"
-        tokens={tokensQuery.data}
+        assets={tokensQuery.data}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={
           modalType === 'from' ? form.getValues().from : form.getValues().to

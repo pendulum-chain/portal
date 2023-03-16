@@ -51,12 +51,12 @@ const WithdrawLiquidity = ({
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
             <div className="flex items-center justify-between">
-              <p>Fee</p>
-              <p>0.99 USDC</p>
+              <div>Fee</div>
+              <div>0.99 USDC</div>
             </div>
             <div className="flex items-center justify-between">
-              <p>Minimum Received</p>
-              <p>0.99 USDC</p>
+              <div>Minimum Received</div>
+              <div>0.99 USDC</div>
             </div>
           </div>
         </>
@@ -117,24 +117,24 @@ const WithdrawLiquidity = ({
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
             <div className="flex items-center justify-between">
-              <p>Amount deposit (after fee)</p>
-              <p>0.99 USDC</p>
+              <div>Amount deposit (after fee)</div>
+              <div>0.99 USDC</div>
             </div>
             <div className="flex items-center justify-between">
-              <p>Fee / Penalty</p>
-              <p>0.99 USDC</p>
+              <div>Fee / Penalty</div>
+              <div>0.99 USDC</div>
             </div>
             <div className="flex items-center justify-between">
-              <p>Minimum Received</p>
-              <p>0.99 USDC</p>
+              <div>Minimum Received</div>
+              <div>0.99 USDC</div>
             </div>
             <div className="flex items-center justify-between">
-              <p>My Remaining Deposit</p>
-              <p>0.99 USDC</p>
+              <div>My Remaining Deposit</div>
+              <div>0.99 USDC</div>
             </div>
             <div className="flex items-center justify-between">
-              <p>My Remain Pool Share</p>
-              <p>0.99 USDC</p>
+              <div>My Remain Pool Share</div>
+              <div>0.99 USDC</div>
             </div>
           </div>
           <Button variant="primary" className="mt-8 w-full" type="submit">

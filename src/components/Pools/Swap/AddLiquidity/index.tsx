@@ -94,20 +94,20 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         </div>
         <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
           <div className="flex items-center justify-between">
-            <p>Effective Deposit</p>
-            <p>0.99 USDC</p>
+            <div>Effective Deposit</div>
+            <div>0.99 USDC</div>
           </div>
           <div className="flex items-center justify-between">
-            <p>Fee / Penalty</p>
-            <p>0.99 USDC</p>
+            <div>Fee / Penalty</div>
+            <div>0.99 USDC</div>
           </div>
           <div className="flex items-center justify-between">
-            <p>My Total Deposits</p>
-            <p>0.99 USDC</p>
+            <div>My Total Deposits</div>
+            <div>0.99 USDC</div>
           </div>
           <div className="flex items-center justify-between">
-            <p>Pool Share</p>
-            <p>0.99 USDC</p>
+            <div>Pool Share</div>
+            <div>0.99 USDC</div>
           </div>
         </div>
         <div className={hideCss}>

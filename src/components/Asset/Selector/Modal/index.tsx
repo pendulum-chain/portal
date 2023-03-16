@@ -1,30 +1,30 @@
 import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, Button, Input, Modal, ModalProps } from 'react-daisyui';
-import { repeat } from '../../../helpers/general';
-import { Asset } from '../../../models/Asset';
-import { Skeleton } from '../../Skeleton';
+import { repeat } from '../../../../helpers/general';
+import { Asset } from '../../../../models/Asset';
+import { Skeleton } from '../../../Skeleton';
 
-export interface TokenSelectorProps {
-  tokens?: Asset[];
-  onSelect: (token: string) => void;
+export interface AssetSelectorProps {
+  assets?: Asset[];
+  onSelect: (asset: Asset) => void;
   selected?: string;
 }
 
 // ! TODO: complete
-const TokenSelector = ({
-  tokens,
+const AssetList = ({
+  assets,
   onSelect,
   selected,
-}: TokenSelectorProps): JSX.Element | null => {
+}: AssetSelectorProps): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
     () =>
-      filter && tokens
-        ? matchSorter(tokens, filter, { keys: ['name', 'address', 'symbol'] })
-        : tokens,
-    [tokens, filter],
+      filter && assets
+        ? matchSorter(assets, filter, { keys: ['name', 'address', 'symbol'] })
+        : assets,
+    [assets, filter],
   );
 
   return (
@@ -44,7 +44,7 @@ const TokenSelector = ({
             size="md"
             variant="ghost"
             key={token.address}
-            onClick={() => onSelect(token.address)}
+            onClick={() => onSelect(token)}
             className={`items-center w-full gap-4 text-base${
               selected === token.address ? ' bg-gray-100' : ''
             }`}
@@ -70,47 +70,49 @@ const TokenSelector = ({
   );
 };
 
-export type TokenSelectorModalProps = {
+export type AssetSelectorModalProps = {
   isLoading?: boolean;
   onClose: () => void;
-} & TokenSelectorProps &
+} & AssetSelectorProps &
   Omit<ModalProps, 'onSelect' | 'selected'>;
 
-export const TokenSelectorModal = ({
-  tokens,
-  onSelect,
+export const AssetSelectorModal = ({
+  assets,
   selected,
-  isLoading,
+  onSelect,
   onClose,
+  isLoading,
   ...rest
-}: TokenSelectorModalProps) => (
-  <Modal {...rest}>
-    <Modal.Header className="mb-0">
-      <Button
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2"
-        onClick={onClose}
-        type="button"
-      >
-        ✕
-      </Button>
-      <h3 className="text-lg font-bold">Select a token</h3>
-    </Modal.Header>
-    <Modal.Body>
-      <div className="py-4">
-        {isLoading ? (
-          repeat(<Skeleton className="w-full h-10 mb-2" />)
-        ) : (
-          <TokenSelector
-            tokens={tokens}
-            onSelect={onSelect}
-            selected={selected}
-          />
-        )}
-      </div>
-    </Modal.Body>
-  </Modal>
-);
+}: AssetSelectorModalProps) => {
+  return (
+    <Modal {...rest}>
+      <Modal.Header className="mb-0">
+        <Button
+          size="sm"
+          shape="circle"
+          className="absolute right-2 top-2"
+          onClick={onClose}
+          type="button"
+        >
+          ✕
+        </Button>
+        <h3 className="text-lg font-bold">Select a token</h3>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="py-4">
+          {isLoading ? (
+            repeat(<Skeleton className="w-full h-10 mb-2" />)
+          ) : (
+            <AssetList
+              assets={assets}
+              onSelect={onSelect}
+              selected={selected}
+            />
+          )}
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+};
 
-export default TokenSelector;
+export default AssetList;
