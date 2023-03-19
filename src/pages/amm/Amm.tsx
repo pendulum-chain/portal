@@ -26,10 +26,16 @@ export function Amm(): JSX.Element | null {
         />
       </div>
       <div className="my-12">
-        <SwapPools />
+        {
+          // ! TODO: get swap pools and user connected data
+        }
+        <SwapPools data={undefined} isLoading={false} />
       </div>
       <div className="center my-12">
-        <BackstopPool />
+        {
+          // ! TODO: get backstop pool and info
+        }
+        <BackstopPool data={undefined} isLoading={false} />
       </div>
     </>
   );

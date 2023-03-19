@@ -302,6 +302,10 @@ input[type='number'] {
   line-height: 1.5;
 }
 
+.input-ghost:focus {
+  color: inherit;
+}
+
 .collapse .collapse-content {
   padding: 0;
 }

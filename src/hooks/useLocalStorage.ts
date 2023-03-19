@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'preact/compat';
 import { debounce } from '../helpers/function';
 import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';

@@ -144,6 +144,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               <input
                 autoFocus
                 className="input-ghost w-full text-4xl font-2"
+                placeholder="0.0"
                 {...register('fromAmount', { onChange: () => undefined })}
               />
             }

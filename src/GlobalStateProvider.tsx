@@ -32,7 +32,6 @@ const GlobalStateProvider = ({
 }) => {
   const { pathname } = useLocation();
 
-  // ? TODO: should redirect in case of wrong network
   const [state, setState] = useState(() => {
     if (value) return value;
     if (pathname) {

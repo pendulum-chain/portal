@@ -28,7 +28,9 @@ const SwapToken = ({
     <>
       <div className={`rounded-lg bg-gray-100 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
-          <div className="flex-grow text-4xl font-2">{value}</div>
+          <div className="flex-grow text-4xl text-[inherit] font-2">
+            {value}
+          </div>
           <Button
             size="xs"
             className="rounded-full h-4 min-h-none bg-gray-200 pl-0 pr-1 flex items-center mt-0.5"

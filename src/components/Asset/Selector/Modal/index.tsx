@@ -96,7 +96,7 @@ export const AssetSelectorModal = ({
         >
           ✕
         </Button>
-        <h3 className="text-lg font-bold">Select a token</h3>
+        <h3 className="text-2xl font-normal">Select a token</h3>
       </Modal.Header>
       <Modal.Body>
         <div className="py-4">

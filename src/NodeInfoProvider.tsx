@@ -76,6 +76,8 @@ const NodeInfoProvider = ({
         ss58Format: Number(ss58Format),
         tokenDecimals,
         tokenSymbol,
+        // TODO: same as for the api we could create a common interface for fetching data from indexer (swap assets, pools, other info)
+        // and pass the instance based on tenant to this context to be used in Swap, Pools components...
         api,
       }));
 

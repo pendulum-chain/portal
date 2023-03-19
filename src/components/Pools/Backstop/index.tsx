@@ -1,40 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import { Card } from 'react-daisyui';
-import { cacheKeys, inactiveOptions } from '../../../constants/cache';
 import { BackstopPool as IBackstopPool } from '../../../models/BackstopPool';
 import { Skeleton } from '../../Skeleton';
 import BackstopPoolForm from './Form';
 
-const mockData: IBackstopPool = {
-  assets: [
-    {
-      address: '1',
-      symbol: 'ETH',
-      decimals: 2,
-      name: 'Ethereum',
-    },
-    {
-      address: '2',
-      symbol: 'USDC',
-      decimals: 2,
-      name: 'USDC',
-    },
-    {
-      address: '3',
-      symbol: 'BTC',
-      decimals: 2,
-      name: 'Bitcoin',
-    },
-  ],
-};
+export type BackstopPoolProps = Pick<
+  UseQueryResult<IBackstopPool>,
+  'data' | 'isLoading'
+>;
 
-const BackstopPool = (): JSX.Element | null => {
-  const { data, isLoading } = useQuery<IBackstopPool | null>(
-    [cacheKeys.backstopPool],
-    () => mockData,
-    inactiveOptions[0],
-  );
-
+const BackstopPool = ({
+  data,
+  isLoading,
+}: BackstopPoolProps): JSX.Element | null => {
   return (
     <Card bordered className="w-full max-w-xl bg-base-100 shadow-xl">
       <div className="card-body text-gray-800">

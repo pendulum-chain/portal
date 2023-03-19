@@ -30,7 +30,7 @@ const BackstopPoolForm = ({
         <div className="flex items-center justify-between mb-4">
           <div>
             <AssetSelector
-              data={pool.assets}
+              assets={pool.assets}
               selected="! TODO"
               onSelect={(asset) =>
                 setValue('address', asset.address, {

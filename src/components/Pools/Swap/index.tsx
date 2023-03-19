@@ -1,17 +1,19 @@
+import { UseQueryResult } from '@tanstack/react-query';
 import ModalProvider from '../../../services/modal';
 import Table from '../../Table';
 import { columns, SwapPoolColumn } from './columns';
 import PoolsModals from './Modals';
 
-export type SwapPoolsProps = {
-  data?: SwapPoolColumn[];
-};
+export type SwapPoolsProps = Pick<
+  UseQueryResult<SwapPoolColumn[]>,
+  'data' | 'isLoading'
+>;
 
-const SwapPools = ({ data }: SwapPoolsProps): JSX.Element | null => {
+const SwapPools = ({ data, isLoading }: SwapPoolsProps): JSX.Element | null => {
   return (
     <ModalProvider>
       <PoolsModals />
-      <Table data={data} columns={columns} search />
+      <Table data={data} isLoading={isLoading} columns={columns} search />
     </ModalProvider>
   );
 };

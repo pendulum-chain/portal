@@ -7,7 +7,7 @@ import { Asset } from '../../../models/Asset';
 import { AssetSelectorModal } from './Modal';
 
 export type AssetSelectorProps = {
-  data: Asset[];
+  assets: Asset[];
   onSelect: (asset: Asset) => void;
   selected?: string;
 } & ButtonProps;
@@ -20,7 +20,7 @@ const iconSizes = {
 };
 
 const AssetSelector = ({
-  data,
+  assets,
   onSelect,
   selected,
   size = 'xs',
@@ -28,7 +28,7 @@ const AssetSelector = ({
 }: AssetSelectorProps): JSX.Element | null => {
   const [open, { setFalse, setTrue }] = useBoolean();
   const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>(
-    data.find((i) => i.address === selected),
+    assets.find((i) => i.address === selected),
   );
 
   const internalOnSelect = useCallback(
@@ -61,7 +61,7 @@ const AssetSelector = ({
       <AssetSelectorModal
         open={open}
         className="modal-top"
-        assets={data}
+        assets={assets}
         onSelect={internalOnSelect}
         selected={selected}
         onClose={setFalse}
