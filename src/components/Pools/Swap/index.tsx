@@ -1,15 +1,17 @@
-import { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { cacheKeys } from '../../../constants/cache';
 import ModalProvider from '../../../services/modal';
 import Table from '../../Table';
 import { columns, SwapPoolColumn } from './columns';
 import PoolsModals from './Modals';
 
-export type SwapPoolsProps = Pick<
-  UseQueryResult<SwapPoolColumn[]>,
-  'data' | 'isLoading'
->;
+const SwapPools = (): JSX.Element | null => {
+  // ! TODO: get swap pools and user connected data (user liquidity for all pools)
+  const { data, isLoading } = useQuery<SwapPoolColumn[] | undefined>(
+    [cacheKeys.swapPools],
+    () => [],
+  );
 
-const SwapPools = ({ data, isLoading }: SwapPoolsProps): JSX.Element | null => {
   return (
     <ModalProvider>
       <PoolsModals />

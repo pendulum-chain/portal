@@ -11,6 +11,7 @@ export interface AddLiquidityProps {
 }
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
+  // ! TODO: get pool stats, create add liquidity transaction
   const {
     toggle,
     mutation,

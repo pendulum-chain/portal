@@ -13,6 +13,7 @@ export interface WithdrawLiquidityProps {
 const WithdrawLiquidity = ({
   data,
 }: WithdrawLiquidityProps): JSX.Element | null => {
+  // ! TODO: get stats, create withdraw liquidity transaction
   const {
     toggle,
     mutation,

@@ -8,6 +8,7 @@ export type PoolOverviewProps = {
 };
 
 const PoolOverview = ({ data }: PoolOverviewProps) => {
+  // ! TODO: get pool info and stats, get user pool liquidity, get user asset wallet balance
   const toggle = useModalToggle();
   const totalBalance = 0.78;
 
