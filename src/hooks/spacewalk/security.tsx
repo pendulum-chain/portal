@@ -12,9 +12,7 @@ export function useSecurityPallet() {
 
         return await api.query.security.activeBlockCount();
       },
-      async subscribeActiveBlockNumber(
-        callback: (activeBlockNumber: number) => void,
-      ) {
+      async subscribeActiveBlockNumber(callback: (activeBlockNumber: number) => void) {
         let unsubscribe: UnsubscribePromise = new Promise(() => undefined);
         if (api) {
           unsubscribe = api.query.security.activeBlockCount((blockNumber) => {

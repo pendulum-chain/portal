@@ -32,10 +32,7 @@ export const useLocalStorage = <T>({
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
   type Def = UseLocalStorageResponse<T>;
   const storageSet = useMemo<Storage['set']>(
-    () =>
-      debounceTime
-        ? debounce(storageService.set, debounceTime)
-        : storageService.set,
+    () => (debounceTime ? debounce(storageService.set, debounceTime) : storageService.set),
     [debounceTime],
   );
 
@@ -61,10 +58,7 @@ export const useLocalStorage = <T>({
   const merge = useCallback<Def['merge']>(
     (value) => {
       setState((prev) => {
-        const newVal =
-          typeof value === 'function'
-            ? value(prev)
-            : ({ ...prev, ...value } as T);
+        const newVal = typeof value === 'function' ? value(prev) : ({ ...prev, ...value } as T);
         storageSet(key, newVal);
         return newVal;
       });

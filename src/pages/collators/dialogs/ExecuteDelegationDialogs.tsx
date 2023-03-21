@@ -1,17 +1,14 @@
-import {
-  ParachainStakingCandidate,
-  useStakingPallet,
-} from "../../../hooks/staking/staking";
-import { useNodeInfoState } from "../../../NodeInfoProvider";
-import { useGlobalState } from "../../../GlobalStateProvider";
-import { useCallback, useMemo, useState } from "preact/hooks";
-import { decimalToNative } from "../../../helpers/parseNumbers";
-import { toast } from "react-toastify";
-import DelegateToCollatorDialog from "./DelegateToCollatorDialog";
-import ConfirmDelegateDialog from "./ConfirmDelegateDialog";
-import DelegationSuccessfulDialog from "./DelegationSuccessfulDialog";
-import { h } from "preact";
-import { doSubmitExtrinsic } from "./helpers";
+import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { decimalToNative } from '../../../helpers/parseNumbers';
+import { toast } from 'react-toastify';
+import DelegateToCollatorDialog from './DelegateToCollatorDialog';
+import ConfirmDelegateDialog from './ConfirmDelegateDialog';
+import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';
+import { h } from 'preact';
+import { doSubmitExtrinsic } from './helpers';
 
 export type DelegationMode = 'joining' | 'delegatingMore' | 'undelegating';
 
@@ -23,15 +20,8 @@ interface ExecuteDelegationDialogsProps {
   onClose: () => void;
 }
 
-
 function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
-  const {
-    userAvailableBalance,
-    userStake,
-    selectedCandidate,
-    mode,
-    onClose
-  } = props;
+  const { userAvailableBalance, userStake, selectedCandidate, mode, onClose } = props;
 
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState().state;
@@ -46,28 +36,23 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   } = useStakingPallet();
 
   // Holds the amount that is to be delegated to the candidate
-  const [delegationAmount, setDelegationAmount] = useState<string | undefined>(
-    undefined
-  );
+  const [delegationAmount, setDelegationAmount] = useState<string | undefined>(undefined);
   const [submissionPending, setSubmissionPending] = useState<boolean>(false);
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState<boolean>(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<boolean>(false);
 
   const totalFee = useMemo(() => {
     switch (mode) {
-      case 'undelegating': return fees.delegatorStakeLess;
-      case 'delegatingMore': return fees.delegatorStakeMore;
-      case 'joining': return fees.joinDelegators;
+      case 'undelegating':
+        return fees.delegatorStakeLess;
+      case 'delegatingMore':
+        return fees.delegatorStakeMore;
+      case 'joining':
+        return fees.joinDelegators;
     }
   }, [mode]);
 
   const submitExtrinsic = useCallback(() => {
-    if (
-      !walletAccount ||
-      !api ||
-      !delegationAmount ||
-      !selectedCandidate
-    ) {
+    if (!walletAccount || !api || !delegationAmount || !selectedCandidate) {
       return;
     }
 
@@ -75,26 +60,23 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
 
     const getExtrinsic = () => {
       if (mode === 'undelegating') {
-        return createDelegateLessExtrinsic(
-          selectedCandidate.id,
-          amount.toString());
+        return createDelegateLessExtrinsic(selectedCandidate.id, amount.toString());
       } else if (mode === 'delegatingMore') {
-        return createDelegateMoreExtrinsic(
-          selectedCandidate.id,
-          amount.toString());
+        return createDelegateMoreExtrinsic(selectedCandidate.id, amount.toString());
       } else if (mode === 'joining') {
-        return createJoinDelegatorsExtrinsic(
-          selectedCandidate.id,
-          amount.toString()
-        );
+        return createJoinDelegatorsExtrinsic(selectedCandidate.id, amount.toString());
       }
-    }
+    };
 
     doSubmitExtrinsic(api, getExtrinsic(), walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }, [
-    walletAccount, api, delegationAmount,
-    selectedCandidate, mode,
-    createJoinDelegatorsExtrinsic, createDelegateMoreExtrinsic
+    walletAccount,
+    api,
+    delegationAmount,
+    selectedCandidate,
+    mode,
+    createJoinDelegatorsExtrinsic,
+    createDelegateMoreExtrinsic,
   ]);
 
   return (
@@ -104,7 +86,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         collator={selectedCandidate}
         inflationInfo={inflationInfo}
         minDelegatorStake={minDelegatorStake}
-        tokenSymbol={tokenSymbol || ""}
+        tokenSymbol={tokenSymbol || ''}
         mode={mode}
         visible={Boolean(selectedCandidate && !delegationAmount)}
         onClose={() => {
@@ -130,7 +112,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       />
       <DelegationSuccessfulDialog
         visible={confirmationDialogVisible}
-        message={mode === 'undelegating' ? "Successfully unbonded." : "Successfully delegated."}
+        message={mode === 'undelegating' ? 'Successfully unbonded.' : 'Successfully delegated.'}
         onClose={() => {
           setConfirmationDialogVisible(false);
           onClose();

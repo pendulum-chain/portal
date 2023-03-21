@@ -60,9 +60,7 @@ export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
     <span style={style}>
       {props.variant === 'full' || !props.variant
         ? props.publicKey
-        : props.publicKey.substr(0, digits.leading) +
-        '…' +
-        props.publicKey.substr(-digits.trailing)}
+        : props.publicKey.substr(0, digits.leading) + '…' + props.publicKey.substr(-digits.trailing)}
     </span>
   );
 });
@@ -77,9 +75,7 @@ interface AddressProps {
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const ClickableAddress = React.memo(function ClickableAddress(
-  props: AddressProps,
-) {
+export const ClickableAddress = React.memo(function ClickableAddress(props: AddressProps) {
   return (
     <Button
       className="px-1 h-1"
@@ -107,9 +103,7 @@ interface CopyableAddressProps extends AddressProps {
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const CopyableAddress = React.memo(function CopyableAddress(
-  props: CopyableAddressProps,
-) {
+export const CopyableAddress = React.memo(function CopyableAddress(props: CopyableAddressProps) {
   const { onClick } = props;
   const clipboard = useClipboard();
 
@@ -120,11 +114,5 @@ export const CopyableAddress = React.memo(function CopyableAddress(
     clipboard.copyToClipboard(props.publicKey);
   }, [clipboard, onClick, props.publicKey]);
 
-  return (
-    <ClickableAddress
-      {...props}
-      onClick={handleClick}
-      icon={<CopyIcon className="w-4 h-4" />}
-    />
-  );
+  return <ClickableAddress {...props} onClick={handleClick} icon={<CopyIcon className="w-4 h-4" />} />;
 });

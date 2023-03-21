@@ -19,22 +19,28 @@ interface Props {
 }
 
 const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
-  const { autoSelect, color, error, label, secondaryLabel, onChange, extraBtnAction,
-    extraBtnText, errorMessage, style, ...rest } = props;
+  const {
+    autoSelect,
+    color,
+    error,
+    label,
+    secondaryLabel,
+    onChange,
+    extraBtnAction,
+    extraBtnText,
+    errorMessage,
+    style,
+    ...rest
+  } = props;
 
   const inputColor = error ? 'error' : color;
 
   return (
-    <div
-      className="flex w-full component-preview items-center justify-center gap-2 font-sans"
-      style={style}
-    >
+    <div className="flex w-full component-preview items-center justify-center gap-2 font-sans" style={style}>
       <div className="form-control w-full">
         <label className="label">
           {label && <span className="label-text">{error ? error : label}</span>}
-          {secondaryLabel && (
-            <span className="label-text-alt">{secondaryLabel}</span>
-          )}
+          {secondaryLabel && <span className="label-text-alt">{secondaryLabel}</span>}
         </label>
         <div className="input-container">
           <Input
@@ -52,12 +58,14 @@ const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
               }
             }}
           />
-          {extraBtnText && extraBtnAction &&
-            <button className="rounded-md max-button bg-base-200" onClick={extraBtnAction}>{extraBtnText}</button>
-          }
+          {extraBtnText && extraBtnAction && (
+            <button className="rounded-md max-button bg-base-200" onClick={extraBtnAction}>
+              {extraBtnText}
+            </button>
+          )}
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 });
 

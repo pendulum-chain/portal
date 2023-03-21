@@ -19,10 +19,8 @@ export interface UserStaking {
   amount: string;
 }
 
-const getAmountDelegated = (
-  candidate: ParachainStakingCandidate,
-  address: string,
-) => candidate.delegators.find(({ owner }) => owner === address)?.amount;
+const getAmountDelegated = (candidate: ParachainStakingCandidate, address: string) =>
+  candidate.delegators.find(({ owner }) => owner === address)?.amount;
 
 export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
@@ -55,15 +53,8 @@ export const myStakedColumn = ({
   header: 'My Staked',
   accessorKey: 'myStaked',
   cell: ({ row }) => {
-    const amountDelegated = getAmountDelegated(
-      row.original.candidate,
-      userAccountAddress,
-    );
-    return (
-      <div>
-        {amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}
-      </div>
-    );
+    const amountDelegated = getAmountDelegated(row.original.candidate, userAccountAddress);
+    return <div>{amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}</div>;
   },
 });
 
@@ -76,16 +67,12 @@ export const actionsColumn = ({
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidate: StateUpdater<
-    ParachainStakingCandidate | undefined
-  >;
+  setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
 }): ColumnDef<TCollator> => ({
   header: '',
   accessorKey: 'actions',
   cell: ({ row }) => {
-    const showUnbond = Boolean(
-      getAmountDelegated(row.original.candidate, userAccountAddress),
-    );
+    const showUnbond = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
     const showDelegate = walletAccount && (!userStaking || showUnbond);
     return (
       <div className="flex flex-row justify-center">

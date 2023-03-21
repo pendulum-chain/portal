@@ -2,25 +2,14 @@ import { h } from 'preact';
 import { Button, Checkbox, Modal } from 'react-daisyui';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import LabelledInputField from '../../components/LabelledInputField';
-import {
-  RichRedeemRequest,
-  useRedeemPallet,
-} from '../../hooks/spacewalk/redeem';
+import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Asset } from 'stellar-sdk';
-import {
-  convertRawHexKeyToPublicKey,
-  isPublicKey,
-  StellarPublicKeyPattern,
-} from '../../helpers/stellar';
+import { convertRawHexKeyToPublicKey, isPublicKey, StellarPublicKeyPattern } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
-import {
-  decimalToStellarNative,
-  nativeStellarToDecimal,
-  nativeToDecimal,
-} from '../../helpers/parseNumbers';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import Big from 'big.js';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -43,18 +32,10 @@ interface FeeBoxProps {
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const {
-    bridgedAsset,
-    extrinsic,
-    nativeCurrency,
-    wrappedCurrencyPrefix,
-    network,
-  } = props;
+  const { bridgedAsset, extrinsic, nativeCurrency, wrappedCurrencyPrefix, network } = props;
   const amount = props.amountNative;
 
-  const wrappedCurrencyName = bridgedAsset
-    ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode()
-    : '';
+  const wrappedCurrencyName = bridgedAsset ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode() : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -116,9 +97,7 @@ interface ConfirmationDialogProps {
 function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { redeemRequest, visible, onClose } = props;
 
-  const totalAmount = redeemRequest
-    ? nativeStellarToDecimal(redeemRequest.request.amount.toString()).toString()
-    : '';
+  const totalAmount = redeemRequest ? nativeStellarToDecimal(redeemRequest.request.amount.toString()).toString() : '';
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
@@ -132,13 +111,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Back to Stellar</Modal.Header>
-      <Button
-        color="ghost"
-        size="md"
-        shape="circle"
-        className="absolute right-4 top-4"
-        onClick={onClose}
-      >
+      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
         ✕
       </Button>
       <Modal.Body>
@@ -147,15 +120,9 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             You will receive {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by{' '}
-            {asset && (
-              <PublicKey variant="short" publicKey={asset?.getIssuer()} />
-            )}
-            )
+            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
           </div>
-          <div className="text-sm text-secondary mt-4">
-            Your request is being processed
-          </div>
+          <div className="text-sm text-secondary mt-4">Your request is being processed</div>
         </div>
         <div className="mt-6 text-secondary">
           <div className="flex items-center justify-between">
@@ -163,8 +130,8 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             <CopyableAddress variant="short" publicKey={destination} />
           </div>
           <div className="text-sm mt-2">
-            We will inform you when the PEN payment is executed. This typically
-            takes only a few minutes but may sometimes take up to 6 hours.
+            We will inform you when the PEN payment is executed. This typically takes only a few minutes but may
+            sometimes take up to 6 hours.
           </div>
         </div>
       </Modal.Body>
@@ -192,12 +159,9 @@ interface RedeemProps {
 function Redeem(props: RedeemProps): JSX.Element {
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-  const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<
-    RichRedeemRequest | undefined
-  >(undefined);
+  const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<RichRedeemRequest | undefined>(undefined);
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
@@ -249,9 +213,7 @@ function Redeem(props: RedeemProps): JSX.Element {
         return false;
       }
 
-      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(
-        vault.id.currencies.wrapped,
-      );
+      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
       return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
     });
   }, [selectedAsset, vaults]);
@@ -269,27 +231,12 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
 
   const requestRedeemExtrinsic = useMemo(() => {
-    if (
-      !selectedVault ||
-      !api ||
-      !stellarAddress ||
-      !isPublicKey(stellarAddress)
-    ) {
+    if (!selectedVault || !api || !stellarAddress || !isPublicKey(stellarAddress)) {
       return undefined;
     }
 
-    return createRedeemRequestExtrinsic(
-      amountNative.toString(),
-      stellarAddress,
-      selectedVault.id,
-    );
-  }, [
-    amountNative,
-    api,
-    createRedeemRequestExtrinsic,
-    selectedVault,
-    stellarAddress,
-  ]);
+    return createRedeemRequestExtrinsic(amountNative.toString(), stellarAddress, selectedVault.id);
+  }, [amountNative, api, createRedeemRequestExtrinsic, selectedVault, stellarAddress]);
 
   const submitRequestRedeemExtrinsic = useCallback(() => {
     if (!requestRedeemExtrinsic || !api || !selectedVault) {
@@ -304,46 +251,36 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSubmissionPending(true);
 
     requestRedeemExtrinsic
-      .signAndSend(
-        walletAccount.address,
-        { signer: walletAccount.signer as any },
-        (result) => {
-          const { status, events } = result;
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        const { status, events } = result;
 
-          const errors = getErrors(events, api);
-          if (status.isInBlock) {
-            if (errors.length > 0) {
-              const errorMessage = `Transaction failed with errors: ${errors.join(
-                '\n',
-              )}`;
-              console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
-            }
-          } else if (status.isFinalized) {
-            const requestRedeemEvents = getEventBySectionAndMethod(
-              events,
-              'redeem',
-              'RequestRedeem',
-            );
-
-            // We only expect one event but loop over all of them just in case
-            for (const requestRedeemEvent of requestRedeemEvents) {
-              // We do not have a proper type for this event, so we have to cast it to any
-              const redeemId = (requestRedeemEvent.data as any).redeemId;
-
-              getRedeemRequest(redeemId).then((redeemRequest) => {
-                setSubmittedRedeemRequest(redeemRequest);
-              });
-            }
-
-            setSubmissionPending(false);
-
-            if (errors.length === 0) {
-              setConfirmationDialogVisible(true);
-            }
+        const errors = getErrors(events, api);
+        if (status.isInBlock) {
+          if (errors.length > 0) {
+            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
+            console.error(errorMessage);
+            toast(errorMessage, { type: 'error' });
           }
-        },
-      )
+        } else if (status.isFinalized) {
+          const requestRedeemEvents = getEventBySectionAndMethod(events, 'redeem', 'RequestRedeem');
+
+          // We only expect one event but loop over all of them just in case
+          for (const requestRedeemEvent of requestRedeemEvents) {
+            // We do not have a proper type for this event, so we have to cast it to any
+            const redeemId = (requestRedeemEvent.data as any).redeemId;
+
+            getRedeemRequest(redeemId).then((redeemRequest) => {
+              setSubmittedRedeemRequest(redeemRequest);
+            });
+          }
+
+          setSubmissionPending(false);
+
+          if (errors.length === 0) {
+            setConfirmationDialogVisible(true);
+          }
+        }
+      })
       .catch((error) => {
         console.error('Transaction submission failed', error);
         toast('Transaction submission failed:' + error.toString(), {
@@ -351,13 +288,7 @@ function Redeem(props: RedeemProps): JSX.Element {
         });
         setSubmissionPending(false);
       });
-  }, [
-    api,
-    getRedeemRequest,
-    requestRedeemExtrinsic,
-    selectedVault,
-    walletAccount,
-  ]);
+  }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
@@ -367,10 +298,7 @@ function Redeem(props: RedeemProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
-        <form
-          className="px-5 flex flex-col"
-          onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
-        >
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <div className="flex items-center">
             <Controller
               control={control}
@@ -410,11 +338,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             <span className="ml-2">Manually select vault</span>
           </div>
           {manualVaultSelection && (
-            <VaultSelector
-              vaults={vaultsForCurrency}
-              onChange={setSelectedVault}
-              selectedVault={selectedVault}
-            />
+            <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
           )}
           <Controller
             control={control}
@@ -445,12 +369,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             nativeCurrency={nativeCurrency}
           />
           {walletAccount ? (
-            <Button
-              className="w-full"
-              color="primary"
-              loading={submissionPending}
-              type="submit"
-            >
+            <Button className="w-full" color="primary" loading={submissionPending} type="submit">
               Bridge
             </Button>
           ) : (

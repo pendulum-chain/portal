@@ -3,13 +3,7 @@ interface Props {
 }
 
 const AmplitudeLogo = ({ className }: Props) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    width="607"
-    height="597"
-    viewBox="0 0 607 597"
-  >
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="607" height="597" viewBox="0 0 607 597">
     <g id="Amplitude-Icon-Black-wbg" transform="translate(-3304 -7602)">
       <rect
         id="Rectangle_72"
@@ -19,11 +13,7 @@ const AmplitudeLogo = ({ className }: Props) => (
         transform="translate(3304 7602)"
         fill="none"
       />
-      <g
-        id="Group_65"
-        data-name="Group 65"
-        transform="translate(3338.643 7631.617)"
-      >
+      <g id="Group_65" data-name="Group 65" transform="translate(3338.643 7631.617)">
         <path
           id="Union_1"
           data-name="Union 1"

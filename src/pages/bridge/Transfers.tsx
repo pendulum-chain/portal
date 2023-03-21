@@ -37,45 +37,35 @@ export function Transfers(): JSX.Element {
                 <Table.Row>
                   <span>30 Oct 2022 18:18:17</span>
                   <span>10 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
+                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">6jes12...x76Xem</span>
                   <span>Redeem</span>
                   <span>Pending</span>
                 </Table.Row>
                 <Table.Row>
                   <span>30 Oct 2022 10:18:17</span>
                   <span>100 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
+                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">6jes12...x76Xem</span>
                   <span>Issue</span>
                   <span>Completed</span>
                 </Table.Row>
                 <Table.Row>
                   <span>25 Oct 2022 05:10:27</span>
                   <span>10 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
+                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">6jes12...x76Xem</span>
                   <span>Issue</span>
                   <span>Completed</span>
                 </Table.Row>
                 <Table.Row>
                   <span>30 Oct 2022 10:18:17</span>
                   <span>100 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
+                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">6jes12...x76Xem</span>
                   <span>Issue</span>
                   <span>Completed</span>
                 </Table.Row>
                 <Table.Row>
                   <span>25 Oct 2022 05:10:27</span>
                   <span>10 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
+                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">6jes12...x76Xem</span>
                   <span>Issue</span>
                   <span>Completed</span>
                 </Table.Row>

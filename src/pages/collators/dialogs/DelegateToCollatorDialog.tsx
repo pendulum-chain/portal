@@ -1,16 +1,13 @@
-import {
-  ParachainStakingCandidate,
-  ParachainStakingInflationInflationInfo,
-} from "../../../hooks/staking/staking";
-import { useMemo, useState } from "preact/hooks";
-import AmplitudeLogo from "../../../assets/AmplitudeLogo";
-import { PublicKey } from "../../../components/PublicKey";
-import { nativeToDecimal } from "../../../helpers/parseNumbers";
-import { Button, Modal } from "react-daisyui";
-import LabelledInputField from "../../../components/LabelledInputField";
-import { h } from "preact";
-import { CloseButton } from "../../../components/CloseButton";
-import { DelegationMode } from "./ExecuteDelegationDialogs";
+import { ParachainStakingCandidate, ParachainStakingInflationInflationInfo } from '../../../hooks/staking/staking';
+import { useMemo, useState } from 'preact/hooks';
+import AmplitudeLogo from '../../../assets/AmplitudeLogo';
+import { PublicKey } from '../../../components/PublicKey';
+import { nativeToDecimal } from '../../../helpers/parseNumbers';
+import { Button, Modal } from 'react-daisyui';
+import LabelledInputField from '../../../components/LabelledInputField';
+import { h } from 'preact';
+import { CloseButton } from '../../../components/CloseButton';
+import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;
@@ -26,7 +23,7 @@ interface DelegateToCollatorDialogProps {
 
 function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   const {
-    availableBalance = "0",
+    availableBalance = '0',
     collator,
     inflationInfo,
     minDelegatorStake,
@@ -37,7 +34,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     mode = 'joining',
   } = props;
 
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>('');
 
   const CollatorInfo = useMemo(
     () =>
@@ -48,13 +45,8 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
             <PublicKey variant="shorter" publicKey={collator.id} />
           </div>
           <div>
-            <div className="text-lg">
-              APR {inflationInfo?.delegator.rewardRate.annual || "0.00%"}
-            </div>
-            <div
-              className="text-sm text-neutral-content"
-              hidden={mode === 'delegatingMore'}
-            >
+            <div className="text-lg">APR {inflationInfo?.delegator.rewardRate.annual || '0.00%'}</div>
+            <div className="text-sm text-neutral-content" hidden={mode === 'delegatingMore'}>
               Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
             </div>
           </div>
@@ -62,19 +54,21 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
       ) : (
         <div />
       ),
-    [collator, inflationInfo, minDelegatorStake, tokenSymbol, isDelegatingMore]
+    [collator, inflationInfo, minDelegatorStake, tokenSymbol, isDelegatingMore],
   );
 
-  const titleAction = useMemo(() => mode === 'undelegating' ? "Unbond" : "Delegate", [mode]);
+  const titleAction = useMemo(() => (mode === 'undelegating' ? 'Unbond' : 'Delegate'), [mode]);
   const available = nativeToDecimal(availableBalance).toFixed(4);
 
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">{titleAction}</Modal.Header>
-      <CloseButton onClick={() => {
-        setAmount("");
-        if (onClose) onClose();
-      }} />
+      <CloseButton
+        onClick={() => {
+          setAmount('');
+          if (onClose) onClose();
+        }}
+      />
       <Modal.Body>
         {CollatorInfo}
         <div className="mt-4" />
@@ -90,15 +84,10 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         />
       </Modal.Body>
       <Modal.Actions className="justify-center">
-        <Button
-          className="px-6"
-          color="primary"
-          onClick={() => onSubmit && onSubmit(amount)}
-        >
+        <Button className="px-6" color="primary" onClick={() => onSubmit && onSubmit(amount)}>
           {titleAction}
         </Button>
       </Modal.Actions>
-
     </Modal>
   );
 }

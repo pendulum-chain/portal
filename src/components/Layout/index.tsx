@@ -4,11 +4,7 @@ import { useTheme } from 'react-daisyui';
 import { Outlet, useParams } from 'react-router-dom';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
-import {
-  TenantName,
-  TenantRPC,
-  useGlobalState,
-} from '../../GlobalStateProvider';
+import { TenantName, TenantRPC, useGlobalState } from '../../GlobalStateProvider';
 import OpenWallet from '../OpenWallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
@@ -23,8 +19,7 @@ export default function Layout(): React.JSX.Element {
   const { state, setState } = useGlobalState();
 
   const network: TenantName = useMemo(() => {
-    return params.network &&
-      Object.values<string>(TenantName).includes(params.network)
+    return params.network && Object.values<string>(TenantName).includes(params.network)
       ? (params.network as TenantName)
       : TenantName.Pendulum;
   }, [params.network]);
@@ -67,14 +62,9 @@ export default function Layout(): React.JSX.Element {
 
   const FooterLink: FC = memo(() => {
     return isPendulum ? (
-      <span onClick={() => (window.location.href = '/amplitude')}>
-        Amplitude
-      </span>
+      <span onClick={() => (window.location.href = '/amplitude')}>Amplitude</span>
     ) : (
-      <span
-        onClick={() => (window.location.href = '/pendulum')}
-        className="hidden"
-      >
+      <span onClick={() => (window.location.href = '/pendulum')} className="hidden">
         Pendulum
       </span>
     );
@@ -108,11 +98,7 @@ export default function Layout(): React.JSX.Element {
             className="pendulum-logo"
             src={sideBarLogo}
             alt=""
-            style={
-              isPendulum
-                ? {}
-                : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
-            }
+            style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
           />
           <Nav />
           <div className="sidebar-footer">
@@ -151,10 +137,7 @@ export default function Layout(): React.JSX.Element {
                   />
                 </svg>
               </button>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
+              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
                   <FooterLink />
                 </li>
