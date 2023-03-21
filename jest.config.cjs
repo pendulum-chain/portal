@@ -18,9 +18,6 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx|mjs|cjs)$': '<rootDir>/config/babel.jest.cjs',
   },
   testPathIgnorePatterns: ['/node_modules/', '/public/'],
-  transformIgnorePatterns: [
-    'node_modules/(?!@testing-library|preact)',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!@testing-library|preact)', '^.+\\.module\\.(css|sass|scss)$'],
   setupFilesAfterEnv: ['<rootDir>/config/setupTests.ts'],
 };

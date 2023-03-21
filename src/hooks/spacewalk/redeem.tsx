@@ -1,7 +1,4 @@
-import type {
-  SpacewalkPrimitivesRedeemRedeemRequest,
-  SpacewalkPrimitivesVaultId,
-} from '@polkadot/types/lookup';
+import type { SpacewalkPrimitivesRedeemRedeemRequest, SpacewalkPrimitivesVaultId } from '@polkadot/types/lookup';
 import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { H256 } from '@polkadot/types/interfaces';
@@ -45,11 +42,7 @@ export function useRedeemPallet() {
           return undefined;
         }
       },
-      createRedeemRequestExtrinsic(
-        amount: string,
-        stellarAddress: string,
-        vaultId: SpacewalkPrimitivesVaultId,
-      ) {
+      createRedeemRequestExtrinsic(amount: string, stellarAddress: string, vaultId: SpacewalkPrimitivesVaultId) {
         if (!api) {
           return undefined;
         }

@@ -60,9 +60,7 @@ const GlobalStateProvider = ({
   };
 
   return (
-    <GlobalStateContext.Provider value={{ state, setState, getThemeName }}>
-      {children}
-    </GlobalStateContext.Provider>
+    <GlobalStateContext.Provider value={{ state, setState, getThemeName }}>{children}</GlobalStateContext.Provider>
   );
 };
 

@@ -17,29 +17,17 @@ const SocialAndTermLinks: FC<Props> = () => {
       <div className="social">
         <ul>
           <li>
-            <a
-              href="https://discord.gg/wJ2fQh776B"
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-            >
+            <a href="https://discord.gg/wJ2fQh776B" target="_blank" rel="nofollow noopener noreferrer">
               <DiscordLogo />
             </a>
           </li>
           <li>
-            <a
-              href="https://twitter.com/pendulum_chain"
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-            >
+            <a href="https://twitter.com/pendulum_chain" target="_blank" rel="nofollow noopener noreferrer">
               <TwitterLogo />
             </a>
           </li>
           <li>
-            <a
-              href="https://t.me/pendulum_chain"
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-            >
+            <a href="https://t.me/pendulum_chain" target="_blank" rel="nofollow noopener noreferrer">
               <TelegramLogo />
             </a>
           </li>
@@ -53,20 +41,12 @@ const SocialAndTermLinks: FC<Props> = () => {
             </a>
           </li>
           <li>
-            <a
-              href="https://pendulum-chain.medium.com/"
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-            >
+            <a href="https://pendulum-chain.medium.com/" target="_blank" rel="nofollow noopener noreferrer">
               <MediumLogo />
             </a>
           </li>
           <li>
-            <a
-              href="https://www.reddit.com/r/Pendulum_Chain/"
-              target="_blank"
-              rel="nofollow noopener noreferrer"
-            >
+            <a href="https://www.reddit.com/r/Pendulum_Chain/" target="_blank" rel="nofollow noopener noreferrer">
               <RedditLogo />
             </a>
           </li>
@@ -93,11 +73,7 @@ const SocialAndTermLinks: FC<Props> = () => {
             </a>
           </li>
           <li>
-            <a
-              href="https://pendulumchain.org/legal/privacy-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://pendulumchain.org/legal/privacy-policy" target="_blank" rel="noopener noreferrer">
               Privacy
             </a>
           </li>

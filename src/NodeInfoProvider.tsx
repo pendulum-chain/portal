@@ -30,12 +30,8 @@ const NodeInfoProvider = ({
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
-  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(
-    undefined
-  );
-  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
-    Promise<unknown>
-  >(Promise.resolve());
+  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(undefined);
+  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
     let disconnect: () => void = () => undefined;
@@ -54,7 +50,7 @@ const NodeInfoProvider = ({
         }),
       );
 
-      console.log("connected to", tenantRPC, "with chain", api);
+      console.log('connected to', tenantRPC, 'with chain', api);
 
       const bestNumberFinalize = await api.derive.chain.bestNumber();
       const chainProperties = await api.registry.getChainProperties();
@@ -110,18 +106,9 @@ const NodeInfoProvider = ({
     });
 
     return disconnect;
-  }, [
-    currentTenantRPC,
-    tenantRPC,
-    pendingInitiationPromise,
-    setPendingInitiationPromise,
-  ]);
+  }, [currentTenantRPC, tenantRPC, pendingInitiationPromise, setPendingInitiationPromise]);
 
-  return (
-    <NodeInfoContext.Provider value={{ state, setState }}>
-      {children}
-    </NodeInfoContext.Provider>
-  );
+  return <NodeInfoContext.Provider value={{ state, setState }}>{children}</NodeInfoContext.Provider>;
 };
 
 const useNodeInfoState = () => useContext(NodeInfoContext);

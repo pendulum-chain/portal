@@ -13,10 +13,7 @@ export function App() {
   return (
     <div className="main-wrapper mx-auto">
       <Routes>
-        <Route
-          path="/"
-          element={<Navigate to={config.defaultPage} replace />}
-        />
+        <Route path="/" element={<Navigate to={config.defaultPage} replace />} />
         <Route path="/:network/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="amm" element={<Amm />} />
