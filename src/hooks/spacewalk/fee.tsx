@@ -10,11 +10,8 @@ export function useFeePallet() {
   const [redeemFee, setRedeemFee] = useState<Big>(new Big(0));
   const [punishmentFee, setPunishmentFee] = useState<Big>(new Big(0));
   const [premiumRedeemFee, setPremiumRedeemFee] = useState<Big>(new Big(0));
-  const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(
-    new Big(0),
-  );
-  const [replaceGriefingCollateral, setReplaceGriefingCollateral] =
-    useState<Big>(new Big(0));
+  const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(new Big(0));
+  const [replaceGriefingCollateral, setReplaceGriefingCollateral] = useState<Big>(new Big(0));
 
   const [griefingCollateralCurrency, setGriefingCollateralCurrency] = useState<
     SpacewalkPrimitivesCurrencyId | undefined
@@ -34,9 +31,7 @@ export function useFeePallet() {
 
     let unsubscribe: () => void = () => undefined;
 
-    setGriefingCollateralCurrency(
-      api.consts.vaultRegistry?.getGriefingCollateralCurrencyId,
-    );
+    setGriefingCollateralCurrency(api.consts.vaultRegistry?.getGriefingCollateralCurrencyId);
 
     Promise.all([
       api.query.fee.issueFee((fee) => {

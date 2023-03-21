@@ -6,17 +6,14 @@ import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
 import { useNodeInfoState } from '../NodeInfoProvider';
 
 const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
-  const { walletAccount, setWalletAccount, removeWalletAccount } =
-    useGlobalState();
+  const { walletAccount, setWalletAccount, removeWalletAccount } = useGlobalState();
   const { ss58Format } = useNodeInfoState().state;
 
   const address = useMemo(
     () =>
       walletAccount?.address
         ? trimAddress(
-            (ss58Format
-              ? getAddressForFormat(walletAccount.address, ss58Format)
-              : walletAccount.address) || '',
+            (ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address) || '',
             4,
           )
         : undefined,
@@ -36,9 +33,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
             />
           </Dropdown.Toggle>
           <Dropdown.Menu className="w-40">
-            <Dropdown.Item onClick={removeWalletAccount}>
-              Disconnect
-            </Dropdown.Item>
+            <Dropdown.Item onClick={removeWalletAccount}>Disconnect</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       ) : (

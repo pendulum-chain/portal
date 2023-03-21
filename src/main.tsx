@@ -3,12 +3,7 @@ import { render } from 'preact';
 import { Theme } from 'react-daisyui';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './app';
-import {
-  defaultState,
-  GlobalState,
-  GlobalStateContext,
-  GlobalStateProvider,
-} from './GlobalStateProvider';
+import { defaultState, GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
 import './index.css';
 import { NodeInfoProvider } from './NodeInfoProvider';
 
@@ -20,8 +15,7 @@ render(
       <GlobalStateProvider>
         <GlobalStateContext.Consumer>
           {(globalState) => {
-            const { state = defaultState, getThemeName = () => undefined } =
-              globalState as GlobalState;
+            const { state = defaultState, getThemeName = () => undefined } = globalState as GlobalState;
             return (
               state.tenantRPC && (
                 <NodeInfoProvider tenantRPC={state.tenantRPC}>

@@ -48,14 +48,10 @@ export function useStakingPallet() {
   const { walletAccount } = useGlobalState();
 
   const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
-  const [inflationInfo, setInflationInfo] = useState<
-    ParachainStakingInflationInflationInfo | undefined
-  >(undefined);
+  const [inflationInfo, setInflationInfo] = useState<ParachainStakingInflationInflationInfo | undefined>(undefined);
   const [minDelegatorStake, setMinDelegatorStake] = useState<string>('0');
   const [estimatedRewards, setEstimatedRewards] = useState<string>('0');
-  const [fees, setFees] = useState<ParachainStakingFees>(
-    defaultTransactionFees,
-  );
+  const [fees, setFees] = useState<ParachainStakingFees>(defaultTransactionFees);
 
   useEffect(() => {
     if (!api) {
@@ -72,9 +68,7 @@ export function useStakingPallet() {
 
       const newCandidates = entries.map(([_, value]) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const candidate = (value as Option<any>)
-          .unwrap()
-          .toHuman() as ParachainStakingCandidate;
+        const candidate = (value as Option<any>).unwrap().toHuman() as ParachainStakingCandidate;
 
         return candidate;
       });
@@ -89,9 +83,7 @@ export function useStakingPallet() {
 
     const fetchEstimatedReward = async () => {
       if (!walletAccount) return '0';
-      return (
-        await api.query.parachainStaking.rewards(walletAccount?.address)
-      ).toString();
+      return (await api.query.parachainStaking.rewards(walletAccount?.address)).toString();
     };
 
     const fetchFees = async () => {
@@ -99,15 +91,9 @@ export function useStakingPallet() {
       const sender = dummyAddress;
       const pallet = api.tx.parachainStaking;
 
-      const jdi = await pallet
-        .joinDelegators(dummyAddress, '0')
-        .paymentInfo(sender);
-      const dsmi = await pallet
-        .delegatorStakeMore(dummyAddress, '0')
-        .paymentInfo(sender);
-      const dsli = await pallet
-        .delegatorStakeLess(dummyAddress, '0')
-        .paymentInfo(sender);
+      const jdi = await pallet.joinDelegators(dummyAddress, '0').paymentInfo(sender);
+      const dsmi = await pallet.delegatorStakeMore(dummyAddress, '0').paymentInfo(sender);
+      const dsli = await pallet.delegatorStakeLess(dummyAddress, '0').paymentInfo(sender);
 
       fees.joinDelegators = new Big(jdi.partialFee.toString());
       fees.delegatorStakeMore = new Big(dsmi.partialFee.toString());
@@ -120,17 +106,12 @@ export function useStakingPallet() {
 
     fetchEstimatedReward().then((reward) => setEstimatedRewards(reward));
 
-    fetchInflationInfo().then((inflationInfo) =>
-      setInflationInfo(inflationInfo),
-    );
+    fetchInflationInfo().then((inflationInfo) => setInflationInfo(inflationInfo));
 
     fetchFees().then((newFees) => setFees(newFees));
 
     if (api.consts.parachainStaking?.minDelegatorStake) {
-      setMinDelegatorStake(
-        (api.consts.parachainStaking.minDelegatorStake.toHuman() as string) ||
-          '0',
-      );
+      setMinDelegatorStake((api.consts.parachainStaking.minDelegatorStake.toHuman() as string) || '0');
     }
   }, [api, fees, walletAccount]);
 
@@ -159,54 +140,29 @@ export function useStakingPallet() {
         }
         return api.tx.parachainStaking?.claimRewards();
       },
-      createDelegateMoreExtrinsic(
-        collatorAddress: string,
-        moreAmountNative: string,
-      ) {
+      createDelegateMoreExtrinsic(collatorAddress: string, moreAmountNative: string) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.delegatorStakeMore(
-          collatorAddress,
-          moreAmountNative,
-        );
+        return api.tx.parachainStaking?.delegatorStakeMore(collatorAddress, moreAmountNative);
       },
-      createDelegateLessExtrinsic(
-        collatorAddress: string,
-        lessAmountNative: string,
-      ) {
+      createDelegateLessExtrinsic(collatorAddress: string, lessAmountNative: string) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.delegatorStakeLess(
-          collatorAddress,
-          lessAmountNative,
-        );
+        return api.tx.parachainStaking?.delegatorStakeLess(collatorAddress, lessAmountNative);
       },
-      createJoinDelegatorsExtrinsic(
-        collatorAddress: string,
-        amountNative: string,
-      ) {
+      createJoinDelegatorsExtrinsic(collatorAddress: string, amountNative: string) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.joinDelegators(
-          collatorAddress,
-          amountNative,
-        );
+        return api.tx.parachainStaking?.joinDelegators(collatorAddress, amountNative);
       },
     };
-  }, [
-    api,
-    candidates,
-    inflationInfo,
-    fees,
-    minDelegatorStake,
-    estimatedRewards,
-  ]);
+  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
 
   return memo;
 }

@@ -4,12 +4,9 @@ import { toast } from 'react-toastify';
 import SuccessDialogIcon from '../../../assets/success-dialog';
 import { CloseButton } from '../../../components/CloseButton';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
+import { format, nativeToDecimal } from '../../../helpers/parseNumbers';
 import { getErrors } from '../../../helpers/substrate';
-import {
-  ParachainStakingInflationInflationInfo,
-  useStakingPallet,
-} from '../../../hooks/staking/staking';
+import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 
 interface Props {
@@ -49,45 +46,30 @@ function ClaimRewardsDialog(props: Props) {
     const extrinsic = createClaimRewardExtrinsic(userRewardsBalance);
 
     extrinsic
-      ?.signAndSend(
-        walletAccount.address,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        { signer: walletAccount.signer as any },
-        (result) => {
-          const { status, events } = result;
+      ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        const { status, events } = result;
 
-          const errors = getErrors(events, api);
-          if (status.isInBlock) {
-            if (errors.length > 0) {
-              const errorMessage = `Transaction failed with errors: ${errors.join(
-                '\n',
-              )}`;
-              console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
-            }
-          } else if (status.isFinalized) {
-            setLoading(true);
-
-            if (errors.length === 0) {
-              setStep(ClaimStep.Success);
-            }
+        const errors = getErrors(events, api);
+        if (status.isInBlock) {
+          if (errors.length > 0) {
+            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
+            console.error(errorMessage);
+            toast(errorMessage, { type: 'error' });
           }
-        },
-      )
+        } else if (status.isFinalized) {
+          setLoading(true);
+
+          if (errors.length === 0) {
+            setStep(ClaimStep.Success);
+          }
+        }
+      })
       .catch((error) => {
         console.error('Transaction submission failed', error);
         toast('Transaction submission failed', { type: 'error' });
         setLoading(false);
       });
-  }, [
-    api,
-    amount,
-    createClaimRewardExtrinsic,
-    walletAccount,
-    setLoading,
-    setStep,
-    userRewardsBalance,
-  ]);
+  }, [walletAccount, api, amount, createClaimRewardExtrinsic, userRewardsBalance]);
 
   const content = useMemo(() => {
     switch (step) {
@@ -95,9 +77,7 @@ function ClaimRewardsDialog(props: Props) {
         return (
           <div className="rounded-lg bg-base-200 flex flex-col p-8 items-center w-fit center m-auto">
             <p className="flex">Amount</p>
-            <h1 className="flex text-4xl">
-              {nativeToFormat(amount, tokenSymbol, true)}
-            </h1>
+            <h1 className="flex text-4xl">{format(amount, tokenSymbol, true)}</h1>
           </div>
         );
       case ClaimStep.Success:
@@ -109,7 +89,7 @@ function ClaimRewardsDialog(props: Props) {
           </div>
         );
     }
-  }, [step, amount, tokenSymbol]);
+  }, [amount, step, tokenSymbol]);
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {
@@ -145,7 +125,7 @@ function ClaimRewardsDialog(props: Props) {
           color="primary"
           loading={loading}
           onClick={getButtonAction(step)}
-          disabled={!walletAccount || amount.lt(0)}
+          disabled={!walletAccount || amount <= 0}
         >
           {getButtonText(step)}
         </Button>

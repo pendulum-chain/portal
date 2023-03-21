@@ -9,5 +9,4 @@ export const ofSelect = instanceOf<HTMLSelectElement>(HTMLSelectElement);
 export const ofAnchor = instanceOf<HTMLAnchorElement>(HTMLAnchorElement);
 
 export const emptyFn = () => null;
-export const repeat = <T>(value: T, times = 3): T[] =>
-  new Array(times).fill(value);
+export const repeat = <T>(value: T, times = 3): T[] => new Array(times).fill(value);

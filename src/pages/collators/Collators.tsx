@@ -11,10 +11,7 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 
 import Table from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import {
-  ParachainStakingCandidate,
-  useStakingPallet,
-} from '../../hooks/staking/staking';
+import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import {
   actionsColumn,
   apyColumn,
@@ -35,28 +32,21 @@ export function Collators() {
   const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 
   // Holds the candidate for which the delegation modal is to be shown
-  const [selectedCandidate, setSelectedCandidate] = useState<
-    ParachainStakingCandidate | undefined
-  >(undefined);
+  const [selectedCandidate, setSelectedCandidate] = useState<ParachainStakingCandidate | undefined>(undefined);
 
-  const [userAvailableBalance, setUserAvailableBalance] =
-    useState<string>('0.00');
+  const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [unbonding, setUnbonding] = useState<boolean>(false);
 
   const userAccountAddress = useMemo(() => {
-    return walletAccount && ss58Format
-      ? getAddressForFormat(walletAccount?.address, ss58Format)
-      : '';
+    return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
   }, [walletAccount, ss58Format]);
 
   useMemo(() => {
     setUserStaking(undefined);
     return candidates?.forEach((candidate) => {
-      const isDelegator = candidate.delegators.find(
-        (delegator) => delegator.owner === userAccountAddress,
-      );
+      const isDelegator = candidate.delegators.find((delegator) => delegator.owner === userAccountAddress);
       if (isDelegator) {
         setUserStaking({
           candidateId: candidate.id,
@@ -122,9 +112,7 @@ export function Collators() {
                 <StakedIcon />
               </div>
               <div className="flex-auto">
-                <h3>
-                  {nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}
-                </h3>
+                <h3>{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
                 <p>My Staking</p>
               </div>
               <div className="flex-auto">
@@ -168,11 +156,7 @@ export function Collators() {
         userStake={userStaking?.amount}
         selectedCandidate={selectedCandidate}
         mode={
-          unbonding
-            ? 'undelegating'
-            : userStaking?.candidateId === selectedCandidate?.id
-            ? 'delegatingMore'
-            : 'joining'
+          unbonding ? 'undelegating' : userStaking?.candidateId === selectedCandidate?.id ? 'delegatingMore' : 'joining'
         }
         onClose={() => {
           setSelectedCandidate(undefined);

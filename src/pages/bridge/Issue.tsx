@@ -12,15 +12,8 @@ import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { useGlobalState } from '../../GlobalStateProvider';
-import {
-  decimalToStellarNative,
-  nativeStellarToDecimal,
-  nativeToDecimal,
-} from '../../helpers/parseNumbers';
-import {
-  calculateDeadline,
-  convertCurrencyToStellarAsset,
-} from '../../helpers/spacewalk';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
@@ -40,19 +33,11 @@ interface FeeBoxProps {
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const {
-    bridgedAsset,
-    extrinsic,
-    network,
-    wrappedCurrencyPrefix,
-    nativeCurrency,
-  } = props;
+  const { bridgedAsset, extrinsic, network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
   const amount = props.amountNative;
 
-  const wrappedCurrencyName = bridgedAsset
-    ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode()
-    : '';
+  const wrappedCurrencyName = bridgedAsset ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode() : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -126,17 +111,12 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [remainingDurationString, setRemainingDurationString] =
-    useState<string>('');
+  const [remainingDurationString, setRemainingDurationString] = useState<string>('');
 
   const totalAmount = useMemo(
     () =>
       issueRequest
-        ? nativeStellarToDecimal(
-            issueRequest.request.amount
-              .add(issueRequest.request.fee)
-              .toString(),
-          ).toString()
+        ? nativeStellarToDecimal(issueRequest.request.amount.add(issueRequest.request.fee).toString()).toString()
         : '',
     [issueRequest],
   );
@@ -148,9 +128,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
   const destination = useMemo(() => {
     const rawDestinationAddress = issueRequest?.request.stellarAddress;
-    return rawDestinationAddress
-      ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-      : '';
+    return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
   }, [issueRequest?.request.stellarAddress]);
 
   const expectedStellarMemo = useMemo(() => {
@@ -181,9 +159,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const newDeadlineString = deadline
-        .diff(DateTime.now())
-        .toFormat('hh:mm:ss');
+      const newDeadlineString = deadline.diff(DateTime.now()).toFormat('hh:mm:ss');
       setRemainingDurationString(newDeadlineString);
     });
 
@@ -193,13 +169,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Deposit</Modal.Header>
-      <Button
-        color="ghost"
-        size="md"
-        shape="circle"
-        className="absolute right-4 top-4"
-        onClick={onClose}
-      >
+      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
         ✕
       </Button>
       <Modal.Body>
@@ -208,16 +178,10 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             Send {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by{' '}
-            {asset && (
-              <PublicKey variant="short" publicKey={asset?.getIssuer()} />
-            )}
-            )
+            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
           </div>
           <div className="text mt-4">With the hash memo</div>
-          {issueRequest && (
-            <CopyableAddress variant="short" publicKey={expectedStellarMemo} />
-          )}
+          {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
           <div className="mt-4">Within {remainingDurationString}</div>
@@ -225,13 +189,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
         <Divider />
         <div>
           <div className="text-sm">
-            Warning: Make sure that the USDC you are sending are issued by the
-            correct issuer.
+            Warning: Make sure that the USDC you are sending are issued by the correct issuer.
           </div>
         </div>
         <div className="text-sm mt-4">
-          Note: If you have already made the payment, please wait for a few
-          minutes for it to be confirmed.
+          Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
         </div>
       </Modal.Body>
 
@@ -257,12 +219,9 @@ function Issue(props: IssueProps): JSX.Element {
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-  const [submittedIssueRequest, setSubmittedIssueRequest] = useState<
-    RichIssueRequest | undefined
-  >(undefined);
+  const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
@@ -293,9 +252,7 @@ function Issue(props: IssueProps): JSX.Element {
         return false;
       }
 
-      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(
-        vault.id.currencies.wrapped,
-      );
+      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
       return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
     });
   }, [selectedAsset, vaults]);
@@ -317,10 +274,7 @@ function Issue(props: IssueProps): JSX.Element {
       return undefined;
     }
 
-    return createIssueRequestExtrinsic(
-      amountNative.toString(),
-      selectedVault.id,
-    );
+    return createIssueRequestExtrinsic(amountNative.toString(), selectedVault.id);
   }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
@@ -336,46 +290,36 @@ function Issue(props: IssueProps): JSX.Element {
     setSubmissionPending(true);
 
     requestIssueExtrinsic
-      .signAndSend(
-        walletAccount.address,
-        { signer: walletAccount.signer as any },
-        (result) => {
-          const { status, events } = result;
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        const { status, events } = result;
 
-          const errors = getErrors(events, api);
-          if (status.isInBlock) {
-            if (errors.length > 0) {
-              const errorMessage = `Transaction failed with errors: ${errors.join(
-                '\n',
-              )}`;
-              console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
-            }
-          } else if (status.isFinalized) {
-            const requestIssueEvents = getEventBySectionAndMethod(
-              events,
-              'issue',
-              'RequestIssue',
-            );
-
-            // We only expect one event but loop over all of them just in case
-            for (const requestIssueEvent of requestIssueEvents) {
-              // We do not have a proper type for this event, so we have to cast it to any
-              const issueId = (requestIssueEvent.data as any).issueId;
-
-              getIssueRequest(issueId).then((issueRequest) => {
-                setSubmittedIssueRequest(issueRequest);
-              });
-            }
-
-            setSubmissionPending(false);
-
-            if (errors.length === 0) {
-              setConfirmationDialogVisible(true);
-            }
+        const errors = getErrors(events, api);
+        if (status.isInBlock) {
+          if (errors.length > 0) {
+            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
+            console.error(errorMessage);
+            toast(errorMessage, { type: 'error' });
           }
-        },
-      )
+        } else if (status.isFinalized) {
+          const requestIssueEvents = getEventBySectionAndMethod(events, 'issue', 'RequestIssue');
+
+          // We only expect one event but loop over all of them just in case
+          for (const requestIssueEvent of requestIssueEvents) {
+            // We do not have a proper type for this event, so we have to cast it to any
+            const issueId = (requestIssueEvent.data as any).issueId;
+
+            getIssueRequest(issueId).then((issueRequest) => {
+              setSubmittedIssueRequest(issueRequest);
+            });
+          }
+
+          setSubmissionPending(false);
+
+          if (errors.length === 0) {
+            setConfirmationDialogVisible(true);
+          }
+        }
+      })
       .catch((error) => {
         console.error('Transaction submission failed', error);
         toast('Transaction submission failed: ' + error.toString(), {
@@ -383,13 +327,7 @@ function Issue(props: IssueProps): JSX.Element {
         });
         setSubmissionPending(false);
       });
-  }, [
-    api,
-    getIssueRequest,
-    requestIssueExtrinsic,
-    selectedVault,
-    walletAccount,
-  ]);
+  }, [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
@@ -430,11 +368,7 @@ function Issue(props: IssueProps): JSX.Element {
             <span className="ml-2">Manually select vault</span>
           </div>
           {manualVaultSelection && (
-            <VaultSelector
-              vaults={vaultsForCurrency}
-              onChange={setSelectedVault}
-              selectedVault={selectedVault}
-            />
+            <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
           )}
           <FeeBox
             amountNative={amountNative}

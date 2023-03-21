@@ -1,12 +1,6 @@
 import { WalletAccount } from '@talismn/connect-wallets';
 import { createContext } from 'preact';
-import {
-  StateUpdater,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'preact/compat';
+import { StateUpdater, useCallback, useContext, useMemo, useState } from 'preact/compat';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
@@ -87,11 +81,7 @@ const GlobalStateProvider = ({
     [getThemeName, removeWalletAccount, setWalletAccount, state, walletAccount],
   );
 
-  return (
-    <GlobalStateContext.Provider value={providerValue}>
-      {children}
-    </GlobalStateContext.Provider>
-  );
+  return <GlobalStateContext.Provider value={providerValue}>{children}</GlobalStateContext.Provider>;
 };
 
 const useGlobalState = () => {

@@ -25,9 +25,7 @@ export const doSubmitExtrinsic = (
         const errors = getErrors(events, api);
         if (status.isInBlock) {
           if (errors.length > 0) {
-            const errorMessage = `Transaction failed with errors: ${errors.join(
-              '\n',
-            )}`;
+            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
             console.error(errorMessage);
             toast(errorMessage, { type: 'error' });
           }

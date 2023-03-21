@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'preact/compat';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { debounce } from '../helpers/function';
 import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';
@@ -57,16 +51,11 @@ export const useLocalStorage = <T>({
   type TResponse = UseLocalStorageResponse<T>;
   const firstRef = useRef(false);
   const storageSet = useMemo<Storage['set']>(
-    () =>
-      debounceTime
-        ? debounce(storageService.set, debounceTime)
-        : storageService.set,
+    () => (debounceTime ? debounce(storageService.set, debounceTime) : storageService.set),
     [debounceTime],
   );
 
-  const [state, setState] = useState<T>(() =>
-    getState<T>(key, defaultValue as T, parse),
-  );
+  const [state, setState] = useState<T>(() => getState<T>(key, defaultValue as T, parse));
   const set = useCallback<TResponse['set']>(
     (value) => {
       storageSet(key, value);
@@ -81,10 +70,7 @@ export const useLocalStorage = <T>({
   const merge = useCallback<TResponse['merge']>(
     (value) => {
       setState((prev) => {
-        const newVal =
-          typeof value === 'function'
-            ? value(prev)
-            : ({ ...prev, ...value } as T);
+        const newVal = typeof value === 'function' ? value(prev) : ({ ...prev, ...value } as T);
         storageSet(key, newVal);
         return newVal;
       });

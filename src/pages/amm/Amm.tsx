@@ -11,9 +11,7 @@ export function Amm(): JSX.Element {
       <div className="row-pick-coin">
         <Button
           animation={false}
-          startIcon={
-            <img src={usdc} alt="usdc" style={{ width: 20, height: 20 }} />
-          }
+          startIcon={<img src={usdc} alt="usdc" style={{ width: 20, height: 20 }} />}
           endIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"

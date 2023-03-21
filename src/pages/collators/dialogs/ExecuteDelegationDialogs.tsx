@@ -1,10 +1,7 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { decimalToNative } from '../../../helpers/parseNumbers';
-import {
-  ParachainStakingCandidate,
-  useStakingPallet,
-} from '../../../hooks/staking/staking';
+import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
 import DelegateToCollatorDialog from './DelegateToCollatorDialog';
@@ -22,8 +19,7 @@ interface ExecuteDelegationDialogsProps {
 }
 
 function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
-  const { userAvailableBalance, userStake, selectedCandidate, mode, onClose } =
-    props;
+  const { userAvailableBalance, userStake, selectedCandidate, mode, onClose } = props;
 
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -38,12 +34,9 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   } = useStakingPallet();
 
   // Holds the amount that is to be delegated to the candidate
-  const [delegationAmount, setDelegationAmount] = useState<string | undefined>(
-    undefined,
-  );
+  const [delegationAmount, setDelegationAmount] = useState<string | undefined>(undefined);
   const [submissionPending, setSubmissionPending] = useState<boolean>(false);
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState<boolean>(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<boolean>(false);
 
   const totalFee = useMemo(() => {
     switch (mode) {
@@ -54,12 +47,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       case 'joining':
         return fees.joinDelegators;
     }
-  }, [
-    fees.delegatorStakeLess,
-    fees.delegatorStakeMore,
-    fees.joinDelegators,
-    mode,
-  ]);
+  }, [fees.delegatorStakeLess, fees.delegatorStakeMore, fees.joinDelegators, mode]);
 
   const submitExtrinsic = useCallback(() => {
     if (!walletAccount || !api || !delegationAmount || !selectedCandidate) {
@@ -70,30 +58,15 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
 
     const getExtrinsic = () => {
       if (mode === 'undelegating') {
-        return createDelegateLessExtrinsic(
-          selectedCandidate.id,
-          amount.toString(),
-        );
+        return createDelegateLessExtrinsic(selectedCandidate.id, amount.toString());
       } else if (mode === 'delegatingMore') {
-        return createDelegateMoreExtrinsic(
-          selectedCandidate.id,
-          amount.toString(),
-        );
+        return createDelegateMoreExtrinsic(selectedCandidate.id, amount.toString());
       } else if (mode === 'joining') {
-        return createJoinDelegatorsExtrinsic(
-          selectedCandidate.id,
-          amount.toString(),
-        );
+        return createJoinDelegatorsExtrinsic(selectedCandidate.id, amount.toString());
       }
     };
 
-    doSubmitExtrinsic(
-      api,
-      getExtrinsic(),
-      walletAccount,
-      setSubmissionPending,
-      setConfirmationDialogVisible,
-    );
+    doSubmitExtrinsic(api, getExtrinsic(), walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }, [
     api,
     createDelegateLessExtrinsic,
@@ -108,9 +81,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   return (
     <>
       <DelegateToCollatorDialog
-        availableBalance={
-          mode === 'undelegating' ? userStake : userAvailableBalance
-        }
+        availableBalance={mode === 'undelegating' ? userStake : userAvailableBalance}
         collator={selectedCandidate}
         inflationInfo={inflationInfo}
         minDelegatorStake={minDelegatorStake}
@@ -140,11 +111,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       />
       <DelegationSuccessfulDialog
         visible={confirmationDialogVisible}
-        message={
-          mode === 'undelegating'
-            ? 'Successfully unbonded.'
-            : 'Successfully delegated.'
-        }
+        message={mode === 'undelegating' ? 'Successfully unbonded.' : 'Successfully delegated.'}
         onClose={() => {
           setConfirmationDialogVisible(false);
           onClose();
