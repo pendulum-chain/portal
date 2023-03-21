@@ -3,7 +3,6 @@ import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { decimalToNative } from '../../../helpers/parseNumbers';
-import { toast } from 'react-toastify';
 import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
 import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';
@@ -49,7 +48,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       case 'joining':
         return fees.joinDelegators;
     }
-  }, [mode]);
+  }, [mode, fees]);
 
   const submitExtrinsic = useCallback(() => {
     if (!walletAccount || !api || !delegationAmount || !selectedCandidate) {
@@ -77,6 +76,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     mode,
     createJoinDelegatorsExtrinsic,
     createDelegateMoreExtrinsic,
+    createDelegateLessExtrinsic,
   ]);
 
   return (
