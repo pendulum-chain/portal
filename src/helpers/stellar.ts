@@ -1,8 +1,10 @@
 import { Asset, Keypair, StrKey } from 'stellar-sdk';
 import { Buffer } from 'buffer';
 
+export const StellarPublicKeyPattern = /^G[A-Z0-9]{55}$/;
+
 export const isPublicKey = (str: string) =>
-  Boolean(str.match(/^G[A-Z0-9]{55}$/));
+  Boolean(str.match(StellarPublicKeyPattern));
 export const isMuxedAddress = (str: string) =>
   Boolean(str.match(/^M[A-Z0-9]{68}$/));
 export const isStellarAddress = (str: string) =>
@@ -14,6 +16,11 @@ export function convertRawHexKeyToPublicKey(rawPublicKeyHex: string): Keypair {
     Buffer.from(rawPublicKeyHex.slice(2), 'hex'),
   );
   return Keypair.fromPublicKey(ed25519PublicKey);
+}
+
+export function convertPublicKeyToRaw(pubKey: string): string {
+  const raw = StrKey.decodeEd25519PublicKey(pubKey);
+  return `0x${raw.toString('hex')}`;
 }
 
 export function stringifyStellarAsset(asset: Asset): string {

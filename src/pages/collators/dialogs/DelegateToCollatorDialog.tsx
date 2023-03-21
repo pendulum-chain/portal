@@ -62,7 +62,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
       ) : (
         <div />
       ),
-    [collator, inflationInfo, minDelegatorStake, tokenSymbol]
+    [collator, inflationInfo, minDelegatorStake, tokenSymbol, isDelegatingMore]
   );
 
   const titleAction = useMemo(() => mode === 'undelegating' ? "Unbond" : "Delegate", [mode]);

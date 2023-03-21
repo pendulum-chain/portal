@@ -19,4 +19,4 @@ export function trimAddress(address: string, trimLength = 6): string {
     addressLength - trimLength,
     addressLength,
   )}`;
-};
+}

@@ -1,10 +1,15 @@
 import { Input, InputProps } from 'react-daisyui';
+import { forwardRef } from 'react';
 import './styles.css';
+
 interface Props {
   autoSelect?: boolean;
   label?: string;
   secondaryLabel?: string;
+  color?: string;
+  error?: string;
   type: string;
+  step?: string;
   value: string;
   extraBtnText?: string;
   extraBtnAction?: () => void;
@@ -13,18 +18,20 @@ interface Props {
   errorMessage?: string;
 }
 
-function LabelledInputField(props: Props & InputProps) {
-  const { label, secondaryLabel, onChange, extraBtnAction,
-    extraBtnText, errorMessage, ...rest } = props;
+const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
+  const { autoSelect, color, error, label, secondaryLabel, onChange, extraBtnAction,
+    extraBtnText, errorMessage, style, ...rest } = props;
+
+  const inputColor = error ? 'error' : color;
 
   return (
     <div
       className="flex w-full component-preview items-center justify-center gap-2 font-sans"
-      style={props.style}
+      style={style}
     >
       <div className="form-control w-full">
         <label className="label">
-          {label && <span className="label-text">{label}</span>}
+          {label && <span className="label-text">{error ? error : label}</span>}
           {secondaryLabel && (
             <span className="label-text-alt">{secondaryLabel}</span>
           )}
@@ -32,7 +39,7 @@ function LabelledInputField(props: Props & InputProps) {
         <div className="input-container">
           <Input
             className="border border-gray-500 rounded-md bg-transparent"
-            color="primary"
+            color={inputColor}
             {...rest}
             onFocus={(event: React.TargetedEvent) => {
               if (event.target instanceof HTMLInputElement) {
@@ -49,9 +56,9 @@ function LabelledInputField(props: Props & InputProps) {
             <button className="rounded-md max-button bg-base-200" onClick={extraBtnAction}>{extraBtnText}</button>
           }
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
-}
+});
 
 export default LabelledInputField;

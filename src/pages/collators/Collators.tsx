@@ -94,11 +94,10 @@ export function Collators() {
   const data = useMemo<TCollator[] | undefined>(
     () =>
       candidates?.map((candidate) => {
-        const totalStaked = nativeToDecimal(candidate.total);
         return {
           candidate: candidate,
           collator: candidate.id,
-          totalStaked: format(totalStaked, tokenSymbol),
+          totalStaked: nativeToFormat(candidate.total, tokenSymbol),
           delegators: candidate.delegators.length,
           apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
         };
