@@ -18,7 +18,7 @@ interface Props {
   errorMessage?: string;
 }
 
-const LabelledInputField = forwardRef((props: Props & InputProps, ref) => {
+const LabelledInputField = forwardRef((props: Props & InputProps) => {
   const {
     autoSelect,
     color,

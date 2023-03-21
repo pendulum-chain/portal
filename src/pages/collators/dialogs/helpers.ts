@@ -1,7 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { getErrors } from '../../../helpers/substrate';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { toast } from 'react-toastify';
 import { StateUpdater } from 'preact/hooks';
 import { ApiPromise } from '@polkadot/api';

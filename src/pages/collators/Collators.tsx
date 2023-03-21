@@ -1,7 +1,3 @@
-/**
- * FIXME remove @ts-nocheck, it was specifically added because of some errors in react-table.
- * Probably fixed in https://github.com/pendulum-chain/portal/pull/64
- */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
