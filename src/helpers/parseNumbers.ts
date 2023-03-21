@@ -1,6 +1,13 @@
 import BigNumber from 'big.js';
 
-export const TOKEN_DECIMALS = 12;
+// These are the decimals used for the native currency on the Amplitude network
+export const ChainDecimals = 12;
+
+// These are the decimals used by the Stellar network
+export const StellarDecimals = 7;
+
+// These are the decimals used by the FixedU128 type
+export const FixedU128Decimals = 18;
 
 // Change the positive exponent to a high value to prevent toString() returning exponential notation
 BigNumber.PE = 100;
@@ -10,9 +17,23 @@ BigNumber.NE = -20;
 // Converts a decimal number to the native representation (a large integer)
 export const decimalToNative = (value: BigNumber | number | string) => {
   const bigIntValue = new BigNumber(value);
-  const multiplier = new BigNumber(10).pow(TOKEN_DECIMALS);
+  const multiplier = new BigNumber(10).pow(ChainDecimals);
 
   return bigIntValue.times(multiplier);
+};
+
+export const decimalToStellarNative = (value: BigNumber | number | string) => {
+  const bigIntValue = new BigNumber(value);
+  const multiplier = new BigNumber(10).pow(StellarDecimals);
+
+  return bigIntValue.times(multiplier);
+};
+
+export const fixedPointToDecimal = (value: BigNumber | number | string) => {
+  const bigIntValue = new BigNumber(value);
+  const divisor = new BigNumber(10).pow(FixedU128Decimals);
+
+  return bigIntValue.div(divisor);
 };
 
 export const nativeToDecimal = (value: BigNumber | number | string) => {
@@ -21,10 +42,16 @@ export const nativeToDecimal = (value: BigNumber | number | string) => {
     value = new BigNumber(value.replaceAll(",", ""));
   }
   const bigIntValue = new BigNumber(value);
-  const divisor = new BigNumber(10).pow(TOKEN_DECIMALS);
-  const quotient = bigIntValue.div(divisor);
+  const divisor = new BigNumber(10).pow(ChainDecimals);
 
-  return quotient.toNumber();
+  return bigIntValue.div(divisor);
+};
+
+export const nativeStellarToDecimal = (value: BigNumber | number | string) => {
+  const bigIntValue = new BigNumber(value);
+  const divisor = new BigNumber(10).pow(StellarDecimals);
+
+  return bigIntValue.div(divisor);
 };
 
 const units = [
@@ -59,7 +86,7 @@ export const nativeToFormat = (
   value: BigNumber | number | string,
   tokenSymbol: string | undefined,
   oneCharOnly = false
-) => format(nativeToDecimal(value), tokenSymbol, oneCharOnly);
+) => format(nativeToDecimal(value).toNumber(), tokenSymbol, oneCharOnly);
 
 export const prettyNumbers = (number: number, lang?: string) =>
   number.toLocaleString(lang || navigator.language, {

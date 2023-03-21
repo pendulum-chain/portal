@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import SuccessDialogIcon from '../../../assets/success-dialog';
 import { CloseButton } from '../../../components/CloseButton';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { format, nativeToDecimal } from '../../../helpers/parseNumbers';
+import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
 import { getErrors } from '../../../helpers/substrate';
 import {
   ParachainStakingInflationInflationInfo,
@@ -80,10 +80,12 @@ function ClaimRewardsDialog(props: Props) {
         setLoading(false);
       });
   }, [
-    walletAccount,
     api,
     amount,
     createClaimRewardExtrinsic,
+    walletAccount,
+    setLoading,
+    setStep,
     userRewardsBalance,
   ]);
 
@@ -94,7 +96,7 @@ function ClaimRewardsDialog(props: Props) {
           <div className="rounded-lg bg-base-200 flex flex-col p-8 items-center w-fit center m-auto">
             <p className="flex">Amount</p>
             <h1 className="flex text-4xl">
-              {format(amount, tokenSymbol, true)}
+              {nativeToFormat(amount, tokenSymbol, true)}
             </h1>
           </div>
         );
@@ -107,7 +109,7 @@ function ClaimRewardsDialog(props: Props) {
           </div>
         );
     }
-  }, [amount, step, tokenSymbol]);
+  }, [step, amount, tokenSymbol]);
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {
@@ -143,7 +145,7 @@ function ClaimRewardsDialog(props: Props) {
           color="primary"
           loading={loading}
           onClick={getButtonAction(step)}
-          disabled={!walletAccount || amount <= 0}
+          disabled={!walletAccount || amount.lt(0)}
         >
           {getButtonText(step)}
         </Button>

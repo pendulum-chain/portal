@@ -8,18 +8,20 @@ import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
 import LabelledInputField from '../../components/LabelledInputField';
-import LabelledSelector from '../../components/LabelledSelector';
+import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
+import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { decimalToNative, nativeToDecimal } from '../../helpers/parseNumbers';
+import {
+  decimalToStellarNative,
+  nativeStellarToDecimal,
+  nativeToDecimal,
+} from '../../helpers/parseNumbers';
 import {
   calculateDeadline,
   convertCurrencyToStellarAsset,
 } from '../../helpers/spacewalk';
-import {
-  convertRawHexKeyToPublicKey,
-  stringifyStellarAsset,
-} from '../../helpers/stellar';
+import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
@@ -27,116 +29,35 @@ import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
-interface AssetSelectorProps {
-  selectedAsset?: Asset;
-  onChange: (asset: Asset) => void;
-  assets: Asset[];
-  style?: React.CSSProperties;
-}
-
-function AssetSelector(props: AssetSelectorProps): JSX.Element {
-  const { assets, selectedAsset } = props;
-
-  const items = assets.map((asset) => {
-    return {
-      displayName: asset.getCode(),
-      id: stringifyStellarAsset(asset),
-    };
-  });
-
-  const selectedAssetItem = selectedAsset
-    ? {
-        displayName: selectedAsset.getCode(),
-        id: stringifyStellarAsset(selectedAsset),
-      }
-    : undefined;
-
-  return (
-    <LabelledSelector
-      items={items}
-      label="Asset"
-      onChange={(newItem) => {
-        const newAsset = assets.find((asset) => {
-          return stringifyStellarAsset(asset) === newItem.id;
-        });
-        newAsset && props.onChange(newAsset);
-      }}
-      value={selectedAssetItem}
-      style={props.style}
-    />
-  );
-}
-
-interface VaultSelectorProps {
-  vaults: VaultRegistryVault[];
-  selectedVault?: VaultRegistryVault;
-  onChange: (vault: VaultRegistryVault) => void;
-}
-
-function VaultSelector(props: VaultSelectorProps): JSX.Element {
-  const { vaults, selectedVault } = props;
-
-  const items = vaults.map((vault) => {
-    return {
-      displayName: vault.id.accountId.toString(),
-      id: vault.id,
-    };
-  });
-
-  const selectedVaultItem = selectedVault
-    ? {
-        displayName: selectedVault.id.accountId.toString(),
-        id: selectedVault.id,
-      }
-    : undefined;
-
-  return (
-    <LabelledSelector
-      items={items}
-      label="Select Vault"
-      onChange={(newItem) => {
-        const newVault = vaults.find((vault) => {
-          return vault.id === newItem.id;
-        });
-        newVault && props.onChange(newVault);
-      }}
-      value={selectedVaultItem}
-      style={{ marginTop: '8px' }}
-    />
-  );
-}
-
 interface FeeBoxProps {
   bridgedAsset?: Asset;
   // The amount of the bridged asset denoted in the smallest unit of the asset
-  amountDecimal: string;
+  amountNative: Big;
   extrinsic?: SubmittableExtrinsic;
+  network: string;
+  wrappedCurrencyPrefix?: string;
+  nativeCurrency: string;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic } = props;
+  const {
+    bridgedAsset,
+    extrinsic,
+    network,
+    wrappedCurrencyPrefix,
+    nativeCurrency,
+  } = props;
 
-  const amount = useMemo(() => {
-    try {
-      return new Big(props.amountDecimal);
-    } catch (e) {
-      return new Big(0);
-    }
-  }, [props.amountDecimal]);
-
-  // TODO - get this from somewhere
-  const network = 'Amplitude'; // or Pendulum
-  const nativeCurrency = network === 'Amplitude' ? 'AMPE' : 'PEN';
-  const wrappedCurrencyPrefix = network === 'Amplitude' ? 'a' : 'p';
+  const amount = props.amountNative;
 
   const wrappedCurrencyName = bridgedAsset
-    ? wrappedCurrencyPrefix + bridgedAsset.getCode()
+    ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode()
     : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
 
-  const [transactionFee, setTransactionFee] = useState<number>(0);
+  const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
 
   useEffect(() => {
     if (!extrinsic) {
@@ -149,11 +70,11 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [extrinsic, getTransactionFee, setTransactionFee]);
 
   const bridgeFee = useMemo(() => {
-    return amount.mul(fees.issueFee);
+    return nativeStellarToDecimal(amount.mul(fees.issueFee));
   }, [amount, fees]);
 
   const griefingCollateral = useMemo(() => {
-    return amount.mul(fees.issueGriefingCollateral);
+    return nativeStellarToDecimal(amount.mul(fees.issueGriefingCollateral));
   }, [amount, fees]);
 
   const totalAmount = useMemo(() => {
@@ -161,7 +82,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       return 0;
     }
 
-    return amount.sub(bridgeFee);
+    return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
 
   return (
@@ -208,18 +129,38 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const [remainingDurationString, setRemainingDurationString] =
     useState<string>('');
 
-  const totalAmount = issueRequest
-    ? nativeToDecimal(
-        issueRequest.request.amount.add(issueRequest.request.fee).toString(),
-      ).toString()
-    : '';
-  const currency = issueRequest?.request.asset;
-  const asset = currency && convertCurrencyToStellarAsset(currency);
+  const totalAmount = useMemo(
+    () =>
+      issueRequest
+        ? nativeStellarToDecimal(
+            issueRequest.request.amount
+              .add(issueRequest.request.fee)
+              .toString(),
+          ).toString()
+        : '',
+    [issueRequest],
+  );
 
-  const rawDestinationAddress = issueRequest?.request.stellarAddress;
-  const destination = rawDestinationAddress
-    ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-    : '';
+  const asset = useMemo(() => {
+    const currency = issueRequest?.request.asset;
+    return currency && convertCurrencyToStellarAsset(currency);
+  }, [issueRequest?.request.asset]);
+
+  const destination = useMemo(() => {
+    const rawDestinationAddress = issueRequest?.request.stellarAddress;
+    return rawDestinationAddress
+      ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
+      : '';
+  }, [issueRequest?.request.stellarAddress]);
+
+  const expectedStellarMemo = useMemo(() => {
+    if (!issueRequest) {
+      return '';
+    }
+    const requestID = issueRequest.id.toString();
+    // Trim first 2 characters to remove the 0x prefix
+    return requestID.slice(2);
+  }, [issueRequest]);
 
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
@@ -233,7 +174,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const deadline = useMemo(() => {
     const openTime = issueRequest?.request.opentime.toNumber() || 0;
     const period = issueRequest?.request.period.toNumber() || 0;
-    const end = calculateDeadline(activeBlockNumber, openTime, period, 6);
+    const end = calculateDeadline(activeBlockNumber, openTime, period, 12);
 
     return end;
   }, [activeBlockNumber, issueRequest]);
@@ -273,9 +214,13 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             )}
             )
           </div>
+          <div className="text mt-4">With the hash memo</div>
+          {issueRequest && (
+            <CopyableAddress variant="short" publicKey={expectedStellarMemo} />
+          )}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
-          <div>Within {remainingDurationString}</div>
+          <div className="mt-4">Within {remainingDurationString}</div>
         </div>
         <Divider />
         <div>
@@ -299,7 +244,15 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   );
 }
 
-function Issue(): JSX.Element {
+interface IssueProps {
+  network: string;
+  wrappedCurrencyPrefix: string;
+  nativeCurrency: string;
+}
+
+function Issue(props: IssueProps): JSX.Element {
+  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
+
   const [amount, setAmount] = useState<string>('0');
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
@@ -320,7 +273,7 @@ function Issue(): JSX.Element {
 
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
-    return amount ? decimalToNative(amount) : Big(0);
+    return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
@@ -371,7 +324,12 @@ function Issue(): JSX.Element {
   }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
-    if (!requestIssueExtrinsic || !walletAccount || !api || !selectedVault) {
+    if (!requestIssueExtrinsic || !api || !selectedVault) {
+      return;
+    }
+
+    if (!walletAccount) {
+      toast('No wallet account selected', { type: 'error' });
       return;
     }
 
@@ -380,7 +338,6 @@ function Issue(): JSX.Element {
     requestIssueExtrinsic
       .signAndSend(
         walletAccount.address,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         { signer: walletAccount.signer as any },
         (result) => {
           const { status, events } = result;
@@ -404,7 +361,6 @@ function Issue(): JSX.Element {
             // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const issueId = (requestIssueEvent.data as any).issueId;
 
               getIssueRequest(issueId).then((issueRequest) => {
@@ -422,7 +378,9 @@ function Issue(): JSX.Element {
       )
       .catch((error) => {
         console.error('Transaction submission failed', error);
-        toast('Transaction submission failed', { type: 'error' });
+        toast('Transaction submission failed: ' + error.toString(), {
+          type: 'error',
+        });
         setSubmissionPending(false);
       });
   }, [
@@ -479,19 +437,25 @@ function Issue(): JSX.Element {
             />
           )}
           <FeeBox
-            amountDecimal={amount}
+            amountNative={amountNative}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
+            network={network}
+            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
+            nativeCurrency={nativeCurrency}
           />
-          <Button
-            className="w-full"
-            color="primary"
-            disabled={!walletAccount}
-            loading={submissionPending}
-            onClick={submitRequestIssueExtrinsic}
-          >
-            Bridge
-          </Button>
+          {walletAccount ? (
+            <Button
+              className="w-full"
+              color="primary"
+              loading={submissionPending}
+              onClick={submitRequestIssueExtrinsic}
+            >
+              Bridge
+            </Button>
+          ) : (
+            <OpenWallet networkName={network} />
+          )}
         </div>
       </div>
     </div>

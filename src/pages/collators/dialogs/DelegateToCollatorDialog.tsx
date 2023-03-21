@@ -64,8 +64,8 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     [
       collator,
       inflationInfo?.delegator.rewardRate.annual,
-      minDelegatorStake,
       mode,
+      minDelegatorStake,
       tokenSymbol,
     ],
   );

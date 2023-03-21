@@ -6,11 +6,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { useGlobalState } from '../../GlobalStateProvider';
-import {
-  format,
-  nativeToDecimal,
-  nativeToFormat,
-} from '../../helpers/parseNumbers';
+import { nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 import Table from '../../components/Table';
@@ -88,11 +84,10 @@ export function Collators() {
   const data = useMemo<TCollator[] | undefined>(
     () =>
       candidates?.map((candidate) => {
-        const totalStaked = nativeToDecimal(candidate.total);
         return {
           candidate: candidate,
           collator: candidate.id,
-          totalStaked: format(totalStaked, tokenSymbol),
+          totalStaked: nativeToFormat(candidate.total, tokenSymbol),
           delegators: candidate.delegators.length,
           apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
         };
