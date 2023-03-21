@@ -15,29 +15,24 @@ export const doSubmitExtrinsic = (
   setSubmissionPending(true);
 
   extrinsic
-    ?.signAndSend(
-      walletAccount.address,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { signer: walletAccount.signer as any },
-      (result) => {
-        const { status, events } = result;
+    ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+      const { status, events } = result;
 
-        const errors = getErrors(events, api);
-        if (status.isInBlock) {
-          if (errors.length > 0) {
-            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
-            console.error(errorMessage);
-            toast(errorMessage, { type: 'error' });
-          }
-        } else if (status.isFinalized) {
-          setSubmissionPending(false);
-
-          if (errors.length === 0) {
-            setConfirmationDialogVisible(true);
-          }
+      const errors = getErrors(events, api);
+      if (status.isInBlock) {
+        if (errors.length > 0) {
+          const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
+          console.error(errorMessage);
+          toast(errorMessage, { type: 'error' });
         }
-      },
-    )
+      } else if (status.isFinalized) {
+        setSubmissionPending(false);
+
+        if (errors.length === 0) {
+          setConfirmationDialogVisible(true);
+        }
+      }
+    })
     .catch((error) => {
       console.error('Transaction submission failed', error);
       toast('Transaction submission failed', { type: 'error' });

@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { Button, Modal } from 'react-daisyui';
+import { toast } from 'react-toastify';
+import SuccessDialogIcon from '../../../assets/success-dialog';
+import { CloseButton } from '../../../components/CloseButton';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
+import { getErrors } from '../../../helpers/substrate';
+import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
+=======
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { format, nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
@@ -8,6 +20,7 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { getErrors } from '../../../helpers/substrate';
 import { toast } from 'react-toastify';
+>>>>>>> staging
 
 interface Props {
   userRewardsBalance?: string;
@@ -69,7 +82,11 @@ function ClaimRewardsDialog(props: Props) {
         toast('Transaction submission failed', { type: 'error' });
         setLoading(false);
       });
+<<<<<<< HEAD
+  }, [walletAccount, api, amount, createClaimRewardExtrinsic, userRewardsBalance]);
+=======
   }, [api, amount, createClaimRewardExtrinsic, walletAccount, setLoading, setStep, userRewardsBalance]);
+>>>>>>> staging
 
   const content = useMemo(() => {
     switch (step) {
