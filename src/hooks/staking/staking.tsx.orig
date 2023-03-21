@@ -1,9 +1,13 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Option } from '@polkadot/types-codec';
+<<<<<<< HEAD
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+=======
+import { useGlobalState } from '../../GlobalStateProvider';
+>>>>>>> origin/staging
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -113,7 +117,11 @@ export function useStakingPallet() {
     if (api.consts.parachainStaking?.minDelegatorStake) {
       setMinDelegatorStake((api.consts.parachainStaking.minDelegatorStake.toHuman() as string) || '0');
     }
+<<<<<<< HEAD
+  }, [api, fees, walletAccount]);
+=======
   }, [api, walletAccount, walletAccount?.address, fees]);
+>>>>>>> origin/staging
 
   const memo = useMemo(() => {
     return {

@@ -18,8 +18,25 @@ interface Props {
   errorMessage?: string;
 }
 
-const LabelledInputField = forwardRef((props: Props & InputProps) => {
+<<<<<<< HEAD
+const LabelledInputField = forwardRef((props: Props & InputProps, _ref) => {
   const { color, error, label, secondaryLabel, onChange, extraBtnAction, extraBtnText, style, ...rest } = props;
+=======
+const LabelledInputField = forwardRef((props: Props & InputProps) => {
+  const {
+    autoSelect,
+    color,
+    error,
+    label,
+    secondaryLabel,
+    onChange,
+    extraBtnAction,
+    extraBtnText,
+    errorMessage,
+    style,
+    ...rest
+  } = props;
+>>>>>>> origin/staging
 
   const inputColor = error ? 'error' : color;
 

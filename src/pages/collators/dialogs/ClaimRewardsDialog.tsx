@@ -1,13 +1,13 @@
-import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { format, nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
 import { Button, Modal } from 'react-daisyui';
+import { toast } from 'react-toastify';
 import SuccessDialogIcon from '../../../assets/success-dialog';
 import { CloseButton } from '../../../components/CloseButton';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
+import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
 import { getErrors } from '../../../helpers/substrate';
-import { toast } from 'react-toastify';
+import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 
 interface Props {
   userRewardsBalance?: string;
