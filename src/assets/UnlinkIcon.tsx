@@ -4,6 +4,7 @@ interface Props {
 
 const UnlinkIcon = ({ className }: Props) => (
   <svg
+    className={className}
     width="16"
     height="14"
     viewBox="0 0 16 14"

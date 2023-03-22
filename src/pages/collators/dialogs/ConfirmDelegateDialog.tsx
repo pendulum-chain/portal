@@ -1,9 +1,9 @@
-import Big from "big.js";
-import { nativeToDecimal } from "../../../helpers/parseNumbers";
-import { Button, Modal } from "react-daisyui";
-import { h } from "preact";
-import { CloseButton } from "../../../components/CloseButton";
-import { DelegationMode } from "./ExecuteDelegationDialogs";
+import Big from 'big.js';
+import { nativeToDecimal } from '../../../helpers/parseNumbers';
+import { Button, Modal } from 'react-daisyui';
+import { h } from 'preact';
+import { CloseButton } from '../../../components/CloseButton';
+import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;
@@ -20,8 +20,8 @@ interface ConfirmDelegateDialogProps {
 
 function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const {
-    availableBalance = "0",
-    delegationAmountDecimal = "0",
+    availableBalance = '0',
+    delegationAmountDecimal = '0',
     mode,
     tokenSymbol,
     visible,
@@ -35,15 +35,10 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const balanceDecimal = nativeToDecimal(availableBalance);
   const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
 
-  const resultingBalance = mode === 'undelegating' ?
-    Big(balanceDecimal)
-      .plus(delegationAmountDecimal)
-      .minus(transactionFeeDecimal)
-      .toString() :
-    Big(balanceDecimal)
-      .minus(delegationAmountDecimal)
-      .minus(transactionFeeDecimal)
-      .toString();
+  const resultingBalance =
+    mode === 'undelegating'
+      ? Big(balanceDecimal).plus(delegationAmountDecimal).minus(transactionFeeDecimal).toString()
+      : Big(balanceDecimal).minus(delegationAmountDecimal).minus(transactionFeeDecimal).toString();
 
   return (
     <Modal open={visible}>
@@ -83,12 +78,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         <Button className="px-6" color="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          className="px-6"
-          color="primary"
-          loading={submissionPending}
-          onClick={onConfirm}
-        >
+        <Button className="px-6" color="primary" loading={submissionPending} onClick={onConfirm}>
           Confirm
         </Button>
       </Modal.Actions>

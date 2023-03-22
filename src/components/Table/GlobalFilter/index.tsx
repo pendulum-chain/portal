@@ -5,10 +5,7 @@ export interface GlobalFilterProps {
   globalFilter?: string;
   setGlobalFilter: (val: string) => void;
 }
-export const GlobalFilter = ({
-  globalFilter,
-  setGlobalFilter,
-}: GlobalFilterProps): JSX.Element | null => {
+export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProps): JSX.Element | null => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSearch = useCallback(
     (ev: TargetedEvent<HTMLFormElement>) => {

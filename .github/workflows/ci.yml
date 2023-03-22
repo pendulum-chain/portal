@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://npm.pkg.github.com'
 
       - name: 💾 Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -46,7 +45,7 @@ jobs:
 
       - name: 🧩 Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --prefer-offline --frozen-lockfile
+        run: yarn install
 
       - name: 📋 Yarn Lock Changes
         uses: Simek/yarn-lock-changes@main 

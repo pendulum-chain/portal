@@ -1,7 +1,7 @@
 import React from 'react';
 import { useClipboard } from '../../hooks/userinterface';
 import { Button } from 'react-daisyui';
-import { DocumentDuplicateIcon } from '@heroicons/react/20/solid';
+import CopyIcon from '../../assets/CopyIcon';
 
 type Variant = 'full' | 'short' | 'shorter';
 
@@ -58,11 +58,9 @@ export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
 
   return (
     <span style={style}>
-      {props.variant === "full" || !props.variant
+      {props.variant === 'full' || !props.variant
         ? props.publicKey
-        : props.publicKey.substr(0, digits.leading) +
-        "…" +
-        props.publicKey.substr(-digits.trailing)}
+        : props.publicKey.substr(0, digits.leading) + '…' + props.publicKey.substr(-digits.trailing)}
     </span>
   );
 });
@@ -73,14 +71,14 @@ interface AddressProps {
   style?: React.CSSProperties;
   icon?: JSX.Element;
   onClick?: () => void;
+  wrap?: boolean;
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const ClickableAddress = React.memo(function ClickableAddress(
-  props: AddressProps,
-) {
+export const ClickableAddress = React.memo(function ClickableAddress(props: AddressProps) {
   return (
     <Button
+      className="px-1 h-1"
       color="ghost"
       onClick={props.onClick}
       style={{
@@ -105,9 +103,7 @@ interface CopyableAddressProps extends AddressProps {
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const CopyableAddress = React.memo(function CopyableAddress(
-  props: CopyableAddressProps,
-) {
+export const CopyableAddress = React.memo(function CopyableAddress(props: CopyableAddressProps) {
   const { onClick } = props;
   const clipboard = useClipboard();
 
@@ -118,11 +114,5 @@ export const CopyableAddress = React.memo(function CopyableAddress(
     clipboard.copyToClipboard(props.publicKey);
   }, [clipboard, onClick, props.publicKey]);
 
-  return (
-    <ClickableAddress
-      {...props}
-      onClick={handleClick}
-      icon={<DocumentDuplicateIcon className="w-5 h-5" />}
-    />
-  );
+  return <ClickableAddress {...props} onClick={handleClick} icon={<CopyIcon className="w-4 h-4" />} />;
 });

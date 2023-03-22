@@ -1,10 +1,7 @@
-import { Keyring } from "@polkadot/api";
+import { Keyring } from '@polkadot/api';
 
-export function getAddressForFormat(
-  address: string,
-  ss58Format: number | string
-) {
-  if (typeof ss58Format === "string") {
+export function getAddressForFormat(address: string, ss58Format: number | string) {
+  if (typeof ss58Format === 'string') {
     ss58Format = parseInt(ss58Format, 10);
   }
 
@@ -15,8 +12,5 @@ export function getAddressForFormat(
 
 export function trimAddress(address: string, trimLength = 6): string {
   const addressLength = address.length;
-  return `${address.slice(0, trimLength)}...${address.slice(
-    addressLength - trimLength,
-    addressLength,
-  )}`;
-};
+  return `${address.slice(0, trimLength)}...${address.slice(addressLength - trimLength, addressLength)}`;
+}

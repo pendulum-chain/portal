@@ -2,11 +2,8 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import Big from 'big.js';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { Option, U128 } from '@polkadot/types-codec';
+import { Option } from '@polkadot/types-codec';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { nativeToDecimal } from '../../helpers/parseNumbers';
-import { SubmittableModuleExtrinsics } from '@polkadot/api-base/types';
-import { ApiBase } from '@polkadot/api/base';
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -44,10 +41,10 @@ export interface ParachainStakingInflationInflationInfo {
 }
 
 const defaultTransactionFees = {
-  "joinDelegators": Big(0),
-  "delegatorStakeMore": Big(0),
-  "delegatorStakeLess": Big(0)
-}
+  joinDelegators: Big(0),
+  delegatorStakeMore: Big(0),
+  delegatorStakeLess: Big(0),
+};
 
 type ParachainStakingFees = typeof defaultTransactionFees;
 type ParachainStakingExtrinsics = keyof typeof defaultTransactionFees;
@@ -57,9 +54,7 @@ export function useStakingPallet() {
   const { walletAccount } = useGlobalState().state;
 
   const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
-  const [inflationInfo, setInflationInfo] = useState<
-    ParachainStakingInflationInflationInfo | undefined
-  >(undefined);
+  const [inflationInfo, setInflationInfo] = useState<ParachainStakingInflationInflationInfo | undefined>(undefined);
   const [minDelegatorStake, setMinDelegatorStake] = useState<string>('0');
   const [estimatedRewards, setEstimatedRewards] = useState<string>('0');
   const [fees, setFees] = useState<ParachainStakingFees>(defaultTransactionFees);
@@ -78,9 +73,7 @@ export function useStakingPallet() {
       const entries = await api.query.parachainStaking.candidatePool.entries();
 
       const newCandidates = entries.map(([_, value]) => {
-        const candidate = (value as Option<any>)
-          .unwrap()
-          .toHuman() as ParachainStakingCandidate;
+        const candidate = (value as Option<any>).unwrap().toHuman() as ParachainStakingCandidate;
 
         return candidate;
       });
@@ -95,9 +88,7 @@ export function useStakingPallet() {
 
     const fetchEstimatedReward = async () => {
       if (!walletAccount) return '0';
-      return (
-        await api.query.parachainStaking.rewards(walletAccount?.address)
-      ).toString();
+      return (await api.query.parachainStaking.rewards(walletAccount?.address)).toString();
     };
 
     const fetchFees = async () => {
@@ -120,21 +111,14 @@ export function useStakingPallet() {
 
     fetchEstimatedReward().then((reward) => setEstimatedRewards(reward));
 
-    fetchInflationInfo().then((inflationInfo) =>
-      setInflationInfo(inflationInfo),
-    );
+    fetchInflationInfo().then((inflationInfo) => setInflationInfo(inflationInfo));
 
-    fetchFees().then((newFees) =>
-      setFees(newFees)
-    );
+    fetchFees().then((newFees) => setFees(newFees));
 
     if (api.consts.parachainStaking?.minDelegatorStake) {
-      setMinDelegatorStake(
-        (api.consts.parachainStaking.minDelegatorStake.toHuman() as string) ||
-        '0',
-      );
+      setMinDelegatorStake((api.consts.parachainStaking.minDelegatorStake.toHuman() as string) || '0');
     }
-  }, [api, walletAccount, walletAccount?.address]);
+  }, [api, walletAccount, walletAccount?.address, fees]);
 
   const memo = useMemo(() => {
     return {
@@ -161,54 +145,29 @@ export function useStakingPallet() {
         }
         return api.tx.parachainStaking?.claimRewards();
       },
-      createDelegateMoreExtrinsic(
-        collatorAddress: string,
-        moreAmountNative: string,
-      ) {
+      createDelegateMoreExtrinsic(collatorAddress: string, moreAmountNative: string) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.delegatorStakeMore(
-          collatorAddress,
-          moreAmountNative,
-        );
+        return api.tx.parachainStaking?.delegatorStakeMore(collatorAddress, moreAmountNative);
       },
-      createDelegateLessExtrinsic(
-        collatorAddress: string,
-        lessAmountNative: string
-      ) {
+      createDelegateLessExtrinsic(collatorAddress: string, lessAmountNative: string) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.delegatorStakeLess(
-          collatorAddress,
-          lessAmountNative
-        );
+        return api.tx.parachainStaking?.delegatorStakeLess(collatorAddress, lessAmountNative);
       },
-      createJoinDelegatorsExtrinsic(
-        collatorAddress: string,
-        amountNative: string,
-      ) {
+      createJoinDelegatorsExtrinsic(collatorAddress: string, amountNative: string) {
         if (!api) {
           return undefined;
         }
 
-        return api.tx.parachainStaking?.joinDelegators(
-          collatorAddress,
-          amountNative,
-        );
+        return api.tx.parachainStaking?.joinDelegators(collatorAddress, amountNative);
       },
     };
-  }, [
-    api,
-    candidates,
-    inflationInfo,
-    fees,
-    minDelegatorStake,
-    estimatedRewards,
-  ]);
+  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
 
   return memo;
 }
