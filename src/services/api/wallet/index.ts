@@ -5,6 +5,5 @@ export const getWalletBalances = async (
   api: ApiPromise,
   address: string,
 ): Promise<Asset[]> => {
-  console.log(api, address);
-  return Promise.resolve([]);
+  return new Promise((r) => setTimeout(() => r([]), 800));
 };

@@ -13,8 +13,8 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { Asset } from '../../models/Asset';
 import { SwapSettings, SwapTransaction } from '../../models/Swap';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { assetsApi } from '../../services/api/assets';
 import { isApiConnected } from '../../services/api/helpers';
-import { getSwapTokens } from '../../services/api/tokens';
 import { getWalletBalances } from '../../services/api/wallet';
 import schema from './schema';
 import { SwapFormValues } from './types';
@@ -66,15 +66,21 @@ export const useSwapComponent = ({
   const { setValue, reset } = form;
 
   // ! TODO: fetch tokens
-  // ! TODO: fetch wallet token balances
-  // ! TODO: fetch swap rates and other info, update everytime token changes, refetch interval
-  // ! TODO: submit transaction
-
-  // submit
-  const submitMutation = useMutation<unknown, unknown, SwapFormValues>(
-    async (data) => {
-      console.log(data);
+  const tokensQuery = useQuery(
+    isConnected ? [cacheKeys.tokens] : [],
+    isConnected ? () => assetsApi.getSwapTokens() : emptyFn,
+    {
+      ...inactiveOptions[0],
+      enabled: !!api && api.isConnected,
+      onError: (err) => {
+        toast(err || 'Error fetching tokens', { type: 'error' });
+      },
     },
+  );
+
+  // ! TODO: submit transaction
+  const submitMutation = useMutation<unknown, unknown, SwapFormValues>(
+    async (data) => new Promise((r) => setTimeout(() => r(data), 2500)),
     {
       onError: () => {
         // ! TODO: display error to user
@@ -86,43 +92,34 @@ export const useSwapComponent = ({
     },
   );
 
+  const balancesEnabled = !!walletAccount?.address && isConnected;
+  // ! TODO: fetch wallet token balances
   // ? might make sense to move queries into custom hooks that can be reused
   const balancesQuery = useQuery(
-    walletAccount?.address && isConnected
-      ? [cacheKeys.swapData, walletAccount.address]
-      : [],
-    walletAccount?.address && isConnected
+    balancesEnabled ? [cacheKeys.swapData, walletAccount.address] : [],
+    balancesEnabled
       ? () => getWalletBalances(api, walletAccount.address)
       : emptyFn,
     {
       ...inactiveOptions[0],
       //refetchInterval: 10000,
-      enabled: !!walletAccount?.address && isConnected,
+      enabled: balancesEnabled,
       onError: (err) => {
         toast(err || 'Error fetching wallet balances', { type: 'error' });
       },
     },
   );
+
+  // ! TODO: fetch swap rates and other info, update everytime token changes, refetch interval
   const swapQuery = useQuery(
     [cacheKeys.swapData, storage.state?.from, storage.state?.to],
-    emptyFn,
+    () => undefined,
     {
       ...inactiveOptions[0],
-      //refetchInterval: 10000,
+      refetchInterval: 15000, // 15s
       enabled: false,
       onError: (err) => {
         toast(err || 'Error fetching swap rates', { type: 'error' });
-      },
-    },
-  );
-  const tokensQuery = useQuery(
-    isConnected ? [cacheKeys.tokens] : [],
-    isConnected ? () => getSwapTokens(api) : emptyFn,
-    {
-      ...inactiveOptions[0],
-      enabled: !!api && api.isConnected,
-      onError: (err) => {
-        toast(err || 'Error fetching tokens', { type: 'error' });
       },
     },
   );
