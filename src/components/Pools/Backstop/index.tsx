@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { Card } from 'react-daisyui';
 import { cacheKeys } from '../../../constants/cache';
-import { BackstopPool } from '../../../models/BackstopPool';
+import { BackstopPool as IBackstopPool } from '../../../models/BackstopPool';
 import { Skeleton } from '../../Skeleton';
 import BackstopPoolForm from './Form';
 
 const BackstopPool = (): JSX.Element | null => {
   // ! TODO: get backstop pool and info
-  const { data, isLoading } = useQuery<BackstopPool | undefined>(
+  const { data, isLoading } = useQuery<IBackstopPool | undefined>(
     [cacheKeys.backstopPool],
     () => undefined,
   );
