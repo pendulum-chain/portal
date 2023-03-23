@@ -20,6 +20,7 @@ import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
+import { Controller, useForm } from 'react-hook-form';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import OpenWallet from '../../components/OpenWallet';
 
@@ -207,6 +208,10 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   );
 }
 
+interface IssueFormInputs {
+  amount: string;
+}
+
 interface IssueProps {
   network: string;
   wrappedCurrencyPrefix: string;
@@ -216,7 +221,6 @@ interface IssueProps {
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
-  const [amount, setAmount] = useState<string>('0');
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
@@ -228,6 +232,21 @@ function Issue(props: IssueProps): JSX.Element {
   const { getVaults } = useVaultRegistryPallet();
   const { walletAccount } = useGlobalState().state;
   const { api } = useNodeInfoState().state;
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    getValues,
+    watch,
+  } = useForm<IssueFormInputs>({
+    defaultValues: {
+      amount: '0',
+    },
+  });
+
+  // We watch the amount because we need to re-render the FeeBox constantly
+  const amount = watch('amount');
 
   const vaults = getVaults();
 
@@ -338,15 +357,32 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
-        <div className="px-5 flex flex-col">
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic)}>
           <div className="flex items-center">
-            <LabelledInputField
-              autoSelect
-              label="From Stellar"
-              type="number"
-              value={amount}
-              onChange={setAmount}
-              style={{ flexGrow: 2 }}
+            <Controller
+              control={control}
+              rules={{
+                required: 'Amount is required',
+                validate: (value) => {
+                  console.log('value', value);
+                  const floatString = parseFloat(value).toString();
+                  console.log('floatString', floatString);
+                  if (floatString.split('.')[1] && floatString.split('.')[1].length > 7) {
+                    return 'Max 7 decimals';
+                  }
+                },
+              }}
+              name="amount"
+              render={({ field }) => (
+                <LabelledInputField
+                  autoSelect
+                  error={errors.amount?.message}
+                  label="From Stellar"
+                  type="number"
+                  style={{ flexGrow: 2 }}
+                  {...field}
+                />
+              )}
             />
             <div className="px-1" />
             <AssetSelector
@@ -380,18 +416,13 @@ function Issue(props: IssueProps): JSX.Element {
             nativeCurrency={nativeCurrency}
           />
           {walletAccount ? (
-            <Button
-              className="w-full"
-              color="primary"
-              loading={submissionPending}
-              onClick={submitRequestIssueExtrinsic}
-            >
+            <Button className="w-full" color="primary" loading={submissionPending} type="submit">
               Bridge
             </Button>
           ) : (
             <OpenWallet networkName={network} />
           )}
-        </div>
+        </form>
       </div>
     </div>
   );
