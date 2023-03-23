@@ -77,6 +77,9 @@ const BackstopPoolForm = ({
           <div>0.99 USDC</div>
         </div>
       </div>
+      <Button variant="primary" className="mt-4 w-full" type="submit">
+        Withdraw
+      </Button>
     </form>
   );
 };
