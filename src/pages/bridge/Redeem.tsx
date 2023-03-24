@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import _ from 'lodash';
 import { Button, Checkbox, Modal } from 'react-daisyui';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import LabelledInputField from '../../components/LabelledInputField';
@@ -12,6 +13,7 @@ import {
   isCompatibleStellarAmount,
   isPublicKey,
   StellarPublicKeyPattern,
+  stringifyStellarAsset,
 } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
@@ -174,13 +176,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { walletAccount } = useGlobalState().state;
   const { api } = useNodeInfoState().state;
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    getValues,
-    watch,
-  } = useForm<RedeemFormInputs>({
+  const { control, handleSubmit, getValues, watch } = useForm<RedeemFormInputs>({
     defaultValues: {
       amount: '0',
       stellarAddress: '',
@@ -201,7 +197,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
-    return vaults
+    const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
         console.log('currency', currency);
@@ -210,6 +206,8 @@ function Redeem(props: RedeemProps): JSX.Element {
       .filter((asset): asset is Asset => {
         return asset != null;
       });
+    // Deduplicate assets
+    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
   }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
@@ -232,8 +230,13 @@ function Redeem(props: RedeemProps): JSX.Element {
       if (!selectedAsset && wrappedAssets.length > 0) {
         setSelectedAsset(wrappedAssets[0]);
       }
+    } else {
+      // If the user manually selected a vault, but it's not available anymore, we reset the selection
+      if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
+        setSelectedVault(vaultsForCurrency[0]);
+      }
     }
-  }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
+  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
 
   const requestRedeemExtrinsic = useMemo(() => {
     if (!selectedVault || !api || !stellarAddress || !isPublicKey(stellarAddress)) {
@@ -361,10 +364,10 @@ function Redeem(props: RedeemProps): JSX.Element {
                 message: 'Stellar address is invalid',
               },
             }}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <LabelledInputField
                 label="Stellar Address"
-                error={errors.stellarAddress?.message}
+                error={error?.message}
                 placeholder="Enter target Stellar address"
                 type="text"
                 {...field}

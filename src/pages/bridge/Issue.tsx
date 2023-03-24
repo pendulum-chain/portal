@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import _ from 'lodash';
 import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import LabelledInputField from '../../components/LabelledInputField';
@@ -7,7 +8,7 @@ import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Asset } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount } from '../../helpers/stellar';
+import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import Big from 'big.js';
@@ -233,13 +234,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount } = useGlobalState().state;
   const { api } = useNodeInfoState().state;
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    getValues,
-    watch,
-  } = useForm<IssueFormInputs>({
+  const { control, handleSubmit, watch } = useForm<IssueFormInputs>({
     defaultValues: {
       amount: '0',
     },
@@ -256,7 +251,7 @@ function Issue(props: IssueProps): JSX.Element {
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
-    return vaults
+    const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
         return convertCurrencyToStellarAsset(currency);
@@ -264,6 +259,8 @@ function Issue(props: IssueProps): JSX.Element {
       .filter((asset): asset is Asset => {
         return asset != null;
       });
+    // Deduplicate assets
+    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
   }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
@@ -286,8 +283,13 @@ function Issue(props: IssueProps): JSX.Element {
       if (!selectedAsset && wrappedAssets.length > 0) {
         setSelectedAsset(wrappedAssets[0]);
       }
+    } else {
+      // If the user manually selected a vault, but it's not available anymore, we reset the selection
+      if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
+        setSelectedVault(vaultsForCurrency[0]);
+      }
     }
-  }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
+  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
 
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !api) {
