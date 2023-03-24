@@ -3,7 +3,7 @@ import { useAccountBalance } from '../../hooks/useAccountBalance';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
 
-export function Dashboard() {
+function Dashboard() {
   const { state } = useNodeInfoState();
   const { tokenSymbol } = state;
   const { balance } = useAccountBalance();
@@ -113,3 +113,5 @@ export function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
