@@ -305,7 +305,6 @@ function Issue(props: IssueProps): JSX.Element {
     }
 
     if (!walletAccount) {
-      toast('No wallet account selected', { type: 'error' });
       return;
     }
 

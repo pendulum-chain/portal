@@ -252,7 +252,6 @@ function Redeem(props: RedeemProps): JSX.Element {
     }
 
     if (!walletAccount) {
-      toast('No wallet connected', { type: 'error' });
       return;
     }
 
