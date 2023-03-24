@@ -6,7 +6,7 @@ import { assetsApi } from '../../../services/api/assets';
 import { Skeleton } from '../../Skeleton';
 import BackstopPoolForm from './Form';
 
-const BackstopPool = (): JSX.Element | null => {
+const BackstopPools = (): JSX.Element | null => {
   // ! TODO: get backstop pool and info
   const { data, isLoading } = useQuery<IBackstopPool[] | undefined>(
     [cacheKeys.backstopPool],
@@ -34,4 +34,4 @@ const BackstopPool = (): JSX.Element | null => {
   );
 };
 
-export default BackstopPool;
+export default BackstopPools;

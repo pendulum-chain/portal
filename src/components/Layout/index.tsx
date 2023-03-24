@@ -14,7 +14,7 @@ import Versions from './Versions';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
-  const params = useParams();
+  const { network } = useParams();
   const { state, setState } = useGlobalState();
   const isPendulum = state.tenantName === TenantName.Pendulum;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
@@ -23,17 +23,16 @@ export default function Layout(): JSX.Element | null {
 
   useEffect(() => {
     // Only change state if network is different
-    const network =
-      params.network &&
-      Object.values<string>(TenantName).includes(params.network)
-        ? (params.network as TenantName)
+    const n =
+      network && Object.values<string>(TenantName).includes(network)
+        ? (network as TenantName)
         : TenantName.Pendulum;
     setState((prevState) => ({
       ...prevState,
-      tenantName: network,
-      tenantRPC: config.tenants[network].rpc,
+      tenantName: n,
+      tenantRPC: config.tenants[n].rpc,
     }));
-  }, [params.network, setState]);
+  }, [network, setState]);
 
   const FooterLink = memo(() => {
     return isPendulum ? (

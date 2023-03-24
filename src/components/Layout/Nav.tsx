@@ -1,13 +1,20 @@
-import { memo } from 'preact/compat';
-import { NavLink, useLocation } from 'react-router-dom';
+import { memo, useMemo } from 'preact/compat';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { links } from './links';
+import { Links, links } from './links';
 
 const Nav = memo(() => {
-  // ?! TODO: different links based on path
   const { state } = useGlobalState();
+  const { network } = useParams();
   const { pathname } = useLocation();
-  const linksArr = pathname.includes('amber') ? links.amber : links.default;
+
+  const linksArr = useMemo<Links>(() => {
+    const [path] = pathname.split('?');
+    const key = (network ? path.replace(network, '') : path)
+      .split('/')
+      .filter(Boolean)[0] as keyof typeof links;
+    return links[key] || links.default;
+  }, [pathname, network]);
 
   return (
     <nav>

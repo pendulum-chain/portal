@@ -10,6 +10,7 @@ import SwapIcon from '../../assets/swap';
 import SwapPoolsIcon from '../../assets/swap-pools';
 import { GlobalStateInterface } from '../../GlobalStateProvider';
 
+export type LinkParameter = { isActive?: boolean };
 export type LinkItem = {
   link: string;
   title: ComponentChildren;
@@ -19,7 +20,7 @@ export type LinkItem = {
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
 };
-export type LinkParameter = { isActive?: boolean };
+export type Links = (state: Partial<GlobalStateInterface>) => LinkItem[];
 
 const arrow = (
   <div className="nav-arrow-container">
@@ -27,9 +28,7 @@ const arrow = (
   </div>
 );
 
-const defaultLinks = ({
-  tenantName,
-}: Partial<GlobalStateInterface>): LinkItem[] => [
+const defaultLinks: Links = ({ tenantName }) => [
   {
     link: './dashboard',
     title: 'Dashboard',
@@ -86,21 +85,21 @@ const defaultLinks = ({
   },
 ];
 
-const amberLinks = (): LinkItem[] => [
+const amberLinks: Links = () => [
   {
-    link: './swap',
+    link: './amber/swap',
     title: 'Swap',
     prefix: <SwapIcon />,
     suffix: arrow,
   },
   {
-    link: './swap-pools',
+    link: './amber/swap-pools',
     title: 'Swap Pools',
     prefix: <SwapPoolsIcon />,
     suffix: arrow,
   },
   {
-    link: './backstop-pool',
+    link: './amber/backstop-pools',
     title: 'Backstop Pool',
     prefix: <BackstopPoolIcon />,
     suffix: arrow,

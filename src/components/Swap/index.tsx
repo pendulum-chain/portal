@@ -15,9 +15,9 @@ import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
     walletAccount,
-    storage,
-    dropdown,
-    modalState,
+    storage: { merge },
+    dropdown: [isOpen, { toggle }],
+    modalState: [modalType, setModalType],
     onFromChange,
     onToChange,
     swapQuery,
@@ -31,9 +31,6 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     register,
     formState: { errors },
   } = form;
-  const { merge } = storage;
-  const [isOpen, { toggle }] = dropdown;
-  const [modalType, setModalType] = modalState;
   const swapData = swapQuery.data || {};
 
   return (
