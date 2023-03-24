@@ -7,7 +7,7 @@ import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Asset } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
+import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import Big from 'big.js';
@@ -364,21 +364,19 @@ function Issue(props: IssueProps): JSX.Element {
               rules={{
                 required: 'Amount is required',
                 validate: (value) => {
-                  console.log('value', value);
-                  const floatString = parseFloat(value).toString();
-                  console.log('floatString', floatString);
-                  if (floatString.split('.')[1] && floatString.split('.')[1].length > 7) {
+                  if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
                 },
               }}
               name="amount"
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <LabelledInputField
                   autoSelect
-                  error={errors.amount?.message}
+                  error={error?.message}
                   label="From Stellar"
                   type="number"
+                  step="any"
                   style={{ flexGrow: 2 }}
                   {...field}
                 />

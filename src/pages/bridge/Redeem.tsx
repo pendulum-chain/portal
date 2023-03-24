@@ -7,7 +7,12 @@ import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Asset } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey, isPublicKey, StellarPublicKeyPattern } from '../../helpers/stellar';
+import {
+  convertRawHexKeyToPublicKey,
+  isCompatibleStellarAmount,
+  isPublicKey,
+  StellarPublicKeyPattern,
+} from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import Big from 'big.js';
@@ -302,11 +307,19 @@ function Redeem(props: RedeemProps): JSX.Element {
           <div className="flex items-center">
             <Controller
               control={control}
-              rules={{ required: 'Amount is required' }}
-              render={({ field }) => (
+              rules={{
+                required: 'Amount is required',
+                validate: (value) => {
+                  if (!isCompatibleStellarAmount(value)) {
+                    return 'Max 7 decimals';
+                  }
+                },
+              }}
+              name="amount"
+              render={({ field, fieldState: { error } }) => (
                 <LabelledInputField
                   autoSelect
-                  error={errors.amount?.message}
+                  error={error?.message}
                   label="From Amplitude"
                   type="number"
                   step="any"
@@ -314,7 +327,6 @@ function Redeem(props: RedeemProps): JSX.Element {
                   {...field}
                 />
               )}
-              name="amount"
             />
             <div className="px-1" />
             <AssetSelector
