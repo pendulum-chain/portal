@@ -3,7 +3,6 @@ import { forwardRef } from 'react';
 import './styles.css';
 
 interface Props {
-  autoSelect?: boolean;
   label?: string;
   secondaryLabel?: string;
   color?: string;
@@ -15,23 +14,10 @@ interface Props {
   extraBtnAction?: () => void;
   onChange?: (value: string) => void;
   style?: React.CSSProperties;
-  errorMessage?: string;
 }
 
 const LabelledInputField = forwardRef((props: Props & InputProps) => {
-  const {
-    autoSelect,
-    color,
-    error,
-    label,
-    secondaryLabel,
-    onChange,
-    extraBtnAction,
-    extraBtnText,
-    errorMessage,
-    style,
-    ...rest
-  } = props;
+  const { color, error, label, secondaryLabel, onChange, extraBtnAction, extraBtnText, style, ...rest } = props;
 
   const inputColor = error ? 'error' : color;
 
@@ -44,7 +30,7 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
         </label>
         <div className="input-container">
           <Input
-            className="border border-gray-500 rounded-md bg-transparent"
+            className={`border rounded-md bg-transparent ${!error && 'border-gray-500'}`}
             color={inputColor}
             {...rest}
             onFocus={(event: React.TargetedEvent) => {
