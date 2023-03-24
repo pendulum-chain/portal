@@ -87,3 +87,12 @@ export function calculateDeadline(
   const end = now.plus({ seconds: remainingDurationSecs });
   return end;
 }
+
+export function estimateRequestCreationTime(
+  activeBlockOpenTime: number,
+  blockTimeSec = 12,
+) {
+  const secondsAgo = activeBlockOpenTime * blockTimeSec;
+  const now = DateTime.now();
+  return now.minus({ seconds: secondsAgo })
+}

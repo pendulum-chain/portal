@@ -14,8 +14,9 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
-import { BlockNumber } from '@polkadot/types/interfaces';
 import { nativeStellarToDecimal } from '../../helpers/parseNumbers';
+import { estimateRequestCreationTime } from '../../helpers/spacewalk';
+import { DateTime } from 'luxon';
 
 export function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
@@ -23,9 +24,6 @@ export function Transfers(): JSX.Element {
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
 
   useEffect(() => {
-    console.log('fetching entries');
-    const getTimeFromBlockHeigh = (_: BlockNumber) => 'Aug 10 2022 13:02:54';
-
     const fetchAllEntries = async () => {
       const issueEntries = await getIssueRequests();
       const redeemEntries = await getRedeemRequests();
@@ -33,7 +31,7 @@ export function Transfers(): JSX.Element {
 
       issueEntries.forEach((e) => {
         entries.push({
-          updated: getTimeFromBlockHeigh(e.request.opentime),
+          updated: estimateRequestCreationTime(e.request.opentime.toNumber()).toLocaleString(DateTime.DATETIME_SHORT),
           amount: nativeStellarToDecimal(e.request.amount.toString()).toString(),
           transactionId: e.id.toString(),
           type: TransferType.issue,
@@ -43,7 +41,7 @@ export function Transfers(): JSX.Element {
 
       redeemEntries.forEach((e) => {
         entries.push({
-          updated: getTimeFromBlockHeigh(e.request.opentime),
+          updated: estimateRequestCreationTime(e.request.opentime.toNumber()).toLocaleString(DateTime.DATETIME_SHORT),
           amount: nativeStellarToDecimal(e.request.amount.toString()).toString(),
           transactionId: e.id.toString(),
           type: TransferType.redeem,
