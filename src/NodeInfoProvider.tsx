@@ -30,12 +30,8 @@ const NodeInfoProvider = ({
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
-  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(
-    undefined,
-  );
-  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
-    Promise<unknown>
-  >(Promise.resolve());
+  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(undefined);
+  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
     let disconnect: () => void = () => undefined;
@@ -108,18 +104,9 @@ const NodeInfoProvider = ({
     });
 
     return disconnect;
-  }, [
-    currentTenantRPC,
-    tenantRPC,
-    pendingInitiationPromise,
-    setPendingInitiationPromise,
-  ]);
+  }, [currentTenantRPC, tenantRPC, pendingInitiationPromise, setPendingInitiationPromise]);
 
-  return (
-    <NodeInfoContext.Provider value={{ state, setState }}>
-      {children}
-    </NodeInfoContext.Provider>
-  );
+  return <NodeInfoContext.Provider value={{ state, setState }}>{children}</NodeInfoContext.Provider>;
 };
 
 const useNodeInfoState = () => useContext(NodeInfoContext);

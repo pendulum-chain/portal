@@ -36,27 +36,16 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   return (
     <>
       <Card bordered className="w-full max-w-xl bg-base-100 shadow-xl">
-        <form
-          className="card-body text-gray-800"
-          onSubmit={form.handleSubmit((data) => submitMutation.mutate(data))}
-        >
+        <form className="card-body text-gray-800" onSubmit={form.handleSubmit((data) => submitMutation.mutate(data))}>
           <div className="flex justify-between mb-2">
             <Card.Title tag="h2" className="text-3xl font-normal">
               Swap
             </Card.Title>
             <Dropdown vertical="end">
-              <Button
-                color="ghost"
-                shape="circle"
-                className="text-gray-600"
-                type="button"
-              >
+              <Button color="ghost" shape="circle" className="text-gray-600" type="button">
                 <Cog8ToothIcon className="h-8 w-8" />
               </Button>
-              <Dropdown.Menu
-                tabIndex={0}
-                className="p-4 shadow-lg bg-base-100 border rounded-lg w-64"
-              >
+              <Dropdown.Menu tabIndex={0} className="p-4 shadow-lg bg-base-100 border rounded-lg w-64">
                 <div className="w-full">
                   <h4 className="font-semibold">Settings</h4>
                   <div className="mt-4 text-sm">
@@ -94,9 +83,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                               }),
                           })}
                         />
-                        <div className="absolute right-0 top-0 w-5 h-full flex items-center">
-                          %
-                        </div>
+                        <div className="absolute right-0 top-0 w-5 h-full flex items-center">%</div>
                       </div>
                     </div>
                   </div>
@@ -132,11 +119,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             token="ETH"
             onValueSelect={() => console.log('! TODO')}
             onOpenSelector={() => setModalType('from')}
-            className={`border ${errorClass(
-              errors.fromAmount,
-              'border-red-600',
-              'border-transparent',
-            )}`}
+            className={`border ${errorClass(errors.fromAmount, 'border-red-600', 'border-transparent')}`}
             value={
               <input
                 autoFocus
@@ -151,24 +134,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             token="USDC"
             onOpenSelector={() => setModalType('to')}
             isLoading={swapQuery.isLoading}
-            className={`border ${errorClass(
-              errors.to,
-              'border-red-600',
-              'border-transparent',
-            )}`}
+            className={`border ${errorClass(errors.to, 'border-red-600', 'border-transparent')}`}
             value={120}
           >
             <Fragment>
               <div className="mt-4 h-px -mx-4 bg-gray-200" />
-              <div
-                className={`collapse text-gray-500 -mx-4 text-sm${
-                  isOpen ? ' collapse-open' : ''
-                }`}
-              >
-                <div
-                  className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0"
-                  onClick={toggle}
-                >
+              <div className={`collapse text-gray-500 -mx-4 text-sm${isOpen ? ' collapse-open' : ''}`}>
+                <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
                   <div className="flex items-center">
                     <div className="tooltip" data-tip="! TODO" title="! TODO">
                       <InformationCircleIcon className="w-5 h-5 mr-1" />
@@ -204,12 +176,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </SwapToken>
           <div className="mt-6">
             {/* <Validation errors={errors} className="mb-2" /> */}
-            <Button
-              variant="primary"
-              className="w-full text-base"
-              disabled={!walletAccount?.wallet}
-              type="submit"
-            >
+            <Button variant="primary" className="w-full text-base" disabled={!walletAccount?.wallet} type="submit">
               Swap
             </Button>
           </div>
@@ -220,9 +187,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         className="modal-top"
         assets={tokensQuery.data}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
-        selected={
-          modalType === 'from' ? form.getValues().from : form.getValues().to
-        }
+        selected={modalType === 'from' ? form.getValues().from : form.getValues().to}
         onClose={() => setModalType(undefined)}
         isLoading={tokensQuery.isLoading}
       />

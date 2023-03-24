@@ -41,28 +41,21 @@ const Table = <T,>({
   className,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
-  const {
-    getHeaderGroups,
-    getRowModel,
-    getPageCount,
-    nextPage,
-    previousPage,
-    setGlobalFilter,
-    getState,
-  } = useReactTable({
-    columns,
-    data,
-    initialState: {
-      pagination: {
-        pageSize: ps,
+  const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState } =
+    useReactTable({
+      columns,
+      data,
+      initialState: {
+        pagination: {
+          pageSize: ps,
+        },
       },
-    },
-    autoResetAll: false,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
+      autoResetAll: false,
+      getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+    });
   const {
     pagination: { pageSize, pageIndex },
     globalFilter,
@@ -74,10 +67,7 @@ const Table = <T,>({
       {search ? (
         <div className="flex flex-wrap flex-row gap-2 mb-2">
           <div className="ml-auto">
-            <GlobalFilter
-              globalFilter={globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
+            <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
           </div>
         </div>
       ) : null}
@@ -90,29 +80,17 @@ const Table = <T,>({
                   <th
                     key={header.id}
                     colSpan={header.colSpan}
-                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''
-                      }`}
+                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''}`}
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     <div className="flex flex-row items-center font-sm text-gray-400 normal-case font-semibold">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                       {header.column.getCanSort() ? (
-                        <div
-                          className={`sort ${header.column.getIsSorted()} ml-2 text-gray-400 mb-0.5`}
-                        >
+                        <div className={`sort ${header.column.getIsSorted()} ml-2 text-gray-400 mb-0.5`}>
                           {header.column.getIsSorted() === 'desc' ? (
-                            <ChevronDownIcon
-                              className="w-3 h-3"
-                              stroke-width="2"
-                            />
+                            <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
                           ) : (
-                            <ChevronUpIcon
-                              className="w-3 h-3"
-                              stroke-width="2"
-                            />
+                            <ChevronUpIcon className="w-3 h-3" stroke-width="2" />
                           )}
                         </div>
                       ) : null}
@@ -129,10 +107,7 @@ const Table = <T,>({
                   {row.getVisibleCells().map((cell) => {
                     return (
                       <td key={cell.id} className="bg-white border-gray-200">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     );
                   })}

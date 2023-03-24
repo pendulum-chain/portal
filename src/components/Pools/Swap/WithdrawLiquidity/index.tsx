@@ -10,9 +10,7 @@ export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
 }
 
-const WithdrawLiquidity = ({
-  data,
-}: WithdrawLiquidityProps): JSX.Element | null => {
+const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
   // ! TODO: get stats, create withdraw liquidity transaction
   const {
     toggle,
@@ -31,18 +29,12 @@ const WithdrawLiquidity = ({
           <div className="flex flex-col items-center justify-center text-center mt-4 mb-10">
             <Spinner size={100} color="#ddd" />
             <h4 className="text-2xl mt-10">Waiting for Confirmation</h4>
-            <p className="text-gray-500 mt-4">
-              Please confirm this transaction in your wallet
-            </p>
+            <p className="text-gray-500 mt-4">Please confirm this transaction in your wallet</p>
           </div>
           <div className="flex items-center justify-between rounded-lg bg-gray-100 p-4">
             <div className="flex items-center gap-2 text-lg">
               <div className="rounded-full bg-gray-300 w-10 h-10 p-px">
-                <img
-                  src={pendulumIcon}
-                  alt="Pendulum"
-                  className="h-full w-auto"
-                />
+                <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
               </div>
               <div>
                 <strong>{data.asset.symbol}</strong>
@@ -78,9 +70,7 @@ const WithdrawLiquidity = ({
           >
             <ArrowLeftIcon className="w-4 h-4" />
           </Button>
-          <h3 className="text-3xl font-normal">
-            Withdraw {data.asset?.symbol}
-          </h3>
+          <h3 className="text-3xl font-normal">Withdraw {data.asset?.symbol}</h3>
         </div>
         <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
@@ -108,13 +98,7 @@ const WithdrawLiquidity = ({
                 MAX
               </Button>
             </div>
-            <Range
-              color="primary"
-              min={0}
-              max={100}
-              size="sm"
-              {...register('amount')}
-            />
+            <Range color="primary" min={0} max={100} size="sm" {...register('amount')} />
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
             <div className="flex items-center justify-between">

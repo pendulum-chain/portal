@@ -28,18 +28,12 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
           <div className="flex flex-col items-center justify-center text-center mt-4 mb-10">
             <Spinner size={100} color="#ddd" />
             <h4 className="text-2xl mt-10">Waiting for Confirmation</h4>
-            <p className="text-gray-500 mt-4">
-              Please confirm this transaction in your wallet
-            </p>
+            <p className="text-gray-500 mt-4">Please confirm this transaction in your wallet</p>
           </div>
           <div className="flex items-center justify-between rounded-lg bg-gray-100 p-4">
             <div className="flex items-center gap-2 text-lg">
               <div className="rounded-full bg-gray-300 w-10 h-10 p-px">
-                <img
-                  src={pendulumIcon}
-                  alt="Pendulum"
-                  className="h-full w-auto"
-                />
+                <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
               </div>
               <div>
                 <strong>{data.asset.symbol}</strong>

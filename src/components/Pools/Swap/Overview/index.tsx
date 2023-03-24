@@ -24,9 +24,7 @@ const PoolOverview = ({ data }: PoolOverviewProps) => {
           </strong>
         </div>
       </div>
-      <div className="my-6">
-        TODO: name, logo, stats - earned fees, deposited date, TVL, APR
-      </div>
+      <div className="my-6">TODO: name, logo, stats - earned fees, deposited date, TVL, APR</div>
       <Button
         variant="primary"
         className="w-full text-base"

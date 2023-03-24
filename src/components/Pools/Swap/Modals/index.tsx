@@ -21,13 +21,7 @@ const PoolsModals = () => {
     <>
       <Modal open={!!Component}>
         <Modal.Header className="mb-0">
-          <Button
-            size="sm"
-            shape="circle"
-            className="absolute right-2 top-2"
-            onClick={() => setModal()}
-            type="button"
-          >
+          <Button size="sm" shape="circle" className="absolute right-2 top-2" onClick={() => setModal()} type="button">
             ✕
           </Button>
         </Modal.Header>

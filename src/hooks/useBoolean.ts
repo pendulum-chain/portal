@@ -13,10 +13,7 @@ export function useBoolean(initial = false): UseBoolean {
   const toggle = useCallback(() => setValue((v) => !v), []);
   const setTrue = useCallback(() => setValue(true), []);
   const setFalse = useCallback(() => setValue(false), []);
-  const actions = useMemo(
-    () => ({ setValue, toggle, setTrue, setFalse }),
-    [setFalse, setTrue, toggle],
-  );
+  const actions = useMemo(() => ({ setValue, toggle, setTrue, setFalse }), [setFalse, setTrue, toggle]);
   return useMemo(() => [value, actions], [actions, value]);
 }
 

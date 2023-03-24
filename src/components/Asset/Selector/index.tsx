@@ -27,9 +27,7 @@ const AssetSelector = ({
   ...rest
 }: AssetSelectorProps): JSX.Element | null => {
   const [open, { setFalse, setTrue }] = useBoolean();
-  const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>(
-    assets.find((i) => i.address === selected),
-  );
+  const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>(assets.find((i) => i.address === selected));
 
   const internalOnSelect = useCallback(
     (asset: Asset) => {

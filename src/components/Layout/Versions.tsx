@@ -32,11 +32,7 @@ const Versions: FC<Props> = memo(({ tenantName }: Props) => {
       {indicator}
     </span> */}
       <p>DApp: {state.nodeName} </p>
-      <p>
-        Runtime:{' '}
-        {(state.nodeVersion && state.nodeVersion.toString()) ||
-          '0.0.0-00000000000'}
-      </p>
+      <p>Runtime: {(state.nodeVersion && state.nodeVersion.toString()) || '0.0.0-00000000000'}</p>
     </div>
   );
 });

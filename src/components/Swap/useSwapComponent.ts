@@ -30,11 +30,7 @@ export const defaults: SwapSettings = {
   ...config.swap.defaults,
 };
 
-export const useSwapComponent = ({
-  from,
-  to,
-  onChange,
-}: UseSwapComponentProps) => {
+export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) => {
   const {
     state: { walletAccount },
   } = useGlobalState();
@@ -97,9 +93,7 @@ export const useSwapComponent = ({
   // ? might make sense to move queries into custom hooks that can be reused
   const balancesQuery = useQuery(
     balancesEnabled ? [cacheKeys.swapData, walletAccount.address] : [],
-    balancesEnabled
-      ? () => getWalletBalances(api, walletAccount.address)
-      : emptyFn,
+    balancesEnabled ? () => getWalletBalances(api, walletAccount.address) : emptyFn,
     {
       ...inactiveOptions[0],
       //refetchInterval: 10000,
@@ -111,18 +105,14 @@ export const useSwapComponent = ({
   );
 
   // ! TODO: fetch swap rates and other info, update everytime token changes, refetch interval
-  const swapQuery = useQuery(
-    [cacheKeys.swapData, storage.state?.from, storage.state?.to],
-    () => undefined,
-    {
-      ...inactiveOptions[0],
-      refetchInterval: 15000, // 15s
-      enabled: false,
-      onError: (err) => {
-        toast(err || 'Error fetching swap rates', { type: 'error' });
-      },
+  const swapQuery = useQuery([cacheKeys.swapData, storage.state?.from, storage.state?.to], () => undefined, {
+    ...inactiveOptions[0],
+    refetchInterval: 15000, // 15s
+    enabled: false,
+    onError: (err) => {
+      toast(err || 'Error fetching swap rates', { type: 'error' });
     },
-  );
+  });
 
   const onFromChange = useCallback(
     (a: string | Asset) => {

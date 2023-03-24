@@ -21,11 +21,9 @@ function Redeem(): JSX.Element | null {
   vaults.forEach((vault) => {
     console.log('vault', vault);
     console.log('collateral', vault.id.currencies.collateral);
-    vaultRegistryHelpers
-      .getVaultStellarPublicKey(vault.id.accountId)
-      .then((key) => {
-        console.log('key', key?.publicKey());
-      });
+    vaultRegistryHelpers.getVaultStellarPublicKey(vault.id.accountId).then((key) => {
+      console.log('key', key?.publicKey());
+    });
   });
 
   return (
@@ -73,10 +71,7 @@ function Redeem(): JSX.Element | null {
               <NavLink className="text-white" to="/amplitude/bridge/redeem">
                 Redeem
               </NavLink>
-              <NavLink
-                className="hover:text-white"
-                to="/amplitude/bridge/transfer"
-              >
+              <NavLink className="hover:text-white" to="/amplitude/bridge/transfer">
                 Transfer
               </NavLink>
             </div>

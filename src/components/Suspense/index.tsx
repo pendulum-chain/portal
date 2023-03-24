@@ -6,10 +6,7 @@ interface Opts<T> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const SuspenseLoad = <T extends () => Promise<any>>({
-  importFn,
-  fallback,
-}: Opts<T>) => {
+export const SuspenseLoad = <T extends () => Promise<any>>({ importFn, fallback }: Opts<T>) => {
   const LazyComponent = lazy(importFn);
   return (
     <Suspense fallback={fallback || null}>

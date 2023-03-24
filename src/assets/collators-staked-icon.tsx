@@ -1,11 +1,5 @@
 const StakedIcon = () => (
-  <svg
-    width="28"
-    height="29"
-    viewBox="0 0 28 29"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M22.5625 13.0625C22.5625 18.2875 18.2875 22.5625 13.0625 22.5625C7.8375 22.5625 3.5625 18.2875 3.5625 13.0625C3.5625 7.8375 7.8375 3.5625 13.0625 3.5625C18.2875 3.5625 22.5625 7.8375 22.5625 13.0625Z"
       fill="#ECC52E"

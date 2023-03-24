@@ -12,14 +12,8 @@ import LabelledSelector from '../../components/LabelledSelector';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { decimalToNative, nativeToDecimal } from '../../helpers/parseNumbers';
-import {
-  calculateDeadline,
-  convertCurrencyToStellarAsset,
-} from '../../helpers/spacewalk';
-import {
-  convertRawHexKeyToPublicKey,
-  stringifyStellarAsset,
-} from '../../helpers/stellar';
+import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey, stringifyStellarAsset } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
@@ -129,9 +123,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element | null {
   const nativeCurrency = network === 'Amplitude' ? 'AMPE' : 'PEN';
   const wrappedCurrencyPrefix = network === 'Amplitude' ? 'a' : 'p';
 
-  const wrappedCurrencyName = bridgedAsset
-    ? wrappedCurrencyPrefix + bridgedAsset.getCode()
-    : '';
+  const wrappedCurrencyName = bridgedAsset ? wrappedCurrencyPrefix + bridgedAsset.getCode() : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -200,20 +192,15 @@ interface ConfirmationDialogProps {
   visible: boolean;
 }
 
-function ConfirmationDialog(
-  props: ConfirmationDialogProps,
-): JSX.Element | null {
+function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element | null {
   const { issueRequest, visible, onClose } = props;
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [remainingDurationString, setRemainingDurationString] =
-    useState<string>('');
+  const [remainingDurationString, setRemainingDurationString] = useState<string>('');
 
   const totalAmount = issueRequest
-    ? nativeToDecimal(
-        issueRequest.request.amount.add(issueRequest.request.fee).toString(),
-      ).toString()
+    ? nativeToDecimal(issueRequest.request.amount.add(issueRequest.request.fee).toString()).toString()
     : '';
   const currency = issueRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
@@ -242,9 +229,7 @@ function ConfirmationDialog(
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const newDeadlineString = deadline
-        .diff(DateTime.now())
-        .toFormat('hh:mm:ss');
+      const newDeadlineString = deadline.diff(DateTime.now()).toFormat('hh:mm:ss');
       setRemainingDurationString(newDeadlineString);
     });
 
@@ -254,13 +239,7 @@ function ConfirmationDialog(
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Deposit</Modal.Header>
-      <Button
-        color="ghost"
-        size="md"
-        shape="circle"
-        className="absolute right-4 top-4"
-        onClick={onClose}
-      >
+      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
         ✕
       </Button>
       <Modal.Body>
@@ -269,11 +248,7 @@ function ConfirmationDialog(
             Send {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by{' '}
-            {asset && (
-              <PublicKey variant="short" publicKey={asset?.getIssuer()} />
-            )}
-            )
+            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
           </div>
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
@@ -282,13 +257,11 @@ function ConfirmationDialog(
         <Divider />
         <div>
           <div className="text-sm">
-            Warning: Make sure that the USDC you are sending are issued by the
-            correct issuer.
+            Warning: Make sure that the USDC you are sending are issued by the correct issuer.
           </div>
         </div>
         <div className="text-sm mt-4">
-          Note: If you have already made the payment, please wait for a few
-          minutes for it to be confirmed.
+          Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
         </div>
       </Modal.Body>
 
@@ -306,12 +279,9 @@ function Issue(): JSX.Element | null {
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-  const [submittedIssueRequest, setSubmittedIssueRequest] = useState<
-    RichIssueRequest | undefined
-  >(undefined);
+  const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
@@ -342,9 +312,7 @@ function Issue(): JSX.Element | null {
         return false;
       }
 
-      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(
-        vault.id.currencies.wrapped,
-      );
+      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
       return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
     });
   }, [selectedAsset, vaults]);
@@ -366,10 +334,7 @@ function Issue(): JSX.Element | null {
       return undefined;
     }
 
-    return createIssueRequestExtrinsic(
-      amountNative.toString(),
-      selectedVault.id,
-    );
+    return createIssueRequestExtrinsic(amountNative.toString(), selectedVault.id);
   }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(() => {
@@ -390,18 +355,12 @@ function Issue(): JSX.Element | null {
           const errors = getErrors(events, api);
           if (status.isInBlock) {
             if (errors.length > 0) {
-              const errorMessage = `Transaction failed with errors: ${errors.join(
-                '\n',
-              )}`;
+              const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
               console.error(errorMessage);
               toast(errorMessage, { type: 'error' });
             }
           } else if (status.isFinalized) {
-            const requestIssueEvents = getEventBySectionAndMethod(
-              events,
-              'issue',
-              'RequestIssue',
-            );
+            const requestIssueEvents = getEventBySectionAndMethod(events, 'issue', 'RequestIssue');
 
             // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
@@ -427,13 +386,7 @@ function Issue(): JSX.Element | null {
         toast('Transaction submission failed', { type: 'error' });
         setSubmissionPending(false);
       });
-  }, [
-    api,
-    getIssueRequest,
-    requestIssueExtrinsic,
-    selectedVault,
-    walletAccount,
-  ]);
+  }, [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
@@ -474,17 +427,9 @@ function Issue(): JSX.Element | null {
             <span className="ml-2">Manually select vault</span>
           </div>
           {manualVaultSelection && (
-            <VaultSelector
-              vaults={vaultsForCurrency}
-              onChange={setSelectedVault}
-              selectedVault={selectedVault}
-            />
+            <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
           )}
-          <FeeBox
-            amountDecimal={amount}
-            bridgedAsset={selectedAsset}
-            extrinsic={requestIssueExtrinsic}
-          />
+          <FeeBox amountDecimal={amount} bridgedAsset={selectedAsset} extrinsic={requestIssueExtrinsic} />
           <Button
             className="w-full"
             color="primary"

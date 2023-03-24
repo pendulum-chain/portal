@@ -7,11 +7,5 @@ export const defaultPageLoader = (
 );
 
 export const PageLoader = (props: { className?: string }) => (
-  <img
-    src={logoLoader}
-    width="120px"
-    height="120px"
-    alt="Pendulum"
-    {...props}
-  />
+  <img src={logoLoader} width="120px" height="120px" alt="Pendulum" {...props} />
 );

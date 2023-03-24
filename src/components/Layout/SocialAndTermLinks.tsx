@@ -48,11 +48,7 @@ const SocialAndTermLinks = (): JSX.Element | null => {
             </a>
           </li>
           <li>
-            <a
-              href="https://pendulumchain.org/legal/privacy-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://pendulumchain.org/legal/privacy-policy" target="_blank" rel="noopener noreferrer">
               Privacy
             </a>
           </li>

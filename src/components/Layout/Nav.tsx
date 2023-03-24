@@ -10,9 +10,7 @@ const Nav = memo(() => {
 
   const linksArr = useMemo<Links>(() => {
     const [path] = pathname.split('?');
-    const key = (network ? path.replace(network, '') : path)
-      .split('/')
-      .filter(Boolean)[0] as keyof typeof links;
+    const key = (network ? path.replace(network, '') : path).split('/').filter(Boolean)[0] as keyof typeof links;
     return links[key] || links.default;
   }, [pathname, network]);
 
@@ -28,12 +26,7 @@ const Nav = memo(() => {
           </>
         );
         return isExternal ? (
-          <a
-            key={i}
-            href={link}
-            {...props}
-            className={props?.className?.() || ''}
-          >
+          <a key={i} href={link} {...props} className={props?.className?.() || ''}>
             {linkUi}
           </a>
         ) : (

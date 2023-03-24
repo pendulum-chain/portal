@@ -12,18 +12,11 @@ export interface AssetSelectorProps {
 }
 
 // ! TODO: complete
-const AssetList = ({
-  assets,
-  onSelect,
-  selected,
-}: AssetSelectorProps): JSX.Element | null => {
+const AssetList = ({ assets, onSelect, selected }: AssetSelectorProps): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
-    () =>
-      filter && assets
-        ? matchSorter(assets, filter, { keys: ['name', 'address', 'symbol'] })
-        : assets,
+    () => (filter && assets ? matchSorter(assets, filter, { keys: ['name', 'address', 'symbol'] }) : assets),
     [assets, filter],
   );
 
@@ -32,9 +25,7 @@ const AssetList = ({
       <Input
         bordered
         className="w-full mb-8"
-        onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-          setFilter(ev.currentTarget.value)
-        }
+        onChange={(ev: ChangeEvent<HTMLInputElement>) => setFilter(ev.currentTarget.value)}
         placeholder="Find by name or address"
       />
       <div className="flex flex-col gap-1">
@@ -45,17 +36,10 @@ const AssetList = ({
             variant="ghost"
             key={token.address}
             onClick={() => onSelect(token)}
-            className={`items-center w-full gap-4 text-base${
-              selected === token.address ? ' bg-gray-100' : ''
-            }`}
+            className={`items-center w-full gap-4 text-base${selected === token.address ? ' bg-gray-100' : ''}`}
           >
             <div>
-              <Avatar
-                size="xs"
-                letters={token.symbol}
-                shape="circle"
-                className="text-xs"
-              />
+              <Avatar size="xs" letters={token.symbol} shape="circle" className="text-xs" />
             </div>
             <div>
               <p>
@@ -87,13 +71,7 @@ export const AssetSelectorModal = ({
   return (
     <Modal {...rest}>
       <Modal.Header className="mb-0">
-        <Button
-          size="sm"
-          shape="circle"
-          className="absolute right-2 top-2"
-          onClick={onClose}
-          type="button"
-        >
+        <Button size="sm" shape="circle" className="absolute right-2 top-2" onClick={onClose} type="button">
           ✕
         </Button>
         <h3 className="text-2xl font-normal">Select a token</h3>
@@ -103,11 +81,7 @@ export const AssetSelectorModal = ({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <AssetList
-              assets={assets}
-              onSelect={onSelect}
-              selected={selected}
-            />
+            <AssetList assets={assets} onSelect={onSelect} selected={selected} />
           )}
         </div>
       </Modal.Body>

@@ -1,7 +1,4 @@
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { UseMutationResult } from '@tanstack/react-query';
 import { Button, Modal, ModalProps } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
@@ -13,12 +10,7 @@ export type ProgressProps = {
   onClose: () => void;
 } & ModalProps;
 
-const Progress = ({
-  transaction,
-  status,
-  onClose,
-  ...rest
-}: ProgressProps): JSX.Element | null => {
+const Progress = ({ transaction, status, onClose, ...rest }: ProgressProps): JSX.Element | null => {
   let ui = null;
   if (transaction) {
     if (status === 'idle' || status === 'loading') {
@@ -35,14 +27,9 @@ const Progress = ({
                   Waiting for confirmation <br />
                 </>
               )}
-              Swapping {transaction.fromAmount} {transaction.from} for{' '}
-              {transaction.toAmount} {transaction.to}
+              Swapping {transaction.fromAmount} {transaction.from} for {transaction.toAmount} {transaction.to}
             </h4>
-            {!isLoading && (
-              <p className="text-gray-400 mt-4">
-                Confirm this transaction in your wallet
-              </p>
-            )}
+            {!isLoading && <p className="text-gray-400 mt-4">Confirm this transaction in your wallet</p>}
           </div>
         </>
       );
@@ -83,13 +70,7 @@ const Progress = ({
   return (
     <Modal {...rest}>
       <Modal.Header className="mb-0">
-        <Button
-          size="sm"
-          shape="circle"
-          className="absolute right-2 top-2"
-          onClick={onClose}
-          type="button"
-        >
+        <Button size="sm" shape="circle" className="absolute right-2 top-2" onClick={onClose} type="button">
           ✕
         </Button>
       </Modal.Header>

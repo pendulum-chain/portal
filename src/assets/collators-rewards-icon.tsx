@@ -1,11 +1,5 @@
 const RewardsIcon = () => (
-  <svg
-    width="14"
-    height="18"
-    viewBox="0 0 14 18"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#clip0_362_1997)">
       <path
         d="M10.2812 15.1797H9.87109V14.3047H4.12891V15.1797H3.71875C3.49204 15.1797 3.30859 15.3631 3.30859 15.5898C3.30859 15.8166 3.49204 16 3.71875 16H10.2812C10.508 16 10.6914 15.8166 10.6914 15.5898C10.6914 15.3631 10.508 15.1797 10.2812 15.1797Z"
@@ -18,12 +12,7 @@ const RewardsIcon = () => (
     </g>
     <defs>
       <clipPath id="clip0_362_1997">
-        <rect
-          width="14"
-          height="17.0964"
-          fill="white"
-          transform="translate(0 0.500977)"
-        />
+        <rect width="14" height="17.0964" fill="white" transform="translate(0 0.500977)" />
       </clipPath>
     </defs>
   </svg>

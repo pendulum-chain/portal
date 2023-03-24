@@ -52,16 +52,12 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   enableSorting: true,
 } as const;
 
-const ActionsColumn = ({
-  row: { original },
-}: CellContext<SwapPoolColumn, unknown>): JSX.Element | null => {
+const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknown>): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
   return (
     <div className="flex items-center gap-2 text-right">
       <Button
-        onClick={() =>
-          toggle({ type: ModalTypes.AddLiquidity, props: { data: original } })
-        }
+        onClick={() => toggle({ type: ModalTypes.AddLiquidity, props: { data: original } })}
         size="sm"
         variant="outline"
         className="px-3"

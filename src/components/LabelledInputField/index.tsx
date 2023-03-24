@@ -14,26 +14,14 @@ interface Props {
 }
 
 function LabelledInputField(props: Props & InputProps) {
-  const {
-    label,
-    secondaryLabel,
-    onChange,
-    extraBtnAction,
-    extraBtnText,
-    ...rest
-  } = props;
+  const { label, secondaryLabel, onChange, extraBtnAction, extraBtnText, ...rest } = props;
 
   return (
-    <div
-      className="flex w-full component-preview items-center justify-center gap-2 font-sans"
-      style={props.style}
-    >
+    <div className="flex w-full component-preview items-center justify-center gap-2 font-sans" style={props.style}>
       <div className="form-control w-full">
         <label className="label">
           {label && <span className="label-text">{label}</span>}
-          {secondaryLabel && (
-            <span className="label-text-alt">{secondaryLabel}</span>
-          )}
+          {secondaryLabel && <span className="label-text-alt">{secondaryLabel}</span>}
         </label>
         <div className="input-container">
           <Input
@@ -52,10 +40,7 @@ function LabelledInputField(props: Props & InputProps) {
             }}
           />
           {extraBtnText && extraBtnAction && (
-            <button
-              className="rounded-md max-button bg-base-200"
-              onClick={extraBtnAction}
-            >
+            <button className="rounded-md max-button bg-base-200" onClick={extraBtnAction}>
               {extraBtnText}
             </button>
           )}

@@ -5,8 +5,7 @@ import { emptyFn } from '../../helpers/general';
 
 export type ApiArgs<T extends Dict<any> = [never]> = { api: ApiPromise } & T;
 
-export const isApiConnected = (api?: ApiPromise): api is ApiPromise =>
-  !!api && api.isConnected;
+export const isApiConnected = (api?: ApiPromise): api is ApiPromise => !!api && api.isConnected;
 
 export const fnOrEmpty =
   <T extends any[], R>(fn: (api: ApiPromise, ...args: T) => R) =>

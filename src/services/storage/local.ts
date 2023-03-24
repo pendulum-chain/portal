@@ -1,7 +1,6 @@
 import { Storage } from './types';
 
-const exists = (value?: string | null): value is string =>
-  !!value && value.length > 0;
+const exists = (value?: string | null): value is string => !!value && value.length > 0;
 export const storageService: Storage = {
   get: (key, defaultValue?) => {
     if (!localStorage) return defaultValue;
@@ -25,9 +24,7 @@ export const storageService: Storage = {
   set: (key, value?) =>
     localStorage?.setItem(
       key,
-      (value && typeof value === 'object') || Array.isArray(value)
-        ? JSON.stringify(value)
-        : String(value),
+      (value && typeof value === 'object') || Array.isArray(value) ? JSON.stringify(value) : String(value),
     ),
 
   remove: (key) => localStorage?.removeItem(key),

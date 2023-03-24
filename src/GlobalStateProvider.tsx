@@ -23,13 +23,7 @@ const GlobalStateContext = createContext({
   getThemeName: (): ThemeName => ThemeName.Pendulum,
 });
 
-const GlobalStateProvider = ({
-  children,
-  value,
-}: {
-  children: ReactNode;
-  value?: GlobalStateInterface;
-}) => {
+const GlobalStateProvider = ({ children, value }: { children: ReactNode; value?: GlobalStateInterface }) => {
   const { pathname } = useLocation();
 
   const [state, setState] = useState(() => {
@@ -50,14 +44,10 @@ const GlobalStateProvider = ({
   });
 
   const getThemeName = () =>
-    state.tenantName
-      ? config.tenants[state.tenantName]?.theme || ThemeName.Amplitude
-      : ThemeName.Amplitude;
+    state.tenantName ? config.tenants[state.tenantName]?.theme || ThemeName.Amplitude : ThemeName.Amplitude;
 
   return (
-    <GlobalStateContext.Provider value={{ state, setState, getThemeName }}>
-      {children}
-    </GlobalStateContext.Provider>
+    <GlobalStateContext.Provider value={{ state, setState, getThemeName }}>{children}</GlobalStateContext.Provider>
   );
 };
 

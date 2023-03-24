@@ -24,9 +24,7 @@ export default function Layout(): JSX.Element | null {
   useEffect(() => {
     // Only change state if network is different
     const n =
-      network && Object.values<string>(TenantName).includes(network)
-        ? (network as TenantName)
-        : TenantName.Pendulum;
+      network && Object.values<string>(TenantName).includes(network) ? (network as TenantName) : TenantName.Pendulum;
     setState((prevState) => ({
       ...prevState,
       tenantName: n,
@@ -36,14 +34,9 @@ export default function Layout(): JSX.Element | null {
 
   const FooterLink = memo(() => {
     return isPendulum ? (
-      <span onClick={() => (window.location.href = '/amplitude')}>
-        Amplitude
-      </span>
+      <span onClick={() => (window.location.href = '/amplitude')}>Amplitude</span>
     ) : (
-      <span
-        onClick={() => (window.location.href = '/pendulum')}
-        className="hidden"
-      >
+      <span onClick={() => (window.location.href = '/pendulum')} className="hidden">
         Pendulum
       </span>
     );
@@ -66,11 +59,7 @@ export default function Layout(): JSX.Element | null {
             className="pendulum-logo"
             src={sideBarLogo}
             alt=""
-            style={
-              isPendulum
-                ? {}
-                : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
-            }
+            style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
           />
           <Nav />
           <div className="sidebar-footer">
@@ -84,10 +73,7 @@ export default function Layout(): JSX.Element | null {
         <header>
           <div className="flex items-center flex-row-reverse h-15 gap-2">
             <div className="mobile-menu">
-              <button
-                className="menu"
-                onClick={() => setVisible((prev) => !prev)}
-              />
+              <button className="menu" onClick={() => setVisible((prev) => !prev)} />
             </div>
             <OpenWallet networkName={isPendulum ? 'Pendulum' : 'Amplitude'} />
             <div className="dropdown dropdown-end mr-2 hidden">
@@ -111,10 +97,7 @@ export default function Layout(): JSX.Element | null {
                   />
                 </svg>
               </button>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
+              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
                   <FooterLink />
                 </li>

@@ -37,18 +37,11 @@ const units = [
   { divider: 1e-12, prefix: 'pico', char: 'p' },
 ];
 
-export const format = (
-  n: number,
-  tokenSymbol: string | undefined,
-  oneCharOnly = false,
-) => {
+export const format = (n: number, tokenSymbol: string | undefined, oneCharOnly = false) => {
   for (let i = 0; i < units.length; i++) {
     if (n >= units[i].divider) {
       return (
-        prettyNumbers(n / units[i].divider) +
-        ' ' +
-        (oneCharOnly ? units[i].char : units[i].prefix + ' ') +
-        tokenSymbol
+        prettyNumbers(n / units[i].divider) + ' ' + (oneCharOnly ? units[i].char : units[i].prefix + ' ') + tokenSymbol
       );
     }
   }

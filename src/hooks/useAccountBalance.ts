@@ -22,10 +22,7 @@ export const useAccountBalance = (): UseAccountBalanceResponse => {
   const enabled = !!api && !!walletAccount;
   const query = useQuery(
     enabled ? [cacheKeys.walletBalance, walletAccount?.address] : [''],
-    () =>
-      api && walletAccount
-        ? api.query.system.account(walletAccount.address)
-        : undefined,
+    () => (api && walletAccount ? api.query.system.account(walletAccount.address) : undefined),
     {
       enabled,
       ...inactiveOptions[0],

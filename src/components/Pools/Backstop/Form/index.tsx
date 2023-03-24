@@ -7,9 +7,7 @@ export type BackstopPoolFormProps = {
   pool: BackstopPool;
 };
 
-const BackstopPoolForm = ({
-  pool,
-}: BackstopPoolFormProps): JSX.Element | null => {
+const BackstopPoolForm = ({ pool }: BackstopPoolFormProps): JSX.Element | null => {
   const {
     mutation,
     form: {
@@ -59,13 +57,7 @@ const BackstopPoolForm = ({
             </Button>
           </div>
         </div>
-        <Range
-          color="primary"
-          min={0}
-          max={100}
-          size="sm"
-          {...register('amount')}
-        />
+        <Range color="primary" min={0} max={100} size="sm" {...register('amount')} />
       </div>
       <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
         <div className="flex items-center justify-between">

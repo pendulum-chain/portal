@@ -8,10 +8,7 @@ import PoolsModals from './Modals';
 
 const SwapPools = (): JSX.Element | null => {
   // ! TODO: get swap pools and user connected data (user liquidity for all pools)
-  const { data, isLoading } = useQuery<SwapPoolColumn[] | undefined>(
-    [cacheKeys.swapPools],
-    assetsApi.getSwapPools,
-  );
+  const { data, isLoading } = useQuery<SwapPoolColumn[] | undefined>([cacheKeys.swapPools], assetsApi.getSwapPools);
 
   return (
     <ModalProvider>
