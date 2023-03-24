@@ -7,6 +7,7 @@ interface Props<T> {
   onChange: (item: T) => void;
   value?: T;
   style?: React.CSSProperties;
+  selectStyle?: React.CSSProperties;
 }
 
 function LabelledSelector<T extends { id: any; displayName: string }>(props: Props<T>) {
@@ -28,6 +29,7 @@ function LabelledSelector<T extends { id: any; displayName: string }>(props: Pro
             onChange(item);
           }
         }}
+        style={props.selectStyle}
         value={value?.id}
       >
         {items.map((item) => (
