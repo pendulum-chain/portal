@@ -1,7 +1,3 @@
-/**
- * FIXME remove @ts-nocheck, it was specifically added because of some errors in react-table.
- * Probably fixed in https://github.com/pendulum-chain/portal/pull/64
- */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
@@ -22,8 +18,8 @@ import {
   TCollator,
   UserStaking,
 } from './columns';
-import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
+import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 
 function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -71,11 +67,10 @@ function Collators() {
   const data = useMemo<TCollator[] | undefined>(
     () =>
       candidates?.map((candidate) => {
-        const totalStaked = nativeToDecimal(candidate.total);
         return {
           candidate: candidate,
           collator: candidate.id,
-          totalStaked: format(totalStaked, tokenSymbol),
+          totalStaked: nativeToFormat(candidate.total, tokenSymbol),
           delegators: candidate.delegators.length,
           apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
         };

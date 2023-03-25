@@ -1,7 +1,7 @@
 import React from 'react';
 import { useClipboard } from '../../hooks/userinterface';
 import { Button } from 'react-daisyui';
-import { DocumentDuplicateIcon } from '@heroicons/react/20/solid';
+import CopyIcon from '../../assets/CopyIcon';
 
 type Variant = 'full' | 'short' | 'shorter';
 
@@ -71,12 +71,14 @@ interface AddressProps {
   style?: React.CSSProperties;
   icon?: JSX.Element;
   onClick?: () => void;
+  wrap?: boolean;
 }
 
 // tslint:disable-next-line no-shadowed-variable
 export const ClickableAddress = React.memo(function ClickableAddress(props: AddressProps) {
   return (
     <Button
+      className="px-1 h-1"
       color="ghost"
       onClick={props.onClick}
       style={{
@@ -112,5 +114,5 @@ export const CopyableAddress = React.memo(function CopyableAddress(props: Copyab
     clipboard.copyToClipboard(props.publicKey);
   }, [clipboard, onClick, props.publicKey]);
 
-  return <ClickableAddress {...props} onClick={handleClick} icon={<DocumentDuplicateIcon className="w-5 h-5" />} />;
+  return <ClickableAddress {...props} onClick={handleClick} icon={<CopyIcon className="w-4 h-4" />} />;
 });

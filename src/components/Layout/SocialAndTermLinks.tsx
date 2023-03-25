@@ -29,7 +29,7 @@ const SocialAndTermLinks = (): JSX.Element | null => {
         <ul>
           {socialLinks.map(({ href, Logo }, i) => (
             <li key={i}>
-              <a href={href} target="_blank" rel="nofollow noreferrer">
+              <a href={href} target="_blank" rel="nofollow noopener noreferrer">
                 <Logo />
               </a>
             </li>

@@ -1,12 +1,37 @@
-import Banner from '../../assets/banner-spacewalk-4x.png';
-import { useAccountBalance } from '../../hooks/useAccountBalance';
+import { h } from 'preact';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
+import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
+import Banner from '../../assets/banner-spacewalk-4x.png';
 
-function Dashboard() {
+export function Dashboard() {
+  const { state: GlobalState } = useGlobalState();
+  const { walletAccount } = GlobalState;
   const { state } = useNodeInfoState();
+  const { api } = state;
   const { tokenSymbol } = state;
-  const { balance } = useAccountBalance();
+
+  const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
+
+  useEffect(() => {
+    if (!walletAccount?.address) return;
+
+    api?.query.system
+      .account(walletAccount.address)
+      .then((data) => {
+        console.log('setting balance');
+        setAccountBalance(data.data);
+      })
+      .catch((e) => console.error(e));
+  }, [api, walletAccount]);
+
+  const cachedBalance = useMemo(() => {
+    if (!accountBalance) return undefined;
+    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()).toNumber());
+  }, [accountBalance]);
 
   return (
     <div className="mt-10">
@@ -28,15 +53,15 @@ function Dashboard() {
         <div className="card-body">
           <h2 className="card-title float-left">Portfolio</h2>
           <div className="balance">
-            {balance && (
+            {cachedBalance && (
               <div className="self-center">
                 <h2 className="flex justify-center">Total balance</h2>
                 <h1 className="flex justify-center">
-                  {balance} {tokenSymbol}
+                  {cachedBalance} {tokenSymbol}
                 </h1>
               </div>
             )}
-            {!balance && (
+            {!cachedBalance && (
               <>
                 <p>You have to connect a wallet to see your available balance. </p>
               </>
@@ -98,5 +123,3 @@ function Dashboard() {
     </div>
   );
 }
-
-export default Dashboard;

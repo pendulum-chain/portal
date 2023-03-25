@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'preact/compat';
+import { memo, useEffect, useMemo, useState } from 'preact/compat';
 import { Outlet, useParams } from 'react-router-dom';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
@@ -14,12 +14,18 @@ import Versions from './Versions';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
-  const { network } = useParams();
+  const params = useParams();
   const { state, setState } = useGlobalState();
   const isPendulum = state.tenantName === TenantName.Pendulum;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
+
+  const network: TenantName = useMemo(() => {
+    return params.network && Object.values<string>(TenantName).includes(params.network)
+      ? (params.network as TenantName)
+      : TenantName.Pendulum;
+  }, [params.network]);
 
   useEffect(() => {
     // Only change state if network is different
