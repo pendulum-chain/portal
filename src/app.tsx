@@ -24,6 +24,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Navigate to={config.defaultPage} replace />} />
         <Route path="/:network/" element={<Layout />}>
+          <Route path="" element={Dashboard} />
           <Route path="dashboard" element={Dashboard} />
           <Route path="amm" element={Amm} />
           <Route path="amber">

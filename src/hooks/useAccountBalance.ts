@@ -33,7 +33,7 @@ export const useAccountBalance = (): UseAccountBalanceResponse => {
 
   const balance = useMemo(() => {
     if (!data?.data) return undefined;
-    return prettyNumbers(nativeToDecimal(data?.data.free.toString()));
+    return prettyNumbers(nativeToDecimal(data.data.free).toNumber());
   }, [data?.data]);
 
   return {
