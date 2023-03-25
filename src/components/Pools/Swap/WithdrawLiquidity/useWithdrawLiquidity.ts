@@ -5,7 +5,7 @@ import { useModalToggle } from '../../../../services/modal';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 
-export const useWithdrawLiquidity = (address: string) => {
+export const useWithdrawLiquidity = (_address: string) => {
   const toggle = useModalToggle();
 
   const form = useForm<WithdrawLiquidityValues>({

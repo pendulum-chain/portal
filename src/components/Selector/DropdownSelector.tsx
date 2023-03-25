@@ -1,5 +1,4 @@
 import { Button, Dropdown } from 'react-daisyui';
-import { h } from 'preact';
 
 function ArrowIcon() {
   return (

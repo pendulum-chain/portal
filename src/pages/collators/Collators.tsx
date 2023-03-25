@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { format, nativeToDecimal, nativeToFormat } from '../../helpers/parseNumbers';
+import { nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 import Table from '../../components/Table';
@@ -18,8 +18,8 @@ import {
   TCollator,
   UserStaking,
 } from './columns';
-import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
+import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
 function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;

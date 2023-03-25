@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import Big from 'big.js';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Option } from '@polkadot/types-codec';
+import Big from 'big.js';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -16,11 +16,6 @@ export interface ParachainStakingCandidate {
   delegators: ParachainStakingDelegator[];
   total: string;
   status: string | false;
-}
-
-interface ParachainStakingStakeOption {
-  owner: string;
-  amount: string;
 }
 
 export interface ParachainStakingInflationInflationInfo {
@@ -47,7 +42,6 @@ const defaultTransactionFees = {
 };
 
 type ParachainStakingFees = typeof defaultTransactionFees;
-type ParachainStakingExtrinsics = keyof typeof defaultTransactionFees;
 
 export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
