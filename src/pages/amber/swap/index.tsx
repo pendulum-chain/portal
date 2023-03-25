@@ -15,7 +15,7 @@ const SwapPage = (): JSX.Element | null => {
   );
 
   return (
-    <div id="swap" className="center mt-8">
+    <div id="swap" className="center mt-6">
       <Swap from={params.get('from') || undefined} to={params.get('to') || undefined} onChange={onChange} />
     </div>
   );

@@ -1,36 +1,51 @@
 import { useQuery } from '@tanstack/react-query';
-import { Card, Divider } from 'react-daisyui';
+import { useState } from 'preact/compat';
+import { Button, Card } from 'react-daisyui';
 import { cacheKeys } from '../../../constants/cache';
 import { BackstopPool as IBackstopPool } from '../../../models/BackstopPool';
 import { assetsApi } from '../../../services/api/assets';
+import AssetBadge from '../../Asset/Badge';
 import { Skeleton } from '../../Skeleton';
-import BackstopPoolForm from './Form';
+import BackstopPoolModal from './Modal';
 
 const BackstopPools = (): JSX.Element | null => {
+  const [selected, setSelected] = useState<[IBackstopPool, 'deposit' | 'withdraw']>();
   // ! TODO: get backstop pool and info
   const { data, isLoading } = useQuery<IBackstopPool[] | undefined>(
-    [cacheKeys.backstopPool],
+    [cacheKeys.backstopPools],
     assetsApi.getBackstopPools,
   );
 
+  if (isLoading) return <Skeleton className="bg-gray-200 h-48 w-full" />;
   return (
-    <Card bordered className="w-full max-w-xl bg-base-100 shadow-xl">
-      <div className="card-body text-gray-800">
-        <h2 className="text-3xl font-normal mb-6">Backstop pools</h2>
-        {isLoading ? (
-          <Skeleton className="bg-gray-200 h-48 w-full" />
-        ) : data ? (
-          <>
-            {data.map((pool, i) => (
-              <div key={i}>
-                <BackstopPoolForm pool={pool} />
-                {i < data.length - 1 && <Divider className="my-8" />}
+    <>
+      <div className="center gap-4 w-full">
+        {data?.map((pool, i) => (
+          <Card key={i} bordered className="w-full max-w-xl bg-base-100 shadow-md">
+            <div className="card-body text-gray-800">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  {pool.assets.map((asset, i) => (
+                    <AssetBadge size="lg" key={i}>
+                      {asset.symbol}
+                    </AssetBadge>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setSelected([pool, 'deposit'])}>
+                    Deposit
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setSelected([pool, 'withdraw'])}>
+                    Withdraw
+                  </Button>
+                </div>
               </div>
-            ))}
-          </>
-        ) : null}
+            </div>
+          </Card>
+        ))}
       </div>
-    </Card>
+      <BackstopPoolModal pool={selected?.[0]} type={selected?.[1]} onClose={() => setSelected(undefined)} />
+    </>
   );
 };
 
