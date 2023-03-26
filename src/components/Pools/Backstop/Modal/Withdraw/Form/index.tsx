@@ -1,6 +1,6 @@
 import { Button, Range } from 'react-daisyui';
-import { BackstopPool } from '../../../../models/BackstopPool';
-import AssetSelector from '../../../Asset/Selector';
+import { BackstopPool } from '../../../../../../models/BackstopPool';
+import AssetSelector from '../../../../../Asset/Selector';
 import { useBackstopPoolForm } from './useBackstopPoolForm';
 
 export type BackstopPoolFormProps = {

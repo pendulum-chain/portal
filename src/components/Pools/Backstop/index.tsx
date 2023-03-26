@@ -24,14 +24,14 @@ const BackstopPools = (): JSX.Element | null => {
           <Card key={i} bordered className="w-full max-w-xl bg-base-100 shadow-md">
             <div className="card-body text-gray-800">
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   {pool.assets.map((asset, i) => (
                     <AssetBadge size="lg" key={i}>
                       {asset.symbol}
                     </AssetBadge>
                   ))}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center flex-wrap gap-2">
                   <Button variant="outline" size="sm" onClick={() => setSelected([pool, 'deposit'])}>
                     Deposit
                   </Button>
