@@ -10,6 +10,7 @@ export interface SwapTransaction {
   fromAmount: number;
   to: string;
   toAmount: number;
+  toMinAmount: number;
   slippage: number;
   deadline: number;
 }

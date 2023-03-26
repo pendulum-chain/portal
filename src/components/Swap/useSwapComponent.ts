@@ -25,12 +25,10 @@ export interface UseSwapComponentProps {
   onChange?: (from: string, to: string) => void;
 }
 
-export const defaults: SwapSettings = {
-  deadline: 30,
-  ...config.swap.defaults,
-};
+export const defaults = config.swap.defaults;
 
 export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) => {
+  console.log(from);
   const {
     state: { walletAccount },
   } = useGlobalState();
@@ -55,11 +53,41 @@ export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) 
     defaultValues: {
       fromAmount: 0,
       ...storageState,
-      from: from || storageState?.from,
+      from: storageState?.from,
       to: to || storageState?.to,
     },
   });
   const { setValue, reset } = form;
+
+  // ! TODO: submit transaction
+  const submitMutation = useMutation<unknown, unknown, SwapTransaction>(
+    async (data) => new Promise((r) => setTimeout(() => r(data), 6500)),
+    {
+      onMutate: (values) => {
+        progress[1](values);
+      },
+      onError: () => {
+        // ! TODO: display error to user
+      },
+      onSuccess: () => {
+        reset();
+        // ! TODO: display response and update balances
+      },
+    },
+  );
+
+  const onSubmit = form.handleSubmit((data) => {
+    const slippage = data.slippage ?? defaults.slippage;
+    const toAmount = data.fromAmount; /** * rate */ // ! TODO: this should be calculated before already for showing in UI
+    // ! TODO: create transaction
+    const transaction: SwapTransaction = {
+      ...data,
+      slippage,
+      toAmount,
+      toMinAmount: toAmount, // ! TODO: calculate from slippage
+    };
+    submitMutation.mutate(transaction);
+  });
 
   // ! TODO: fetch tokens
   const tokensQuery = useQuery(
@@ -70,20 +98,6 @@ export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) 
       enabled: !!api && api.isConnected,
       onError: (err) => {
         toast(err || 'Error fetching tokens', { type: 'error' });
-      },
-    },
-  );
-
-  // ! TODO: submit transaction
-  const submitMutation = useMutation<unknown, unknown, SwapFormValues>(
-    async (data) => new Promise((r) => setTimeout(() => r(data), 2500)),
-    {
-      onError: () => {
-        // ! TODO: display error to user
-      },
-      onSuccess: () => {
-        reset();
-        // ! TODO: display response and update balances
       },
     },
   );
@@ -173,5 +187,6 @@ export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) 
     modalState,
     onFromChange,
     onToChange,
+    onSubmit,
   };
 };

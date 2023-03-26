@@ -39,6 +39,8 @@ export const config = {
       // ! TODO: update to address
       from: 'ETH',
       to: 'USDC',
+      slippage: 0.5,
+      deadline: 30,
     },
   },
 };
