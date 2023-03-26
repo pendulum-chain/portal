@@ -22,7 +22,7 @@ const BackstopPools = (): JSX.Element | null => {
       <div className="center gap-4 w-full">
         {data?.map((pool, i) => (
           <Card key={i} bordered className="w-full max-w-xl bg-base-100 shadow-md">
-            <div className="card-body text-gray-800">
+            <div className="card-body p-4 md:p-6 text-gray-800">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   {pool.assets.map((asset, i) => (
