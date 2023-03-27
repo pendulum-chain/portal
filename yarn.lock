@@ -4227,6 +4227,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base-x@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "base-x@npm:4.0.0"
+  checksum: a7374c828d9be4c874b739211cc2b9781117c67cbd880dfe44ee79c2baeae20fe8fec0ca4e6803a7f4acb965f974cd04ff7ffe3137eabdf722b264410a749bc7
+  languageName: node
+  linkType: hard
+
 "base32.js@npm:^0.1.0":
   version: 0.1.0
   resolution: "base32.js@npm:0.1.0"
@@ -4343,6 +4350,15 @@ __metadata:
   bin:
     browserslist: cli.js
   checksum: 66c055357fda71fcde8a9dc1f5af7e5bd320670ad5199196275703e305b77f92969c07a70a383e8130cd0f8c98a8b6d2a211b57ee6b5b4c2ac37779d9800a6c4
+  languageName: node
+  linkType: hard
+
+"bs58@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "bs58@npm:5.0.0"
+  dependencies:
+    base-x: "npm:^4.0.0"
+  checksum: d2c271f80f2d404e6df387de2bdcffe07568fe73404ed686ea5be49f87cf74ca29be918d14cae3b01e8fe31696b82f28cdee730b11f27c01543870d239b5dddd
   languageName: node
   linkType: hard
 
@@ -10218,6 +10234,7 @@ __metadata:
     autoprefixer: "npm:^10.4.13"
     big.js: "npm:^6.2.1"
     bn.js: "npm:^5.2.1"
+    bs58: "npm:^5.0.0"
     daisyui: "npm:^2.50.2"
     eslint: "npm:^8.34.0"
     eslint-plugin-jest: "npm:^27.2.1"

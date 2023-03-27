@@ -6,7 +6,7 @@ import LabelledInputField from '../../components/LabelledInputField';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
-import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { Asset } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
@@ -24,6 +24,7 @@ import { DateTime } from 'luxon';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import OpenWallet from '../../components/OpenWallet';
+import bs58 from 'bs58';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -138,9 +139,8 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     if (!issueRequest) {
       return '';
     }
-    const requestID = issueRequest.id.toString();
-    // Trim first 2 characters to remove the 0x prefix
-    return requestID.slice(2);
+    // For issue requests we use a shorter identifier for the memo
+    return deriveShortenedRequestId(issueRequest.id);
   }, [issueRequest]);
 
   useEffect(() => {
@@ -183,7 +183,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           <div className="text-sm">
             (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
           </div>
-          <div className="text mt-4">With the hash memo</div>
+          <div className="text mt-4">With the text memo</div>
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
