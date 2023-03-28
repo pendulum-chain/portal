@@ -3,6 +3,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Asset, Keypair } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from './stellar';
 import { DateTime } from 'luxon';
+import { u32 } from '@polkadot/types-codec';
 
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
@@ -89,10 +90,12 @@ export function calculateDeadline(
 }
 
 export function estimateRequestCreationTime(
+  currentActiveBlock: number,
   activeBlockOpenTime: number,
   blockTimeSec = 12,
 ) {
-  const secondsAgo = activeBlockOpenTime * blockTimeSec;
+  const activeBlocksPassed = currentActiveBlock - activeBlockOpenTime;
+  const secondsAgo = activeBlocksPassed * blockTimeSec;
   const now = DateTime.now();
-  return now.minus({ seconds: secondsAgo })
+  return now.minus({ seconds: secondsAgo });
 }

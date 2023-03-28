@@ -17,21 +17,36 @@ import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { nativeStellarToDecimal } from '../../helpers/parseNumbers';
 import { estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { DateTime } from 'luxon';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { VoidFn } from '@polkadot/api-base/types';
 
 export function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
+  const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
+
+  useEffect(() => {
+    let unsub: VoidFn = () => undefined;
+    subscribeActiveBlockNumber((blockNumber) => {
+      setActiveBlockNumber(blockNumber);
+    }).then((u) => (unsub = u));
+
+    return unsub;
+  }, [subscribeActiveBlockNumber]);
 
   useEffect(() => {
     const fetchAllEntries = async () => {
       const issueEntries = await getIssueRequests();
       const redeemEntries = await getRedeemRequests();
       let entries: TTransfer[] = [];
-
       issueEntries.forEach((e) => {
         entries.push({
-          updated: estimateRequestCreationTime(e.request.opentime.toNumber()).toLocaleString(DateTime.DATETIME_SHORT),
+          updated: estimateRequestCreationTime(
+            activeBlockNumber as number,
+            e.request.opentime.toNumber(),
+          ).toLocaleString(DateTime.DATETIME_SHORT),
           amount: nativeStellarToDecimal(e.request.amount.toString()).toString(),
           transactionId: e.id.toString(),
           type: TransferType.issue,
@@ -41,7 +56,10 @@ export function Transfers(): JSX.Element {
 
       redeemEntries.forEach((e) => {
         entries.push({
-          updated: estimateRequestCreationTime(e.request.opentime.toNumber()).toLocaleString(DateTime.DATETIME_SHORT),
+          updated: estimateRequestCreationTime(
+            activeBlockNumber as number,
+            e.request.opentime.toNumber(),
+          ).toLocaleString(DateTime.DATETIME_SHORT),
           amount: nativeStellarToDecimal(e.request.amount.toString()).toString(),
           transactionId: e.id.toString(),
           type: TransferType.redeem,
