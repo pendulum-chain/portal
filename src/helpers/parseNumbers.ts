@@ -58,7 +58,7 @@ const units = [
   { divider: 1e9, prefix: 'billion', char: 'B' },
   { divider: 1e6, prefix: 'million', char: 'M' },
   { divider: 1, prefix: '', char: '' },
-  { divider: 1e-3, prefix: 'milli', char: 'm' },
+  { divider: 1e-3, prefix: 'mili', char: 'm' },
   { divider: 1e-6, prefix: 'micro', char: 'μ' },
   { divider: 1e-9, prefix: 'nano', char: 'n' },
   { divider: 1e-12, prefix: 'pico', char: 'p' },

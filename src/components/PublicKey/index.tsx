@@ -2,14 +2,20 @@ import React from 'react';
 import { useClipboard } from '../../hooks/userinterface';
 import { Button } from 'react-daisyui';
 import CopyIcon from '../../assets/CopyIcon';
+import { bool } from '@polkadot/types-codec';
 
-type Variant = 'full' | 'short' | 'shorter';
+type Variant = 'full' | 'short' | 'shorter' | 'hexa';
 
 function getDigitCounts(variant?: Variant) {
   if (variant === 'short') {
     return {
       leading: 6,
       trailing: 6,
+    };
+  } else if (variant === 'hexa') {
+    return {
+      leading: 10,
+      trailing: 10,
     };
   } else {
     return {
@@ -38,18 +44,16 @@ interface PublicKeyProps {
   publicKey: string;
   variant?: Variant;
   style?: React.CSSProperties;
+  className?: string;
   showRaw?: boolean;
 }
 
 // tslint:disable-next-line no-shadowed-variable
 export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
-  const { variant = 'full' } = props;
+  const { variant = 'full', className } = props;
   const digits = getDigitCounts(props.variant);
 
   const style: React.CSSProperties = {
-    display: 'inline',
-    fontSize: 'inherit',
-    fontWeight: 'bold',
     userSelect: 'text',
     WebkitUserSelect: 'text',
     whiteSpace: variant !== 'full' ? 'pre' : undefined,
@@ -57,7 +61,7 @@ export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
   };
 
   return (
-    <span style={style}>
+    <span style={style} className={className}>
       {props.variant === 'full' || !props.variant
         ? props.publicKey
         : props.publicKey.substr(0, digits.leading) + '…' + props.publicKey.substr(-digits.trailing)}
@@ -68,7 +72,9 @@ export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
 interface AddressProps {
   publicKey: string;
   variant?: Variant;
+  inline?: boolean;
   style?: React.CSSProperties;
+  className?: string;
   icon?: JSX.Element;
   onClick?: () => void;
   wrap?: boolean;
@@ -76,16 +82,13 @@ interface AddressProps {
 
 // tslint:disable-next-line no-shadowed-variable
 export const ClickableAddress = React.memo(function ClickableAddress(props: AddressProps) {
+  console.log(props.inline);
   return (
     <Button
-      className="px-1 h-1"
+      className="rounded h-1 p-1 m-0"
+      style={props.inline ? { height: 'inherit', minHeight: '0', padding: 0 } : {}}
       color="ghost"
       onClick={props.onClick}
-      style={{
-        fontSize: 'inherit',
-        fontWeight: 'inherit',
-        textAlign: 'inherit',
-      }}
     >
       {props.icon ? (
         <>

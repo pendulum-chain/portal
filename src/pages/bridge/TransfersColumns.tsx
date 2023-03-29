@@ -1,3 +1,4 @@
+import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
 
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Retried';
@@ -13,6 +14,7 @@ export interface TTransfer {
   transactionId: string;
   type: TransferType;
   status: TransferStatus;
+  original: SpacewalkPrimitivesIssueIssueRequest | SpacewalkPrimitivesRedeemRedeemRequest;
 }
 
 export interface UserStaking {

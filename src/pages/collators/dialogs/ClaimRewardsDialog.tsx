@@ -2,7 +2,7 @@ import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { format, nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
 import { Button, Modal } from 'react-daisyui';
-import SuccessDialogIcon from '../../../assets/success-dialog';
+import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';

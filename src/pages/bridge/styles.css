@@ -67,3 +67,12 @@
   border-bottom: 1px solid var(--table-border);
   color: var(--table-text);
 }
+
+#details {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+#details>div {
+  color: var(--table-text);
+  margin: 0.5em 0;
+}
