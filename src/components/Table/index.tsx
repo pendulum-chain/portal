@@ -6,8 +6,10 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
@@ -26,6 +28,9 @@ export type TableProps<T> = {
   isLoading?: boolean;
   /** table className */
   className?: string;
+  /** default sorting */
+  sortBy?: string;
+  sortDesc?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,8 +44,23 @@ const Table = <T,>({
   search = true,
   isLoading,
   className,
+  sortBy,
+  sortDesc = false,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
+
+  const initialSort = sortBy
+    ? useMemo(
+        () => [
+          {
+            id: sortBy,
+            desc: sortDesc,
+          },
+        ],
+        [],
+      )
+    : undefined;
+
   const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState } =
     useReactTable({
       columns,
@@ -49,6 +69,7 @@ const Table = <T,>({
         pagination: {
           pageSize: ps,
         },
+        sorting: initialSort,
       },
       autoResetAll: false,
       getCoreRowModel: getCoreRowModel(),

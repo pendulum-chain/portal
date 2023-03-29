@@ -19,6 +19,7 @@ import { estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { DateTime } from 'luxon';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
+import { CompletedTransferDialog } from './TransferDialog';
 
 export function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
@@ -51,6 +52,7 @@ export function Transfers(): JSX.Element {
           transactionId: e.id.toString(),
           type: TransferType.issue,
           status: e.request.status.type,
+          original: e.request,
         });
       });
 
@@ -64,6 +66,7 @@ export function Transfers(): JSX.Element {
           transactionId: e.id.toString(),
           type: TransferType.redeem,
           status: e.request.status.type,
+          original: e.request,
         });
       });
 
@@ -78,6 +81,7 @@ export function Transfers(): JSX.Element {
 
   return (
     <div className="overflow-x-auto mt-10">
+      {data && data[0] && <CompletedTransferDialog transfer={data[0]} />}
       <Table
         className="transfer-list-table bg-base-100 text-md"
         data={data}
@@ -85,6 +89,8 @@ export function Transfers(): JSX.Element {
         isLoading={false}
         search={false}
         pageSize={8}
+        sortBy="updated"
+        sortDesc={true}
       />
     </div>
   );
