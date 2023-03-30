@@ -2,10 +2,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { StorageKey } from '@polkadot/types';
 import { AccountId32 } from '@polkadot/types/interfaces';
 import { FrameSystemAccountInfo, PalletBalancesAccountData } from '@polkadot/types/lookup';
-import Big from 'big.js';
-import BigNumber from 'big.js';
 import BN from 'bn.js';
-import { decimalToNative, nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 
 export interface StatsData {
   totalIssuance: string;
