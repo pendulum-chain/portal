@@ -1,6 +1,7 @@
 import { Input, InputProps } from 'react-daisyui';
 import { forwardRef } from 'react';
 import './styles.css';
+import { ChangeEvent, CSSProperties, TargetedEvent } from 'preact/compat';
 
 interface Props {
   label?: string;
@@ -13,7 +14,7 @@ interface Props {
   extraBtnText?: string;
   extraBtnAction?: () => void;
   onChange?: (value: string) => void;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 const LabelledInputField = forwardRef((props: Props & InputProps) => {
@@ -33,12 +34,12 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
             className={`border rounded-md bg-transparent ${!error && 'border-gray-500'}`}
             color={inputColor}
             {...rest}
-            onFocus={(event: React.TargetedEvent) => {
+            onFocus={(event: TargetedEvent) => {
               if (event.target instanceof HTMLInputElement) {
                 event.target.select();
               }
             }}
-            onInput={(event: React.ChangeEvent) => {
+            onInput={(event: ChangeEvent) => {
               if (event.target instanceof HTMLInputElement) {
                 onChange?.(event.target.value);
               }

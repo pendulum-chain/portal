@@ -1,5 +1,6 @@
 import { Select } from 'react-daisyui';
 import { h } from 'preact';
+import { CSSProperties } from 'preact/compat';
 
 interface Item {
   id: object | string;
@@ -11,8 +12,8 @@ interface Props<T> {
   label?: string;
   onChange: (item: T) => void;
   value?: T;
-  style?: React.CSSProperties;
-  selectStyle?: React.CSSProperties;
+  style?: CSSProperties;
+  selectStyle?: CSSProperties;
 }
 
 function LabelledSelector<T extends Item>(props: Props<T>) {
