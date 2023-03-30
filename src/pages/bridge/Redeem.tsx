@@ -109,11 +109,9 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
   const rawDestinationAddress = redeemRequest?.request.stellarAddress;
-  console.log('rawDestinationAddress', redeemRequest?.request.stellarAddress);
   const destination = rawDestinationAddress
     ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
     : '';
-  console.log('destination', destination);
 
   return (
     <Modal open={visible}>
@@ -200,7 +198,6 @@ function Redeem(props: RedeemProps): JSX.Element {
     const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
-        console.log('currency', currency);
         return convertCurrencyToStellarAsset(currency);
       })
       .filter((asset): asset is Asset => {
@@ -232,7 +229,7 @@ function Redeem(props: RedeemProps): JSX.Element {
       }
     } else {
       // If the user manually selected a vault, but it's not available anymore, we reset the selection
-      if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
+      if (selectedVault && vaultsForCurrency.length > 0 && !vaultsForCurrency.includes(selectedVault)) {
         setSelectedVault(vaultsForCurrency[0]);
       }
     }
