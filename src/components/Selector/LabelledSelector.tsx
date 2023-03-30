@@ -1,6 +1,11 @@
 import { Select } from 'react-daisyui';
 import { h } from 'preact';
 
+interface Item {
+  id: object | string;
+  displayName: string;
+}
+
 interface Props<T> {
   items: T[];
   label?: string;
@@ -10,7 +15,7 @@ interface Props<T> {
   selectStyle?: React.CSSProperties;
 }
 
-function LabelledSelector<T extends { id: object; displayName: string }>(props: Props<T>) {
+function LabelledSelector<T extends Item>(props: Props<T>) {
   const { label, items, onChange, value } = props;
 
   return (
