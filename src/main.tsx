@@ -15,15 +15,13 @@ render(
     <BrowserRouter>
       <GlobalStateProvider>
         <GlobalStateContext.Consumer>
-          {({ state, getThemeName }) =>
-            state.tenantRPC && (
-              <NodeInfoProvider tenantRPC={state.tenantRPC}>
-                <Theme dataTheme={getThemeName()}>
-                  <App />
-                </Theme>
-              </NodeInfoProvider>
-            )
-          }
+          {({ state, getThemeName }) => (
+            <NodeInfoProvider tenantRPC={state.tenantRPC}>
+              <Theme dataTheme={getThemeName()}>
+                <App />
+              </Theme>
+            </NodeInfoProvider>
+          )}
         </GlobalStateContext.Consumer>
       </GlobalStateProvider>
     </BrowserRouter>

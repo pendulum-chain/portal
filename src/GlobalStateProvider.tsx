@@ -18,8 +18,8 @@ export enum TenantRPC {
 
 export interface GlobalStateInterface {
   walletAccount?: WalletAccount;
-  tenantName: TenantName;
-  tenantRPC: TenantRPC;
+  tenantName?: TenantName;
+  tenantRPC?: TenantRPC;
 }
 
 const enum ThemeName {
@@ -28,8 +28,8 @@ const enum ThemeName {
 }
 
 const DefaultGlobalState: GlobalStateInterface = {
-  tenantName: TenantName.Amplitude,
-  tenantRPC: TenantRPC.Amplitude,
+  tenantName: undefined,
+  tenantRPC: undefined,
 };
 
 const GlobalStateContext = createContext({
