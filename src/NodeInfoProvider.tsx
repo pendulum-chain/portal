@@ -1,8 +1,8 @@
-import { createContext, h } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { createContext } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize: number;

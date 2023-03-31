@@ -1,6 +1,8 @@
-import { createContext, h } from 'preact';
-import { useContext, useState } from 'preact/hooks';
 import { WalletAccount } from '@talismn/connect-wallets';
+import { createContext } from 'preact';
+import { StateUpdater, useCallback, useContext, useMemo, useState } from 'preact/compat';
+import { storageKeys } from './constants/localStorage';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
 export enum TenantName {
   Amplitude = 'amplitude',
@@ -16,10 +18,17 @@ export enum TenantRPC {
   Local = 'ws://localhost:9944',
 }
 
-export interface GlobalStateInterface {
-  walletAccount?: WalletAccount;
+export interface TenantStateValues {
   tenantName: TenantName;
   tenantRPC: TenantRPC;
+}
+export interface GlobalState {
+  state: Partial<TenantStateValues>;
+  setState: StateUpdater<Partial<TenantStateValues>>;
+  walletAccount: WalletAccount | undefined;
+  setWalletAccount: (data: WalletAccount) => void;
+  removeWalletAccount: () => void;
+  getThemeName: () => ThemeName;
 }
 
 const enum ThemeName {
@@ -27,43 +36,58 @@ const enum ThemeName {
   Pendulum = 'pendulum',
 }
 
-const DefaultGlobalState: GlobalStateInterface = {
+export const defaultState: TenantStateValues = {
   tenantName: TenantName.Amplitude,
   tenantRPC: TenantRPC.Amplitude,
 };
 
-const GlobalStateContext = createContext({
-  state: {} as Partial<GlobalStateInterface>,
-  setState: {} as Dispatch<SetStateAction<Partial<GlobalStateInterface>>>,
-  getThemeName: () => ThemeName.Pendulum as ThemeName,
-});
+const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
 const GlobalStateProvider = ({
   children,
-  value = DefaultGlobalState,
+  value = defaultState,
 }: {
   children: ReactNode;
-  value?: Partial<GlobalStateInterface>;
+  value?: Partial<TenantStateValues>;
 }) => {
   const [state, setState] = useState(value);
+  const {
+    state: walletAccount,
+    set: setWalletAccount,
+    clear: removeWalletAccount,
+  } = useLocalStorage<WalletAccount | undefined>({
+    key: `${storageKeys.GLOBAL}-${state.tenantName}`,
+    parse: true,
+  });
 
-  const getThemeName = () => {
+  const getThemeName = useCallback(() => {
     switch (state.tenantName) {
       case TenantName.Pendulum:
         return ThemeName.Pendulum;
-      case TenantName.Amplitude:
-      case TenantName.Foucoco:
-      case TenantName.Local:
       default:
         return ThemeName.Amplitude;
     }
-  };
+  }, [state?.tenantName]);
 
-  return (
-    <GlobalStateContext.Provider value={{ state, setState, getThemeName }}>{children}</GlobalStateContext.Provider>
+  const providerValue = useMemo(
+    () => ({
+      state,
+      setState,
+      walletAccount,
+      setWalletAccount,
+      removeWalletAccount,
+      getThemeName,
+    }),
+    [getThemeName, removeWalletAccount, setWalletAccount, state, walletAccount],
   );
+
+  return <GlobalStateContext.Provider value={providerValue}>{children}</GlobalStateContext.Provider>;
 };
 
-const useGlobalState = () => useContext(GlobalStateContext);
+const useGlobalState = () => {
+  const state = useContext(GlobalStateContext);
+  if (!state) throw 'GlobalStateProvider not defined!';
+  return state;
+};
 
 export { GlobalStateContext, GlobalStateProvider, useGlobalState };

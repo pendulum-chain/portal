@@ -1,5 +1,4 @@
 import { Select } from 'react-daisyui';
-import { h } from 'preact';
 
 interface Props<T> {
   items: T[];

@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import Big from 'big.js';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Option } from '@polkadot/types-codec';
+import Big from 'big.js';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -16,11 +16,6 @@ export interface ParachainStakingCandidate {
   delegators: ParachainStakingDelegator[];
   total: string;
   status: string | false;
-}
-
-interface ParachainStakingStakeOption {
-  owner: string;
-  amount: string;
 }
 
 export interface ParachainStakingInflationInflationInfo {
@@ -47,11 +42,10 @@ const defaultTransactionFees = {
 };
 
 type ParachainStakingFees = typeof defaultTransactionFees;
-type ParachainStakingExtrinsics = keyof typeof defaultTransactionFees;
 
 export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
   const [inflationInfo, setInflationInfo] = useState<ParachainStakingInflationInflationInfo | undefined>(undefined);
@@ -73,6 +67,7 @@ export function useStakingPallet() {
       const entries = await api.query.parachainStaking.candidatePool.entries();
 
       const newCandidates = entries.map(([_, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const candidate = (value as Option<any>).unwrap().toHuman() as ParachainStakingCandidate;
 
         return candidate;
@@ -139,7 +134,7 @@ export function useStakingPallet() {
 
         return new Big(info.partialFee.toString());
       },
-      createClaimRewardExtrinsic(claimAmount: string) {
+      createClaimRewardExtrinsic(_claimAmount: string) {
         if (!api) {
           return undefined;
         }

@@ -1,12 +1,11 @@
-import { ParachainStakingCandidate, ParachainStakingInflationInflationInfo } from '../../../hooks/staking/staking';
 import { useMemo, useState } from 'preact/hooks';
+import { Button, Modal } from 'react-daisyui';
 import AmplitudeLogo from '../../../assets/AmplitudeLogo';
+import { CloseButton } from '../../../components/CloseButton';
+import LabelledInputField from '../../../components/LabelledInputField';
 import { PublicKey } from '../../../components/PublicKey';
 import { nativeToDecimal } from '../../../helpers/parseNumbers';
-import { Button, Modal } from 'react-daisyui';
-import LabelledInputField from '../../../components/LabelledInputField';
-import { h } from 'preact';
-import { CloseButton } from '../../../components/CloseButton';
+import { ParachainStakingCandidate, ParachainStakingInflationInflationInfo } from '../../../hooks/staking/staking';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface DelegateToCollatorDialogProps {
@@ -35,6 +34,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   } = props;
 
   const [amount, setAmount] = useState<string>('');
+  const annual = inflationInfo?.delegator.rewardRate.annual;
 
   const CollatorInfo = useMemo(
     () =>
@@ -45,7 +45,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
             <PublicKey variant="shorter" publicKey={collator.id} />
           </div>
           <div>
-            <div className="text-lg">APR {inflationInfo?.delegator.rewardRate.annual || '0.00%'}</div>
+            <div className="text-lg">APR {annual || '0.00%'}</div>
             <div className="text-sm text-neutral-content" hidden={mode === 'delegatingMore'}>
               Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
             </div>
@@ -54,7 +54,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
       ) : (
         <div />
       ),
-    [collator, inflationInfo, minDelegatorStake, tokenSymbol, mode],
+    [collator, annual, minDelegatorStake, mode, tokenSymbol],
   );
 
   const titleAction = useMemo(() => (mode === 'undelegating' ? 'Unbond' : 'Delegate'), [mode]);

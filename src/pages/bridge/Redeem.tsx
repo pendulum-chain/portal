@@ -1,25 +1,24 @@
-import { h } from 'preact';
-import { Button, Checkbox, Modal } from 'react-daisyui';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import LabelledInputField from '../../components/LabelledInputField';
-import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { VaultRegistryVault } from '@polkadot/types/lookup';
-import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { Asset } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey, isPublicKey, StellarPublicKeyPattern } from '../../helpers/stellar';
-import { useFeePallet } from '../../hooks/spacewalk/fee';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
-import Big from 'big.js';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { useNodeInfoState } from '../../NodeInfoProvider';
-import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { VaultRegistryVault } from '@polkadot/types/lookup';
+import Big from 'big.js';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { Button, Checkbox, Modal } from 'react-daisyui';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { Asset } from 'stellar-sdk';
+import LabelledInputField from '../../components/LabelledInputField';
+import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
-import { Controller, useForm } from 'react-hook-form';
-import OpenWallet from '../../components/OpenWallet';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey, isPublicKey, StellarPublicKeyPattern } from '../../helpers/stellar';
+import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { useFeePallet } from '../../hooks/spacewalk/fee';
+import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -166,7 +165,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const {
