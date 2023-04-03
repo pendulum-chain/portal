@@ -11,8 +11,8 @@ import { Asset } from 'stellar-sdk';
 import LabelledInputField from '../../components/LabelledInputField';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
+import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
@@ -22,6 +22,8 @@ import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { Controller, useForm } from 'react-hook-form';
+import _ from 'lodash';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -236,6 +238,8 @@ function Issue(props: IssueProps): JSX.Element {
       amount: '0',
     },
   });
+
+  console.log('walletaccount', walletAccount);
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');

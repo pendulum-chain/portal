@@ -1,6 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
+import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { Button, Checkbox, Modal } from 'react-daisyui';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,7 +14,13 @@ import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey, isPublicKey, StellarPublicKeyPattern } from '../../helpers/stellar';
+import {
+  convertRawHexKeyToPublicKey,
+  isCompatibleStellarAmount,
+  isPublicKey,
+  StellarPublicKeyPattern,
+  stringifyStellarAsset,
+} from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
