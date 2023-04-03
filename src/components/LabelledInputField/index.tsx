@@ -1,5 +1,5 @@
-import { Input, InputProps } from 'react-daisyui';
 import { forwardRef } from 'react';
+import { Input, InputProps } from 'react-daisyui';
 import './styles.css';
 import { ChangeEvent, CSSProperties, TargetedEvent } from 'preact/compat';
 

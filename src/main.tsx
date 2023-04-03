@@ -1,10 +1,9 @@
-import { QueryClient } from '@tanstack/react-query';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from 'preact';
 import { Theme } from 'react-daisyui';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './app';
-import { GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
+import { defaultState, GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
 import './index.css';
 import { NodeInfoProvider } from './NodeInfoProvider';
 
@@ -15,13 +14,16 @@ render(
     <BrowserRouter>
       <GlobalStateProvider>
         <GlobalStateContext.Consumer>
-          {({ state, getThemeName }) => (
-            <NodeInfoProvider tenantRPC={state.tenantRPC}>
-              <Theme dataTheme={getThemeName()}>
-                <App />
-              </Theme>
-            </NodeInfoProvider>
-          )}
+          {(globalState) => {
+            const { state = defaultState, getThemeName = () => undefined } = globalState as GlobalState;
+            return (
+              <NodeInfoProvider tenantRPC={state.tenantRPC}>
+                <Theme dataTheme={getThemeName()}>
+                  <App />
+                </Theme>
+              </NodeInfoProvider>
+            );
+          }}
         </GlobalStateContext.Consumer>
       </GlobalStateProvider>
     </BrowserRouter>

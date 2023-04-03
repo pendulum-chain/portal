@@ -1,5 +1,4 @@
 import { Select } from 'react-daisyui';
-import { h } from 'preact';
 import { CSSProperties } from 'preact/compat';
 
 interface Item {

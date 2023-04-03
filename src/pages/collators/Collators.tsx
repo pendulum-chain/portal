@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { format, nativeToDecimal, nativeToFormat } from '../../helpers/parseNumbers';
+import { nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 import Table from '../../components/Table';
@@ -18,20 +18,12 @@ import {
   TCollator,
   UserStaking,
 } from './columns';
-import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
-
-interface CollatorColumnProps {
-  candidate: ParachainStakingCandidate;
-  collator: string;
-  totalStaked: string;
-  delegators: number;
-  apy: string;
-}
+import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
 export function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 
