@@ -8,6 +8,7 @@ import { Amm } from './pages/amm/Amm';
 import Bridge from './pages/bridge';
 import { Collators } from './pages/collators/Collators';
 import { Dashboard } from './pages/dashboard/Dashboard';
+import { Stats } from './pages/stats';
 
 export function App() {
   return (
@@ -19,6 +20,7 @@ export function App() {
           <Route path="amm" element={<Amm />} />
           <Route path="bridge/:to?" element={<Bridge />} />
           <Route path="collators" element={<Collators />} />
+          <Route path="stats" element={<Stats />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
