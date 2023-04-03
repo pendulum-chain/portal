@@ -14,7 +14,7 @@ export interface UseAccountBalanceResponse {
 
 export const useAccountBalance = (): UseAccountBalanceResponse => {
   const globalState = useGlobalState();
-  const { walletAccount } = globalState.state;
+  const { walletAccount } = globalState;
   const {
     state: { api },
   } = useNodeInfoState();

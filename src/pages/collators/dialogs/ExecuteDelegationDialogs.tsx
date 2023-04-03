@@ -22,7 +22,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   const { userAvailableBalance, userStake, selectedCandidate, mode, onClose } = props;
 
   const { api, tokenSymbol } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const {
     inflationInfo,

@@ -1,27 +1,26 @@
-import { h } from 'preact';
-import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import LabelledInputField from '../../components/LabelledInputField';
-import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { VaultRegistryVault } from '@polkadot/types/lookup';
-import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { Asset } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
-import { useFeePallet } from '../../hooks/spacewalk/fee';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
-import Big from 'big.js';
+import { VoidFn } from '@polkadot/api-base/types';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { VaultRegistryVault } from '@polkadot/types/lookup';
+import Big from 'big.js';
+import { DateTime } from 'luxon';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
+import { toast } from 'react-toastify';
+import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
-import { toast } from 'react-toastify';
-import { CopyableAddress, PublicKey } from '../../components/PublicKey';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { VoidFn } from '@polkadot/api-base/types';
-import { DateTime } from 'luxon';
-import { AssetSelector, VaultSelector } from '../../components/Selector';
+import LabelledInputField from '../../components/LabelledInputField';
 import OpenWallet from '../../components/OpenWallet';
+import { CopyableAddress, PublicKey } from '../../components/PublicKey';
+import { AssetSelector, VaultSelector } from '../../components/Selector';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
+import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { useFeePallet } from '../../hooks/spacewalk/fee';
+import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -226,7 +225,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const vaults = getVaults();

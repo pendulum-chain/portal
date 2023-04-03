@@ -23,7 +23,7 @@ import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
 function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
 

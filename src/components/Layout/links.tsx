@@ -1,5 +1,6 @@
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
+import { TenantStateValues } from '../../GlobalStateProvider';
 import BackstopPoolIcon from '../../assets/backstop-pool';
 import BridgeIcon from '../../assets/bridge';
 import CollatorsIcon from '../../assets/collators';
@@ -8,7 +9,6 @@ import GovernanceIcon from '../../assets/governance';
 import ArrowIcon from '../../assets/nav-arrow';
 import SwapIcon from '../../assets/swap';
 import SwapPoolsIcon from '../../assets/swap-pools';
-import { GlobalStateInterface } from '../../GlobalStateProvider';
 
 export type LinkParameter = { isActive?: boolean };
 export type LinkItem = {
@@ -20,7 +20,7 @@ export type LinkItem = {
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
 };
-export type Links = (state: Partial<GlobalStateInterface>) => LinkItem[];
+export type Links = (state: Partial<TenantStateValues>) => LinkItem[];
 
 const arrow = (
   <div className="nav-arrow-container">

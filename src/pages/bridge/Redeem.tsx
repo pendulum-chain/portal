@@ -165,7 +165,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const {

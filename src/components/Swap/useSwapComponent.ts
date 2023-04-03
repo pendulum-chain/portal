@@ -3,16 +3,16 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import { config } from '../../config';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { emptyFn } from '../../helpers/general';
 import useBoolean from '../../hooks/useBoolean';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { Asset } from '../../models/Asset';
 import { SwapSettings, SwapTransaction } from '../../models/Swap';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { assetsApi } from '../../services/api/assets';
 import { isApiConnected } from '../../services/api/helpers';
 import { getWalletBalances } from '../../services/api/wallet';
@@ -29,9 +29,7 @@ export const defaults = config.swap.defaults;
 
 export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) => {
   console.log(from);
-  const {
-    state: { walletAccount },
-  } = useGlobalState();
+  const { walletAccount } = useGlobalState();
   const {
     state: { api },
   } = useNodeInfoState();
