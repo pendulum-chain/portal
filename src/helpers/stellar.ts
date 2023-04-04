@@ -9,6 +9,14 @@ export const isStellarAddress = (str: string) =>
   // eslint-disable-next-line no-useless-escape
   Boolean(str.match(/^[^\*> \t\n\r]+\*[^\*\.> \t\n\r]+\.[^\*> \t\n\r]+$/));
 
+// A Stellar amount should not have more than 7 decimal places
+export function isCompatibleStellarAmount(amount: string): boolean {
+  return !(
+    (amount.split('.')[1] && amount.split('.')[1].length > 7) ||
+    (amount.split(',')[1] && amount.split(',')[1].length > 7)
+  );
+}
+
 export function convertRawHexKeyToPublicKey(rawPublicKeyHex: string): Keypair {
   const ed25519PublicKey = StrKey.encodeEd25519PublicKey(Buffer.from(rawPublicKeyHex.slice(2), 'hex'));
   return Keypair.fromPublicKey(ed25519PublicKey);

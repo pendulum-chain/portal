@@ -1,6 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
+import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { Button, Checkbox, Modal } from 'react-daisyui';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,7 +14,13 @@ import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey, isPublicKey, StellarPublicKeyPattern } from '../../helpers/stellar';
+import {
+  convertRawHexKeyToPublicKey,
+  isCompatibleStellarAmount,
+  isPublicKey,
+  StellarPublicKeyPattern,
+  stringifyStellarAsset,
+} from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
@@ -101,11 +108,9 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
   const rawDestinationAddress = redeemRequest?.request.stellarAddress;
-  console.log('rawDestinationAddress', redeemRequest?.request.stellarAddress);
   const destination = rawDestinationAddress
     ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
     : '';
-  console.log('destination', destination);
 
   return (
     <Modal open={visible}>
@@ -168,13 +173,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    getValues,
-    watch,
-  } = useForm<RedeemFormInputs>({
+  const { control, handleSubmit, getValues, watch } = useForm<RedeemFormInputs>({
     defaultValues: {
       amount: '0',
       stellarAddress: '',
@@ -195,15 +194,16 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
-    return vaults
+    const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
-        console.log('currency', currency);
         return convertCurrencyToStellarAsset(currency);
       })
       .filter((asset): asset is Asset => {
         return asset != null;
       });
+    // Deduplicate assets
+    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
   }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
@@ -226,8 +226,13 @@ function Redeem(props: RedeemProps): JSX.Element {
       if (!selectedAsset && wrappedAssets.length > 0) {
         setSelectedAsset(wrappedAssets[0]);
       }
+    } else {
+      // If the user manually selected a vault, but it's not available anymore, we reset the selection
+      if (selectedVault && vaultsForCurrency.length > 0 && !vaultsForCurrency.includes(selectedVault)) {
+        setSelectedVault(vaultsForCurrency[0]);
+      }
     }
-  }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
+  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
 
   const requestRedeemExtrinsic = useMemo(() => {
     if (!selectedVault || !api || !stellarAddress || !isPublicKey(stellarAddress)) {
@@ -243,7 +248,6 @@ function Redeem(props: RedeemProps): JSX.Element {
     }
 
     if (!walletAccount) {
-      toast('No wallet connected', { type: 'error' });
       return;
     }
 
@@ -301,11 +305,19 @@ function Redeem(props: RedeemProps): JSX.Element {
           <div className="flex items-center">
             <Controller
               control={control}
-              rules={{ required: 'Amount is required' }}
-              render={({ field }) => (
+              rules={{
+                required: 'Amount is required',
+                validate: (value) => {
+                  if (!isCompatibleStellarAmount(value)) {
+                    return 'Max 7 decimals';
+                  }
+                },
+              }}
+              name="amount"
+              render={({ field, fieldState: { error } }) => (
                 <LabelledInputField
                   autoSelect
-                  error={errors.amount?.message}
+                  error={error?.message}
                   label="From Amplitude"
                   type="number"
                   step="any"
@@ -313,7 +325,6 @@ function Redeem(props: RedeemProps): JSX.Element {
                   {...field}
                 />
               )}
-              name="amount"
             />
             <div className="px-1" />
             <AssetSelector
@@ -348,10 +359,10 @@ function Redeem(props: RedeemProps): JSX.Element {
                 message: 'Stellar address is invalid',
               },
             }}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <LabelledInputField
                 label="Stellar Address"
-                error={errors.stellarAddress?.message}
+                error={error?.message}
                 placeholder="Enter target Stellar address"
                 type="text"
                 {...field}

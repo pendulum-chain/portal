@@ -1,8 +1,8 @@
-import { WalletAccount } from '@talismn/connect-wallets';
-import { createContext } from 'preact';
+import { createContext, h } from 'preact';
 import { StateUpdater, useCallback, useContext, useMemo, useState } from 'preact/compat';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { WalletAccount } from '@talismn/connect-wallets';
 
 export enum TenantName {
   Amplitude = 'amplitude',
@@ -19,9 +19,10 @@ export enum TenantRPC {
 }
 
 export interface TenantStateValues {
-  tenantName: TenantName;
-  tenantRPC: TenantRPC;
+  tenantName?: TenantName;
+  tenantRPC?: TenantRPC;
 }
+
 export interface GlobalState {
   state: Partial<TenantStateValues>;
   setState: StateUpdater<Partial<TenantStateValues>>;
@@ -37,8 +38,8 @@ const enum ThemeName {
 }
 
 export const defaultState: TenantStateValues = {
-  tenantName: TenantName.Amplitude,
-  tenantRPC: TenantRPC.Amplitude,
+  tenantName: undefined,
+  tenantRPC: undefined,
 };
 
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
