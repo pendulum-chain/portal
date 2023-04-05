@@ -8,6 +8,7 @@ import {
   transactionIdColumn,
   typeColumn,
   statusColumn,
+  detailsColumnCreator,
   TTransfer,
   TransferType,
 } from './TransfersColumns';
@@ -19,12 +20,13 @@ import { estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { DateTime } from 'luxon';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
-import { CompletedTransferDialog, PendingTransferDialog, ReimbursedTransferDialog } from './TransferDialog';
+import { CompletedTransferDialog, getModalId, PendingTransferDialog, ReimbursedTransferDialog } from './TransferDialog';
 
 export function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
   const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
 
@@ -78,11 +80,33 @@ export function Transfers(): JSX.Element {
   }, [getIssueRequests, getRedeemRequests]);
 
   const columns = useMemo(() => {
-    return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn];
+    const detailsColumn = detailsColumnCreator(setCurrentTransfer);
+    return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn, detailsColumn];
   }, []);
 
   return (
     <div className="overflow-x-auto mt-10">
+      {currentTransfer && (
+        <PendingTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Pending'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <CompletedTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Completed'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <ReimbursedTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Reimbursed'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
       <Table
         className="transfer-list-table bg-base-100 text-md"
         data={data}

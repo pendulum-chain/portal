@@ -76,3 +76,7 @@
   color: var(--table-text);
   margin: 0.5em 0;
 }
+
+.details-link {
+  fill: var(--table-text);
+}

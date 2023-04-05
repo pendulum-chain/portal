@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 
 interface BaseTransferDialogProps {
+  id: string;
   visible: boolean;
   transfer: TTransfer;
   title?: string;
@@ -34,15 +35,14 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 );
 
 function BaseTransferDialog(props: BaseTransferDialogProps) {
-  const { statusIcon, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
+  const { id, statusIcon, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
   const { tenantName, tenantRPC } = useGlobalState().state;
-  const { tokenSymbol } = useNodeInfoState().state;
   const chainName = tenantName ? tenantName.slice(0, 1).toUpperCase() + tenantName.slice(1) : '';
   const polkadotJSBlockPage = useMemo(() => {
     return `https://polkadot.js.org/apps/?rpc=${tenantRPC}#/explorer/query/${transfer.original.opentime}`;
   }, [tenantRPC, transfer.original.opentime]);
   return (
-    <Modal open={visible} className="bg-base-200">
+    <Modal id={id} open={visible} className="bg-base-200">
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
@@ -92,10 +92,12 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
 
 interface TransferDialogProps {
   transfer: TTransfer;
+  visible: boolean;
+  onClose?: () => void;
 }
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
-  const { transfer } = props;
+  const { transfer, visible, onClose } = props;
   const { tokenSymbol } = useNodeInfoState().state;
   const completedContent = () => {
     return (
@@ -111,17 +113,20 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   };
   return (
     <BaseTransferDialog
+      id="completed-transfer-modal"
       transfer={transfer}
       title="Completed!"
-      visible={true}
+      visible={visible}
       content={completedContent}
       statusIcon={SuccessDialogIcon}
+      onClose={onClose}
+      onConfirm={onClose}
     />
   );
 }
 
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
-  const { transfer } = props;
+  const { transfer, visible, onClose } = props;
   const { tokenSymbol } = useNodeInfoState().state;
   const reimbursedContent = () => {
     return (
@@ -136,18 +141,19 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
   };
   return (
     <BaseTransferDialog
+      id="reimbursed-transfer-modal"
       transfer={transfer}
       title="Reimbursed Successful!"
-      visible={true}
+      visible={visible}
       content={reimbursedContent}
       statusIcon={SuccessDialogIcon}
+      onClose={onClose}
     />
   );
 }
 
 export function PendingTransferDialog(props: TransferDialogProps) {
-  const { transfer } = props;
-  const { tokenSymbol } = useNodeInfoState().state;
+  const { transfer, visible, onClose } = props;
   const { getActiveBlockNumber } = useSecurityPallet();
   const [deadline, setDeadline] = useState<string>();
   useEffect(() => {
@@ -204,11 +210,13 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   };
   return (
     <BaseTransferDialog
+      id="pending-transfer-modal"
       transfer={transfer}
       title="Pending"
-      visible={true}
+      visible={visible}
       content={pendingContent}
       statusIcon={PendingDialogIcon}
+      onClose={onClose}
     />
   );
 }

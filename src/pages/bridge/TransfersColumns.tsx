@@ -1,6 +1,10 @@
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
+import { Button } from 'react-daisyui';
+import { Row } from 'react-table';
+import ExternalIcon from '../../assets/ExternalIcon';
 import { CopyableAddress } from '../../components/PublicKey';
+import { getModalId } from './TransferDialog';
 
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
@@ -65,3 +69,17 @@ export const statusColumn: ColumnDef<TTransfer> = {
     );
   },
 };
+
+export const detailsColumnCreator = (onClick: (t: TTransfer) => void): ColumnDef<TTransfer> => ({
+  header: 'Details',
+  accessorKey: 'details',
+  cell: ({ row }) => {
+    return (
+      <Button color="ghost" onClick={() => onClick(row.original)}>
+        <div className="w-3 m-auto details-link">
+          <ExternalIcon />
+        </div>
+      </Button>
+    );
+  },
+});
