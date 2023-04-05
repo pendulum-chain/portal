@@ -20,7 +20,7 @@ import { estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { DateTime } from 'luxon';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
-import { CompletedTransferDialog, getModalId, PendingTransferDialog, ReimbursedTransferDialog } from './TransferDialog';
+import { CompletedTransferDialog, PendingTransferDialog, ReimbursedTransferDialog } from './TransferDialog';
 
 export function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();

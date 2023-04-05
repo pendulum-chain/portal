@@ -1,10 +1,8 @@
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
 import { Button } from 'react-daisyui';
-import { Row } from 'react-table';
 import ExternalIcon from '../../assets/ExternalIcon';
 import { CopyableAddress } from '../../components/PublicKey';
-import { getModalId } from './TransferDialog';
 
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
