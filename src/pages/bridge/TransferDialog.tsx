@@ -2,19 +2,17 @@ import { Button, Divider, Modal } from 'react-daisyui';
 import { h } from 'preact';
 import { CloseButton } from '../../components/CloseButton';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
-import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
-import WarningDialogIcon from '../../assets/dialog-status-warning';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
 import { JSXInternal } from 'preact/src/jsx';
 import { CopyableAddress } from '../../components/PublicKey';
 import { TTransfer } from './TransfersColumns';
-import { format, nativeToFormat } from '../../helpers/parseNumbers';
+import { decimalToNative, format, nativeToDecimal, nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { calculateDeadline } from '../../helpers/spacewalk';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 
 interface BaseTransferDialogProps {
@@ -24,16 +22,25 @@ interface BaseTransferDialogProps {
   statusIcon: () => JSXInternal.Element;
   content: () => JSXInternal.Element;
   footer?: () => JSXInternal.Element;
+  actions?: (onConfirm: (() => void) | undefined) => JSXInternal.Element;
   onClose?: () => void;
   onConfirm?: () => void;
 }
 
+const defaultActions = (onConfirm: (() => void) | undefined) => (
+  <Button className="px-6" color="primary" onClick={onConfirm}>
+    OK
+  </Button>
+);
+
 function BaseTransferDialog(props: BaseTransferDialogProps) {
-  const { statusIcon, transfer, visible, title, content, footer, onClose, onConfirm } = props;
-  const { tenantName } = useGlobalState().state;
+  const { statusIcon, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
+  const { tenantName, tenantRPC } = useGlobalState().state;
   const { tokenSymbol } = useNodeInfoState().state;
   const chainName = tenantName ? tenantName.slice(0, 1).toUpperCase() + tenantName.slice(1) : '';
-  console.log(transfer.original);
+  const polkadotJSBlockPage = useMemo(() => {
+    return `https://polkadot.js.org/apps/?rpc=${tenantRPC}#/explorer/query/${transfer.original.opentime}`;
+  }, [tenantRPC, transfer.original.opentime]);
   return (
     <Modal open={visible} className="bg-base-200">
       <CloseButton onClick={onClose} />
@@ -46,7 +53,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
           <div id="details" className="rounded flex flex-col p-5 mt-1 w-11/12">
             <div className="flex flex-row justify-between">
               <div className="text-sm">Bridge fee</div>
-              <div className="text-sm">{format(transfer.original.fee.toNumber(), tokenSymbol)}</div>
+              <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
             </div>
             <div className="flex flex-row justify-between">
               <div className="text-sm">Address</div>
@@ -59,7 +66,9 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
             </div>
             <div className="flex flex-row justify-between">
               <div className="text-sm">{chainName} opentime block</div>
-              <div className="text-sm">{transfer.original.opentime.toString()}</div>
+              <a target="_blank" href={polkadotJSBlockPage}>
+                <div className="text-sm">{transfer.original.opentime.toString()}</div>
+              </a>
             </div>
             <div className="flex flex-row justify-between">
               <div className="text-sm">Vault Account</div>
@@ -72,13 +81,10 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
             </div>
           </div>
         </div>
-        <Divider />
         {footer && footer()}
       </Modal.Body>
       <Modal.Actions className="justify-center">
-        <Button className="px-6" color="primary" onClick={onConfirm}>
-          OK
-        </Button>
+        {actions ? actions(onConfirm) : defaultActions(onConfirm)}
       </Modal.Actions>
     </Modal>
   );
@@ -144,7 +150,6 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const { tokenSymbol } = useNodeInfoState().state;
   const { getActiveBlockNumber } = useSecurityPallet();
   const [deadline, setDeadline] = useState<string>();
-
   useEffect(() => {
     getActiveBlockNumber().then((active) => {
       setDeadline(
@@ -157,27 +162,42 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     });
   }, [setDeadline]);
 
-  const completedContent = () => {
+  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
+  const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
+  const pendingContent = () => {
     return (
       <>
-        <div className="text-xl">Send {nativeToFormat(transfer.amount, tokenSymbol)}</div>
-        <div className="mt-2" />
+        <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
+          amountToSend.toNumber(),
+          stellarAsset,
+        )}`}</div>
+        <div className="mt-1" />
         <div className="text-md">In a single transaction to</div>
+        <div className="mt-2" />
         <CopyableAddress
           inline={true}
           className="text-sm p-0"
           variant="short"
-          publicKey={transfer.original.vault.accountId.toString()}
+          publicKey={vaultStellarAddress.publicKey()}
         />
-        <div className="text-md">Withing 24 hours from the request creation (which means before {deadline})</div>
         <div className="mt-4" />
-        <div className="text-md">
-          {'Warning: Some wallets display values in ' +
-            { tokenSymbol } +
-            '. Please ensure you send the correct amount: ' +
-            nativeToFormat(transfer.amount, tokenSymbol)}
+        <div className="text-sm">Withing 24 hours from the request creation (before {deadline})</div>
+        <div className="mt-4" />
+        <div className="text-sm">
+          {`Warning: Some wallets display values in ${stellarAsset}. Please ensure you send the correct amount: ${nativeToFormat(
+            transfer.amount,
+            stellarAsset,
+          )}`}
         </div>
-        <h1>{nativeToFormat(transfer.amount, tokenSymbol)}</h1>
+        <div className="mt-4" />
+        <div className="text-sm">
+          Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
+        </div>
+        <Divider />
+        <div className="text-xl" title={nativeToDecimal(transfer.original.amount.toNumber()).toString()}>
+          You will receive {format(nativeToDecimal(transfer.original.amount.toNumber()).toNumber(), stellarAsset)}
+        </div>
         <div className="mt-4" />
       </>
     );
@@ -187,7 +207,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       transfer={transfer}
       title="Pending"
       visible={true}
-      content={completedContent}
+      content={pendingContent}
       statusIcon={PendingDialogIcon}
     />
   );
