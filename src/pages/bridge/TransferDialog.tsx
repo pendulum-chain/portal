@@ -6,7 +6,7 @@ import PendingDialogIcon from '../../assets/dialog-status-pending';
 import { JSXInternal } from 'preact/src/jsx';
 import { CopyableAddress } from '../../components/PublicKey';
 import { TTransfer } from './TransfersColumns';
-import { decimalToNative, format, nativeToDecimal, nativeToFormat } from '../../helpers/parseNumbers';
+import { format, nativeToDecimal, nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -20,9 +20,9 @@ interface BaseTransferDialogProps {
   visible: boolean;
   transfer: TTransfer;
   title?: string;
-  statusIcon: () => JSXInternal.Element;
-  content: () => JSXInternal.Element;
-  footer?: () => JSXInternal.Element;
+  content: JSXInternal.Element;
+  footer?: JSXInternal.Element;
+  statusIcon: JSXInternal.Element;
   actions?: (onConfirm: (() => void) | undefined) => JSXInternal.Element;
   onClose?: () => void;
   onConfirm?: () => void;
@@ -46,10 +46,10 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
-          {statusIcon()}
+          {statusIcon}
           <div className="mt-4" />
           <h1 className="text-xl mb-5">{title}</h1>
-          {content()}
+          {content}
           <div id="details" className="rounded flex flex-col p-5 mt-1 w-11/12">
             <div className="flex flex-row justify-between">
               <div className="text-sm">Bridge fee</div>
@@ -81,7 +81,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
             </div>
           </div>
         </div>
-        {footer && footer()}
+        {footer}
       </Modal.Body>
       <Modal.Actions className="justify-center">
         {actions ? actions(onConfirm) : defaultActions(onConfirm)}
@@ -99,26 +99,29 @@ interface TransferDialogProps {
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const { tokenSymbol } = useNodeInfoState().state;
-  const completedContent = () => {
-    return (
-      <>
-        <div className="text-md">{'You have received ' + nativeToFormat(transfer.amount, tokenSymbol)}</div>
-        <div className="mt-4" />
-        <div className="flex flex-row justify-between w-11/12">
-          <div className="text-sm">Spacewalk transaction</div>
-          <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
-        </div>
-      </>
-    );
-  };
+  const content = (
+    <>
+      <div className="text-md">{'You have received ' + nativeToFormat(transfer.amount, tokenSymbol)}</div>
+      <div className="mt-4" />
+      <div className="flex flex-row justify-between w-11/12">
+        <div className="text-sm">Spacewalk transaction</div>
+        <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
+      </div>
+    </>
+  );
   return (
     <BaseTransferDialog
       id="completed-transfer-modal"
       transfer={transfer}
       title="Completed!"
       visible={visible}
-      content={completedContent}
-      statusIcon={SuccessDialogIcon}
+      content={content}
+      statusIcon={<SuccessDialogIcon />}
+      onClose={onClose}
+      onConfirm={onClose}
+    />
+  );
+}
       onClose={onClose}
       onConfirm={onClose}
     />
@@ -128,25 +131,23 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const { tokenSymbol } = useNodeInfoState().state;
-  const reimbursedContent = () => {
-    return (
-      <>
-        <div className="text-md">
-          {'Your redeem request failed. You decided to burn ' + tokenSymbol + ' in return for ' + tokenSymbol}
-        </div>
-        <h1>{nativeToFormat(transfer.amount, tokenSymbol)}</h1>
-        <div className="mt-4" />
-      </>
-    );
-  };
+  const content = (
+    <>
+      <div className="text-md">
+        {'Your redeem request failed. You decided to burn ' + tokenSymbol + ' in return for ' + tokenSymbol}
+      </div>
+      <h1>{nativeToFormat(transfer.amount, tokenSymbol)}</h1>
+      <div className="mt-4" />
+    </>
+  );
   return (
     <BaseTransferDialog
       id="reimbursed-transfer-modal"
       transfer={transfer}
       title="Reimbursed Successful!"
       visible={visible}
-      content={reimbursedContent}
-      statusIcon={SuccessDialogIcon}
+      content={content}
+      statusIcon={<SuccessDialogIcon />}
       onClose={onClose}
     />
   );
@@ -171,51 +172,49 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
   const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
-  const pendingContent = () => {
-    return (
-      <>
-        <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
-          amountToSend.toNumber(),
+  const content = (
+    <>
+      <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
+        amountToSend.toNumber(),
+        stellarAsset,
+      )}`}</div>
+      <div className="mt-1" />
+      <div className="text-md">In a single transaction to</div>
+      <div className="mt-2" />
+      <CopyableAddress
+        inline={true}
+        className="text-sm p-0"
+        variant="short"
+        publicKey={vaultStellarAddress.publicKey()}
+      />
+      <div className="mt-4" />
+      <div className="text-sm">Withing 24 hours from the request creation (before {deadline})</div>
+      <div className="mt-4" />
+      <div className="text-sm">
+        {`Warning: Some wallets display values in ${stellarAsset}. Please ensure you send the correct amount: ${nativeToFormat(
+          transfer.amount,
           stellarAsset,
-        )}`}</div>
-        <div className="mt-1" />
-        <div className="text-md">In a single transaction to</div>
-        <div className="mt-2" />
-        <CopyableAddress
-          inline={true}
-          className="text-sm p-0"
-          variant="short"
-          publicKey={vaultStellarAddress.publicKey()}
-        />
-        <div className="mt-4" />
-        <div className="text-sm">Withing 24 hours from the request creation (before {deadline})</div>
-        <div className="mt-4" />
-        <div className="text-sm">
-          {`Warning: Some wallets display values in ${stellarAsset}. Please ensure you send the correct amount: ${nativeToFormat(
-            transfer.amount,
-            stellarAsset,
-          )}`}
-        </div>
-        <div className="mt-4" />
-        <div className="text-sm">
-          Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
-        </div>
-        <Divider />
-        <div className="text-xl" title={nativeToDecimal(transfer.original.amount.toNumber()).toString()}>
-          You will receive {format(nativeToDecimal(transfer.original.amount.toNumber()).toNumber(), stellarAsset)}
-        </div>
-        <div className="mt-4" />
-      </>
-    );
-  };
+        )}`}
+      </div>
+      <div className="mt-4" />
+      <div className="text-sm">
+        Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
+      </div>
+      <Divider />
+      <div className="text-xl" title={nativeToDecimal(transfer.original.amount.toNumber()).toString()}>
+        You will receive {format(nativeToDecimal(transfer.original.amount.toNumber()).toNumber(), stellarAsset)}
+      </div>
+      <div className="mt-4" />
+    </>
+  );
   return (
     <BaseTransferDialog
       id="pending-transfer-modal"
       transfer={transfer}
       title="Pending"
       visible={visible}
-      content={pendingContent}
-      statusIcon={PendingDialogIcon}
+      content={content}
+      statusIcon={<PendingDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
     />
