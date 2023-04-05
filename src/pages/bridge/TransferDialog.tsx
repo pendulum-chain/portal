@@ -217,6 +217,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       content={pendingContent}
       statusIcon={PendingDialogIcon}
       onClose={onClose}
+      onConfirm={onClose}
     />
   );
 }
