@@ -1,7 +1,8 @@
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
+import { CopyableAddress } from '../../components/PublicKey';
 
-export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Retried';
+export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
 export enum TransferType {
   issue = 'issue',
@@ -11,6 +12,7 @@ export enum TransferType {
 export interface TTransfer {
   updated: string;
   amount: string;
+  asset?: string;
   transactionId: string;
   type: TransferType;
   status: TransferStatus;
@@ -32,10 +34,17 @@ export const amountColumn: ColumnDef<TTransfer> = {
   accessorKey: 'amount',
 };
 
+export const assetColumn: ColumnDef<TTransfer> = {
+  header: 'Asset',
+  accessorKey: 'asset',
+};
+
 export const transactionIdColumn: ColumnDef<TTransfer> = {
   header: 'Transaction ID',
   accessorKey: 'transactionId',
-  accessorFn: (row) => row.transactionId.slice(0, 10) + '...' + row.transactionId.slice(-10),
+  cell: ({ row }) => {
+    return <CopyableAddress publicKey={row.original.transactionId} variant="hexa" />;
+  },
 };
 
 export const typeColumn: ColumnDef<TTransfer> = {
