@@ -20,7 +20,12 @@ import { estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { DateTime } from 'luxon';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
-import { CompletedTransferDialog, PendingTransferDialog, ReimbursedTransferDialog } from './TransferDialog';
+import {
+  CancelledTransferDialog,
+  CompletedTransferDialog,
+  PendingTransferDialog,
+  ReimbursedTransferDialog,
+} from './TransferDialog';
 
 export function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
@@ -104,6 +109,13 @@ export function Transfers(): JSX.Element {
         <ReimbursedTransferDialog
           transfer={currentTransfer}
           visible={currentTransfer.status === 'Reimbursed'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <CancelledTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Cancelled'}
           onClose={() => setCurrentTransfer(undefined)}
         />
       )}

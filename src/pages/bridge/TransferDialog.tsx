@@ -14,6 +14,8 @@ import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { calculateDeadline } from '../../helpers/spacewalk';
 import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
+import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
+import WarningDialogIcon from '../../assets/dialog-status-warning';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -41,6 +43,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   const polkadotJSBlockPage = useMemo(() => {
     return `https://polkadot.js.org/apps/?rpc=${tenantRPC}#/explorer/query/${transfer.original.opentime}`;
   }, [tenantRPC, transfer.original.opentime]);
+  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex()).publicKey();
   return (
     <Modal id={id} open={visible} className="bg-base-200">
       <CloseButton onClick={onClose} />
@@ -56,7 +59,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="text-sm">Address</div>
+              <div className="text-sm">Destination Address</div>
               <CopyableAddress
                 inline={true}
                 className="text-sm p0"
@@ -71,13 +74,17 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               </a>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="text-sm">Vault Account</div>
+              <div className="text-sm">Vault Address</div>
               <CopyableAddress
                 inline={true}
                 className="text-sm p-0"
                 variant="short"
                 publicKey={transfer.original.vault.accountId.toString()}
               />
+            </div>
+            <div className="flex flex-row justify-between">
+              <div className="text-sm">Vault Stellar Address</div>
+              <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={vaultStellarAddress} />
             </div>
           </div>
         </div>
@@ -98,10 +105,10 @@ interface TransferDialogProps {
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const { tokenSymbol } = useNodeInfoState().state;
+  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
   const content = (
     <>
-      <div className="text-md">{'You have received ' + nativeToFormat(transfer.amount, tokenSymbol)}</div>
+      <div className="text-md">{'You have received ' + nativeToFormat(transfer.amount, stellarAsset)}</div>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-sm">Spacewalk transaction</div>
@@ -122,6 +129,37 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
     />
   );
 }
+
+export function CancelledTransferDialog(props: TransferDialogProps) {
+  const { transfer, visible, onClose } = props;
+  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
+  const content = (
+    <>
+      <div className="text-sm">
+        {`You did not send me a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${format(
+          amountToSend,
+          stellarAsset,
+        )}`}
+      </div>
+      <div className="mt-4" />
+      <div className="text-sm text-accent ">Contact the team for debugging if you think this is an error.</div>
+      <Divider />
+      <div className="mt-5" />
+      <div className="flex flex-row justify-between w-11/12">
+        <div className="text-xs">Spacewalk transaction</div>
+        <CopyableAddress inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
+      </div>
+    </>
+  );
+  return (
+    <BaseTransferDialog
+      id="completed-transfer-modal"
+      transfer={transfer}
+      title="Cancelled"
+      visible={visible}
+      content={content}
+      statusIcon={<CancelledDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
     />
@@ -156,15 +194,11 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const { getActiveBlockNumber } = useSecurityPallet();
-  const [deadline, setDeadline] = useState<string>();
+  const [deadline, setDeadline] = useState<DateTime>();
   useEffect(() => {
     getActiveBlockNumber().then((active) => {
       setDeadline(
-        calculateDeadline(
-          active as number,
-          transfer.original.opentime.toNumber(),
-          transfer.original.period.toNumber(),
-        ).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
+        calculateDeadline(active as number, transfer.original.opentime.toNumber(), transfer.original.period.toNumber()),
       );
     });
   }, [setDeadline]);
@@ -172,37 +206,50 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
   const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
+  const timedout = useMemo(() => deadline && deadline < DateTime.now(), [deadline]);
   const content = (
     <>
-      <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
-        amountToSend.toNumber(),
-        stellarAsset,
-      )}`}</div>
-      <div className="mt-1" />
-      <div className="text-md">In a single transaction to</div>
-      <div className="mt-2" />
-      <CopyableAddress
-        inline={true}
-        className="text-sm p-0"
-        variant="short"
-        publicKey={vaultStellarAddress.publicKey()}
-      />
+      {timedout && (
+        <>
+          <div className="mt-2" />
+          <div className="text-sm">{`We didn't register a transfer of ${format(
+            amountToSend.toNumber(),
+            stellarAsset,
+          )} to `}</div>
+          <div className="mt-2" />
+          <CopyableAddress
+            inline={true}
+            className="text-sm p-0"
+            variant="short"
+            publicKey={vaultStellarAddress.publicKey()}
+          />
+          <div className="mt-2" />
+          <div className="text-sm">before {deadline?.toLocaleString(DateTime.DATETIME_SHORT)}</div>
+        </>
+      )}
+      {!timedout && (
+        <>
+          <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
+            amountToSend.toNumber(),
+            stellarAsset,
+          )}`}</div>
+          <div className="mt-1" />
+          <div className="text-md">In a single transaction to</div>
+          <div className="mt-2" />
+          <CopyableAddress
+            inline={true}
+            className="text-sm p-0"
+            variant="short"
+            publicKey={vaultStellarAddress.publicKey()}
+          />
+          <div className="mt-2" />
+          <div className="text-sm">before {deadline?.toLocaleString(DateTime.DATETIME_SHORT)}</div>
+        </>
+      )}
       <div className="mt-4" />
-      <div className="text-sm">Withing 24 hours from the request creation (before {deadline})</div>
-      <div className="mt-4" />
-      <div className="text-sm">
-        {`Warning: Some wallets display values in ${stellarAsset}. Please ensure you send the correct amount: ${nativeToFormat(
-          transfer.amount,
-          stellarAsset,
-        )}`}
-      </div>
       <div className="mt-4" />
       <div className="text-sm">
         Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
-      </div>
-      <Divider />
-      <div className="text-xl" title={nativeToDecimal(transfer.original.amount.toNumber()).toString()}>
-        You will receive {format(nativeToDecimal(transfer.original.amount.toNumber()).toNumber(), stellarAsset)}
       </div>
       <div className="mt-4" />
     </>
@@ -211,10 +258,10 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     <BaseTransferDialog
       id="pending-transfer-modal"
       transfer={transfer}
-      title="Pending"
+      title={timedout ? 'Transaction timed out' : 'Pending'}
       visible={visible}
       content={content}
-      statusIcon={<PendingDialogIcon />}
+      statusIcon={timedout ? <WarningDialogIcon /> : <PendingDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
     />
