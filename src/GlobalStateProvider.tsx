@@ -22,7 +22,6 @@ export enum TenantRPC {
 export interface GlobalStateValues {
   tenantName?: TenantName;
   tenantRPC?: TenantRPC;
-  dAppName?: string;
   wallet?: WalletAccount;
 }
 
@@ -33,6 +32,7 @@ export interface GlobalState {
   setWalletAccount: (data: WalletAccount) => void;
   removeWalletAccount: () => void;
   getThemeName: () => ThemeName;
+  dAppName: string;
 }
 
 const enum ThemeName {
@@ -52,6 +52,7 @@ const GlobalStateProvider = ({
   value?: Partial<GlobalStateValues>;
 }) => {
   const [state, setState] = useState(value);
+  const dAppName = state.tenantName || TenantName.Amplitude;
 
   const getThemeName = useCallback(() => {
     switch (state.tenantName) {
@@ -77,14 +78,14 @@ const GlobalStateProvider = ({
       if (!name) return;
       const wallet = getWalletBySource(name);
       if (!wallet) return;
-      // TODO: optimize this
-      await wallet.enable(state.tenantName === 'pendulum' ? 'Pendulum' : 'Amplitude');
+      // TODO: optimize this - make reusable as it's used in multiple places
+      await wallet.enable(dAppName || TenantName.Amplitude);
       const selectedWallet = (await wallet.getAccounts()).find((a) => a.address === account);
       if (!selectedWallet) return;
       setState((prev) => ({ ...prev, wallet: selectedWallet }));
     };
     run();
-  }, [account, state.tenantName]);
+  }, [account, dAppName, state.tenantName]);
 
   const providerValue = useMemo(
     () => ({
@@ -100,8 +101,9 @@ const GlobalStateProvider = ({
         setState((prev) => ({ ...prev, wallet: undefined }));
       },
       getThemeName,
+      dAppName,
     }),
-    [clear, getThemeName, set, state],
+    [clear, dAppName, getThemeName, set, state],
   );
 
   return <GlobalStateContext.Provider value={providerValue}>{children}</GlobalStateContext.Provider>;
