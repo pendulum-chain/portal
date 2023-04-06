@@ -2,15 +2,15 @@ import { FC, memo, useRef } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useTheme } from 'react-daisyui';
 import { Outlet, useParams } from 'react-router-dom';
+import { TenantName, TenantRPC, useGlobalState } from '../../GlobalStateProvider';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
-import { TenantName, TenantRPC, useGlobalState } from '../../GlobalStateProvider';
 import OpenWallet from '../OpenWallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
-import './styles.sass';
 import Versions from './Versions';
+import './styles.sass';
 
 export default function Layout(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);

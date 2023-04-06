@@ -1,3 +1,3 @@
 export const storageKeys = {
-  GLOBAL: 'GLOBAL',
+  ACCOUNT: 'ACCOUNT',
 };
