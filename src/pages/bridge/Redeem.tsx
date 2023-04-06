@@ -170,7 +170,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState();
+  const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const { control, handleSubmit, getValues, watch } = useForm<RedeemFormInputs>({
@@ -180,7 +180,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     },
   });
 
-  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { wrappedCurrencyPrefix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
@@ -383,7 +383,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               Bridge
             </Button>
           ) : (
-            <OpenWallet dAppName={network} />
+            <OpenWallet dAppName={dAppName} />
           )}
         </form>
       </div>
