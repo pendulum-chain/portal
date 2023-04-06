@@ -7,25 +7,25 @@ import { Button, Checkbox, Modal } from 'react-daisyui';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
 import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import {
+  StellarPublicKeyPattern,
   convertRawHexKeyToPublicKey,
   isCompatibleStellarAmount,
   isPublicKey,
-  StellarPublicKeyPattern,
   stringifyStellarAsset,
 } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -383,7 +383,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               Bridge
             </Button>
           ) : (
-            <OpenWallet networkName={network} />
+            <OpenWallet dAppName={network} />
           )}
         </form>
       </div>

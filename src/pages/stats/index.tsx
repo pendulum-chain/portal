@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { getStatsData, StatsData } from '../../services/stats';
+import { StatsData, getStatsData } from '../../services/stats';
 
 export function Stats(): JSX.Element {
   const [data, setData] = useState<StatsData | undefined>(undefined);
@@ -9,7 +9,8 @@ export function Stats(): JSX.Element {
   const { tenantRPC } = useGlobalState().state;
   useEffect(() => {
     getStatsData(tenantRPC).then((d) => setData(d));
-  }, [setData]);
+  }, [setData, tenantRPC]);
+
   return data ? (
     <div className="rounded bg-base-200 p-10 mt-5 border border-slate-200 w-fit">
       <h1 className="text-3xl mb-2">Stats</h1>
