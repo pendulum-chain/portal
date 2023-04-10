@@ -26,7 +26,7 @@ interface Props<T> {
   value?: T;
 }
 
-function DropdownSelector<T extends { id: any; displayName: string }>(props: Props<T>) {
+function DropdownSelector<T extends { id: unknown; displayName: string }>(props: Props<T>) {
   const { items, onChange, value } = props;
 
   return (

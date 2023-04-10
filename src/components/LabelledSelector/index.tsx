@@ -1,14 +1,14 @@
 import { Select } from 'react-daisyui';
 import { h } from 'preact';
 import { ofSelect } from '../../helpers/general';
-import { ChangeEvent } from 'preact/compat';
+import { ChangeEvent, CSSProperties } from 'preact/compat';
 
 interface Props<T> {
   items: T[];
   label?: string;
   onChange: (item: T) => void;
   value?: T;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,9 +1,9 @@
 import { forwardRef } from 'react';
 import { Input, InputProps } from 'react-daisyui';
 import './styles.css';
+import { ChangeEvent, CSSProperties, TargetedEvent } from 'preact/compat';
 
 interface Props {
-  autoSelect?: boolean;
   label?: string;
   secondaryLabel?: string;
   color?: string;
@@ -14,8 +14,7 @@ interface Props {
   extraBtnText?: string;
   extraBtnAction?: () => void;
   onChange?: (value: string) => void;
-  style?: React.CSSProperties;
-  errorMessage?: string;
+  style?: CSSProperties;
 }
 
 const LabelledInputField = forwardRef((props: Props & InputProps) => {
@@ -32,15 +31,15 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
         </label>
         <div className="input-container">
           <Input
-            className="border border-gray-500 rounded-md bg-transparent"
+            className={`border rounded-md bg-transparent ${!error && 'border-gray-500'}`}
             color={inputColor}
             {...rest}
-            onFocus={(event: React.TargetedEvent) => {
+            onFocus={(event: TargetedEvent) => {
               if (event.target instanceof HTMLInputElement) {
                 event.target.select();
               }
             }}
-            onInput={(event: React.ChangeEvent) => {
+            onInput={(event: ChangeEvent) => {
               if (event.target instanceof HTMLInputElement) {
                 onChange?.(event.target.value);
               }

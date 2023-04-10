@@ -2,12 +2,13 @@ import { Asset } from 'stellar-sdk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import LabelledSelector from './LabelledSelector';
 import { h } from 'preact';
+import { CSSProperties } from 'preact/compat';
 
 interface AssetSelectorProps {
   selectedAsset?: Asset;
   onChange: (asset: Asset) => void;
   assets: Asset[];
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   assetPrefix?: string;
 }
 

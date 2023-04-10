@@ -10,6 +10,7 @@ import { config } from './config';
 const Dashboard = <SuspenseLoad importFn={() => import('./pages/dashboard/Dashboard')} fallback={defaultPageLoader} />;
 const Amm = <SuspenseLoad importFn={() => import('./pages/amm/Amm')} fallback={defaultPageLoader} />;
 const AmberPage = <SuspenseLoad importFn={() => import('./pages/amber')} fallback={defaultPageLoader} />;
+const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
 const SwapPage = <SuspenseLoad importFn={() => import('./pages/amber/swap')} fallback={defaultPageLoader} />;
 const SwapPoolsPage = <SuspenseLoad importFn={() => import('./pages/amber/swap-pools')} fallback={defaultPageLoader} />;
 const BackstopPoolsPage = (
@@ -27,6 +28,7 @@ export function App() {
           <Route path="" element={Dashboard} />
           <Route path="dashboard" element={Dashboard} />
           <Route path="amm" element={Amm} />
+          <Route path="stats" element={StatsPage} />
           <Route path="amber">
             <Route path="" element={AmberPage} />
             <Route path="swap" element={SwapPage} />

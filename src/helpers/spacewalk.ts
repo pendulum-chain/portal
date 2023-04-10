@@ -1,3 +1,5 @@
+import bs58 from 'bs58';
+import { H256 } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { DateTime } from 'luxon';
@@ -12,6 +14,13 @@ function hex_to_ascii(hexString: string, leading0x = true) {
     str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
   }
   return str;
+}
+
+// This function is used to derive a shorter identifier that can be used as a TEXT MEMO by a user when creating a Stellar transaction
+// to fulfill an issue request. This is only used for _issue_ requests, not for redeem or replace requests.
+export function deriveShortenedRequestId(requestId: H256) {
+  // This derivation matches the one used in the Spacewalk pallets
+  return bs58.encode(requestId).slice(0, 28);
 }
 
 export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurrencyId): Asset | null {
