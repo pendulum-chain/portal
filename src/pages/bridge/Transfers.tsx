@@ -16,13 +16,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
-import { estimateRequestCreationTime } from '../../helpers/spacewalk';
+import { calculateDeadline, estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { DateTime } from 'luxon';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { VoidFn } from '@polkadot/api-base/types';
 import {
   CancelledTransferDialog,
   CompletedTransferDialog,
+  FailedTransferDialog,
   PendingTransferDialog,
   ReimbursedTransferDialog,
 } from './TransferDialog';
@@ -116,6 +117,13 @@ export function Transfers(): JSX.Element {
         <CancelledTransferDialog
           transfer={currentTransfer}
           visible={currentTransfer.status === 'Cancelled'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <FailedTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Failed'}
           onClose={() => setCurrentTransfer(undefined)}
         />
       )}
