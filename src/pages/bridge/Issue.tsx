@@ -22,6 +22,7 @@ import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import OpenWallet from '../../components/OpenWallet';
+import TransferCountdown from '../../components/TransferCountdown';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -185,7 +186,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
-          <div className="mt-4">Within {remainingDurationString}</div>
+          <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
         </div>
         <Divider />
         <div>
