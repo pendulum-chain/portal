@@ -50,7 +50,14 @@ export function Transfers(): JSX.Element {
       const issueEntries = await getIssueRequests();
       const redeemEntries = await getRedeemRequests();
       let entries: TTransfer[] = [];
+
       issueEntries.forEach((e) => {
+        const deadline = calculateDeadline(
+          activeBlockNumber as number,
+          e.request.opentime.toNumber(),
+          e.request.period.toNumber(),
+        );
+        const timedout = deadline < DateTime.now();
         entries.push({
           updated: estimateRequestCreationTime(
             activeBlockNumber as number,
@@ -60,7 +67,7 @@ export function Transfers(): JSX.Element {
           asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
           transactionId: e.id.toString(),
           type: TransferType.issue,
-          status: e.request.status.type,
+          status: 'Pending', //timedout ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
@@ -83,7 +90,7 @@ export function Transfers(): JSX.Element {
       return entries;
     };
     fetchAllEntries().then((res) => setData(res));
-  }, [getIssueRequests, getRedeemRequests]);
+  }, [activeBlockNumber, getIssueRequests, getRedeemRequests]);
 
   const columns = useMemo(() => {
     const detailsColumn = detailsColumnCreator(setCurrentTransfer);

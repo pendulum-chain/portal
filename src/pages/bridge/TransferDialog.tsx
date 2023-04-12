@@ -5,7 +5,7 @@ import SuccessDialogIcon from '../../assets/dialog-status-success';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
 import { JSXInternal } from 'preact/src/jsx';
 import { CopyableAddress } from '../../components/PublicKey';
-import { TTransfer } from './TransfersColumns';
+import { TransferType, TTransfer } from './TransfersColumns';
 import { format, nativeToDecimal, nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
+import TransferCountdown from '../../components/TransferCountdown';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -172,7 +173,9 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
       <div className="text-md">
         {'Your redeem request failed. You decided to burn ' + stellarAsset + ' in return for ' + stellarAsset}
       </div>
-      <h1>{nativeToFormat(transfer.amount, stellarAsset)}</h1>
+      <h1 className="text-xl">
+        {transfer.amount} {stellarAsset}
+      </h1>
       <div className="mt-4" />
     </>
   );
@@ -203,24 +206,8 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       );
     });
   }, [setDeadline]);
-  const content = (
+  const issueContent = (
     <>
-      <>
-        <div className="mt-2" />
-        <div className="text-sm">{`We didn't register a transfer of ${format(
-          amountToSend.toNumber(),
-          stellarAsset,
-        )} to `}</div>
-        <div className="mt-2" />
-        <CopyableAddress
-          inline={true}
-          className="text-sm p-0"
-          variant="short"
-          publicKey={vaultStellarAddress.publicKey()}
-        />
-        <div className="mt-2" />
-        <div className="text-sm">before {deadline?.toLocaleString(DateTime.DATETIME_SHORT)}</div>
-      </>
       <>
         <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
           amountToSend.toNumber(),
@@ -236,7 +223,9 @@ export function PendingTransferDialog(props: TransferDialogProps) {
           publicKey={vaultStellarAddress.publicKey()}
         />
         <div className="mt-2" />
-        <div className="text-sm">before {deadline?.toLocaleString(DateTime.DATETIME_SHORT)}</div>
+        <div className="text-sm">
+          Within <TransferCountdown request={transfer.original} />
+        </div>
       </>
       <div className="mt-4" />
       <div className="mt-4" />
@@ -246,13 +235,23 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       <div className="mt-4" />
     </>
   );
+  const redeemContent = (
+    <>
+      <div className="text-xl mb-2">{`${format(amountToSend.toNumber(), stellarAsset)}`}</div>
+      <div className="text-md">The vault has to complete the transaction in: </div>
+      <TransferCountdown request={transfer.original} />
+      <div className="mt-2" />
+
+      <div className="mt-2" />
+    </>
+  );
   return (
     <BaseTransferDialog
       id="pending-transfer-modal"
       transfer={transfer}
       title={'Pending'}
       visible={visible}
-      content={content}
+      content={transfer.type === TransferType.issue ? issueContent : redeemContent}
       statusIcon={<PendingDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
