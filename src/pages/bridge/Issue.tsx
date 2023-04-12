@@ -1,28 +1,30 @@
+import { VoidFn } from '@polkadot/api-base/types';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { VaultRegistryVault } from '@polkadot/types/lookup';
+import Big from 'big.js';
+import { DateTime } from 'luxon';
 import { h } from 'preact';
 import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { toast } from 'react-toastify';
+import { Asset } from 'stellar-sdk';
 import LabelledInputField from '../../components/LabelledInputField';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { VaultRegistryVault } from '@polkadot/types/lookup';
-import { calculateDeadline, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { Asset } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
-import { useFeePallet } from '../../hooks/spacewalk/fee';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
-import Big from 'big.js';
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { useNodeInfoState } from '../../NodeInfoProvider';
-import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
-import { toast } from 'react-toastify';
-import { CopyableAddress, PublicKey } from '../../components/PublicKey';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { VoidFn } from '@polkadot/api-base/types';
-import { DateTime } from 'luxon';
-import { AssetSelector, VaultSelector } from '../../components/Selector';
+import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import OpenWallet from '../../components/OpenWallet';
 import TransferCountdown from '../../components/TransferCountdown';
+import { CopyableAddress, PublicKey } from '../../components/PublicKey';
+import { AssetSelector, VaultSelector } from '../../components/Selector';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { useFeePallet } from '../../hooks/spacewalk/fee';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { Controller, useForm } from 'react-hook-form';
+import _ from 'lodash';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -137,9 +139,8 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
     if (!issueRequest) {
       return '';
     }
-    const requestID = issueRequest.id.toString();
-    // Trim first 2 characters to remove the 0x prefix
-    return requestID.slice(2);
+    // For issue requests we use a shorter identifier for the memo
+    return deriveShortenedRequestId(issueRequest.id);
   }, [issueRequest]);
 
   useEffect(() => {
@@ -182,7 +183,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           <div className="text-sm">
             (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
           </div>
-          <div className="text mt-4">With the hash memo</div>
+          <div className="text mt-4">With the text memo</div>
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
@@ -208,6 +209,10 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   );
 }
 
+interface IssueFormInputs {
+  amount: string;
+}
+
 interface IssueProps {
   network: string;
   wrappedCurrencyPrefix: string;
@@ -217,7 +222,6 @@ interface IssueProps {
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
-  const [amount, setAmount] = useState<string>('0');
   const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
@@ -227,9 +231,19 @@ function Issue(props: IssueProps): JSX.Element {
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
+  const { control, handleSubmit, watch } = useForm<IssueFormInputs>({
+    defaultValues: {
+      amount: '0',
+    },
+  });
+
+  console.log('walletaccount', walletAccount);
+
+  // We watch the amount because we need to re-render the FeeBox constantly
+  const amount = watch('amount');
   const vaults = getVaults();
 
   // The amount represented in the units of the native currency (as integer)
@@ -238,7 +252,7 @@ function Issue(props: IssueProps): JSX.Element {
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
-    return vaults
+    const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
         return convertCurrencyToStellarAsset(currency);
@@ -246,6 +260,8 @@ function Issue(props: IssueProps): JSX.Element {
       .filter((asset): asset is Asset => {
         return asset != null;
       });
+    // Deduplicate assets
+    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
   }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
@@ -268,8 +284,13 @@ function Issue(props: IssueProps): JSX.Element {
       if (!selectedAsset && wrappedAssets.length > 0) {
         setSelectedAsset(wrappedAssets[0]);
       }
+    } else {
+      // If the user manually selected a vault, but it's not available anymore, we reset the selection
+      if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
+        setSelectedVault(vaultsForCurrency[0]);
+      }
     }
-  }, [manualVaultSelection, selectedAsset, vaultsForCurrency, wrappedAssets]);
+  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
 
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !api) {
@@ -339,15 +360,30 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div style={{ width: 500 }}>
-        <div className="px-5 flex flex-col">
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic)}>
           <div className="flex items-center">
-            <LabelledInputField
-              autoSelect
-              label="From Stellar"
-              type="number"
-              value={amount}
-              onChange={setAmount}
-              style={{ flexGrow: 2 }}
+            <Controller
+              control={control}
+              rules={{
+                required: 'Amount is required',
+                validate: (value) => {
+                  if (!isCompatibleStellarAmount(value)) {
+                    return 'Max 7 decimals';
+                  }
+                },
+              }}
+              name="amount"
+              render={({ field, fieldState: { error } }) => (
+                <LabelledInputField
+                  autoSelect
+                  error={error?.message}
+                  label="From Stellar"
+                  type="number"
+                  step="any"
+                  style={{ flexGrow: 2 }}
+                  {...field}
+                />
+              )}
             />
             <div className="px-1" />
             <AssetSelector
@@ -381,18 +417,13 @@ function Issue(props: IssueProps): JSX.Element {
             nativeCurrency={nativeCurrency}
           />
           {walletAccount ? (
-            <Button
-              className="w-full"
-              color="primary"
-              loading={submissionPending}
-              onClick={submitRequestIssueExtrinsic}
-            >
+            <Button className="w-full" color="primary" loading={submissionPending} type="submit">
               Bridge
             </Button>
           ) : (
             <OpenWallet networkName={network} />
           )}
-        </div>
+        </form>
       </div>
     </div>
   );

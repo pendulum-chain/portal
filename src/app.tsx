@@ -9,6 +9,7 @@ import Bridge from './pages/bridge';
 import { Transfers } from './pages/bridge/Transfers';
 import { Collators } from './pages/collators/Collators';
 import { Dashboard } from './pages/dashboard/Dashboard';
+import { Stats } from './pages/stats';
 
 export function App() {
   return (
@@ -21,6 +22,7 @@ export function App() {
           <Route path="bridge/:to?" element={<Bridge />} />
           <Route path="transfers" element={<Transfers />} />
           <Route path="collators" element={<Collators />} />
+          <Route path="stats" element={<Stats />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

@@ -37,6 +37,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
       }}
       value={selectedVaultItem}
       style={{ marginTop: '8px' }}
+      selectStyle={{ width: '100%' }}
     />
   );
 }

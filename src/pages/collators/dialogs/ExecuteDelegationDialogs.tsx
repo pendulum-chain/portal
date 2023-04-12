@@ -1,12 +1,11 @@
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { decimalToNative } from '../../../helpers/parseNumbers';
 import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import { decimalToNative } from '../../../helpers/parseNumbers';
-import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
+import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';
-import { h } from 'preact';
 import { doSubmitExtrinsic } from './helpers';
 
 export type DelegationMode = 'joining' | 'delegatingMore' | 'undelegating';
@@ -23,7 +22,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   const { userAvailableBalance, userStake, selectedCandidate, mode, onClose } = props;
 
   const { api, tokenSymbol } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState().state;
+  const { walletAccount } = useGlobalState();
 
   const {
     inflationInfo,
@@ -48,7 +47,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       case 'joining':
         return fees.joinDelegators;
     }
-  }, [mode, fees]);
+  }, [fees.delegatorStakeLess, fees.delegatorStakeMore, fees.joinDelegators, mode]);
 
   const submitExtrinsic = useCallback(() => {
     if (!walletAccount || !api || !delegationAmount || !selectedCandidate) {
@@ -69,14 +68,14 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
 
     doSubmitExtrinsic(api, getExtrinsic(), walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }, [
-    walletAccount,
     api,
-    delegationAmount,
-    selectedCandidate,
-    mode,
-    createJoinDelegatorsExtrinsic,
-    createDelegateMoreExtrinsic,
     createDelegateLessExtrinsic,
+    createDelegateMoreExtrinsic,
+    createJoinDelegatorsExtrinsic,
+    delegationAmount,
+    mode,
+    selectedCandidate,
+    walletAccount,
   ]);
 
   return (

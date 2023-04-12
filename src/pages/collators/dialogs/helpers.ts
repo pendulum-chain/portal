@@ -1,9 +1,9 @@
+import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { WalletAccount } from '@talismn/connect-wallets';
-import { getErrors } from '../../../helpers/substrate';
-import { toast } from 'react-toastify';
 import { StateUpdater } from 'preact/hooks';
-import { ApiPromise } from '@polkadot/api';
+import { toast } from 'react-toastify';
+import { getErrors } from '../../../helpers/substrate';
 
 export const doSubmitExtrinsic = (
   api: ApiPromise,

@@ -4,7 +4,8 @@ import BigNumber from 'big.js';
 export const ChainDecimals = 12;
 
 // These are the decimals used by the Stellar network
-export const StellarDecimals = 7;
+// We actually up-scale the amounts on Stellar now to match the expected decimals of the other tokens.
+export const StellarDecimals = ChainDecimals;
 
 // These are the decimals used by the FixedU128 type
 export const FixedU128Decimals = 18;

@@ -1,15 +1,21 @@
 import { Select } from 'react-daisyui';
-import { h } from 'preact';
+import { CSSProperties } from 'preact/compat';
+
+interface Item {
+  id: object | string;
+  displayName: string;
+}
 
 interface Props<T> {
   items: T[];
   label?: string;
   onChange: (item: T) => void;
   value?: T;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
+  selectStyle?: CSSProperties;
 }
 
-function LabelledSelector<T extends { id: any; displayName: string }>(props: Props<T>) {
+function LabelledSelector<T extends Item>(props: Props<T>) {
   const { label, items, onChange, value } = props;
 
   return (
@@ -22,16 +28,17 @@ function LabelledSelector<T extends { id: any; displayName: string }>(props: Pro
       <Select
         className="w-fit max-w-full h-10 border border-gray-500 rounded-md bg-transparent"
         onChange={(e: any) => {
-          const id = e.target.value;
-          const item = items.find((i) => i.id === id);
+          const id = e.target?.value;
+          const item = items.find((i) => i.id.toString() === id.toString());
           if (item) {
             onChange(item);
           }
         }}
+        style={props.selectStyle}
         value={value?.id}
       >
         {items.map((item) => (
-          <option key={item.id} value={item.id}>
+          <option key={item.id} value={item.id.toString()}>
             {item.displayName}
           </option>
         ))}

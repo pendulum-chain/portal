@@ -12,7 +12,7 @@ import SocialAndTermLinks from './SocialAndTermLinks';
 import './styles.sass';
 import Versions from './Versions';
 
-export default function Layout(): React.JSX.Element {
+export default function Layout(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const params = useParams();
   const { setTheme } = useTheme();
