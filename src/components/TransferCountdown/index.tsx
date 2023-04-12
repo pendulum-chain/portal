@@ -35,14 +35,19 @@ const TransferCountdown = ({ request }: TransferCountdownProps) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const newDeadlineString = deadline.diff(DateTime.now()).toFormat('hh:mm:ss');
+      const newDeadlineString = deadline
+        .diff(DateTime.now())
+        .toFormat('hh:1mm:2ss:3')
+        .replace(':1', ' h')
+        .replace(':2', ' m')
+        .replace(':3', ' s');
       setRemainingDurationString(newDeadlineString);
     });
 
     return () => clearInterval(interval);
   }, [deadline]);
 
-  return <div className="transfer-timer">{remainingDurationString}</div>;
+  return <span className="transfer-timer">{remainingDurationString}</span>;
 };
 
 export default TransferCountdown;
