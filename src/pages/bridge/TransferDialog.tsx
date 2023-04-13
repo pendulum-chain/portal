@@ -109,7 +109,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
   const content = (
     <>
-      <div className="text-md">{'You have received ' + nativeToFormat(transfer.amount, stellarAsset)}</div>
+      <div className="text-md">{'You have received ' + format(Number(transfer.amount), stellarAsset)}</div>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-sm">Spacewalk transaction</div>
@@ -238,7 +238,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const redeemContent = (
     <>
       <div className="text-xl mb-2">{`${format(amountToSend.toNumber(), stellarAsset)}`}</div>
-      <div className="text-md">The vault has to complete the transaction in: </div>
+      <div className="text-md">The vault has to complete the transaction in:</div>
       <TransferCountdown request={transfer.original} />
       <div className="mt-2" />
 
@@ -314,4 +314,5 @@ export function FailedTransferDialog(props: TransferDialogProps) {
     />
   );
 }
+
 export default BaseTransferDialog;
