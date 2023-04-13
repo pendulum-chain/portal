@@ -2,10 +2,10 @@ import { WalletSelect } from '@talismn/connect-components';
 import { useMemo } from 'preact/hooks';
 import { Button, Dropdown } from 'react-daisyui';
 import { useGlobalState } from '../GlobalStateProvider';
-import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
 import { useNodeInfoState } from '../NodeInfoProvider';
+import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
 
-const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
+const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   const { walletAccount, setWalletAccount, removeWalletAccount } = useGlobalState();
   const { ss58Format } = useNodeInfoState().state;
 
@@ -38,7 +38,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
         </Dropdown>
       ) : (
         <WalletSelect
-          dappName={networkName}
+          dappName={dAppName}
           open={false}
           showAccountsList={true}
           triggerComponent={

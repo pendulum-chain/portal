@@ -2,21 +2,21 @@ import { FC, memo, useRef } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useTheme } from 'react-daisyui';
 import { Outlet, useParams } from 'react-router-dom';
+import { TenantName, TenantRPC, useGlobalState } from '../../GlobalStateProvider';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
-import { TenantName, TenantRPC, useGlobalState } from '../../GlobalStateProvider';
 import OpenWallet from '../OpenWallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
-import './styles.sass';
 import Versions from './Versions';
+import './styles.sass';
 
 export default function Layout(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const params = useParams();
   const { setTheme } = useTheme();
-  const { state, setState } = useGlobalState();
+  const { state, setState, dAppName } = useGlobalState();
 
   const network: TenantName = useMemo(() => {
     return params.network && Object.values<string>(TenantName).includes(params.network)
@@ -115,7 +115,7 @@ export default function Layout(): JSX.Element {
       <div id="main" className="flex-wrap bg-base-100">
         <div className="container flex-wrap">
           <div className="flex flex-row-reverse h-15">
-            <OpenWallet networkName={isPendulum ? 'Pendulum' : 'Amplitude'} />
+            <OpenWallet dAppName={dAppName} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
