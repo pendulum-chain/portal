@@ -75,6 +75,50 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
   }
 }
 
+const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
+  pendulum: {
+    '0': 'DOT',
+  },
+  amplitude: {
+    '0': 'KSM',
+  },
+};
+
+// Convert a currency to a string
+// The supplied network is used to choose the list of XCM assets per network.
+export function currencyToString(
+  currency: SpacewalkPrimitivesCurrencyId,
+  network: 'pendulum' | 'amplitude' = 'pendulum',
+) {
+  if (currency.isStellar) {
+    const stellarAsset = currency.asStellar;
+    if (stellarAsset.isStellarNative) {
+      return 'XLM';
+    } else if (stellarAsset.isAlphaNum4) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+      return `${code}:${issuer.publicKey()}`;
+    } else if (stellarAsset.isAlphaNum12) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+      return `${code}:${issuer.publicKey()}`;
+    } else {
+      return 'Unknown';
+    }
+  } else if (currency.isXcm) {
+    const xcmAsset = currency.asXcm;
+    const xcmIndex = xcmAsset.toString();
+    const assetsForNetwork = XCM_ASSETS[network];
+    if (xcmIndex in assetsForNetwork) {
+      return assetsForNetwork[xcmIndex];
+    } else {
+      return `XCM:${xcmIndex}`;
+    }
+  } else {
+    return 'Unknown';
+  }
+}
+
 // Calculate the remaining duration for a request
 // Params:
 //   currentActiveBlock: The block number of the current active block
