@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/table-core';
 import { Button } from 'react-daisyui';
 import ExternalIcon from '../../assets/ExternalIcon';
 import { CopyableAddress } from '../../components/PublicKey';
+import { DateTime } from 'luxon';
 
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
@@ -12,7 +13,7 @@ export enum TransferType {
 }
 
 export interface TTransfer {
-  updated: string;
+  updated: DateTime;
   amount: string;
   asset?: string;
   transactionId: string;
@@ -29,6 +30,9 @@ export interface UserStaking {
 export const updatedColumn: ColumnDef<TTransfer> = {
   header: 'Updated',
   accessorKey: 'updated',
+  cell: ({ row }) => {
+    return <div>{row.original.updated.toLocaleString(DateTime.DATETIME_SHORT)}</div>;
+  },
 };
 
 export const amountColumn: ColumnDef<TTransfer> = {

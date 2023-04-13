@@ -49,17 +49,18 @@ const Table = <T,>({
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
-  const initialSort = sortBy
-    ? useMemo(
-        () => [
-          {
-            id: sortBy,
-            desc: sortDesc,
-          },
-        ],
-        [],
-      )
-    : undefined;
+  const initialSort = useMemo(
+    () =>
+      sortBy
+        ? [
+            {
+              id: sortBy,
+              desc: sortDesc,
+            },
+          ]
+        : undefined,
+    [sortBy, sortDesc],
+  );
 
   const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState } =
     useReactTable({

@@ -49,7 +49,7 @@ export function Transfers(): JSX.Element {
     const fetchAllEntries = async () => {
       const issueEntries = await getIssueRequests();
       const redeemEntries = await getRedeemRequests();
-      let entries: TTransfer[] = [];
+      const entries: TTransfer[] = [];
 
       issueEntries.forEach((e) => {
         const deadline = calculateDeadline(
@@ -57,27 +57,23 @@ export function Transfers(): JSX.Element {
           e.request.opentime.toNumber(),
           e.request.period.toNumber(),
         );
-        const timedout = deadline < DateTime.now();
+
+        const timedOut = deadline < DateTime.now();
+
         entries.push({
-          updated: estimateRequestCreationTime(
-            activeBlockNumber as number,
-            e.request.opentime.toNumber(),
-          ).toLocaleString(DateTime.DATETIME_SHORT),
+          updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
           asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
           transactionId: e.id.toString(),
           type: TransferType.issue,
-          status: 'Pending', //timedout ? 'Cancelled' : e.request.status.type,
+          status: 'Pending', //timedOut ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
 
       redeemEntries.forEach((e) => {
         entries.push({
-          updated: estimateRequestCreationTime(
-            activeBlockNumber as number,
-            e.request.opentime.toNumber(),
-          ).toLocaleString(DateTime.DATETIME_SHORT),
+          updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
           asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
           transactionId: e.id.toString(),
