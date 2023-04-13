@@ -56,13 +56,13 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
           <div className="flex justify-between">
             <span className="text-neutral-content">Available Balance</span>
             <span>
-              {nativeToDecimal(availableBalance)} {tokenSymbol}
+              {nativeToDecimal(availableBalance).toString()} {tokenSymbol}
             </span>
           </div>
           <div className="flex justify-between mt-4">
             <span className="text-neutral-content">Fees</span>
             <span>
-              {nativeToDecimal(transactionFee)} {tokenSymbol}
+              {nativeToDecimal(transactionFee).toString()} {tokenSymbol}
             </span>
           </div>
         </div>
