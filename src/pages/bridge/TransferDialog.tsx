@@ -11,7 +11,7 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { calculateDeadline } from '../../helpers/spacewalk';
+import { calculateDeadline, currencyToString } from '../../helpers/spacewalk';
 import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
@@ -167,11 +167,18 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
 
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
+  const tenant = useGlobalState().state.tenantName;
+
   const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const collateralAsset = transfer.original.vault.currencies.collateral;
+
   const content = (
     <>
       <div className="text-md">
-        {'Your redeem request failed. You decided to burn ' + stellarAsset + ' in return for ' + stellarAsset}
+        {'Your redeem request failed but you decided to burn ' +
+          stellarAsset +
+          ' in return for ' +
+          currencyToString(collateralAsset, tenant)}
       </div>
       <h1 className="text-xl">
         {transfer.amount} {stellarAsset}
@@ -183,7 +190,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
     <BaseTransferDialog
       id="reimbursed-transfer-modal"
       transfer={transfer}
-      title="Reimbursed Successful!"
+      title="Reimburse Successful!"
       visible={visible}
       content={content}
       statusIcon={<SuccessDialogIcon />}

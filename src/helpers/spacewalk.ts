@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Asset, Keypair } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from './stellar';
 import { DateTime } from 'luxon';
-import { u32 } from '@polkadot/types-codec';
+import { TenantName } from '../GlobalStateProvider';
 
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
@@ -86,10 +86,7 @@ const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
 
 // Convert a currency to a string
 // The supplied network is used to choose the list of XCM assets per network.
-export function currencyToString(
-  currency: SpacewalkPrimitivesCurrencyId,
-  network: 'pendulum' | 'amplitude' = 'pendulum',
-) {
+export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant: TenantName = TenantName.Pendulum) {
   if (currency.isStellar) {
     const stellarAsset = currency.asStellar;
     if (stellarAsset.isStellarNative) {
@@ -106,9 +103,10 @@ export function currencyToString(
       return 'Unknown';
     }
   } else if (currency.isXcm) {
-    const xcmAsset = currency.asXcm;
-    const xcmIndex = xcmAsset.toString();
+    const network = tenant === TenantName.Pendulum ? 'pendulum' : 'amplitude';
     const assetsForNetwork = XCM_ASSETS[network];
+
+    const xcmIndex = currency.asXcm.toString();
     if (xcmIndex in assetsForNetwork) {
       return assetsForNetwork[xcmIndex];
     } else {
