@@ -66,7 +66,7 @@ export function Transfers(): JSX.Element {
           asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
           transactionId: e.id.toString(),
           type: TransferType.issue,
-          status: 'Pending', //timedOut ? 'Cancelled' : e.request.status.type,
+          status: timedOut ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
