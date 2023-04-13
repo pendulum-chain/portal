@@ -195,6 +195,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
       content={content}
       statusIcon={<SuccessDialogIcon />}
       onClose={onClose}
+      onConfirm={onClose}
     />
   );
 }
