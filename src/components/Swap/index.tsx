@@ -10,7 +10,7 @@ import { errorClass } from '../../helpers/form';
 import { AssetSelectorModal } from '../Asset/Selector/Modal';
 import Progress from './Progress';
 import SwapToken from './SwapToken';
-import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
+import { UseSwapComponentProps, useSwapComponent } from './useSwapComponent';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -42,7 +42,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             <Card.Title tag="h2" className="text-3xl font-normal">
               Swap
             </Card.Title>
-            <Dropdown vertical="end">
+            <Dropdown vertical="bottom" end>
               <Button color="ghost" shape="circle" className="text-gray-600" type="button">
                 <Cog8ToothIcon className="h-8 w-8" />
               </Button>
@@ -59,7 +59,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                     <div className="flex gap-2 mt-2">
                       <Button
                         size="sm"
-                        variant="primary"
+                        color="primary"
                         className="px-3"
                         onClick={() => {
                           setValue('slippage', undefined);
