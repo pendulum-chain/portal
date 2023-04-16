@@ -7,7 +7,7 @@ import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
 import { useAccountBalance } from '../hooks/useAccountBalance';
 import { Skeleton } from './Skeleton';
 
-const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
+const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   const { walletAccount, setWalletAccount, removeWalletAccount } = useGlobalState();
   const { wallet, address } = walletAccount || {};
   const { query, balance } = useAccountBalance();
@@ -39,7 +39,7 @@ const OpenWallet = ({ networkName }: { networkName: string }): JSX.Element => {
         </Dropdown>
       ) : (
         <WalletSelect
-          dappName={networkName}
+          dappName={dAppName}
           open={false}
           showAccountsList={true}
           triggerComponent={

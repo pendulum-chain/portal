@@ -1,6 +1,6 @@
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { TenantStateValues } from '../../GlobalStateProvider';
+import { GlobalStateValues } from '../../GlobalStateProvider';
 import BackstopPoolIcon from '../../assets/backstop-pool';
 import BridgeIcon from '../../assets/bridge';
 import CollatorsIcon from '../../assets/collators';
@@ -20,7 +20,7 @@ export type LinkItem = {
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
 };
-export type Links = (state: Partial<TenantStateValues>) => LinkItem[];
+export type Links = (state: Partial<GlobalStateValues>) => LinkItem[];
 
 const arrow = (
   <div className="nav-arrow-container">

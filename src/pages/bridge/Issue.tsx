@@ -2,28 +2,27 @@ import { VoidFn } from '@polkadot/api-base/types';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
-import { h } from 'preact';
-import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
-import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
+import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { Controller, useForm } from 'react-hook-form';
-import _ from 'lodash';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -230,7 +229,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState();
+  const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const { control, handleSubmit, watch } = useForm<IssueFormInputs>({
@@ -420,7 +419,7 @@ function Issue(props: IssueProps): JSX.Element {
               Bridge
             </Button>
           ) : (
-            <OpenWallet networkName={network} />
+            <OpenWallet dAppName={dAppName} />
           )}
         </form>
       </div>

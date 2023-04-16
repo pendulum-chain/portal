@@ -10,6 +10,7 @@ export function Stats(): JSX.Element {
   useEffect(() => {
     getStatsData(tenantRPC).then((d) => setData(d));
   }, [setData, tenantRPC]);
+
   return data ? (
     <div className="rounded bg-base-200 p-10 mt-5 border border-slate-200 w-fit">
       <h1 className="text-3xl mb-2">Stats</h1>

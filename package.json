@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@3.5.0",
   "scripts": {
     "dev": "vite",
     "build": "node version.cjs && tsc && vite build && echo '/* /index.html 200' | cat > dist/_redirects",
@@ -100,5 +100,9 @@
     "tailwindcss": "^3.2.7",
     "typescript": "^4.9.5",
     "vite": "^3.2.5"
+  },
+  "engines": {
+    "npm": "please-use-yarn",
+    "yarn": ">=1.22.19"
   }
 }
