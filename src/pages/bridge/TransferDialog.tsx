@@ -39,10 +39,6 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
   const { tenantName, tenantRPC } = useGlobalState().state;
-  const chainName = tenantName ? tenantName.slice(0, 1).toUpperCase() + tenantName.slice(1) : '';
-  const polkadotJSBlockPage = useMemo(() => {
-    return `https://polkadot.js.org/apps/?rpc=${tenantRPC}#/explorer/query/${transfer.original.opentime}`;
-  }, [tenantRPC, transfer.original.opentime]);
   const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex()).publicKey();
   return (
     <Modal id={id} open={visible} className="bg-base-200">
@@ -66,12 +62,6 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
                 variant="short"
                 publicKey={convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toString()).publicKey()}
               />
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="text-sm">{chainName} opentime block</div>
-              <a target="_blank" href={polkadotJSBlockPage}>
-                <div className="text-sm">{transfer.original.opentime.toString()}</div>
-              </a>
             </div>
             <div className="flex flex-row justify-between">
               <div className="text-sm">Vault Address</div>
