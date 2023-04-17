@@ -1,10 +1,9 @@
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
 import { Button } from 'react-daisyui';
-import ExternalIcon from '../../assets/ExternalIcon';
 import { CopyableAddress } from '../../components/PublicKey';
 import { DateTime } from 'luxon';
-
+import { DocumentMagnifyingGlassIcon } from '@heroicons/react/24/outline';
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
 export enum TransferType {
@@ -78,8 +77,8 @@ export const detailsColumnCreator = (onClick: (t: TTransfer) => void): ColumnDef
   cell: ({ row }) => {
     return (
       <Button color="ghost" onClick={() => onClick(row.original)}>
-        <div className="w-3 m-auto details-link">
-          <ExternalIcon />
+        <div className="w-5 m-auto details-link">
+          <DocumentMagnifyingGlassIcon />
         </div>
       </Button>
     );
