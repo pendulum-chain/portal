@@ -6,7 +6,7 @@ import PendingDialogIcon from '../../assets/dialog-status-pending';
 import { JSXInternal } from 'preact/src/jsx';
 import { CopyableAddress } from '../../components/PublicKey';
 import { TransferType, TTransfer } from './TransfersColumns';
-import { format, nativeToDecimal } from '../../helpers/parseNumbers';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
@@ -98,7 +98,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
   const content = (
     <>
-      <div className="text-md">{'You have received ' + format(Number(transfer.amount), stellarAsset)}</div>
+      <div className="text-md">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-sm">Spacewalk transaction</div>
@@ -195,7 +195,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
-  const [deadline, setDeadline] = useState<DateTime>();
+  const [, setDeadline] = useState<DateTime>();
   useEffect(() => {
     getActiveBlockNumber().then((active) => {
       setDeadline(
@@ -206,10 +206,10 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const issueContent = (
     <>
       <>
-        <div className="text-xl" title={amountToSend.toString()}>{`Send ${format(
-          amountToSend.toNumber(),
-          stellarAsset,
-        )}`}</div>
+        <div
+          className="text-xl"
+          title={amountToSend.toString()}
+        >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-1" />
         <div className="text-md">In a single transaction to</div>
         <div className="mt-2" />
@@ -234,7 +234,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   );
   const redeemContent = (
     <>
-      <div className="text-xl mb-2">{`${format(amountToSend.toNumber(), stellarAsset)}`}</div>
+      <div className="text-xl mb-2">{`${amountToSend} ${stellarAsset}`}</div>
       <div className="text-md">The vault has to complete the transaction in:</div>
       <TransferCountdown request={transfer.original} />
       <div className="mt-2" />
