@@ -76,11 +76,13 @@ export const detailsColumnCreator = (onClick: (t: TTransfer) => void): ColumnDef
   accessorKey: 'details',
   cell: ({ row }) => {
     return (
-      <Button color="ghost" onClick={() => onClick(row.original)}>
-        <div className="w-5 m-auto details-link">
-          <DocumentMagnifyingGlassIcon />
-        </div>
-      </Button>
+      row.original.status !== 'Retried' && (
+        <Button color="ghost" onClick={() => onClick(row.original)}>
+          <div className="w-5 m-auto details-link">
+            <DocumentMagnifyingGlassIcon />
+          </div>
+        </Button>
+      )
     );
   },
 });
