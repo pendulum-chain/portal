@@ -36,6 +36,8 @@
   --portfolio-border: rgba(229, 229, 229, 0.03);
   --selected-nav-item: hsla(158, 100%, 47%, 0.08);
   --subtitle-collator-box: #fff;
+  --text-primary-disabled: rgba(88, 102, 126, 0.4);
+  --tag-background: rgba(78, 229, 154, 0.16); /* --primary 16% */
 }
 
 [data-theme='pendulum'] {
@@ -53,6 +55,8 @@
   --portfolio-border: #e5e5e5;
   --subtitle-collator-box: #828282;
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
+  --text-primary-disabled: rgba(88, 102, 126, 0.4);
+  --tag-background: rgba(144, 126,160, 0.16); /* --primary 16% */
 }
 
 body {

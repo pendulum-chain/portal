@@ -55,7 +55,7 @@ $menu: 32px
 
 nav
   margin: 0 10px auto 10px
-
+  
   .nav-item
     position: relative
     width: 100%
@@ -81,6 +81,10 @@ nav
 
     &:hover, &.active
       background-color: var(--selected-nav-item)
+    
+    &.coming-soon
+      pointer-events: none
+      color: var(--text-primary-disabled)
 
     .nav-arrow
       visibility: hidden
@@ -98,9 +102,24 @@ nav
       width: 140px
       height: auto
       color: var(--text-primary)
+    
+    .coming-soon-tag
+      position: absolute
+      right: 0.1em
+      line-height: 14px
+      padding: 5px 10px
+      background: var(--tag-background)
+      border-radius: 24px
+      color: var(--primary)
+      opacity: 1
+
 
   .collapse-btn
     margin-bottom: 0
+
+  .coming-soon
+    pointer-events: none
+    color: var(--text-primary-disabled)
 
   .submenu
     .nav-item
