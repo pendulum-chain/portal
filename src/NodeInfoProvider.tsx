@@ -71,13 +71,13 @@ const NodeInfoProvider = ({
 
       setState((prevState) => ({
         ...prevState,
-        ...{
-          bestNumberFinalize: Number(bestNumberFinalize),
-          ss58Format: Number(ss58Format),
-          tokenDecimals,
-          tokenSymbol,
-          api,
-        },
+        bestNumberFinalize: Number(bestNumberFinalize),
+        ss58Format: Number(ss58Format),
+        tokenDecimals,
+        tokenSymbol,
+        // TODO: same as for the api we could create a common interface for fetching data from indexer (swap assets, pools, other info)
+        // and pass the instance based on tenant to this context to be used in Swap, Pools components...
+        api,
       }));
 
       const [chain, nodeName, nodeVersion] = await Promise.all([
@@ -88,11 +88,9 @@ const NodeInfoProvider = ({
 
       setState((prevState) => ({
         ...prevState,
-        ...{
-          chain: chain.toString(),
-          nodeName: nodeName.toString(),
-          nodeVersion: nodeVersion.toString(),
-        },
+        chain: chain.toString(),
+        nodeName: nodeName.toString(),
+        nodeVersion: nodeVersion.toString(),
       }));
 
       disconnect = () => {

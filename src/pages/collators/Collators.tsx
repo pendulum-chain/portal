@@ -21,7 +21,7 @@ import {
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
-export function Collators() {
+function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
 
@@ -173,3 +173,5 @@ export function Collators() {
     </div>
   );
 }
+
+export default Collators;

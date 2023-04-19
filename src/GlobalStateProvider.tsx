@@ -1,30 +1,19 @@
 import { WalletAccount, getWalletBySource } from '@talismn/connect-wallets';
 import { createContext } from 'preact';
 import { StateUpdater, useCallback, useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { useLocation } from 'react-router-dom';
+import { config } from './config';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { TenantName } from './models/Tenant';
+import { ThemeName } from './models/Theme';
 import { storageService } from './services/storage/local';
 
-export enum TenantName {
-  Amplitude = 'amplitude',
-  Pendulum = 'pendulum',
-  Foucoco = 'foucoco',
-  Local = 'local',
-}
-
-export enum TenantRPC {
-  Amplitude = 'wss://rpc-amplitude.pendulumchain.tech',
-  Pendulum = 'wss://rpc-pendulum.prd.pendulumchain.tech',
-  Foucoco = 'wss://rpc-foucoco.pendulumchain.tech',
-  Local = 'ws://localhost:9944',
-}
-
 export interface GlobalStateValues {
-  tenantName?: TenantName;
-  tenantRPC?: TenantRPC;
+  tenantName: TenantName;
+  tenantRPC: string;
   wallet?: WalletAccount;
 }
-
 export interface GlobalState {
   state: Partial<GlobalStateValues>;
   setState: StateUpdater<Partial<GlobalStateValues>>;
@@ -35,12 +24,10 @@ export interface GlobalState {
   dAppName: string;
 }
 
-const enum ThemeName {
-  Amplitude = 'amplitude',
-  Pendulum = 'pendulum',
-}
-
-export const defaultState: GlobalStateValues = {};
+export const defaultState: GlobalStateValues = {
+  tenantName: TenantName.Amplitude,
+  tenantRPC: config.tenants.amplitude.rpc,
+};
 
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
@@ -51,17 +38,29 @@ const GlobalStateProvider = ({
   children: ReactNode;
   value?: Partial<GlobalStateValues>;
 }) => {
-  const [state, setState] = useState(value);
+  const { pathname } = useLocation();
+  const [state, setState] = useState(() => {
+    if (value) return value;
+    if (pathname) {
+      const [network] = pathname.split('/').filter(Boolean);
+      const tenantName = Object.values<string>(TenantName).includes(network)
+        ? (network as TenantName)
+        : TenantName.Pendulum;
+      if (tenantName) {
+        return {
+          tenantName,
+          tenantRPC: config.tenants[tenantName].rpc,
+        };
+      }
+    }
+    return defaultState;
+  });
   const dAppName = state.tenantName || TenantName.Amplitude;
 
-  const getThemeName = useCallback(() => {
-    switch (state.tenantName) {
-      case TenantName.Pendulum:
-        return ThemeName.Pendulum;
-      default:
-        return ThemeName.Amplitude;
-    }
-  }, [state?.tenantName]);
+  const getThemeName = useCallback(
+    () => (state.tenantName ? config.tenants[state.tenantName]?.theme || ThemeName.Amplitude : ThemeName.Amplitude),
+    [state?.tenantName],
+  );
 
   const {
     state: account,
