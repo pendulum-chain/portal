@@ -54,7 +54,6 @@ export default function Layout(): JSX.Element | null {
         <div
           style={{
             ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
-            ...{ boxShadow: '7px 0 10px rgba(0,0,0,0.1)' },
           }}
           id="sidebar"
           className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
@@ -111,7 +110,7 @@ export default function Layout(): JSX.Element | null {
             </div>
           </div>
         </header>
-        <main className="flex-wrap">
+        <main className="w-full flex-wrap px-4 sm:px-8 py-4 flex-grow">
           <Outlet />
         </main>
       </section>

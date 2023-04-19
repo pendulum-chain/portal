@@ -22,16 +22,22 @@ $menu: 32px
     svg
       filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%)
 
+#sidebar-wrapper
+  position: static
+  border-right: 1px solid var(--border)
+
 #sidebar
   display: flex
   flex-direction: column
   padding-top: 20px
-  min-width: 260px
+  width: 260px
   @media screen and (max-width: $medium)
-  .floating-sidebar
-    display: block !important
-    position: absolute !important
-    top: 0 !important
+    box-shadow: 5px 0 8px rgba(0, 0, 0, .1)
+
+.pendulum-logo
+  width: 160px
+  margin-left: 20px
+  margin-bottom: 20px
 
 #main-wrapper
   > section
@@ -45,9 +51,62 @@ $menu: 32px
       position: sticky
       top: 0
       padding: 1rem
-      z-index: 100
+      z-index: 49
 
-main
-  width: 100%
-  padding: 1rem
-  flex-grow: 1
+nav
+  margin: 0 10px auto 10px
+
+  .nav-item
+    position: relative
+    width: 100%
+    font-size: .9rem
+    color: var(--text-primary)
+    font-weight: 600
+    display: flex
+    text-align: left
+    transition: all 0.2s ease-out
+    align-items: center
+    cursor: pointer
+
+    border-radius: 100px
+    border-radius: 9px
+    margin: 10px 0
+    padding: 15px 25px
+
+    svg
+      fill: currentColor
+
+    svg:first-of-type
+      width: 20px
+      height: 20px
+
+    span
+      display: block
+      margin-left: 20px
+      width: 140px
+      height: auto
+      color: var(--text-primary)
+
+  > .nav-item
+    .nav-arrow
+      visibility: hidden
+
+    &.active .nav-arrow
+      visibility: visible
+
+    &.hidden
+      display: none
+
+    &:hover, &.active
+      background-color: var(--selected-nav-item)
+
+  .collapse-btn
+    margin-bottom: 0
+
+  .submenu
+    .nav-item
+      margin: 0
+      padding: 12px 25px 12px 45px
+
+      &:hover, &.active
+        color: var(--primary)
