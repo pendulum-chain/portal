@@ -175,9 +175,9 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               </div>
             </Fragment>
           </SwapToken>
-          <div className="mt-6">
+          <div className="mt-6" title={!walletAccount?.wallet ? 'Please connect your wallet' : ''}>
             {/* <Validation errors={errors} className="mb-2" /> */}
-            <Button variant="primary" className="w-full text-base" disabled={!walletAccount?.wallet} type="submit">
+            <Button color="primary" className="w-full text-base" disabled={!walletAccount?.wallet} type="submit">
               Swap
             </Button>
           </div>
