@@ -17,6 +17,7 @@ export type BaseLinkItem = {
   };
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
+  hidden?: boolean;
 };
 export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
@@ -81,6 +82,7 @@ export const links: Links = ({ tenantName }) => [
     title: 'Amber',
     prefix: <SwapIcon />,
     suffix: <ChevronDownIcon className="ml-auto w-5 h-5" />,
+    hidden: true, // ! temporary hide amber
     submenu: [
       {
         link: './amber/swap',

@@ -7,10 +7,12 @@ import { LinkItem, links } from './links';
 
 const CollapseMenu = ({
   link,
+  hidden,
   button,
   children,
 }: {
   link: string;
+  hidden?: boolean;
   button: JSX.Element | null;
   children: JSX.Element | null;
 }) => {
@@ -25,7 +27,7 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <>
+    <div className={hidden && !isActive ? 'hidden' : ''}>
       <button
         type="button"
         className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
@@ -34,7 +36,7 @@ const CollapseMenu = ({
         {button}
       </button>
       <div className={`${isOpen ? '' : 'hidden'}`}>{children}</div>
-    </>
+    </div>
   );
 };
 
@@ -70,6 +72,7 @@ const Nav = memo(() => {
           <CollapseMenu
             key={i}
             link={item.link}
+            hidden={item.hidden}
             button={
               <>
                 {item.prefix}

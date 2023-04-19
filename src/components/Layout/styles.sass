@@ -73,6 +73,18 @@ nav
     margin: 10px 0
     padding: 15px 25px
 
+    &.active .nav-arrow
+      visibility: visible
+
+    &.hidden
+      display: none
+
+    &:hover, &.active
+      background-color: var(--selected-nav-item)
+
+    .nav-arrow
+      visibility: hidden
+
     svg
       fill: currentColor
 
@@ -87,19 +99,6 @@ nav
       height: auto
       color: var(--text-primary)
 
-  > .nav-item
-    .nav-arrow
-      visibility: hidden
-
-    &.active .nav-arrow
-      visibility: visible
-
-    &.hidden
-      display: none
-
-    &:hover, &.active
-      background-color: var(--selected-nav-item)
-
   .collapse-btn
     margin-bottom: 0
 
@@ -107,6 +106,7 @@ nav
     .nav-item
       margin: 0
       padding: 12px 25px 12px 45px
+      background-color: transparent !important
 
       &:hover, &.active
         color: var(--primary)
