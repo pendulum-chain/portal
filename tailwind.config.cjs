@@ -23,6 +23,7 @@ module.exports = {
           neutral: '#EFF2F5',
           'base-100': '#fbfcfe',
           'base-200': '#ffffff',
+          'base-300': '#d1d5dB',
           'base-content': '#58667E',
 
           '--rounded-btn': '9px',
@@ -40,6 +41,7 @@ module.exports = {
           'neutral-content': '#A6ADBB',
           'base-100': '#202020',
           'base-200': '#1c1c1c',
+          'base-300': '#2c2c2c',
           'base-content': '#FFFFFF',
 
           '--rounded-btn': '9px',
