@@ -36,7 +36,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   return (
     <>
-      <Card bordered className="w-full max-w-xl bg-base-100 shadow-xl">
+      <Card bordered className="w-full max-w-xl bg-base-200  shadow-0">
         <form className="card-body text-gray-800" onSubmit={onSubmit}>
           <div className="flex justify-between mb-2">
             <Card.Title tag="h2" className="text-3xl font-normal">
@@ -46,7 +46,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               <Button color="ghost" shape="circle" className="text-gray-600" type="button">
                 <Cog8ToothIcon className="h-8 w-8" />
               </Button>
-              <Dropdown.Menu tabIndex={0} className="p-4 shadow-lg bg-base-100 border rounded-lg w-64">
+              <Dropdown.Menu tabIndex={0} className="p-4 shadow-lg bg-base-200 border rounded-lg w-64">
                 <div className="w-full">
                   <h4 className="font-semibold">Settings</h4>
                   <div className="mt-4 text-sm">

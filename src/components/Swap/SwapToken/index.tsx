@@ -26,7 +26,7 @@ const SwapToken = ({
 }: SwapTokenProps): JSX.Element | null => {
   return (
     <>
-      <div className={`rounded-lg bg-gray-100 px-4 py-3 ${className}`}>
+      <div className={`rounded-lg bg-gray-50 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-[inherit] font-2">{value}</div>
           <Button
