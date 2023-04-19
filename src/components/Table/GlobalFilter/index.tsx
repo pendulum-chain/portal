@@ -30,7 +30,7 @@ export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProp
             defaultValue={globalFilter}
             placeholder="Search..."
           />
-          <Button size="sm" variant="secondary" bordered type="submit">
+          <Button size="sm" color="secondary" bordered type="submit">
             <MagnifyingGlassIcon className="w-3 h-3" />
           </Button>
         </InputGroup>

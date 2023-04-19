@@ -2,8 +2,8 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button, Range } from 'react-daisyui';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import Spinner from '../../../../assets/spinner';
-import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
+import { SwapPoolColumn } from '../columns';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 
 export interface WithdrawLiquidityProps {
@@ -122,11 +122,11 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               <div>0.99 USDC</div>
             </div>
           </div>
-          <Button variant="primary" className="mt-8 w-full" type="submit">
+          <Button color="primary" className="mt-8 w-full" type="submit">
             Withdraw
           </Button>
           <Button
-            variant="secondary"
+            color="secondary"
             className="mt-2 w-full"
             type="button"
             disable={mutation.isLoading}

@@ -1,7 +1,7 @@
 import { Button } from 'react-daisyui';
 import { useModalToggle } from '../../../../services/modal';
-import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
+import { SwapPoolColumn } from '../columns';
 
 export type PoolOverviewProps = {
   data: SwapPoolColumn;
@@ -26,7 +26,7 @@ const PoolOverview = ({ data }: PoolOverviewProps) => {
       </div>
       <div className="my-6">TODO: name, logo, stats - earned fees, deposited date, TVL, APR</div>
       <Button
-        variant="primary"
+        color="primary"
         className="w-full text-base"
         onClick={() =>
           toggle({
@@ -39,7 +39,7 @@ const PoolOverview = ({ data }: PoolOverviewProps) => {
         Add Liquidity
       </Button>
       <Button
-        variant="secondary"
+        color="secondary"
         className="w-full text-base mt-2"
         onClick={() =>
           toggle({

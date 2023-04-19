@@ -69,7 +69,7 @@ const BackstopPoolForm = ({ pool }: BackstopPoolFormProps): JSX.Element | null =
           <div>0.99 USDC</div>
         </div>
       </div>
-      <Button variant="primary" className="mt-4 w-full" type="submit">
+      <Button color="primary" className="mt-4 w-full" type="submit">
         Deposit
       </Button>
     </form>
