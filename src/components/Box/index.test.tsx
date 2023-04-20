@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/preact';
+import { Fragment } from 'preact';
 import Box from '.';
-import { Fragment, h } from 'preact';
 
 describe('Box', () => {
   test('should display initial count', () => {

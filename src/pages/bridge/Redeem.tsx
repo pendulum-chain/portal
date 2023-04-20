@@ -7,25 +7,25 @@ import { Button, Checkbox, Modal } from 'react-daisyui';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
 import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import {
+  StellarPublicKeyPattern,
   convertRawHexKeyToPublicKey,
   isCompatibleStellarAmount,
   isPublicKey,
-  StellarPublicKeyPattern,
   stringifyStellarAsset,
 } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -170,7 +170,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults } = useVaultRegistryPallet();
-  const { walletAccount } = useGlobalState();
+  const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const { control, handleSubmit, getValues, watch } = useForm<RedeemFormInputs>({
@@ -180,7 +180,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     },
   });
 
-  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { wrappedCurrencyPrefix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
@@ -383,7 +383,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               Bridge
             </Button>
           ) : (
-            <OpenWallet networkName={network} />
+            <OpenWallet dAppName={dAppName} />
           )}
         </form>
       </div>

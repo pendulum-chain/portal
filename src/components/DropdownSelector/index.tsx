@@ -1,5 +1,4 @@
 import { Button, Dropdown } from 'react-daisyui';
-import { h } from 'preact';
 import './styles.css';
 
 function ArrowIcon() {
@@ -28,8 +27,7 @@ interface Props<T> {
   value?: T;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function DropdownSelector<T extends { id: any; displayName: string }>(props: Props<T>) {
+function DropdownSelector<T extends { id: unknown; displayName: string }>(props: Props<T>) {
   const { items, onChange, value } = props;
 
   return (

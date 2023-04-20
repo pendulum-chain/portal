@@ -47,14 +47,14 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           <div>
             <div className="text-lg">APR {annual || '0.00%'}</div>
             <div className="text-sm text-neutral-content" hidden={mode === 'delegatingMore'}>
-              Min Bond {nativeToDecimal(minDelegatorStake)} {tokenSymbol}
+              Min Bond {nativeToDecimal(minDelegatorStake).toFixed(4)} {tokenSymbol}
             </div>
           </div>
         </div>
       ) : (
         <div />
       ),
-    [collator, annual, minDelegatorStake, mode, tokenSymbol],
+    [annual, collator, minDelegatorStake, mode, tokenSymbol],
   );
 
   const titleAction = useMemo(() => (mode === 'undelegating' ? 'Unbond' : 'Delegate'), [mode]);

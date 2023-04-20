@@ -1,56 +1,96 @@
 import { memo } from 'preact/compat';
-import { NavLink } from 'react-router-dom';
+import { useMemo } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useGlobalState } from '../../GlobalStateProvider';
+import useBoolean from '../../hooks/useBoolean';
+import { LinkItem, links } from './links';
 
-import BridgeIcon from '../../assets/bridge';
-import CollatorsIcon from '../../assets/collators';
-import DashboardIcon from '../../assets/dashboard';
-import ExternalIcon from '../../assets/ExternalIcon';
-import GovernanceIcon from '../../assets/governance';
-import ArrowIcon from '../../assets/nav-arrow';
-import SwapIcon from '../../assets/swap';
-import { TenantName, useGlobalState } from '../../GlobalStateProvider';
+const CollapseMenu = ({
+  link,
+  hidden,
+  button,
+  children,
+}: {
+  link: string;
+  hidden?: boolean;
+  button: JSX.Element | null;
+  children: JSX.Element | null;
+}) => {
+  const { pathname } = useLocation();
 
-type LinkParameter = { isActive: boolean };
+  const isActive = useMemo(() => {
+    const [path] = pathname.split('?');
+    const paths = path.split('/').filter(Boolean);
+    return paths[1].startsWith(link.replace('/', '')) ? true : false;
+  }, [link, pathname]);
+
+  const [isOpen, { toggle }] = useBoolean(isActive);
+
+  return (
+    <div className={hidden && !isActive ? 'hidden' : ''}>
+      <button
+        type="button"
+        className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
+        onClick={() => toggle()}
+      >
+        {button}
+      </button>
+      <div className={`${isOpen ? '' : 'hidden'}`}>{children}</div>
+    </div>
+  );
+};
+
+const NavItem = ({ item }: { item: LinkItem }) => {
+  const { link, prefix, suffix, title, props } = item;
+  const isExternal = link.startsWith('http');
+  const linkUi = (
+    <>
+      {prefix}
+      <span>{title}</span>
+      {suffix}
+    </>
+  );
+  const cls = `nav-item ${props?.className?.()}`;
+  return isExternal ? (
+    <a href={link} {...props} className={cls}>
+      {linkUi}
+    </a>
+  ) : (
+    <NavLink to={link} {...props} className={cls}>
+      {linkUi}
+    </NavLink>
+  );
+};
 
 const Nav = memo(() => {
-  const {
-    state: { tenantName = TenantName.Amplitude },
-  } = useGlobalState();
+  const { state } = useGlobalState();
+
   return (
     <nav>
-      <NavLink to="./dashboard" className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}>
-        <DashboardIcon />
-        <span>Dashboard</span>
-        <div className={'nav-arrow-container'}>
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <NavLink to="./amm" className={(navData: LinkParameter) => (navData.isActive ? 'active' : 'hidden')}>
-        <SwapIcon />
-        <span>Amm</span>
-        <div className="nav-arrow-container">
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <NavLink to="./bridge" className={(navData: LinkParameter) => (navData.isActive ? 'active' : 'hidden')}>
-        <BridgeIcon />
-        <span>Bridge</span>
-        <div className="nav-arrow-container">
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <NavLink to="./collators" className={(navData: LinkParameter) => (navData.isActive ? 'active' : '')}>
-        <CollatorsIcon />
-        <span>Collators</span>
-        <div className="nav-arrow-container">
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <a href={`https://${tenantName}.polkassembly.io/`} target="_blank" rel="nofollow noreferrer">
-        <GovernanceIcon />
-        <span>Governance</span>
-        <ExternalIcon />
-      </a>
+      {links(state).map((item, i) => {
+        return item.submenu ? (
+          <CollapseMenu
+            key={i}
+            link={item.link}
+            hidden={item.hidden}
+            button={
+              <>
+                {item.prefix}
+                <span>{item.title}</span>
+                {item.suffix}
+              </>
+            }
+          >
+            <div className="submenu">
+              {item.submenu.map((subItem, j) => (
+                <NavItem key={`${i}-${j}`} item={subItem} />
+              ))}
+            </div>
+          </CollapseMenu>
+        ) : (
+          <NavItem key={i} item={item} />
+        );
+      })}
     </nav>
   );
 });

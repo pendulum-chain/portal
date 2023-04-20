@@ -1,49 +1,112 @@
 $small: 300px
-$medium: 900px
-$menu: 30px
+$medium: 1023px
+$menu: 32px
 
 .mobile-menu
   display: none
-  width: 100%
+  width: $menu
   height: $menu
-  position: absolute
+  padding: 4px
+  margin-left: 4px
+  transition: opacity .2s ease-out
+  opacity: .8
+  :hover
+    opacity: .75
   @media screen and (max-width: $medium)
     display: block
 
   .menu
-    width: $menu
-    height: $menu
+    width: 100%
+    height: 100%
     background: transparent center center no-repeat url(../../assets/bars.svg)
-    float: right
-    margin: 20px
-    display: block
     svg
       filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%)
+
+#sidebar-wrapper
+  position: static
+  border-right: 1px solid var(--border)
 
 #sidebar
   display: flex
   flex-direction: column
   padding-top: 20px
-  min-width: 260px
+  width: 260px
   @media screen and (max-width: $medium)
-    display: none
-  .floating-sidebar
-    display: block !important
-    position: absolute !important
-    top: 0 !important
+    box-shadow: 5px 0 8px rgba(0, 0, 0, .1)
 
-#main
-  height: 100vh
-  width: 100%
-  overflow: auto
-  .container
-    padding: 1rem 10rem
-    max-width: inherit
-    @media screen and (min-width: $small)
-      width: 100% !important
+.pendulum-logo
+  width: 160px
+  margin-left: 20px
+  margin-bottom: 20px
 
-  @media screen and (min-width: $small)
+#main-wrapper
+  > section
+    display: flex
+    flex-direction: column
     width: 100%
+    height: 100vh
+    overflow: auto
 
-  @media screen and (min-width: $medium)
+    > header
+      position: sticky
+      top: 0
+      padding: 1rem
+      z-index: 49
+
+nav
+  margin: 0 10px auto 10px
+
+  .nav-item
+    position: relative
     width: 100%
+    font-size: .9rem
+    color: var(--text-primary)
+    font-weight: 600
+    display: flex
+    text-align: left
+    transition: all 0.2s ease-out
+    align-items: center
+    cursor: pointer
+
+    border-radius: 100px
+    border-radius: 9px
+    margin: 10px 0
+    padding: 15px 25px
+
+    &.active .nav-arrow
+      visibility: visible
+
+    &.hidden
+      display: none
+
+    &:hover, &.active
+      background-color: var(--selected-nav-item)
+
+    .nav-arrow
+      visibility: hidden
+
+    svg
+      fill: currentColor
+
+    svg:first-of-type
+      width: 20px
+      height: 20px
+
+    span
+      display: block
+      margin-left: 20px
+      width: 140px
+      height: auto
+      color: var(--text-primary)
+
+  .collapse-btn
+    margin-bottom: 0
+
+  .submenu
+    .nav-item
+      margin: 0
+      padding: 12px 25px 12px 45px
+      background-color: transparent !important
+
+      &:hover, &.active
+        color: var(--primary)

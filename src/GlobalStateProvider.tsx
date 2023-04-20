@@ -1,45 +1,32 @@
-import { createContext, h } from 'preact';
-import { StateUpdater, useCallback, useContext, useMemo, useState } from 'preact/compat';
+import { WalletAccount, getWalletBySource } from '@talismn/connect-wallets';
+import { createContext } from 'preact';
+import { StateUpdater, useCallback, useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { useLocation } from 'react-router-dom';
+import { config } from './config';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { WalletAccount } from '@talismn/connect-wallets';
+import { TenantName } from './models/Tenant';
+import { ThemeName } from './models/Theme';
+import { storageService } from './services/storage/local';
 
-export enum TenantName {
-  Amplitude = 'amplitude',
-  Pendulum = 'pendulum',
-  Foucoco = 'foucoco',
-  Local = 'local',
+export interface GlobalStateValues {
+  tenantName: TenantName;
+  tenantRPC: string;
+  wallet?: WalletAccount;
 }
-
-export enum TenantRPC {
-  Amplitude = 'wss://rpc-amplitude.pendulumchain.tech',
-  Pendulum = 'wss://rpc-pendulum.prd.pendulumchain.tech',
-  Foucoco = 'wss://rpc-foucoco.pendulumchain.tech',
-  Local = 'ws://localhost:9944',
-}
-
-export interface TenantStateValues {
-  tenantName?: TenantName;
-  tenantRPC?: TenantRPC;
-}
-
 export interface GlobalState {
-  state: Partial<TenantStateValues>;
-  setState: StateUpdater<Partial<TenantStateValues>>;
+  state: Partial<GlobalStateValues>;
+  setState: StateUpdater<Partial<GlobalStateValues>>;
   walletAccount: WalletAccount | undefined;
   setWalletAccount: (data: WalletAccount) => void;
   removeWalletAccount: () => void;
   getThemeName: () => ThemeName;
+  dAppName: string;
 }
 
-const enum ThemeName {
-  Amplitude = 'amplitude',
-  Pendulum = 'pendulum',
-}
-
-export const defaultState: TenantStateValues = {
-  tenantName: undefined,
-  tenantRPC: undefined,
+export const defaultState: GlobalStateValues = {
+  tenantName: TenantName.Amplitude,
+  tenantRPC: config.tenants.amplitude.rpc,
 };
 
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
@@ -49,37 +36,73 @@ const GlobalStateProvider = ({
   value = defaultState,
 }: {
   children: ReactNode;
-  value?: Partial<TenantStateValues>;
+  value?: Partial<GlobalStateValues>;
 }) => {
-  const [state, setState] = useState(value);
+  const { pathname } = useLocation();
+  const [state, setState] = useState(() => {
+    if (value) return value;
+    if (pathname) {
+      const [network] = pathname.split('/').filter(Boolean);
+      const tenantName = Object.values<string>(TenantName).includes(network)
+        ? (network as TenantName)
+        : TenantName.Pendulum;
+      if (tenantName) {
+        return {
+          tenantName,
+          tenantRPC: config.tenants[tenantName].rpc,
+        };
+      }
+    }
+    return defaultState;
+  });
+  const dAppName = state.tenantName || TenantName.Amplitude;
+
+  const getThemeName = useCallback(
+    () => (state.tenantName ? config.tenants[state.tenantName]?.theme || ThemeName.Amplitude : ThemeName.Amplitude),
+    [state?.tenantName],
+  );
+
   const {
-    state: walletAccount,
-    set: setWalletAccount,
-    clear: removeWalletAccount,
-  } = useLocalStorage<WalletAccount | undefined>({
-    key: `${storageKeys.GLOBAL}-${state.tenantName}`,
-    parse: true,
+    state: account,
+    set,
+    clear,
+  } = useLocalStorage<string | undefined>({
+    key: `${storageKeys.ACCOUNT}-${state.tenantName}`,
   });
 
-  const getThemeName = useCallback(() => {
-    switch (state.tenantName) {
-      case TenantName.Pendulum:
-        return ThemeName.Pendulum;
-      default:
-        return ThemeName.Amplitude;
-    }
-  }, [state?.tenantName]);
+  useEffect(() => {
+    const run = async () => {
+      if (!account) return;
+      const name = storageService.get('@talisman-connect/selected-wallet-name');
+      if (!name) return;
+      const wallet = getWalletBySource(name);
+      if (!wallet) return;
+      // TODO: optimize this - make reusable as it's used in multiple places
+      await wallet.enable(dAppName || TenantName.Amplitude);
+      const selectedWallet = (await wallet.getAccounts()).find((a) => a.address === account);
+      if (!selectedWallet) return;
+      setState((prev) => ({ ...prev, wallet: selectedWallet }));
+    };
+    run();
+  }, [account, dAppName, state.tenantName]);
 
   const providerValue = useMemo(
     () => ({
       state,
       setState,
-      walletAccount,
-      setWalletAccount,
-      removeWalletAccount,
+      walletAccount: state.wallet,
+      setWalletAccount: (wallet: WalletAccount | undefined) => {
+        set(wallet?.address);
+        setState((prev) => ({ ...prev, wallet }));
+      },
+      removeWalletAccount: () => {
+        clear();
+        setState((prev) => ({ ...prev, wallet: undefined }));
+      },
       getThemeName,
+      dAppName,
     }),
-    [getThemeName, removeWalletAccount, setWalletAccount, state, walletAccount],
+    [clear, dAppName, getThemeName, set, state],
   );
 
   return <GlobalStateContext.Provider value={providerValue}>{children}</GlobalStateContext.Provider>;
