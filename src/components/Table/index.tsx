@@ -97,7 +97,7 @@ const Table = <T,>({
         <table className={`table w-full ${className}`}>
           <thead>
             {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b">
+              <tr key={headerGroup.id} className="border-b border-base-100">
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
@@ -128,7 +128,7 @@ const Table = <T,>({
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id} className="bg-white border-gray-200">
+                      <td key={cell.id} className="bg-base-200 bg-base-100">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     );
@@ -138,7 +138,7 @@ const Table = <T,>({
             })}
           </tbody>
           <tfoot>
-            <tr className="border-t">
+            <tr className="border-t border-base-100">
               <td colSpan={columns.length}>
                 <Pagination
                   className="justify-end text-gray-400 normal-case font-normal"
