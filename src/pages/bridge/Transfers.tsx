@@ -1,25 +1,12 @@
-import { h } from 'preact';
-import Table from '../../components/Table';
-import './styles.css';
-import {
-  assetColumn,
-  updatedColumn,
-  amountColumn,
-  transactionIdColumn,
-  typeColumn,
-  statusColumn,
-  detailsColumnCreator,
-  TTransfer,
-  TransferType,
-} from './TransfersColumns';
+import { VoidFn } from '@polkadot/api-base/types';
+import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'react';
-import { useIssuePallet } from '../../hooks/spacewalk/issue';
-import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
+import Table from '../../components/Table';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, estimateRequestCreationTime } from '../../helpers/spacewalk';
-import { DateTime } from 'luxon';
+import { useIssuePallet } from '../../hooks/spacewalk/issue';
+import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { VoidFn } from '@polkadot/api-base/types';
 import {
   CancelledTransferDialog,
   CompletedTransferDialog,
@@ -27,8 +14,20 @@ import {
   PendingTransferDialog,
   ReimbursedTransferDialog,
 } from './TransferDialog';
+import {
+  TTransfer,
+  TransferType,
+  amountColumn,
+  assetColumn,
+  detailsColumnCreator,
+  statusColumn,
+  transactionIdColumn,
+  typeColumn,
+  updatedColumn,
+} from './TransfersColumns';
+import './styles.css';
 
-export function Transfers(): JSX.Element {
+function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
   const { subscribeActiveBlockNumber } = useSecurityPallet();
@@ -143,3 +142,4 @@ export function Transfers(): JSX.Element {
     </div>
   );
 }
+export default Transfers;
