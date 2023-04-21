@@ -11,3 +11,6 @@ type ReactNodeArray = Array<ReactNode>;
 type ReactFragment = object | ReactNodeArray;
 
 type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
+
+type Dict<T = unknown> = Record<string | number | symbol, T>;
+type AnyFn = (...args: any) => any;

@@ -6,7 +6,7 @@ import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
 
-export function Dashboard() {
+function Dashboard() {
   const { walletAccount } = useGlobalState();
   const {
     state: { api, tokenSymbol },
@@ -120,3 +120,5 @@ export function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;

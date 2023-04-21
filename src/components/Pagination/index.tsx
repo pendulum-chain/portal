@@ -18,7 +18,7 @@ const Pagination = ({
   onPrev,
   onNext,
   className,
-}: PaginationProps): JSX.Element => {
+}: PaginationProps): JSX.Element | null => {
   const totalPages = pageCount !== undefined ? pageCount : Math.ceil(totalCount / pageSize);
   return (
     <div className={`flex items-center ${className}`}>

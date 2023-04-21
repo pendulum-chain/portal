@@ -1,11 +1,10 @@
-import { h } from 'preact';
 import { Button } from 'react-daisyui';
 
-import Box from '../../components/Box';
 import usdc from '../../assets/usdc.png';
+import Box from '../../components/Box';
 import './styles.css';
 
-export function Amm(): JSX.Element {
+function Amm(): JSX.Element {
   const Dummy = () => (
     <>
       <div className="row-pick-coin">
@@ -58,3 +57,5 @@ export function Amm(): JSX.Element {
     </div>
   );
 }
+
+export default Amm;

@@ -1,5 +1,7 @@
+import { ChangeEvent } from 'preact/compat';
 import { Select } from 'react-daisyui';
 import { CSSProperties } from 'preact/compat';
+import { ofSelect } from '../../helpers/general';
 
 interface Item {
   id: object | string;
@@ -27,7 +29,8 @@ function LabelledSelector<T extends Item>(props: Props<T>) {
       )}
       <Select
         className="w-fit max-w-full h-10 border border-gray-500 rounded-md bg-transparent"
-        onChange={(e: any) => {
+        onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+          if (!ofSelect(e.target)) return;
           const id = e.target?.value;
           const item = items.find((i) => i.id.toString() === id.toString());
           if (item) {

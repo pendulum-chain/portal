@@ -1,38 +1,39 @@
+import { ArrowTrendingUpIcon } from '@heroicons/react/20/solid';
 import { WalletSelect } from '@talismn/connect-components';
-import { useMemo } from 'preact/hooks';
 import { Button, Dropdown } from 'react-daisyui';
 import { useGlobalState } from '../GlobalStateProvider';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { getAddressForFormat, trimAddress } from '../helpers/addressFormatter';
+import { useAccountBalance } from '../hooks/useAccountBalance';
+import { Skeleton } from './Skeleton';
 
 const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   const { walletAccount, setWalletAccount, removeWalletAccount } = useGlobalState();
-  const { ss58Format } = useNodeInfoState().state;
-
-  const address = useMemo(
-    () =>
-      walletAccount?.address
-        ? trimAddress(
-            (ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address) || '',
-            4,
-          )
-        : undefined,
-    [ss58Format, walletAccount],
-  );
+  const { wallet, address } = walletAccount || {};
+  const { query, balance } = useAccountBalance();
+  const { ss58Format, tokenSymbol } = useNodeInfoState().state;
 
   return (
     <>
-      {walletAccount?.address ? (
+      {address ? (
         <Dropdown vertical="end">
-          <Dropdown.Toggle color="primary" title={walletAccount.wallet?.title}>
-            <span className="leading-6">{address}</span>
-            <img
-              src={walletAccount.wallet?.logo?.src || ''}
-              style={{ width: 20, marginLeft: 12 }}
-              alt={walletAccount.wallet?.logo?.alt || ''}
-            />
-          </Dropdown.Toggle>
-          <Dropdown.Menu className="w-40">
+          <Button
+            size="sm"
+            color="ghost"
+            className="text-sm border-1 border-gray-300 bg-white h-9"
+            title={wallet?.title}
+          >
+            {query.isLoading ? (
+              <Skeleton className="bg-[rgba(0,0,0,.06)] px-2 py-1 mr-2">10000.00 TKN</Skeleton>
+            ) : (
+              <span className="flex items-center bg-[rgba(0,0,0,.06)] px-2 py-0.5 mr-2 rounded-lg">
+                <ArrowTrendingUpIcon className="w-5 h-5 mr-1 text-primary" /> {balance} {tokenSymbol}
+              </span>
+            )}
+            {trimAddress(ss58Format ? getAddressForFormat(address, ss58Format) : address, 4)}
+            <img src={wallet?.logo?.src || ''} className="w-[20px] ml-2" alt={wallet?.logo?.alt || ''} />
+          </Button>
+          <Dropdown.Menu className="w-40 p-1">
             <Dropdown.Item onClick={removeWalletAccount}>Disconnect</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -42,8 +43,8 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
           open={false}
           showAccountsList={true}
           triggerComponent={
-            <Button color="primary" width="100px">
-              Connect wallet
+            <Button size="sm" color="primary">
+              Connect to Wallet
             </Button>
           }
           onAccountSelected={setWalletAccount}

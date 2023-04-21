@@ -1,10 +1,10 @@
-import { FC, memo, useRef } from 'preact/compat';
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import { useTheme } from 'react-daisyui';
+import { memo, useEffect, useMemo, useState } from 'preact/compat';
 import { Outlet, useParams } from 'react-router-dom';
-import { TenantName, TenantRPC, useGlobalState } from '../../GlobalStateProvider';
+import { useGlobalState } from '../../GlobalStateProvider';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
+import { config } from '../../config';
+import { TenantName } from '../../models/Tenant';
 import OpenWallet from '../OpenWallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
@@ -12,11 +12,14 @@ import SocialAndTermLinks from './SocialAndTermLinks';
 import Versions from './Versions';
 import './styles.sass';
 
-export default function Layout(): JSX.Element {
-  const [visible, setVisible] = useState<boolean>(false);
+export default function Layout(): JSX.Element | null {
+  const [visible, setVisible] = useState(false);
   const params = useParams();
-  const { setTheme } = useTheme();
   const { state, setState, dAppName } = useGlobalState();
+  const isPendulum = state.tenantName === TenantName.Pendulum;
+  const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
+  const chevronColor = isPendulum ? 'white' : 'grey ';
+  const bgColor = isPendulum ? 'bg-white' : 'bg-black';
 
   const network: TenantName = useMemo(() => {
     return params.network && Object.values<string>(TenantName).includes(params.network)
@@ -26,41 +29,16 @@ export default function Layout(): JSX.Element {
 
   useEffect(() => {
     // Only change state if network is different
-    if (state.tenantName !== network) {
-      let newTenantRPC: TenantRPC;
-      switch (network) {
-        case 'pendulum':
-          newTenantRPC = TenantRPC.Pendulum;
-          setTheme('pendulum');
-          break;
-        case 'foucoco':
-          newTenantRPC = TenantRPC.Foucoco;
-          setTheme('amplitude');
-          break;
-        case 'local':
-          newTenantRPC = TenantRPC.Local;
-          setTheme('pendulum');
-          break;
-        case 'amplitude':
-        default:
-          newTenantRPC = TenantRPC.Amplitude;
-          setTheme('amplitude');
-          break;
-      }
+    const n =
+      network && Object.values<string>(TenantName).includes(network) ? (network as TenantName) : TenantName.Pendulum;
+    setState((prevState) => ({
+      ...prevState,
+      tenantName: n,
+      tenantRPC: config.tenants[n].rpc,
+    }));
+  }, [network, setState]);
 
-      setState((prevState) => ({
-        ...prevState,
-        tenantName: network,
-        tenantRPC: newTenantRPC,
-      }));
-    }
-  }, [network, setState, setTheme, state.tenantName]);
-
-  const isPendulum = network === 'pendulum';
-  const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
-  const sidebar = useRef<HTMLDivElement>(null);
-
-  const FooterLink: FC = memo(() => {
+  const FooterLink = memo(() => {
     return isPendulum ? (
       <span onClick={() => (window.location.href = '/amplitude')}>Amplitude</span>
     ) : (
@@ -70,29 +48,17 @@ export default function Layout(): JSX.Element {
     );
   });
 
-  const toggleMenu = () => {
-    const theSidebar = sidebar.current;
-    if (!theSidebar) return;
-
-    if (visible) {
-      theSidebar.style.display = 'none';
-      theSidebar.style.position = 'relative';
-      theSidebar.style.top = '0';
-    } else {
-      theSidebar.style.display = 'flex';
-      theSidebar.style.position = 'absolute';
-      theSidebar.style.top = '0';
-    }
-    setVisible(!visible);
-  };
-
   return (
-    <div className="flex">
-      <div id="sidebar-wrapper" className="flex flex-wrap bg-base-200">
+    <div id="main-wrapper" className="flex">
+      <div id="sidebar-wrapper" className="flex flex-wrap z-50">
         <div
-          className="self-start text-center bottom-0 md:pt-8 md:top-0 md:left-0 h-160 md:h-screen sidebar"
+          style={{
+            ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
+          }}
           id="sidebar"
-          ref={sidebar}
+          className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
+            visible ? 'open left-0' : 'closed -left-full'
+          }`}
         >
           <img
             className="pendulum-logo"
@@ -102,19 +68,18 @@ export default function Layout(): JSX.Element {
           />
           <Nav />
           <div className="sidebar-footer">
-            <Versions tenantName={network} />
+            <Versions tenantName={state.tenantName} />
             <NetworkId />
-            <SocialAndTermLinks Link={FooterLink} />
+            <SocialAndTermLinks />
           </div>
         </div>
-
-        <div className="mobile-menu">
-          <button className="menu" onClick={() => toggleMenu()} />
-        </div>
       </div>
-      <div id="main" className="flex-wrap bg-base-100">
-        <div className="container flex-wrap">
-          <div className="flex flex-row-reverse h-15">
+      <section>
+        <header>
+          <div className="flex items-center flex-row-reverse h-15 gap-2">
+            <div className="mobile-menu">
+              <button className="menu" onClick={() => setVisible((prev) => !prev)} />
+            </div>
             <OpenWallet dAppName={dAppName} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
@@ -132,7 +97,7 @@ export default function Layout(): JSX.Element {
                   viewBox="0 0 448 512"
                 >
                   <path
-                    fill={isPendulum ? 'white' : 'grey'}
+                    fill={chevronColor}
                     d="M224 416c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L224 338.8l169.4-169.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-192 192C240.4 412.9 232.2 416 224 416z"
                   />
                 </svg>
@@ -144,9 +109,11 @@ export default function Layout(): JSX.Element {
               </ul>
             </div>
           </div>
+        </header>
+        <main className="w-full flex-wrap px-4 sm:px-8 py-4 flex-grow">
           <Outlet />
-        </div>
-      </div>
+        </main>
+      </section>
     </div>
   );
 }
