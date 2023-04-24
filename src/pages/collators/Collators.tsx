@@ -90,9 +90,10 @@ function Collators() {
         walletAccount,
         userStaking,
         setSelectedCandidate,
+        setUnbonding,
       }),
     ];
-  }, [tokenSymbol, userAccountAddress, userStaking, walletAccount]);
+  }, [tokenSymbol, userAccountAddress, userStaking, walletAccount, setUnbonding]);
 
   return (
     <div className="overflow-x-auto collators-list-container mt-10">
