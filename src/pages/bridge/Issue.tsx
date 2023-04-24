@@ -13,6 +13,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
 import OpenWallet from '../../components/OpenWallet';
+import TransferCountdown from '../../components/TransferCountdown';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
@@ -185,7 +186,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
-          <div className="mt-4">Within {remainingDurationString}</div>
+          <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
         </div>
         <Divider />
         <div>

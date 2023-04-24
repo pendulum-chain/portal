@@ -1,7 +1,7 @@
 import { Button, Modal } from 'react-daisyui';
 import { h } from 'preact';
 import { CloseButton } from '../../../components/CloseButton';
-import SuccessDialogIcon from '../../../assets/success-dialog';
+import SuccessDialogIcon from '../../../assets/dialog-status-success';
 
 interface DelegationSuccessfulDialogProps {
   visible: boolean;

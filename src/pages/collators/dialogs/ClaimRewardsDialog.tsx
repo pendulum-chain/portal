@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button, Modal } from 'react-daisyui';
 import { toast } from 'react-toastify';
-import SuccessDialogIcon from '../../../assets/success-dialog';
+import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';

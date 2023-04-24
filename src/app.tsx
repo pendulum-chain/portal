@@ -7,12 +7,16 @@ import { NotFound } from './components/NotFound';
 import { SuspenseLoad } from './components/Suspense';
 import { config } from './config';
 
+/**
+ * Components need to be default exports inside the file for suspense loading to work properly
+ */
 const Dashboard = <SuspenseLoad importFn={() => import('./pages/dashboard/Dashboard')} fallback={defaultPageLoader} />;
 const Amm = <SuspenseLoad importFn={() => import('./pages/amm/Amm')} fallback={defaultPageLoader} />;
 const AmberPage = <SuspenseLoad importFn={() => import('./pages/amber')} fallback={defaultPageLoader} />;
 const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
 const SwapPage = <SuspenseLoad importFn={() => import('./pages/amber/swap')} fallback={defaultPageLoader} />;
 const SwapPoolsPage = <SuspenseLoad importFn={() => import('./pages/amber/swap-pools')} fallback={defaultPageLoader} />;
+const TransfersPage = <SuspenseLoad importFn={() => import('./pages/bridge/Transfers')} fallback={defaultPageLoader} />;
 const BackstopPoolsPage = (
   <SuspenseLoad importFn={() => import('./pages/amber/backstop-pools')} fallback={defaultPageLoader} />
 );
@@ -29,6 +33,7 @@ export function App() {
           <Route path="dashboard" element={Dashboard} />
           <Route path="amm" element={Amm} />
           <Route path="stats" element={StatsPage} />
+          <Route path="transfers" element={TransfersPage} />
           <Route path="amber">
             <Route path="" element={AmberPage} />
             <Route path="swap" element={SwapPage} />
