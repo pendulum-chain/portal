@@ -20,7 +20,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
           <Button
             size="sm"
             color="ghost"
-            className="text-sm border-1 border-gray-300 bg-white h-9"
+            className="text-sm border-gray-300 border-base-300 border-1 bg-base-200 h-9"
             title={wallet?.title}
           >
             {query.isLoading ? (

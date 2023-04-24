@@ -5,6 +5,7 @@ import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { DateTime } from 'luxon';
 import { Asset, Keypair } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from './stellar';
+import { TenantName } from '../models/Tenant';
 
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
@@ -74,6 +75,48 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
   }
 }
 
+const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
+  pendulum: {
+    '0': 'DOT',
+  },
+  amplitude: {
+    '0': 'KSM',
+  },
+};
+
+// Convert a currency to a string
+// The supplied network is used to choose the list of XCM assets per network.
+export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant: TenantName = TenantName.Pendulum) {
+  if (currency.isStellar) {
+    const stellarAsset = currency.asStellar;
+    if (stellarAsset.isStellarNative) {
+      return 'XLM';
+    } else if (stellarAsset.isAlphaNum4) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+      return `${code}:${issuer.publicKey()}`;
+    } else if (stellarAsset.isAlphaNum12) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+      return `${code}:${issuer.publicKey()}`;
+    } else {
+      return 'Unknown';
+    }
+  } else if (currency.isXcm) {
+    const network = tenant === TenantName.Pendulum ? 'pendulum' : 'amplitude';
+    const assetsForNetwork = XCM_ASSETS[network];
+
+    const xcmIndex = currency.asXcm.toString();
+    if (xcmIndex in assetsForNetwork) {
+      return assetsForNetwork[xcmIndex];
+    } else {
+      return `XCM:${xcmIndex}`;
+    }
+  } else {
+    return 'Unknown';
+  }
+}
+
 // Calculate the remaining duration for a request
 // Params:
 //   currentActiveBlock: The block number of the current active block
@@ -95,4 +138,15 @@ export function calculateDeadline(
   const now = DateTime.now();
   const end = now.plus({ seconds: remainingDurationSecs });
   return end;
+}
+
+export function estimateRequestCreationTime(
+  currentActiveBlock: number,
+  activeBlockOpenTime: number,
+  blockTimeSec = 12,
+) {
+  const activeBlocksPassed = currentActiveBlock - activeBlockOpenTime;
+  const secondsAgo = activeBlocksPassed * blockTimeSec;
+  const now = DateTime.now();
+  return now.minus({ seconds: secondsAgo });
 }

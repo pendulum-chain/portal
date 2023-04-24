@@ -27,7 +27,7 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <div className={hidden && !isActive ? 'hidden' : ''}>
+    <div className={hidden && !isActive ? 'coming-soon' : ''}>
       <button
         type="button"
         className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
