@@ -7,6 +7,7 @@ import CollatorsIcon from '../../assets/collators';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import SwapIcon from '../../assets/swap';
+import ComingSoonTag from './ComingSoonTag';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -40,19 +41,19 @@ export const links: Links = ({ tenantName }) => [
     link: './amm',
     title: 'Amm',
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : 'hidden'),
+      className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
     },
     prefix: <SwapIcon />,
-    suffix: arrow,
+    suffix: <ComingSoonTag />,
   },
   {
     link: './bridge',
     title: 'Bridge',
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : 'hidden'),
+      className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
     },
     prefix: <BridgeIcon />,
-    suffix: arrow,
+    suffix: <ComingSoonTag />,
   },
   {
     link: './collators',
@@ -81,8 +82,11 @@ export const links: Links = ({ tenantName }) => [
     link: '/amber',
     title: 'Amber',
     prefix: <SwapIcon />,
-    suffix: <ChevronDownIcon className="ml-auto w-5 h-5" />,
-    hidden: true, // ! temporary hide amber
+    suffix: <ComingSoonTag />,
+    hidden: true,
+    props: {
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
+    },
     submenu: [
       {
         link: './amber/swap',
