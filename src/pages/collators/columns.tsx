@@ -5,6 +5,7 @@ import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { nativeToFormat } from '../../helpers/parseNumbers';
 import { ParachainStakingCandidate } from '../../hooks/staking/staking';
+import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
 
 export interface TCollator {
   candidate: ParachainStakingCandidate;
@@ -12,6 +13,7 @@ export interface TCollator {
   totalStaked: string;
   delegators: number;
   apy: string;
+  identityInfo?: PalletIdentityInfo;
 }
 
 export interface UserStaking {
@@ -25,6 +27,9 @@ const getAmountDelegated = (candidate: ParachainStakingCandidate, address: strin
 export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
   accessorKey: 'collator',
+  accessorFn: (c) => {
+    return c.identityInfo?.email || c.identityInfo?.twitter || c.candidate.id;
+  },
 };
 
 export const stakedColumn: ColumnDef<TCollator> = {
