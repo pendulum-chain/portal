@@ -3,8 +3,10 @@ import { Button, Checkbox, Modal, Theme } from 'react-daisyui';
 import { CloseButton } from './components/CloseButton';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
+const EXPIRE_DATE = 30 * 24 * 60 * 60; // 30 days in seconds
+
 const TermsAndConditions = (p: PropsWithChildren) => {
-  const { state, set } = useLocalStorage<string | undefined>({ key: 'termsAndConditions' });
+  const { state, set } = useLocalStorage<string | undefined>({ key: 'termsAndConditions', expire: EXPIRE_DATE });
   const [checked, setChecked] = useState<boolean>(false);
 
   const acceptTerms = () => {
