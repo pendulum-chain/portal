@@ -6,6 +6,7 @@ import { defaultPageLoader } from './components/Loader/Page';
 import { NotFound } from './components/NotFound';
 import { SuspenseLoad } from './components/Suspense';
 import { config } from './config';
+import TermsAndConditions from './TermsAndConditions';
 
 /**
  * Components need to be default exports inside the file for suspense loading to work properly
@@ -47,6 +48,7 @@ export function App() {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <TermsAndConditions />
       <ToastContainer />
     </>
   );

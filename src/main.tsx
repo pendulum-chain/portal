@@ -6,6 +6,7 @@ import { App } from './app';
 import { defaultState, GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
 import './index.css';
 import { NodeInfoProvider } from './NodeInfoProvider';
+import TermsAndConditions from './TermsAndConditions';
 
 const queryClient = new QueryClient();
 
