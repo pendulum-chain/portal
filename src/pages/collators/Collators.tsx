@@ -189,6 +189,7 @@ function Collators() {
         data={data}
         columns={columns}
         isLoading={!candidates}
+        sortBy="collator"
         search={false}
         pageSize={8}
       />
