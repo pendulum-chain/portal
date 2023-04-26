@@ -28,7 +28,7 @@ export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
   accessorKey: 'collator',
   accessorFn: (c) => {
-    return c.identityInfo?.email || c.identityInfo?.twitter || c.candidate.id;
+    return c.identityInfo?.display || c.identityInfo?.email || c.identityInfo?.twitter || c.candidate.id;
   },
 };
 
