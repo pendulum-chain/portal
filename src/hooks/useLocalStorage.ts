@@ -10,6 +10,8 @@ export type UseLocalStorageProps<T> = {
   parse?: boolean;
   /** Should the value updating be debounced (eg.: for quickly changing values) */
   debounce?: number;
+  /** Should the value expire? Indicate time in seconds, or false for no expiry date. */
+  expire?: number | false;
 } & (T extends undefined
   ? {
       /** Default/fallback value */
@@ -47,6 +49,7 @@ export const useLocalStorage = <T>({
   defaultValue,
   parse = false,
   debounce: debounceTime,
+  expire = false,
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
   type TResponse = UseLocalStorageResponse<T>;
   const firstRef = useRef(false);
@@ -60,6 +63,9 @@ export const useLocalStorage = <T>({
     (value) => {
       storageSet(key, value);
       setState(value);
+      if (expire) {
+        debounce(storageService.remove, expire * 60)(key);
+      } 
     },
     [key, storageSet],
   );
