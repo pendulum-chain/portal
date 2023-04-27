@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/table-core';
 import { StateUpdater } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
+import { CopyableAddress } from '../../components/PublicKey';
 import { nativeToFormat } from '../../helpers/parseNumbers';
 import { ParachainStakingCandidate } from '../../hooks/staking/staking';
 import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
@@ -27,8 +28,13 @@ const getAmountDelegated = (candidate: ParachainStakingCandidate, address: strin
 export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
   accessorKey: 'collator',
-  accessorFn: (c) => {
-    return c.identityInfo?.display || c.identityInfo?.email || c.identityInfo?.twitter || c.candidate.id;
+  cell: ({ row }) => {
+    return (
+      <div className="flex flex-row">
+        <div className="mr-2">{row.original.identityInfo ? row.original.identityInfo.display : 'Unknown' + ' |'}</div>
+        <CopyableAddress publicKey={row.original.candidate.id} variant="short" inline />
+      </div>
+    );
   },
 };
 
