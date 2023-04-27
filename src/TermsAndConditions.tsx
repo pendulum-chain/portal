@@ -1,5 +1,5 @@
 import { PropsWithChildren, useState } from 'react';
-import { Button, Checkbox, Modal, Theme } from 'react-daisyui';
+import { Button, Checkbox, Link, Modal, Theme } from 'react-daisyui';
 import { CloseButton } from './components/CloseButton';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
@@ -19,15 +19,19 @@ const TermsAndConditions = (p: PropsWithChildren) => {
     <Modal open={true} style={{ borderRadius: '5px' }}>
       <Modal.Header className="text-3xl">T&C</Modal.Header>
       <Modal.Body>
-        <div className="text-lg mb-4">Alternative links can be found in the docs.</div>
         <div className="text-lg mb-5">
           {'By clicking Agree you accept the '}
-          <a target="_blank" href="https://pendulumchain.org/legal/portal-terms-and-conditions">
+          <Link
+            style={{ textDecoration: 'underline' }}
+            color="primary"
+            target="_blank"
+            href="https://pendulumchain.org/legal/portal-terms-and-conditions"
+          >
             Terms and Conditions.
-          </a>
+          </Link>
         </div>
         <div className="text-lg flex">
-          <Checkbox checked={checked} onClick={() => setChecked(!checked)} color="primary" size="md" />{' '}
+          <Checkbox checked={checked} onClick={() => setChecked(!checked)} color="primary" size="md" />
           <span className="pl-2">Don't show this message again for 30 days.</span>
         </div>
       </Modal.Body>
