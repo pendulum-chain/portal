@@ -3,6 +3,7 @@ import { Option } from '@polkadot/types-codec';
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface ParachainStakingDelegator {
@@ -46,6 +47,7 @@ type ParachainStakingFees = typeof defaultTransactionFees;
 export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
+  const { ss58Format } = useNodeInfoState().state;
 
   const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
   const [inflationInfo, setInflationInfo] = useState<ParachainStakingInflationInflationInfo | undefined>(undefined);
@@ -83,7 +85,8 @@ export function useStakingPallet() {
 
     const fetchEstimatedReward = async () => {
       if (!walletAccount) return '0';
-      return (await api.query.parachainStaking.rewards(walletAccount?.address)).toString();
+      const formattedAddr = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+      return (await api.query.parachainStaking.rewards(formattedAddr)).toString();
     };
 
     const fetchFees = async () => {
@@ -162,7 +165,7 @@ export function useStakingPallet() {
         return api.tx.parachainStaking?.joinDelegators(collatorAddress, amountNative);
       },
     };
-  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
+  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards, ss58Format]);
 
   return memo;
 }

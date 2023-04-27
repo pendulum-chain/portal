@@ -63,11 +63,13 @@ export const actionsColumn = ({
   walletAccount,
   userStaking,
   setSelectedCandidate,
+  setUnbonding,
 }: {
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
   setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
+  setUnbonding: StateUpdater<boolean>;
 }): ColumnDef<TCollator> => ({
   header: '',
   accessorKey: 'actions',
@@ -80,7 +82,10 @@ export const actionsColumn = ({
           className="mr-2 text-primary"
           size="sm"
           color="ghost"
-          onClick={() => undefined}
+          onClick={() => {
+            setUnbonding(true);
+            setSelectedCandidate(row.original.candidate);
+          }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
           style={{ visibility: showUnbond ? 'visible' : 'hidden' }}
         >
