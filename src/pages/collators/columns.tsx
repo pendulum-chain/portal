@@ -31,7 +31,7 @@ export const nameColumn: ColumnDef<TCollator> = {
   cell: ({ row }) => {
     return (
       <div className="flex flex-row">
-        <div className="mr-2">{row.original.identityInfo ? row.original.identityInfo.display : 'Unknown' + ' |'}</div>
+        <div className="mr-2">{(row.original.identityInfo ? row.original.identityInfo.display : 'Unknown') + ' |'}</div>
         <CopyableAddress publicKey={row.original.candidate.id} variant="short" inline />
       </div>
     );
