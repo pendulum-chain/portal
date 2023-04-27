@@ -20,14 +20,14 @@ export function useIdentityPallet() {
         if (!api || !api.query.identity) {
           return;
         }
-        const indentityResponse = await api.query.identity.identityOf(account);
-        if (indentityResponse.isEmpty) {
+        const identityResponse = await api.query.identity.identityOf(account);
+        if (identityResponse.isEmpty) {
           return;
         }
         
         // Casting the data to the real value PalletIdentityRegistration, fails to show readable info
         // Therefore the cast to 'any'
-        const pir: any = indentityResponse.toHuman() as unknown as PalletIdentityRegistration;
+        const pir: any = identityResponse.toHuman() as unknown as PalletIdentityRegistration;
         return {
           display: pir.info.display? pir.info.display.Raw : '',
           email: pir.info.email ? pir.info.email.Raw : '',
