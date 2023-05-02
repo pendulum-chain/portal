@@ -28,6 +28,7 @@ const getAmountDelegated = (candidate: ParachainStakingCandidate, address: strin
 export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
   accessorKey: 'collator',
+  accessorFn: ({ identityInfo }) => identityInfo?.display || '0',
   cell: ({ row }) => {
     return (
       <div className="flex flex-row">
