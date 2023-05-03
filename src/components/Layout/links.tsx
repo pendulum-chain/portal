@@ -8,6 +8,7 @@ import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import SwapIcon from '../../assets/swap';
 import ComingSoonTag from './ComingSoonTag';
+import { TenantName } from '../../models/Tenant';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -48,12 +49,12 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './bridge',
-    title: 'Bridge',
+    title: 'Spacewalk',
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
+      className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
     },
     prefix: <BridgeIcon />,
-    suffix: <ComingSoonTag />,
+    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
   },
   {
     link: './collators',
