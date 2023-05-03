@@ -48,13 +48,23 @@ export const links: Links = ({ tenantName }) => [
     suffix: <ComingSoonTag />,
   },
   {
-    link: './bridge',
+    link: './spacewalk',
     title: 'Spacewalk',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
     },
     prefix: <BridgeIcon />,
     suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
+    submenu: [
+      {
+        link: './spacewalk/bridge',
+        title: 'Bridge',
+      },
+      {
+        link: './spacewalk/transfers',
+        title: 'Transfers',
+      },
+    ],
   },
   {
     link: './collators',
