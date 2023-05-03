@@ -13,18 +13,13 @@ const options = [
 
 const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): JSX.Element => (
   <>
-    <Dropdown vertical="end" dropdown-hover="">
-      <Button
-        size="sm"
-        color="ghost"
-        className="text-sm border-gray-300 border-base-300 border-1 bg-base-200 h-9"
-        title={tenantName}
-      >
-        {tenantName === TenantName.Pendulum ? <PendulumLogo className="mr-1" /> : <AmplitudeLogo className="mr-1" />}
-        <span className="text-sm mr-3">{tenantName ? toTitle(tenantName) : ''}</span>
+    <Dropdown vertical="end" className="w-30">
+      <Button size="sm" color="ghost" className="text-sm border-base-300 bg-base-200 h-9" title={tenantName}>
+        {tenantName === TenantName.Pendulum ? <PendulumLogo className="mr-2" /> : <AmplitudeLogo className="mr-1" />}
+        <span className="text-sm mr-5">{tenantName ? toTitle(tenantName) : ''}</span>
         <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
       </Button>
-      <Dropdown.Menu className="w-40 p-1">
+      <Dropdown.Menu className="w-30 mt-1.5 p-1 text-sm border-base-300 border bg-base-200 rounded-xl shadow-none">
         {options.map((option) => (
           <Dropdown.Item
             onClick={() => {
@@ -32,9 +27,9 @@ const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): 
             }}
           >
             {option.name === TenantName.Pendulum ? (
-              <PendulumLogo className="mr-1" />
+              <PendulumLogo className="w-5 h-6 mr-1" />
             ) : (
-              <AmplitudeLogo className="mr-1" />
+              <AmplitudeLogo className="w-5 h-5 mr-1" />
             )}
             <span className="text-sm mr-3">{toTitle(option.name)}</span>
           </Dropdown.Item>

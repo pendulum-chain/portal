@@ -3,7 +3,7 @@ interface Props {
 }
 
 const AmplitudeLogo = ({ className }: Props) => (
-  <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+  <svg fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path
       d="M3.8606 9.50286C3.8606 9.50286 4.34281 10.9582 4.61302 11.6738C4.88323 12.3895 5.03867 12.8273 5.71325 12.8259C5.99852 12.8252 6.29641 12.4543 6.62941 11.6738C7.01913 10.6583 7.4623 9.50286 7.4623 9.50286H3.8606Z"
       fill="#4EE59A"
