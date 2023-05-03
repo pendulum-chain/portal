@@ -11,7 +11,7 @@ const options = [
   { name: TenantName.Foucoco, url: `/${TenantName.Foucoco}/dashboard` },
 ];
 
-const ChainSeletor = ({ tenantName }: { tenantName: TenantName }): JSX.Element => (
+const ChainSeletor = ({ tenantName }: { tenantName: TenantName | undefined }): JSX.Element => (
   <>
     <Dropdown vertical="end" dropdown-hover="">
       <Button
