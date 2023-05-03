@@ -49,7 +49,7 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './bridge',
-    title: 'Bridge',
+    title: 'Spacewalk',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
     },
