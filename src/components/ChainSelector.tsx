@@ -11,7 +11,7 @@ const options = [
   { name: TenantName.Foucoco, url: `/${TenantName.Foucoco}/dashboard` },
 ];
 
-const ChainSeletor = ({ tenantName }: { tenantName: TenantName | undefined }): JSX.Element => (
+const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): JSX.Element => (
   <>
     <Dropdown vertical="end" dropdown-hover="">
       <Button
@@ -48,4 +48,4 @@ function toTitle(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export default ChainSeletor;
+export default ChainSelector;
