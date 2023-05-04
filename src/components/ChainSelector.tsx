@@ -2,10 +2,8 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
 import AmplitudeLogo from '../assets/AmplitudeLogo';
 import PendulumLogo from '../assets/PendulumLogo';
-import { useGlobalState } from '../GlobalStateProvider';
 import { TenantName } from '../models/Tenant';
 import { useNavigate, useLocation } from 'react-router-dom';
-import path from 'path';
 
 const options = [TenantName.Pendulum, TenantName.Amplitude, TenantName.Foucoco];
 

@@ -11,7 +11,7 @@ import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import Versions from './Versions';
 import './styles.sass';
-import ChainSeletor from '../ChainSelector';
+import ChainSelector from '../ChainSelector';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
@@ -84,7 +84,7 @@ export default function Layout(): JSX.Element | null {
               <button className="menu" onClick={() => setVisible((prev) => !prev)} />
             </div>
             <OpenWallet dAppName={dAppName} />
-            <ChainSeletor tenantName={state.tenantName} />
+            <ChainSelector tenantName={state.tenantName} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
