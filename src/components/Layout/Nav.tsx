@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
+import { TenantName } from '../../models/Tenant';
 import { LinkItem, links } from './links';
 
 const CollapseMenu = ({
@@ -17,6 +18,8 @@ const CollapseMenu = ({
   children: JSX.Element | null;
 }) => {
   const { pathname } = useLocation();
+  const { tenantName } = useGlobalState().state;
+  const isPendulum = tenantName === TenantName.Pendulum;
 
   const isActive = useMemo(() => {
     const [path] = pathname.split('?');
@@ -27,7 +30,7 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <div className={hidden && !isActive ? 'coming-soon' : ''}>
+    <div className={(hidden && !isActive) || isPendulum ? 'coming-soon' : ''}>
       <button
         type="button"
         className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}

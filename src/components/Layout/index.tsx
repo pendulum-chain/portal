@@ -18,6 +18,7 @@ export default function Layout(): JSX.Element | null {
   const params = useParams();
   const { state, setState, dAppName } = useGlobalState();
   const isPendulum = state.tenantName === TenantName.Pendulum;
+  const isTestnet = state.tenantName === TenantName.Foucoco;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
@@ -67,6 +68,7 @@ export default function Layout(): JSX.Element | null {
             alt=""
             style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
           />
+          {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
           <Nav />
           <div className="sidebar-footer">
             <Versions tenantName={state.tenantName} />
