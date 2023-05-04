@@ -31,17 +31,23 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
 
   const stellarAsset = currency.asStellar;
 
-  if (stellarAsset.isStellarNative) {
-    return Asset.native();
-  } else if (stellarAsset.isAlphaNum4) {
-    const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
-    const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
-    return new Asset(code, issuer.publicKey());
-  } else if (stellarAsset.isAlphaNum12) {
-    const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
-    const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
-    return new Asset(code, issuer.publicKey());
-  } else {
+  try {
+    if (stellarAsset.isStellarNative) {
+      return Asset.native();
+    } else if (stellarAsset.isAlphaNum4) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      console.log('code', code);
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+      return new Asset(code, issuer.publicKey());
+    } else if (stellarAsset.isAlphaNum12) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+      return new Asset(code, issuer.publicKey());
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.error('Error converting currency to stellar asset', e);
     return null;
   }
 }
