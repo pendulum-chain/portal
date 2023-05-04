@@ -1,14 +1,14 @@
 name: release
 on:
   push:
-    branches: [staging, develop]
+    branches: [staging, develop, fix/release-action]
 
   workflow_dispatch:
 
 jobs:
   semantic-release:
     name: Running push
-    if: "!contains(toJSON(github.event.commits.*.message), 'chore(release):')"
+    if: '!contains(toJSON(github.event.commits.*.message), "chore(release):")'
     runs-on: ubuntu-latest
     strategy:
       matrix:

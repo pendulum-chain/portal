@@ -9,8 +9,8 @@ jobs:
   build:
     name: Running pr
     if:
-      "!contains(toJSON(github.event.commits.*.message), 'chore(release):') &&
-      github.event.pull_request.draft != true"
+      '!contains(toJSON(github.event.commits.*.message), "chore(release):") &&
+      github.event.pull_request.draft != true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
