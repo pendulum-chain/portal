@@ -1,16 +1,14 @@
-name: pr
+name: push
 on:
-  pull_request:
-    branches: [main, staging, develop]
-    
+  push:
+    branches: [staging, develop]
+
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Running pr
-    if:
-      "!contains(toJSON(github.event.commits.*.message), 'chore(release):') &&
-      github.event.pull_request.draft != true"
+  semantic-release:
+    name: Running push
+    if: '!contains(toJSON(github.event.commits.*.message), "chore(release):")'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,11 +19,15 @@ jobs:
     steps:
       - name: 🛒 Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 💿 Setup Nodejs
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: 'https://npm.pkg.github.com'
 
       - name: 💾 Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -45,16 +47,10 @@ jobs:
 
       - name: 🧩 Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install
+        run: yarn install --prefer-offline --frozen-lockfile
 
-      - name: 📋 Yarn Lock Changes
-        uses: Simek/yarn-lock-changes@main 
-        with:
-          updateComment: 'true'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: ✏️ Lint
-        run: yarn lint:ts
-
-      - name: 🧪 Test
-        run: yarn test
+      - name: 📦 Release
+        run: yarn release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
