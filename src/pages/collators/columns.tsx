@@ -3,8 +3,10 @@ import { ColumnDef } from '@tanstack/table-core';
 import { StateUpdater } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
+import { CopyableAddress } from '../../components/PublicKey';
 import { nativeToFormat } from '../../helpers/parseNumbers';
 import { ParachainStakingCandidate } from '../../hooks/staking/staking';
+import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
 
 export interface TCollator {
   candidate: ParachainStakingCandidate;
@@ -12,6 +14,7 @@ export interface TCollator {
   totalStaked: string;
   delegators: number;
   apy: string;
+  identityInfo?: PalletIdentityInfo;
 }
 
 export interface UserStaking {
@@ -19,14 +22,21 @@ export interface UserStaking {
   amount: string;
 }
 
-const getAmountDelegated = (
-  candidate: ParachainStakingCandidate,
-  address: string,
-) => candidate.delegators.find(({ owner }) => owner === address)?.amount;
+const getAmountDelegated = (candidate: ParachainStakingCandidate, address: string) =>
+  candidate.delegators.find(({ owner }) => owner === address)?.amount;
 
 export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
   accessorKey: 'collator',
+  accessorFn: ({ identityInfo }) => identityInfo?.display || '0',
+  cell: ({ row }) => {
+    return (
+      <div className="flex flex-row">
+        <div className="mr-2">{(row.original.identityInfo ? row.original.identityInfo.display : 'Unknown') + ' |'}</div>
+        <CopyableAddress publicKey={row.original.candidate.id} variant="short" inline />
+      </div>
+    );
+  },
 };
 
 export const stakedColumn: ColumnDef<TCollator> = {
@@ -55,15 +65,8 @@ export const myStakedColumn = ({
   header: 'My Staked',
   accessorKey: 'myStaked',
   cell: ({ row }) => {
-    const amountDelegated = getAmountDelegated(
-      row.original.candidate,
-      userAccountAddress,
-    );
-    return (
-      <div>
-        {amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}
-      </div>
-    );
+    const amountDelegated = getAmountDelegated(row.original.candidate, userAccountAddress);
+    return <div>{amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}</div>;
   },
 });
 
@@ -72,20 +75,18 @@ export const actionsColumn = ({
   walletAccount,
   userStaking,
   setSelectedCandidate,
+  setUnbonding,
 }: {
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidate: StateUpdater<
-    ParachainStakingCandidate | undefined
-  >;
+  setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
+  setUnbonding: StateUpdater<boolean>;
 }): ColumnDef<TCollator> => ({
   header: '',
   accessorKey: 'actions',
   cell: ({ row }) => {
-    const showUnbond = Boolean(
-      getAmountDelegated(row.original.candidate, userAccountAddress),
-    );
+    const showUnbond = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
     const showDelegate = walletAccount && (!userStaking || showUnbond);
     return (
       <div className="flex flex-row justify-center">
@@ -93,7 +94,10 @@ export const actionsColumn = ({
           className="mr-2 text-primary"
           size="sm"
           color="ghost"
-          onClick={() => undefined}
+          onClick={() => {
+            setUnbonding(true);
+            setSelectedCandidate(row.original.candidate);
+          }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
           style={{ visibility: showUnbond ? 'visible' : 'hidden' }}
         >

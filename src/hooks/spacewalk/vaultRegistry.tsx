@@ -41,8 +41,7 @@ export function useVaultRegistryPallet() {
         if (!api) {
           return undefined;
         }
-        const publicKeyBinary =
-          await api.query.vaultRegistry?.vaultStellarPublicKey(accountId);
+        const publicKeyBinary = await api.query.vaultRegistry?.vaultStellarPublicKey(accountId);
 
         if (publicKeyBinary.isNone) {
           return undefined;

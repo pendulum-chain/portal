@@ -1,20 +1,17 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import Big from 'big.js';
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import Big from 'big.js';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { fixedPointToDecimal } from '../../helpers/parseNumbers';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 
 export function useFeePallet() {
   const [issueFee, setIssueFee] = useState<Big>(new Big(0));
   const [redeemFee, setRedeemFee] = useState<Big>(new Big(0));
   const [punishmentFee, setPunishmentFee] = useState<Big>(new Big(0));
   const [premiumRedeemFee, setPremiumRedeemFee] = useState<Big>(new Big(0));
-  const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(
-    new Big(0),
-  );
-  const [replaceGriefingCollateral, setReplaceGriefingCollateral] =
-    useState<Big>(new Big(0));
+  const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(new Big(0));
+  const [replaceGriefingCollateral, setReplaceGriefingCollateral] = useState<Big>(new Big(0));
 
   const [griefingCollateralCurrency, setGriefingCollateralCurrency] = useState<
     SpacewalkPrimitivesCurrencyId | undefined
@@ -34,33 +31,31 @@ export function useFeePallet() {
 
     let unsubscribe: () => void = () => undefined;
 
-    setGriefingCollateralCurrency(
-      api.consts.vaultRegistry?.getGriefingCollateralCurrencyId,
-    );
+    setGriefingCollateralCurrency(api.consts.vaultRegistry?.getGriefingCollateralCurrencyId);
 
     Promise.all([
       api.query.fee.issueFee((fee) => {
-        const decimal = Big(nativeToDecimal(fee.toString()));
+        const decimal = Big(fixedPointToDecimal(fee.toString()));
         setIssueFee(decimal);
       }),
       api.query.fee.punishmentFee((fee) => {
-        const decimal = Big(nativeToDecimal(fee.toString()));
+        const decimal = Big(fixedPointToDecimal(fee.toString()));
         setPunishmentFee(decimal);
       }),
       api.query.fee.redeemFee((fee) => {
-        const decimal = Big(nativeToDecimal(fee.toString()));
+        const decimal = Big(fixedPointToDecimal(fee.toString()));
         setRedeemFee(decimal);
       }),
       api.query.fee.premiumRedeemFee((fee) => {
-        const decimal = Big(nativeToDecimal(fee.toString()));
+        const decimal = Big(fixedPointToDecimal(fee.toString()));
         setPremiumRedeemFee(decimal);
       }),
       api.query.fee.issueGriefingCollateral((fee) => {
-        const decimal = Big(nativeToDecimal(fee.toString()));
+        const decimal = Big(fixedPointToDecimal(fee.toString()));
         setIssueGriefingCollateral(decimal);
       }),
       api.query.fee.replaceGriefingCollateral((fee) => {
-        const decimal = Big(nativeToDecimal(fee.toString()));
+        const decimal = Big(fixedPointToDecimal(fee.toString()));
         setReplaceGriefingCollateral(decimal);
       }),
     ]).then((unsubscribeFunctions) => {

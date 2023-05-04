@@ -37,16 +37,11 @@ export default defineConfig({
       util: 'rollup-plugin-node-polyfills/polyfills/util',
       vm: 'rollup-plugin-node-polyfills/polyfills/vm',
       zlib: 'rollup-plugin-node-polyfills/polyfills/zlib',
-      _stream_duplex:
-        'rollup-plugin-node-polyfills/polyfills/readable-stream/duplex',
-      _stream_passthrough:
-        'rollup-plugin-node-polyfills/polyfills/readable-stream/passthrough',
-      _stream_readable:
-        'rollup-plugin-node-polyfills/polyfills/readable-stream/readable',
-      _stream_writable:
-        'rollup-plugin-node-polyfills/polyfills/readable-stream/writable',
-      _stream_transform:
-        'rollup-plugin-node-polyfills/polyfills/readable-stream/transform',
+      _stream_duplex: 'rollup-plugin-node-polyfills/polyfills/readable-stream/duplex',
+      _stream_passthrough: 'rollup-plugin-node-polyfills/polyfills/readable-stream/passthrough',
+      _stream_readable: 'rollup-plugin-node-polyfills/polyfills/readable-stream/readable',
+      _stream_writable: 'rollup-plugin-node-polyfills/polyfills/readable-stream/writable',
+      _stream_transform: 'rollup-plugin-node-polyfills/polyfills/readable-stream/transform',
     },
   },
   optimizeDeps: {

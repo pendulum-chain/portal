@@ -1,7 +1,4 @@
-import type {
-  SpacewalkPrimitivesIssueIssueRequest,
-  SpacewalkPrimitivesVaultId,
-} from '@polkadot/types/lookup';
+import type { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesVaultId } from '@polkadot/types/lookup';
 import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { H256 } from '@polkadot/types/interfaces';
@@ -44,10 +41,7 @@ export function useIssuePallet() {
           return undefined;
         }
       },
-      createIssueRequestExtrinsic(
-        amount: string,
-        vaultId: SpacewalkPrimitivesVaultId,
-      ) {
+      createIssueRequestExtrinsic(amount: string, vaultId: SpacewalkPrimitivesVaultId) {
         if (!api) {
           return undefined;
         }

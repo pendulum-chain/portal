@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { h } from 'preact';
-import { memo, FC } from 'preact/compat';
-import { TenantName } from '../../GlobalStateProvider';
+import { FC, memo } from 'preact/compat';
+import { TenantName } from '../../models/Tenant';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface Props {
@@ -33,11 +32,7 @@ const Versions: FC<Props> = memo(({ tenantName }: Props) => {
       {indicator}
     </span> */}
       <p>DApp: {state.nodeName} </p>
-      <p>
-        Runtime:{' '}
-        {(state.nodeVersion && state.nodeVersion.toString()) ||
-          '0.0.0-00000000000'}
-      </p>
+      <p>Runtime: {(state.nodeVersion && state.nodeVersion.toString()) || '0.0.0-00000000000'}</p>
     </div>
   );
 });

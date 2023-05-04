@@ -1,7 +1,7 @@
-import { Button, Modal } from "react-daisyui";
-import { h } from "preact";
-import { CloseButton } from "../../../components/CloseButton";
-import SuccessDialogIcon from "../../../assets/success-dialog";
+import { Button, Modal } from 'react-daisyui';
+import { h } from 'preact';
+import { CloseButton } from '../../../components/CloseButton';
+import SuccessDialogIcon from '../../../assets/dialog-status-success';
 
 interface DelegationSuccessfulDialogProps {
   visible: boolean;
@@ -21,9 +21,7 @@ function DelegationSuccessfulDialog(props: DelegationSuccessfulDialogProps) {
         <div className="flex flex-col items-center justify-between">
           <SuccessDialogIcon />
           <div className="mt-4" />
-          <div className="text-md text-neutral-content">
-            {message}
-          </div>
+          <div className="text-md text-neutral-content">{message}</div>
         </div>
       </Modal.Body>
 

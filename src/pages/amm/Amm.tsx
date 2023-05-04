@@ -1,19 +1,16 @@
-import { h } from 'preact';
 import { Button } from 'react-daisyui';
 
-import Box from '../../components/Box';
 import usdc from '../../assets/usdc.png';
+import Box from '../../components/Box';
 import './styles.css';
 
-export function Amm(): JSX.Element {
+function Amm(): JSX.Element {
   const Dummy = () => (
     <>
       <div className="row-pick-coin">
         <Button
           animation={false}
-          startIcon={
-            <img src={usdc} alt="usdc" style={{ width: 20, height: 20 }} />
-          }
+          startIcon={<img src={usdc} alt="usdc" style={{ width: 20, height: 20 }} />}
           endIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,3 +57,5 @@ export function Amm(): JSX.Element {
     </div>
   );
 }
+
+export default Amm;

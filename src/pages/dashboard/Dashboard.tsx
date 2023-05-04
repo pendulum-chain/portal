@@ -1,22 +1,18 @@
-import { h } from 'preact';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import Banner from '../../assets/banner-spacewalk-4x.png';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
-import { prettyNumbers, nativeToDecimal } from '../../helpers/parseNumbers';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
-import Banner from '../../assets/banner-spacewalk-4x.png';
 
-export function Dashboard() {
-  const { state: GlobalState } = useGlobalState();
-  const { walletAccount } = GlobalState;
-  const { state } = useNodeInfoState();
-  const { api } = state;
-  const { tokenSymbol } = state;
+function Dashboard() {
+  const { walletAccount } = useGlobalState();
+  const {
+    state: { api, tokenSymbol },
+  } = useNodeInfoState();
 
-  const [accountBalance, setAccountBalance] = useState<
-    PalletBalancesAccountData | undefined
-  >(undefined);
+  const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
 
   useEffect(() => {
     if (!walletAccount?.address) return;
@@ -32,7 +28,7 @@ export function Dashboard() {
 
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return undefined;
-    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()));
+    return prettyNumbers(nativeToDecimal(accountBalance.free.toString()).toNumber());
   }, [accountBalance]);
 
   return (
@@ -44,9 +40,11 @@ export function Dashboard() {
               <h2 className={'float-left'}>Promo</h2>
               <h2 className={'float-right'}>Join now</h2>
             </div>
-            <figure> <img src={Banner} /></figure>
+            <figure>
+              <img src={Banner} />
+            </figure>
           </div>
-        </a >
+        </a>
       </div>
       <div className="card w-1/3 portfolio rounded-md bg-base-200">
         <div className="card-body">
@@ -62,9 +60,7 @@ export function Dashboard() {
             )}
             {!cachedBalance && (
               <>
-                <p>
-                  You have to connect a wallet to see your available balance.{' '}
-                </p>
+                <p>You have to connect a wallet to see your available balance. </p>
               </>
             )}
           </div>
@@ -75,22 +71,9 @@ export function Dashboard() {
         <h2>$63.231,98</h2>
         <svg viewBox="0 0 200 200" className="chart">
           <defs>
-            <linearGradient
-              id="grad"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-              gradientTransform="rotate(65)"
-            >
-              <stop
-                offset="0%"
-                style="stop-color:rgb(89, 196, 226);stop-opacity:1"
-              />
-              <stop
-                offset="100%"
-                style="stop-color:rgb(255,255,255);stop-opacity:1"
-              />
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%" gradientTransform="rotate(65)">
+              <stop offset="0%" style="stop-color:rgb(89, 196, 226);stop-opacity:1" />
+              <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
             </linearGradient>
           </defs>
           <polyline
@@ -137,3 +120,5 @@ export function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;

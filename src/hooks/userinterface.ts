@@ -1,5 +1,4 @@
 import { useMemo } from 'preact/hooks';
-
 import { toast } from 'react-toastify';
 
 export function useClipboard() {

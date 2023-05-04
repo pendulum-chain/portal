@@ -40,16 +40,11 @@ export function getErrors(events: EventRecord[], api: ApiPromise) {
   );
 }
 
-export function getEventBySectionAndMethod(
-  events: EventRecord[],
-  section: string,
-  method: string,
-) {
+export function getEventBySectionAndMethod(events: EventRecord[], section: string, method: string) {
   return events
     .filter(
       ({ event: { method: eventMethod, section: eventSection } }) =>
-        eventSection.toLowerCase() === section.toLowerCase() &&
-        eventMethod.toLowerCase() === method.toLowerCase(),
+        eventSection.toLowerCase() === section.toLowerCase() && eventMethod.toLowerCase() === method.toLowerCase(),
     )
     .map((event) => event.event);
 }

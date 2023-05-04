@@ -1,18 +1,19 @@
-import { createContext, h } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
+import { toast } from 'react-toastify';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { createContext } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
 
 export interface NodeInfoProviderInterface {
-  bestNumberFinalize: number;
-  chain: string;
-  nodeName: string;
-  nodeVersion: string;
+  bestNumberFinalize?: number;
+  chain?: string;
+  nodeName?: string;
+  nodeVersion?: string;
   ss58Format?: number;
-  tokenDecimals: number;
-  tokenSymbol: string;
-  api: ApiPromise;
+  tokenDecimals?: number;
+  tokenSymbol?: string;
+  api?: ApiPromise;
 }
 
 const NodeInfoContext = createContext({
@@ -26,35 +27,33 @@ const NodeInfoProvider = ({
   value = {},
 }: {
   children: ReactNode;
-  tenantRPC: string;
+  tenantRPC?: string;
   value?: Partial<NodeInfoProviderInterface>;
 }) => {
   const [state, setState] = useState(value);
-  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(
-    undefined
-  );
-  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<
-    Promise<unknown>
-  >(Promise.resolve());
+  const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(undefined);
+  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
     let disconnect: () => void = () => undefined;
 
     // If the tenantRPC is the same as the currentTenantRPC, we don't need to do anything.
-    if (currentTenantRPC && currentTenantRPC === tenantRPC) {
+    if (!tenantRPC || (currentTenantRPC && currentTenantRPC === tenantRPC)) {
       return disconnect;
     }
 
     const connect = async () => {
-      const provider = new WsProvider(tenantRPC);
+      const provider = new WsProvider(tenantRPC, false);
+      await provider.connect();
       const api = await ApiPromise.create(
         options({
           provider,
           rpc,
+          // These are necessary so that the promise throws the error
+          throwOnConnect: true,
+          throwOnUnknown: true,
         }),
       );
-
-      console.log("connected to", tenantRPC, "with chain", api);
 
       const bestNumberFinalize = await api.derive.chain.bestNumber();
       const chainProperties = await api.registry.getChainProperties();
@@ -72,13 +71,13 @@ const NodeInfoProvider = ({
 
       setState((prevState) => ({
         ...prevState,
-        ...{
-          bestNumberFinalize: Number(bestNumberFinalize),
-          ss58Format: Number(ss58Format),
-          tokenDecimals,
-          tokenSymbol,
-          api,
-        },
+        bestNumberFinalize: Number(bestNumberFinalize),
+        ss58Format: Number(ss58Format),
+        tokenDecimals,
+        tokenSymbol,
+        // TODO: same as for the api we could create a common interface for fetching data from indexer (swap assets, pools, other info)
+        // and pass the instance based on tenant to this context to be used in Swap, Pools components...
+        api,
       }));
 
       const [chain, nodeName, nodeVersion] = await Promise.all([
@@ -89,11 +88,9 @@ const NodeInfoProvider = ({
 
       setState((prevState) => ({
         ...prevState,
-        ...{
-          chain: chain.toString(),
-          nodeName: nodeName.toString(),
-          nodeVersion: nodeVersion.toString(),
-        },
+        chain: chain.toString(),
+        nodeName: nodeName.toString(),
+        nodeVersion: nodeVersion.toString(),
       }));
 
       disconnect = () => {
@@ -105,23 +102,18 @@ const NodeInfoProvider = ({
       // We need this promise based approach to prevent race conditions when the user switches between tenants very quickly.
       // Otherwise, it might happen that the connection to the first endpoint takes longer and resolves later than
       // the connection to the second endpoint which would make us end up with a connection to the outdated endpoint.
-      setPendingInitiationPromise(connect());
+      const promise = connect().catch((error) => {
+        console.error('Error while connecting to the node:', error);
+        toast('Error while connecting to the node. Refresh the page to re-connect.', { type: toast.TYPE.ERROR });
+      });
+      setPendingInitiationPromise(promise);
       setCurrentTenantRPC(tenantRPC);
     });
 
     return disconnect;
-  }, [
-    currentTenantRPC,
-    tenantRPC,
-    pendingInitiationPromise,
-    setPendingInitiationPromise,
-  ]);
+  }, [currentTenantRPC, tenantRPC, pendingInitiationPromise, setPendingInitiationPromise]);
 
-  return (
-    <NodeInfoContext.Provider value={{ state, setState }}>
-      {children}
-    </NodeInfoContext.Provider>
-  );
+  return <NodeInfoContext.Provider value={{ state, setState }}>{children}</NodeInfoContext.Provider>;
 };
 
 const useNodeInfoState = () => useContext(NodeInfoContext);

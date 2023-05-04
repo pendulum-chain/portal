@@ -1,11 +1,10 @@
-import { h } from 'preact';
-import { memo, FC } from 'preact/compat';
-import { useNodeInfoState } from '../../NodeInfoProvider';
+import { FC, memo } from 'preact/compat';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 
 const NetworkId: FC = memo(() => {
   const lastBlockNumber = useNodeInfoState().state.bestNumberFinalize;
-  const tenantRPC = useGlobalState().state.tenantRPC;
+  const { tenantRPC } = useGlobalState().state;
   const encodedRPC = tenantRPC ? encodeURI(tenantRPC) : '';
 
   return (

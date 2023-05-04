@@ -1,8 +1,11 @@
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import bs58 from 'bs58';
+import { H256 } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { DateTime } from 'luxon';
 import { Asset, Keypair } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from './stellar';
-import { DateTime } from 'luxon';
+import { TenantName } from '../models/Tenant';
 
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
@@ -14,32 +17,42 @@ function hex_to_ascii(hexString: string, leading0x = true) {
   return str;
 }
 
-export function convertCurrencyToStellarAsset(
-  currency: SpacewalkPrimitivesCurrencyId,
-): Asset | null {
-  if (currency.isStellarNative) {
-    return Asset.native();
-  } else if (currency.isAlphaNum4) {
-    const code = hex_to_ascii(currency.asAlphaNum4.code.toHex());
-    const issuer = convertRawHexKeyToPublicKey(
-      currency.asAlphaNum4.issuer.toHex(),
-    );
-    return new Asset(code, issuer.publicKey());
-  } else if (currency.isAlphaNum12) {
-    const code = hex_to_ascii(currency.asAlphaNum12.code.toHex());
-    const issuer = convertRawHexKeyToPublicKey(
-      currency.asAlphaNum12.issuer.toHex(),
-    );
-    return new Asset(code, issuer.publicKey());
-  } else {
+// This function is used to derive a shorter identifier that can be used as a TEXT MEMO by a user when creating a Stellar transaction
+// to fulfill an issue request. This is only used for _issue_ requests, not for redeem or replace requests.
+export function deriveShortenedRequestId(requestId: H256) {
+  // This derivation matches the one used in the Spacewalk pallets
+  return bs58.encode(requestId).slice(0, 28);
+}
+
+export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurrencyId): Asset | null {
+  if (!currency.isStellar) {
+    return null;
+  }
+
+  const stellarAsset = currency.asStellar;
+
+  try {
+    if (stellarAsset.isStellarNative) {
+      return Asset.native();
+    } else if (stellarAsset.isAlphaNum4) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      console.log('code', code);
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+      return new Asset(code, issuer.publicKey());
+    } else if (stellarAsset.isAlphaNum12) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+      return new Asset(code, issuer.publicKey());
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.error('Error converting currency to stellar asset', e);
     return null;
   }
 }
 
-export function convertStellarAssetToCurrency(
-  asset: Asset,
-  api: ApiPromise,
-): SpacewalkPrimitivesCurrencyId {
+export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): SpacewalkPrimitivesCurrencyId {
   if (asset.isNative()) {
     return api.createType('SpacewalkPrimitivesCurrencyId', 'StellarNative');
   } else {
@@ -68,6 +81,48 @@ export function convertStellarAssetToCurrency(
   }
 }
 
+const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
+  pendulum: {
+    '0': 'DOT',
+  },
+  amplitude: {
+    '0': 'KSM',
+  },
+};
+
+// Convert a currency to a string
+// The supplied network is used to choose the list of XCM assets per network.
+export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant: TenantName = TenantName.Pendulum) {
+  if (currency.isStellar) {
+    const stellarAsset = currency.asStellar;
+    if (stellarAsset.isStellarNative) {
+      return 'XLM';
+    } else if (stellarAsset.isAlphaNum4) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+      return `${code}:${issuer.publicKey()}`;
+    } else if (stellarAsset.isAlphaNum12) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+      return `${code}:${issuer.publicKey()}`;
+    } else {
+      return 'Unknown';
+    }
+  } else if (currency.isXcm) {
+    const network = tenant === TenantName.Pendulum ? 'pendulum' : 'amplitude';
+    const assetsForNetwork = XCM_ASSETS[network];
+
+    const xcmIndex = currency.asXcm.toString();
+    if (xcmIndex in assetsForNetwork) {
+      return assetsForNetwork[xcmIndex];
+    } else {
+      return `XCM:${xcmIndex}`;
+    }
+  } else {
+    return 'Unknown';
+  }
+}
+
 // Calculate the remaining duration for a request
 // Params:
 //   currentActiveBlock: The block number of the current active block
@@ -89,4 +144,15 @@ export function calculateDeadline(
   const now = DateTime.now();
   const end = now.plus({ seconds: remainingDurationSecs });
   return end;
+}
+
+export function estimateRequestCreationTime(
+  currentActiveBlock: number,
+  activeBlockOpenTime: number,
+  blockTimeSec = 12,
+) {
+  const activeBlocksPassed = currentActiveBlock - activeBlockOpenTime;
+  const secondsAgo = activeBlocksPassed * blockTimeSec;
+  const now = DateTime.now();
+  return now.minus({ seconds: secondsAgo });
 }

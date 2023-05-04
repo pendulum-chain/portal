@@ -7,14 +7,12 @@ export function useSecurityPallet() {
 
   return useMemo(() => {
     return {
-      async getActiveBlockNumber() {
+      async getActiveBlockNumber(): Promise<number> {
         if (!api) return Promise.resolve(0);
 
-        return await api.query.security.activeBlockCount();
+        return await (await api.query.security.activeBlockCount()).toNumber();
       },
-      async subscribeActiveBlockNumber(
-        callback: (activeBlockNumber: number) => void,
-      ) {
+      async subscribeActiveBlockNumber(callback: (activeBlockNumber: number) => void) {
         let unsubscribe: UnsubscribePromise = new Promise(() => undefined);
         if (api) {
           unsubscribe = api.query.security.activeBlockCount((blockNumber) => {

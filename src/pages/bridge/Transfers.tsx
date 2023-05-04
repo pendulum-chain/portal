@@ -1,89 +1,145 @@
-import { h } from 'preact';
-import { NavLink } from 'react-router-dom';
-import { Table } from 'react-daisyui';
+import { VoidFn } from '@polkadot/api-base/types';
+import { DateTime } from 'luxon';
+import { useEffect, useMemo, useState } from 'react';
+import Table from '../../components/Table';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { calculateDeadline, estimateRequestCreationTime } from '../../helpers/spacewalk';
+import { useIssuePallet } from '../../hooks/spacewalk/issue';
+import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import {
+  CancelledTransferDialog,
+  CompletedTransferDialog,
+  FailedTransferDialog,
+  PendingTransferDialog,
+  ReimbursedTransferDialog,
+} from './TransferDialog';
+import {
+  TTransfer,
+  TransferType,
+  amountColumn,
+  assetColumn,
+  detailsColumnCreator,
+  statusColumn,
+  transactionIdColumn,
+  typeColumn,
+  updatedColumn,
+} from './TransfersColumns';
 import './styles.css';
 
-export function Transfers(): JSX.Element {
+function Transfers(): JSX.Element {
+  const { getIssueRequests } = useIssuePallet();
+  const { getRedeemRequests } = useRedeemPallet();
+  const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
+  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
+  const [data, setData] = useState<TTransfer[] | undefined>(undefined);
+
+  useEffect(() => {
+    let unsub: VoidFn = () => undefined;
+    subscribeActiveBlockNumber((blockNumber) => {
+      setActiveBlockNumber(blockNumber);
+    }).then((u) => (unsub = u));
+
+    return unsub;
+  }, [subscribeActiveBlockNumber]);
+
+  useEffect(() => {
+    const fetchAllEntries = async () => {
+      const issueEntries = await getIssueRequests();
+      const redeemEntries = await getRedeemRequests();
+      const entries: TTransfer[] = [];
+
+      issueEntries.forEach((e) => {
+        const deadline = calculateDeadline(
+          activeBlockNumber as number,
+          e.request.opentime.toNumber(),
+          e.request.period.toNumber(),
+        );
+
+        const timedOut = deadline < DateTime.now();
+
+        entries.push({
+          updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
+          amount: nativeToDecimal(e.request.amount.toString()).toString(),
+          asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
+          transactionId: e.id.toString(),
+          type: TransferType.issue,
+          status: timedOut ? 'Cancelled' : e.request.status.type,
+          original: e.request,
+        });
+      });
+
+      redeemEntries.forEach((e) => {
+        entries.push({
+          updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
+          amount: nativeToDecimal(e.request.amount.toString()).toString(),
+          asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
+          transactionId: e.id.toString(),
+          type: TransferType.redeem,
+          status: e.request.status.type,
+          original: e.request,
+        });
+      });
+
+      return entries;
+    };
+    fetchAllEntries().then((res) => setData(res));
+  }, [activeBlockNumber, getIssueRequests, getRedeemRequests]);
+
+  const columns = useMemo(() => {
+    const detailsColumn = detailsColumnCreator(setCurrentTransfer);
+    return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn, detailsColumn];
+  }, []);
+
   return (
-    <div
-      className="flex items-center justify-center h-full space-walk grid place-items-center"
-      style={{ minHeight: 700 }}
-    >
-      <div className="box">
-        <div className="box-inner">
-          <div className="flex justify-between px-10 py-5 mb-5">
-            <NavLink className="hover:text-white" to="/amplitude/bridge">
-              Swap
-            </NavLink>
-            <NavLink className="hover:text-white" to="/amplitude/bridge/redeem">
-              Redeem
-            </NavLink>
-            <NavLink className="text-white" to="/amplitude/bridge/transfer">
-              Transfer
-            </NavLink>
-          </div>
-
-          <div className="overflow-x-auto">
-            <Table>
-              <Table.Head>
-                <span>Time</span>
-                <span>Amount</span>
-                <span>Transaction ID</span>
-                <span>Type</span>
-                <span>Status</span>
-              </Table.Head>
-
-              <Table.Body>
-                <Table.Row>
-                  <span>30 Oct 2022 18:18:17</span>
-                  <span>10 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
-                  <span>Redeem</span>
-                  <span>Pending</span>
-                </Table.Row>
-                <Table.Row>
-                  <span>30 Oct 2022 10:18:17</span>
-                  <span>100 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
-                  <span>Issue</span>
-                  <span>Completed</span>
-                </Table.Row>
-                <Table.Row>
-                  <span>25 Oct 2022 05:10:27</span>
-                  <span>10 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
-                  <span>Issue</span>
-                  <span>Completed</span>
-                </Table.Row>
-                <Table.Row>
-                  <span>30 Oct 2022 10:18:17</span>
-                  <span>100 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
-                  <span>Issue</span>
-                  <span>Completed</span>
-                </Table.Row>
-                <Table.Row>
-                  <span>25 Oct 2022 05:10:27</span>
-                  <span>10 USDC</span>
-                  <span title="6jes12cy3bkU1EttA7ZqP9CLw2p8miaiJezaNx7Ra7TR6Xem">
-                    6jes12...x76Xem
-                  </span>
-                  <span>Issue</span>
-                  <span>Completed</span>
-                </Table.Row>
-              </Table.Body>
-            </Table>
-          </div>
-        </div>
-      </div>
+    <div className="overflow-x-auto mt-10">
+      {currentTransfer && (
+        <PendingTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Pending'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <CompletedTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Completed'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <ReimbursedTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Reimbursed'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <CancelledTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Cancelled'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      {currentTransfer && (
+        <FailedTransferDialog
+          transfer={currentTransfer}
+          visible={currentTransfer.status === 'Failed'}
+          onClose={() => setCurrentTransfer(undefined)}
+        />
+      )}
+      <Table
+        className="transfer-list-table bg-base-100 text-md"
+        data={data}
+        columns={columns}
+        isLoading={false}
+        search={false}
+        pageSize={8}
+        sortBy="updated"
+        sortDesc={true}
+      />
     </div>
   );
 }
+export default Transfers;

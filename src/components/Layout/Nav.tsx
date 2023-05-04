@@ -1,85 +1,99 @@
 import { memo } from 'preact/compat';
-import { NavLink } from 'react-router-dom';
+import { useMemo } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useGlobalState } from '../../GlobalStateProvider';
+import useBoolean from '../../hooks/useBoolean';
+import { TenantName } from '../../models/Tenant';
+import { LinkItem, links } from './links';
 
-import BridgeIcon from '../../assets/bridge';
-import CollatorsIcon from '../../assets/collators';
-import DashboardIcon from '../../assets/dashboard';
-import GovernanceIcon from '../../assets/governance';
-import ArrowIcon from '../../assets/nav-arrow';
-import SwapIcon from '../../assets/swap';
-import { TenantName, useGlobalState } from '../../GlobalStateProvider';
+const CollapseMenu = ({
+  link,
+  hidden,
+  button,
+  children,
+}: {
+  link: string;
+  hidden?: boolean;
+  button: JSX.Element | null;
+  children: JSX.Element | null;
+}) => {
+  const { pathname } = useLocation();
+  const { tenantName } = useGlobalState().state;
+  const isPendulum = tenantName === TenantName.Pendulum;
 
-type LinkParameter = { isActive: boolean };
+  const isActive = useMemo(() => {
+    const [path] = pathname.split('?');
+    const paths = path.split('/').filter(Boolean);
+    return paths[1].startsWith(link.replace('/', '')) ? true : false;
+  }, [link, pathname]);
+
+  const [isOpen, { toggle }] = useBoolean(isActive);
+
+  return (
+    <div className={(hidden && !isActive) || isPendulum ? 'coming-soon' : ''}>
+      <button
+        type="button"
+        className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
+        onClick={() => toggle()}
+      >
+        {button}
+      </button>
+      <div className={`${isOpen ? '' : 'hidden'}`}>{children}</div>
+    </div>
+  );
+};
+
+const NavItem = ({ item }: { item: LinkItem }) => {
+  const { link, prefix, suffix, title, props } = item;
+  const isExternal = link.startsWith('http');
+  const linkUi = (
+    <>
+      {prefix}
+      <span>{title}</span>
+      {suffix}
+    </>
+  );
+  const cls = `nav-item ${props?.className?.()}`;
+  return isExternal ? (
+    <a href={link} {...props} className={cls}>
+      {linkUi}
+    </a>
+  ) : (
+    <NavLink to={link} {...props} className={cls}>
+      {linkUi}
+    </NavLink>
+  );
+};
 
 const Nav = memo(() => {
-  const {
-    state: { tenantName = TenantName.Amplitude },
-  } = useGlobalState();
+  const { state } = useGlobalState();
+
   return (
     <nav>
-      <NavLink
-        to="./dashboard"
-        className={(navData: LinkParameter) =>
-          navData.isActive ? 'active' : ''
-        }
-      >
-        <DashboardIcon />
-        <span>Dashboard</span>
-        <div className={'nav-arrow-container'}>
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <NavLink
-        to="./amm"
-        className={(navData: LinkParameter) =>
-          navData.isActive ? 'active' : 'hidden'
-        }
-      >
-        <SwapIcon />
-        <span>Amm</span>
-        <div className="nav-arrow-container">
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <NavLink
-        to="./bridge"
-        className={(navData: LinkParameter) =>
-          navData.isActive ? 'active' : 'hidden'
-        }
-      >
-        <BridgeIcon />
-        <span>Bridge</span>
-        <div className="nav-arrow-container">
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <NavLink
-        to="./collators"
-        className={(navData: LinkParameter) =>
-          navData.isActive ? 'active' : ''
-        }
-      >
-        <CollatorsIcon />
-        <span>Collators</span>
-        <div className="nav-arrow-container">
-          <ArrowIcon />
-        </div>
-      </NavLink>
-      <a
-        href={`https://${tenantName}.polkassembly.io/`}
-        target="_blank"
-        rel="nofollow noreferrer"
-      >
-        <GovernanceIcon />
-        <span>Governance</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 448 512"
-          className="external-link"
-        >
-          <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144V400c0 44.2 35.8 80 80 80H336c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
-        </svg>
-      </a>
+      {links(state).map((item, i) => {
+        return item.submenu ? (
+          <CollapseMenu
+            key={i}
+            link={item.link}
+            hidden={item.hidden}
+            button={
+              <>
+                {item.prefix}
+                <span>{item.title}</span>
+                {item.suffix}
+              </>
+            }
+          >
+            <div className="submenu">
+              {item.submenu.map((subItem, j) => (
+                <NavItem key={`${i}-${j}`} item={subItem} />
+              ))}
+            </div>
+          </CollapseMenu>
+        ) : (
+          <NavItem key={i} item={item} />
+        );
+      })}
     </nav>
   );
 });
