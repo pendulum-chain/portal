@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/pendulum-chain/portal/compare/v1.0.0...v1.0.1) (2023-05-04)
+
+
+### Bug Fixes
+
+* release ([0e4e2a0](https://github.com/pendulum-chain/portal/commit/0e4e2a0cf138d2fa9d7992f2e8a2e2aaccdcd8e1))
+
 # 1.0.0 (2023-05-04)
 
 
