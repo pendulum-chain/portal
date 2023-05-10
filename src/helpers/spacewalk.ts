@@ -35,12 +35,11 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
     if (stellarAsset.isStellarNative) {
       return Asset.native();
     } else if (stellarAsset.isAlphaNum4) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
-      console.log('code', code);
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex()).trim();
       const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
       return new Asset(code, issuer.publicKey());
     } else if (stellarAsset.isAlphaNum12) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex()).trim();
       const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
       return new Asset(code, issuer.publicKey());
     } else {
@@ -98,11 +97,11 @@ export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant
     if (stellarAsset.isStellarNative) {
       return 'XLM';
     } else if (stellarAsset.isAlphaNum4) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex()).trim();
       const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
       return `${code}:${issuer.publicKey()}`;
     } else if (stellarAsset.isAlphaNum12) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex()).trim();
       const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
       return `${code}:${issuer.publicKey()}`;
     } else {
