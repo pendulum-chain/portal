@@ -20,7 +20,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.16",
     "@hookform/resolvers": "^2.9.11",
-    "@pendulum-chain/api": "^0.2.3",
+    "@pendulum-chain/api": "^0.3.1",
     "@polkadot/api": "^9.9.1",
     "@polkadot/api-base": "^9.9.1",
     "@polkadot/api-derive": "^9.9.1",
