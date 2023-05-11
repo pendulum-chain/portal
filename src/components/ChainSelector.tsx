@@ -4,6 +4,7 @@ import AmplitudeLogo from '../assets/AmplitudeLogo';
 import PendulumLogo from '../assets/PendulumLogo';
 import { TenantName } from '../models/Tenant';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { toTitle } from '../helpers/string';
 
 const options = [TenantName.Pendulum, TenantName.Amplitude, TenantName.Foucoco];
 
@@ -45,10 +46,6 @@ const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): 
 
 function buildPath(current: TenantName | undefined, next: TenantName, location: string) {
   return current ? location.replace(current, next) : location;
-}
-
-function toTitle(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default ChainSelector;
