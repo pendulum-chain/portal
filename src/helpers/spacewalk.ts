@@ -1,11 +1,12 @@
 import bs58 from 'bs58';
 import { H256 } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { SpacewalkPrimitivesAsset, SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { DateTime } from 'luxon';
 import { Asset, Keypair } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from './stellar';
 import { TenantName } from '../models/Tenant';
+import { U8aFixed } from '@polkadot/types-codec';
 
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
@@ -35,12 +36,11 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
     if (stellarAsset.isStellarNative) {
       return Asset.native();
     } else if (stellarAsset.isAlphaNum4) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
-      console.log('code', code);
+      const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum4.code);
       const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
       return new Asset(code, issuer.publicKey());
     } else if (stellarAsset.isAlphaNum12) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum12.code);
       const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
       return new Asset(code, issuer.publicKey());
     } else {
@@ -93,34 +93,47 @@ const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
 // Convert a currency to a string
 // The supplied network is used to choose the list of XCM assets per network.
 export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant: TenantName = TenantName.Pendulum) {
-  if (currency.isStellar) {
-    const stellarAsset = currency.asStellar;
-    if (stellarAsset.isStellarNative) {
-      return 'XLM';
-    } else if (stellarAsset.isAlphaNum4) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
-      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
-      return `${code}:${issuer.publicKey()}`;
-    } else if (stellarAsset.isAlphaNum12) {
-      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
-      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
-      return `${code}:${issuer.publicKey()}`;
+  try {
+    if (currency.isStellar) {
+      const stellarAsset = currency.asStellar;
+      if (stellarAsset.isStellarNative) {
+        return 'XLM';
+      } else if (stellarAsset.isAlphaNum4) {
+        const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum4.code);
+        const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+        return `${code}:${issuer.publicKey()}`;
+      } else if (stellarAsset.isAlphaNum12) {
+        const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum12.code);
+        const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+        return `${code}:${issuer.publicKey()}`;
+      } else {
+        return 'Unknown';
+      }
+    } else if (currency.isXcm) {
+      const network = tenant === TenantName.Pendulum ? 'pendulum' : 'amplitude';
+      const assetsForNetwork = XCM_ASSETS[network];
+
+      const xcmIndex = currency.asXcm.toString();
+      if (xcmIndex in assetsForNetwork) {
+        return assetsForNetwork[xcmIndex];
+      } else {
+        return `XCM:${xcmIndex}`;
+      }
     } else {
       return 'Unknown';
     }
-  } else if (currency.isXcm) {
-    const network = tenant === TenantName.Pendulum ? 'pendulum' : 'amplitude';
-    const assetsForNetwork = XCM_ASSETS[network];
-
-    const xcmIndex = currency.asXcm.toString();
-    if (xcmIndex in assetsForNetwork) {
-      return assetsForNetwork[xcmIndex];
-    } else {
-      return `XCM:${xcmIndex}`;
-    }
-  } else {
-    return 'Unknown';
+  } catch (e) {
+    console.error('Error converting currency to stellar asset', e);
+    return null;
   }
+}
+
+function tryConvertCodeToAscii(code: U8aFixed) {
+  const ascii = hex_to_ascii(code.toHex());
+  if (ascii !== ascii.trim()) {
+    throw Error('Asset has invalid characters');
+  }
+  return ascii.replace('\0', '');
 }
 
 // Calculate the remaining duration for a request
