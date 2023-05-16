@@ -30,7 +30,7 @@ const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): 
               }}
             >
               {option === TenantName.Pendulum ? (
-                <PendulumLogo className="w-5 h-6 mr-1" />
+                <PendulumLogo light={tenantName !== TenantName.Pendulum} className="w-5 h-6 mr-1" />
               ) : (
                 <AmplitudeLogo className="w-5 h-5 mr-1" />
               )}
