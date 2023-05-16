@@ -27,6 +27,7 @@ import {
 } from './TransfersColumns';
 import './styles.css';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { decodeAssetCode } from './helpers';
 
 function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
@@ -64,7 +65,7 @@ function Transfers(): JSX.Element {
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
+          asset: decodeAssetCode(e.request.asset),
           transactionId: e.id.toString(),
           type: TransferType.issue,
           status: timedOut ? 'Cancelled' : e.request.status.type,
@@ -76,7 +77,7 @@ function Transfers(): JSX.Element {
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
+          asset: decodeAssetCode(e.request.asset),
           transactionId: e.id.toString(),
           type: TransferType.redeem,
           status: e.request.status.type,
