@@ -40,6 +40,7 @@ const defaultTransactionFees = {
   joinDelegators: Big(0),
   delegatorStakeMore: Big(0),
   delegatorStakeLess: Big(0),
+  leaveDelegators: Big(0),
 };
 
 type ParachainStakingFees = typeof defaultTransactionFees;
@@ -97,10 +98,12 @@ export function useStakingPallet() {
       const jdi = await pallet.joinDelegators(dummyAddress, '0').paymentInfo(sender);
       const dsmi = await pallet.delegatorStakeMore(dummyAddress, '0').paymentInfo(sender);
       const dsli = await pallet.delegatorStakeLess(dummyAddress, '0').paymentInfo(sender);
+      const lds = await pallet.leaveDelegators().paymentInfo(sender);
 
       fees.joinDelegators = new Big(jdi.partialFee.toString());
       fees.delegatorStakeMore = new Big(dsmi.partialFee.toString());
       fees.delegatorStakeLess = new Big(dsli.partialFee.toString());
+      fees.leaveDelegators = new Big(lds.partialFee.toString());
 
       return fees;
     };
@@ -163,6 +166,13 @@ export function useStakingPallet() {
         }
 
         return api.tx.parachainStaking?.joinDelegators(collatorAddress, amountNative);
+      },
+      createLeaveDelegatorsExtrinsic() {
+        if (!api) {
+          return undefined;
+        }
+
+        return api.tx.parachainStaking.leaveDelegators();
       },
     };
   }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards, ss58Format]);

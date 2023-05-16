@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { decimalToNative } from '../../../helpers/parseNumbers';
+import { decimalToNative, nativeToDecimal } from '../../../helpers/parseNumbers';
 import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
@@ -30,6 +30,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     createJoinDelegatorsExtrinsic,
     createDelegateMoreExtrinsic,
     createDelegateLessExtrinsic,
+    createLeaveDelegatorsExtrinsic,
     fees,
   } = useStakingPallet();
 
@@ -37,6 +38,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   const [delegationAmount, setDelegationAmount] = useState<string | undefined>(undefined);
   const [submissionPending, setSubmissionPending] = useState<boolean>(false);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<boolean>(false);
+  const [undelegatingAll, setUndelegatingAll] = useState<boolean>(false);
 
   const totalFee = useMemo(() => {
     switch (mode) {
@@ -57,7 +59,9 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     const amount = decimalToNative(delegationAmount);
 
     const getExtrinsic = () => {
-      if (mode === 'undelegating') {
+      if (mode === 'undelegating' && undelegatingAll) {
+        return createLeaveDelegatorsExtrinsic();
+      } else if (mode === 'undelegating') {
         return createDelegateLessExtrinsic(selectedCandidate.id, amount.toString());
       } else if (mode === 'delegatingMore') {
         return createDelegateMoreExtrinsic(selectedCandidate.id, amount.toString());
@@ -69,6 +73,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     doSubmitExtrinsic(api, getExtrinsic(), walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }, [
     api,
+    createLeaveDelegatorsExtrinsic,
     createDelegateLessExtrinsic,
     createDelegateMoreExtrinsic,
     createJoinDelegatorsExtrinsic,
@@ -92,7 +97,11 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
           setDelegationAmount(undefined);
           onClose();
         }}
-        onSubmit={(amount) => setDelegationAmount(amount)}
+        onSubmit={(amount) => {
+          const userStakeAsString = nativeToDecimal(userStake || '0').toString();
+          setDelegationAmount(amount);
+          setUndelegatingAll(parseFloat(amount) === parseFloat(userStakeAsString));
+        }}
       />
       <ConfirmDelegateDialog
         delegationAmountDecimal={delegationAmount}

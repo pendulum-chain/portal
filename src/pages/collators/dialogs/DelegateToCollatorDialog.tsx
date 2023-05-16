@@ -34,6 +34,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   } = props;
 
   const [amount, setAmount] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const annual = inflationInfo?.delegator.rewardRate.annual;
 
   const CollatorInfo = useMemo(
@@ -66,6 +67,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
       <CloseButton
         onClick={() => {
           setAmount('');
+          setError('');
           if (onClose) onClose();
         }}
       />
@@ -75,7 +77,15 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         <LabelledInputField
           type="number"
           value={amount}
-          onChange={setAmount}
+          onChange={(val: string) => {
+            setAmount(val);
+            if (parseFloat(val) > parseFloat(available)) {
+              setError('Amount is higher than available.');
+            } else {
+              setError('');
+            }
+          }}
+          error={error}
           label="Amount"
           secondaryLabel={`Available: ${available} ${tokenSymbol}`}
           placeholder="Enter amount..."
@@ -84,7 +94,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         />
       </Modal.Body>
       <Modal.Actions className="justify-center">
-        <Button className="px-6" color="primary" onClick={() => onSubmit && onSubmit(amount)}>
+        <Button className="px-6" color="primary" onClick={() => onSubmit && onSubmit(amount)} disabled={!!error}>
           {titleAction}
         </Button>
       </Modal.Actions>
