@@ -245,8 +245,6 @@ function Issue(props: IssueProps): JSX.Element {
     },
   });
 
-  console.log('walletaccount', walletAccount);
-
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
   const vaults = getVaults();
