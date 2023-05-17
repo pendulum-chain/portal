@@ -10,16 +10,18 @@ import { nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { calculateDeadline, currencyToString } from '../../helpers/spacewalk';
+import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
 import TransferCountdown from '../../components/TransferCountdown';
+import { hexToU8a } from '@polkadot/util';
 
 interface BaseTransferDialogProps {
   id: string;
   visible: boolean;
+  showMemo?: boolean;
   transfer: TTransfer;
   title?: string;
   content: JSXInternal.Element;
@@ -37,9 +39,13 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 );
 
 function BaseTransferDialog(props: BaseTransferDialogProps) {
-  const { id, statusIcon, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
-  const { tenantName, tenantRPC } = useGlobalState().state;
+  const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
   const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex()).publicKey();
+
+  const expectedStellarMemo = useMemo(() => {
+    return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
+  }, [transfer]);
+
   return (
     <Modal id={id} open={visible} className="bg-base-200">
       <CloseButton onClick={onClose} />
@@ -76,6 +82,17 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               <div className="text-sm">Vault Stellar Address</div>
               <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={vaultStellarAddress} />
             </div>
+            {showMemo && (
+              <div className="flex flex-row justify-between">
+                <div className="text-sm">Memo</div>
+                <CopyableAddress
+                  inline={true}
+                  className="text-sm p-0"
+                  variant="short"
+                  publicKey={expectedStellarMemo}
+                />
+              </div>
+            )}
           </div>
         </div>
         {footer}
@@ -248,6 +265,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       transfer={transfer}
       title={'Pending'}
       visible={visible}
+      showMemo={transfer.type === TransferType.issue}
       content={transfer.type === TransferType.issue ? issueContent : redeemContent}
       statusIcon={<PendingDialogIcon />}
       onClose={onClose}

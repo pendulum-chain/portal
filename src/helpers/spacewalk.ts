@@ -19,7 +19,7 @@ function hex_to_ascii(hexString: string, leading0x = true) {
 
 // This function is used to derive a shorter identifier that can be used as a TEXT MEMO by a user when creating a Stellar transaction
 // to fulfill an issue request. This is only used for _issue_ requests, not for redeem or replace requests.
-export function deriveShortenedRequestId(requestId: H256) {
+export function deriveShortenedRequestId(requestId: H256 | Uint8Array) {
   // This derivation matches the one used in the Spacewalk pallets
   return bs58.encode(requestId).slice(0, 28);
 }
@@ -31,17 +31,23 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
 
   const stellarAsset = currency.asStellar;
 
-  if (stellarAsset.isStellarNative) {
-    return Asset.native();
-  } else if (stellarAsset.isAlphaNum4) {
-    const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
-    const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
-    return new Asset(code, issuer.publicKey());
-  } else if (stellarAsset.isAlphaNum12) {
-    const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
-    const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
-    return new Asset(code, issuer.publicKey());
-  } else {
+  try {
+    if (stellarAsset.isStellarNative) {
+      return Asset.native();
+    } else if (stellarAsset.isAlphaNum4) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum4.code.toHex());
+      console.log('code', code);
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+      return new Asset(code, issuer.publicKey());
+    } else if (stellarAsset.isAlphaNum12) {
+      const code = hex_to_ascii(stellarAsset.asAlphaNum12.code.toHex());
+      const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+      return new Asset(code, issuer.publicKey());
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.error('Error converting currency to stellar asset', e);
     return null;
   }
 }

@@ -4,6 +4,8 @@ import { Button } from 'react-daisyui';
 import { CopyableAddress } from '../../components/PublicKey';
 import { DateTime } from 'luxon';
 import { DocumentMagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { TenantName } from '../../models/Tenant';
+import { toTitle } from '../../helpers/string';
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
 export enum TransferType {
@@ -52,11 +54,11 @@ export const transactionIdColumn: ColumnDef<TTransfer> = {
   },
 };
 
-export const typeColumn: ColumnDef<TTransfer> = {
+export const typeColumnCreator = (tenantName: TenantName | undefined): ColumnDef<TTransfer> => ({
   header: 'Type',
   accessorKey: 'type',
-  accessorFn: (row) => (row.type === TransferType.issue ? 'To Pendulum' : 'Back to Stellar'),
-};
+  accessorFn: (row) => (row.type === TransferType.issue ? `To ${toTitle(tenantName || '')}` : 'Back to Stellar'),
+});
 
 export const statusColumn: ColumnDef<TTransfer> = {
   header: 'Status',
