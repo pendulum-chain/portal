@@ -1,7 +1,7 @@
 import bs58 from 'bs58';
 import { H256 } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
-import { SpacewalkPrimitivesAsset, SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { SpacewalkPrimitivesAsset, SpacewalkPrimitivesCurrencyId, VaultRegistryVault } from '@polkadot/types/lookup';
 import { DateTime } from 'luxon';
 import { Asset, Keypair } from 'stellar-sdk';
 import { convertRawHexKeyToPublicKey } from './stellar';
@@ -168,4 +168,6 @@ export function estimateRequestCreationTime(
   const secondsAgo = activeBlocksPassed * blockTimeSec;
   const now = DateTime.now();
   return now.minus({ seconds: secondsAgo });
+}
+export function calculateVaultCapacity(vault: VaultRegistryVault) {
 }

@@ -3,11 +3,9 @@ import LabelledSelector from './LabelledSelector';
 import { h } from 'preact';
 import { JsxElement } from 'typescript';
 import { CopyableAddress, PublicKey } from '../PublicKey';
-import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { calculateVaultCapacity, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Button, Dropdown } from 'react-daisyui';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import VaultAvailableLogo from '../../assets/VaultAvailableLogo';
-import { nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 
 interface VaultSelectorProps {
   vaults: VaultRegistryVault[];
@@ -40,8 +38,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
                 <CopyableAddress publicKey={vault.id.accountId.toString()} variant="short" inline />
               </span>
               <span className="content-end">
-                {nativeToDecimal(vault.issuedTokens.toString()).toFixed(2)}{' '}
-                {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
+                {calculateVaultCapacity(vault)} {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
               </span>
             </span>
           </Dropdown.Item>
