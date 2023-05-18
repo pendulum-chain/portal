@@ -40,7 +40,7 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './amm',
-    title: 'Amm',
+    title: 'Zenlink Amm',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
     },
@@ -91,7 +91,7 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: '/amber',
-    title: 'Amber',
+    title: '0xAmber',
     prefix: <SwapIcon />,
     suffix: <ComingSoonTag />,
     hidden: true,
