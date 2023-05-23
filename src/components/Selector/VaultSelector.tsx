@@ -1,11 +1,11 @@
-import { VaultRegistryVault } from '@polkadot/types/lookup';
+import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
 import LabelledSelector from './LabelledSelector';
 import { h } from 'preact';
 
 interface VaultSelectorProps {
-  vaults: VaultRegistryVault[];
-  selectedVault?: VaultRegistryVault;
-  onChange: (vault: VaultRegistryVault) => void;
+  vaults: ExtendedRegistryVault[];
+  selectedVault?: ExtendedRegistryVault;
+  onChange: (vault: ExtendedRegistryVault) => void;
 }
 
 function VaultSelector(props: VaultSelectorProps): JSX.Element {

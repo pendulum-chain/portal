@@ -1,8 +1,14 @@
 import type { VaultRegistryVault } from '@polkadot/types/lookup';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { AccountId32 } from '@polkadot/types/interfaces';
+import { AccountId32, Balance } from '@polkadot/types/interfaces';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
+import { u128 } from '@polkadot/types-codec';
+
+export interface ExtendedRegistryVault extends VaultRegistryVault {
+  issuableTokens?: Balance;
+  redeemableTokens?: Balance;
+}
 
 export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;
@@ -48,6 +54,18 @@ export function useVaultRegistryPallet() {
         } else {
           return convertRawHexKeyToPublicKey(publicKeyBinary.toHex());
         }
+      },
+      async getVaultsWithIssuableTokens() {
+        if (!api) {
+          return undefined;
+        }
+        return await api.rpc.vaultRegistry.getVaultsWithIssuableTokens();
+      },
+      async getVaultsWithRedeemableTokens() {
+        if (!api) {
+          return undefined;
+        }
+        return await api.rpc.vaultRegistry.getVaultsWithRedeemableTokens();
       },
     };
   }, [api, vaults]);
