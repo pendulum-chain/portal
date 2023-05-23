@@ -180,7 +180,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             Send {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
+            {asset && asset.getIssuer() && (
+              <>
+                issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+              </>
+            )}
           </div>
           <div className="text mt-4">With the text memo</div>
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
@@ -190,9 +194,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
         </div>
         <Divider />
         <div>
-          <div className="text-sm">
-            Warning: Make sure that the USDC you are sending are issued by the correct issuer.
-          </div>
+          {asset?.getAssetType() !== 'native' && (
+            <div className="text-sm">
+              Warning: Make sure that the {asset?.code} you are sending are issued by the correct issuer.
+            </div>
+          )}
         </div>
         <div className="text-sm mt-4">
           Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
