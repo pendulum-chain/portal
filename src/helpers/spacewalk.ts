@@ -131,7 +131,7 @@ export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant
 function tryConvertCodeToAscii(code: U8aFixed) {
   const ascii = hex_to_ascii(code.toHex());
   if (ascii !== ascii.trim()) {
-    throw Error('Asset has invalid characters');
+    throw Error('Asset code contains invalid space characters');
   }
   return ascii.replace('\0', '');
 }
