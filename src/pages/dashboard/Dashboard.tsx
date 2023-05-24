@@ -1,8 +1,19 @@
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
+import { Balance } from '@polkadot/types/interfaces';
+import {
+  OrmlTokensAccountData,
+  PalletBalancesAccountData,
+  SpacewalkPrimitivesCurrencyId,
+} from '@polkadot/types/lookup';
+import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { stringify } from 'querystring';
+import { Asset } from 'stellar-sdk';
 import Banner from '../../assets/banner-spacewalk-4x.png';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { stringifyStellarAsset } from '../../helpers/stellar';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
 
@@ -11,8 +22,12 @@ function Dashboard() {
   const {
     state: { api, tokenSymbol },
   } = useNodeInfoState();
+  const { getVaults } = useVaultRegistryPallet();
 
   const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
+  const [accountTokenBalances, setAccountTokenBalances] = useState<Map<string, OrmlTokensAccountData | undefined>>(
+    new Map(),
+  );
 
   useEffect(() => {
     if (!walletAccount?.address) return;
@@ -20,7 +35,6 @@ function Dashboard() {
     api?.query.system
       .account(walletAccount.address)
       .then((data) => {
-        console.log('setting balance');
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
@@ -30,6 +44,40 @@ function Dashboard() {
     if (!accountBalance) return undefined;
     return prettyNumbers(nativeToDecimal(accountBalance.free.toString()).toNumber());
   }, [accountBalance]);
+
+  const vaults = getVaults();
+
+  const wrappedCurrencies = useMemo(() => {
+    const currencies = vaults
+      .map((vault) => {
+        return vault.id.currencies.wrapped;
+      })
+      .filter((asset) => {
+        return asset != null;
+      });
+
+    // Deduplicate assets
+    return _.uniqBy(currencies, (currencyId: SpacewalkPrimitivesCurrencyId) => currencyId.toHex());
+  }, [vaults]);
+
+  useEffect(() => {
+    if (!walletAccount || !wrappedCurrencies) return;
+
+    async function fetchBridgedTokens(address: string, asset: SpacewalkPrimitivesCurrencyId) {
+      if (!api) return;
+      return api.query.tokens.accounts(address, asset);
+    }
+    wrappedCurrencies.forEach((currencyId) => {
+      const asset = convertCurrencyToStellarAsset(currencyId);
+      if (asset) {
+        console.log('trying to get balance for:', asset.code);
+        fetchBridgedTokens(walletAccount.address, currencyId).then((balance) => {
+          console.log(asset.code, balance);
+          setAccountTokenBalances(new Map(accountTokenBalances.set(asset.code, balance)));
+        });
+      }
+    });
+  }, [wrappedCurrencies, walletAccount]);
 
   return (
     <div className="mt-10">
@@ -58,6 +106,16 @@ function Dashboard() {
                 </h1>
               </div>
             )}
+            {accountTokenBalances.forEach((balance, assetCode) => {
+              console.log(assetCode, nativeToDecimal(balance?.free.toString() || '0').toFixed(2));
+              return (
+                <div className="self-center">
+                  <h1 className="flex justify-center">
+                    {nativeToDecimal(balance?.free.toString() || '0').toFixed(2)} {assetCode}
+                  </h1>
+                </div>
+              );
+            })}
             {!cachedBalance && (
               <>
                 <p>You have to connect a wallet to see your available balance. </p>
