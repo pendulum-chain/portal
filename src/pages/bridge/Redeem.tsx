@@ -328,6 +328,9 @@ function Redeem(props: RedeemProps): JSX.Element {
                   if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
+                  if (parseFloat(value) > parseFloat(selectedVault?.redeemableTokens?.toString() || '0')) {
+                    return 'Amount is higher than the vault can redeem.';
+                  }
                 },
               }}
               name="amount"
