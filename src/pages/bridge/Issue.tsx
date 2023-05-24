@@ -439,7 +439,12 @@ function Issue(props: IssueProps): JSX.Element {
             <span className="ml-2">Manually select vault</span>
           </div>
           {manualVaultSelection && vaultsForCurrency && (
-            <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
+            <VaultSelector
+              vaults={vaultsForCurrency}
+              onChange={setSelectedVault}
+              selectedVault={selectedVault}
+              showMaxTokensFor="issuableTokens"
+            />
           )}
           <FeeBox
             amountNative={amountNative}

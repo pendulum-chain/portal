@@ -1,44 +1,52 @@
 import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
-import LabelledSelector from './LabelledSelector';
 import { h } from 'preact';
+import { PublicKey } from '../PublicKey';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { Button, Dropdown } from 'react-daisyui';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
 
 interface VaultSelectorProps {
   vaults: ExtendedRegistryVault[];
   selectedVault?: ExtendedRegistryVault;
+  showMaxTokensFor?: 'issuableTokens' | 'redeemableTokens';
   onChange: (vault: ExtendedRegistryVault) => void;
 }
 
 function VaultSelector(props: VaultSelectorProps): JSX.Element {
-  const { vaults, selectedVault } = props;
-
-  const items = vaults.map((vault) => {
-    return {
-      displayName: vault.id.accountId.toString(),
-      id: vault.id,
-    };
-  });
-
-  const selectedVaultItem = selectedVault
-    ? {
-        displayName: selectedVault.id.accountId.toString(),
-        id: selectedVault.id,
-      }
-    : undefined;
-
+  const { vaults, selectedVault, showMaxTokensFor, onChange } = props;
   return (
-    <LabelledSelector
-      items={items}
-      label="Select Vault"
-      onChange={(newItem) => {
-        const newVault = vaults.find((vault) => {
-          return vault.id === newItem.id;
-        });
-        newVault && props.onChange(newVault);
-      }}
-      value={selectedVaultItem}
-      style={{ marginTop: '8px' }}
-      selectStyle={{ width: '100%' }}
-    />
+    <Dropdown vertical="end" className="w-full mt-3">
+      <Button
+        type="button"
+        color="ghost"
+        className="flex content-center place-content-between w-full border-gray-500 bg-base-200 rounded-md no-animation"
+      >
+        <PublicKey publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''} variant="full" />
+        <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
+      </Button>
+      <Dropdown.Menu className="w-full mt-1.5 p-1 border border-gray-500 bg-base-200 rounded-md shadow-none">
+        {vaults.map((vault) => (
+          <Dropdown.Item
+            key={vault.id.accountId.toString()}
+            onClick={() => onChange(vault)}
+            className="w-full rounded-md"
+          >
+            <span className="w-full flex place-content-between">
+              <span className="flex">
+                <PublicKey publicKey={vault.id.accountId.toString()} variant="short" />
+              </span>
+              {showMaxTokensFor && (
+                <span className="content-end">
+                  {nativeToDecimal(vault[showMaxTokensFor]?.toString() || '0').toFixed(2)}{' '}
+                  {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
+                </span>
+              )}
+            </span>
+          </Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }
 
