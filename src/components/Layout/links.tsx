@@ -40,7 +40,7 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './amm',
-    title: 'Zenlink Amm',
+    title: 'Zenlink AMM',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
     },
