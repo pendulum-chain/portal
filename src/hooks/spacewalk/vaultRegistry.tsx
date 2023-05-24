@@ -54,6 +54,18 @@ export function useVaultRegistryPallet() {
           return convertRawHexKeyToPublicKey(publicKeyBinary.toHex());
         }
       },
+      async getVaultsWithIssuableTokens() {
+        if (!api) {
+          return undefined;
+        }
+        return await api.rpc.vaultRegistry.getVaultsWithIssuableTokens();
+      },
+      async getVaultsWithRedeemableTokens() {
+        if (!api) {
+          return undefined;
+        }
+        return await api.rpc.vaultRegistry.getVaultsWithRedeemableTokens();
+      },
     };
   }, [api, vaults]);
 
