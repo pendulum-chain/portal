@@ -88,6 +88,7 @@ export const ClickableAddress = React.memo(function ClickableAddress(props: Addr
       className="rounded h-1 p-1 m-0"
       style={props.inline ? { height: 'inherit', minHeight: '0', padding: 0 } : {}}
       color="ghost"
+      type="button"
       onClick={props.onClick}
     >
       {props.icon ? (
