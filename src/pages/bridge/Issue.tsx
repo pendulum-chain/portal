@@ -16,7 +16,7 @@ import OpenWallet from '../../components/OpenWallet';
 import TransferCountdown from '../../components/TransferCountdown';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { decimalToStellarNative, format, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
@@ -227,7 +227,7 @@ interface IssueProps {
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
-  const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
+  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
@@ -416,6 +416,12 @@ function Issue(props: IssueProps): JSX.Element {
                 style={{ flexGrow: 1 }}
               />
             )}
+          </div>
+          <div className="flex align-center mt-4">
+            <span className="text-sm">{`Max issuable: ${nativeToDecimal(
+              selectedVault?.issuableTokens?.toString() || 0,
+            ).toFixed(2)} 
+              ${selectedAsset?.code}`}</span>
           </div>
           <div className="flex align-center mt-4">
             <Checkbox
