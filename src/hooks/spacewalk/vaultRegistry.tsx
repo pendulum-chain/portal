@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { AccountId32, Balance } from '@polkadot/types/interfaces';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
-import { u128 } from '@polkadot/types-codec';
 
 export interface ExtendedRegistryVault extends VaultRegistryVault {
   issuableTokens?: Balance;
