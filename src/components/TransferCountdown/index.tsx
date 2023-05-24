@@ -38,9 +38,9 @@ const TransferCountdown = ({ request }: TransferCountdownProps) => {
       const newDeadlineString = deadline
         .diff(DateTime.now())
         .toFormat('hh:1mm:2ss:3')
-        .replace(':1', ' h')
-        .replace(':2', ' m')
-        .replace(':3', ' s');
+        .replace(':1', 'h ')
+        .replace(':2', 'm ')
+        .replace(':3', 's ');
       setRemainingDurationString(newDeadlineString);
     });
 
