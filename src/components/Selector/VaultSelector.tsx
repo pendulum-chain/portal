@@ -1,21 +1,23 @@
-import { VaultRegistryVault } from '@polkadot/types/lookup';
+import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
 import LabelledSelector from './LabelledSelector';
 import { h } from 'preact';
 import { JsxElement } from 'typescript';
 import { CopyableAddress, PublicKey } from '../PublicKey';
-import { calculateVaultCapacity, convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { Button, Dropdown } from 'react-daisyui';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { Balance } from '@polkadot/types/interfaces';
 
 interface VaultSelectorProps {
-  vaults: VaultRegistryVault[];
-  selectedVault?: VaultRegistryVault;
-  onChange: (vault: VaultRegistryVault) => void;
+  vaults: ExtendedRegistryVault[];
+  selectedVault?: ExtendedRegistryVault;
+  showMaxTokensFor?: 'issuableTokens' | 'redeemableTokens';
+  onChange: (vault: ExtendedRegistryVault) => void;
 }
 
 function VaultSelector(props: VaultSelectorProps): JSX.Element {
-  const { vaults, selectedVault, onChange } = props;
-
+  const { vaults, selectedVault, showMaxTokensFor, onChange } = props;
   return (
     <Dropdown vertical="end" className="w-full mt-3">
       <Button
@@ -35,11 +37,14 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
           >
             <span className="w-full flex place-content-between">
               <span className="flex">
-                <CopyableAddress publicKey={vault.id.accountId.toString()} variant="short" inline />
+                <PublicKey publicKey={vault.id.accountId.toString()} variant="short" />
               </span>
-              <span className="content-end">
-                {calculateVaultCapacity(vault)} {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
-              </span>
+              {showMaxTokensFor && (
+                <span className="content-end">
+                  {nativeToDecimal(vault[showMaxTokensFor]?.toString() || '0').toFixed(2)}{' '}
+                  {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
+                </span>
+              )}
             </span>
           </Dropdown.Item>
         ))}

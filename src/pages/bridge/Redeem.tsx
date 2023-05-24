@@ -347,8 +347,13 @@ function Redeem(props: RedeemProps): JSX.Element {
             />
             <span className="ml-2">Manually select vault</span>
           </div>
-          {manualVaultSelection && (
-            <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
+          {manualVaultSelection && vaultsForCurrency && (
+            <VaultSelector
+              vaults={vaultsForCurrency}
+              onChange={setSelectedVault}
+              selectedVault={selectedVault}
+              showMaxTokensFor="redeemableTokens"
+            />
           )}
           <Controller
             control={control}
