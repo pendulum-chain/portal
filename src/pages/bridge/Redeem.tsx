@@ -1,5 +1,4 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
@@ -25,7 +24,7 @@ import {
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -161,15 +160,16 @@ interface RedeemProps {
 }
 
 function Redeem(props: RedeemProps): JSX.Element {
-  const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
+  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<RichRedeemRequest | undefined>(undefined);
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
+  const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
-  const { getVaults } = useVaultRegistryPallet();
+  const { getVaults, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
@@ -186,7 +186,18 @@ function Redeem(props: RedeemProps): JSX.Element {
   const amount = watch('amount');
   const { stellarAddress } = getValues();
 
-  const vaults = getVaults();
+  useEffect(() => {
+    let combinedVaults: ExtendedRegistryVault[] = [];
+    getVaultsWithRedeemableTokens().then((vaultsWithRedeemableTokens) => {
+      getVaults().forEach((vaultFromRegistry) => {
+        const found = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+        const extended: ExtendedRegistryVault = vaultFromRegistry;
+        extended.redeemableTokens = found ? found[1] : undefined;
+        combinedVaults.push(extended);
+      });
+      setExtendedVaults(combinedVaults);
+    });
+  }, [getVaults, setExtendedVaults, getVaultsWithRedeemableTokens]);
 
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
@@ -194,6 +205,8 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
+    if (!vaults) return;
+
     const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
@@ -207,6 +220,8 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
+    if (!vaults) return;
+
     return vaults.filter((vault) => {
       if (!selectedAsset) {
         return false;
@@ -218,18 +233,20 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [selectedAsset, vaults]);
 
   useEffect(() => {
-    if (!manualVaultSelection) {
-      // TODO build a better algorithm for automatically selecting a vault
-      if (vaultsForCurrency.length > 0) {
-        setSelectedVault(vaultsForCurrency[0]);
-      }
-      if (!selectedAsset && wrappedAssets.length > 0) {
-        setSelectedAsset(wrappedAssets[0]);
-      }
-    } else {
-      // If the user manually selected a vault, but it's not available anymore, we reset the selection
-      if (selectedVault && vaultsForCurrency.length > 0 && !vaultsForCurrency.includes(selectedVault)) {
-        setSelectedVault(vaultsForCurrency[0]);
+    if (vaultsForCurrency && wrappedAssets) {
+      if (!manualVaultSelection) {
+        // TODO build a better algorithm for automatically selecting a vault
+        if (vaultsForCurrency.length > 0) {
+          setSelectedVault(vaultsForCurrency[0]);
+        }
+        if (!selectedAsset && wrappedAssets.length > 0) {
+          setSelectedAsset(wrappedAssets[0]);
+        }
+      } else {
+        // If the user manually selected a vault, but it's not available anymore, we reset the selection
+        if (selectedVault && vaultsForCurrency.length > 0 && !vaultsForCurrency.includes(selectedVault)) {
+          setSelectedVault(vaultsForCurrency[0]);
+        }
       }
     }
   }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
@@ -311,6 +328,9 @@ function Redeem(props: RedeemProps): JSX.Element {
                   if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
+                  if (parseFloat(value) > parseFloat(selectedVault?.redeemableTokens?.toString() || '0')) {
+                    return 'Amount is higher than the vault can redeem.';
+                  }
                 },
               }}
               name="amount"
@@ -327,14 +347,23 @@ function Redeem(props: RedeemProps): JSX.Element {
               )}
             />
             <div className="px-1" />
-            <AssetSelector
-              assetPrefix={wrappedCurrencyPrefix}
-              selectedAsset={selectedAsset}
-              assets={wrappedAssets}
-              onChange={setSelectedAsset}
-              style={{ flexGrow: 1 }}
-            />
+            {wrappedAssets && (
+              <AssetSelector
+                assetPrefix={wrappedCurrencyPrefix}
+                selectedAsset={selectedAsset}
+                assets={wrappedAssets}
+                onChange={setSelectedAsset}
+                style={{ flexGrow: 1 }}
+              />
+            )}
           </div>
+          <div className="flex align-center mt-4">
+            <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
+              selectedVault?.redeemableTokens?.toString() || 0,
+            ).toFixed(2)} 
+              ${selectedAsset?.code}`}</span>
+          </div>
+
           <div className="flex align-center mt-4">
             <Checkbox
               size="sm"
@@ -347,7 +376,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             />
             <span className="ml-2">Manually select vault</span>
           </div>
-          {manualVaultSelection && (
+          {manualVaultSelection && vaultsForCurrency && (
             <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
           )}
           <Controller
