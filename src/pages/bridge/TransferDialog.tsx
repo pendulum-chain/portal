@@ -222,6 +222,11 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     });
   }, [getActiveBlockNumber, setDeadline, transfer.original.opentime, transfer.original.period]);
 
+  const expectedStellarMemo = useMemo(() => {
+    // For issue requests we use a shorter identifier for the memo
+    return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
+  }, [transfer]);
+
   const issueContent = (
     <>
       <>
@@ -229,7 +234,11 @@ export function PendingTransferDialog(props: TransferDialogProps) {
           className="text-xl"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
-        <div className="mt-1" />
+        <div className="mt-2" />
+        <div className="text">With the text memo</div>
+        <div className="mt-2" />
+        <CopyableAddress inline={true} variant="short" publicKey={expectedStellarMemo} />
+        <div className="mt-2" />
         <div className="text-md">In a single transaction to</div>
         <div className="mt-2" />
         <CopyableAddress
@@ -238,8 +247,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
           variant="short"
           publicKey={vaultStellarAddress.publicKey()}
         />
-        <div className="mt-2" />
-        <div className="text-sm">
+        <div className="text-md mt-2">
           Within <TransferCountdown request={transfer.original} />
         </div>
       </>
