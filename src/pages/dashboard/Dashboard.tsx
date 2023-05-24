@@ -70,10 +70,11 @@ function Dashboard() {
     wrappedCurrencies.forEach((currencyId) => {
       const asset = convertCurrencyToStellarAsset(currencyId);
       if (asset) {
-        console.log('trying to get balance for:', asset.code);
         fetchBridgedTokens(walletAccount.address, currencyId).then((balance) => {
-          console.log(asset.code, balance);
-          setAccountTokenBalances(new Map(accountTokenBalances.set(asset.code, balance)));
+          // Add non zero balances to map
+          if (!balance?.free.isZero()) {
+            setAccountTokenBalances(new Map(accountTokenBalances.set(asset.code, balance)));
+          }
         });
       }
     });
@@ -106,16 +107,16 @@ function Dashboard() {
                 </h1>
               </div>
             )}
-            {accountTokenBalances.forEach((balance, assetCode) => {
-              console.log(assetCode, nativeToDecimal(balance?.free.toString() || '0').toFixed(2));
-              return (
-                <div className="self-center">
+            <ul>
+              <li />
+              {accountTokenBalances.forEach((balance, assetCode) => (
+                <li>
                   <h1 className="flex justify-center">
                     {nativeToDecimal(balance?.free.toString() || '0').toFixed(2)} {assetCode}
                   </h1>
-                </div>
-              );
-            })}
+                </li>
+              ))}
+            </ul>
             {!cachedBalance && (
               <>
                 <p>You have to connect a wallet to see your available balance. </p>
