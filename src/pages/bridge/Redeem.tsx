@@ -190,7 +190,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     let combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithRedeemableTokens().then((vaultsWithRedeemableTokens) => {
       getVaults().forEach((vaultFromRegistry) => {
-        const found = vaultsWithRedeemableTokens?.find(([id, _]) => id.accountId.eq(vaultFromRegistry.id.accountId));
+        const found = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
         const extended: ExtendedRegistryVault = vaultFromRegistry;
         extended.redeemableTokens = found ? found[1] : undefined;
         combinedVaults.push(extended);

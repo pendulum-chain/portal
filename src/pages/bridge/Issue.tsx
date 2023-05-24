@@ -254,7 +254,7 @@ function Issue(props: IssueProps): JSX.Element {
     let combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
       getVaults().forEach((vaultFromRegistry) => {
-        const found = vaultsWithIssuableTokens?.find(([id, _]) => id.accountId.eq(vaultFromRegistry.id.accountId));
+        const found = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
         const extended: ExtendedRegistryVault = vaultFromRegistry;
         extended.issuableTokens = found ? found[1] : undefined;
         combinedVaults.push(extended);
