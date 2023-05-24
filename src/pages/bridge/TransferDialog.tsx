@@ -112,7 +112,7 @@ interface TransferDialogProps {
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const stellarAsset = currencyToString(transfer.original.asset);
   const content = (
     <>
       <div className="text-md">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
@@ -139,7 +139,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
 
 export function CancelledTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const stellarAsset = currencyToString(transfer.original.asset);
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
@@ -175,7 +175,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const tenant = useGlobalState().state.tenantName;
 
-  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const stellarAsset = currencyToString(transfer.original.asset);
   const collateralAsset = transfer.original.vault.currencies.collateral;
 
   const content = (
@@ -208,18 +208,20 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const stellarAsset = currencyToString(transfer.original.asset);
   const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
   const [, setDeadline] = useState<DateTime>();
+
   useEffect(() => {
     getActiveBlockNumber().then((active) => {
       setDeadline(
         calculateDeadline(active as number, transfer.original.opentime.toNumber(), transfer.original.period.toNumber()),
       );
     });
-  }, [setDeadline]);
+  }, [getActiveBlockNumber, setDeadline, transfer.original.opentime, transfer.original.period]);
+
   const issueContent = (
     <>
       <>
@@ -276,7 +278,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
 
 export function FailedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = transfer.original.asset.asStellar.asAlphaNum4.code.toHuman()?.toString();
+  const stellarAsset = currencyToString(transfer.original.asset);
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const compensation = 0.05;
   const content = (
