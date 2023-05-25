@@ -1,4 +1,3 @@
-import { Balance } from '@polkadot/types/interfaces';
 import {
   OrmlTokensAccountData,
   PalletBalancesAccountData,
@@ -6,13 +5,10 @@ import {
 } from '@polkadot/types/lookup';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { stringify } from 'querystring';
-import { Asset } from 'stellar-sdk';
 import Banner from '../../assets/banner-spacewalk-4x.png';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
-import { convertCurrencyToStellarAsset, currencyToString } from '../../helpers/spacewalk';
-import { stringifyStellarAsset } from '../../helpers/stellar';
+import { currencyToString } from '../../helpers/spacewalk';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
@@ -23,7 +19,10 @@ interface TokenBalances {
 }
 
 function Dashboard() {
-  const { walletAccount } = useGlobalState();
+  const {
+    walletAccount,
+    state: { tenantName },
+  } = useGlobalState();
   const {
     state: { api, tokenSymbol, ss58Format },
   } = useNodeInfoState();
@@ -50,43 +49,42 @@ function Dashboard() {
 
   const vaults = getVaults();
 
-  const wrappedCurrencies = useMemo(() => {
-    const currencies = vaults
-      .map((vault) => {
-        return vault.id.currencies.wrapped;
-      })
-      .filter((asset) => {
-        return asset != null;
-      });
+  const availableCurrencies = useMemo(() => {
+    const currencies: SpacewalkPrimitivesCurrencyId[] = [];
+    vaults.forEach((vault) => {
+      currencies.push(vault.id.currencies.wrapped);
+      currencies.push(vault.id.currencies.collateral);
+    });
 
     // Deduplicate assets
     return _.uniqBy(currencies, (currencyId: SpacewalkPrimitivesCurrencyId) => currencyId.toHex());
   }, [vaults]);
 
   useEffect(() => {
-    if (!walletAccount || !wrappedCurrencies) return;
+    if (!walletAccount || !availableCurrencies) return;
 
     async function fetchBridgedTokens(address: string, asset: SpacewalkPrimitivesCurrencyId) {
       if (!api) return;
       return api.query.tokens.accounts(address, asset);
     }
 
-    wrappedCurrencies.forEach((currencyId) => {
+    availableCurrencies.forEach((currencyId) => {
       const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
       fetchBridgedTokens(walletAddress, currencyId).then((balance) => {
         setAccountTokenBalances((oldBalances) => {
-          const tokenId = currencyToString(currencyId);
-          if (tokenId && balance) {
-            oldBalances[tokenId] = balance;
+          try {
+            const tokenId = currencyToString(currencyId, tenantName);
+            if (tokenId && balance) {
+              oldBalances[tokenId] = balance;
+            }
+          } catch (e) {
+            console.log(e);
           }
           return oldBalances;
         });
       });
     });
-  }, [wrappedCurrencies, walletAccount, api, ss58Format]);
-
-  console.log('wrappedCurrencies', wrappedCurrencies);
-  console.log('accountTokenBalances', accountTokenBalances);
+  }, [availableCurrencies, walletAccount, api, ss58Format, tenantName]);
 
   return (
     <div className="mt-10">
@@ -119,7 +117,7 @@ function Dashboard() {
               <li />
               {Object.entries(accountTokenBalances).map(([tokenId, balance]) => {
                 if (!balance.free.isZero()) {
-                  // If it's a Stellar asset we are interested in the code which is the first part of the token id
+                  // If it's a Stellar asset we are interested in the code which is the first part of the stringified token id
                   const assetCode = tokenId.split(':')[0];
                   return (
                     <li key={tokenId}>
