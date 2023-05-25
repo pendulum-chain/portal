@@ -107,8 +107,7 @@ function Dashboard() {
           <div className="balance">
             {cachedBalance && (
               <div className="self-center">
-                <h3 className="flex justify-center">Balances</h3>
-                <h2 className="flex justify-center">
+                <h2 className="flex">
                   {cachedBalance} {tokenSymbol}
                 </h2>
               </div>
@@ -120,8 +119,8 @@ function Dashboard() {
                   // If it's a Stellar asset we are interested in the code which is the first part of the stringified token id
                   const assetCode = tokenId.split(':')[0];
                   return (
-                    <li key={tokenId}>
-                      <h2 className="flex justify-center">
+                    <li key={tokenId} title={tokenId}>
+                      <h2 className="flex">
                         {nativeToDecimal(balance.free.toString()).toFixed()} {assetCode}
                       </h2>
                     </li>
