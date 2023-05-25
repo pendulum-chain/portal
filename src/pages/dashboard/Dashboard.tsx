@@ -11,23 +11,26 @@ import { Asset } from 'stellar-sdk';
 import Banner from '../../assets/banner-spacewalk-4x.png';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
-import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { convertCurrencyToStellarAsset, currencyToString } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
+
+interface TokenBalances {
+  [tokenId: string]: OrmlTokensAccountData;
+}
 
 function Dashboard() {
   const { walletAccount } = useGlobalState();
   const {
-    state: { api, tokenSymbol },
+    state: { api, tokenSymbol, ss58Format },
   } = useNodeInfoState();
   const { getVaults } = useVaultRegistryPallet();
 
   const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
-  const [accountTokenBalances, setAccountTokenBalances] = useState<Map<string, OrmlTokensAccountData | undefined>>(
-    new Map(),
-  );
+  const [accountTokenBalances, setAccountTokenBalances] = useState<TokenBalances>({});
 
   useEffect(() => {
     if (!walletAccount?.address) return;
@@ -67,18 +70,23 @@ function Dashboard() {
       if (!api) return;
       return api.query.tokens.accounts(address, asset);
     }
+
     wrappedCurrencies.forEach((currencyId) => {
-      const asset = convertCurrencyToStellarAsset(currencyId);
-      if (asset) {
-        fetchBridgedTokens(walletAccount.address, currencyId).then((balance) => {
-          // Add non zero balances to map
-          if (!balance?.free.isZero()) {
-            setAccountTokenBalances(new Map(accountTokenBalances.set(asset.code, balance)));
+      const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+      fetchBridgedTokens(walletAddress, currencyId).then((balance) => {
+        setAccountTokenBalances((oldBalances) => {
+          const tokenId = currencyToString(currencyId);
+          if (tokenId && balance) {
+            oldBalances[tokenId] = balance;
           }
+          return oldBalances;
         });
-      }
+      });
     });
-  }, [wrappedCurrencies, walletAccount]);
+  }, [wrappedCurrencies, walletAccount, api, ss58Format]);
+
+  console.log('wrappedCurrencies', wrappedCurrencies);
+  console.log('accountTokenBalances', accountTokenBalances);
 
   return (
     <div className="mt-10">
@@ -101,21 +109,27 @@ function Dashboard() {
           <div className="balance">
             {cachedBalance && (
               <div className="self-center">
-                <h2 className="flex justify-center">Total balance</h2>
-                <h1 className="flex justify-center">
+                <h3 className="flex justify-center">Balances</h3>
+                <h2 className="flex justify-center">
                   {cachedBalance} {tokenSymbol}
-                </h1>
+                </h2>
               </div>
             )}
             <ul>
               <li />
-              {accountTokenBalances.forEach((balance, assetCode) => (
-                <li>
-                  <h1 className="flex justify-center">
-                    {nativeToDecimal(balance?.free.toString() || '0').toFixed(2)} {assetCode}
-                  </h1>
-                </li>
-              ))}
+              {Object.entries(accountTokenBalances).map(([tokenId, balance]) => {
+                if (!balance.free.isZero()) {
+                  // If it's a Stellar asset we are interested in the code which is the first part of the token id
+                  const assetCode = tokenId.split(':')[0];
+                  return (
+                    <li key={tokenId}>
+                      <h2 className="flex justify-center">
+                        {nativeToDecimal(balance.free.toString()).toFixed()} {assetCode}
+                      </h2>
+                    </li>
+                  );
+                }
+              })}
             </ul>
             {!cachedBalance && (
               <>
