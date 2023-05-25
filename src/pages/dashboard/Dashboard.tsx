@@ -71,16 +71,12 @@ function Dashboard() {
     availableCurrencies.forEach((currencyId) => {
       const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
       fetchBridgedTokens(walletAddress, currencyId).then((balance) => {
-        setAccountTokenBalances((oldBalances) => {
-          try {
-            const tokenId = currencyToString(currencyId, tenantName);
-            if (tokenId && balance) {
-              oldBalances[tokenId] = balance;
-            }
-          } catch (e) {
-            console.log(e);
+        setAccountTokenBalances((balances) => {
+          const tokenId = currencyToString(currencyId, tenantName);
+          if (tokenId && balance) {
+            balances[tokenId] = balance;
           }
-          return oldBalances;
+          return balances;
         });
       });
     });
