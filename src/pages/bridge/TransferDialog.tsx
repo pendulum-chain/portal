@@ -1,5 +1,8 @@
 import { Button, Divider, Modal } from 'react-daisyui';
+import { useEffect, useMemo, useState } from 'react';
 import { h } from 'preact';
+import { DateTime } from 'luxon';
+import { hexToU8a } from '@polkadot/util';
 import { CloseButton } from '../../components/CloseButton';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
@@ -11,12 +14,9 @@ import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
-import { useEffect, useMemo, useState } from 'react';
-import { DateTime } from 'luxon';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
 import TransferCountdown from '../../components/TransferCountdown';
-import { hexToU8a } from '@polkadot/util';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 interface BaseTransferDialogProps {
@@ -238,7 +238,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const stellarAsset = currencyToString(transfer.original.asset);
-  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
+  const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
   const [, setDeadline] = useState<DateTime>();
@@ -270,7 +270,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         <div className="mt-2" />
         <div className="text-md">In a single transaction to</div>
         <div className="mt-2" />
-        <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={vaultStellarAddress} />
+        <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={destinationStellarAddress} />
         <div className="text-md mt-2">
           Within <TransferCountdown request={transfer.original} />
         </div>
