@@ -209,7 +209,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const stellarAsset = currencyToString(transfer.original.asset);
-  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
+  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
   const [, setDeadline] = useState<DateTime>();
@@ -241,12 +241,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         <div className="mt-2" />
         <div className="text-md">In a single transaction to</div>
         <div className="mt-2" />
-        <CopyableAddress
-          inline={true}
-          className="text-sm p-0"
-          variant="short"
-          publicKey={vaultStellarAddress.publicKey()}
-        />
+        <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={vaultStellarAddress} />
         <div className="text-md mt-2">
           Within <TransferCountdown request={transfer.original} />
         </div>
