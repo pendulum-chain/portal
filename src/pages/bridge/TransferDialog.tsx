@@ -40,7 +40,7 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
-  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex()).publicKey();
+  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
 
   const expectedStellarMemo = useMemo(() => {
     return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
