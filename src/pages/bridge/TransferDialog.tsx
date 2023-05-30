@@ -40,7 +40,12 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
-  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
+
+  const { tenantName } = useGlobalState().state;
+  const tenantNameCapitalized = tenantName ? tenantName.charAt(0).toUpperCase() + tenantName.slice(1) : 'Pendulum';
+
+  // The `stellarAddress` contained in the request will either be the vault's or the user's Stellar address depending on the transfer type.
+  const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
 
   const expectedStellarMemo = useMemo(() => {
     return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
@@ -61,26 +66,22 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="text-sm">Destination Address</div>
+              <div className="text-sm">Destination Address (Stellar)</div>
               <CopyableAddress
                 inline={true}
                 className="text-sm p0"
                 variant="short"
-                publicKey={convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toString()).publicKey()}
+                publicKey={destinationStellarAddress}
               />
             </div>
             <div className="flex flex-row justify-between">
-              <div className="text-sm">Vault Address</div>
+              <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
               <CopyableAddress
                 inline={true}
                 className="text-sm p-0"
                 variant="short"
                 publicKey={transfer.original.vault.accountId.toString()}
               />
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="text-sm">Vault Stellar Address</div>
-              <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={vaultStellarAddress} />
             </div>
             {showMemo && (
               <div className="flex flex-row justify-between">
