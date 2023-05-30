@@ -17,6 +17,7 @@ import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
 import TransferCountdown from '../../components/TransferCountdown';
 import { hexToU8a } from '@polkadot/util';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -44,8 +45,24 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { tenantName } = useGlobalState().state;
   const tenantNameCapitalized = tenantName ? tenantName.charAt(0).toUpperCase() + tenantName.slice(1) : 'Pendulum';
 
-  // The `stellarAddress` contained in the request will either be the vault's or the user's Stellar address depending on the transfer type.
+  const [vaultStellarPublicKey, setVaultStellarPublicKey] = useState<string | undefined>(undefined);
+
+  // The `stellarAddress` contained in the request will either be the user's Stellar address or the vault's Stellar address (i.e. equal to `vaultStellarPublicKey`).
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
+  const { getVaultStellarPublicKey } = useVaultRegistryPallet();
+
+  useEffect(() => {
+    getVaultStellarPublicKey(transfer.original.vault.accountId)
+      .then((publicKey) => {
+        if (publicKey) {
+          setVaultStellarPublicKey(publicKey.publicKey());
+        }
+      })
+      .catch((e) => {
+        setVaultStellarPublicKey(undefined);
+        console.error(e);
+      });
+  }, [getVaultStellarPublicKey, transfer.original.vault.accountId]);
 
   const expectedStellarMemo = useMemo(() => {
     return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
@@ -83,6 +100,17 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
                 publicKey={transfer.original.vault.accountId.toString()}
               />
             </div>
+            {vaultStellarPublicKey && (
+              <div className="flex flex-row justify-between">
+                <div className="text-sm">Vault Address (Stellar)</div>
+                <CopyableAddress
+                  inline={true}
+                  className="text-sm p-0"
+                  variant="short"
+                  publicKey={vaultStellarPublicKey}
+                />
+              </div>
+            )}
             {showMemo && (
               <div className="flex flex-row justify-between">
                 <div className="text-sm">Memo</div>
