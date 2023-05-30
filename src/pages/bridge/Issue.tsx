@@ -1,6 +1,5 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
@@ -404,8 +403,14 @@ function Issue(props: IssueProps): JSX.Element {
                   error={error?.message}
                   label="From Stellar"
                   type="number"
+                  min="0"
                   step="any"
                   style={{ flexGrow: 2 }}
+                  onKeyPress={(e: KeyboardEvent) => {
+                    if (e.code === 'Minus' || e.code === 'KeyE') {
+                      e.preventDefault();
+                    }
+                  }}
                   {...field}
                 />
               )}

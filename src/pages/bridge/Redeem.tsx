@@ -340,8 +340,14 @@ function Redeem(props: RedeemProps): JSX.Element {
                   error={error?.message}
                   label="From Amplitude"
                   type="number"
+                  min="0"
                   step="any"
                   style={{ flexGrow: 2 }}
+                  onKeyPress={(e: KeyboardEvent) => {
+                    if (e.code === 'Minus' || e.code === 'KeyE') {
+                      e.preventDefault();
+                    }
+                  }}
                   {...field}
                 />
               )}
