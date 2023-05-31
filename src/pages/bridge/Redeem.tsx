@@ -25,6 +25,7 @@ import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { ChangeEvent } from 'preact/compat';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -167,13 +168,14 @@ function Redeem(props: RedeemProps): JSX.Element {
   const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<RichRedeemRequest | undefined>(undefined);
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
+  const [stellarAddress, setStellarAddress] = useState<string>('');
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
-  const { control, handleSubmit, getValues, watch } = useForm<RedeemFormInputs>({
+  const { control, handleSubmit, setValue, watch } = useForm<RedeemFormInputs>({
     defaultValues: {
       amount: '0',
       stellarAddress: '',
@@ -184,7 +186,6 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
-  const { stellarAddress } = getValues();
 
   useEffect(() => {
     let combinedVaults: ExtendedRegistryVault[] = [];
@@ -407,6 +408,11 @@ function Redeem(props: RedeemProps): JSX.Element {
                 type="text"
                 {...field}
                 style={{ marginTop: 8 }}
+                value={stellarAddress}
+                onChange={(addr) => {
+                  setStellarAddress(addr);
+                  setValue('stellarAddress', addr);
+                }}
               />
             )}
             name="stellarAddress"
