@@ -107,10 +107,10 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
-  const rawDestinationAddress = redeemRequest?.request.stellarAddress;
-  const destination = rawDestinationAddress
-    ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-    : '';
+  const destination = useMemo(() => {
+    const rawDestinationAddress = redeemRequest?.request.stellarAddress;
+    return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
+  }, [redeemRequest?.request.stellarAddress]);
 
   return (
     <Modal open={visible}>
@@ -123,9 +123,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           <div className="text-xl">
             You will receive {totalAmount} {asset?.getCode()}
           </div>
-          <div className="text-sm">
-            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
-          </div>
+          {asset && asset.getIssuer() && (
+            <>
+              issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+            </>
+          )}
           <div className="text-sm text-secondary mt-4">Your request is being processed</div>
         </div>
         <div className="mt-6 text-secondary">
@@ -409,7 +411,7 @@ function Redeem(props: RedeemProps): JSX.Element {
                 {...field}
                 style={{ marginTop: 8 }}
                 value={stellarAddress}
-                onChange={(addr) => {
+                onChange={(addr: string) => {
                   setStellarAddress(addr);
                   setValue('stellarAddress', addr);
                 }}
