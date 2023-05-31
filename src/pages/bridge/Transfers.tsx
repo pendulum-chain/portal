@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'react';
 import Table from '../../components/Table';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
-import { calculateDeadline, estimateRequestCreationTime } from '../../helpers/spacewalk';
+import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
@@ -27,7 +27,6 @@ import {
 } from './TransfersColumns';
 import './styles.css';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { decodeAssetCode } from './helpers';
 
 function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
@@ -65,7 +64,7 @@ function Transfers(): JSX.Element {
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: decodeAssetCode(e.request.asset),
+          asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.issue,
           status: timedOut ? 'Cancelled' : e.request.status.type,
@@ -77,7 +76,7 @@ function Transfers(): JSX.Element {
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: decodeAssetCode(e.request.asset),
+          asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.redeem,
           status: e.request.status.type,
