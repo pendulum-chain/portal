@@ -47,7 +47,7 @@ export const assetColumn: ColumnDef<TTransfer> = {
 };
 
 export const transactionIdColumn: ColumnDef<TTransfer> = {
-  header: 'Transaction ID',
+  header: 'Request ID',
   accessorKey: 'transactionId',
   cell: ({ row }) => {
     return <CopyableAddress publicKey={row.original.transactionId} variant="hexa" />;

@@ -113,7 +113,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [remainingDurationString, setRemainingDurationString] = useState<string>('');
+  const [_, setRemainingDurationString] = useState<string>('');
 
   const totalAmount = useMemo(
     () =>
@@ -250,7 +250,7 @@ function Issue(props: IssueProps): JSX.Element {
   const amount = watch('amount');
 
   useEffect(() => {
-    let combinedVaults: ExtendedRegistryVault[] = [];
+    const combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
       getVaults().forEach((vaultFromRegistry) => {
         const found = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));

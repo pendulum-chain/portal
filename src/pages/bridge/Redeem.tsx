@@ -25,6 +25,7 @@ import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { ChangeEvent } from 'preact/compat';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -106,10 +107,10 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
-  const rawDestinationAddress = redeemRequest?.request.stellarAddress;
-  const destination = rawDestinationAddress
-    ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey()
-    : '';
+  const destination = useMemo(() => {
+    const rawDestinationAddress = redeemRequest?.request.stellarAddress;
+    return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
+  }, [redeemRequest?.request.stellarAddress]);
 
   return (
     <Modal open={visible}>
@@ -122,9 +123,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
           <div className="text-xl">
             You will receive {totalAmount} {asset?.getCode()}
           </div>
-          <div className="text-sm">
-            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
-          </div>
+          {asset && asset.getIssuer() && (
+            <>
+              issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+            </>
+          )}
           <div className="text-sm text-secondary mt-4">Your request is being processed</div>
         </div>
         <div className="mt-6 text-secondary">
@@ -173,7 +176,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
-  const { control, handleSubmit, getValues, watch } = useForm<RedeemFormInputs>({
+  const { control, handleSubmit, setValue, watch } = useForm<RedeemFormInputs>({
     defaultValues: {
       amount: '0',
       stellarAddress: '',
@@ -184,10 +187,10 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
-  const { stellarAddress } = getValues();
+  const stellarAddress = watch('stellarAddress');
 
   useEffect(() => {
-    let combinedVaults: ExtendedRegistryVault[] = [];
+    const combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithRedeemableTokens().then((vaultsWithRedeemableTokens) => {
       getVaults().forEach((vaultFromRegistry) => {
         const found = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
