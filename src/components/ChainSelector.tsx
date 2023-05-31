@@ -28,6 +28,7 @@ const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): 
             <Dropdown.Item
               onClick={() => {
                 navigateTo(buildPath(tenantName, option, location));
+                window.location.reload();
               }}
             >
               {option === TenantName.Pendulum ? (
