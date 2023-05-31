@@ -170,7 +170,6 @@ function Redeem(props: RedeemProps): JSX.Element {
   const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<RichRedeemRequest | undefined>(undefined);
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
-  const [stellarAddress, setStellarAddress] = useState<string>('');
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { getVaults, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
@@ -188,6 +187,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
+  const stellarAddress = watch('stellarAddress');
 
   useEffect(() => {
     let combinedVaults: ExtendedRegistryVault[] = [];
@@ -410,11 +410,6 @@ function Redeem(props: RedeemProps): JSX.Element {
                 type="text"
                 {...field}
                 style={{ marginTop: 8 }}
-                value={stellarAddress}
-                onChange={(addr: string) => {
-                  setStellarAddress(addr);
-                  setValue('stellarAddress', addr);
-                }}
               />
             )}
             name="stellarAddress"
