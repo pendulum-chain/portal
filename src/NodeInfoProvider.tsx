@@ -32,7 +32,7 @@ const NodeInfoProvider = ({
 }) => {
   const [state, setState] = useState(value);
   const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(undefined);
-  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<Promise<unknown>>(Promise.resolve());
+  const [pendingInitiationPromise, setPendingInitiationPromise] = useState<Promise<unknown> | undefined>(undefined);
 
   useEffect(() => {
     let disconnect: () => void = () => undefined;
@@ -43,6 +43,8 @@ const NodeInfoProvider = ({
     }
 
     const connect = async () => {
+      console.log('connecting to', tenantRPC);
+
       const provider = new WsProvider(tenantRPC, false);
       await provider.connect();
       const api = await ApiPromise.create(
@@ -98,7 +100,8 @@ const NodeInfoProvider = ({
       };
     };
 
-    pendingInitiationPromise.then(() => {
+    console.log('pendingInitiationPromise', pendingInitiationPromise);
+    if (!pendingInitiationPromise) {
       // We need this promise based approach to prevent race conditions when the user switches between tenants very quickly.
       // Otherwise, it might happen that the connection to the first endpoint takes longer and resolves later than
       // the connection to the second endpoint which would make us end up with a connection to the outdated endpoint.
@@ -107,10 +110,12 @@ const NodeInfoProvider = ({
         toast('Error while connecting to the node. Refresh the page to re-connect.', { type: toast.TYPE.ERROR });
       });
       setPendingInitiationPromise(promise);
-      setCurrentTenantRPC(tenantRPC);
-    });
-
-    return disconnect;
+    } else {
+      pendingInitiationPromise.then(() => {
+        setCurrentTenantRPC(tenantRPC);
+      });
+      return disconnect;
+    }
   }, [currentTenantRPC, tenantRPC, pendingInitiationPromise, setPendingInitiationPromise]);
 
   return <NodeInfoContext.Provider value={{ state, setState }}>{children}</NodeInfoContext.Provider>;
