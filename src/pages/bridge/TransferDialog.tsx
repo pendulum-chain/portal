@@ -18,6 +18,7 @@ import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
 import TransferCountdown from '../../components/TransferCountdown';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { toTitle } from '../../helpers/string';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -43,7 +44,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
 
   const { tenantName } = useGlobalState().state;
-  const tenantNameCapitalized = tenantName ? tenantName.charAt(0).toUpperCase() + tenantName.slice(1) : 'Pendulum';
+  const tenantNameCapitalized = tenantName ? toTitle(tenantName) : 'Pendulum';
 
   const [vaultStellarPublicKey, setVaultStellarPublicKey] = useState<string | undefined>(undefined);
 
