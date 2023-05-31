@@ -14,6 +14,7 @@ export interface GlobalStateValues {
   tenantRPC?: string;
   wallet?: WalletAccount;
 }
+
 export interface GlobalState {
   state: Partial<GlobalStateValues>;
   setState: StateUpdater<Partial<GlobalStateValues>>;
