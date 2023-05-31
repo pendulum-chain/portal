@@ -1,5 +1,8 @@
 import { Button, Divider, Modal } from 'react-daisyui';
+import { useEffect, useMemo, useState } from 'react';
 import { h } from 'preact';
+import { DateTime } from 'luxon';
+import { hexToU8a } from '@polkadot/util';
 import { CloseButton } from '../../components/CloseButton';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
@@ -11,12 +14,11 @@ import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
-import { useEffect, useMemo, useState } from 'react';
-import { DateTime } from 'luxon';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
 import TransferCountdown from '../../components/TransferCountdown';
-import { hexToU8a } from '@polkadot/util';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { toTitle } from '../../helpers/string';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -40,7 +42,28 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
-  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex()).publicKey();
+
+  const { tenantName } = useGlobalState().state;
+  const tenantNameCapitalized = tenantName ? toTitle(tenantName) : 'Pendulum';
+
+  const [vaultStellarPublicKey, setVaultStellarPublicKey] = useState<string | undefined>(undefined);
+
+  // The `stellarAddress` contained in the request will either be the user's Stellar address or the vault's Stellar address (i.e. equal to `vaultStellarPublicKey`).
+  const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
+  const { getVaultStellarPublicKey } = useVaultRegistryPallet();
+
+  useEffect(() => {
+    getVaultStellarPublicKey(transfer.original.vault.accountId)
+      .then((publicKey) => {
+        if (publicKey) {
+          setVaultStellarPublicKey(publicKey.publicKey());
+        }
+      })
+      .catch((e) => {
+        setVaultStellarPublicKey(undefined);
+        console.error(e);
+      });
+  }, [getVaultStellarPublicKey, transfer.original.vault.accountId]);
 
   const expectedStellarMemo = useMemo(() => {
     return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
@@ -61,16 +84,16 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="text-sm">Destination Address</div>
+              <div className="text-sm">Destination Address (Stellar)</div>
               <CopyableAddress
                 inline={true}
                 className="text-sm p0"
                 variant="short"
-                publicKey={convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toString()).publicKey()}
+                publicKey={destinationStellarAddress}
               />
             </div>
             <div className="flex flex-row justify-between">
-              <div className="text-sm">Vault Address</div>
+              <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
               <CopyableAddress
                 inline={true}
                 className="text-sm p-0"
@@ -78,10 +101,17 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
                 publicKey={transfer.original.vault.accountId.toString()}
               />
             </div>
-            <div className="flex flex-row justify-between">
-              <div className="text-sm">Vault Stellar Address</div>
-              <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={vaultStellarAddress} />
-            </div>
+            {vaultStellarPublicKey && (
+              <div className="flex flex-row justify-between">
+                <div className="text-sm">Vault Address (Stellar)</div>
+                <CopyableAddress
+                  inline={true}
+                  className="text-sm p-0"
+                  variant="short"
+                  publicKey={vaultStellarPublicKey}
+                />
+              </div>
+            )}
             {showMemo && (
               <div className="flex flex-row justify-between">
                 <div className="text-sm">Memo</div>
@@ -209,7 +239,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const stellarAsset = currencyToString(transfer.original.asset);
-  const vaultStellarAddress = convertRawHexKeyToPublicKey(transfer.original.vault.accountId.toHex());
+  const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
   const [, setDeadline] = useState<DateTime>();
@@ -241,12 +271,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         <div className="mt-2" />
         <div className="text-md">In a single transaction to</div>
         <div className="mt-2" />
-        <CopyableAddress
-          inline={true}
-          className="text-sm p-0"
-          variant="short"
-          publicKey={vaultStellarAddress.publicKey()}
-        />
+        <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={destinationStellarAddress} />
         <div className="text-md mt-2">
           Within <TransferCountdown request={transfer.original} />
         </div>
