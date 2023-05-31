@@ -21,7 +21,7 @@ interface TokenBalances {
 function Dashboard() {
   const {
     walletAccount,
-    state: { tenantName },
+    state: { tenantName, tenantRPC },
   } = useGlobalState();
   const {
     state: { api, tokenSymbol, ss58Format },
@@ -32,15 +32,17 @@ function Dashboard() {
   const [accountTokenBalances, setAccountTokenBalances] = useState<TokenBalances>({});
 
   useEffect(() => {
-    if (!walletAccount?.address) return;
-
+    if (!walletAccount?.address || !tenantRPC) {
+      setAccountBalance(undefined);
+      return;
+    }
     api?.query.system
       .account(walletAccount.address)
       .then((data) => {
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
-  }, [api, walletAccount]);
+  }, [api, walletAccount, tenantRPC]);
 
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return undefined;
