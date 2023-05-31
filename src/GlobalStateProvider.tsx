@@ -11,7 +11,7 @@ import { storageService } from './services/storage/local';
 
 export interface GlobalStateValues {
   tenantName: TenantName;
-  tenantRPC: string;
+  tenantRPC?: string;
   wallet?: WalletAccount;
 }
 export interface GlobalState {
@@ -26,7 +26,7 @@ export interface GlobalState {
 
 export const defaultState: GlobalStateValues = {
   tenantName: TenantName.Amplitude,
-  tenantRPC: config.tenants.amplitude.rpc,
+  tenantRPC: undefined,
 };
 
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
