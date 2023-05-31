@@ -113,7 +113,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [remainingDurationString, setRemainingDurationString] = useState<string>('');
+  const [_, setRemainingDurationString] = useState<string>('');
 
   const totalAmount = useMemo(
     () =>
