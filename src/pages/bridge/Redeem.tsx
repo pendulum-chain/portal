@@ -190,7 +190,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const stellarAddress = watch('stellarAddress');
 
   useEffect(() => {
-    let combinedVaults: ExtendedRegistryVault[] = [];
+    const combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithRedeemableTokens().then((vaultsWithRedeemableTokens) => {
       getVaults().forEach((vaultFromRegistry) => {
         const found = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));

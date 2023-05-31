@@ -250,7 +250,7 @@ function Issue(props: IssueProps): JSX.Element {
   const amount = watch('amount');
 
   useEffect(() => {
-    let combinedVaults: ExtendedRegistryVault[] = [];
+    const combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
       getVaults().forEach((vaultFromRegistry) => {
         const found = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
