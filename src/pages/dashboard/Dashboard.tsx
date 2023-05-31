@@ -21,7 +21,7 @@ interface TokenBalances {
 function Dashboard() {
   const {
     walletAccount,
-    state: { tenantName },
+    state: { tenantName, tenantRPC },
   } = useGlobalState();
   const {
     state: { api, tokenSymbol, ss58Format },
@@ -32,15 +32,17 @@ function Dashboard() {
   const [accountTokenBalances, setAccountTokenBalances] = useState<TokenBalances>({});
 
   useEffect(() => {
-    if (!walletAccount?.address) return;
-
+    if (!walletAccount?.address || !tenantRPC) {
+      setAccountBalance(undefined);
+      return;
+    }
     api?.query.system
       .account(walletAccount.address)
       .then((data) => {
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
-  }, [api, walletAccount]);
+  }, [api, walletAccount, tenantRPC]);
 
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return undefined;
@@ -71,12 +73,15 @@ function Dashboard() {
     availableCurrencies.forEach((currencyId) => {
       const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
       fetchBridgedTokens(walletAddress, currencyId).then((balance) => {
+        const tokenId = currencyToString(currencyId, tenantName);
         setAccountTokenBalances((balances) => {
-          const tokenId = currencyToString(currencyId, tenantName);
+          let newBalances = balances;
           if (tokenId && balance) {
-            balances[tokenId] = balance;
+            newBalances[tokenId] = balance;
+            newBalances = Object.assign({}, balances);
           }
-          return balances;
+
+          return newBalances;
         });
       });
     });

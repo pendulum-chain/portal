@@ -17,13 +17,11 @@ render(
           {(globalState) => {
             const { state = defaultState, getThemeName = () => undefined } = globalState as GlobalState;
             return (
-              state.tenantRPC && (
-                <NodeInfoProvider tenantRPC={state.tenantRPC}>
-                  <Theme dataTheme={getThemeName()}>
-                    <App />
-                  </Theme>
-                </NodeInfoProvider>
-              )
+              <NodeInfoProvider tenantRPC={state.tenantRPC}>
+                <Theme dataTheme={getThemeName()}>
+                  <App />
+                </Theme>
+              </NodeInfoProvider>
             );
           }}
         </GlobalStateContext.Consumer>
