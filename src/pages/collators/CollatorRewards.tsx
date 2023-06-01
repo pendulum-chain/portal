@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { nativeToFormat } from '../../helpers/parseNumbers';
@@ -8,15 +8,19 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
+import { toast } from 'react-toastify';
+import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
+import { Button } from 'react-daisyui';
 
 function CollatorRewards() {
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
+  const [submissionPending, setSubmissionPending] = useState(false);
 
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
-  const { candidates, estimatedRewards } = useStakingPallet();
+  const { candidates, estimatedRewards, createUpdateDelegatorRewardsExtrinsic } = useStakingPallet();
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
@@ -46,6 +50,44 @@ function CollatorRewards() {
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
   }, [api, walletAccount]);
+
+  const updateRewardsExtrinsic = useMemo(() => {
+    if (!api) {
+      return undefined;
+    }
+
+    return createUpdateDelegatorRewardsExtrinsic();
+  }, [api, createUpdateDelegatorRewardsExtrinsic]);
+
+  const submitUpdateExtrinsic = useCallback(() => {
+    if (!updateRewardsExtrinsic || !api || !walletAccount) {
+      return;
+    }
+    setSubmissionPending(true);
+    updateRewardsExtrinsic
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        const { status, events } = result;
+        const errors = getErrors(events, api);
+        if (status.isInBlock) {
+          if (errors.length > 0) {
+            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
+            console.error(errorMessage);
+            toast(errorMessage, { type: 'error' });
+          }
+        } else if (status.isFinalized) {
+          setSubmissionPending(false);
+          if (errors.length === 0) {
+            toast('Delegator rewards updated', { type: 'success' });
+          }
+        }
+      })
+      .catch((error) => {
+        toast('Transaction submission failed: ' + error.toString(), {
+          type: 'error',
+        });
+        setSubmissionPending(false);
+      });
+  }, [api, setSubmissionPending, updateRewardsExtrinsic, walletAccount]);
 
   return (
     <>
@@ -85,13 +127,21 @@ function CollatorRewards() {
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto place-content-end">
-                <button
+                <Button
+                  loading={submissionPending}
+                  onClick={() => submitUpdateExtrinsic()}
+                  className="btn btn-primary btn-outline w-1/3 mr-2"
+                  disabled={!walletAccount}
+                >
+                  Update
+                </Button>
+                <Button
                   onClick={() => setClaimDialogOpen(true)}
                   className="btn btn-primary w-1/3"
                   disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
                 >
                   Claim
-                </button>
+                </Button>
               </div>
             </div>
           </div>

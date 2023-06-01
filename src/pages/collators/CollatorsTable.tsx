@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import RewardsIcon from '../../assets/collators-rewards-icon';
-import StakedIcon from '../../assets/collators-staked-icon';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
@@ -31,7 +29,6 @@ function CollatorsTable() {
   const [selectedCandidate, setSelectedCandidate] = useState<ParachainStakingCandidate | undefined>(undefined);
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
-  const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [unbonding, setUnbonding] = useState<boolean>(false);
   const [data, setData] = useState<TCollator[] | undefined>();
 

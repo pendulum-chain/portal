@@ -174,6 +174,12 @@ export function useStakingPallet() {
 
         return api.tx.parachainStaking.leaveDelegators();
       },
+      createUpdateDelegatorRewardsExtrinsic() {
+        if (!api) {
+          return undefined;
+        }
+        return api.tx.parachainStaking?.incrementDelegatorRewards();
+      },
     };
   }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards, ss58Format]);
 
