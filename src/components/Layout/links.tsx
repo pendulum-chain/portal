@@ -68,7 +68,7 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './collators',
-    title: 'Collators',
+    title: 'Staking',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
