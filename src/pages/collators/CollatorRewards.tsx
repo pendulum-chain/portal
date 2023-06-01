@@ -1,0 +1,110 @@
+import { useEffect, useMemo, useState } from 'react';
+import RewardsIcon from '../../assets/collators-rewards-icon';
+import StakedIcon from '../../assets/collators-staked-icon';
+import { nativeToFormat } from '../../helpers/parseNumbers';
+import { UserStaking } from './columns';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
+import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
+import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
+
+function CollatorRewards() {
+  const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
+  const [userStaking, setUserStaking] = useState<UserStaking>();
+  const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
+
+  const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
+  const { walletAccount } = useGlobalState();
+  const { candidates, estimatedRewards } = useStakingPallet();
+
+  const userAccountAddress = useMemo(() => {
+    return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
+  }, [walletAccount, ss58Format]);
+
+  useMemo(() => {
+    setUserStaking(undefined);
+    return candidates?.forEach((candidate) => {
+      const isDelegator = candidate.delegators.find((delegator) => delegator.owner === userAccountAddress);
+      if (isDelegator) {
+        setUserStaking({
+          candidateId: candidate.id,
+          amount: isDelegator.amount,
+        });
+      }
+    });
+  }, [candidates, userAccountAddress, setUserStaking]);
+
+  useEffect(() => {
+    const fetchAvailableBalance = async () => {
+      if (!api || !walletAccount) {
+        return '0';
+      }
+      const { data: balance } = await api.query.system.account(walletAccount?.address);
+      return balance.free.sub(balance.miscFrozen).toString();
+    };
+
+    fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
+  }, [api, walletAccount]);
+
+  return (
+    <>
+      <div className="flex mb-8 justify-between">
+        <div className="card gap-0 rounded-lg bg-base-200 w-1/2 mr-4 collators-box">
+          <div className="card-body">
+            <h2 className="card-title">Collators</h2>
+            <div className="flex flex-row">
+              <div className="flex-initial pr-5">
+                <StakedIcon />
+              </div>
+              <div className="flex-auto">
+                <h3>{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
+                <p>My Staking</p>
+              </div>
+              <div className="flex-auto">
+                <h3>{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
+                <p>Free balance</p>
+              </div>
+              <div className="flex flex-auto place-content-end">
+                <button className="btn btn-secondary w-full" disabled>
+                  0 {tokenSymbol} Unboarding
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="card rounded-lg bg-base-200 w-1/2 ml-4 collators-box">
+          <div className="card-body">
+            <h2 className="card-title">Staking Rewards</h2>
+            <div className="flex flex-row">
+              <div className="flex-initial pt-1 pr-5 pb-0">
+                <RewardsIcon />
+              </div>
+              <div className="flex-auto">
+                <h4>{nativeToFormat(estimatedRewards, tokenSymbol)}</h4>
+                <p>Estimated reward</p>
+              </div>
+              <div className="flex flex-auto place-content-end">
+                <button
+                  onClick={() => setClaimDialogOpen(true)}
+                  className="btn btn-primary w-1/3"
+                  disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
+                >
+                  Claim
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ClaimRewardsDialog
+        userRewardsBalance={estimatedRewards}
+        tokenSymbol={tokenSymbol}
+        visible={claimDialogOpen}
+        onClose={() => setClaimDialogOpen(false)}
+      />
+    </>
+  );
+}
+
+export default CollatorRewards;

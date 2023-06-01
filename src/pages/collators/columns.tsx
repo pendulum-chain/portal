@@ -30,8 +30,14 @@ export const nameColumn: ColumnDef<TCollator> = {
   accessorKey: 'collator',
   accessorFn: ({ identityInfo }) => identityInfo?.display || '0',
   cell: ({ row }) => {
+    const desc = row.original.identityInfo
+      ? `${row.original.identityInfo.email ? row.original.identityInfo.email + '\n' : ''}` +
+        `${row.original.identityInfo.riot ? row.original.identityInfo.riot + '\n' : ''}` +
+        `${row.original.identityInfo.twitter ? row.original.identityInfo.twitter + '\n' : ''}` +
+        `${row.original.identityInfo.web ? row.original.identityInfo.web + '\n' : ''}`
+      : '';
     return (
-      <div className="flex flex-row">
+      <div className="flex flex-row" title={desc}>
         <div className="mr-2">{(row.original.identityInfo ? row.original.identityInfo.display : 'Unknown') + ' |'}</div>
         <CopyableAddress publicKey={row.original.candidate.id} variant="short" inline />
       </div>
