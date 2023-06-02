@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'react';
 import Table from '../../components/Table';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
-import { calculateDeadline, estimateRequestCreationTime } from '../../helpers/spacewalk';
+import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
@@ -22,15 +22,17 @@ import {
   detailsColumnCreator,
   statusColumn,
   transactionIdColumn,
-  typeColumn,
+  typeColumnCreator,
   updatedColumn,
 } from './TransfersColumns';
 import './styles.css';
+import { useGlobalState } from '../../GlobalStateProvider';
 
 function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
   const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const { tenantName } = useGlobalState().state;
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
@@ -62,7 +64,7 @@ function Transfers(): JSX.Element {
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
+          asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.issue,
           status: timedOut ? 'Cancelled' : e.request.status.type,
@@ -74,7 +76,7 @@ function Transfers(): JSX.Element {
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: e.request.asset.asStellar.asAlphaNum4.code.toHuman()?.toString(),
+          asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.redeem,
           status: e.request.status.type,
@@ -89,8 +91,9 @@ function Transfers(): JSX.Element {
 
   const columns = useMemo(() => {
     const detailsColumn = detailsColumnCreator(setCurrentTransfer);
+    const typeColumn = typeColumnCreator(tenantName);
     return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn, detailsColumn];
-  }, []);
+  }, [tenantName, setCurrentTransfer]);
 
   return (
     <div className="overflow-x-auto mt-10">

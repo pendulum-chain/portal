@@ -41,7 +41,7 @@ function LabelledSelector<T extends Item>(props: Props<T>) {
         value={value?.id}
       >
         {items.map((item) => (
-          <option key={item.id} value={item.id.toString()}>
+          <option key={item.id} value={item.id.toString()} className="bg-base-200">
             {item.displayName}
           </option>
         ))}

@@ -1,40 +1,96 @@
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
+import {
+  OrmlTokensAccountData,
+  PalletBalancesAccountData,
+  SpacewalkPrimitivesCurrencyId,
+} from '@polkadot/types/lookup';
+import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import Banner from '../../assets/banner-spacewalk-4x.png';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
+import { currencyToString } from '../../helpers/spacewalk';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
+
+interface TokenBalances {
+  [tokenId: string]: OrmlTokensAccountData;
+}
 
 function Dashboard() {
-  const { walletAccount } = useGlobalState();
   const {
-    state: { api, tokenSymbol },
+    walletAccount,
+    state: { tenantName, tenantRPC },
+  } = useGlobalState();
+  const {
+    state: { api, tokenSymbol, ss58Format },
   } = useNodeInfoState();
+  const { getVaults } = useVaultRegistryPallet();
 
   const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
+  const [accountTokenBalances, setAccountTokenBalances] = useState<TokenBalances>({});
 
   useEffect(() => {
-    if (!walletAccount?.address) return;
-
+    if (!walletAccount?.address || !tenantRPC) {
+      setAccountBalance(undefined);
+      return;
+    }
     api?.query.system
       .account(walletAccount.address)
       .then((data) => {
-        console.log('setting balance');
         setAccountBalance(data.data);
       })
       .catch((e) => console.error(e));
-  }, [api, walletAccount]);
+  }, [api, walletAccount, tenantRPC]);
 
   const cachedBalance = useMemo(() => {
     if (!accountBalance) return undefined;
     return prettyNumbers(nativeToDecimal(accountBalance.free.toString()).toNumber());
   }, [accountBalance]);
 
+  const vaults = getVaults();
+
+  const availableCurrencies = useMemo(() => {
+    const currencies: SpacewalkPrimitivesCurrencyId[] = [];
+    vaults.forEach((vault) => {
+      currencies.push(vault.id.currencies.wrapped);
+      currencies.push(vault.id.currencies.collateral);
+    });
+
+    // Deduplicate assets
+    return _.uniqBy(currencies, (currencyId: SpacewalkPrimitivesCurrencyId) => currencyId.toHex());
+  }, [vaults]);
+
+  useEffect(() => {
+    if (!walletAccount || !availableCurrencies) return;
+
+    async function fetchBridgedTokens(address: string, asset: SpacewalkPrimitivesCurrencyId) {
+      if (!api) return;
+      return api.query.tokens.accounts(address, asset);
+    }
+
+    availableCurrencies.forEach((currencyId) => {
+      const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+      fetchBridgedTokens(walletAddress, currencyId).then((balance) => {
+        const tokenId = currencyToString(currencyId, tenantName);
+        setAccountTokenBalances((balances) => {
+          let newBalances = balances;
+          if (tokenId && balance) {
+            newBalances[tokenId] = balance;
+            newBalances = Object.assign({}, balances);
+          }
+
+          return newBalances;
+        });
+      });
+    });
+  }, [availableCurrencies, walletAccount, api, ss58Format, tenantName]);
+
   return (
     <div className="mt-10">
       <div className="card card-compact w-2/3 banner rounded-md mb-6 bg-base-200">
-        <a target="blank" href="https://pendulumchain.org/">
+        <a target="blank" href="https://pendulumchain.org/spacewalk">
           <div className="card-body">
             <div className="card-title block">
               <h2 className={'float-left'}>Promo</h2>
@@ -52,12 +108,27 @@ function Dashboard() {
           <div className="balance">
             {cachedBalance && (
               <div className="self-center">
-                <h2 className="flex justify-center">Total balance</h2>
-                <h1 className="flex justify-center">
+                <h2 className="flex">
                   {cachedBalance} {tokenSymbol}
-                </h1>
+                </h2>
               </div>
             )}
+            <ul>
+              <li />
+              {Object.entries(accountTokenBalances).map(([tokenId, balance]) => {
+                if (!balance.free.isZero()) {
+                  // If it's a Stellar asset we are interested in the code which is the first part of the stringified token id
+                  const assetCode = tokenId.split(':')[0];
+                  return (
+                    <li key={tokenId} title={tokenId}>
+                      <h2 className="flex">
+                        {nativeToDecimal(balance.free.toString()).toFixed()} {assetCode}
+                      </h2>
+                    </li>
+                  );
+                }
+              })}
+            </ul>
             {!cachedBalance && (
               <>
                 <p>You have to connect a wallet to see your available balance. </p>

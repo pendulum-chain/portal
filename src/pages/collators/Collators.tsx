@@ -20,12 +20,15 @@ import {
 } from './columns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
+import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
+import { PalletIdentityRegistrarInfo } from '@polkadot/types/lookup';
 
 function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
 
   const { candidates, inflationInfo, estimatedRewards } = useStakingPallet();
+  const { identityOf } = useIdentityPallet();
 
   // Holds the candidate for which the delegation modal is to be shown
   const [selectedCandidate, setSelectedCandidate] = useState<ParachainStakingCandidate | undefined>(undefined);
@@ -34,6 +37,7 @@ function Collators() {
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [unbonding, setUnbonding] = useState<boolean>(false);
+  const [data, setData] = useState<TCollator[] | undefined>();
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
@@ -64,19 +68,37 @@ function Collators() {
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
   }, [api, walletAccount]);
 
-  const data = useMemo<TCollator[] | undefined>(
-    () =>
-      candidates?.map((candidate) => {
-        return {
-          candidate: candidate,
-          collator: candidate.id,
-          totalStaked: nativeToFormat(candidate.total, tokenSymbol),
-          delegators: candidate.delegators.length,
-          apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
-        };
-      }),
-    [candidates, inflationInfo?.delegator.rewardRate.annual, tokenSymbol],
-  );
+  useEffect(() => {
+    const identitiesPrefetch = async (candidatesArray: any) => {
+      const m: Map<string, PalletIdentityInfo | undefined> = new Map();
+      for (let i = 0; i < candidatesArray.length; i++) {
+        const c = candidatesArray[i];
+        m.set(c.id, await identityOf(c.id));
+      }
+      return m;
+    };
+
+    const decorateCandidates = (
+      candidatesArray: ParachainStakingCandidate[],
+      identities: Map<string, PalletIdentityInfo | undefined>,
+    ) => {
+      return candidatesArray?.map((candidate) => ({
+        candidate: candidate,
+        collator: candidate.id,
+        identityInfo: identities.get(candidate.id),
+        totalStaked: nativeToFormat(candidate.total, tokenSymbol),
+        delegators: candidate.delegators.length,
+        apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
+      }));
+    };
+
+    if (candidates) {
+      identitiesPrefetch(candidates).then((identitiesMap) => {
+        const d = decorateCandidates(candidates, identitiesMap);
+        setData(d);
+      });
+    }
+  }, [candidates, inflationInfo?.delegator.rewardRate.annual, tokenSymbol, identityOf]);
 
   const columns = useMemo(() => {
     return [
@@ -90,14 +112,15 @@ function Collators() {
         walletAccount,
         userStaking,
         setSelectedCandidate,
+        setUnbonding,
       }),
     ];
-  }, [tokenSymbol, userAccountAddress, userStaking, walletAccount]);
+  }, [tokenSymbol, userAccountAddress, userStaking, walletAccount, setUnbonding]);
 
   return (
     <div className="overflow-x-auto collators-list-container mt-10">
       <div className="flex mb-8 justify-between">
-        <div className="card gap-0 rounded-lg text-primary-content bg-base-200 w-1/2 mr-4 collators-box">
+        <div className="card gap-0 rounded-lg bg-base-200 w-1/2 mr-4 collators-box">
           <div className="card-body">
             <h2 className="card-title">Collators</h2>
             <div className="flex flex-row">
@@ -120,7 +143,7 @@ function Collators() {
             </div>
           </div>
         </div>
-        <div className="card rounded-lg text-primary-content bg-base-200 w-1/2 ml-4 collators-box">
+        <div className="card rounded-lg bg-base-200 w-1/2 ml-4 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking Rewards</h2>
             <div className="flex flex-row">
@@ -167,6 +190,7 @@ function Collators() {
         data={data}
         columns={columns}
         isLoading={!candidates}
+        sortBy="collator"
         search={false}
         pageSize={8}
       />

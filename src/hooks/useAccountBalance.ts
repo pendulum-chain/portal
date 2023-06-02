@@ -32,9 +32,10 @@ export const useAccountBalance = (): UseAccountBalanceResponse => {
   const { data } = query;
 
   const balance = useMemo(() => {
-    if (!data?.data) return undefined;
+    if (!data?.data || !walletAccount) return undefined;
     return prettyNumbers(nativeToDecimal(data.data.free).toNumber());
-  }, [data?.data]);
+  }, [data?.data, walletAccount]);
+
 
   return {
     globalState,

@@ -34,7 +34,10 @@ export function App() {
           <Route path="dashboard" element={Dashboard} />
           <Route path="amm" element={Amm} />
           <Route path="stats" element={StatsPage} />
-          <Route path="transfers" element={TransfersPage} />
+          <Route path="spacewalk">
+            <Route path="bridge" element={Bridge} />
+            <Route path="transfers" element={TransfersPage} />
+          </Route>
           <Route path="amber">
             <Route path="" element={AmberPage} />
             <Route path="swap" element={SwapPage} />
@@ -42,7 +45,6 @@ export function App() {
             <Route path="backstop-pools" element={BackstopPoolsPage} />
             <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="bridge/:to?" element={Bridge} />
           <Route path="collators" element={Collators} />
           <Route path="*" element={<NotFound />} />
         </Route>

@@ -3,6 +3,7 @@ import { Option } from '@polkadot/types-codec';
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 interface ParachainStakingDelegator {
@@ -39,6 +40,7 @@ const defaultTransactionFees = {
   joinDelegators: Big(0),
   delegatorStakeMore: Big(0),
   delegatorStakeLess: Big(0),
+  leaveDelegators: Big(0),
 };
 
 type ParachainStakingFees = typeof defaultTransactionFees;
@@ -46,6 +48,7 @@ type ParachainStakingFees = typeof defaultTransactionFees;
 export function useStakingPallet() {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
+  const { ss58Format } = useNodeInfoState().state;
 
   const [candidates, setCandidates] = useState<ParachainStakingCandidate[]>();
   const [inflationInfo, setInflationInfo] = useState<ParachainStakingInflationInflationInfo | undefined>(undefined);
@@ -83,7 +86,8 @@ export function useStakingPallet() {
 
     const fetchEstimatedReward = async () => {
       if (!walletAccount) return '0';
-      return (await api.query.parachainStaking.rewards(walletAccount?.address)).toString();
+      const formattedAddr = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+      return (await api.query.parachainStaking.rewards(formattedAddr)).toString();
     };
 
     const fetchFees = async () => {
@@ -94,10 +98,12 @@ export function useStakingPallet() {
       const jdi = await pallet.joinDelegators(dummyAddress, '0').paymentInfo(sender);
       const dsmi = await pallet.delegatorStakeMore(dummyAddress, '0').paymentInfo(sender);
       const dsli = await pallet.delegatorStakeLess(dummyAddress, '0').paymentInfo(sender);
+      const lds = await pallet.leaveDelegators().paymentInfo(sender);
 
       fees.joinDelegators = new Big(jdi.partialFee.toString());
       fees.delegatorStakeMore = new Big(dsmi.partialFee.toString());
       fees.delegatorStakeLess = new Big(dsli.partialFee.toString());
+      fees.leaveDelegators = new Big(lds.partialFee.toString());
 
       return fees;
     };
@@ -161,8 +167,15 @@ export function useStakingPallet() {
 
         return api.tx.parachainStaking?.joinDelegators(collatorAddress, amountNative);
       },
+      createLeaveDelegatorsExtrinsic() {
+        if (!api) {
+          return undefined;
+        }
+
+        return api.tx.parachainStaking.leaveDelegators();
+      },
     };
-  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
+  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards, ss58Format]);
 
   return memo;
 }

@@ -1,6 +1,5 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
@@ -16,14 +15,14 @@ import OpenWallet from '../../components/OpenWallet';
 import TransferCountdown from '../../components/TransferCountdown';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import { decimalToStellarNative, format, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -114,7 +113,7 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [remainingDurationString, setRemainingDurationString] = useState<string>('');
+  const [_, setRemainingDurationString] = useState<string>('');
 
   const totalAmount = useMemo(
     () =>
@@ -180,7 +179,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
             Send {totalAmount} {asset?.getCode()}
           </div>
           <div className="text-sm">
-            (issued by {asset && <PublicKey variant="short" publicKey={asset?.getIssuer()} />})
+            {asset && asset.getIssuer() && (
+              <>
+                issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+              </>
+            )}
           </div>
           <div className="text mt-4">With the text memo</div>
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
@@ -190,9 +193,11 @@ function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
         </div>
         <Divider />
         <div>
-          <div className="text-sm">
-            Warning: Make sure that the USDC you are sending are issued by the correct issuer.
-          </div>
+          {asset?.getAssetType() !== 'native' && (
+            <div className="text-sm">
+              Warning: Make sure that the {asset?.code} you are sending are issued by the correct issuer.
+            </div>
+          )}
         </div>
         <div className="text-sm mt-4">
           Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
@@ -221,16 +226,18 @@ interface IssueProps {
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
 
-  const [selectedVault, setSelectedVault] = useState<VaultRegistryVault>();
+  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
+  const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { getVaults } = useVaultRegistryPallet();
+  const { getVaults, getVaultsWithIssuableTokens } = useVaultRegistryPallet();
   const { walletAccount, dAppName } = useGlobalState();
+
   const { api } = useNodeInfoState().state;
 
   const { control, handleSubmit, watch } = useForm<IssueFormInputs>({
@@ -239,11 +246,21 @@ function Issue(props: IssueProps): JSX.Element {
     },
   });
 
-  console.log('walletaccount', walletAccount);
-
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
-  const vaults = getVaults();
+
+  useEffect(() => {
+    const combinedVaults: ExtendedRegistryVault[] = [];
+    getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
+      getVaults().forEach((vaultFromRegistry) => {
+        const found = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+        const extended: ExtendedRegistryVault = vaultFromRegistry;
+        extended.issuableTokens = found ? found[1] : undefined;
+        combinedVaults.push(extended);
+      });
+      setExtendedVaults(combinedVaults);
+    });
+  }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens]);
 
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
@@ -251,6 +268,7 @@ function Issue(props: IssueProps): JSX.Element {
   }, [amount]);
 
   const wrappedAssets = useMemo(() => {
+    if (!vaults) return;
     const assets = vaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
@@ -264,6 +282,8 @@ function Issue(props: IssueProps): JSX.Element {
   }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
+    if (!vaults) return;
+
     return vaults.filter((vault) => {
       if (!selectedAsset) {
         return false;
@@ -275,18 +295,20 @@ function Issue(props: IssueProps): JSX.Element {
   }, [selectedAsset, vaults]);
 
   useEffect(() => {
-    if (!manualVaultSelection) {
-      // TODO build a better algorithm for automatically selecting a vault
-      if (vaultsForCurrency.length > 0) {
-        setSelectedVault(vaultsForCurrency[0]);
-      }
-      if (!selectedAsset && wrappedAssets.length > 0) {
-        setSelectedAsset(wrappedAssets[0]);
-      }
-    } else {
-      // If the user manually selected a vault, but it's not available anymore, we reset the selection
-      if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
-        setSelectedVault(vaultsForCurrency[0]);
+    if (vaultsForCurrency && wrappedAssets) {
+      if (!manualVaultSelection) {
+        // TODO build a better algorithm for automatically selecting a vault
+        if (vaultsForCurrency.length > 0) {
+          setSelectedVault(vaultsForCurrency[0]);
+        }
+        if (!selectedAsset && wrappedAssets.length > 0) {
+          setSelectedAsset(wrappedAssets[0]);
+        }
+      } else {
+        // If the user manually selected a vault, but it's not available anymore, we reset the selection
+        if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
+          setSelectedVault(vaultsForCurrency[0]);
+        }
       }
     }
   }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
@@ -369,6 +391,9 @@ function Issue(props: IssueProps): JSX.Element {
                   if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
+                  if (parseFloat(value) > parseFloat(selectedVault?.issuableTokens?.toString() || '0')) {
+                    return 'Amount is higher than the vault can issue.';
+                  }
                 },
               }}
               name="amount"
@@ -378,19 +403,33 @@ function Issue(props: IssueProps): JSX.Element {
                   error={error?.message}
                   label="From Stellar"
                   type="number"
+                  min="0"
                   step="any"
                   style={{ flexGrow: 2 }}
+                  onKeyPress={(e: KeyboardEvent) => {
+                    if (e.code === 'Minus' || e.code === 'KeyE') {
+                      e.preventDefault();
+                    }
+                  }}
                   {...field}
                 />
               )}
             />
             <div className="px-1" />
-            <AssetSelector
-              selectedAsset={selectedAsset}
-              assets={wrappedAssets}
-              onChange={setSelectedAsset}
-              style={{ flexGrow: 1 }}
-            />
+            {wrappedAssets && (
+              <AssetSelector
+                selectedAsset={selectedAsset}
+                assets={wrappedAssets}
+                onChange={setSelectedAsset}
+                style={{ flexGrow: 1 }}
+              />
+            )}
+          </div>
+          <div className="flex align-center mt-4">
+            <span className="text-sm">{`Max issuable: ${nativeToDecimal(
+              selectedVault?.issuableTokens?.toString() || 0,
+            ).toFixed(2)} 
+              ${selectedAsset?.code}`}</span>
           </div>
           <div className="flex align-center mt-4">
             <Checkbox
@@ -404,8 +443,13 @@ function Issue(props: IssueProps): JSX.Element {
             />
             <span className="ml-2">Manually select vault</span>
           </div>
-          {manualVaultSelection && (
-            <VaultSelector vaults={vaultsForCurrency} onChange={setSelectedVault} selectedVault={selectedVault} />
+          {manualVaultSelection && vaultsForCurrency && (
+            <VaultSelector
+              vaults={vaultsForCurrency}
+              onChange={setSelectedVault}
+              selectedVault={selectedVault}
+              showMaxTokensFor="issuableTokens"
+            />
           )}
           <FeeBox
             amountNative={amountNative}

@@ -11,12 +11,14 @@ import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import Versions from './Versions';
 import './styles.sass';
+import ChainSelector from '../ChainSelector';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
   const params = useParams();
   const { state, setState, dAppName } = useGlobalState();
   const isPendulum = state.tenantName === TenantName.Pendulum;
+  const isTestnet = state.tenantName === TenantName.Foucoco;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
@@ -66,6 +68,7 @@ export default function Layout(): JSX.Element | null {
             alt=""
             style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
           />
+          {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
           <Nav />
           <div className="sidebar-footer">
             <Versions tenantName={state.tenantName} />
@@ -81,6 +84,7 @@ export default function Layout(): JSX.Element | null {
               <button className="menu" onClick={() => setVisible((prev) => !prev)} />
             </div>
             <OpenWallet dAppName={dAppName} />
+            <ChainSelector tenantName={state.tenantName} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>

@@ -30,7 +30,6 @@
 }
 
 .portfolio {
-  width: 300px;
   height: 95%;
   background-color: var(--portfolio-bg);
   border-radius: 5px;
