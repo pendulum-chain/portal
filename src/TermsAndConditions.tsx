@@ -3,10 +3,8 @@ import { Button, Checkbox, Link, Modal, Theme } from 'react-daisyui';
 import { CloseButton } from './components/CloseButton';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
-const EXPIRE_DATE = 30 * 24 * 60 * 60; // 30 days in seconds
-
 const TermsAndConditions = (p: PropsWithChildren) => {
-  const { state, set } = useLocalStorage<string | undefined>({ key: 'termsAndConditions', expire: EXPIRE_DATE });
+  const { state, set } = useLocalStorage<string | undefined>({ key: 'termsAndConditions' });
   const [checked, setChecked] = useState<boolean>(false);
 
   const acceptTerms = () => {
@@ -17,22 +15,21 @@ const TermsAndConditions = (p: PropsWithChildren) => {
     <></>
   ) : (
     <Modal open={true} style={{ borderRadius: '5px' }}>
-      <Modal.Header className="text-3xl">T&C</Modal.Header>
+      <Modal.Header className="text-3xl">T&Cs</Modal.Header>
       <Modal.Body>
         <div className="text-lg mb-5">
-          {'By clicking Agree you accept the '}
           <Link
             style={{ textDecoration: 'underline' }}
-            color="primary"
+            color="accent"
             target="_blank"
             href="https://pendulumchain.org/legal/portal-terms-and-conditions"
           >
-            Terms and Conditions.
+            View Terms and Conditions
           </Link>
         </div>
         <div className="text-lg flex">
           <Checkbox checked={checked} onClick={() => setChecked(!checked)} color="primary" size="md" />
-          <span className="pl-2">Don't show this message again for 30 days.</span>
+          <span className="pl-2">I have read and accept the terms and conditions</span>
         </div>
       </Modal.Body>
       <Modal.Actions className="justify-center mt-10">
