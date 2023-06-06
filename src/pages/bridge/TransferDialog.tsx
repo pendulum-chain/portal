@@ -19,6 +19,8 @@ import WarningDialogIcon from '../../assets/dialog-status-warning';
 import TransferCountdown from '../../components/TransferCountdown';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { toTitle } from '../../helpers/string';
+import { useOraclePallet } from '../../hooks/oracle/oracle';
+import { Float } from '@polkadot/types-codec';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -204,21 +206,31 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const tenant = useGlobalState().state.tenantName;
+  const [exchangeRate, setExchangeRate] = useState<number | undefined>(undefined);
+  const { getExchangeRate } = useOraclePallet();
 
-  const stellarAsset = currencyToString(transfer.original.asset);
-  const collateralAsset = transfer.original.vault.currencies.collateral;
+  const stellarAsset = currencyToString(transfer.original.asset)?.split(':')[0];
+  const collateralAsset = currencyToString(transfer.original.vault.currencies.collateral, tenant);
+  const amount = transfer.amount;
+
+  useEffect(() => {
+    getExchangeRate(transfer.original.vault.currencies.collateral, transfer.original.vault.currencies.wrapped).then(
+      (e) => setExchangeRate(e),
+    );
+  }, [setExchangeRate, getExchangeRate]);
+
+  const convertedAmount = useMemo(
+    () => (exchangeRate ? parseFloat(transfer.amount) * exchangeRate : 0),
+    [transfer.amount, exchangeRate],
+  );
 
   const content = (
     <>
       <div className="text-md">
-        {'Your redeem request failed but you decided to burn ' +
-          stellarAsset +
-          ' in return for ' +
-          currencyToString(collateralAsset, tenant)}
+        {`Your redeem request failed but you decided to burn ${amount} ${stellarAsset} in return for ${convertedAmount.toFixed(
+          2,
+        )} ${collateralAsset}`}
       </div>
-      <h1 className="text-xl">
-        {transfer.amount} {stellarAsset}
-      </h1>
       <div className="mt-4" />
     </>
   );
