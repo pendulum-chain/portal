@@ -12,7 +12,7 @@
   background: rgba(255, 255, 255, 0.07);
 }
 
-.status-box.completed {
+.status-box.completed, .status-box.reimbursed {
   background: rgba(28, 203, 138, 0.07);
 }
 
@@ -32,7 +32,7 @@
   background-color: #fff;
 }
 
-.status-dot.completed {
+.status-dot.completed, .status-dot.reimbursed {
   background-color: #1CCB8A;
 }
 
