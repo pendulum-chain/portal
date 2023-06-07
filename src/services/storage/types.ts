@@ -5,4 +5,5 @@ export interface Storage {
   getBoolean: (key: string) => boolean | undefined;
   set: (key: string, value: unknown) => void;
   remove: (key: string) => void;
+  removeExpired: () => void;
 }

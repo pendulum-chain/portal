@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat
 import { debounce } from '../helpers/function';
 import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';
+import { DateTime } from 'luxon';
+import { storageKeys } from '../constants/localStorage';
 
 export type UseLocalStorageProps<T> = {
   /** Storage key */
@@ -10,6 +12,8 @@ export type UseLocalStorageProps<T> = {
   parse?: boolean;
   /** Should the value updating be debounced (eg.: for quickly changing values) */
   debounce?: number;
+  /** Should the value expire? Indicate time in seconds, or false for no expiry date. */
+  expire?: number | false;
 } & (T extends undefined
   ? {
       /** Default/fallback value */
@@ -47,6 +51,7 @@ export const useLocalStorage = <T>({
   defaultValue,
   parse = false,
   debounce: debounceTime,
+  expire
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
   type TResponse = UseLocalStorageResponse<T>;
   const firstRef = useRef(false);
@@ -60,6 +65,13 @@ export const useLocalStorage = <T>({
     (value) => {
       storageSet(key, value);
       setState(value);
+      if (expire) {
+        const expiryDate = DateTime.now().plus({ seconds: expire });
+        const expiryKey = `${key}${storageKeys.EXPIRY_DATE}`;
+        storageSet(expiryKey, expiryDate);
+        debounce(storageService.remove, expire * 1000)(key);
+        debounce(storageService.remove, expire * 1000)(expiryKey);
+      } 
     },
     [key, storageSet],
   );
