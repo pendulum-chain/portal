@@ -1697,62 +1697,44 @@
   dependencies:
     "@open-web3/orml-type-definitions" "1.1.4"
 
-"@pendulum-chain/api-derive@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.3.1.tgz#75d793a3cb1e315c72a02f3b3db2534282c40aae"
-  integrity sha512-XxmRm4I0YWyIJdpv3jPiuOTyCbukx6fSn7OdIjLkaqtXunccI2vmHcb0AruxkUIIP1YXhYL+7wjWdaWAlGsMsg==
+"@pendulum-chain/api-derive@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.3.2.tgz#ab715da721296cf15e20929c5db345107a907fdc"
+  integrity sha512-X5UYSGqS7JwgtyJpihlR4a3KjCJx1C3T0RRf5DOZKVbQMgveamn7clpjeOJIxnJ8PCObc5aBWzO4O96pBiakMQ==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-types" "^1.1.4"
-    "@pendulum-chain/types" "0.3.1"
+    "@pendulum-chain/types" "0.3.2"
     "@polkadot/api-derive" "^10.6.1"
 
-"@pendulum-chain/api@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/api/-/api-0.3.1.tgz#5122fad552fe7f0befa2766ecfacc58ab4902f42"
-  integrity sha512-kFYKykQCrWi2dpqytyjYV543SQlswEFUiVT11BIlZpEwlPE3kFB/g0Xt5jfEKsVLIAIWmEVj5gMkbZlSWUKMEw==
+"@pendulum-chain/api@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api/-/api-0.3.2.tgz#e87ecc3f2d0abb550d8901cf978e0e7970cce221"
+  integrity sha512-E0U3dL+RyNQSbAgRRgAzShmBWD2FBiiN6KiUds/Goi5bQLemnNfnYeE+3t22K/bnPwOM/DHFAAXtvlD+Ef1JiA==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-api-derive" "^1.1.4"
-    "@pendulum-chain/api-derive" "0.3.1"
-    "@pendulum-chain/types" "^0.3.1"
+    "@pendulum-chain/api-derive" "0.3.2"
+    "@pendulum-chain/types" "^0.3.2"
     "@polkadot/api" "^10.6.1"
 
-"@pendulum-chain/type-definitions@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/type-definitions/-/type-definitions-0.2.3.tgz#49090071fea6f5154d3e3f1f46eeafdc00f269b5"
-  integrity sha512-ylw+M1LJ/kO3anptQBBZnh+YvhSJA/m0JuXf9uBxRhQkawBV+0spr+hHQwLT7hUkwE8Eo6O/eaOfZuys0MZtmQ==
+"@pendulum-chain/type-definitions@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/type-definitions/-/type-definitions-0.3.2.tgz#302f005b4e12d63391b927f03d8e494fc32a341f"
+  integrity sha512-XTYJihvDJEPH1QJgxo1wy0nFJUhlO2WLmtlzXISD0R0CuFc//10jSyRyMNPBB8T6LVouCh8H0yFspV4H42mKBw==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-type-definitions" "^1.1.4"
 
-"@pendulum-chain/type-definitions@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/type-definitions/-/type-definitions-0.3.1.tgz#51343f587aea110c0293524322e0fda7cd800e45"
-  integrity sha512-O97igvf3WIrQkt5QcpXALN8ho9sq/xP9mz3KcEDy9LeEeo+Nv3ZcljcVanYRQ0AWrGWLjcmP4Zee85yySGG88g==
-  dependencies:
-    "@babel/runtime" "^7.10.2"
-    "@open-web3/orml-type-definitions" "^1.1.4"
-
-"@pendulum-chain/types@0.3.1", "@pendulum-chain/types@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/types/-/types-0.3.1.tgz#5509e108d6b78671ee2d7cd6ef3e588361b3eed5"
-  integrity sha512-zH7tzPkTQu/FkXoHcr6zhEPn7BelsFrIIPGZQrV0C4Yj1CskdNHpHqPvC+slHrN4IdHBYcsNuDnoPbkdZpXUdQ==
+"@pendulum-chain/types@0.3.2", "@pendulum-chain/types@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/types/-/types-0.3.2.tgz#5274fa338b63720836e14630eec737024f64b387"
+  integrity sha512-Y7NKCDJQodd+jZhOCK2kPtlrkAJfL3aWGf5aLnNiTJbHzPVN64aaYeJvn8zuEbZwZCqWUGBbH0sblSo4o9b4Gg==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/api-mobx" "^1.1.4"
     "@open-web3/orml-types" "^1.1.4"
-    "@pendulum-chain/type-definitions" "0.3.1"
-
-"@pendulum-chain/types@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/types/-/types-0.2.3.tgz#efaab90ba235eda5a81a332adefdcebcdeb892f6"
-  integrity sha512-cXnZFuW4sg0PYnn8pdzUaWIao/i9+PO73SCI1N7PtQQ4IjeqymbDDZwcTrufOTtvL9R9hmeuMPrp+vWiaodFnw==
-  dependencies:
-    "@babel/runtime" "^7.10.2"
-    "@open-web3/api-mobx" "^1.1.4"
-    "@open-web3/orml-types" "^1.1.4"
-    "@pendulum-chain/type-definitions" "0.2.3"
+    "@pendulum-chain/type-definitions" "0.3.2"
 
 "@pnpm/config.env-replace@^1.1.0":
   version "1.1.0"
@@ -2655,12 +2637,7 @@
     pako "^2.0.4"
     ws "^8.8.1"
 
-"@substrate/ss58-registry@^1.38.0":
-  version "1.40.0"
-  resolved "https://registry.yarnpkg.com/@substrate/ss58-registry/-/ss58-registry-1.40.0.tgz#2223409c496271df786c1ca8496898896595441e"
-  integrity sha512-QuU2nBql3J4KCnOWtWDw4n1K4JU0T79j54ZZvm/9nhsX6AIar13FyhsaBfs6QkJ2ixTQAnd7TocJIoJRWbqMZA==
-
-"@substrate/ss58-registry@^1.40.0":
+"@substrate/ss58-registry@^1.38.0", "@substrate/ss58-registry@^1.40.0":
   version "1.40.0"
   resolved "https://registry.yarnpkg.com/@substrate/ss58-registry/-/ss58-registry-1.40.0.tgz#2223409c496271df786c1ca8496898896595441e"
   integrity sha512-QuU2nBql3J4KCnOWtWDw4n1K4JU0T79j54ZZvm/9nhsX6AIar13FyhsaBfs6QkJ2ixTQAnd7TocJIoJRWbqMZA==
@@ -5133,12 +5110,7 @@ eventemitter3@^4.0.4, eventemitter3@^4.0.7:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-eventemitter3@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-5.0.1.tgz#53f5ffd0a492ac800721bb42c66b841de96423c4"
-  integrity sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==
-
-eventemitter3@^5.0.1:
+eventemitter3@^5.0.0, eventemitter3@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-5.0.1.tgz#53f5ffd0a492ac800721bb42c66b841de96423c4"
   integrity sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==
@@ -7482,17 +7454,7 @@ next-tick@1, next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-nock@^13.3.0:
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-13.3.1.tgz#f22d4d661f7a05ebd9368edae1b5dc0a62d758fc"
-  integrity sha512-vHnopocZuI93p2ccivFyGuUfzjq2fxNyNurp7816mlT5V5HF4SzXu8lvLrVzBbNqzs+ODooZ6OksuSUNM7Njkw==
-  dependencies:
-    debug "^4.1.0"
-    json-stringify-safe "^5.0.1"
-    lodash "^4.17.21"
-    propagate "^2.0.0"
-
-nock@^13.3.1:
+nock@^13.3.0, nock@^13.3.1:
   version "13.3.1"
   resolved "https://registry.yarnpkg.com/nock/-/nock-13.3.1.tgz#f22d4d661f7a05ebd9368edae1b5dc0a62d758fc"
   integrity sha512-vHnopocZuI93p2ccivFyGuUfzjq2fxNyNurp7816mlT5V5HF4SzXu8lvLrVzBbNqzs+ODooZ6OksuSUNM7Njkw==
@@ -9362,14 +9324,7 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
-rxjs@^7.2.0, rxjs@^7.8.0:
-  version "7.8.1"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.1.tgz#6f6f3d99ea8044291efd92e7c7fcf562c4057543"
-  integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
-  dependencies:
-    tslib "^2.1.0"
-
-rxjs@^7.8.1:
+rxjs@^7.2.0, rxjs@^7.8.0, rxjs@^7.8.1:
   version "7.8.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.1.tgz#6f6f3d99ea8044291efd92e7c7fcf562c4057543"
   integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
