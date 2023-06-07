@@ -10,15 +10,20 @@ export function useOraclePallet() {
 
   const memo = useMemo(() => {
     return {
-      async currencyToUsd(amount: Balance, currency: CurrencyId) {},
-      async usdToCurrency(amount: Balance, currency: CurrencyId) {},
-      async getExchangeRate(currency_a: CurrencyId, currency_b: CurrencyId) {
-        // const currency_a_usd = await api?.rpc.oracle.currency_to_usd(1, currency_a);
-        // const currency_b_usd = await api?.rpc.oracle.currency_to_usd(1, currency_b);
-        // const rate = currency_a_usd / currency_b_usd;
-
-        // TODO unharcode once RPC calls are available
-        return 0.9;
+      async currencyToUsd(amount: Balance, currency: CurrencyId) {
+        if (!api) return;
+        return await api.rpc.oracle.currencyToUsd(toString(), currency);
+      },
+      async usdToCurrency(amount: Balance, currency: CurrencyId) {
+        if (!api) return;
+        return await api.rpc.oracle.usdToCurrency(amount.toString(), currency);
+      },
+      async getExchangeRate(currency_a: CurrencyId, currency_b: CurrencyId): Promise<number> {
+        if (!api) return 0;
+        const currency_a_usd = await api.rpc.oracle.currencyToUsd('1', currency_a);
+        const currency_b_usd = await api.rpc.oracle.currencyToUsd('1', currency_b);
+        const rate = currency_a_usd.amount.div(currency_b_usd.amount);
+        return rate.toNumber();
       },
     };
   }, [api]);
