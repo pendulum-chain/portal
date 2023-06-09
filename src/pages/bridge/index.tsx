@@ -2,43 +2,32 @@ import { useMemo, useState } from 'preact/hooks';
 import { Card, Tabs } from 'react-daisyui';
 import Issue from './Issue';
 import Redeem from './Redeem';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import './styles.css';
 
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(0);
-
-  // TODO - get the network from somewhere
-  const parachainNetwork = 'Amplitude';
-  const nativeCurrency = parachainNetwork === 'Amplitude' ? 'AMPE' : 'PEN';
-  const wrappedCurrencyPrefix = parachainNetwork === 'Amplitude' ? 'a' : 'p';
+  const { chain } = useNodeInfoState().state;
+  const nativeCurrency = chain === 'Amplitude' ? 'AMPE' : 'PEN';
+  const wrappedCurrencyPrefix = chain === 'Amplitude' ? 'a' : 'p';
 
   const Content = useMemo(() => {
+    if (!chain) return;
     switch (tabValue) {
       case 0:
-        return (
-          <Issue
-            network={parachainNetwork}
-            nativeCurrency={nativeCurrency}
-            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
-          />
-        );
+        return <Issue network={chain} nativeCurrency={nativeCurrency} wrappedCurrencyPrefix={wrappedCurrencyPrefix} />;
       case 1:
-        return (
-          <Redeem
-            network={parachainNetwork}
-            nativeCurrency={nativeCurrency}
-            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
-          />
-        );
+        return <Redeem network={chain} nativeCurrency={nativeCurrency} wrappedCurrencyPrefix={wrappedCurrencyPrefix} />;
     }
-  }, [nativeCurrency, tabValue, wrappedCurrencyPrefix]);
+  }, [chain, nativeCurrency, tabValue, wrappedCurrencyPrefix]);
 
-  return (
+  return chain ? (
     <div className="h-full flex items-center justify-center grid place-items-center mt-4">
-      <Card className="bg-base-200 min-h-500 min-w-535 w-fit">
+      <Card className="bridge-card min-h-500 min-w-535 w-fit">
         <div className="flex justify-between px-10 mt-5">
           <Tabs className="flex flex-grow" boxed value={tabValue} onChange={setTabValue}>
             <Tabs.Tab className="w-2/4 h-fit p-2" value={0}>
-              To {parachainNetwork}
+              To {chain}
             </Tabs.Tab>
             <Tabs.Tab className="w-2/4 h-fit p-2" value={1}>
               Back To Stellar
@@ -48,6 +37,8 @@ function Bridge(): JSX.Element | null {
         {Content}
       </Card>
     </div>
+  ) : (
+    <></>
   );
 }
 
