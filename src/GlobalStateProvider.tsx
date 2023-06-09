@@ -73,6 +73,7 @@ const GlobalStateProvider = ({
 
   useEffect(() => {
     const run = async () => {
+      storageService.removeExpired();
       if (!account) return;
       const name = storageService.get('@talisman-connect/selected-wallet-name');
       if (!name) return;
