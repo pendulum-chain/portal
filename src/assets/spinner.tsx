@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'preact/compat';
 
 export type SpinnerProps = {
   size?: number;

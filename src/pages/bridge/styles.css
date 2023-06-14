@@ -33,17 +33,16 @@
 }
 
 .status-dot.completed {
-  background-color: #1CCB8A;
+  background-color: #1ccb8a;
 }
 
 .status-dot.pending {
-  background-color: #EEB931;
+  background-color: #eeb931;
 }
 
 .status-dot.cancelled {
-  background-color: #EE3F14;
+  background-color: #ee3f14;
 }
-
 
 .transfer-list-table th {
   background-color: var(--table-background);
@@ -72,7 +71,7 @@
   background-color: rgba(255, 255, 255, 0.03);
 }
 
-#details>div {
+#details > div {
   color: var(--table-text);
   margin: 0.5em 0;
 }
@@ -85,6 +84,7 @@
   background-color: rgba(255, 255, 255, 0.06);
 }
 
-.bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]), .bridge-card button.btn-primary {
+.bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]),
+.bridge-card button.btn-primary {
   color: #202020;
 }

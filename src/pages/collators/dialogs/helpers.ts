@@ -15,6 +15,7 @@ export const doSubmitExtrinsic = (
   setSubmissionPending(true);
 
   extrinsic
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
       const { status, events } = result;
 

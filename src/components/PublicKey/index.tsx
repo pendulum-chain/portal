@@ -1,8 +1,7 @@
-import React from 'react';
-import { useClipboard } from '../../hooks/userinterface';
+import { memo, useCallback } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import CopyIcon from '../../assets/CopyIcon';
-import { bool } from '@polkadot/types-codec';
+import { useClipboard } from '../../hooks/userinterface';
 
 type Variant = 'full' | 'short' | 'shorter' | 'hexa';
 
@@ -49,7 +48,7 @@ interface PublicKeyProps {
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const PublicKey = React.memo(function PublicKey(props: PublicKeyProps) {
+export const PublicKey = memo(function PublicKey(props: PublicKeyProps) {
   const { variant = 'full', className } = props;
   const digits = getDigitCounts(props.variant);
 
@@ -81,7 +80,7 @@ interface AddressProps {
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const ClickableAddress = React.memo(function ClickableAddress(props: AddressProps) {
+export const ClickableAddress = memo(function ClickableAddress(props: AddressProps) {
   console.log(props.inline);
   return (
     <Button
@@ -107,11 +106,11 @@ interface CopyableAddressProps extends AddressProps {
 }
 
 // tslint:disable-next-line no-shadowed-variable
-export const CopyableAddress = React.memo(function CopyableAddress(props: CopyableAddressProps) {
+export const CopyableAddress = memo(function CopyableAddress(props: CopyableAddressProps) {
   const { onClick } = props;
   const clipboard = useClipboard();
 
-  const handleClick = React.useCallback(() => {
+  const handleClick = useCallback(() => {
     if (onClick) {
       onClick();
     }

@@ -1,10 +1,10 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AmplitudeLogo from '../assets/AmplitudeLogo';
 import PendulumLogo from '../assets/PendulumLogo';
-import { TenantName } from '../models/Tenant';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { toTitle } from '../helpers/string';
+import { TenantName } from '../models/Tenant';
 
 const options = [TenantName.Pendulum, TenantName.Amplitude, TenantName.Foucoco];
 
@@ -24,8 +24,9 @@ const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): 
           <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
         </Button>
         <Dropdown.Menu className="w-30 mt-1.5 p-1 text-sm border-base-300 border bg-base-200 rounded-xl shadow-none">
-          {options.map((option) => (
+          {options.map((option, i) => (
             <Dropdown.Item
+              key={i}
               onClick={() => {
                 navigateTo(buildPath(tenantName, option, location));
                 window.location.reload();
