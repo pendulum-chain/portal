@@ -1,9 +1,11 @@
-interface Props {
+import { HTMLAttributes } from 'react';
+
+interface Props extends HTMLAttributes<SVGSVGElement> {
   className?: string;
 }
 
-const AmplitudeLogo = ({ className }: Props) => (
-  <svg fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+const AmplitudeLogo = ({ className, ...rest }: Props) => (
+  <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className={className} {...rest}>
     <path
       d="M3.8606 9.50286C3.8606 9.50286 4.34281 10.9582 4.61302 11.6738C4.88323 12.3895 5.03867 12.8273 5.71325 12.8259C5.99852 12.8252 6.29641 12.4543 6.62941 11.6738C7.01913 10.6583 7.4623 9.50286 7.4623 9.50286H3.8606Z"
       fill="#4EE59A"

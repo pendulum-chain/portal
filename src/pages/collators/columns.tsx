@@ -99,7 +99,7 @@ export const actionsColumn = ({
             setSelectedCandidate(row.original.candidate);
           }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
-          style={{ visibility: showUnbond ? 'visible' : 'hidden' }}
+          style={{ display: showUnbond ? undefined : 'none' }}
         >
           Unbond
         </Button>

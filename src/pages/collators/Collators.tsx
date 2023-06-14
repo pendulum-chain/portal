@@ -118,12 +118,12 @@ function Collators() {
 
   return (
     <div className="overflow-x-auto collators-list-container mt-10">
-      <div className="flex mb-8 justify-between">
-        <div className="card gap-0 rounded-lg bg-base-200 w-1/2 mr-4 collators-box">
+      <div className="flex flex-col sm:flex-row mb-8 gap-8 justify-between">
+        <div className="card gap-0 rounded-lg bg-base-200 sm:w-1/2 collators-box">
           <div className="card-body">
             <h2 className="card-title">Collators</h2>
-            <div className="flex flex-row">
-              <div className="flex-initial pr-5">
+            <div className="flex flex-row flex-wrap gap-4">
+              <div className="flex-initial">
                 <StakedIcon />
               </div>
               <div className="flex-auto">
@@ -142,11 +142,11 @@ function Collators() {
             </div>
           </div>
         </div>
-        <div className="card rounded-lg bg-base-200 w-1/2 ml-4 collators-box">
+        <div className="card rounded-lg bg-base-200 sm:w-1/2 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking Rewards</h2>
-            <div className="flex flex-row">
-              <div className="flex-initial pt-1 pr-5 pb-0">
+            <div className="flex flex-row flex-wrap  gap-4">
+              <div className="flex-initial pt-1 pb-0">
                 <RewardsIcon />
               </div>
               <div className="flex-auto">
@@ -156,7 +156,7 @@ function Collators() {
               <div className="flex flex-auto place-content-end">
                 <button
                   onClick={() => setClaimDialogOpen(true)}
-                  className="btn btn-primary w-1/3"
+                  className="btn btn-primary px-2"
                   disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
                 >
                   Claim
