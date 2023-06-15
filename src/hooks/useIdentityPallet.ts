@@ -1,5 +1,4 @@
 import { PalletIdentityRegistration } from '@polkadot/types/lookup';
-import { hexToU8a } from '@polkadot/util';
 import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../NodeInfoProvider';
 
@@ -24,18 +23,19 @@ export function useIdentityPallet() {
         if (identityResponse.isEmpty) {
           return;
         }
-        
+
         // Casting the data to the real value PalletIdentityRegistration, fails to show readable info
         // Therefore the cast to 'any'
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const pir: any = identityResponse.toHuman() as unknown as PalletIdentityRegistration;
         return {
-          display: pir.info.display? pir.info.display.Raw : '',
+          display: pir.info.display ? pir.info.display.Raw : '',
           email: pir.info.email ? pir.info.email.Raw : '',
-          riot: pir.info.riot? pir.info.riot.Raw : '',
-          twitter: pir.info.twitter? pir.info.twitter.Raw: '',
-          web: pir.info.web? pir.info.web.Raw : '',
+          riot: pir.info.riot ? pir.info.riot.Raw : '',
+          twitter: pir.info.twitter ? pir.info.twitter.Raw : '',
+          web: pir.info.web ? pir.info.web.Raw : '',
         };
-      }
+      },
     };
   }, [api]);
 

@@ -1,27 +1,26 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToFormat } from '../../helpers/parseNumbers';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 
 import Table from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
+import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
 import {
+  TCollator,
+  UserStaking,
   actionsColumn,
   apyColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
   stakedColumn,
-  TCollator,
-  UserStaking,
 } from './columns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
-import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
-import { PalletIdentityRegistrarInfo } from '@polkadot/types/lookup';
 
 function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -69,7 +68,7 @@ function Collators() {
   }, [api, walletAccount]);
 
   useEffect(() => {
-    const identitiesPrefetch = async (candidatesArray: any) => {
+    const identitiesPrefetch = async (candidatesArray: ParachainStakingCandidate[]) => {
       const m: Map<string, PalletIdentityInfo | undefined> = new Map();
       for (let i = 0; i < candidatesArray.length; i++) {
         const c = candidatesArray[i];

@@ -1,6 +1,5 @@
-import { DateTime } from 'luxon';
-import { Storage } from './types';
 import { storageKeys } from '../../constants/localStorage';
+import { Storage } from './types';
 
 const exists = (value?: string | null): value is string => !!value && value.length > 0;
 export const storageService: Storage = {
@@ -32,17 +31,17 @@ export const storageService: Storage = {
   remove: (key) => localStorage?.removeItem(key),
 
   removeExpired: () => {
-    const keys = {...localStorage};
+    const keys = { ...localStorage };
     for (const key in keys) {
       if (key.endsWith(storageKeys.EXPIRY_DATE)) {
         const item = localStorage.getItem(key) || '';
-        if (item && Date.now() > (new Date(JSON.parse(item)).getDate())) {
-          const originalKey = key.replace(storageKeys.EXPIRY_DATE,''); 
-          console.log("Removing " + originalKey + "from local storage");
+        if (item && Date.now() > new Date(JSON.parse(item)).getDate()) {
+          const originalKey = key.replace(storageKeys.EXPIRY_DATE, '');
+          console.log('Removing ' + originalKey + 'from local storage');
           localStorage.removeItem(originalKey);
           localStorage.removeItem(key);
         }
       }
     }
-  }
+  },
 };

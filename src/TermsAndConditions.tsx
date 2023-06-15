@@ -1,9 +1,8 @@
-import { PropsWithChildren, useState } from 'react';
-import { Button, Checkbox, Link, Modal, Theme } from 'react-daisyui';
-import { CloseButton } from './components/CloseButton';
+import { PropsWithChildren, useState } from 'preact/compat';
+import { Button, Checkbox, Link, Modal } from 'react-daisyui';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
-const TermsAndConditions = (p: PropsWithChildren) => {
+const TermsAndConditions = (_props: PropsWithChildren) => {
   const { state, set } = useLocalStorage<string | undefined>({ key: 'termsAndConditions' });
   const [checked, setChecked] = useState<boolean>(false);
 

@@ -1,4 +1,4 @@
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { GlobalStateValues } from '../../GlobalStateProvider';
@@ -7,8 +7,8 @@ import CollatorsIcon from '../../assets/collators';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import SwapIcon from '../../assets/swap';
-import ComingSoonTag from './ComingSoonTag';
 import { TenantName } from '../../models/Tenant';
+import ComingSoonTag from './ComingSoonTag';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {

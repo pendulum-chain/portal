@@ -3,8 +3,8 @@ import { Option } from '@polkadot/types-codec';
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
 
 interface ParachainStakingDelegator {
   owner: string;
@@ -119,7 +119,7 @@ export function useStakingPallet() {
     if (api.consts.parachainStaking?.minDelegatorStake) {
       setMinDelegatorStake((api.consts.parachainStaking.minDelegatorStake.toHuman() as string) || '0');
     }
-  }, [api, walletAccount, walletAccount?.address, fees]);
+  }, [api, walletAccount, walletAccount?.address, fees, ss58Format]);
 
   const memo = useMemo(() => {
     return {
@@ -175,7 +175,7 @@ export function useStakingPallet() {
         return api.tx.parachainStaking.leaveDelegators();
       },
     };
-  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards, ss58Format]);
+  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
 
   return memo;
 }

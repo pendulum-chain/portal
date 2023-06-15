@@ -2,11 +2,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from 'preact';
 import { Theme } from 'react-daisyui';
 import { BrowserRouter } from 'react-router-dom';
-import { App } from './app';
-import { defaultState, GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
-import './index.css';
+import { GlobalState, GlobalStateContext, GlobalStateProvider, defaultState } from './GlobalStateProvider';
 import { NodeInfoProvider } from './NodeInfoProvider';
-import TermsAndConditions from './TermsAndConditions';
+import { App } from './app';
+import './index.css';
 
 const queryClient = new QueryClient();
 

@@ -1,9 +1,9 @@
+import { DateTime } from 'luxon';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat';
+import { storageKeys } from '../constants/localStorage';
 import { debounce } from '../helpers/function';
 import { storageService } from '../services/storage/local';
 import { Storage } from '../services/storage/types';
-import { DateTime } from 'luxon';
-import { storageKeys } from '../constants/localStorage';
 
 export type UseLocalStorageProps<T> = {
   /** Storage key */
@@ -51,7 +51,7 @@ export const useLocalStorage = <T>({
   defaultValue,
   parse = false,
   debounce: debounceTime,
-  expire
+  expire,
 }: UseLocalStorageProps<T>): UseLocalStorageResponse<T> => {
   type TResponse = UseLocalStorageResponse<T>;
   const firstRef = useRef(false);
@@ -71,9 +71,9 @@ export const useLocalStorage = <T>({
         storageSet(expiryKey, expiryDate);
         debounce(storageService.remove, expire * 1000)(key);
         debounce(storageService.remove, expire * 1000)(expiryKey);
-      } 
+      }
     },
-    [key, storageSet],
+    [expire, key, storageSet],
   );
   const clear = useCallback<TResponse['clear']>(() => {
     storageService.remove(key);

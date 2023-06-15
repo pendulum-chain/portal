@@ -1,5 +1,4 @@
-import { memo } from 'preact/compat';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'preact/compat';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
