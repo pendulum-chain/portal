@@ -3,24 +3,18 @@ $medium: 1023px
 $menu: 32px
 
 .mobile-menu
-  display: none
-  width: $menu
-  height: $menu
-  padding: 4px
   margin-left: 4px
-  transition: opacity .2s ease-out
-  opacity: .8
-  :hover
-    opacity: .75
-  @media screen and (max-width: $medium)
-    display: block
 
-  .menu
-    width: 100%
-    height: 100%
-    background: transparent center center no-repeat url(../../assets/bars.svg)
-    svg
-      filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%)
+  button
+    display: none
+    width: $menu
+    height: $menu
+    transition: opacity .2s ease-out
+    opacity: .9
+    :hover
+      opacity: .85
+    @media screen and (max-width: $medium)
+      display: block
 
 #sidebar-wrapper
   position: static
@@ -64,7 +58,7 @@ $menu: 32px
 
 nav
   margin: 0 10px auto 10px
-  
+
   .nav-item
     position: relative
     width: 100%
@@ -90,7 +84,7 @@ nav
 
     &:hover, &.active
       background-color: var(--selected-nav-item)
-    
+
     &.coming-soon
       pointer-events: none
       color: var(--text-primary-disabled)
@@ -111,7 +105,7 @@ nav
       width: 140px
       height: auto
       color: var(--text-primary)
-    
+
     .coming-soon-tag
       position: absolute
       right: 0.1em

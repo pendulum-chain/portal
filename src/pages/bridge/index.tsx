@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'preact/hooks';
 import { Card, Tabs } from 'react-daisyui';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import Issue from './Issue';
 import Redeem from './Redeem';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
 
 function Bridge(): JSX.Element | null {
@@ -22,9 +22,9 @@ function Bridge(): JSX.Element | null {
   }, [chain, nativeCurrency, tabValue, wrappedCurrencyPrefix]);
 
   return chain ? (
-    <div className="h-full flex items-center justify-center grid place-items-center mt-4">
-      <Card className="bridge-card min-h-500 min-w-535 w-fit">
-        <div className="flex justify-between px-10 mt-5">
+    <div className="h-full flex items-center justify-center mt-4">
+      <Card className="bridge-card min-h-500 w-full max-w-[520px]">
+        <div className="flex justify-between px-4 xs:px-10 mt-5">
           <Tabs className="flex flex-grow" boxed value={tabValue} onChange={setTabValue}>
             <Tabs.Tab className="w-2/4 h-fit p-2" value={0}>
               To {chain}

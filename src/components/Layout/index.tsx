@@ -1,3 +1,4 @@
+import { Bars3Icon } from '@heroicons/react/20/solid';
 import { memo, useEffect, useMemo, useState } from 'preact/compat';
 import { Outlet, useParams } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -5,13 +6,13 @@ import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
 import { config } from '../../config';
 import { TenantName } from '../../models/Tenant';
+import ChainSelector from '../ChainSelector';
 import OpenWallet from '../OpenWallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import Versions from './Versions';
 import './styles.sass';
-import ChainSelector from '../ChainSelector';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
@@ -81,7 +82,9 @@ export default function Layout(): JSX.Element | null {
         <header>
           <div className="flex items-center flex-row-reverse h-15 gap-2">
             <div className="mobile-menu">
-              <button className="menu" onClick={() => setVisible((prev) => !prev)} />
+              <button type="button" onClick={() => setVisible((prev) => !prev)}>
+                <Bars3Icon className="w-7" />
+              </button>
             </div>
             <OpenWallet dAppName={dAppName} />
             <ChainSelector tenantName={state.tenantName} />
