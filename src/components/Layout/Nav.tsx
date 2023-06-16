@@ -42,7 +42,7 @@ const CollapseMenu = ({
   );
 };
 
-const NavItem = ({ item }: { item: LinkItem }) => {
+const NavItem = ({ item, onClick }: { item: LinkItem; onClick: () => void }) => {
   const { link, prefix, suffix, title, props } = item;
   const isExternal = link.startsWith('http');
   const linkUi = (
@@ -54,17 +54,21 @@ const NavItem = ({ item }: { item: LinkItem }) => {
   );
   const cls = `nav-item ${props?.className?.()}`;
   return isExternal ? (
-    <a href={link} {...props} className={cls}>
+    <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
     </a>
   ) : (
-    <NavLink to={link} {...props} className={cls}>
+    <NavLink to={link} {...props} onClick={onClick} className={cls}>
       {linkUi}
     </NavLink>
   );
 };
 
-const Nav = memo(() => {
+export type NavProps = {
+  onClick?: () => void;
+};
+
+const Nav = memo(({ onClick }: NavProps) => {
   const { state } = useGlobalState();
 
   return (
@@ -85,12 +89,12 @@ const Nav = memo(() => {
           >
             <div className="submenu">
               {item.submenu.map((subItem, j) => (
-                <NavItem key={`${i}-${j}`} item={subItem} />
+                <NavItem key={`${i}-${j}`} item={subItem} onClick={onClick} />
               ))}
             </div>
           </CollapseMenu>
         ) : (
-          <NavItem key={i} item={item} />
+          <NavItem key={i} item={item} onClick={onClick} />
         );
       })}
     </nav>

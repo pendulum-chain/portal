@@ -70,7 +70,7 @@ export default function Layout(): JSX.Element | null {
             style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
           />
           {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
-          <Nav />
+          <Nav onClick={() => setVisible(false)} />
           <div className="sidebar-footer">
             <Versions tenantName={state.tenantName} />
             <NetworkId />

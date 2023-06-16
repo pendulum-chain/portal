@@ -81,7 +81,6 @@ interface AddressProps {
 
 // tslint:disable-next-line no-shadowed-variable
 export const ClickableAddress = memo(function ClickableAddress(props: AddressProps) {
-  console.log(props.inline);
   return (
     <Button
       className="rounded h-1 p-1 m-0"
