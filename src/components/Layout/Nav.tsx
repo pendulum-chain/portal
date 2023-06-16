@@ -42,7 +42,7 @@ const CollapseMenu = ({
   );
 };
 
-const NavItem = ({ item, onClick }: { item: LinkItem; onClick: () => void }) => {
+const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
   const { link, prefix, suffix, title, props } = item;
   const isExternal = link.startsWith('http');
   const linkUi = (
