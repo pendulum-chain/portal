@@ -136,23 +136,17 @@ const Table = <T,>({
               );
             })}
           </tbody>
-          <tfoot>
-            <tr className="border-t border-base-100">
-              <td colSpan={columns.length}>
-                <Pagination
-                  className="justify-end text-gray-400 normal-case font-normal"
-                  currentIndex={pageIndex}
-                  pageSize={pageSize}
-                  totalCount={totalCount}
-                  pageCount={getPageCount()}
-                  onPrev={previousPage}
-                  onNext={nextPage}
-                />
-              </td>
-            </tr>
-          </tfoot>
         </table>
       </div>
+      <Pagination
+        className="justify-end text-gray-400 normal-case font-normal text-sm mt-1"
+        currentIndex={pageIndex}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        pageCount={getPageCount()}
+        onPrev={previousPage}
+        onNext={nextPage}
+      />
     </>
   );
 };

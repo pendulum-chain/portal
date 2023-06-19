@@ -315,13 +315,13 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
+    <div className="flex items-center justify-center h-full space-walk py-4 w-full">
       <ConfirmationDialog
         redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
-      <div style={{ width: 500 }}>
+      <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <div className="flex items-center">
             <Controller
