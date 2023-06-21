@@ -62,7 +62,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
               </Button>
             }
             onAccountSelected={setWalletAccount}
-            footer={<WalletConnect />}
+            footer={<WalletConnect setWalletAccount={setWalletAccount} />}
           />
         </>
       )}

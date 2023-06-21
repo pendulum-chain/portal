@@ -28,7 +28,6 @@ export interface UseSwapComponentProps {
 export const defaults = config.swap.defaults;
 
 export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) => {
-  console.log(from);
   const { walletAccount } = useGlobalState();
   const {
     state: { api },

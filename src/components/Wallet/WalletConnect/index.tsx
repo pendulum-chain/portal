@@ -1,8 +1,14 @@
 import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { useCallback, useEffect, useState } from 'preact/compat';
+import { toast } from 'react-toastify';
+import { GlobalState } from '../../../GlobalStateProvider';
+import logo from '../../../assets/wallet-connect.svg';
 import { config } from '../../../config';
-import logo from './wallet-connect.svg';
+
+export type WalletConnectProps = {
+  setWalletAccount: GlobalState['setWalletAccount'];
+};
 
 const wcParams = {
   requiredNamespaces: {
@@ -16,7 +22,7 @@ const wcParams = {
   },
 };
 
-const WalletConnect = () => {
+const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
   const [loading, setLoading] = useState(false);
   const [provider, setProvider] = useState<Promise<UniversalProvider> | undefined>();
   const [modal, setModal] = useState<WalletConnectModal | undefined>();
@@ -34,22 +40,43 @@ const WalletConnect = () => {
       }
       // await session approval from the wallet app
       const wcSession = await approval();
-      console.log('APPROVAL', wcSession);
       const wcAccount = Object.values(wcSession.namespaces)
         .map((namespace) => namespace.accounts)
         .flat();
       console.log('ACCOUNT', wcSession, wcAccount);
+      // TODO: set account and unify signature
+      setWalletAccount({
+        address: wcAccount[0],
+        source: '',
+        name: 'WalletConnect',
+        signer: undefined,
+        wallet: {
+          enable: () => undefined,
+          extensionName: 'WalletConnect',
+          title: 'Wallet Connect',
+          installUrl: 'https://walletconnect.com/',
+          logo: {
+            src: logo,
+            alt: 'WalletConnect',
+          },
+          installed: true,
+          extension: null,
+          signer: null,
+          getAccounts: () => Promise.resolve([]),
+          subscribeAccounts: () => undefined,
+          transformError: () => new Error(),
+        },
+      });
       // grab account addresses from CAIP account formatted accounts
       /* const accounts = wcAccounts.map(wcAccount => {
           const address = wcAccount.split(':')[2]
           return address */
-      // TODO: set storage values, set account
     } catch (error) {
       // TODO: handle error
-      console.error(error);
+      toast(error, { type: 'error' });
       setLoading(false);
     }
-  }, [modal, provider]);
+  }, [modal, provider, setWalletAccount]);
 
   useEffect(() => {
     if (provider) return;

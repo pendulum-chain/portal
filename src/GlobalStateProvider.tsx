@@ -68,7 +68,16 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
     setWallet(undefined);
   }, [clear]);
 
+  const setWalletAccount = useCallback(
+    (wallet: WalletAccount | undefined) => {
+      set(wallet?.address);
+      setWallet(wallet);
+    },
+    [set],
+  );
+
   useEffect(() => {
+    // ! TODO: do this also for wallet connect (https://github.com/WalletConnect/web-examples/blob/3c8ebfe96af617697916f99dcc8a3ab843970d1c/dapps/react-dapp-v2-with-web3js/src/contexts/ClientContext.tsx#L311)
     const run = async () => {
       storageService.removeExpired();
       if (!account) removeWalletAccount();
@@ -90,15 +99,12 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       walletAccount,
       tenantName: tenantName,
       tenantRPC: config.tenants[tenantName].rpc,
-      setWalletAccount: (wallet: WalletAccount | undefined) => {
-        set(wallet?.address);
-        setWallet(wallet);
-      },
+      setWalletAccount,
       removeWalletAccount,
       getThemeName,
       dAppName,
     }),
-    [dAppName, getThemeName, removeWalletAccount, set, tenantName, walletAccount],
+    [dAppName, getThemeName, removeWalletAccount, setWalletAccount, tenantName, walletAccount],
   );
 
   return <GlobalStateContext.Provider value={providerValue}>{children}</GlobalStateContext.Provider>;
