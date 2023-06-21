@@ -42,7 +42,7 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
 
-  const { tenantName } = useGlobalState().state;
+  const { tenantName } = useGlobalState();
   const tenantNameCapitalized = tenantName ? toTitle(tenantName) : 'Pendulum';
 
   const [vaultStellarPublicKey, setVaultStellarPublicKey] = useState<string | undefined>(undefined);
@@ -202,7 +202,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
 
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const tenant = useGlobalState().state.tenantName;
+  const tenant = useGlobalState().tenantName;
 
   const stellarAsset = currencyToString(transfer.original.asset);
   const collateralAsset = transfer.original.vault.currencies.collateral;

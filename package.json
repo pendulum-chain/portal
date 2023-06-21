@@ -36,6 +36,8 @@
     "@talismn/connect-wallets": "^1.2.3",
     "@tanstack/react-query": "^4.24.10",
     "@tanstack/react-table": "^8.7.9",
+    "@walletconnect/modal": "^2.4.7",
+    "@walletconnect/universal-provider": "^2.8.1",
     "big.js": "^6.2.1",
     "bn.js": "^5.2.1",
     "bs58": "^5.0.0",

@@ -17,7 +17,7 @@ const CollapseMenu = ({
   children: JSX.Element | null;
 }) => {
   const { pathname } = useLocation();
-  const { tenantName } = useGlobalState().state;
+  const { tenantName } = useGlobalState();
   const isPendulum = tenantName === TenantName.Pendulum;
 
   const isActive = useMemo(() => {
@@ -69,7 +69,7 @@ export type NavProps = {
 };
 
 const Nav = memo(({ onClick }: NavProps) => {
-  const { state } = useGlobalState();
+  const state = useGlobalState();
 
   return (
     <nav>

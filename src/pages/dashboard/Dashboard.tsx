@@ -19,10 +19,7 @@ interface TokenBalances {
 }
 
 function Dashboard() {
-  const {
-    walletAccount,
-    state: { tenantName, tenantRPC },
-  } = useGlobalState();
+  const { walletAccount, tenantName, tenantRPC } = useGlobalState();
   const {
     state: { api, tokenSymbol, ss58Format },
   } = useNodeInfoState();

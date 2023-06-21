@@ -6,7 +6,7 @@ import { StatsData, getStatsData } from '../../services/stats';
 export function Stats(): JSX.Element {
   const [data, setData] = useState<StatsData | undefined>(undefined);
   const { tokenSymbol } = useNodeInfoState().state;
-  const { tenantRPC } = useGlobalState().state;
+  const { tenantRPC } = useGlobalState();
   useEffect(() => {
     getStatsData(tenantRPC).then((d) => setData(d));
   }, [setData, tenantRPC]);

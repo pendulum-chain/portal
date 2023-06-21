@@ -258,3 +258,8 @@ table th .sort:not(.desc):not(.asc) {
 table th:hover .sort {
   opacity: 0.8 !important;
 }
+
+w3m-modal {
+  position: relative;
+  z-index: 1000;
+}

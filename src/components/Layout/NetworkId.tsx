@@ -4,7 +4,7 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 
 const NetworkId: FC = memo(() => {
   const lastBlockNumber = useNodeInfoState().state.bestNumberFinalize;
-  const { tenantRPC } = useGlobalState().state;
+  const { tenantRPC } = useGlobalState();
   const encodedRPC = tenantRPC ? encodeURI(tenantRPC) : '';
 
   return (
