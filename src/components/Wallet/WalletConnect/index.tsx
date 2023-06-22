@@ -33,20 +33,26 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
       if (!provider) return;
       const wcProvider = await provider;
       const { uri, approval } = await wcProvider.client.connect(wcParams);
-      setLoading(false);
       // if there is a URI from the client connect step open the modal
       if (uri) {
         modal?.openModal({ uri });
+        setLoading(false);
       }
       // await session approval from the wallet app
+      console.log('WAITING APPROVAL', uri);
       const wcSession = await approval();
-      const wcAccount = Object.values(wcSession.namespaces)
+      const wcAccounts = Object.values(wcSession.namespaces)
         .map((namespace) => namespace.accounts)
         .flat();
-      console.log('ACCOUNT', wcSession, wcAccount);
+      // grab account addresses from CAIP account formatted accounts
+      const accounts = wcAccounts.map((wcAccount) => {
+        const address = wcAccount.split(':')[2];
+        return address;
+      });
+      console.log('ACCOUNT', wcSession, wcAccounts, accounts);
       // TODO: set account and unify signature
       setWalletAccount({
-        address: wcAccount[0],
+        address: accounts[0],
         source: '',
         name: 'WalletConnect',
         signer: undefined,
@@ -67,10 +73,7 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
           transformError: () => new Error(),
         },
       });
-      // grab account addresses from CAIP account formatted accounts
-      /* const accounts = wcAccounts.map(wcAccount => {
-          const address = wcAccount.split(':')[2]
-          return address */
+      setLoading(false);
     } catch (error) {
       // TODO: handle error
       toast(error, { type: 'error' });
