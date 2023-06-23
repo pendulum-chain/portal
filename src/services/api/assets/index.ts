@@ -6,6 +6,7 @@ import { ApiPromise } from '@polkadot/api';
 import contractAddresses from '../../../../contracts/nabla-contract-addresses.json';
 import mockErc20Metadata from '../../../../contracts/MockERC20.json';
 import swapPoolMetadata from '../../../../contracts/SwapPool.json';
+import backstopPoolMetadata from '../../../../contracts/BackstopPool.json';
 import { WeightV2 } from '@polkadot/types/interfaces';
 import { nativeToDecimal, prettyNumbers } from '../../../helpers/parseNumbers';
 
@@ -20,7 +21,7 @@ const createOptions = (api: ApiPromise) => ({
 
 // ! TODO
 export const assetsApi = {
-  getSwapTokens: async (api: ApiPromise, network: 'foucoco', walletAccount?: string): Promise<Asset[]> => {
+  getSwapTokens: async (api: ApiPromise, network: 'foucoco'): Promise<Asset[]> => {
     const addressesForNetwork = contractAddresses[network];
     return addressesForNetwork.tokensWithMeta;
   },
@@ -80,8 +81,27 @@ export const assetsApi = {
 
     return swapPoolColumns;
   },
-  getBackstopPools: async (): Promise<BackstopPool[]> => {
-    const backstopPools: BackstopPool[] = [];
-    return backstopPools;
+  getBackstopPool: async (api: ApiPromise, network: 'foucoco', userAddress: string): Promise<BackstopPool> => {
+    const addressesForNetwork = contractAddresses[network];
+    const backstopPoolAddress = addressesForNetwork.backstopPool;
+
+    const backstopPoolContract = new ContractPromise(api, backstopPoolMetadata, backstopPoolAddress);
+    const options = createOptions(api);
+
+    // Query shares of user in backstop pool
+    const mySharesQueryResult = await backstopPoolContract.query.balanceOf(userAddress, options, userAddress);
+    const myShares =
+      mySharesQueryResult.result.isOk && mySharesQueryResult.output
+        ? parseFloat(mySharesQueryResult.output.toString())
+        : 0;
+    // Convert shares to amount
+    const myAmountQuery = await backstopPoolContract.query.sharesTargetWorth(userAddress, options, myShares);
+    const myAmount =
+      myAmountQuery.result.isOk && myAmountQuery.output ? parseFloat(myAmountQuery.output.toString()) : 0;
+
+    return {
+      address: backstopPoolAddress,
+      myAmount: prettyNumbers(nativeToDecimal(myAmount).toNumber()),
+    };
   },
 };
