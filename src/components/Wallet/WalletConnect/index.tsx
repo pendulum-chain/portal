@@ -5,32 +5,10 @@ import { toast } from 'react-toastify';
 import { GlobalState } from '../../../GlobalStateProvider';
 import logo from '../../../assets/wallet-connect.svg';
 import { config } from '../../../config';
+import { walletConnectConfig } from '../../../config/walletConnect';
 
 export type WalletConnectProps = {
   setWalletAccount: GlobalState['setWalletAccount'];
-};
-
-const wcParams = {
-  requiredNamespaces: {
-    polkadot: {
-      methods: ['polkadot_signTransaction', 'polkadot_signMessage'],
-      events: ['chainChanged", "accountsChanged'],
-      chains: [
-        'polkadot:91b171bb158e2d3848fa23a9f1c25182', // polkadot
-      ],
-    },
-  },
-  optionalNamespaces: {
-    polkadot: {
-      methods: ['polkadot_signTransaction', 'polkadot_signMessage'],
-      events: ['chainChanged", "accountsChanged'],
-      chains: [
-        'polkadot:67221cd96c1551b72d55f65164d6a39f', // foucoco,
-        'polkadot:cceae7f3b9947cdb67369c026ef78efa', // amplitude
-        'polkadot:5d3c298622d5634ed019bf61ea4b7165', // pendulum
-      ],
-    },
-  },
 };
 
 const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
@@ -43,14 +21,12 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
     try {
       if (!provider) return;
       const wcProvider = await provider;
-      const { uri, approval } = await wcProvider.client.connect(wcParams);
+      const { uri, approval } = await wcProvider.client.connect(walletConnectConfig);
       // if there is a URI from the client connect step open the modal
       if (uri) {
-        modal?.openModal({ uri });
-        setLoading(false);
+        modal?.openModal({ uri, onclose: () => setLoading(false) });
       }
       // await session approval from the wallet app
-      console.log('WAITING APPROVAL', uri);
       const wcSession = await approval();
       const wcAccounts = Object.values(wcSession.namespaces)
         .map((namespace) => namespace.accounts)
@@ -98,7 +74,6 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
       UniversalProvider.init({
         projectId: config.walletConnect.projectId,
         relayUrl: config.walletConnect.url,
-        logger: 'debug',
       }),
     );
     setModal(

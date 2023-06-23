@@ -77,7 +77,8 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    // ! TODO: do this also for wallet connect (https://github.com/WalletConnect/web-examples/blob/3c8ebfe96af617697916f99dcc8a3ab843970d1c/dapps/react-dapp-v2-with-web3js/src/contexts/ClientContext.tsx#L311)
+    // ! TODO: do this also for wallet connect
+    // (https://github.com/WalletConnect/web-examples/blob/3c8ebfe96af617697916f99dcc8a3ab843970d1c/dapps/react-dapp-v2-with-web3js/src/contexts/ClientContext.tsx#L311)
     const run = async () => {
       storageService.removeExpired();
       if (!account) removeWalletAccount();
