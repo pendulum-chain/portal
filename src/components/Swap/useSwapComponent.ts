@@ -76,7 +76,8 @@ export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) 
 
   const onSubmit = form.handleSubmit((data) => {
     const slippage = data.slippage ?? defaults.slippage;
-    const toAmount = data.fromAmount; /** * rate */ // ! TODO: this should be calculated before already for showing in UI
+    const toAmount = data.fromAmount;
+    /** * rate */ // ! TODO: this should be calculated before already for showing in UI
     // ! TODO: create transaction
     const transaction: SwapTransaction = {
       ...data,
@@ -90,7 +91,7 @@ export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) 
   // ! TODO: fetch tokens
   const tokensQuery = useQuery(
     isConnected ? [cacheKeys.tokens] : [],
-    isConnected ? () => assetsApi.getSwapTokens() : emptyFn,
+    isConnected ? () => assetsApi.getSwapTokens(api, 'foucoco') : emptyFn,
     {
       ...inactiveOptions[0],
       enabled: !!api && api.isConnected,
