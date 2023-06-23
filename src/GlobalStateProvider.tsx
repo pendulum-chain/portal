@@ -2,7 +2,7 @@ import { WalletAccount, getWalletBySource } from '@talismn/connect-wallets';
 import { createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo } from 'preact/compat';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { config } from './config';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -25,28 +25,13 @@ export const defaultTenant = TenantName.Pendulum;
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
 const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
-  const params = useParams();
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
-  //const { pathname } = useLocation();
+  const { pathname } = useLocation();
+  const network = pathname.split('/').filter(Boolean)[0]?.toLowerCase();
 
   const tenantName = useMemo(() => {
-    return params.network && Object.values<string>(TenantName).includes(params.network)
-      ? (params.network as TenantName)
-      : defaultTenant;
-    /* if (pathname) {
-      const [network] = pathname.split('/').filter(Boolean);
-      const tenantName = Object.values<string>(TenantName).includes(network)
-        ? (network as TenantName)
-        : TenantName.Pendulum;
-  
-      if (tenantName) {
-        return {
-          tenantName,
-          tenantRPC: config.tenants[tenantName].rpc,
-        };
-      }
-    } */
-  }, [params.network]);
+    return network && Object.values<string>(TenantName).includes(network) ? (network as TenantName) : defaultTenant;
+  }, [network]);
 
   const dAppName = tenantName;
 
