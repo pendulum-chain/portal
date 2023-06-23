@@ -60,6 +60,7 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
           transformError: () => new Error(),
         },
       });
+      modal?.closeModal();
       setLoading(false);
     } catch (error) {
       // TODO: handle error
