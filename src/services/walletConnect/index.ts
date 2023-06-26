@@ -2,6 +2,7 @@ import { WalletAccount } from '@talismn/connect-wallets';
 import type { SessionTypes } from '@walletconnect/types/dist/types/sign-client/session';
 import UniversalProvider from '@walletconnect/universal-provider';
 import logo from '../../assets/wallet-connect.svg';
+import { SignerPayloadJSON } from '@polkadot/types/types';
 
 type Config = {
   chainId?: string;
@@ -20,18 +21,21 @@ export const walletConnectService = {
       return address;
     });
     const signer = {
-      sign: async (address: string, transactionPayload: string) => {
-        await client.request({
+      signPayload: async (data: SignerPayloadJSON) => {
+        const { address } = data;
+
+        const params = {
           chainId,
           topic: session.topic,
           request: {
             method: 'polkadot_signTransaction',
             params: {
               address,
-              transactionPayload,
+              transactionPayload: data,
             },
           },
-        });
+        };
+        return await client.request(params);
       },
     };
     return {
