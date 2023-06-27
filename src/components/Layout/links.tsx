@@ -9,6 +9,8 @@ import GovernanceIcon from '../../assets/governance';
 import SwapIcon from '../../assets/swap';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
+import NablaIcon from '../../assets/nabla';
+import SpacewalkIcon from '../../assets/spacewalk';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -44,7 +46,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
     },
-    prefix: <SwapIcon />,
+    prefix: <SwapIcon className="p-1" />,
     suffix: <ComingSoonTag />,
   },
   {
@@ -53,7 +55,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
     },
-    prefix: <BridgeIcon />,
+    prefix: <SpacewalkIcon />,
     suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
     submenu: [
       {
@@ -90,25 +92,25 @@ export const links: Links = ({ tenantName }) => [
     ),
   },
   {
-    link: '/amber',
-    title: '0xAmber',
-    prefix: <SwapIcon />,
+    link: '/nabla',
+    title: 'Nabla',
+    prefix: <NablaIcon />,
     suffix: <ComingSoonTag />,
-    hidden: true,
+    hidden: !true,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
     submenu: [
       {
-        link: './amber/swap',
+        link: './nabla/swap',
         title: 'Swap',
       },
       {
-        link: './amber/swap-pools',
+        link: './nabla/swap-pools',
         title: 'Swap Pools',
       },
       {
-        link: './amber/backstop-pools',
+        link: './nabla/backstop-pools',
         title: 'Backstop Pool',
       },
     ],
