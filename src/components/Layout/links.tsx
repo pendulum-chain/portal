@@ -95,7 +95,7 @@ export const links: Links = ({ tenantName }) => [
     title: 'Nabla',
     prefix: <NablaIcon />,
     suffix: <ComingSoonTag />,
-    hidden: !true,
+    hidden: true,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
