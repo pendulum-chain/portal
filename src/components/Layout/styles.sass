@@ -25,6 +25,9 @@ $menu: 32px
   flex-direction: column
   padding-top: 20px
   width: 270px
+  max-height: 100%
+  overflow: auto
+
   @media screen and (max-width: $medium)
     box-shadow: 5px 0 8px rgba(0, 0, 0, .1)
 
@@ -74,7 +77,7 @@ nav
     border-radius: 100px
     border-radius: 9px
     margin: 10px 0
-    padding: 15px 25px
+    padding: 12px 16px
 
     &.active .nav-arrow
       visibility: visible
@@ -96,12 +99,12 @@ nav
       fill: currentColor
 
     svg:first-of-type
-      width: 20px
-      height: 20px
+      width: 32px
+      height: 32px
 
     span
       display: block
-      margin-left: 20px
+      margin-left: 14px
       width: 140px
       height: auto
       color: var(--text-primary)
