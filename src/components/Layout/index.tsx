@@ -1,6 +1,6 @@
 import { Bars3Icon } from '@heroicons/react/20/solid';
 import { memo, useEffect, useMemo, useState } from 'preact/compat';
-import { Outlet, useParams } from 'react-router-dom';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
@@ -63,13 +63,16 @@ export default function Layout(): JSX.Element | null {
             visible ? 'open left-0' : 'closed -left-full'
           }`}
         >
-          <img
-            className="pendulum-logo"
-            src={sideBarLogo}
-            alt=""
-            style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
-          />
-          {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
+          <div
+            style={
+              isPendulum ? { marginLeft: 20, marginBottom: 20 } : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
+            }
+          >
+            <Link to={`/${network}/dashboard`} target="_blank">
+              <img className="logo" src={sideBarLogo} alt="" />
+              {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
+            </Link>
+          </div>
           <Nav onClick={() => setVisible(false)} />
           <div className="sidebar-footer">
             <Versions tenantName={state.tenantName} />
