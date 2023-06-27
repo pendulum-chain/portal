@@ -68,10 +68,14 @@ export default function Layout(): JSX.Element | null {
               isPendulum ? { marginLeft: 20, marginBottom: 20 } : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
             }
           >
-            <Link to={`/${network}/dashboard`} target="_blank">
+            <a
+              href={`https://pendulumchain.org/${isPendulum ? '' : 'amplitude'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img className="logo" src={sideBarLogo} alt="" />
               {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
-            </Link>
+            </a>
           </div>
           <Nav onClick={() => setVisible(false)} />
           <div className="sidebar-footer">
