@@ -1,8 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { GlobalStateValues } from '../../GlobalStateProvider';
-import BridgeIcon from '../../assets/bridge';
+import { GlobalState } from '../../GlobalStateProvider';
 import CollatorsIcon from '../../assets/collators';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
@@ -26,7 +25,7 @@ export type BaseLinkItem = {
 export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
 };
-export type Links = (state: Partial<GlobalStateValues>) => LinkItem[];
+export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
 const arrow = <ChevronRightIcon className="nav-arrow w-5 h-5" />;
 

@@ -9,9 +9,9 @@ import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
-import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
+import OpenWallet from '../../components/Wallet';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import {
