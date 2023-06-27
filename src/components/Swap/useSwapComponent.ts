@@ -39,7 +39,6 @@ export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) 
   const storage = useLocalStorage<SwapSettings>({
     key: storageKeys.SWAP_SETTINGS,
     defaultValue: defaults,
-    parse: true,
     debounce: 1000,
   });
   const { merge, state: storageState } = storage;

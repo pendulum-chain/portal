@@ -1,7 +1,6 @@
 import { WalletAccount, getWalletBySource } from '@talismn/connect-wallets';
 import { createContext } from 'preact';
-import { useCallback, useContext, useEffect, useMemo } from 'preact/compat';
-import { useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { useLocation } from 'react-router-dom';
 import { config } from './config';
 import { storageKeys } from './constants/localStorage';
@@ -34,15 +33,16 @@ const initTalisman = async (dAppName: string, selected?: string) => {
   const accounts = await wallet.getAccounts();
   const selectedWallet = accounts.find((a) => a.address === selected) || accounts[0];
   return selectedWallet;
-}
+};
 const initWalletConnect = async (chainId: string) => {
   const provider = await walletConnectService.getProvider();
   //const pairings = provider.client.pairing.getAll({ active: true });
   if (!provider?.session) return;
   return await walletConnectService.init(provider?.session, chainId);
-}
+};
 
 const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
+  const tenantRef = useRef<string>();
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
   const { pathname } = useLocation();
   const network = pathname.split('/').filter(Boolean)[0]?.toLowerCase();
@@ -59,11 +59,12 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const {
-    state: account,
+    state: storageAddress,
     set,
     clear,
   } = useLocalStorage<string | undefined>({
     key: `${storageKeys.ACCOUNT}-${tenantName}`,
+    expire: 2 * 86400, // 2 days
   });
 
   const removeWalletAccount = useCallback(() => {
@@ -79,16 +80,23 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
     [set],
   );
 
+  const accountAddress = walletAccount?.address;
   useEffect(() => {
     const run = async () => {
-      storageService.removeExpired();
-      if (!account) removeWalletAccount();
+      if (!storageAddress) {
+        removeWalletAccount();
+        return;
+      }
+      // skip if tenant already initialized
+      if (tenantRef.current === tenantName || accountAddress) return;
+      tenantRef.current = tenantName;
       const appName = dAppName || TenantName.Amplitude;
-      const selectedWallet = await initTalisman(appName, account) || await initWalletConnect(chainIds[tenantName])
+      const selectedWallet =
+        (await initTalisman(appName, storageAddress)) || (await initWalletConnect(chainIds[tenantName]));
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();
-  }, [account, removeWalletAccount, dAppName, tenantName]);
+  }, [storageAddress, removeWalletAccount, dAppName, tenantName, accountAddress]);
 
   const providerValue = useMemo<GlobalState>(
     () => ({
