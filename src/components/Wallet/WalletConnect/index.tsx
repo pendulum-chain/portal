@@ -30,9 +30,8 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
       if (uri) {
         modal?.openModal({ uri, onclose: () => setLoading(false) });
       }
-      // await session approval from the wallet app
       const session = await approval();
-      setWalletAccount(walletConnectService.init(session, wcProvider.client, chainId));
+      setWalletAccount(await walletConnectService.init(session, chainId));
       modal?.closeModal();
       setLoading(false);
     } catch (error) {
@@ -43,12 +42,7 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
 
   useEffect(() => {
     if (provider) return;
-    setProvider(
-      UniversalProvider.init({
-        projectId: config.walletConnect.projectId,
-        relayUrl: config.walletConnect.url,
-      }),
-    );
+    setProvider(walletConnectService.getProvider());
     setModal(
       new WalletConnectModal({
         projectId: config.walletConnect.projectId,

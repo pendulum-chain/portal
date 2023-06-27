@@ -44,7 +44,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
             <p className="truncate my-6 text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
               {balance} {tokenSymbol}
             </p>
-            <Button color="secondary" size="sm" onClick={removeWalletAccount}>
+            <Button className="bg-base-300" size="sm" onClick={removeWalletAccount}>
               <ArrowLeftOnRectangleIcon className="mr-2 w-5" />
               Disconnect
             </Button>

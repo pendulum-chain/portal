@@ -3,15 +3,20 @@ import type { SessionTypes } from '@walletconnect/types/dist/types/sign-client/s
 import UniversalProvider from '@walletconnect/universal-provider';
 import logo from '../../assets/wallet-connect.svg';
 import { SignerPayloadJSON } from '@polkadot/types/types';
-
-type Config = {
-  chainId?: string;
-};
+import { config } from '../../config';
 
 // TODO: improve this
 export const walletConnectService = {
-  config: {} as Config,
-  init: (session: SessionTypes.Struct, client: UniversalProvider['client'], chainId: string): WalletAccount => {
+  provider: undefined as UniversalProvider | undefined,
+  getProvider: async function getProvider(): Promise<UniversalProvider> {
+    this.provider = this.provider || await UniversalProvider.init({
+      projectId: config.walletConnect.projectId,
+      relayUrl: config.walletConnect.url,
+    });
+    return this.provider;
+  },
+  init: async function init(session: SessionTypes.Struct, chainId: string): Promise<WalletAccount> {
+    const provider = await this.getProvider();
     const wcAccounts = Object.values(session.namespaces)
       .map((namespace) => namespace.accounts)
       .flat();
@@ -20,11 +25,11 @@ export const walletConnectService = {
       const address = wcAccount.split(':')[2];
       return address;
     });
+
     const signer = {
       signPayload: async (data: SignerPayloadJSON) => {
         const { address } = data;
-
-        const params = {
+        return provider.client.request({
           chainId,
           topic: session.topic,
           request: {
@@ -34,8 +39,7 @@ export const walletConnectService = {
               transactionPayload: data,
             },
           },
-        };
-        return await client.request(params);
+        });
       },
     };
     return {

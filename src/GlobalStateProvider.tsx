@@ -9,6 +9,8 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
 import { storageService } from './services/storage/local';
+import { walletConnectService } from './services/walletConnect';
+import { chainIds } from './config/walletConnect';
 
 export interface GlobalState {
   dAppName: string;
@@ -21,8 +23,24 @@ export interface GlobalState {
 }
 
 export const defaultTenant = TenantName.Pendulum;
-
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
+
+const initTalisman = async (dAppName: string, selected?: string) => {
+  const name = storageService.get('@talisman-connect/selected-wallet-name');
+  if (!name?.length) return;
+  const wallet = getWalletBySource(name);
+  if (!wallet) return;
+  await wallet.enable(dAppName);
+  const accounts = await wallet.getAccounts();
+  const selectedWallet = accounts.find((a) => a.address === selected) || accounts[0];
+  return selectedWallet;
+}
+const initWalletConnect = async (chainId: string) => {
+  const provider = await walletConnectService.getProvider();
+  //const pairings = provider.client.pairing.getAll({ active: true });
+  if (!provider?.session) return;
+  return await walletConnectService.init(provider?.session, chainId);
+}
 
 const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
@@ -62,23 +80,15 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    // ! TODO: do this also for wallet connect
-    // (https://github.com/WalletConnect/web-examples/blob/3c8ebfe96af617697916f99dcc8a3ab843970d1c/dapps/react-dapp-v2-with-web3js/src/contexts/ClientContext.tsx#L311)
     const run = async () => {
       storageService.removeExpired();
       if (!account) removeWalletAccount();
-      const name = storageService.get('@talisman-connect/selected-wallet-name');
-      if (!name) return;
-      const wallet = getWalletBySource(name);
-      if (!wallet) return;
-      // TODO: optimize this - make reusable as it's used in multiple places
-      await wallet.enable(dAppName || TenantName.Amplitude);
-      const selectedWallet = (await wallet.getAccounts()).find((a) => a.address === account);
-      if (!selectedWallet) return;
-      setWallet(selectedWallet);
+      const appName = dAppName || TenantName.Amplitude;
+      const selectedWallet = await initTalisman(appName, account) || await initWalletConnect(chainIds[tenantName])
+      if (selectedWallet) setWallet(selectedWallet);
     };
     run();
-  }, [account, removeWalletAccount, dAppName]);
+  }, [account, removeWalletAccount, dAppName, tenantName]);
 
   const providerValue = useMemo<GlobalState>(
     () => ({
