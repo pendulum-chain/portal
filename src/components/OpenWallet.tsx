@@ -1,4 +1,4 @@
-import { ArrowLeftOnRectangleIcon, ArrowTrendingUpIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/20/solid';
 import { WalletSelect } from '@talismn/connect-components';
 import { Button, Dropdown } from 'react-daisyui';
 import { useGlobalState } from '../GlobalStateProvider';
@@ -30,7 +30,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
               <Skeleton className="bg-[rgba(0,0,0,.06)] px-2 py-1 mr-2 hidden sm:flex">10000.00 TKN</Skeleton>
             ) : (
               <span className="items-center bg-[rgba(0,0,0,.06)] px-2 py-0.5 mr-2 rounded-lg hidden sm:flex">
-                <ArrowTrendingUpIcon className="w-5 h-5 mr-1 text-primary" /> {balance} {tokenSymbol}
+                {balance} {tokenSymbol}
               </span>
             )}
             {trimmedAddress}
