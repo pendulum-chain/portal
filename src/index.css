@@ -251,6 +251,14 @@ input[type='number'] {
   outline: none;
   border: 0;
 }
+.table thead tr th:not(.pinned) {
+  position: initial;
+}
+.table tr td.pinned {
+  position: sticky;
+  left: 0px;
+  right: 0px;
+}
 table th .sort:not(.desc):not(.asc) {
   transition: opacity 0.15s ease-out;
   opacity: 0;
