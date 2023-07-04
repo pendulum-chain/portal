@@ -5,14 +5,13 @@ import { repeat } from '../../../../helpers/general';
 import { Asset } from '../../../../models/Asset';
 import { Skeleton } from '../../../Skeleton';
 
-export interface AssetSelectorProps {
+export interface AssetListProps {
   assets?: Asset[];
   onSelect: (asset: Asset) => void;
   selected?: string;
 }
 
-// ! TODO: complete
-const AssetList = ({ assets, onSelect, selected }: AssetSelectorProps): JSX.Element | null => {
+const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
@@ -57,15 +56,15 @@ const AssetList = ({ assets, onSelect, selected }: AssetSelectorProps): JSX.Elem
 export type AssetSelectorModalProps = {
   isLoading?: boolean;
   onClose: () => void;
-} & AssetSelectorProps &
+} & AssetListProps &
   Omit<ModalProps, 'onSelect' | 'selected'>;
 
 export const AssetSelectorModal = ({
   assets,
   selected,
+  isLoading,
   onSelect,
   onClose,
-  isLoading,
   ...rest
 }: AssetSelectorModalProps) => {
   return (
@@ -81,7 +80,7 @@ export const AssetSelectorModal = ({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <AssetList assets={assets} onSelect={onSelect} selected={selected} />
+            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} />
           )}
         </div>
       </Modal.Body>

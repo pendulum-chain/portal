@@ -5,6 +5,7 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Fragment } from 'preact';
+import { useMemo } from 'preact/compat';
 import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { errorClass } from '../../helpers/form';
 import { AssetSelectorModal } from '../Asset/Selector/Modal';
@@ -14,25 +15,30 @@ import { UseSwapComponentProps, useSwapComponent } from './useSwapComponent';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
-    walletAccount,
-    storage: { merge },
     dropdown: [isOpen, { toggle }],
-    modalState: [modalType, setModalType],
+    tokensModal: [modalType, setModalType],
     onFromChange,
     onToChange,
-    swapQuery,
-    tokensQuery,
-    submitMutation,
-    form,
-    progress,
+    form: {
+      setValue,
+      getValues,
+      register,
+      formState: { errors },
+    },
+    updateStorage,
     onSubmit,
+    swapMutation,
+    balancesQuery,
   } = useSwapComponent(props);
-  const {
-    setValue,
-    register,
-    formState: { errors },
-  } = form;
-  const swapData = swapQuery.data || {};
+
+  const isSwapLoading = swapMutation.status === 'loading';
+  const progressUi = useMemo(
+    () =>
+      isSwapLoading
+        ? `Swapping ${getValues('from')} ${getValues().from} for ${getValues().toAmount} ${getValues().to}`
+        : null,
+    [getValues, isSwapLoading],
+  );
 
   return (
     <>
@@ -63,7 +69,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                         className="px-3"
                         onClick={() => {
                           setValue('slippage', undefined);
-                          merge({ slippage: undefined });
+                          updateStorage({ slippage: undefined });
                         }}
                         type="button"
                       >
@@ -79,7 +85,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                           placeholder="Auto"
                           {...register('slippage', {
                             onChange: (ev) =>
-                              merge({
+                              updateStorage({
                                 slippage: Number(ev.currentTarget.value),
                               }),
                           })}
@@ -104,7 +110,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                         placeholder="30"
                         {...register('deadline', {
                           onChange: (ev) =>
-                            merge({
+                            updateStorage({
                               deadline: Number(ev.currentTarget.value),
                             }),
                         })}
@@ -130,11 +136,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               />
             }
           />
-
           <SwapToken
             token="USDC"
             onOpenSelector={() => setModalType('to')}
-            isLoading={swapQuery.isLoading}
+            isLoading={swapMutation.isLoading}
             className={`border ${errorClass(errors.to, 'border-red-600', 'border-transparent')}`}
             value={120}
           >
@@ -149,7 +154,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                     1 USDC = 0.00 ETH ($1.00)
                   </div>
                   <div>
-                    ${swapData.price}
+                    ${'! TODO'}
                     <ChevronDownIcon className="w-3 h-3 inline ml-1 -mt-px" />
                   </div>
                 </div>
@@ -157,27 +162,27 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                   <div className="mt-3 h-px -mx-4 bg-gray-200" />
                   <div className="flex justify-between px-4">
                     <div>Expected Output:</div>
-                    <div>{swapData.output} USDC</div>
+                    <div>{'! TODO'} USDC</div>
                   </div>
                   <div className="flex justify-between px-4">
                     <div>Price Impact:</div>
-                    <div>{swapData.impact}%</div>
+                    <div>{'! TODO'}%</div>
                   </div>
                   <div className="flex justify-between px-4">
                     <div>Minimum received after slippage (0.56%):</div>
-                    <div>{swapData.receive} USDC</div>
+                    <div>{'! TODO'} USDC</div>
                   </div>
                   <div className="flex justify-between px-4">
                     <div>Network Fee:</div>
-                    <div>{swapData.fee}</div>
+                    <div>{'! TODO'}</div>
                   </div>
                 </div>
               </div>
             </Fragment>
           </SwapToken>
-          <div className="mt-6" title={!walletAccount?.wallet ? 'Please connect your wallet' : ''}>
+          <div className="mt-6">
             {/* <Validation errors={errors} className="mb-2" /> */}
-            <Button color="primary" className="w-full text-base" disabled={!walletAccount?.wallet} type="submit">
+            <Button color="primary" className="w-full text-base" type="submit">
               Swap
             </Button>
           </div>
@@ -185,20 +190,19 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
       </Card>
       <AssetSelectorModal
         open={!!modalType}
-        className="modal-top"
-        assets={tokensQuery.data}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
-        selected={modalType === 'from' ? form.getValues().from : form.getValues().to}
+        selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}
         onClose={() => setModalType(undefined)}
-        isLoading={tokensQuery.isLoading}
       />
       <Progress
-        open={!!progress[0]}
+        open={!swapMutation.isIdle}
         className="modal-top"
-        onClose={() => progress[1](undefined)}
-        status={submitMutation.status}
-        transaction={progress[0]}
-      />
+        onClose={swapMutation.reset}
+        status={swapMutation.status}
+        progress={swapMutation}
+      >
+        {progressUi}
+      </Progress>
     </>
   );
 };

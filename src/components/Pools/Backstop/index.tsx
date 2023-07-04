@@ -3,7 +3,6 @@ import { useState } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { cacheKeys } from '../../../constants/cache';
 import { BackstopPool as IBackstopPool } from '../../../models/BackstopPool';
-import { assetsApi } from '../../../services/api/assets';
 import AssetBadge from '../../Asset/Badge';
 import { Skeleton } from '../../Skeleton';
 import BackstopPoolModal from './Modal';
@@ -11,10 +10,7 @@ import BackstopPoolModal from './Modal';
 const BackstopPools = (): JSX.Element | null => {
   const [selected, setSelected] = useState<[IBackstopPool, 'deposit' | 'withdraw']>();
   // ! TODO: get backstop pool and info
-  const { data, isLoading } = useQuery<IBackstopPool[] | undefined>(
-    [cacheKeys.backstopPools],
-    assetsApi.getBackstopPools,
-  );
+  const { data, isLoading } = useQuery<IBackstopPool[] | undefined>([cacheKeys.backstopPools], () => []);
 
   if (isLoading) return <Skeleton className="bg-gray-200 h-48 w-full" />;
   return (

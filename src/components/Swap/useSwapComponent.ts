@@ -1,21 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useState } from 'preact/compat';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { useMutation } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { config } from '../../config';
-import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
-import { emptyFn } from '../../helpers/general';
+import { debounce } from '../../helpers/function';
+import { useBalance } from '../../hooks/useBalance';
 import useBoolean from '../../hooks/useBoolean';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { Asset } from '../../models/Asset';
-import { SwapSettings, SwapTransaction } from '../../models/Swap';
-import { assetsApi } from '../../services/api/assets';
-import { isApiConnected } from '../../services/api/helpers';
-import { getWalletBalances } from '../../services/api/wallet';
+import { SwapSettings } from '../../models/Swap';
+import { storageService } from '../../services/storage/local';
 import schema from './schema';
 import { SwapFormValues } from './types';
 
@@ -25,164 +20,147 @@ export interface UseSwapComponentProps {
   onChange?: (from: string, to: string) => void;
 }
 
-export const defaults = config.swap.defaults;
+export const defaultValues = config.swap.defaults;
+const getInitialValues = () => ({
+  ...defaultValues,
+  ...storageService.getParsed<SwapSettings>(storageKeys.SWAP_SETTINGS),
+});
+const storageSet = debounce(storageService.set, 1000);
 
-export const useSwapComponent = ({ from, to, onChange }: UseSwapComponentProps) => {
+export const useSwapComponent = (props: UseSwapComponentProps) => {
+  const { onChange } = props;
+  const hadMountedRef = useRef(false);
   const { walletAccount } = useGlobalState();
-  const {
-    state: { api },
-  } = useNodeInfoState();
-
-  const modalState = useState<undefined | 'from' | 'to'>();
-  const progress = useState<SwapTransaction>();
+  const { address } = walletAccount || {};
+  const tokensModal = useState<undefined | 'from' | 'to'>();
+  const setTokenModal = tokensModal[1];
   const dropdown = useBoolean();
-  const storage = useLocalStorage<SwapSettings>({
-    key: storageKeys.SWAP_SETTINGS,
-    defaultValue: defaults,
-    debounce: 1000,
-  });
-  const { merge, state: storageState } = storage;
-  const isConnected = isApiConnected(api);
-
+  const storageState = useRef(getInitialValues());
+  const initFrom = props.from || storageState.current.from;
+  const initTo = props.to || storageState.current.to;
+  const defaultFormValues = {
+    ...storageState.current,
+    from: initFrom || '',
+    to: initTo || '',
+  };
   const form = useForm<SwapFormValues>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      fromAmount: 0,
-      ...storageState,
-      from: storageState?.from,
-      to: to || storageState?.to,
-    },
+    resolver: yupResolver(schema) as Resolver<SwapFormValues>,
+    defaultValues: defaultFormValues,
   });
-  const { setValue, reset } = form;
+  const { setValue, reset, getValues, handleSubmit, control } = form;
+  const from = useWatch({
+    control,
+    name: 'from',
+  });
+  const balancesQuery = useBalance(from);
+  const { refetch: refetchBalances } = balancesQuery;
 
-  // ! TODO: submit transaction
-  const submitMutation = useMutation<unknown, unknown, SwapTransaction>(
+  const updateStorage = useCallback(
+    (newValues: Partial<SwapSettings>) => {
+      const prev = getValues();
+      const updated = {
+        slippage: prev.slippage || defaultValues.slippage,
+        deadline: prev.deadline || defaultValues.deadline,
+        ...newValues,
+      };
+      storageSet(storageKeys.SWAP_SETTINGS, updated);
+      return updated;
+    },
+    [getValues],
+  );
+
+  const swapMutation = useMutation<unknown, unknown, SwapFormValues>(
     async (data) => new Promise((r) => setTimeout(() => r(data), 6500)),
     {
-      onMutate: (values) => {
-        progress[1](values);
-      },
       onError: () => {
         // ! TODO: display error to user
       },
       onSuccess: () => {
+        refetchBalances();
         reset();
         // ! TODO: display response and update balances
       },
     },
   );
+  const { mutate: swap } = swapMutation;
 
-  const onSubmit = form.handleSubmit((data) => {
-    const slippage = data.slippage ?? defaults.slippage;
-    const toAmount = data.fromAmount; /** * rate */ // ! TODO: this should be calculated before already for showing in UI
-    // ! TODO: create transaction
-    const transaction: SwapTransaction = {
-      ...data,
-      slippage,
-      toAmount,
-      toMinAmount: toAmount, // ! TODO: calculate from slippage
-    };
-    submitMutation.mutate(transaction);
-  });
-
-  // ! TODO: fetch tokens
-  const tokensQuery = useQuery(
-    isConnected ? [cacheKeys.tokens] : [],
-    isConnected ? () => assetsApi.getSwapTokens() : emptyFn,
-    {
-      ...inactiveOptions[0],
-      enabled: !!api && api.isConnected,
-      onError: (err) => {
-        toast(err || 'Error fetching tokens', { type: 'error' });
-      },
-    },
+  const onSubmit = useMemo(
+    () =>
+      handleSubmit(async (data) => {
+        if (!address) return; // TODO: error alert
+        console.log(data, swap);
+        /* const time = Math.floor(Date.now() / 1000) + data.deadline;
+        const deadline = BigNumber.from(time).toBigInt();
+        const slippage = data.slippage ?? defaultValues.slippage;
+        const fromAmount = parseEther(`${data.fromAmount}`);
+        const toMinAmount = parseEther(`${calcPercentage(data.toAmount, slippage)}`);
+        swap({
+          args: [fromAmount, toMinAmount, [data.from, data.to], address, deadline],
+        }); */
+      }),
+    [address, handleSubmit, swap],
   );
-
-  const balancesEnabled = !!walletAccount?.address && isConnected;
-  // ! TODO: fetch wallet token balances
-  // ? might make sense to move queries into custom hooks that can be reused
-  const balancesQuery = useQuery(
-    balancesEnabled ? [cacheKeys.swapData, walletAccount.address] : [],
-    balancesEnabled ? () => getWalletBalances(api, walletAccount.address) : emptyFn,
-    {
-      ...inactiveOptions[0],
-      //refetchInterval: 10000,
-      enabled: balancesEnabled,
-      onError: (err) => {
-        toast(err || 'Error fetching wallet balances', { type: 'error' });
-      },
-    },
-  );
-
-  // ! TODO: fetch swap rates and other info, update everytime token changes, refetch interval
-  const swapQuery = useQuery([cacheKeys.swapData, storage.state?.from, storage.state?.to], () => undefined, {
-    ...inactiveOptions[0],
-    refetchInterval: 15000, // 15s
-    enabled: false,
-    onError: (err) => {
-      toast(err || 'Error fetching swap rates', { type: 'error' });
-    },
-  });
 
   const onFromChange = useCallback(
-    (a: string | Asset) => {
+    (a: string | Asset, event = true) => {
       const f = typeof a === 'string' ? a : a.address;
-      merge((prev) => {
-        const updated = {
-          ...defaults,
-          ...prev,
-          from: f,
-          to: (prev?.to === f ? prev?.from : prev?.to) || defaults.to,
-        };
-        setValue('from', updated.from);
-        setValue('to', updated.to);
-        if (onChange) onChange(updated.from, updated.to);
-        return updated;
-      });
-      // ! TODO: update queries, rates
+      const prev = getValues();
+      const updated = {
+        from: f,
+        to: prev?.to === f ? prev?.from : prev?.to,
+      };
+      updateStorage(updated);
+      setValue('from', updated.from);
+      if (updated.to && prev?.to === f) setValue('to', updated.to);
+      if (onChange && event) onChange(updated.from, updated.to);
+      setTokenModal(undefined);
     },
-    [merge, onChange, setValue],
+    [getValues, onChange, setTokenModal, setValue, updateStorage],
   );
 
   const onToChange = useCallback(
-    (a: string | Asset) => {
+    (a: string | Asset, event = true) => {
       const t = typeof a === 'string' ? a : a.address;
-      merge((prev) => {
-        const updated = {
-          ...defaults,
-          ...prev,
-          to: t,
-          from: (prev?.from === t ? prev?.to : prev?.from) || defaults.from,
-        };
-        setValue('from', updated.from);
-        setValue('to', updated.to);
-        if (onChange) onChange(updated.from, updated.to);
-        return updated;
-      });
-      // ! TODO: update queries, rates
+      const prev = getValues();
+      const updated = {
+        to: t,
+        from: prev?.from === t ? prev?.to : prev?.from,
+      };
+      updateStorage(updated);
+      if (updated.from && prev?.from !== updated.from) setValue('from', updated.from);
+      setValue('to', updated.to);
+      if (onChange && event) onChange(updated.from, updated.to);
+      setTokenModal(undefined);
     },
-    [merge, onChange, setValue],
+    [getValues, onChange, setTokenModal, setValue, updateStorage],
   );
+
+  const onReverse = useCallback(() => {
+    const prev = getValues();
+    if (prev.from) onToChange(prev.from);
+    else if (prev.to) onFromChange(prev.to);
+  }, [getValues, onFromChange, onToChange]);
 
   // when props change (url updated)
   useEffect(() => {
-    if (from) onFromChange(from);
-    if (to) onToChange(to);
-  }, [from, to, onFromChange, onToChange]);
+    if (hadMountedRef) {
+      onFromChange(initFrom || '', false);
+      onToChange(initTo || '', false);
+    }
+    hadMountedRef.current = true;
+  }, [initFrom, initTo, onFromChange, onToChange]);
 
   return {
     form,
-    walletAccount,
-    swapQuery,
-    tokensQuery,
-    balancesQuery,
-    submitMutation,
     dropdown,
-    progress,
-    storage,
-    modalState,
+    balancesQuery,
+    swapMutation,
+    tokensModal,
     onFromChange,
     onToChange,
+    onReverse,
     onSubmit,
+    updateStorage,
+    from,
   };
 };
