@@ -121,7 +121,7 @@ function Collators() {
       <div className="flex flex-col sm:flex-row mb-8 gap-8 justify-between">
         <div className="card gap-0 rounded-lg bg-base-200 sm:w-1/2 collators-box">
           <div className="card-body">
-            <h2 className="card-title">Collators</h2>
+            <h2 className="card-title">Staking</h2>
             <div className="flex flex-row flex-wrap gap-4">
               <div className="flex-initial">
                 <StakedIcon />
