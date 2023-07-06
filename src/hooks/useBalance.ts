@@ -12,13 +12,13 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
 };
 
 // ! TODO
-export const useBalance = (tokenAddress: string, options?: QueryOptions): UseBalanceResponse => {
+export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBalanceResponse => {
   const {
     state: { api },
   } = useNodeInfoState();
   const { address } = useGlobalState().walletAccount || {};
 
-  const enabled = !!api && !!address && options?.enabled !== false;
+  const enabled = !!api && !!address && !!tokenAddress && options?.enabled !== false;
   const query = useQuery<FrameSystemAccountInfo | undefined, unknown>(
     enabled ? [cacheKeys.walletBalance, tokenAddress, address] : [''],
     enabled ? () => api.query.system.account(address) : emptyFn,

@@ -6,8 +6,6 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { config } from '../../config';
 import { storageKeys } from '../../constants/localStorage';
 import { debounce } from '../../helpers/function';
-import { useBalance } from '../../hooks/useBalance';
-import useBoolean from '../../hooks/useBoolean';
 import { Asset } from '../../models/Asset';
 import { SwapSettings } from '../../models/Swap';
 import { storageService } from '../../services/storage/local';
@@ -34,7 +32,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { address } = walletAccount || {};
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
-  const dropdown = useBoolean();
   const storageState = useRef(getInitialValues());
   const initFrom = props.from || storageState.current.from;
   const initTo = props.to || storageState.current.to;
@@ -52,8 +49,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     control,
     name: 'from',
   });
-  const balancesQuery = useBalance(from);
-  const { refetch: refetchBalances } = balancesQuery;
 
   const updateStorage = useCallback(
     (newValues: Partial<SwapSettings>) => {
@@ -76,9 +71,9 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
         // ! TODO: display error to user
       },
       onSuccess: () => {
-        refetchBalances();
         reset();
-        // ! TODO: display response and update balances
+        // ! TODO: display response
+        // ! update balances
       },
     },
   );
@@ -152,8 +147,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   return {
     form,
-    dropdown,
-    balancesQuery,
     swapMutation,
     tokensModal,
     onFromChange,
