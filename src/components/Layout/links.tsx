@@ -2,14 +2,14 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { GlobalState } from '../../GlobalStateProvider';
-import CollatorsIcon from '../../assets/collators';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
+import NablaIcon from '../../assets/nabla';
+import SpacewalkIcon from '../../assets/spacewalk';
+import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
-import NablaIcon from '../../assets/nabla';
-import SpacewalkIcon from '../../assets/spacewalk';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -68,12 +68,12 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: './collators',
-    title: 'Collators',
+    link: './staking',
+    title: 'Staking',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <CollatorsIcon />,
+    prefix: <StakingIcon />,
     suffix: arrow,
   },
   {

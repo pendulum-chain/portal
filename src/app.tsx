@@ -22,7 +22,7 @@ const BackstopPoolsPage = (
   <SuspenseLoad importFn={() => import('./pages/nabla/backstop-pools')} fallback={defaultPageLoader} />
 );
 const Bridge = <SuspenseLoad importFn={() => import('./pages/bridge')} fallback={defaultPageLoader} />;
-const Collators = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
+const Staking = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
 
 export function App() {
   return (
@@ -45,7 +45,7 @@ export function App() {
             <Route path="backstop-pools" element={BackstopPoolsPage} />
             <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="collators" element={Collators} />
+          <Route path="staking" element={Staking} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="*" element={<NotFound />} />
