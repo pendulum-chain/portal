@@ -12,7 +12,7 @@ export type UseContractProps<T, TFn> = QueryOptions & {
 };
 export const useContract = <
   T extends Abi | Record<string, unknown>,
-  TFn extends (contract: ContractPromise) => Function,
+  TFn extends (contract: ContractPromise) => () => Promise<unknown>,
 >(
   key: QueryKey,
   { abi, address, fn, ...rest }: UseContractProps<T, TFn>,

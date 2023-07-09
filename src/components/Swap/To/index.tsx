@@ -61,7 +61,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
 
   return (
     <>
-      <div className={`rounded-lg bg-gray-50 px-4 py-3 ${className}`}>
+      <div className={`rounded-lg bg-base-100 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-[inherit] font-2">
             {isLoading ? (
@@ -76,11 +76,11 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
           </div>
           <Button
             size="xs"
-            className="rounded-full h-4 min-h-none bg-gray-200 pl-0 pr-1 flex items-center mt-0.5"
+            className="rounded-full h-4 min-h-none bg-[rgba(0,0,0,0.08)] pl-0 pr-1 flex items-center mt-0.5"
             onClick={onOpenSelector}
             type="button"
           >
-            <span className="rounded-full bg-gray-300 h-full p-px mr-1">
+            <span className="rounded-full bg-[rgba(0,0,0,0.1)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
             <strong className="font-bold">{token.symbol}</strong>
@@ -93,7 +93,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
             <Balance address={to} />
           </div>
         </div>
-        <div className="mt-4 h-px -mx-4 bg-gray-200" />
+        <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.1)]" />
         <div className={`collapse text-gray-500 -mx-4 text-sm${isOpen ? ' collapse-open' : ''}`}>
           <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
             <div className="flex items-center">
@@ -108,7 +108,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
             </div>
           </div>
           <div className="collapse-content flex flex-col gap-4">
-            <div className="mt-3 h-px -mx-4 bg-gray-200" />
+            <div className="mt-3 h-px -mx-4 bg-[rgba(0,0,0,0.1)]" />
             <div className="flex justify-between px-4">
               <div>Expected Output:</div>
               <div>

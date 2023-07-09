@@ -22,7 +22,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
   const token = { symbol: 'ETH', address: '' }; // ! TODO: get token info
   return (
     <>
-      <div className={`rounded-lg bg-gray-50 px-4 py-3 ${className}`}>
+      <div className={`rounded-lg bg-base-100 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-[inherit] font-2">
             <input
@@ -34,11 +34,11 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           </div>
           <Button
             size="xs"
-            className="rounded-full h-4 min-h-none bg-gray-200 pl-0 pr-1 flex items-center mt-0.5"
+            className="rounded-full h-4 min-h-none bg-[rgba(0,0,0,0.08)] pl-0 pr-1 flex items-center mt-0.5"
             onClick={onOpenSelector}
             type="button"
           >
-            <span className="rounded-full bg-gray-300 h-full p-px mr-1">
+            <span className="rounded-full bg-[rgba(0,0,0,0.1)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
             <strong className="font-bold">{token.symbol}</strong>
@@ -46,7 +46,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1">
-          <div className="text-sm text-gray-500 mt-px">{!!token && <TokenPrice address={token.address} />}</div>
+          <div className="text-sm  text-gray-500 mt-px">{!!token && <TokenPrice address={token.address} />}s</div>
           <div className="flex gap-1 text-sm text-gray-500">
             {balance !== undefined && (
               <Fragment>

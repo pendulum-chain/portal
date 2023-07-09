@@ -37,7 +37,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   return (
     <>
-      <Card bordered className="w-full max-w-xl bg-base-200  shadow-0">
+      <Card bordered className="w-full max-w-xl bg-base-200 shadow-0">
         <FormProvider {...form}>
           <form className="card-body text-gray-800" onSubmit={onSubmit}>
             <div className="flex justify-between mb-2">

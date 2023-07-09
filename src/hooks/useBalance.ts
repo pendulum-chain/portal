@@ -1,3 +1,5 @@
+import { ApiPromise } from '@polkadot/api';
+import { WeightV2 } from '@polkadot/types/interfaces';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
@@ -13,13 +15,13 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
   formatted?: string;
 };
 
-/* const createOptions = (api: ApiPromise) => ({
+export const createOptions = (api: ApiPromise) => ({
   gasLimit: api.createType('WeightV2', {
     refTime: '100000000000',
     proofSize: '1000000',
   }) as WeightV2,
   storageDepositLimit: null,
-}); */
+});
 
 export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBalanceResponse => {
   const {
@@ -30,8 +32,9 @@ export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBa
   const enabled = !!api && !!address && !!tokenAddress && options?.enabled !== false;
   const query = useContract([cacheKeys.walletBalance, tokenAddress, address], {
     abi: mockERC20,
-    address: tokenAddress, // contract address
+    address: '6nCMLKYGgiv4UvjK2dFaq3maZd7grhDYRJVEwUM2o14tTET1', // tokenAddress, // contract address
     // ! TODO: fix types
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fn: (contract) => (contract.query as any).balanceOf(address, { gasLimit: -1 } /* createOptions(api) */, address),
     ...inactiveOptions['3m'],
     ...options,
