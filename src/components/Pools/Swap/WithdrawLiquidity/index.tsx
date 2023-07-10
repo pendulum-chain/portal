@@ -23,7 +23,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
 
   const hideCss = mutation.isLoading ? 'hidden' : '';
   return (
-    <div className="text-[initial]">
+    <div className="text-[initial] dark:text-neutral-200">
       {mutation.isLoading ? (
         <>
           <div className="flex flex-col items-center justify-center text-center mt-4 mb-10">
@@ -31,9 +31,9 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             <h4 className="text-2xl mt-10">Waiting for Confirmation</h4>
             <p className="text-neutral-500 mt-4">Please confirm this transaction in your wallet</p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-neutral-100 p-4">
+          <div className="flex items-center justify-between rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
             <div className="flex items-center gap-2 text-lg">
-              <div className="rounded-full bg-neutral-300 w-10 h-10 p-px">
+              <div className="rounded-full bg-[rgba(0,0,0,0.15)] w-10 h-10 p-px">
                 <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
               </div>
               <div>
@@ -42,7 +42,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             </div>
             <div className="text-3xl font-2">{amount}%</div>
           </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 text-neutral-500 p-4 mt-4">
+          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
               <div>Fee</div>
               <div>0.99 USDC</div>
@@ -81,11 +81,11 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               Balance: {balance} {data.asset?.symbol}
             </p>
           </div>
-          <div className="relative rounded-lg bg-neutral-100 p-4">
+          <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="text-3xl font-2">{amount}%</div>
               <Button
-                className="bg-neutral-200 px-4 rounded-2xl"
+                className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
                 size="sm"
                 type="button"
                 onClick={() =>
@@ -100,7 +100,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             </div>
             <Range color="primary" min={0} max={100} size="sm" {...register('amount')} />
           </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 text-neutral-500 p-4 mt-4">
+          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
               <div>Amount deposit (after fee)</div>
               <div>0.99 USDC</div>

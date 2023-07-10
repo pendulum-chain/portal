@@ -5,9 +5,9 @@ import { useModalToggle } from '../../../services/modal';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
 export type SwapPoolColumn = SwapPool & {
-  wallet: unknown;
-  myAmount: unknown;
-  coverage: unknown;
+  wallet?: unknown;
+  myAmount?: unknown;
+  coverage?: unknown;
 };
 
 export const nameColumn: ColumnDef<SwapPoolColumn> = {

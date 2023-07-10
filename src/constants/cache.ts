@@ -6,6 +6,7 @@ export const cacheKeys = {
   swapData: 'swapData',
   swapPools: 'swapPools',
   tokens: 'tokens',
+  tokenAllowance: 'tokenAllowance',
   balance: 'balance',
   walletBalance: 'walletBalance',
   walletBalances: 'walletBalances',

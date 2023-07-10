@@ -35,7 +35,7 @@ export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBa
     address: tokenAddress, // contract address
     // ! TODO: fix types
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fn: (contract) => (contract.query as any).balanceOf(address, api ? createOptions(api) : {}, address),
+    fn: (contract: any) => contract.query.balanceOf(address, api ? createOptions(api) : {}, address),
     ...inactiveOptions['3m'],
     ...options,
     enabled,

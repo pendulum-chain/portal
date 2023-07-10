@@ -9,7 +9,7 @@ export const Skeleton = ({ className, isLoading, children, ...rest }: SkeletonPr
   isLoading === false ? (
     <>{children}</>
   ) : (
-    <div {...rest} className={`bg-base-300 rounded-lg ${className} animate-pulse`}>
+    <div {...rest} className={`bg-neutral-300 dark:bg-neutral-600 rounded-lg ${className} animate-pulse`}>
       <div className="invisible">{children}</div>
     </div>
   );
