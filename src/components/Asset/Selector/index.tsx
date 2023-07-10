@@ -41,13 +41,13 @@ const AssetSelector = ({ onSelect, selected, size = 'xs', ...rest }: AssetSelect
       <Button
         size={size}
         {...rest}
-        className={`rounded-full bg-gray-200 pl-0 pr-1 flex items-center justify-between min-w-[70px] ${
+        className={`rounded-full bg-neutral-200 pl-0 pr-1 flex items-center justify-between min-w-[70px] ${
           rest.className || ''
         }`}
         onClick={setTrue}
         type="button"
       >
-        <span className="rounded-full bg-gray-300 h-full p-px mr-1">
+        <span className="rounded-full bg-neutral-300 h-full p-px mr-1">
           <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
         </span>
         <strong>{selectedAssetVal?.symbol}</strong>

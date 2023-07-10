@@ -23,7 +23,7 @@ const Progress = ({ data, status, onClose, children, ...rest }: ProgressProps): 
           </div>
           <div className="text-center mt-6">
             <h4 className="text-2xl font-bold text-bold">Waiting for confirmation</h4>
-            <p className="text-gray-400 my-4">Confirm this transaction in your wallet</p>
+            <p className="text-neutral-400 my-4">Confirm this transaction in your wallet</p>
             {children}
           </div>
         </>

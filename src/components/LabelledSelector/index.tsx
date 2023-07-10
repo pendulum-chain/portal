@@ -1,7 +1,6 @@
-import { Select } from 'react-daisyui';
-import { h } from 'preact';
-import { ofSelect } from '../../helpers/general';
 import { ChangeEvent, CSSProperties } from 'preact/compat';
+import { Select } from 'react-daisyui';
+import { ofSelect } from '../../helpers/general';
 
 interface Props<T> {
   items: T[];
@@ -23,7 +22,7 @@ function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
         </label>
       )}
       <Select
-        className="w-fit max-w-full h-10 border border-gray-500 rounded-md bg-transparent"
+        className="w-fit max-w-full h-10 border border-neutral-500 rounded-md bg-transparent"
         onChange={(e: ChangeEvent) => {
           if (!ofSelect(e.target)) return;
           const id = e.target.value;
