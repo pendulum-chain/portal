@@ -5,7 +5,7 @@ export const enum ThemeName {
   Pendulum = TenantName.Pendulum,
 }
 
-export const tenantTheme: Partial<Record<ThemeName, 'light' | 'dark'>> = {
-  [TenantName.Amplitude]: 'dark',
-  [TenantName.Pendulum]: 'light',
+export const tenantTheme: Record<ThemeName, 'light' | 'dark'> = {
+  [ThemeName.Amplitude]: 'dark',
+  [ThemeName.Pendulum]: 'light',
 };
