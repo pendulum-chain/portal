@@ -39,8 +39,8 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
       name: 'slippage',
     }),
   );
-  const token = { symbol: 'ETH', address: '' };
-  const fromToken = { symbol: 'USDC', address: '' };
+  const token = { symbol: 'ETH', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' };
+  const fromToken = { symbol: 'USDC', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' };
   const debouncedFromAmount = useDebouncedValue(fromAmount, 800);
   const { isLoading, data, refetch } = {
     data: 154.432,
@@ -90,7 +90,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
         <div className="flex justify-between items-center mt-1">
           <div className="text-sm text-gray-500 mt-px">{!!token && <TokenPrice address={token.address} />}</div>
           <div className="flex gap-1 text-sm text-gray-500">
-            <Balance address={to} />
+            Balance: <Balance address={token.address} />
           </div>
         </div>
         <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.1)]" />

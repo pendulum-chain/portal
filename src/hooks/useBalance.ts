@@ -29,24 +29,23 @@ export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBa
   } = useNodeInfoState();
   const { address } = useGlobalState().walletAccount || {};
 
-  const enabled = !!api && !!address && !!tokenAddress && options?.enabled !== false;
+  const enabled = !!api && !!address && options?.enabled !== false;
   const query = useContract([cacheKeys.walletBalance, tokenAddress, address], {
     abi: mockERC20,
-    address: '6nCMLKYGgiv4UvjK2dFaq3maZd7grhDYRJVEwUM2o14tTET1', // tokenAddress, // contract address
+    address: tokenAddress, // contract address
     // ! TODO: fix types
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fn: (contract) => (contract.query as any).balanceOf(address, { gasLimit: -1 } /* createOptions(api) */, address),
+    fn: (contract) => (contract.query as any).balanceOf(address, api ? createOptions(api) : {}, address),
     ...inactiveOptions['3m'],
     ...options,
     enabled,
   });
   const { data } = query;
-
   const val = useMemo(() => {
-    if (!data?.data) return {};
-    const balance = nativeToDecimal(data.data.free).toNumber();
+    if (!data?.result.isOk || !data.output) return {};
+    const balance = nativeToDecimal(parseFloat(data.output.toString()) || 0).toNumber();
     return { balance, formatted: prettyNumbers(balance) };
-  }, [data?.data]);
+  }, [data]);
 
   return {
     ...query,

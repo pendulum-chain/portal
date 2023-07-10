@@ -10,10 +10,10 @@ export type BalanceProps = {
 };
 
 const Balance = ({ address, fallback = 0, loader = true, options }: BalanceProps): JSX.Element | null => {
-  const { isLoading, balance } = useBalance(address, options);
+  const { isLoading, formatted } = useBalance(address, options);
   if (isLoading) {
     return loader ? <Skeleton className="inline-flex">10000</Skeleton> : null;
   }
-  return <span title={balance}>{balance ?? fallback ?? null}</span>;
+  return <span title={formatted}>{formatted ?? fallback ?? null}</span>;
 };
 export default Balance;

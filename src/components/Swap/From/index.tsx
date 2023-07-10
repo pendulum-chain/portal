@@ -18,8 +18,8 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
     control,
     name: 'from',
   });
-  const { balance } = useBalance(from);
-  const token = { symbol: 'ETH', address: '' }; // ! TODO: get token info
+  const token = { symbol: 'ETH', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' }; // ! TODO: get token info
+  const { balance } = useBalance(token.address);
   return (
     <>
       <div className={`rounded-lg bg-base-100 px-4 py-3 ${className}`}>

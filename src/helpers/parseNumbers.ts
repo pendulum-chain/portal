@@ -83,10 +83,11 @@ export const nativeToFormat = (
   oneCharOnly = false,
 ) => format(nativeToDecimal(value).toNumber(), tokenSymbol, oneCharOnly);
 
-export const prettyNumbers = (number: number, lang?: string) =>
+export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberFormatOptions) =>
   number.toLocaleString(lang || navigator.language, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
+    ...opts,
   });
 
 export const roundNumber = (value: number | string = 0, round = 6) => {
