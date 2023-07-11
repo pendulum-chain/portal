@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
 import { inactiveOptions } from '../constants/cache';
+import { mockERC20 } from '../contracts/MockERC20';
+import { decimalToNative } from '../helpers/parseNumbers';
 import { useTokenAllowance } from './useTokenAllowance';
 
 export enum ApprovalState {
@@ -32,7 +34,7 @@ export const useTokenApproval = ({
 }: UseTokenApprovalParams) => {
   const { address } = useGlobalState().walletAccount || {};
   const [pending, setPending] = useState(false);
-  const amountBI = parseEther(`${amount || 0}`);
+  const amountBI = decimalToNative(approveMax ? Number.MAX_SAFE_INTEGER : amount || 0);
   const isEnabled = Boolean(token && spender && address && enabled);
   const {
     data: allowance,
@@ -43,15 +45,6 @@ export const useTokenApproval = ({
     owner: address,
     spender,
     enabled: isEnabled,
-  });
-
-  const { config } = usePrepareContractWrite({
-    ...inactiveOptions['1m'],
-    abi: erc20ABI,
-    address: token,
-    functionName: 'approve',
-    args: [spender, approveMax ? MaxUint256.toBigInt() : amountBI],
-    enabled: isEnabled && allowance !== undefined && !isAllowanceLoading,
   });
 
   const onSettledFn = useCallback(
@@ -75,8 +68,14 @@ export const useTokenApproval = ({
     [refetch],
   );
 
+  // https://github.com/wagmi-dev/wagmi/blob/9d3310e417eedde6bf481f5959af73745b9c27b4/packages/react/src/hooks/contracts/useContractWrite.ts
   const execute = useContractWrite({
-    ...config,
+    abi: mockERC20,
+    address: token,
+    functionName: 'approve',
+    args: [spender, amountBI],
+    ...inactiveOptions['1m'],
+    enabled: isEnabled && allowance !== undefined && !isAllowanceLoading,
     onError,
     onSettled: onSettledFn,
     onSuccess: onSuccessFn,
