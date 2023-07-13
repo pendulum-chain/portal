@@ -205,7 +205,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
 
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const tenant = useGlobalState().state.tenantName;
+  const tenant = useGlobalState().tenantName;
   const [exchangeRate, setExchangeRate] = useState<number | undefined>(undefined);
   const { getExchangeRate } = useOraclePallet();
 
