@@ -1,27 +1,26 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { nativeToFormat } from '../../helpers/parseNumbers';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 
 import Table from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
+import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
 import {
+  TCollator,
+  UserStaking,
   actionsColumn,
   apyColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
   stakedColumn,
-  TCollator,
-  UserStaking,
 } from './columns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
-import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
-import { PalletIdentityRegistrarInfo } from '@polkadot/types/lookup';
 
 function Collators() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -69,7 +68,7 @@ function Collators() {
   }, [api, walletAccount]);
 
   useEffect(() => {
-    const identitiesPrefetch = async (candidatesArray: any) => {
+    const identitiesPrefetch = async (candidatesArray: ParachainStakingCandidate[]) => {
       const m: Map<string, PalletIdentityInfo | undefined> = new Map();
       for (let i = 0; i < candidatesArray.length; i++) {
         const c = candidatesArray[i];
@@ -119,12 +118,12 @@ function Collators() {
 
   return (
     <div className="overflow-x-auto collators-list-container mt-10">
-      <div className="flex mb-8 justify-between">
-        <div className="card gap-0 rounded-lg bg-base-200 w-1/2 mr-4 collators-box">
+      <div className="flex flex-col sm:flex-row mb-8 gap-8 justify-between">
+        <div className="card gap-0 rounded-lg bg-base-200 sm:w-1/2 collators-box">
           <div className="card-body">
-            <h2 className="card-title">Collators</h2>
-            <div className="flex flex-row">
-              <div className="flex-initial pr-5">
+            <h2 className="card-title">Staking</h2>
+            <div className="flex flex-row flex-wrap gap-4">
+              <div className="flex-initial">
                 <StakedIcon />
               </div>
               <div className="flex-auto">
@@ -143,11 +142,11 @@ function Collators() {
             </div>
           </div>
         </div>
-        <div className="card rounded-lg bg-base-200 w-1/2 ml-4 collators-box">
+        <div className="card rounded-lg bg-base-200 sm:w-1/2 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking Rewards</h2>
-            <div className="flex flex-row">
-              <div className="flex-initial pt-1 pr-5 pb-0">
+            <div className="flex flex-row flex-wrap  gap-4">
+              <div className="flex-initial pt-1 pb-0">
                 <RewardsIcon />
               </div>
               <div className="flex-auto">
@@ -157,7 +156,7 @@ function Collators() {
               <div className="flex flex-auto place-content-end">
                 <button
                   onClick={() => setClaimDialogOpen(true)}
-                  className="btn btn-primary w-1/3"
+                  className="btn btn-primary px-2"
                   disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
                 >
                   Claim

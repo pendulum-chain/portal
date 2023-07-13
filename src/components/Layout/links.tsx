@@ -1,14 +1,15 @@
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { GlobalStateValues } from '../../GlobalStateProvider';
-import BridgeIcon from '../../assets/bridge';
-import CollatorsIcon from '../../assets/collators';
+import { GlobalState } from '../../GlobalStateProvider';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
+import NablaIcon from '../../assets/nabla';
+import SpacewalkIcon from '../../assets/spacewalk';
+import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
-import ComingSoonTag from './ComingSoonTag';
 import { TenantName } from '../../models/Tenant';
+import ComingSoonTag from './ComingSoonTag';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -24,7 +25,7 @@ export type BaseLinkItem = {
 export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
 };
-export type Links = (state: Partial<GlobalStateValues>) => LinkItem[];
+export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
 const arrow = <ChevronRightIcon className="nav-arrow w-5 h-5" />;
 
@@ -44,7 +45,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
     },
-    prefix: <SwapIcon />,
+    prefix: <SwapIcon className="p-1" />,
     suffix: <ComingSoonTag />,
   },
   {
@@ -53,7 +54,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
     },
-    prefix: <BridgeIcon />,
+    prefix: <SpacewalkIcon />,
     suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
     submenu: [
       {
@@ -67,12 +68,12 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: './collators',
-    title: 'Collators',
+    link: './staking',
+    title: 'Staking',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <CollatorsIcon />,
+    prefix: <StakingIcon />,
     suffix: arrow,
   },
   {
@@ -90,9 +91,9 @@ export const links: Links = ({ tenantName }) => [
     ),
   },
   {
-    link: '/amber',
-    title: '0xAmber',
-    prefix: <SwapIcon />,
+    link: '/nabla',
+    title: 'Nabla',
+    prefix: <NablaIcon />,
     suffix: <ComingSoonTag />,
     hidden: true,
     props: {
@@ -100,15 +101,15 @@ export const links: Links = ({ tenantName }) => [
     },
     submenu: [
       {
-        link: './amber/swap',
+        link: './nabla/swap',
         title: 'Swap',
       },
       {
-        link: './amber/swap-pools',
+        link: './nabla/swap-pools',
         title: 'Swap Pools',
       },
       {
-        link: './amber/backstop-pools',
+        link: './nabla/backstop-pools',
         title: 'Backstop Pool',
       },
     ],

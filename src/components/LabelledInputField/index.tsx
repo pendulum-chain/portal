@@ -1,7 +1,6 @@
-import { forwardRef } from 'react';
+import { CSSProperties, ChangeEvent, TargetedEvent, forwardRef } from 'preact/compat';
 import { Input, InputProps } from 'react-daisyui';
 import './styles.css';
-import { ChangeEvent, CSSProperties, TargetedEvent } from 'preact/compat';
 
 interface Props {
   label?: string;

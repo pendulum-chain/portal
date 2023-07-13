@@ -1,26 +1,26 @@
-import { Button, Divider, Modal } from 'react-daisyui';
-import { useEffect, useMemo, useState } from 'react';
-import { h } from 'preact';
-import { DateTime } from 'luxon';
 import { hexToU8a } from '@polkadot/util';
-import { CloseButton } from '../../components/CloseButton';
-import SuccessDialogIcon from '../../assets/dialog-status-success';
-import PendingDialogIcon from '../../assets/dialog-status-pending';
+import { DateTime } from 'luxon';
+import { useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
-import { CopyableAddress } from '../../components/PublicKey';
-import { TransferType, TTransfer } from './TransfersColumns';
-import { nativeToDecimal } from '../../helpers/parseNumbers';
-import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
+import { Button, Divider, Modal } from 'react-daisyui';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
+import PendingDialogIcon from '../../assets/dialog-status-pending';
+import SuccessDialogIcon from '../../assets/dialog-status-success';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
+import { CloseButton } from '../../components/CloseButton';
+import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
+
 import { useOraclePallet } from '../../hooks/oracle/oracle';
 import { Float } from '@polkadot/types-codec';
+import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { TTransfer, TransferType } from './TransfersColumns';
 
 interface BaseTransferDialogProps {
   id: string;
@@ -45,7 +45,7 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
 
-  const { tenantName } = useGlobalState().state;
+  const { tenantName } = useGlobalState();
   const tenantNameCapitalized = tenantName ? toTitle(tenantName) : 'Pendulum';
 
   const [vaultStellarPublicKey, setVaultStellarPublicKey] = useState<string | undefined>(undefined);
@@ -353,10 +353,10 @@ export function FailedTransferDialog(props: TransferDialogProps) {
   );
   const actions = () => (
     <>
-      <Button className="px-6" variant="outline" color="primary" onClick={() => {}}>
+      <Button className="px-6" variant="outline" color="primary" onClick={() => undefined}>
         1. Compensate
       </Button>
-      <Button className="px-6" variant="outline" color="primary" onClick={() => {}}>
+      <Button className="px-6" variant="outline" color="primary" onClick={() => undefined}>
         2. Remburse
       </Button>
     </>

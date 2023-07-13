@@ -1,44 +1,26 @@
-import { memo, useEffect, useMemo, useState } from 'preact/compat';
-import { Outlet, useParams } from 'react-router-dom';
+import { Bars3Icon } from '@heroicons/react/20/solid';
+import { memo, useState } from 'preact/compat';
+import { Outlet } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
 import AmplitudeLogo from '../../assets/amplitud-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
-import { config } from '../../config';
 import { TenantName } from '../../models/Tenant';
-import OpenWallet from '../OpenWallet';
+import ChainSelector from '../ChainSelector';
+import OpenWallet from '../Wallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import Versions from './Versions';
 import './styles.sass';
-import ChainSelector from '../ChainSelector';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
-  const params = useParams();
-  const { state, setState, dAppName } = useGlobalState();
-  const isPendulum = state.tenantName === TenantName.Pendulum;
-  const isTestnet = state.tenantName === TenantName.Foucoco;
+  const { tenantName, dAppName } = useGlobalState();
+  const isPendulum = tenantName === TenantName.Pendulum;
+  const isTestnet = tenantName === TenantName.Foucoco;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
   const bgColor = isPendulum ? 'bg-white' : 'bg-black';
-
-  const network: TenantName = useMemo(() => {
-    return params.network && Object.values<string>(TenantName).includes(params.network)
-      ? (params.network as TenantName)
-      : TenantName.Pendulum;
-  }, [params.network]);
-
-  useEffect(() => {
-    // Only change state if network is different
-    const n =
-      network && Object.values<string>(TenantName).includes(network) ? (network as TenantName) : TenantName.Pendulum;
-    setState((prevState) => ({
-      ...prevState,
-      tenantName: n,
-      tenantRPC: config.tenants[n].rpc,
-    }));
-  }, [network, setState]);
 
   const FooterLink = memo(() => {
     return isPendulum ? (
@@ -62,16 +44,23 @@ export default function Layout(): JSX.Element | null {
             visible ? 'open left-0' : 'closed -left-full'
           }`}
         >
-          <img
-            className="pendulum-logo"
-            src={sideBarLogo}
-            alt=""
-            style={isPendulum ? {} : { marginTop: 20, marginBottom: 30, marginLeft: 30 }}
-          />
-          {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
-          <Nav />
+          <div
+            style={
+              isPendulum ? { marginLeft: 20, marginBottom: 20 } : { marginTop: 20, marginBottom: 30, marginLeft: 30 }
+            }
+          >
+            <a
+              href={`https://pendulumchain.org/${isPendulum ? '' : 'amplitude'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img className="logo" src={sideBarLogo} alt="" />
+              {isTestnet && <div className="foucoco-tag">Foucoco testnet</div>}
+            </a>
+          </div>
+          <Nav onClick={() => setVisible(false)} />
           <div className="sidebar-footer">
-            <Versions tenantName={state.tenantName} />
+            <Versions tenantName={tenantName} />
             <NetworkId />
             <SocialAndTermLinks />
           </div>
@@ -81,10 +70,12 @@ export default function Layout(): JSX.Element | null {
         <header>
           <div className="flex items-center flex-row-reverse h-15 gap-2">
             <div className="mobile-menu">
-              <button className="menu" onClick={() => setVisible((prev) => !prev)} />
+              <button type="button" onClick={() => setVisible((prev) => !prev)}>
+                <Bars3Icon className="w-7" />
+              </button>
             </div>
             <OpenWallet dAppName={dAppName} />
-            <ChainSelector tenantName={state.tenantName} />
+            <ChainSelector tenantName={tenantName} />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>

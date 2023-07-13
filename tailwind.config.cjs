@@ -8,6 +8,13 @@ module.exports = {
   // eslint-disable-next-line no-undef
   plugins: [require('daisyui')],
   themes: ['pendulum', 'amplitude'],
+  theme: {
+    extend: {
+      screens: {
+        xs: '480px',
+      },
+    },
+  },
   daisyui: {
     themes: [
       // The colors defined for the following themes have to match the ones defined in the color configuration

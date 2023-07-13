@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button, Modal } from 'react-daisyui';
 import { toast } from 'react-toastify';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
-import { useGlobalState } from '../../../GlobalStateProvider';
 import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 
 interface Props {
   userRewardsBalance?: string;
@@ -46,6 +46,7 @@ function ClaimRewardsDialog(props: Props) {
     const extrinsic = createClaimRewardExtrinsic(userRewardsBalance);
 
     extrinsic
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
         const { status, events } = result;
 

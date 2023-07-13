@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from 'preact';
 import { Theme } from 'react-daisyui';
 import { BrowserRouter } from 'react-router-dom';
-import { App } from './app';
-import { defaultState, GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
-import './index.css';
+import { GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
 import { NodeInfoProvider } from './NodeInfoProvider';
-import TermsAndConditions from './TermsAndConditions';
+import { App } from './app';
+import { emptyFn } from './helpers/general';
+import './index.css';
 
 const queryClient = new QueryClient();
 
@@ -16,9 +16,9 @@ render(
       <GlobalStateProvider>
         <GlobalStateContext.Consumer>
           {(globalState) => {
-            const { state = defaultState, getThemeName = () => undefined } = globalState as GlobalState;
+            const { tenantRPC, getThemeName = emptyFn } = globalState as GlobalState;
             return (
-              <NodeInfoProvider tenantRPC={state.tenantRPC}>
+              <NodeInfoProvider tenantRPC={tenantRPC}>
                 <Theme dataTheme={getThemeName()}>
                   <App />
                 </Theme>

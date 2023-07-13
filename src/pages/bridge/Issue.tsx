@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VoidFn } from '@polkadot/api-base/types';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
@@ -11,11 +12,11 @@ import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
-import OpenWallet from '../../components/OpenWallet';
-import TransferCountdown from '../../components/TransferCountdown';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
-import { decimalToStellarNative, format, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
+import TransferCountdown from '../../components/TransferCountdown';
+import OpenWallet from '../../components/Wallet';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
@@ -73,7 +74,7 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [amount, bridgeFee]);
 
   return (
-    <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col">
+    <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col text-sm xs:text-base">
       <div className="flex justify-between">
         <span>To {network}</span>
         <span>
@@ -82,19 +83,19 @@ function FeeBox(props: FeeBoxProps): JSX.Element {
       </div>
       <div className="flex justify-between mt-2">
         <span>Bridge Fee</span>
-        <span>
+        <span className="text-right">
           {bridgeFee.toString()} {bridgedAsset?.getCode()}
         </span>
       </div>
       <div className="flex justify-between mt-2">
         <span>Security Deposit</span>
-        <span>
+        <span className="text-right">
           {griefingCollateral.toString()} {nativeCurrency}
         </span>
       </div>
       <div className="flex justify-between mt-2">
         <span>Transaction Fee</span>
-        <span>
+        <span className="text-right">
           {transactionFee.toFixed(12)} {nativeCurrency}
         </span>
       </div>
@@ -374,15 +375,15 @@ function Issue(props: IssueProps): JSX.Element {
   }, [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
+    <div className="flex items-center justify-center h-full space-walk py-4">
       <ConfirmationDialog
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
-      <div style={{ width: 500 }}>
+      <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic)}>
-          <div className="flex items-center">
+          <div className="flex flex-col xs:flex-row xs:items-center gap-1">
             <Controller
               control={control}
               rules={{
@@ -415,7 +416,6 @@ function Issue(props: IssueProps): JSX.Element {
                 />
               )}
             />
-            <div className="px-1" />
             {wrappedAssets && (
               <AssetSelector
                 selectedAsset={selectedAsset}

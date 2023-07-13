@@ -1,6 +1,7 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'preact/compat';
+import { useGlobalState } from '../../GlobalStateProvider';
 import Table from '../../components/Table';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
@@ -26,13 +27,12 @@ import {
   updatedColumn,
 } from './TransfersColumns';
 import './styles.css';
-import { useGlobalState } from '../../GlobalStateProvider';
 
 function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
   const { subscribeActiveBlockNumber } = useSecurityPallet();
-  const { tenantName } = useGlobalState().state;
+  const { tenantName } = useGlobalState();
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
