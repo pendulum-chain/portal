@@ -3,24 +3,18 @@ $medium: 1023px
 $menu: 32px
 
 .mobile-menu
-  display: none
-  width: $menu
-  height: $menu
-  padding: 4px
   margin-left: 4px
-  transition: opacity .2s ease-out
-  opacity: .8
-  :hover
-    opacity: .75
-  @media screen and (max-width: $medium)
-    display: block
 
-  .menu
-    width: 100%
-    height: 100%
-    background: transparent center center no-repeat url(../../assets/bars.svg)
-    svg
-      filter: invert(58%) sepia(0%) saturate(2%) hue-rotate(360deg) brightness(91%) contrast(83%)
+  button
+    display: none
+    width: $menu
+    height: $menu
+    transition: opacity .2s ease-out
+    opacity: .9
+    :hover
+      opacity: .85
+    @media screen and (max-width: $medium)
+      display: block
 
 #sidebar-wrapper
   position: static
@@ -31,13 +25,14 @@ $menu: 32px
   flex-direction: column
   padding-top: 20px
   width: 270px
+  max-height: 100%
+  overflow: auto
+
   @media screen and (max-width: $medium)
     box-shadow: 5px 0 8px rgba(0, 0, 0, .1)
 
-.pendulum-logo
+#sidebar-wrapper .logo
   width: 160px
-  margin-left: 20px
-  margin-bottom: 20px
 
 .foucoco-tag
   font-family: 'Nunito Sans'
@@ -45,7 +40,7 @@ $menu: 32px
   color: var(--primary)
   font-size: 11px
   letter-spacing: 1px
-  left: 79px
+  left: 66px
   top: 70px
 
 #main-wrapper
@@ -64,7 +59,7 @@ $menu: 32px
 
 nav
   margin: 0 10px auto 10px
-  
+
   .nav-item
     position: relative
     width: 100%
@@ -80,7 +75,7 @@ nav
     border-radius: 100px
     border-radius: 9px
     margin: 10px 0
-    padding: 15px 25px
+    padding: 10px 16px
 
     &.active .nav-arrow
       visibility: visible
@@ -90,7 +85,7 @@ nav
 
     &:hover, &.active
       background-color: var(--selected-nav-item)
-    
+
     &.coming-soon
       pointer-events: none
       color: var(--text-primary-disabled)
@@ -102,16 +97,16 @@ nav
       fill: currentColor
 
     svg:first-of-type
-      width: 20px
-      height: 20px
+      width: 32px
+      height: 32px
 
     span
       display: block
-      margin-left: 20px
+      margin-left: 14px
       width: 140px
       height: auto
       color: var(--text-primary)
-    
+
     .coming-soon-tag
       position: absolute
       right: 0.1em

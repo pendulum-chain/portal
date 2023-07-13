@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../../GlobalStateProvider';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { decimalToNative, nativeToDecimal } from '../../../helpers/parseNumbers';
 import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
 import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';
@@ -72,15 +72,16 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
 
     doSubmitExtrinsic(api, getExtrinsic(), walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }, [
+    walletAccount,
     api,
+    delegationAmount,
+    selectedCandidate,
+    mode,
+    undelegatingAll,
     createLeaveDelegatorsExtrinsic,
     createDelegateLessExtrinsic,
     createDelegateMoreExtrinsic,
     createJoinDelegatorsExtrinsic,
-    delegationAmount,
-    mode,
-    selectedCandidate,
-    walletAccount,
   ]);
 
   return (

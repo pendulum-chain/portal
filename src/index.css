@@ -56,7 +56,7 @@
   --subtitle-collator-box: #828282;
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
   --text-primary-disabled: rgba(88, 102, 126, 0.4);
-  --tag-background: rgba(144, 126,160, 0.16); /* --primary 16% */
+  --tag-background: rgba(144, 126, 160, 0.16); /* --primary 16% */
 }
 
 body {
@@ -251,10 +251,23 @@ input[type='number'] {
   outline: none;
   border: 0;
 }
+.table thead tr th:not(.pinned) {
+  position: initial;
+}
+.table tr td.pinned {
+  position: sticky;
+  left: 0px;
+  right: 0px;
+}
 table th .sort:not(.desc):not(.asc) {
   transition: opacity 0.15s ease-out;
   opacity: 0;
 }
 table th:hover .sort {
   opacity: 0.8 !important;
+}
+
+w3m-modal {
+  position: relative;
+  z-index: 1000;
 }

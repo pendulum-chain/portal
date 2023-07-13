@@ -36,7 +36,6 @@ export const useAccountBalance = (): UseAccountBalanceResponse => {
     return prettyNumbers(nativeToDecimal(data.data.free).toNumber());
   }, [data?.data, walletAccount]);
 
-
   return {
     globalState,
     query,

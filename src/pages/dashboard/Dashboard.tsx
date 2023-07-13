@@ -5,24 +5,21 @@ import {
 } from '@polkadot/types/lookup';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import Banner from '../../assets/banner-spacewalk-4x.png';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import Banner from '../../assets/banner-spacewalk-4x.png';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 import { currencyToString } from '../../helpers/spacewalk';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import './styles.css';
-import { getAddressForFormat } from '../../helpers/addressFormatter';
 
 interface TokenBalances {
   [tokenId: string]: OrmlTokensAccountData;
 }
 
 function Dashboard() {
-  const {
-    walletAccount,
-    state: { tenantName, tenantRPC },
-  } = useGlobalState();
+  const { walletAccount, tenantName, tenantRPC } = useGlobalState();
   const {
     state: { api, tokenSymbol, ss58Format },
   } = useNodeInfoState();
@@ -89,7 +86,7 @@ function Dashboard() {
 
   return (
     <div className="mt-10">
-      <div className="card card-compact w-2/3 banner rounded-md mb-6 bg-base-200">
+      <div className="card card-compact sm:w-2/3 banner rounded-md mb-6 bg-base-200">
         <a target="blank" href="https://pendulumchain.org/spacewalk">
           <div className="card-body">
             <div className="card-title block">
@@ -102,7 +99,7 @@ function Dashboard() {
           </div>
         </a>
       </div>
-      <div className="card w-1/3 portfolio rounded-md bg-base-200">
+      <div className="card sm:w-1/3 portfolio rounded-md bg-base-200">
         <div className="card-body">
           <h2 className="card-title float-left">Portfolio</h2>
           <div className="balance">

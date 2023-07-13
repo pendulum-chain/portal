@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TermsAndConditions from './TermsAndConditions';
 import Layout from './components/Layout';
 import { defaultPageLoader } from './components/Loader/Page';
 import { NotFound } from './components/NotFound';
@@ -12,16 +13,16 @@ import { config } from './config';
  */
 const Dashboard = <SuspenseLoad importFn={() => import('./pages/dashboard/Dashboard')} fallback={defaultPageLoader} />;
 const Amm = <SuspenseLoad importFn={() => import('./pages/amm/Amm')} fallback={defaultPageLoader} />;
-const AmberPage = <SuspenseLoad importFn={() => import('./pages/amber')} fallback={defaultPageLoader} />;
+const NablaPage = <SuspenseLoad importFn={() => import('./pages/nabla')} fallback={defaultPageLoader} />;
 const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
-const SwapPage = <SuspenseLoad importFn={() => import('./pages/amber/swap')} fallback={defaultPageLoader} />;
-const SwapPoolsPage = <SuspenseLoad importFn={() => import('./pages/amber/swap-pools')} fallback={defaultPageLoader} />;
+const SwapPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap')} fallback={defaultPageLoader} />;
+const SwapPoolsPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap-pools')} fallback={defaultPageLoader} />;
 const TransfersPage = <SuspenseLoad importFn={() => import('./pages/bridge/Transfers')} fallback={defaultPageLoader} />;
 const BackstopPoolsPage = (
-  <SuspenseLoad importFn={() => import('./pages/amber/backstop-pools')} fallback={defaultPageLoader} />
+  <SuspenseLoad importFn={() => import('./pages/nabla/backstop-pools')} fallback={defaultPageLoader} />
 );
 const Bridge = <SuspenseLoad importFn={() => import('./pages/bridge')} fallback={defaultPageLoader} />;
-const Collators = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
+const Staking = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
 
 export function App() {
   return (
@@ -37,18 +38,19 @@ export function App() {
             <Route path="bridge" element={Bridge} />
             <Route path="transfers" element={TransfersPage} />
           </Route>
-          <Route path="amber">
-            <Route path="" element={AmberPage} />
+          <Route path="nabla">
+            <Route path="" element={NablaPage} />
             <Route path="swap" element={SwapPage} />
             <Route path="swap-pools" element={SwapPoolsPage} />
             <Route path="backstop-pools" element={BackstopPoolsPage} />
             <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="collators" element={Collators} />
+          <Route path="staking" element={Staking} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <TermsAndConditions />
       <ToastContainer />
     </>
   );

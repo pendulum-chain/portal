@@ -9,9 +9,9 @@ import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import LabelledInputField from '../../components/LabelledInputField';
-import OpenWallet from '../../components/OpenWallet';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
+import OpenWallet from '../../components/Wallet';
 import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import {
@@ -25,7 +25,6 @@ import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { ChangeEvent } from 'preact/compat';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -176,7 +175,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
-  const { control, handleSubmit, setValue, watch } = useForm<RedeemFormInputs>({
+  const { control, handleSubmit, watch } = useForm<RedeemFormInputs>({
     defaultValues: {
       amount: '0',
       stellarAddress: '',
@@ -274,6 +273,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSubmissionPending(true);
 
     requestRedeemExtrinsic
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
         const { status, events } = result;
 
@@ -290,6 +290,7 @@ function Redeem(props: RedeemProps): JSX.Element {
           // We only expect one event but loop over all of them just in case
           for (const requestRedeemEvent of requestRedeemEvents) {
             // We do not have a proper type for this event, so we have to cast it to any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const redeemId = (requestRedeemEvent.data as any).redeemId;
 
             getRedeemRequest(redeemId).then((redeemRequest) => {
@@ -314,13 +315,13 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk grid place-items-center py-4">
+    <div className="flex items-center justify-center h-full space-walk py-4 w-full">
       <ConfirmationDialog
         redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
-      <div style={{ width: 500 }}>
+      <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <div className="flex items-center">
             <Controller

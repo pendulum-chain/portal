@@ -1,5 +1,5 @@
-import CollatorsTable from './CollatorsTable';
 import CollatorRewards from './CollatorRewards';
+import CollatorsTable from './CollatorsTable';
 
 function Collators() {
   return (

@@ -40,9 +40,9 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   const CollatorInfo = useMemo(
     () =>
       collator ? (
-        <div className="flex flex-row items-center rounded-lg bg-base-200 justify-between text-right p-5">
+        <div className="flex flex-col xs:flex-row xs:items-center rounded-lg bg-base-200 justify-between text-right p-5 gap-2">
           <div className="flex flex-row items-center">
-            <AmplitudeLogo className="w-8 h-8 mr-2 bg-base-200" />
+            <AmplitudeLogo className="w-8 h-8 mr-2 bg-base-200" width="50" height="50" />
             <PublicKey variant="shorter" publicKey={collator.id} />
           </div>
           <div>

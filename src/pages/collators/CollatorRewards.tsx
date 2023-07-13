@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button } from 'react-daisyui';
+import { toast } from 'react-toastify';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
-import { nativeToFormat } from '../../helpers/parseNumbers';
-import { UserStaking } from './columns';
-import { useNodeInfoState } from '../../NodeInfoProvider';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
+import { nativeToFormat } from '../../helpers/parseNumbers';
+import { getErrors } from '../../helpers/substrate';
+import { useStakingPallet } from '../../hooks/staking/staking';
+import { UserStaking } from './columns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
-import { toast } from 'react-toastify';
-import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
-import { Button } from 'react-daisyui';
 
 function CollatorRewards() {
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
@@ -92,11 +92,11 @@ function CollatorRewards() {
   return (
     <>
       <div className="flex mb-8 justify-between">
-        <div className="card gap-0 rounded-lg bg-base-200 w-1/2 mr-4 collators-box">
+        <div className="card gap-0 rounded-lg bg-base-200 sm:w-1/2 collators-box">
           <div className="card-body">
-            <h2 className="card-title">Collators</h2>
-            <div className="flex flex-row">
-              <div className="flex-initial pr-5">
+            <h2 className="card-title">Staking</h2>
+            <div className="flex flex-row flex-wrap gap-4">
+              <div className="flex-initial">
                 <StakedIcon />
               </div>
               <div className="flex-auto">
