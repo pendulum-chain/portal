@@ -3,13 +3,13 @@ import { createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { useLocation } from 'react-router-dom';
 import { config } from './config';
+import { chainIds } from './config/walletConnect';
 import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
-import { chainIds } from './config/walletConnect';
 
 export interface GlobalState {
   dAppName: string;
@@ -69,6 +69,8 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
 
   const removeWalletAccount = useCallback(() => {
     clear();
+    // remove talisman
+    storageService.remove('@talisman-connect/selected-wallet-name');
     setWallet(undefined);
   }, [clear]);
 
