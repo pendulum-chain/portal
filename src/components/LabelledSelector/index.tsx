@@ -1,7 +1,6 @@
-import { Select } from 'react-daisyui';
-import { h } from 'preact';
-import { ofSelect } from '../../helpers/general';
 import { ChangeEvent, CSSProperties } from 'preact/compat';
+import { Select } from 'react-daisyui';
+import { ofSelect } from '../../helpers/general';
 
 interface Props<T> {
   items: T[];

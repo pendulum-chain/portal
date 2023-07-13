@@ -1,6 +1,6 @@
+import { AccountId32, Balance } from '@polkadot/types/interfaces';
 import type { VaultRegistryVault } from '@polkadot/types/lookup';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { AccountId32, Balance } from '@polkadot/types/interfaces';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 

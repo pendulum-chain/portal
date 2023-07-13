@@ -1,6 +1,5 @@
-import { ChangeEvent } from 'preact/compat';
+import { CSSProperties, ChangeEvent } from 'preact/compat';
 import { Select } from 'react-daisyui';
-import { CSSProperties } from 'preact/compat';
 import { ofSelect } from '../../helpers/general';
 
 interface Item {

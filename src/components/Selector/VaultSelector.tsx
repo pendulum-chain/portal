@@ -1,10 +1,9 @@
-import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
-import { h } from 'preact';
-import { PublicKey } from '../PublicKey';
-import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { Button, Dropdown } from 'react-daisyui';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { Button, Dropdown } from 'react-daisyui';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
+import { PublicKey } from '../PublicKey';
 
 interface VaultSelectorProps {
   vaults: ExtendedRegistryVault[];

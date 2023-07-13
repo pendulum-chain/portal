@@ -1,5 +1,4 @@
 import { FC } from 'preact/compat';
-import { h } from 'preact';
 
 import './styles.css';
 

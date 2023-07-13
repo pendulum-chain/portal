@@ -1,9 +1,9 @@
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
-import { toast } from 'react-toastify';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { createContext } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
+import { toast } from 'react-toastify';
 
 export interface NodeInfoProviderInterface {
   bestNumberFinalize?: number;
