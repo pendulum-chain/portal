@@ -1803,15 +1803,15 @@
   dependencies:
     "@open-web3/orml-type-definitions" "1.1.4"
 
-"@pendulum-chain/api-derive@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.3.2.tgz#ab715da721296cf15e20929c5db345107a907fdc"
-  integrity sha512-X5UYSGqS7JwgtyJpihlR4a3KjCJx1C3T0RRf5DOZKVbQMgveamn7clpjeOJIxnJ8PCObc5aBWzO4O96pBiakMQ==
-
 "@pedrouid/environment@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
+
+"@pendulum-chain/api-derive@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@pendulum-chain/api-derive/-/api-derive-0.3.2.tgz#ab715da721296cf15e20929c5db345107a907fdc"
+  integrity sha512-X5UYSGqS7JwgtyJpihlR4a3KjCJx1C3T0RRf5DOZKVbQMgveamn7clpjeOJIxnJ8PCObc5aBWzO4O96pBiakMQ==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@open-web3/orml-types" "^1.1.4"
@@ -5676,6 +5676,11 @@ event-emitter@^0.3.5:
   dependencies:
     d "1"
     es5-ext "~0.10.14"
+
+eventemitter3@^4.0.4, eventemitter3@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
+  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
 eventemitter3@^5.0.0, eventemitter3@^5.0.1:
   version "5.0.1"
