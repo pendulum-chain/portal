@@ -17,7 +17,6 @@ import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 
 import { useOraclePallet } from '../../hooks/oracle/oracle';
-import { Float } from '@polkadot/types-codec';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
 import { TTransfer, TransferType } from './TransfersColumns';
@@ -28,6 +27,7 @@ interface BaseTransferDialogProps {
   showMemo?: boolean;
   transfer: TTransfer;
   title?: string;
+  compensation?: string;
   content: JSXInternal.Element;
   footer?: JSXInternal.Element;
   statusIcon: JSXInternal.Element;
@@ -43,7 +43,20 @@ const defaultActions = (onConfirm: (() => void) | undefined) => (
 );
 
 function BaseTransferDialog(props: BaseTransferDialogProps) {
-  const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
+  const {
+    id,
+    statusIcon,
+    showMemo,
+    transfer,
+    visible,
+    title,
+    content,
+    footer,
+    compensation,
+    actions,
+    onClose,
+    onConfirm,
+  } = props;
 
   const { tenantName } = useGlobalState();
   const tenantNameCapitalized = tenantName ? toTitle(tenantName) : 'Pendulum';
@@ -85,6 +98,14 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               <div className="text-sm">Bridge fee</div>
               <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
             </div>
+            {compensation ? (
+              <div className="flex flex-row justify-between">
+                <div className="text-sm">Inconvenience Compensation</div>
+                <div className="text-sm">{compensation}</div>
+              </div>
+            ) : (
+              <></>
+            )}
             <div className="flex flex-row justify-between">
               <div className="text-sm">Destination Address (Stellar)</div>
               <CopyableAddress
@@ -215,7 +236,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 
   useEffect(() => {
     getExchangeRate(transfer.original.vault.currencies.collateral, transfer.original.vault.currencies.wrapped).then(
-      (e) => setExchangeRate(e),
+      (e: number | undefined) => setExchangeRate(e),
     );
   }, [setExchangeRate, getExchangeRate]);
 
@@ -241,6 +262,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
       title="Reimburse Successful!"
       visible={visible}
       content={content}
+      compensation={`${convertedAmount.toFixed(2)} ${collateralAsset}`}
       statusIcon={<SuccessDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
