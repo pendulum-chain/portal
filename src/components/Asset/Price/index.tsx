@@ -3,7 +3,7 @@
 import { memo } from 'preact/compat';
 import { Skeleton } from '../../Skeleton';
 
-// ! TODO
+// ! TODO: implement this component for fetching token prices
 export type TokenPriceProps = {
   address: string;
   amount?: number;
