@@ -1,4 +1,5 @@
 import { VoidFn } from '@polkadot/api-base/types';
+import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -52,22 +53,19 @@ function Transfers(): JSX.Element {
       const redeemEntries = await getRedeemRequests();
       const entries: TTransfer[] = [];
 
+      const hasExpired = (r: SpacewalkPrimitivesIssueIssueRequest | SpacewalkPrimitivesRedeemRedeemRequest) => {
+        const deadline = calculateDeadline(activeBlockNumber as number, r.opentime.toNumber(), r.period.toNumber());
+        return deadline < DateTime.now() && r.status.type === 'Pending';
+      };
+
       issueEntries.forEach((e) => {
-        const deadline = calculateDeadline(
-          activeBlockNumber as number,
-          e.request.opentime.toNumber(),
-          e.request.period.toNumber(),
-        );
-
-        const timedOut = deadline < DateTime.now();
-
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
           asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.issue,
-          status: timedOut ? 'Cancelled' : e.request.status.type,
+          status: hasExpired(e.request) ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
@@ -79,7 +77,7 @@ function Transfers(): JSX.Element {
           asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.redeem,
-          status: e.request.status.type,
+          status: hasExpired(e.request) ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
