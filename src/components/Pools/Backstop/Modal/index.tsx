@@ -1,6 +1,7 @@
-import { Button, Modal } from 'react-daisyui';
+import { Modal } from 'react-daisyui';
 import { joinOn } from '../../../../helpers/array';
 import { BackstopPool } from '../../../../models/BackstopPool';
+import ModalCloseButton from '../../../Button/ModalClose';
 import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 
@@ -15,9 +16,7 @@ const BackstopPoolModal = ({ pool, type, onClose }: ModalProps): JSX.Element | n
   return (
     <Modal open={!!pool}>
       <Modal.Header className="mb-0">
-        <Button size="sm" shape="circle" className="absolute right-2 top-2" onClick={onClose} type="button">
-          ✕
-        </Button>
+        <ModalCloseButton onClick={onClose} />
         <h3 className="text-2xl font-normal">
           {isDeposit ? 'Deposit' : 'Withdraw'}: {joinOn(pool?.assets, 'symbol')}
         </h3>

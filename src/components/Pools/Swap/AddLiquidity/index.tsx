@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import Spinner from '../../../../assets/spinner';
+import TokenApproval from '../../../Asset/Approval';
 import { ModalTypes } from '../Modals/types';
 import { SwapPoolColumn } from '../columns';
 import { useAddLiquidity } from './useAddLiquidity';
@@ -106,9 +107,11 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
           </div>
         </div>
         <div className={hideCss}>
-          <Button color="primary" className="mt-8 w-full" type="submit">
-            Deposit
-          </Button>
+          <TokenApproval className="mt-8 w-full" spender={data.address} token={data.asset.address} amount={10}>
+            <Button color="primary" className="mt-8 w-full" type="submit">
+              Deposit
+            </Button>
+          </TokenApproval>
           <Button
             color="secondary"
             className="mt-2 w-full"

@@ -24,6 +24,6 @@ export const useContract = <
     [abi, address, api],
   );
   const enabled = !!contract && rest.enabled !== false;
-  const query = useQuery(enabled ? key : [''], enabled ? () => fn(contract) : emptyFn, { ...rest, enabled });
+  const query = useQuery(enabled ? key : [''], enabled ? fn(contract) : emptyFn, { ...rest, enabled });
   return { ...query, enabled };
 };

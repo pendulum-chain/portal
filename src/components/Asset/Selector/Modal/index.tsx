@@ -3,6 +3,7 @@ import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, Button, Input, Modal, ModalProps } from 'react-daisyui';
 import { repeat } from '../../../../helpers/general';
 import { Asset } from '../../../../models/Asset';
+import ModalCloseButton from '../../../Button/ModalClose';
 import { Skeleton } from '../../../Skeleton';
 
 export interface AssetListProps {
@@ -70,9 +71,7 @@ export const AssetSelectorModal = ({
   return (
     <Modal {...rest}>
       <Modal.Header className="mb-0">
-        <Button size="sm" shape="circle" className="absolute right-2 top-2" onClick={onClose} type="button">
-          ✕
-        </Button>
+        <ModalCloseButton onClick={onClose} />
         <h3 className="text-2xl font-normal">Select a token</h3>
       </Modal.Header>
       <Modal.Body>

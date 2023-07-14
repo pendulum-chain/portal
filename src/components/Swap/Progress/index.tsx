@@ -3,6 +3,7 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { ComponentChildren, JSX } from 'preact';
 import { Button, Modal, ModalProps } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
+import ModalCloseButton from '../../Button/ModalClose';
 
 export type ProgressProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,9 +67,7 @@ const Progress = ({ data, status, onClose, children, ...rest }: ProgressProps): 
   return (
     <Modal {...rest}>
       <Modal.Header className="mb-0">
-        <Button size="sm" shape="circle" className="absolute right-2 top-2" onClick={onClose} type="button">
-          ✕
-        </Button>
+        <ModalCloseButton onClick={onClose} />
       </Modal.Header>
       <Modal.Body>{ui}</Modal.Body>
     </Modal>
