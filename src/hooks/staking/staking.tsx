@@ -181,7 +181,11 @@ export function useStakingPallet() {
         if (!api) {
           return undefined;
         }
-        return api.tx.parachainStaking?.incrementDelegatorRewards();
+        const txs = [
+          api.tx.parachainStaking?.incrementDelegatorRewards(),
+          api.tx.parachainStaking?.incrementCollatorRewards(),
+        ];
+        return api.tx.utility.batch(txs);
       },
     };
   }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
