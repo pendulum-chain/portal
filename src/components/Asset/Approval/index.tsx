@@ -32,17 +32,18 @@ const TokenApproval = ({
   });
 
   if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;
-  const isLoading = approval[0] === ApprovalState.LOADING || approval[0] === ApprovalState.PENDING;
+  const isPending = approval[0] === ApprovalState.PENDING;
+  const isLoading = approval[0] === ApprovalState.LOADING;
   return (
     <Button
-      className={`w-full${isLoading ? ' loading' : ''} ${className}`}
+      className={`w-full${isPending || isLoading ? ' loading' : ''} ${className}`}
       color="primary"
       {...rest}
       type="button"
-      disabled={isLoading}
-      onClick={isLoading ? undefined : () => approval[1].mutate()}
+      disabled={isPending}
+      onClick={isPending ? undefined : () => approval[1].mutate()}
     >
-      {isLoading ? 'Approving' : 'Approve'}
+      {isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}
     </Button>
   );
 };

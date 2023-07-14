@@ -18,8 +18,8 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
     control,
     name: 'from',
   });
-  const token = { symbol: 'ETH', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' }; // ! TODO: get token info
-  const { balance } = useBalance(token.address);
+  const token = from.length > 0 ? { symbol: 'ETH', address: from } : undefined; // ! TODO: get token info
+  const { balance } = useBalance(token?.address);
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -41,7 +41,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
             <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
-            <strong className="font-bold">{token.symbol}</strong>
+            <strong className="font-bold">{token?.symbol}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
           </Button>
         </div>

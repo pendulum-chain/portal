@@ -2,8 +2,10 @@ import { Cog8ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outli
 import { useMemo } from 'preact/compat';
 import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
+import { addresses } from '../../contracts/NablaAddresses';
 import { errorClass } from '../../helpers/form';
 import { AssetSelectorModal } from '../Asset/Selector/Modal';
+import ApprovalSubmit from './Approval';
 import From from './From';
 import Progress from './Progress';
 import To from './To';
@@ -17,6 +19,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     onFromChange,
     onToChange,
     form,
+    from,
     updateStorage,
     onSubmit,
     swapMutation,
@@ -133,14 +136,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             />
             <div className="mt-6">
               {/* <Validation errors={errors} className="mb-2" /> */}
-              <Button color="primary" className="w-full text-base" type="submit">
-                Swap
-              </Button>
+              <ApprovalSubmit token={from} />
             </div>
           </form>
         </FormProvider>
       </Card>
       <AssetSelectorModal
+        assets={addresses.foucoco.tokensWithMeta}
         open={!!modalType}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}

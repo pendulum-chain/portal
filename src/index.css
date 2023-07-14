@@ -267,6 +267,13 @@ table th:hover .sort {
   opacity: 0.8 !important;
 }
 
+.btn-disabled, .btn-disabled:hover, .btn[disabled], .btn[disabled]:hover {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: hsl(var(--s));
+  opacity: .3;
+}
+
 w3m-modal {
   position: relative;
   z-index: 1000;

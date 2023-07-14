@@ -36,9 +36,6 @@ export const config = {
   } as Tenants,
   swap: {
     defaults: {
-      // ! TODO: update to address
-      from: 'ETH',
-      to: 'USDC',
       slippage: 0.5,
       deadline: 30,
     },

@@ -39,8 +39,8 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
       name: 'slippage',
     }),
   );
-  const token = { symbol: 'ETH', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' };
-  const fromToken = { symbol: 'USDC', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' };
+  const token = to.length > 0 ? { symbol: 'ETH', address: to } : undefined; // ! TODO: get token info
+  const fromToken = from.length > 0 ? { symbol: 'ETH', address: from } : undefined; // ! TODO: get token info
   const debouncedFromAmount = useDebouncedValue(fromAmount, 800);
   const { isLoading, data, refetch } = {
     data: 154.432,
@@ -83,14 +83,14 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
             <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
-            <strong className="font-bold">{token.symbol}</strong>
+            <strong className="font-bold">{token?.symbol}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
           <div className="text-sm mt-px">{!!token && <TokenPrice address={token.address} />}</div>
           <div className="flex gap-1 text-sm">
-            Balance: <Balance address={token.address} />
+            Balance: <Balance address={token?.address} />
           </div>
         </div>
         <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
@@ -115,7 +115,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
               <div>Expected Output:</div>
               <div>
                 <Skeleton isLoading={loading}>
-                  {value} {token.symbol}
+                  {value} {token?.symbol}
                 </Skeleton>
               </div>
             </div>

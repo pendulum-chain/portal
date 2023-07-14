@@ -22,18 +22,18 @@ export const addresses = {
       },
       {
         address: '6khvKsaX64PuyULLCGSRDVNGPqAL9jFkYFjjzZKMBu8akJhD',
-        asset: '6nCMLKYGgiv4UvjK2dFaq3maZd7grhDYRJVEwUM2o14tTET1',
+        asset: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t',
         apr: 0.0,
       },
     ],
     tokens: [
-      '6nCMLKYGgiv4UvjK2dFaq3maZd7grhDYRJVEwUM2o14tTET1',
+      '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t',
       '6mohRoHcjMwgkWX8s4UHmvdcSWmuB58uXFSWghj2HgiM3B8Q',
       '6kX7XiYtzMK9UT6GQHxMqDFYwGu9N7LgHtEdbhd1s73cncNR',
     ],
     tokensWithMeta: [
       {
-        address: '6nCMLKYGgiv4UvjK2dFaq3maZd7grhDYRJVEwUM2o14tTET1',
+        address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t',
         name: 'USDC',
         symbol: 'USDC',
         decimals: 12,

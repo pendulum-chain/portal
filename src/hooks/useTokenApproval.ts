@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
+import { useNodeInfoState } from '../NodeInfoProvider';
 import { mockERC20 } from '../contracts/MockERC20';
 import { decimalToNative } from '../helpers/parseNumbers';
+import { createOptions } from '../services/api/helpers';
 import { useContractWrite } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
 
@@ -33,9 +35,12 @@ export const useTokenApproval = ({
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
+  const {
+    state: { api },
+  } = useNodeInfoState();
   const { address } = useGlobalState().walletAccount || {};
   const [pending, setPending] = useState(false);
-  const amountBI = decimalToNative(approveMax ? Number.MAX_SAFE_INTEGER : amount || 0);
+  const amountBI = decimalToNative(amount || 0);
   const isEnabled = Boolean(token && spender && address && enabled);
   const {
     data: allowance,
@@ -78,7 +83,12 @@ export const useTokenApproval = ({
     address: token,
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
-        ? (contract: any) => contract.tx.approve(spender, amountBI)
+        ? (contract: any) =>
+            contract.tx.approve(
+              api ? createOptions(api) : {},
+              spender,
+              approveMax ? decimalToNative(Number.MAX_SAFE_INTEGER).toString() : amountBI.toString(),
+            )
         : undefined,
     onError,
     onSettled: onSettledFn,
@@ -88,11 +98,11 @@ export const useTokenApproval = ({
   return useMemo<[ApprovalState, typeof mutation]>(() => {
     let state = ApprovalState.UNKNOWN;
     // if (amount?.currency.isNative) state = ApprovalState.APPROVED;
-    if (!mutation.isReady) state = ApprovalState.UNKNOWN;
+    if (isAllowanceLoading) state = ApprovalState.LOADING;
+    else if (!mutation.isReady) state = ApprovalState.UNKNOWN;
     else if (allowance !== undefined && amountBI !== undefined && allowance >= amountBI) {
       state = ApprovalState.APPROVED;
     } else if (pending || mutation.isLoading) state = ApprovalState.PENDING;
-    else if (isAllowanceLoading) state = ApprovalState.LOADING;
     else if (allowance !== undefined && amountBI !== undefined && allowance < amountBI) {
       state = ApprovalState.NOT_APPROVED;
     }

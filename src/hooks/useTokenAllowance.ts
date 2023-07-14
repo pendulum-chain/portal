@@ -25,11 +25,10 @@ export const useTokenAllowance = ({ token, owner, spender, enabled = true }: Use
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fn: (contract: any) => async () => {
       const data = await contract.query.allowance(owner, api ? createOptions(api) : {}, owner, spender);
-      console.log(data?.result);
       if (!data?.result?.isOk || data.output === undefined) throw new Error(data);
       return nativeToDecimal(parseFloat(data.output.toString()) || 0);
     },
-    ...inactiveOptions['3s'],
+    ...inactiveOptions['3m'],
     enabled: isEnabled,
   });
   return response;
