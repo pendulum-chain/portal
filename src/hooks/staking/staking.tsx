@@ -56,6 +56,12 @@ export function useStakingPallet() {
   const [estimatedRewards, setEstimatedRewards] = useState<string>('0');
   const [fees, setFees] = useState<ParachainStakingFees>(defaultTransactionFees);
 
+  const fetchEstimatedReward = async () => {
+    if (!api || !walletAccount) return '0';
+    const formattedAddr = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+    return (await api.query.parachainStaking.rewards(formattedAddr)).toString();
+  };
+
   useEffect(() => {
     if (!api) {
       return;
@@ -82,12 +88,6 @@ export function useStakingPallet() {
     const fetchInflationInfo = async () => {
       const inflationInfo = await api.query.parachainStaking.inflationConfig();
       return inflationInfo.toHuman() as unknown as ParachainStakingInflationInflationInfo;
-    };
-
-    const fetchEstimatedReward = async () => {
-      if (!walletAccount) return '0';
-      const formattedAddr = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
-      return (await api.query.parachainStaking.rewards(formattedAddr)).toString();
     };
 
     const fetchFees = async () => {
@@ -128,6 +128,9 @@ export function useStakingPallet() {
       minDelegatorStake,
       estimatedRewards,
       fees,
+      refreshRewards() {
+        fetchEstimatedReward().then((reward) => setEstimatedRewards(reward));
+      },
       async getTransactionFee(extrinsic: SubmittableExtrinsic) {
         if (!api || !extrinsic.hasPaymentInfo) {
           return new Big(0);

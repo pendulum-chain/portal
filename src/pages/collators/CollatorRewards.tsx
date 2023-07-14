@@ -20,7 +20,7 @@ function CollatorRewards() {
 
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
-  const { candidates, estimatedRewards, createUpdateDelegatorRewardsExtrinsic } = useStakingPallet();
+  const { candidates, estimatedRewards, refreshRewards, createUpdateDelegatorRewardsExtrinsic } = useStakingPallet();
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
@@ -76,6 +76,7 @@ function CollatorRewards() {
           }
         } else if (status.isFinalized) {
           setSubmissionPending(false);
+          refreshRewards();
           if (errors.length === 0) {
             toast('Delegator rewards updated', { type: 'success' });
           }
