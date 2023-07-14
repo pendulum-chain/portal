@@ -38,7 +38,7 @@ export const useTokenApproval = ({
   const {
     state: { api },
   } = useNodeInfoState();
-  const { address } = useGlobalState().walletAccount || {};
+  const { address, signer } = useGlobalState().walletAccount || {};
   const [pending, setPending] = useState(false);
   const amountBI = decimalToNative(amount || 0);
   const isEnabled = Boolean(token && spender && address && enabled);
@@ -77,18 +77,22 @@ export const useTokenApproval = ({
     ],
   );
 
-  // https://github.com/wagmi-dev/wagmi/blob/9d3310e417eedde6bf481f5959af73745b9c27b4/packages/react/src/hooks/contracts/useContractWrite.ts
   const mutation = useContractWrite({
     abi: mockERC20,
     address: token,
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
-        ? (contract: any) =>
-            contract.tx.approve(
-              api ? createOptions(api) : {},
-              spender,
-              approveMax ? decimalToNative(Number.MAX_SAFE_INTEGER).toString() : amountBI.toString(),
-            )
+        ? async (contract: any) => {
+            const tx = await contract.tx
+              .approve(
+                api ? createOptions(api) : {},
+                spender,
+                approveMax ? decimalToNative(Number.MAX_SAFE_INTEGER).toString() : amountBI.toString(),
+              )
+              .signAndSend(spender, { signer });
+            console.log(tx);
+            return tx;
+          }
         : undefined,
     onError,
     onSettled: onSettledFn,
