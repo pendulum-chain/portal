@@ -7,6 +7,7 @@ import { NodeInfoProvider } from './NodeInfoProvider';
 import { App } from './app';
 import { emptyFn } from './helpers/general';
 import './index.css';
+import { ThemeName, tenantTheme } from './models/Theme';
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,7 @@ render(
             const { tenantRPC, getThemeName = emptyFn } = globalState as GlobalState;
             return (
               <NodeInfoProvider tenantRPC={tenantRPC}>
-                <Theme dataTheme={getThemeName()}>
+                <Theme dataTheme={`${getThemeName()}`} className={tenantTheme[getThemeName() || ThemeName.Pendulum]}>
                   <App />
                 </Theme>
               </NodeInfoProvider>

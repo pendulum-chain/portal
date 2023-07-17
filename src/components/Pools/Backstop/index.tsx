@@ -3,26 +3,22 @@ import { useState } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { cacheKeys } from '../../../constants/cache';
 import { BackstopPool as IBackstopPool } from '../../../models/BackstopPool';
-import { assetsApi } from '../../../services/api/assets';
 import { Skeleton } from '../../Skeleton';
 import BackstopPoolModal from './Modal';
 
 const BackstopPools = (): JSX.Element | null => {
   const [selected, setSelected] = useState<[IBackstopPool, 'deposit' | 'withdraw']>();
   // ! TODO: get backstop pool and info
-  const { data, isLoading } = useQuery<IBackstopPool[] | undefined>(
-    [cacheKeys.backstopPools],
-    assetsApi.getBackstopPools,
-  );
+  const { data, isLoading } = useQuery<IBackstopPool[] | undefined>([cacheKeys.backstopPools], () => []);
 
-  if (isLoading) return <Skeleton className="bg-gray-200 h-48 w-full" />;
+  if (isLoading) return <Skeleton className="bg-neutral-200 h-48 w-full" />;
   const pool = data?.[0];
   if (!pool) return null;
   return (
     <>
       <div className="center gap-4 w-full">
         <Card bordered className="w-full max-w-xl bg-base-200">
-          <div className="card-body p-4 md:p-6 text-gray-800">
+          <div className="card-body p-4 md:p-6 text-neutral-800">
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>$0.78</div>

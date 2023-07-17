@@ -38,7 +38,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
             <img src={wallet?.logo?.src || ''} className="w-[20px] ml-2" alt={wallet?.logo?.alt || ''} />
           </Button>
           <Dropdown.Menu className="card card-compact bg-base-200 shadow-lg min-w-[240px] p-3">
-            <div className="flex items-center gap-2 text-gray-500">
+            <div className="flex items-center gap-2 text-neutral-500">
               <strong>{trimmedAddress}</strong>
             </div>
             <p className="truncate my-6 text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>

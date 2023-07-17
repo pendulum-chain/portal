@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-undef
 module.exports = {
+  darkMode: 'class',
   content: [
     './src/**/*.{js,ts,jsx,tsx}',
     'node_modules/daisyui/dist/**/*.js',

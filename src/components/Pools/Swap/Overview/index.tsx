@@ -14,11 +14,11 @@ const PoolOverview = ({ data }: PoolOverviewProps) => {
 
   return (
     <>
-      <div className="mb-8 mt-2 font-normal text-gray-800">
+      <div className="mb-8 mt-2 font-normal text-neutral-800">
         <h3 className="text-2xl">My Pool Balance</h3>
       </div>
       <div className="center mb-6">
-        <div className="bg-gray-100 px-8 py-4 rounded-lg text-2xl sm:text-4xl text-gray-900">
+        <div className="bg-neutral-100 px-8 py-4 rounded-lg text-2xl sm:text-4xl text-neutral-900">
           <strong>
             {totalBalance} {data.asset.symbol}
           </strong>
