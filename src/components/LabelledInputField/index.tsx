@@ -30,7 +30,7 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
         </label>
         <div className="input-container">
           <Input
-            className={`border rounded-md bg-transparent ${!error && 'border-gray-500'}`}
+            className={`border rounded-md bg-transparent ${!error && 'border-neutral-500'}`}
             color={inputColor}
             {...rest}
             onFocus={(event: TargetedEvent) => {

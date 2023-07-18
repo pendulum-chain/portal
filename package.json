@@ -23,6 +23,7 @@
     "@pendulum-chain/api": "^0.3.2",
     "@polkadot/api": "^9.9.1",
     "@polkadot/api-base": "^9.9.1",
+    "@polkadot/api-contract": "^9.9.1",
     "@polkadot/api-derive": "^9.9.1",
     "@polkadot/extension-dapp": "^0.44.6",
     "@polkadot/keyring": "^10.1.9",

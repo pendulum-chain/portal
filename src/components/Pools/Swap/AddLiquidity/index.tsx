@@ -28,11 +28,11 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
           <div className="flex flex-col items-center justify-center text-center mt-4 mb-10">
             <Spinner size={100} color="#ddd" />
             <h4 className="text-2xl mt-10">Waiting for Confirmation</h4>
-            <p className="text-gray-500 mt-4">Please confirm this transaction in your wallet</p>
+            <p className="text-neutral-500 mt-4">Please confirm this transaction in your wallet</p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-gray-100 p-4">
+          <div className="flex items-center justify-between rounded-lg bg-neutral-100 p-4">
             <div className="flex items-center gap-2 text-lg">
-              <div className="rounded-full bg-gray-300 w-10 h-10 p-px">
+              <div className="rounded-full bg-neutral-300 w-10 h-10 p-px">
                 <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
               </div>
               <div>
@@ -66,11 +66,11 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             <p>
               Deposited: {deposited} {data.asset?.symbol}
             </p>
-            <p className="text-gray-500 text-right">
+            <p className="text-neutral-500 text-right">
               Balance: {balance} {data.asset?.symbol}
             </p>
           </div>
-          <div className="relative rounded-lg bg-gray-100">
+          <div className="relative rounded-lg bg-neutral-100">
             <input
               autoFocus
               className="input-ghost w-full text-4xl font-2 py-7 px-4"
@@ -78,7 +78,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               {...register('amount', { onChange: () => undefined })}
             />
             <Button
-              className="absolute bg-gray-200 px-4 rounded-2xl right-3 top-1/2 -mt-4"
+              className="absolute bg-neutral-200 px-4 rounded-2xl right-3 top-1/2 -mt-4"
               size="sm"
               type="button"
               onClick={() => console.log('! TODO')}
@@ -87,7 +87,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </Button>
           </div>
         </div>
-        <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
+        <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 text-neutral-500 p-4 mt-4">
           <div className="flex items-center justify-between">
             <div>Effective Deposit</div>
             <div>0.99 USDC</div>

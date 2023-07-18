@@ -4,13 +4,3 @@ export interface SwapSettings {
   from: string;
   to: string;
 }
-
-export interface SwapTransaction {
-  from: string;
-  fromAmount: number;
-  to: string;
-  toAmount: number;
-  toMinAmount: number;
-  slippage: number;
-  deadline: number;
-}

@@ -1,10 +1,9 @@
-import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
-import { h } from 'preact';
-import { PublicKey } from '../PublicKey';
-import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
-import { Button, Dropdown } from 'react-daisyui';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { Button, Dropdown } from 'react-daisyui';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
+import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
+import { PublicKey } from '../PublicKey';
 
 interface VaultSelectorProps {
   vaults: ExtendedRegistryVault[];
@@ -20,12 +19,12 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
       <Button
         type="button"
         color="ghost"
-        className="flex content-center place-content-between w-full border-gray-500 bg-base-200 rounded-md no-animation"
+        className="flex content-center place-content-between w-full border-neutral-500 bg-base-200 rounded-md no-animation"
       >
         <PublicKey publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''} variant="full" />
         <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
       </Button>
-      <Dropdown.Menu className="w-full mt-1.5 p-1 border border-gray-500 bg-base-200 rounded-md shadow-none">
+      <Dropdown.Menu className="w-full mt-1.5 p-1 border border-neutral-500 bg-base-200 rounded-md shadow-none">
         {vaults.map((vault) => (
           <Dropdown.Item
             key={vault.id.accountId.toString()}

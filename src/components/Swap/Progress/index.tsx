@@ -1,35 +1,30 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { UseMutationResult } from '@tanstack/react-query';
+import { ComponentChildren, JSX } from 'preact';
 import { Button, Modal, ModalProps } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
-import { SwapTransaction } from '../../../models/Swap';
 
 export type ProgressProps = {
-  transaction?: SwapTransaction;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  progress?: UseMutationResult<any, any, any, any>;
   status?: UseMutationResult['status'];
   onClose: () => void;
+  children?: ComponentChildren;
 } & ModalProps;
 
-const Progress = ({ transaction, status, onClose, ...rest }: ProgressProps): JSX.Element | null => {
+const Progress = ({ data, status, onClose, children, ...rest }: ProgressProps): JSX.Element | null => {
   let ui = null;
-  if (transaction) {
+  if (data) {
     if (status === 'idle' || status === 'loading') {
-      const isLoading = status === 'loading';
       ui = (
         <>
           <div className="center py-6">
             <Spinner size={100} color="#ddd" />
           </div>
           <div className="text-center mt-6">
-            <h4 className="text-2xl font-bold text-bold">
-              {!isLoading && (
-                <>
-                  Waiting for confirmation <br />
-                </>
-              )}
-              Swapping {transaction.fromAmount} {transaction.from} for {transaction.toAmount} {transaction.to}
-            </h4>
-            {!isLoading && <p className="text-gray-400 mt-4">Confirm this transaction in your wallet</p>}
+            <h4 className="text-2xl font-bold text-bold">Waiting for confirmation</h4>
+            <p className="text-neutral-400 my-4">Confirm this transaction in your wallet</p>
+            {children}
           </div>
         </>
       );
@@ -49,6 +44,7 @@ const Progress = ({ transaction, status, onClose, ...rest }: ProgressProps): JSX
               {status ? 'Transaction successfull' : 'Transaction failed'}
             </h4>
           </div>
+          {children}
           <Button color="primary" className="w-full mt-6" onClick={onClose}>
             Close
           </Button>

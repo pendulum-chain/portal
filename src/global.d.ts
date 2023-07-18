@@ -1,1 +1,1 @@
-declare type Dict<T> = Record<string | number | symbol, T>;
+declare type Dict<T = unknown> = Record<string | number | symbol, T>;

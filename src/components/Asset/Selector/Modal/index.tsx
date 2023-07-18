@@ -5,14 +5,13 @@ import { repeat } from '../../../../helpers/general';
 import { Asset } from '../../../../models/Asset';
 import { Skeleton } from '../../../Skeleton';
 
-export interface AssetSelectorProps {
+export interface AssetListProps {
   assets?: Asset[];
   onSelect: (asset: Asset) => void;
   selected?: string;
 }
 
-// ! TODO: complete
-const AssetList = ({ assets, onSelect, selected }: AssetSelectorProps): JSX.Element | null => {
+const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
@@ -36,7 +35,7 @@ const AssetList = ({ assets, onSelect, selected }: AssetSelectorProps): JSX.Elem
             variant="ghost"
             key={token.address}
             onClick={() => onSelect(token)}
-            className={`items-center w-full gap-4 text-base${selected === token.address ? ' bg-gray-100' : ''}`}
+            className={`items-center w-full gap-4 text-base${selected === token.address ? ' bg-neutral-100' : ''}`}
           >
             <div>
               <Avatar size="xs" letters={token.symbol} shape="circle" className="text-xs" />
@@ -57,15 +56,15 @@ const AssetList = ({ assets, onSelect, selected }: AssetSelectorProps): JSX.Elem
 export type AssetSelectorModalProps = {
   isLoading?: boolean;
   onClose: () => void;
-} & AssetSelectorProps &
+} & AssetListProps &
   Omit<ModalProps, 'onSelect' | 'selected'>;
 
 export const AssetSelectorModal = ({
   assets,
   selected,
+  isLoading,
   onSelect,
   onClose,
-  isLoading,
   ...rest
 }: AssetSelectorModalProps) => {
   return (
@@ -81,7 +80,7 @@ export const AssetSelectorModal = ({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <AssetList assets={assets} onSelect={onSelect} selected={selected} />
+            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} />
           )}
         </div>
       </Modal.Body>

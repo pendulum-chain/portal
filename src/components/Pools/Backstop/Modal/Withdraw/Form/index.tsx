@@ -24,7 +24,7 @@ const BackstopPoolForm = ({ pool }: BackstopPoolFormProps): JSX.Element | null =
 
   return (
     <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
-      <div className="relative rounded-lg bg-gray-100 p-4">
+      <div className="relative rounded-lg bg-neutral-100 p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
             <AssetSelector
@@ -43,7 +43,7 @@ const BackstopPoolForm = ({ pool }: BackstopPoolFormProps): JSX.Element | null =
           <div className="flex items-center gap-2">
             <div className="text-3xl font-2">{amount}%</div>
             <Button
-              className="bg-gray-200 px-4 rounded-2xl"
+              className="bg-neutral-200 px-4 rounded-2xl"
               size="sm"
               type="button"
               onClick={() =>
@@ -59,7 +59,7 @@ const BackstopPoolForm = ({ pool }: BackstopPoolFormProps): JSX.Element | null =
         </div>
         <Range color="primary" min={0} max={100} size="sm" {...register('amount')} />
       </div>
-      <div className="relative flex w-full flex-col gap-4 rounded-lg bg-gray-100 text-gray-500 p-4 mt-4">
+      <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 text-neutral-500 p-4 mt-4">
         <div className="flex items-center justify-between">
           <div>Fee</div>
           <div>0.99 USDC</div>

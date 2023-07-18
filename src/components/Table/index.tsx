@@ -104,10 +104,10 @@ const Table = <T,>({
                     className={`${header.column.getCanSort() ? ' cursor-pointer' : ''}`}
                     onClick={header.column.getToggleSortingHandler()}
                   >
-                    <div className="flex flex-row items-center font-sm text-gray-400 normal-case font-semibold">
+                    <div className="flex flex-row items-center font-sm text-neutral-400 normal-case font-semibold">
                       {flexRender(header.column.columnDef.header, header.getContext())}
                       {header.column.getCanSort() ? (
-                        <div className={`sort ${header.column.getIsSorted()} ml-2 text-gray-400 mb-0.5`}>
+                        <div className={`sort ${header.column.getIsSorted()} ml-2 text-neutral-400 mb-0.5`}>
                           {header.column.getIsSorted() === 'desc' ? (
                             <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
                           ) : (
@@ -139,7 +139,7 @@ const Table = <T,>({
         </table>
       </div>
       <Pagination
-        className="justify-end text-gray-400 normal-case font-normal text-sm mt-1"
+        className="justify-end text-neutral-400 normal-case font-normal text-sm mt-1"
         currentIndex={pageIndex}
         pageSize={pageSize}
         totalCount={totalCount}

@@ -9,5 +9,5 @@ export const isApiConnected = (api?: ApiPromise): api is ApiPromise => !!api && 
 
 export const fnOrEmpty =
   <T extends any[], R>(fn: (api: ApiPromise, ...args: T) => R) =>
-  (api: ApiPromise | undefined, ...args: T): (() => R | null) =>
+  (api: ApiPromise | undefined, ...args: T): (() => R | undefined) =>
     isApiConnected(api) ? () => fn(api, ...args) : emptyFn;
