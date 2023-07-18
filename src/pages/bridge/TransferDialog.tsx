@@ -165,7 +165,7 @@ interface TransferDialogProps {
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToString(transfer.original.asset)?.split(':')[0];
   const content = (
     <>
       <div className="text-md">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
