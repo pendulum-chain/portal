@@ -192,7 +192,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
 
 export function CancelledTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToString(transfer.original.asset)?.split(':')[0];
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
@@ -272,7 +272,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToString(transfer.original.asset)?.split(':')[0];
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
@@ -345,7 +345,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
 
 export function FailedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToString(transfer.original.asset)?.split(':')[0];
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const compensation = 0.05;
   const content = (
