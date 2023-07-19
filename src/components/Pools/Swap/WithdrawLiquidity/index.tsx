@@ -1,7 +1,11 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import Spinner from '../../../../assets/spinner';
+import { calcSharePercentage } from '../../../../helpers/calc';
+import { nativeToDecimal } from '../../../../helpers/parseNumbers';
+import { numberLoader } from '../../../Loader';
 import { ModalTypes } from '../Modals/types';
 import { SwapPoolColumn } from '../columns';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -11,15 +15,16 @@ export interface WithdrawLiquidityProps {
 }
 
 const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
-  // ! TODO: get stats, create withdraw liquidity transaction
   const {
     toggle,
     mutation,
-    form: { register, handleSubmit, watch, setValue },
-  } = useWithdrawLiquidity(data.asset.address);
-  const deposited = 0;
-  const balance = 120.53;
-  const amount = watch('amount');
+    balanceQuery,
+    depositQuery,
+    form: { register, handleSubmit, setValue, watch },
+  } = useWithdrawLiquidity(data.address, data.asset.address);
+  const amount = Number(watch('amount') || 0);
+  const balance = balanceQuery.balance || 0;
+  const deposit = depositQuery.balance || 0;
 
   const hideCss = mutation.isLoading ? 'hidden' : '';
   return (
@@ -41,16 +46,6 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               </div>
             </div>
             <div className="text-3xl font-2">{amount}%</div>
-          </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
-            <div className="flex items-center justify-between">
-              <div>Fee</div>
-              <div>0.99 USDC</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Minimum Received</div>
-              <div>0.99 USDC</div>
-            </div>
           </div>
         </>
       ) : null}
@@ -75,21 +70,28 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
         <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
             <p>
-              Deposited: {deposited} {data.asset?.symbol}
+              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.asset.symbol}`}
             </p>
             <p className="text-neutral-500 text-right">
-              Balance: {balance} {data.asset?.symbol}
+              Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.asset.symbol}`}
             </p>
           </div>
           <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-3xl font-2">{amount}%</div>
+              <input
+                type="text"
+                autoFocus
+                className="input-ghost w-full text-4xl font-2"
+                placeholder="0.0"
+                max={depositQuery.balance || 0}
+                {...register('amount')}
+              />
               <Button
                 className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
                 size="sm"
                 type="button"
                 onClick={() =>
-                  setValue('amount', 100, {
+                  setValue('amount', balance, {
                     shouldDirty: true,
                     shouldTouch: true,
                   })
@@ -98,28 +100,35 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 MAX
               </Button>
             </div>
-            <Range color="primary" min={0} max={100} size="sm" {...register('amount')} />
+            <Range
+              color="primary"
+              min={0}
+              max={100}
+              size="sm"
+              value={amount ? (amount / deposit) * 100 : 0}
+              onChange={(ev: ChangeEvent<HTMLInputElement>) =>
+                setValue('amount', (Number(ev.currentTarget.value) / 100) * deposit, {
+                  shouldDirty: true,
+                  shouldTouch: false,
+                })
+              }
+            />
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
-              <div>Amount deposit (after fee)</div>
-              <div>0.99 USDC</div>
+              <div>Fee</div>
+              <div>{'! TODO'}</div>
             </div>
             <div className="flex items-center justify-between">
-              <div>Fee / Penalty</div>
-              <div>0.99 USDC</div>
+              <div>Remaining deposit</div>
+              <div>{deposit - amount || 0}</div>
             </div>
             <div className="flex items-center justify-between">
-              <div>Minimum Received</div>
-              <div>0.99 USDC</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>My Remaining Deposit</div>
-              <div>0.99 USDC</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>My Remain Pool Share</div>
-              <div>0.99 USDC</div>
+              <div>Remaining pool share</div>
+              <div>
+                {calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() - amount, deposit - amount)}%
+              </div>
+              w
             </div>
           </div>
           <Button color="primary" className="mt-8 w-full" type="submit">
