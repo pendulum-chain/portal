@@ -45,7 +45,7 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
             }}
           />
           {extraBtnText && extraBtnAction && (
-            <button className="rounded-md max-button bg-base-200" onClick={extraBtnAction}>
+            <button type="button" className="rounded-md max-button" onClick={extraBtnAction}>
               {extraBtnText}
             </button>
           )}
