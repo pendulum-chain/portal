@@ -1,12 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { swapPoolAbi } from '../../../../contracts/SwapPool';
+import { decimalToNative } from '../../../../helpers/parseNumbers';
+import { useBalance } from '../../../../hooks/useBalance';
+import { useContractWrite } from '../../../../hooks/useContractWrite';
+import { createOptions } from '../../../../services/api/helpers';
 import { useModalToggle } from '../../../../services/modal';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 
-export const useWithdrawLiquidity = (_address: string) => {
+export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
   const toggle = useModalToggle();
+  const balanceQuery = useBalance(tokenAddress);
+  const depositQuery = useBalance(poolAddress);
 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
@@ -15,16 +21,24 @@ export const useWithdrawLiquidity = (_address: string) => {
     },
   });
 
-  const mutation = useMutation<unknown, unknown, WithdrawLiquidityValues>(
-    async (data) => {
-      console.log(data);
+  const mutation = useContractWrite({
+    abi: swapPoolAbi,
+    address: poolAddress,
+    fn: async ({ contract, api, walletAccount }, variables: WithdrawLiquidityValues) => {
+      const spender = walletAccount.address;
+      return await contract.tx
+        .withdraw(createOptions(api), spender, decimalToNative(variables.amount).toString())
+        .signAndSend(spender, { signer: walletAccount.signer });
     },
-    {
-      onSuccess: () => {
-        toggle();
-      },
+    onError: () => {
+      // TODO: handle error
     },
-  );
+    onSuccess: () => {
+      // TODO: wait for transaction to complete
+      balanceQuery.refetch();
+      depositQuery.refetch();
+    },
+  });
 
-  return { form, mutation, toggle };
+  return { form, mutation, toggle, balanceQuery, depositQuery };
 };

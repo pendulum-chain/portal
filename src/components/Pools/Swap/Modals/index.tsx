@@ -3,13 +3,11 @@ import { Modal } from 'react-daisyui';
 import { useModal } from '../../../../services/modal';
 import ModalCloseButton from '../../../Button/ModalClose';
 import AddLiquidity from '../AddLiquidity';
-import PoolOverview from '../Overview';
 import WithdrawLiquidity from '../WithdrawLiquidity';
 import { LiquidityModalProps } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const modalsUi: Record<number, FunctionalComponent<any>> = {
-  1: PoolOverview,
   2: AddLiquidity,
   3: WithdrawLiquidity,
 };

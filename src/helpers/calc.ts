@@ -17,7 +17,7 @@ export function calcFiatValuePriceImpact(
 export const calcPercentage = (value = 0, percent = 0, round = 2) => roundNumber(value * (1 - percent / 100), round);
 
 /** Calculate share percentage */
-export const calcSharePercentage = (total = 0, share = 0, round = 2) => roundNumber((share / total) * 100, round);
+export const calcSharePercentage = (total = 0, share = 0, round = 2) => roundNumber((share / total) * 100, round) || 0;
 
 /** Calculate pool APY (daily fee * 365 / TVL)  */
 export const calcAPR = (dailyFees: number, tvl: number, round = 2) =>

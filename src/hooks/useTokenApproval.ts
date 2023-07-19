@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
-import { useNodeInfoState } from '../NodeInfoProvider';
 import { mockERC20 } from '../contracts/MockERC20';
 import { decimalToNative } from '../helpers/parseNumbers';
 import { createOptions } from '../services/api/helpers';
@@ -35,10 +34,7 @@ export const useTokenApproval = ({
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
-  const {
-    state: { api },
-  } = useNodeInfoState();
-  const { address, signer } = useGlobalState().walletAccount || {};
+  const { address } = useGlobalState().walletAccount || {};
   const [pending, setPending] = useState(false);
   const amountBI = decimalToNative(amount || 0);
   const isEnabled = Boolean(token && spender && address && enabled);
@@ -68,6 +64,7 @@ export const useTokenApproval = ({
     async (data: any) => {
       setPending(true);
       console.log(data);
+      // ! TODO: complete
       //const trx = data?.hash ? await waitForTransaction({ hash: data.hash }) : undefined;
       //if (trx) await refetch();
       setPending(false);
@@ -82,10 +79,10 @@ export const useTokenApproval = ({
     address: token,
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
-        ? async (contract: any) => {
+        ? async ({ contract, api, walletAccount: { signer } }) => {
             const tx = await contract.tx
               .approve(
-                api ? createOptions(api) : {},
+                createOptions(api),
                 spender,
                 approveMax ? decimalToNative(Number.MAX_SAFE_INTEGER).toString() : amountBI.toString(),
               )

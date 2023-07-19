@@ -24,9 +24,10 @@ export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBa
   const query = useContract([cacheKeys.walletBalance, tokenAddress, address], {
     abi: mockERC20,
     address: tokenAddress, // contract address
-    // ! TODO: fix types
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fn: (contract: any) => () => contract.query.balanceOf(address, api ? createOptions(api) : {}, address),
+    fn:
+      ({ contract, api }) =>
+      () =>
+        contract.query.balanceOf(address, createOptions(api), address),
     ...inactiveOptions['3m'],
     ...options,
     enabled,
