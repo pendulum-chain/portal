@@ -10,7 +10,7 @@ import PoolsModals from './Modals';
 const SwapPools = (): JSX.Element | null => {
   const { tenantName } = useGlobalState();
   // ! TODO: get swap pools and user connected data (user liquidity for all pools)
-  const { data, isLoading } = useQuery<SwapPoolColumn[] | undefined>([cacheKeys.swapPools, tenantName, 1], () => {
+  const { data, isLoading } = useQuery<SwapPoolColumn[] | undefined>([cacheKeys.swapPools, tenantName], () => {
     return swapPools;
   });
 

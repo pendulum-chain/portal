@@ -35,6 +35,9 @@ export const swapPools: SwapPoolColumn[] = [
 ];
 export const backstopPool: BackstopPool[] = [
   {
-    assets: [mock.tokensWithMeta[0], mock.tokensWithMeta[1]],
+    address: '6koGpLFoFAbBRCPDBVpqsENKqPeDASTJL9UCoqh7wFLbS3Tf',
+    asset: mock.tokensWithMeta[2],
+    liabilities: 100,
+    totalSupply: 1000,
   },
 ];

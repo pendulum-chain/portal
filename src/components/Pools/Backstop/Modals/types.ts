@@ -1,4 +1,4 @@
-import { SwapPoolColumn } from '../columns';
+import { BackstopPool } from '../../../../models/BackstopPool';
 
 export const ModalTypes = {
   AddLiquidity: 2,
@@ -6,5 +6,5 @@ export const ModalTypes = {
 };
 
 export type LiquidityModalProps = {
-  data?: SwapPoolColumn;
+  data?: BackstopPool;
 };
