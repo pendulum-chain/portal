@@ -69,6 +69,8 @@ const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
 
   const removeWalletAccount = useCallback(() => {
     clear();
+    // remove talisman
+    storageService.remove('@talisman-connect/selected-wallet-name');
     setWallet(undefined);
   }, [clear]);
 
