@@ -14,6 +14,7 @@ export type UseContractWriteProps<TAbi, TVariables, TData> = Partial<
   address?: string;
   fn?: (
     data: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       contract: any; //ContractPromise; // TODO: fix types
       api: ApiPromise;
       walletAccount: WalletAccount;

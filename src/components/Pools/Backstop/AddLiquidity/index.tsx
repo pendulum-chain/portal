@@ -22,7 +22,6 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   } = useAddLiquidity(data.address, data.asset.address);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
-  const deposit = depositQuery.balance || 0;
 
   const hideCss = mutation.isLoading ? 'hidden' : '';
   return (

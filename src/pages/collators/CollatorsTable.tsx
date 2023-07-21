@@ -1,23 +1,22 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { nativeToFormat } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-
 import Table from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
+import { nativeToFormat } from '../../helpers/parseNumbers';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
+import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
 import {
+  TCollator,
+  UserStaking,
   actionsColumn,
   apyColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
   stakedColumn,
-  TCollator,
-  UserStaking,
 } from './columns';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
-import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
 
 function CollatorsTable() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -62,6 +61,7 @@ function CollatorsTable() {
   }, [api, walletAccount]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const identitiesPrefetch = async (candidatesArray: any) => {
       const m: Map<string, PalletIdentityInfo | undefined> = new Map();
       for (let i = 0; i < candidatesArray.length; i++) {

@@ -15,6 +15,7 @@ export type UseContractProps<T, TFn> = QueryOptions & {
 export const useContract = <
   T extends Abi | Record<string, unknown>,
   TFn extends (data: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     contract: any; //ContractPromise; // TODO: fix contract type
     api: ApiPromise;
   }) => () => Promise<unknown>,

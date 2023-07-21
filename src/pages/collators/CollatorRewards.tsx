@@ -65,6 +65,7 @@ function CollatorRewards() {
     }
     setSubmissionPending(true);
     updateRewardsExtrinsic
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
         const { status, events } = result;
         const errors = getErrors(events, api);
@@ -88,7 +89,7 @@ function CollatorRewards() {
         });
         setSubmissionPending(false);
       });
-  }, [api, setSubmissionPending, updateRewardsExtrinsic, walletAccount]);
+  }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount]);
 
   return (
     <>
