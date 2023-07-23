@@ -7,7 +7,7 @@ import { errorClass } from '../../helpers/form';
 import { AssetSelectorModal } from '../Asset/Selector/Modal';
 import ApprovalSubmit from './Approval';
 import From from './From';
-import Progress from './Progress';
+import SwapProgress from './Progress';
 import To from './To';
 import { UseSwapComponentProps, useSwapComponent } from './useSwapComponent';
 
@@ -18,33 +18,39 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     tokensModal: [modalType, setModalType],
     onFromChange,
     onToChange,
+    swapMutation,
     form,
     from,
     updateStorage,
-    onSubmit,
-    swapMutation,
+    progressClose,
   } = useSwapComponent(props);
   const {
     setValue,
-    getValues,
+    handleSubmit,
     register,
+    getValues,
     formState: { errors },
   } = form;
 
-  const isSwapLoading = swapMutation.status === 'loading';
-  const progressUi = useMemo(
-    () =>
-      isSwapLoading
-        ? `Swapping ${getValues('from')} ${getValues().from} for ${getValues().toAmount} ${getValues().to}`
-        : null,
-    [getValues, isSwapLoading],
-  );
+  const progressUi = useMemo(() => {
+    if (!swapMutation.isLoading) return '';
+    const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
+    // TODO: optimize finding tokens with object map
+    const fromAsset = addresses.foucoco.tokensWithMeta.find((x) => x.address === fromV);
+    const toAsset = addresses.foucoco.tokensWithMeta.find((x) => x.address === toV);
+    return (
+      <p className="text-center text-neutral-500">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
+    );
+  }, [getValues, swapMutation.isLoading]);
 
   return (
     <>
       <Card bordered className="w-full max-w-xl bg-base-200 shadow-0">
         <FormProvider {...form}>
-          <form className="card-body dark:text-neutral-200 text-neutral-800" onSubmit={onSubmit}>
+          <form
+            className="card-body dark:text-neutral-200 text-neutral-800"
+            onSubmit={handleSubmit((data) => swapMutation.mutate(data))}
+          >
             <div className="flex justify-between mb-2">
               <Card.Title tag="h2" className="text-3xl font-normal">
                 Swap
@@ -148,15 +154,9 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}
         onClose={() => setModalType(undefined)}
       />
-      <Progress
-        open={!swapMutation.isIdle}
-        className="modal-top"
-        onClose={swapMutation.reset}
-        status={swapMutation.status}
-        progress={swapMutation}
-      >
+      <SwapProgress open={!swapMutation.isIdle} className="modal-top" onClose={progressClose} mutation={swapMutation}>
         {progressUi}
-      </Progress>
+      </SwapProgress>
     </>
   );
 };

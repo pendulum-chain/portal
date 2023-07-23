@@ -1,6 +1,7 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
+import { PoolProgress } from '../..';
 import { calcSharePercentage } from '../../../../helpers/calc';
 import { nativeToDecimal } from '../../../../helpers/parseNumbers';
 import { numberLoader } from '../../../Loader';
@@ -27,8 +28,8 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   const hideCss = mutation.isLoading ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
-      <TransactionProgress asset={data.asset} mutation={mutation}>
-        <div className="text-3xl font-2">{amount}</div>
+      <TransactionProgress mutation={mutation} onClose={mutation.reset}>
+        <PoolProgress symbol={data.asset.symbol} amount={amount} />
       </TransactionProgress>
       <div className={hideCss}>
         <div className="flex items-center gap-2 mt-2 mb-8">

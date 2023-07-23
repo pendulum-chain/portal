@@ -1,35 +1,60 @@
+import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { UseMutationResult } from '@tanstack/react-query';
-import pendulumIcon from '../../../assets/pendulum-icon.svg';
+import { ComponentChildren } from 'preact';
+import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
-import { Asset } from '../../../models/Asset';
 
 export interface TransactionProgressProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mutation: UseMutationResult<any, any, any, any>;
-  asset: Asset;
-  children: JSX.Element;
+  children?: ComponentChildren;
+  onClose: () => void;
 }
 
-const TransactionProgress = ({ mutation, asset, children }: TransactionProgressProps): JSX.Element | null => {
-  if (!mutation.isLoading) return null;
-  return (
-    <>
-      <div className="flex flex-col items-center justify-center text-center mt-4 mb-10">
-        <Spinner size={100} color="#ddd" />
-        <h4 className="text-2xl mt-10">Waiting for Confirmation</h4>
-        <p className="text-neutral-500 mt-4">Please confirm this transaction in your wallet</p>
-      </div>
-      <div className="flex items-center justify-between rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-        <div className="flex items-center gap-2 text-lg">
-          <div className="rounded-full bg-[rgba(0,0,0,0.15)] w-10 h-10 p-px">
-            <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
-          </div>
-          <div>
-            <strong>{asset.symbol}</strong>
-          </div>
+const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
+  if (mutation.isIdle) return null;
+  if (mutation.isLoading) {
+    return (
+      <>
+        <div className="flex flex-col items-center justify-center text-center mt-4">
+          <Spinner size={100} color="#ddd" />
+          <h4 className="text-2xl mt-10">Waiting for confirmation</h4>
+          <p className="text-neutral-500 mt-4">Please confirm this transaction in your wallet</p>
         </div>
         {children}
+      </>
+    );
+  }
+  return (
+    <>
+      <div className="center mt-6">
+        {mutation.isSuccess ? (
+          <CheckCircleIcon className="w-32 h-32 text-green-400" />
+        ) : (
+          <ExclamationCircleIcon className="w-32 h-32 text-red-400" />
+        )}
       </div>
+      <div className="text-center mt-6">
+        <h4 className="text-2xl font-bold text-bold">
+          {mutation.isSuccess ? 'Transaction successfull' : 'Transaction failed'}
+        </h4>
+      </div>
+      {children}
+      {!!onClose && (
+        <Button color="primary" className="w-full mt-6" onClick={onClose}>
+          Close
+        </Button>
+      )}
+      <Button
+        tag="a"
+        href={mutation.data} // ! TODO: mutation returns transaction hash and build url
+        rel="noopener noreferrer"
+        onClick={onClose}
+        color="secondary"
+        className="w-full mt-2"
+      >
+        Transaction details
+      </Button>
     </>
   );
 };
