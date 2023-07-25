@@ -332,8 +332,12 @@ function Redeem(props: RedeemProps): JSX.Element {
                   if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
-                  if (parseFloat(value) > parseFloat(selectedVault?.redeemableTokens?.toString() || '0')) {
-                    return 'Amount is higher than the vault can redeem.';
+                  if (selectedVault?.issuableTokens) {
+                    const bigValue = new Big(value);
+                    const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens?.toString());
+                    if (bigValue.gt(maxIssuable)) {
+                      return 'Amount is higher than the vault can issue.';
+                    }
                   }
                   if (parseFloat(value) <= 0) {
                     return 'Amount should be a positive number.';
