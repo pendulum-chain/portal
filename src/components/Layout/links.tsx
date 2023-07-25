@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon, WalletIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { GlobalState } from '../../GlobalStateProvider';
@@ -113,5 +113,15 @@ export const links: Links = ({ tenantName }) => [
         title: 'Backstop Pool',
       },
     ],
+  },
+  {
+    link: 'https://ramptest.alchemypay.org/?appId=qmamnbodyqzbdr0w',
+    title: 'Buy PEN',
+    prefix: <WalletIcon />,
+    suffix: arrow,
+    hidden: true,
+    props: {
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
+    },
   },
 ];
