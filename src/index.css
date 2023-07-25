@@ -38,6 +38,7 @@
   --subtitle-collator-box: #fff;
   --text-primary-disabled: rgba(88, 102, 126, 0.4);
   --tag-background: rgba(78, 229, 154, 0.16); /* --primary 16% */
+  --network-bg: #252733;
 }
 
 [data-theme='pendulum'] {
@@ -57,6 +58,7 @@
   --selected-nav-item: hsla(272, 15%, 56%, 0.1);
   --text-primary-disabled: rgba(88, 102, 126, 0.4);
   --tag-background: rgba(144, 126, 160, 0.16); /* --primary 16% */
+  --network-bg: hsla(0, 0%, 0%, 0.04);
 }
 
 body {
@@ -88,7 +90,7 @@ strong {
 }
 
 .pendulum-network-id {
-  background-color: hsla(0, 0%, 0%, 0.04);
+  background-color: var(--network-bg);
   border-radius: 4px;
   width: 160px;
   margin-left: 30px;
