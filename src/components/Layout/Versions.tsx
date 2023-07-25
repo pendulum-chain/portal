@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, memo } from 'preact/compat';
-import { TenantName } from '../../models/Tenant';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { TenantName } from '../../models/Tenant';
 
 interface Props {
   tenantName: TenantName | undefined;
