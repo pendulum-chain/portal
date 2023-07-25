@@ -382,7 +382,7 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic)}>
+        <form className="px-5 flex flex-col">
           <div className="flex flex-col xs:flex-row xs:items-center gap-1">
             <Controller
               control={control}
@@ -392,8 +392,15 @@ function Issue(props: IssueProps): JSX.Element {
                   if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
-                  if (parseFloat(value) > parseFloat(selectedVault?.issuableTokens?.toString() || '0')) {
-                    return 'Amount is higher than the vault can issue.';
+                  if (selectedVault?.issuableTokens) {
+                    const bigValue = new Big(value);
+                    const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens?.toString());
+                    if (bigValue.gt(maxIssuable)) {
+                      return 'Amount is higher than the vault can issue.';
+                    }
+                  }
+                  if (parseFloat(value) <= 0) {
+                    return 'Amount should be a positive number.';
                   }
                 },
               }}
@@ -460,7 +467,13 @@ function Issue(props: IssueProps): JSX.Element {
             nativeCurrency={nativeCurrency}
           />
           {walletAccount ? (
-            <Button className="w-full" color="primary" loading={submissionPending} type="submit">
+            <Button
+              className="w-full"
+              color="primary"
+              loading={submissionPending}
+              onClick={handleSubmit(submitRequestIssueExtrinsic)}
+              type="button"
+            >
               Bridge
             </Button>
           ) : (

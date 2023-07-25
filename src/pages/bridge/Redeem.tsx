@@ -322,7 +322,7 @@ function Redeem(props: RedeemProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
+        <form className="px-5 flex flex-col">
           <div className="flex items-center">
             <Controller
               control={control}
@@ -332,8 +332,15 @@ function Redeem(props: RedeemProps): JSX.Element {
                   if (!isCompatibleStellarAmount(value)) {
                     return 'Max 7 decimals';
                   }
-                  if (parseFloat(value) > parseFloat(selectedVault?.redeemableTokens?.toString() || '0')) {
-                    return 'Amount is higher than the vault can redeem.';
+                  if (selectedVault?.issuableTokens) {
+                    const bigValue = new Big(value);
+                    const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens?.toString());
+                    if (bigValue.gt(maxIssuable)) {
+                      return 'Amount is higher than the vault can issue.';
+                    }
+                  }
+                  if (parseFloat(value) <= 0) {
+                    return 'Amount should be a positive number.';
                   }
                 },
               }}
@@ -423,7 +430,13 @@ function Redeem(props: RedeemProps): JSX.Element {
             nativeCurrency={nativeCurrency}
           />
           {walletAccount ? (
-            <Button className="w-full" color="primary" loading={submissionPending} type="submit">
+            <Button
+              className="w-full"
+              color="primary"
+              loading={submissionPending}
+              onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
+              type="button"
+            >
               Bridge
             </Button>
           ) : (
