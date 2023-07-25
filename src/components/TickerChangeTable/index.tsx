@@ -1,6 +1,5 @@
-import { h } from 'preact';
-import './styles.css';
 import usdc from '../../assets/usdc.png';
+import './styles.css';
 
 const TickerChangeTable = () => (
   <div className="ticker-change-table" style={{ marginTop: 40 }}>

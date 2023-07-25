@@ -1,7 +1,7 @@
+import { H256 } from '@polkadot/types/interfaces';
 import type { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesVaultId } from '@polkadot/types/lookup';
 import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { H256 } from '@polkadot/types/interfaces';
 
 export interface RichIssueRequest {
   id: H256;

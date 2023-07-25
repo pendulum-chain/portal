@@ -2,8 +2,8 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { fixedPointToDecimal } from '../../helpers/parseNumbers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { fixedPointToDecimal } from '../../helpers/parseNumbers';
 
 export function useFeePallet() {
   const [issueFee, setIssueFee] = useState<Big>(new Big(0));
