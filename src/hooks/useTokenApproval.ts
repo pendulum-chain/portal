@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
-import { mockERC20 } from '../contracts/MockERC20';
+import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { decimalToNative } from '../helpers/parseNumbers';
 import { createOptions } from '../services/api/helpers';
 import { useContractWrite } from './useContractWrite';

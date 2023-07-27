@@ -2,7 +2,7 @@ import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { cacheKeys, inactiveOptions, QueryOptions } from '../constants/cache';
-import { mockERC20 } from '../contracts/MockERC20';
+import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { useGlobalState } from '../GlobalStateProvider';
 import { nativeToDecimal, prettyNumbers } from '../helpers/parseNumbers';
 import { useNodeInfoState } from '../NodeInfoProvider';

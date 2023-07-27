@@ -2,8 +2,9 @@ import { Cog8ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outli
 import { useMemo } from 'preact/compat';
 import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
-import { addresses } from '../../contracts/NablaAddresses';
+import { nablaConfig } from '../../config/apps/nabla';
 import { errorClass } from '../../helpers/form';
+import { useGetTenantData } from '../../hooks/useGetTenantData';
 import { AssetSelectorModal } from '../Asset/Selector/Modal';
 import ApprovalSubmit from './Approval';
 import From from './From';
@@ -31,17 +32,18 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     getValues,
     formState: { errors },
   } = form;
+  const { assets } = useGetTenantData(nablaConfig) || {};
 
   const progressUi = useMemo(() => {
     if (!swapMutation.isLoading) return '';
     const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
     // TODO: optimize finding tokens with object map
-    const fromAsset = addresses.foucoco.tokensWithMeta.find((x) => x.address === fromV);
-    const toAsset = addresses.foucoco.tokensWithMeta.find((x) => x.address === toV);
+    const fromAsset = assets?.find((x) => x.address === fromV);
+    const toAsset = assets?.find((x) => x.address === toV);
     return (
       <p className="text-center text-neutral-500">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
     );
-  }, [getValues, swapMutation.isLoading]);
+  }, [assets, getValues, swapMutation.isLoading]);
 
   return (
     <>
@@ -148,7 +150,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         </FormProvider>
       </Card>
       <AssetSelectorModal
-        assets={addresses.foucoco.tokensWithMeta}
+        assets={assets}
         open={!!modalType}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}

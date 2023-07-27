@@ -6,7 +6,7 @@ export type TokenApprovalProps = ButtonProps & {
   token: string | undefined;
   amount: number;
   /** contract address (eg. router address) */
-  spender: string;
+  spender?: string;
   enabled?: boolean;
   children: ReactNode;
 };

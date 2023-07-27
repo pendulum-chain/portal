@@ -4,14 +4,15 @@ import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { config } from '../../config';
+import { nablaConfig } from '../../config/apps/nabla';
 import { cacheKeys } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
-import { addresses } from '../../contracts/NablaAddresses';
-import { routerAbi } from '../../contracts/Router';
+import { routerAbi } from '../../contracts/nabla/Router';
 import { calcPercentage } from '../../helpers/calc';
 import { debounce } from '../../helpers/function';
 import { decimalToNative } from '../../helpers/parseNumbers';
 import { useContractWrite } from '../../hooks/useContractWrite';
+import { useGetTenantData } from '../../hooks/useGetTenantData';
 import { Asset } from '../../models/Asset';
 import { SwapSettings } from '../../models/Swap';
 import { createOptions } from '../../services/api/helpers';
@@ -37,6 +38,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   const hadMountedRef = useRef(false);
   const queryClient = useQueryClient();
   const { walletAccount } = useGlobalState();
+  const { router } = useGetTenantData(nablaConfig) || {};
   const { address } = walletAccount || {};
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
@@ -73,8 +75,8 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   );
 
   const swapMutation = useContractWrite({
-    abi: routerAbi,
-    address: addresses.foucoco.router, // TODO: get based on chain
+    abi: routerAbi, // ? should be chain specific
+    address: router,
     fn: async ({ contract, api, walletAccount }, variables: SwapFormValues) => {
       // ! TODO: complete and test
       const time = Math.floor(Date.now() / 1000) + variables.deadline;

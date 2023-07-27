@@ -1,13 +1,13 @@
 import { SwapPoolColumn } from '../components/Pools/Swap/columns';
-import { addresses } from '../contracts/NablaAddresses';
+import { nablaConfig } from '../config/apps/nabla';
 import { BackstopPool } from '../models/BackstopPool';
 
-const mock = addresses.foucoco;
+const mock = nablaConfig.foucoco;
 
 export const swapPools: SwapPoolColumn[] = [
   {
-    ...mock.swapPoolsWithMeta[0],
-    asset: mock.tokensWithMeta[2],
+    ...mock.swapPools[0],
+    asset: mock.assets[0],
     balance: 100,
     liabilities: 1,
     wallet: undefined,
@@ -15,8 +15,8 @@ export const swapPools: SwapPoolColumn[] = [
     coverage: 5,
   },
   {
-    ...mock.swapPoolsWithMeta[1],
-    asset: mock.tokensWithMeta[0],
+    ...mock.swapPools[1],
+    asset: mock.assets[1],
     balance: 0,
     liabilities: 1,
     wallet: undefined,
@@ -24,8 +24,8 @@ export const swapPools: SwapPoolColumn[] = [
     coverage: 15,
   },
   {
-    ...mock.swapPoolsWithMeta[2],
-    asset: mock.tokensWithMeta[1],
+    ...mock.swapPools[2],
+    asset: mock.assets[2],
     balance: 0,
     liabilities: 3,
     wallet: undefined,
@@ -35,8 +35,8 @@ export const swapPools: SwapPoolColumn[] = [
 ];
 export const backstopPool: BackstopPool[] = [
   {
-    address: '6koGpLFoFAbBRCPDBVpqsENKqPeDASTJL9UCoqh7wFLbS3Tf',
-    asset: mock.tokensWithMeta[2],
+    address: mock.backstopPool,
+    asset: mock.assets[2],
     liabilities: 100,
     totalSupply: 1000,
   },

@@ -1,6 +1,6 @@
 import { useGlobalState } from '../GlobalStateProvider';
 import { cacheKeys, inactiveOptions } from '../constants/cache';
-import { mockERC20 } from '../contracts/MockERC20';
+import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { nativeToDecimal } from '../helpers/parseNumbers';
 import { createOptions } from '../services/api/helpers';
 import { useContract } from './useContract';
