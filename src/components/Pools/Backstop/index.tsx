@@ -22,9 +22,9 @@ const BackstopPoolsBody = (): JSX.Element | null => {
   if (!pool) return null; // TODO: empty state UI
   return (
     <>
-      <div className="center gap-4 w-full">
+      <div className="text-[initial] dark:text-neutral-200 center gap-4 w-full">
         <Card bordered className="w-full max-w-xl bg-base-200">
-          <div className="card-body p-4 md:p-6 text-neutral-800">
+          <div className="card-body p-4 md:p-6">
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { backstopPoolAbi } from '../../../../contracts/BackstopPool';
+import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
 import { decimalToNative } from '../../../../helpers/parseNumbers';
 import { useBalance } from '../../../../hooks/useBalance';
 import { useContractWrite } from '../../../../hooks/useContractWrite';
