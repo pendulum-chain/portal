@@ -12,6 +12,7 @@ import { useContract } from './useContract';
 export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefined, unknown> & {
   balance?: number;
   formatted?: string;
+  enabled: boolean;
 };
 
 export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBalanceResponse => {
