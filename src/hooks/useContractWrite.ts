@@ -19,10 +19,10 @@ export type UseContractWriteProps<TAbi, TVariables, TData> = Partial<
       api: ApiPromise;
       walletAccount: WalletAccount;
     },
-    variables: TVariables,
+    variables?: TVariables,
   ) => Promise<TData | undefined>;
 };
-export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TData = unknown, TVariables = void>({
+export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TData = unknown, TVariables = never>({
   abi,
   address,
   fn,
@@ -35,7 +35,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TDa
     [abi, address, api],
   );
   const isReady = !!contract && !!fn && !!api && !!walletAccount && !!walletAccount.signer;
-  const submit = async (variables: TVariables) =>
+  const submit = async (variables?: TVariables) =>
     isReady ? fn({ contract, api, walletAccount }, variables) : undefined;
   const mutation = useMutation(submit, rest);
   return { ...mutation, isReady };

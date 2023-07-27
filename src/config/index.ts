@@ -10,7 +10,12 @@ type Tenants = Record<
   }
 >;
 
+const env = process.env.NODE_ENV;
+
 export const config = {
+  env,
+  isProd: env === 'production',
+  isDev: env === 'development',
   defaultPage: '/pendulum/dashboard',
   tenants: {
     [TenantName.Amplitude]: {
