@@ -46,7 +46,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.asset.symbol}`}
             </p>
           </div>
-          <div className="relative rounded-lg bg-neutral-100 p-4">
+          <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <input
@@ -56,7 +56,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   {...register('amount')}
                 />
                 <Button
-                  className="bg-neutral-200 px-4 rounded-2xl"
+                  className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
                   size="sm"
                   type="button"
                   onClick={() =>
@@ -84,7 +84,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               }
             />
           </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 text-neutral-500 p-4 mt-4">
+          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 p-4 mt-4">
             <div className="flex items-center justify-between">
               <div>Fee</div>
               <div>! TODO</div>
