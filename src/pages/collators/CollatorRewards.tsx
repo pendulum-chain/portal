@@ -17,6 +17,7 @@ function CollatorRewards() {
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [submissionPending, setSubmissionPending] = useState(false);
+  const [unboarding, setUnbording] = useState<string>('0.00');
 
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -45,10 +46,18 @@ function CollatorRewards() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      return balance.free.sub(balance.miscFrozen).toString();
+      setUserAvailableBalance(balance.free.sub(balance.miscFrozen).toString());
+    };
+    const fetchUnstaking = async () => {
+      if (!api || !walletAccount) {
+        return '0.00';
+      }
+      const unstakingData = await api.query.parachainStaking.unstaking(walletAccount?.address);
+      unstakingData.forEach((n) => setUnbording(nativeToFormat(parseInt(n.toString()), tokenSymbol)));
     };
 
-    fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
+    fetchUnstaking();
+    fetchAvailableBalance();
   }, [api, walletAccount]);
 
   const updateRewardsExtrinsic = useMemo(() => {
@@ -110,7 +119,7 @@ function CollatorRewards() {
               </div>
               <div className="flex flex-auto place-content-end">
                 <button className="btn btn-secondary w-full" disabled>
-                  0 {tokenSymbol} Unboarding
+                  {unboarding} Unboarding
                 </button>
               </div>
             </div>
