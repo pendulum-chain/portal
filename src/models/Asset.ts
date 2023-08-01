@@ -3,4 +3,5 @@ export interface Asset {
   decimals: number;
   symbol: string;
   name: string;
+  logoURI?: string;
 }

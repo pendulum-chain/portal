@@ -1,3 +1,5 @@
+import { colors } from './src/constants/colors';
+
 // eslint-disable-next-line no-undef
 module.exports = {
   darkMode: 'class',
@@ -11,6 +13,7 @@ module.exports = {
   themes: ['pendulum', 'amplitude'],
   theme: {
     extend: {
+      colors,
       screens: {
         xs: '480px',
       },
@@ -33,7 +36,6 @@ module.exports = {
           'base-200': '#fff',
           'base-300': '#eff2f5',
           'base-content': '#58667E',
-
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
         },

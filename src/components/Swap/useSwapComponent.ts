@@ -35,6 +35,7 @@ const storageSet = debounce(storageService.set, 1000);
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { onChange } = props;
+  const { assets } = useGetTenantData(nablaConfig) || {};
   const hadMountedRef = useRef(false);
   const queryClient = useQueryClient();
   const { walletAccount } = useGlobalState();
@@ -160,6 +161,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   return {
     form,
+    assets,
     swapMutation,
     tokensModal,
     onFromChange,

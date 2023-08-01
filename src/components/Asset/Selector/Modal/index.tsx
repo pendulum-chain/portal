@@ -1,3 +1,4 @@
+import { CheckIcon } from '@heroicons/react/20/solid';
 import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, Button, Input, Modal, ModalProps } from 'react-daisyui';
@@ -32,21 +33,24 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
         {filteredTokens?.map((token) => (
           <Button
             type="button"
-            size="md"
-            variant="ghost"
+            size="lg"
+            variant="secondary"
             key={token.address}
             onClick={() => onSelect(token)}
-            className={`items-center w-full gap-4 text-base${selected === token.address ? ' bg-neutral-100' : ''}`}
+            className="w-full items-center justify-start gap-4 px-3 py-1 border-0 bg-[rgba(0,0,0,.2)] text-left hover:opacity-80 dark:bg-[rgba(255,255,255,.12)]"
           >
-            <div>
-              <Avatar size="xs" letters={token.symbol} shape="circle" className="text-xs" />
-            </div>
-            <div>
-              <p>
-                <strong>{token.name}</strong>
-              </p>
-            </div>
-            <div className="ml-auto text-sm font-normal">{'Amount'}</div>
+            <span className="relative">
+              <Avatar size="xs" letters={token.symbol} src={token.logoURI} shape="circle" className="text-xs" />
+              {selected == token.address && (
+                <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
+              )}
+            </span>
+            <span className="flex flex-col">
+              <span className="text-lg leading-5">
+                <strong>{token.symbol}</strong>
+              </span>
+              <span className="text-sm leading-5">{token.name}</span>
+            </span>
           </Button>
         ))}
       </div>

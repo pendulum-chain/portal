@@ -1,9 +1,13 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
+import { useMemo } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
+import { nablaConfig } from '../../../config/apps/nabla';
+import { getAssets } from '../../../helpers/array';
 import { useBalance } from '../../../hooks/useBalance';
+import { useGetTenantData } from '../../../hooks/useGetTenantData';
 import TokenPrice from '../../Asset/Price';
 import { SwapFormValues } from '../types';
 
@@ -13,13 +17,17 @@ export interface FromProps {
 }
 
 const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
+  const { assets } = useGetTenantData(nablaConfig) || {};
   const { register, setValue, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',
   });
-  const token = from.length > 0 ? { symbol: 'ETH', address: from } : undefined; // ! TODO: get token info
-  const { balance } = useBalance(token?.address);
+  const { [from]: token } = useMemo(
+    () => (from.length > 0 ? getAssets(assets || [], { [from]: true }) : {}),
+    [assets, from],
+  );
+  const { formatted, balance } = useBalance(token?.address);
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -50,7 +58,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>
-                <span className="mr-1">Balance: {balance}</span>
+                <span className="mr-1">Balance: {formatted}</span>
                 <button
                   className="text-primary hover:underline"
                   onClick={() => setValue('fromAmount', Number(balance))}

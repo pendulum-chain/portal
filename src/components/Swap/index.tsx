@@ -2,9 +2,7 @@ import { Cog8ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outli
 import { useMemo } from 'preact/compat';
 import { Button, Card, Dropdown, Input } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
-import { nablaConfig } from '../../config/apps/nabla';
 import { errorClass } from '../../helpers/form';
-import { useGetTenantData } from '../../hooks/useGetTenantData';
 import { AssetSelectorModal } from '../Asset/Selector/Modal';
 import ApprovalSubmit from './Approval';
 import From from './From';
@@ -16,6 +14,7 @@ const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
+    assets,
     tokensModal: [modalType, setModalType],
     onFromChange,
     onToChange,
@@ -32,7 +31,6 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     getValues,
     formState: { errors },
   } = form;
-  const { assets } = useGetTenantData(nablaConfig) || {};
 
   const progressUi = useMemo(() => {
     if (!swapMutation.isLoading) return '';
