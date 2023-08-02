@@ -25,6 +25,8 @@ interface UseTokenApprovalParams {
   onSuccess?: (data: any) => void;
 }
 
+const maxInt = decimalToNative(Number.MAX_SAFE_INTEGER).toString();
+
 export const useTokenApproval = ({
   token,
   amount,
@@ -64,7 +66,7 @@ export const useTokenApproval = ({
     async (data: any) => {
       setPending(true);
       console.log(data);
-      // ! TODO: complete
+      // !? TODO: complete - await transaction
       //const trx = data?.hash ? await waitForTransaction({ hash: data.hash }) : undefined;
       //if (trx) await refetch();
       setPending(false);
@@ -81,11 +83,7 @@ export const useTokenApproval = ({
       isEnabled && allowance !== undefined && !isAllowanceLoading
         ? async ({ contract, api, walletAccount: { signer } }) => {
             const tx = await contract.tx
-              .approve(
-                createOptions(api),
-                spender,
-                approveMax ? decimalToNative(Number.MAX_SAFE_INTEGER).toString() : amountBI.toString(),
-              )
+              .approve(createOptions(api), spender, approveMax ? maxInt : amountBI.toString())
               .signAndSend(spender, { signer });
             console.log(tx);
             return tx;

@@ -23,6 +23,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   } = useAddLiquidity(data.address, data.asset.address);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
+  const deposit = depositQuery.balance || 0;
 
   const hideCss = mutation.isLoading ? 'hidden' : '';
   return (
@@ -77,14 +78,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${balance + amount} ${data.asset.symbol}`}</div>
+              <div>{depositQuery.isLoading ? numberLoader : `${deposit + amount} ${data.asset.symbol}`}</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool Share</div>
               <div>
                 {depositQuery.isLoading
                   ? numberLoader
-                  : calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() + amount, balance + amount)}
+                  : calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() + amount, deposit + amount)}
                 %
               </div>
             </div>
