@@ -17,7 +17,7 @@ function CollatorRewards() {
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-  const [unboarding, setUnboarding] = useState<string>('0.00');
+  const [unstaking, setUnstaking] = useState<string>('0.00');
 
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -53,7 +53,7 @@ function CollatorRewards() {
         return '0.00';
       }
       const unstakingData = await api.query.parachainStaking.unstaking(walletAccount?.address);
-      unstakingData.forEach((n) => setUnboarding(nativeToFormat(parseInt(n.toString()), tokenSymbol)));
+      unstakingData.forEach((n) => setUnstaking(nativeToFormat(parseInt(n.toString()), tokenSymbol)));
     };
 
     fetchUnstaking();
@@ -119,7 +119,7 @@ function CollatorRewards() {
               </div>
               <div className="flex flex-auto place-content-end">
                 <button className="btn btn-secondary w-full" disabled>
-                  {unboarding} Unboarding
+                  {unstaking} unstaking
                 </button>
               </div>
             </div>
