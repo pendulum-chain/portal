@@ -17,7 +17,7 @@ function CollatorRewards() {
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [submissionPending, setSubmissionPending] = useState(false);
-  const [unboarding, setUnbording] = useState<string>('0.00');
+  const [unboarding, setUnboarding] = useState<string>('0.00');
 
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
