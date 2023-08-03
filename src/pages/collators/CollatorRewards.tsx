@@ -53,7 +53,7 @@ function CollatorRewards() {
         return '0.00';
       }
       const unstakingData = await api.query.parachainStaking.unstaking(walletAccount?.address);
-      unstakingData.forEach((n) => setUnbording(nativeToFormat(parseInt(n.toString()), tokenSymbol)));
+      unstakingData.forEach((n) => setUnboarding(nativeToFormat(parseInt(n.toString()), tokenSymbol)));
     };
 
     fetchUnstaking();
