@@ -121,7 +121,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
       />
       <DelegationSuccessfulDialog
         visible={confirmationDialogVisible}
-        message={mode === 'unstaking' ? 'Successfully unstaked.' : 'Successfully delegated.'}
+        message={mode === 'unstaking' ? 'Successfully unstaked.' : 'Successfully staked.'}
         onClose={() => {
           setConfirmationDialogVisible(false);
           onClose();

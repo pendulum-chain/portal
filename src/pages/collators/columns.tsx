@@ -93,7 +93,7 @@ export const actionsColumn = ({
   accessorKey: 'actions',
   cell: ({ row }) => {
     const showUstake = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
-    const showDelegate = walletAccount && (!userStaking || showUnbond);
+    const showStake = walletAccount && (!userStaking || showUstake);
     return (
       <div className="flex flex-row justify-center">
         <Button
@@ -116,9 +116,9 @@ export const actionsColumn = ({
           onClick={() => {
             setSelectedCandidate(row.original.candidate);
           }}
-          disabled={!showDelegate}
+          disabled={!showStake}
         >
-          Delegate
+          Stake
         </Button>
       </div>
     );

@@ -45,7 +45,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
-          <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Delegate'}</div>
+          <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Stake'}</div>
           <div className="text-xl mt-2">
             {delegationAmountDecimal} {tokenSymbol}
           </div>

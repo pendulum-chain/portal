@@ -58,7 +58,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     [annual, collator, minDelegatorStake, mode, tokenSymbol],
   );
 
-  const titleAction = useMemo(() => (mode === 'unstaking' ? 'Unstake' : 'Delegate'), [mode]);
+  const titleAction = useMemo(() => (mode === 'unstaking' ? 'Unstake' : 'Stake'), [mode]);
   const available = nativeToDecimal(availableBalance).toFixed(4);
 
   return (
