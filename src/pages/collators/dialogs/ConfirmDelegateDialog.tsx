@@ -35,7 +35,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
 
   const resultingBalance =
-    mode === 'undelegating'
+    mode === 'unstaking'
       ? Big(balanceDecimal).plus(delegationAmountDecimal).minus(transactionFeeDecimal).toString()
       : Big(balanceDecimal).minus(delegationAmountDecimal).minus(transactionFeeDecimal).toString();
 
@@ -45,7 +45,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
-          <div className="text-md text-neutral-content">{mode === 'undelegating' ? 'Unbond' : 'Delegate'}</div>
+          <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Stake'}</div>
           <div className="text-xl mt-2">
             {delegationAmountDecimal} {tokenSymbol}
           </div>
