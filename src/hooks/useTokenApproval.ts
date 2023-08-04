@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { decimalToNative } from '../helpers/parseNumbers';
@@ -43,7 +43,7 @@ export const useTokenApproval = ({
   const {
     data: allowance,
     isLoading: isAllowanceLoading,
-    /* refetch, */
+    refetch,
   } = useTokenAllowance({
     token,
     owner: address,
@@ -51,47 +51,27 @@ export const useTokenApproval = ({
     enabled: isEnabled,
   });
 
-  const onSettledFn = useCallback(
-    (data: any | undefined, e: any | null) => {
-      if (e instanceof Error) {
-        setPending(false);
-        if (onError) onError(e);
-      } else if (data) {
-        if (onSuccess) onSuccess(data);
-      }
-    },
-    [onError, onSuccess],
-  );
-  const onSuccessFn = useCallback(
-    async (data: any) => {
-      setPending(true);
-      console.log(data);
-      // !? TODO: complete - await transaction
-      //const trx = data?.hash ? await waitForTransaction({ hash: data.hash }) : undefined;
-      //if (trx) await refetch();
-      setPending(false);
-    },
-    [
-      /* refetch */
-    ],
-  );
-
   const mutation = useContractWrite({
     abi: mockERC20,
     address: token,
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
         ? async ({ contract, api, walletAccount: { signer } }) => {
-            const tx = await contract.tx
+            setPending(true);
+            return contract.tx
               .approve(createOptions(api), spender, approveMax ? maxInt : amountBI.toString())
-              .signAndSend(spender, { signer });
-            console.log(tx);
-            return tx;
+              .signAndSend(spender, { signer }, (response: any) => {
+                console.log(response);
+                refetch();
+                if (onSuccess) onSuccess(''); // TODO
+                setPending(false);
+              });
           }
         : undefined,
-    onError,
-    onSettled: onSettledFn,
-    onSuccess: onSuccessFn,
+    onError: (err) => {
+      if (onError) onError(err);
+      setPending(false);
+    },
   });
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {

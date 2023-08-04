@@ -23,7 +23,7 @@ export const useTokenAllowance = ({ token, owner, spender, enabled = true }: Use
       ({ contract, api }) =>
       async () => {
         const data = await contract.query.allowance(owner, createOptions(api), owner, spender);
-        if (!data?.result?.isOk || data.output === undefined) throw new Error(data);
+        if (!data?.result?.isOk || data?.output === undefined) throw new Error(data);
         return nativeToDecimal(parseFloat(data.output.toString()) || 0);
       },
     ...inactiveOptions['3m'],

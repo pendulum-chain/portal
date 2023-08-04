@@ -35,7 +35,7 @@ export const useBalance = (tokenAddress?: string, options?: QueryOptions): UseBa
   });
   const { data } = query;
   const val = useMemo(() => {
-    if (!data?.result?.isOk || !data.output) return {};
+    if (!data?.result?.isOk || data?.output === undefined) return {};
     const balance = nativeToDecimal(parseFloat(data.output.toString()) || 0).toNumber();
     return { balance, formatted: prettyNumbers(balance) };
   }, [data]);

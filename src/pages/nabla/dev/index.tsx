@@ -15,12 +15,8 @@ const TokenItem = ({ token }: { token: Asset }) => {
   const { mutate, isLoading } = useContractWrite({
     abi: mockERC20,
     address: token.address,
-    fn: async ({ contract, api, walletAccount }) => {
-      const spender = walletAccount.address;
-      return await contract.tx
-        .mint(createOptions(api), spender, amount)
-        .signAndSend(spender, { signer: walletAccount.signer });
-    },
+    fn: async ({ contract, api, walletAccount: { address, signer } }) =>
+      contract.tx.mint(createOptions(api), address, amount).signAndSend(address, { signer }),
     onError: console.error,
   });
   return (
