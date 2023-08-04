@@ -1,13 +1,15 @@
-import { ChevronRightIcon, WalletIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { GlobalState } from '../../GlobalStateProvider';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
+import OnrampIcon from '../../assets/onramp';
 import SpacewalkIcon from '../../assets/spacewalk';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
+import { config } from '../../config';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
 
@@ -115,13 +117,16 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: 'https://ramptest.alchemypay.org/?appId=qmamnbodyqzbdr0w',
+    link: config.aclhemyPay.prodUrl,
     title: 'Buy PEN',
-    prefix: <WalletIcon />,
+    prefix: <OnrampIcon />,
     suffix: arrow,
-    hidden: true,
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
+      style: {
+        visibility: tenantName === TenantName.Pendulum ? 'visible' : 'hidden',
+      },
+      target: '_blank',
+      rel: 'nofollow noreferrer',
     },
   },
 ];
