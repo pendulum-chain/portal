@@ -1,5 +1,4 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { toast } from 'react-toastify';
 import { ApprovalState, useTokenApproval } from '../../../hooks/useTokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {
@@ -24,11 +23,7 @@ const TokenApproval = ({
     amount,
     token,
     spender,
-    approveMax: true,
     enabled,
-    onError: (_err) => {
-      toast('Please approve transaction.', { type: toast.TYPE.ERROR });
-    },
   });
 
   if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;

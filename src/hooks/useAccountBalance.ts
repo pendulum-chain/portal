@@ -27,7 +27,7 @@ export const useAccountBalance = (): UseAccountBalanceResponse => {
     {
       enabled,
       ...inactiveOptions[0],
-      onError: (err) => console.error(err),
+      onError: console.error,
     },
   );
   const { data } = query;

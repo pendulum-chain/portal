@@ -3,10 +3,14 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
+import { TransactionsStatus } from '../../../hooks/useContractWrite';
 
 export interface TransactionProgressProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mutation: UseMutationResult<any, any, any, any>;
+  mutation: Pick<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    UseMutationResult<TransactionsStatus, any, any, any>,
+    'isIdle' | 'isLoading' | 'isSuccess' | 'isError' | 'data'
+  >;
   children?: ComponentChildren;
   onClose: () => void;
 }
@@ -47,7 +51,7 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
       )}
       <Button
         tag="a"
-        href={mutation.data} // ! TODO: mutation returns transaction hash and build url
+        href={mutation.data?.hex} // ! TODO: mutation returns transaction hash and build url
         rel="noopener noreferrer"
         onClick={onClose}
         color="secondary"

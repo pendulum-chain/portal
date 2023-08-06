@@ -23,17 +23,9 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   const mutation = useContractWrite({
     abi: swapPoolAbi,
     address: poolAddress,
-    fn: async ({ contract, api, walletAccount }, variables: AddLiquidityValues) => {
-      const spender = walletAccount.address;
-      return await contract.tx
-        .deposit(createOptions(api), spender, decimalToNative(variables.amount).toString())
-        .signAndSend(spender, { signer: walletAccount.signer });
-    },
-    onError: () => {
-      // TODO: handle error
-    },
+    fn: ({ contract, api }, variables: AddLiquidityValues) =>
+      contract.tx.deposit(createOptions(api), decimalToNative(variables.amount).toString()),
     onSuccess: () => {
-      // TODO: wait for transaction to complete
       balanceQuery.refetch();
       depositQuery.refetch();
     },

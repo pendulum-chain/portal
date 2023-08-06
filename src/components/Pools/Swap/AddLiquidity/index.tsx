@@ -25,7 +25,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
-  const hideCss = mutation.isLoading ? 'hidden' : '';
+  const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
@@ -91,8 +91,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </div>
           </div>
           <div>
-            <TokenApproval className="mt-8 w-full" spender={data.address} token={data.asset.address} amount={amount}>
-              <Button color="primary" className="mt-8 w-full" type="submit">
+            <TokenApproval
+              className="mt-8 w-full"
+              spender={data.address}
+              token={data.asset.address}
+              amount={amount}
+              enabled={amount > 0}
+            >
+              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!amount}>
                 Deposit
               </Button>
             </TokenApproval>

@@ -4,19 +4,20 @@ import { config } from '../../../config';
 import { nablaConfig } from '../../../config/apps/nabla';
 import { mockERC20 } from '../../../contracts/nabla/MockERC20';
 import { decimalToNative } from '../../../helpers/parseNumbers';
-import { useContractWrite } from '../../../hooks/useContractWrite';
+import { UseContractWriteProps, useContractWrite } from '../../../hooks/useContractWrite';
 import { useGetTenantData } from '../../../hooks/useGetTenantData';
 import { Asset } from '../../../models/Asset';
 import { createOptions } from '../../../services/api/helpers';
 
 const amount = decimalToNative(1000).toString();
+const mintFn: UseContractWriteProps<typeof mockERC20>['fn'] = ({ contract, api, walletAccount }) =>
+  contract.tx.mint(createOptions(api), walletAccount.address, amount);
 
 const TokenItem = ({ token }: { token: Asset }) => {
   const { mutate, isLoading } = useContractWrite({
     abi: mockERC20,
     address: token.address,
-    fn: async ({ contract, api, walletAccount: { address, signer } }) =>
-      contract.tx.mint(createOptions(api), address, amount).signAndSend(address, { signer }),
+    fn: mintFn,
     onError: console.error,
   });
   return (

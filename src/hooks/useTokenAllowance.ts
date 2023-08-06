@@ -15,10 +15,9 @@ export type UseTokenAllowance = {
 export const useTokenAllowance = ({ token, owner, spender, enabled = true }: UseTokenAllowance) => {
   const { tenantName } = useGlobalState();
   const isEnabled = Boolean(token && owner && spender && enabled);
-  const response = useContract([cacheKeys.tokenAllowance, tenantName, token, owner], {
+  return useContract([cacheKeys.tokenAllowance, tenantName, token, owner], {
     abi: mockERC20,
     address: token,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fn:
       ({ contract, api }) =>
       async () => {
@@ -29,5 +28,4 @@ export const useTokenAllowance = ({ token, owner, spender, enabled = true }: Use
     ...inactiveOptions['3m'],
     enabled: isEnabled,
   });
-  return response;
 };

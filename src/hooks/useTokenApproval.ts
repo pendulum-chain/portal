@@ -4,7 +4,7 @@ import { useGlobalState } from '../GlobalStateProvider';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { decimalToNative } from '../helpers/parseNumbers';
 import { createOptions } from '../services/api/helpers';
-import { useContractWrite } from './useContractWrite';
+import { UseContractWriteProps, useContractWrite } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
 
 export enum ApprovalState {
@@ -22,23 +22,23 @@ interface UseTokenApprovalParams {
   approveMax?: boolean;
   enabled?: boolean;
   onError?: (err: any) => void;
-  onSuccess?: (data: any) => void;
+  onSuccess?: UseContractWriteProps['onSuccess'];
 }
 
 const maxInt = decimalToNative(Number.MAX_SAFE_INTEGER).toString();
 
 export const useTokenApproval = ({
   token,
-  amount,
+  amount = 0,
   spender,
   enabled = true,
-  approveMax = true,
+  approveMax,
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
   const { address } = useGlobalState().walletAccount || {};
   const [pending, setPending] = useState(false);
-  const amountBI = decimalToNative(amount || 0);
+  const amountBI = decimalToNative(amount);
   const isEnabled = Boolean(token && spender && address && enabled);
   const {
     data: allowance,
@@ -56,21 +56,20 @@ export const useTokenApproval = ({
     address: token,
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
-        ? async ({ contract, api, walletAccount: { signer } }) => {
-            setPending(true);
-            return contract.tx
-              .approve(createOptions(api), spender, approveMax ? maxInt : amountBI.toString())
-              .signAndSend(spender, { signer }, (response: any) => {
-                console.log(response);
-                refetch();
-                if (onSuccess) onSuccess(''); // TODO
-                setPending(false);
-              });
-          }
+        ? ({ contract, api }) =>
+            contract.tx.approve(createOptions(api), spender, approveMax ? maxInt : amountBI.toString())
         : undefined,
     onError: (err) => {
-      if (onError) onError(err);
       setPending(false);
+      if (onError) onError(err);
+    },
+    onSuccess: (...args) => {
+      setPending(true);
+      if (onSuccess) onSuccess(...args);
+      setTimeout(() => {
+        refetch();
+        setPending(false);
+      }, 2000);
     },
   });
 
@@ -79,12 +78,12 @@ export const useTokenApproval = ({
     // if (amount?.currency.isNative) state = ApprovalState.APPROVED;
     if (isAllowanceLoading) state = ApprovalState.LOADING;
     else if (!mutation.isReady) state = ApprovalState.UNKNOWN;
-    else if (allowance !== undefined && amountBI !== undefined && allowance >= amountBI) {
+    else if (allowance !== undefined && amount !== undefined && allowance >= amount) {
       state = ApprovalState.APPROVED;
     } else if (pending || mutation.isLoading) state = ApprovalState.PENDING;
-    else if (allowance !== undefined && amountBI !== undefined && allowance < amountBI) {
+    else if (allowance !== undefined && amount !== undefined && allowance < amount) {
       state = ApprovalState.NOT_APPROVED;
     }
     return [state, mutation];
-  }, [allowance, amountBI, mutation, isAllowanceLoading, pending]);
+  }, [allowance, amount, mutation, isAllowanceLoading, pending]);
 };

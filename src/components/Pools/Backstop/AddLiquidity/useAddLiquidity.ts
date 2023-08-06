@@ -23,12 +23,8 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   const mutation = useContractWrite({
     abi: backstopPoolAbi,
     address: poolAddress,
-    fn: async ({ contract, api, walletAccount }, variables: AddLiquidityValues) => {
-      const spender = walletAccount.address;
-      return await contract.tx
-        .deposit(createOptions(api), spender, decimalToNative(variables.amount).toString())
-        .signAndSend(spender, { signer: walletAccount.signer });
-    },
+    fn: ({ contract, api }, variables: AddLiquidityValues) =>
+      contract.tx.deposit(createOptions(api), decimalToNative(variables.amount).toString()),
     onError: () => {
       // TODO: handle error
     },

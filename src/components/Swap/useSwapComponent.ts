@@ -78,7 +78,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   const swapMutation = useContractWrite({
     abi: routerAbi, // ? should be chain specific
     address: router,
-    fn: async ({ contract, api, walletAccount }, variables: SwapFormValues) => {
+    fn: ({ contract, api, walletAccount }, variables: SwapFormValues) => {
       // ! TODO: complete and test
       const time = Math.floor(Date.now() / 1000) + variables.deadline;
       const deadline = decimalToNative(time);
@@ -86,17 +86,15 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
       const fromAmount = decimalToNative(variables.fromAmount).toString();
       const toMinAmount = decimalToNative(calcPercentage(variables.toAmount, slippage)).toString();
       const spender = walletAccount.address;
-      return await contract.tx
-        .swapExactTokensForTokens(
-          createOptions(api),
-          spender,
-          fromAmount,
-          toMinAmount,
-          [variables.from, variables.to],
-          address,
-          deadline,
-        )
-        .signAndSend(spender, { signer: walletAccount.signer });
+      return contract.tx.swapExactTokensForTokens(
+        createOptions(api),
+        spender,
+        fromAmount,
+        toMinAmount,
+        [variables.from, variables.to],
+        address,
+        deadline,
+      );
     },
     onError: () => {
       // ? log error

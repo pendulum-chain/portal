@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { calcPercentage } from '../../../../helpers/calc';
 import { decimalToNative } from '../../../../helpers/parseNumbers';
 import { useBalance } from '../../../../hooks/useBalance';
 import { useContractWrite } from '../../../../hooks/useContractWrite';
@@ -24,12 +25,12 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const mutation = useContractWrite({
     abi: swapPoolAbi,
     address: poolAddress,
-    fn: async ({ contract, api, walletAccount }, variables: WithdrawLiquidityValues) => {
-      const spender = walletAccount.address;
-      return await contract.tx
-        .withdraw(createOptions(api), spender, decimalToNative(variables.amount).toString())
-        .signAndSend(spender, { signer: walletAccount.signer });
-    },
+    fn: ({ contract, api }, variables: WithdrawLiquidityValues) =>
+      contract.tx.withdraw(
+        createOptions(api),
+        decimalToNative(calcPercentage(variables.amount, 0.01)).toString(),
+        decimalToNative(variables.amount).toString(),
+      ),
     onError: () => {
       // TODO: handle error
     },
