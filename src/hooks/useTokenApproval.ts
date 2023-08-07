@@ -57,7 +57,7 @@ export const useTokenApproval = ({
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
         ? ({ contract, api }) =>
-            contract.tx.approve(createOptions(api), spender, approveMax ? maxInt : amountBI.toString())
+            contract.tx.approve(createOptions(api, false), spender, approveMax ? maxInt : amountBI.toString())
         : undefined,
     onError: (err) => {
       setPending(false);

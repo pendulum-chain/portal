@@ -27,7 +27,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
     address: poolAddress,
     fn: ({ contract, api }, variables: WithdrawLiquidityValues) =>
       contract.tx.withdraw(
-        createOptions(api),
+        createOptions(api, false),
         decimalToNative(calcPercentage(variables.amount, 0.01)).toString(),
         decimalToNative(variables.amount).toString(),
       ),

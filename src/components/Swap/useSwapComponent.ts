@@ -87,7 +87,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
       const toMinAmount = decimalToNative(calcPercentage(variables.toAmount, slippage)).toString();
       const spender = walletAccount.address;
       return contract.tx.swapExactTokensForTokens(
-        createOptions(api),
+        createOptions(api, false),
         spender,
         fromAmount,
         toMinAmount,

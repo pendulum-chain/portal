@@ -13,10 +13,18 @@ export const fnOrEmpty =
   (api: ApiPromise | undefined, ...args: T): (() => R | undefined) =>
     isApiConnected(api) ? () => fn(api, ...args) : emptyFn;
 
-export const createOptions = (api: ApiPromise) => ({
-  gasLimit: api.createType('WeightV2', {
-    refTime: '100000000000',
-    proofSize: '1000000',
-  }) as WeightV2,
+export const createOptions = (api: ApiPromise, defaults = true) => ({
+  gasLimit: api.createType(
+    'WeightV2',
+    defaults
+      ? {
+          refTime: '100000000000',
+          proofSize: '1000000',
+        }
+      : {
+          refTime: '-1',
+          proofSize: '-1',
+        },
+  ) as WeightV2,
   storageDepositLimit: null,
 });

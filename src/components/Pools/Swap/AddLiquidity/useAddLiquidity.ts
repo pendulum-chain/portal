@@ -24,7 +24,7 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
     abi: swapPoolAbi,
     address: poolAddress,
     fn: ({ contract, api }, variables: AddLiquidityValues) =>
-      contract.tx.deposit(createOptions(api), decimalToNative(variables.amount).toString()),
+      contract.tx.deposit(createOptions(api, false), decimalToNative(variables.amount).toString()),
     onSuccess: () => {
       balanceQuery.refetch();
       depositQuery.refetch();
