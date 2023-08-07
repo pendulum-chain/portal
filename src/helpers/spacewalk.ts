@@ -1,12 +1,12 @@
-import bs58 from 'bs58';
-import { H256 } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
+import { U8aFixed } from '@polkadot/types-codec';
+import { H256 } from '@polkadot/types/interfaces';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import bs58 from 'bs58';
 import { DateTime } from 'luxon';
 import { Asset, Keypair } from 'stellar-sdk';
-import { convertRawHexKeyToPublicKey } from './stellar';
 import { TenantName } from '../models/Tenant';
-import { U8aFixed } from '@polkadot/types-codec';
+import { convertRawHexKeyToPublicKey } from './stellar';
 
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
@@ -126,6 +126,13 @@ export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant
     console.error('Error converting currency to stellar asset', e);
     return null;
   }
+}
+
+export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrencyId, tenant: TenantName = TenantName.Pendulum) {
+  if (!currency.isStellar) {
+    throw Error('Not an Stellar asset');
+  }
+  return currencyToString(currency,tenant)?.split(':')[0];
 }
 
 function tryConvertCodeToAscii(code: U8aFixed) {

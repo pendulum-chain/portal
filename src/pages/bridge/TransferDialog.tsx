@@ -12,7 +12,7 @@ import { CloseButton } from '../../components/CloseButton';
 import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
 import { nativeToDecimal } from '../../helpers/parseNumbers';
-import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import { calculateDeadline, currencyToStellarAssetCode, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
@@ -141,7 +141,7 @@ interface TransferDialogProps {
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToStellarAssetCode(transfer.original.asset);
   const content = (
     <>
       <div className="text-md">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
@@ -168,7 +168,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
 
 export function CancelledTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToStellarAssetCode(transfer.original.asset);
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
@@ -204,7 +204,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const tenant = useGlobalState().tenantName;
 
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToStellarAssetCode(transfer.original.asset);
   const collateralAsset = transfer.original.vault.currencies.collateral;
 
   const content = (
@@ -213,7 +213,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
         {'Your redeem request failed but you decided to burn ' +
           stellarAsset +
           ' in return for ' +
-          currencyToString(collateralAsset, tenant)}
+          currencyToStellarAssetCode(collateralAsset, tenant)}
       </div>
       <h1 className="text-xl">
         {transfer.amount} {stellarAsset}
@@ -237,7 +237,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
 
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToStellarAssetCode(transfer.original.asset);
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
   const { getActiveBlockNumber } = useSecurityPallet();
@@ -310,7 +310,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
 
 export function FailedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = currencyToString(transfer.original.asset);
+  const stellarAsset = currencyToStellarAssetCode(transfer.original.asset);
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const compensation = 0.05;
   const content = (
