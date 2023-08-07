@@ -33,14 +33,14 @@ interface FeeBoxProps {
   extrinsic?: SubmittableExtrinsic;
   network: string;
   nativeCurrency: string;
-  wrappedCurrencyPrefix?: string;
+  wrappedCurrencySuffix?: string;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, nativeCurrency, wrappedCurrencyPrefix, network } = props;
+  const { bridgedAsset, extrinsic, nativeCurrency, wrappedCurrencySuffix, network } = props;
   const amount = props.amountNative;
 
-  const wrappedCurrencyName = bridgedAsset ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode() : '';
+  const wrappedCurrencyName = bridgedAsset ? (wrappedCurrencySuffix || '') + bridgedAsset.getCode() : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -157,7 +157,7 @@ interface RedeemFormInputs {
 
 interface RedeemProps {
   network: string;
-  wrappedCurrencyPrefix: string;
+  wrappedCurrencySuffix: string;
   nativeCurrency: string;
 }
 
@@ -182,7 +182,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     },
   });
 
-  const { wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { wrappedCurrencySuffix, nativeCurrency } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
@@ -366,7 +366,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             <div className="px-1" />
             {wrappedAssets && (
               <AssetSelector
-                assetPrefix={wrappedCurrencyPrefix}
+                assetSuffix={wrappedCurrencySuffix}
                 selectedAsset={selectedAsset}
                 assets={wrappedAssets}
                 onChange={setSelectedAsset}

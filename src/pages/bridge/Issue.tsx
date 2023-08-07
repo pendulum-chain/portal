@@ -31,16 +31,16 @@ interface FeeBoxProps {
   amountNative: Big;
   extrinsic?: SubmittableExtrinsic;
   network: string;
-  wrappedCurrencyPrefix?: string;
+  wrappedCurrencySuffix?: string;
   nativeCurrency: string;
 }
 
 function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, network, wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency } = props;
 
   const amount = props.amountNative;
 
-  const wrappedCurrencyName = bridgedAsset ? (wrappedCurrencyPrefix || '') + bridgedAsset.getCode() : '';
+  const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
 
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
@@ -220,12 +220,12 @@ interface IssueFormInputs {
 
 interface IssueProps {
   network: string;
-  wrappedCurrencyPrefix: string;
+  wrappedCurrencySuffix: string;
   nativeCurrency: string;
 }
 
 function Issue(props: IssueProps): JSX.Element {
-  const { network, wrappedCurrencyPrefix, nativeCurrency } = props;
+  const { network, wrappedCurrencySuffix, nativeCurrency } = props;
 
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
@@ -463,7 +463,7 @@ function Issue(props: IssueProps): JSX.Element {
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
             network={network}
-            wrappedCurrencyPrefix={wrappedCurrencyPrefix}
+            wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
           />
           {walletAccount ? (

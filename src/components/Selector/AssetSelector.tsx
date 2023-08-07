@@ -9,25 +9,26 @@ interface AssetSelectorProps {
   assets: Asset[];
   style?: CSSProperties;
   assetPrefix?: string;
+  assetSuffix?: string;
 }
 
-function getDisplayName(asset: Asset, assetPrefix?: string): string {
-  return `${assetPrefix || ''}${asset.getCode()}`;
+function getDisplayName(asset: Asset, assetPrefix?: string, assetSuffix?: string): string {
+  return `${assetPrefix || ''}${asset.getCode()}${assetSuffix || ''}`;
 }
 
 function AssetSelector(props: AssetSelectorProps): JSX.Element {
-  const { assets, selectedAsset, assetPrefix } = props;
+  const { assets, selectedAsset, assetPrefix, assetSuffix } = props;
 
   const items = assets.map((asset) => {
     return {
-      displayName: getDisplayName(asset, assetPrefix),
+      displayName: getDisplayName(asset, assetPrefix, assetSuffix),
       id: stringifyStellarAsset(asset),
     };
   });
 
   const selectedAssetItem = selectedAsset
     ? {
-        displayName: getDisplayName(selectedAsset, assetPrefix),
+        displayName: getDisplayName(selectedAsset, assetPrefix, assetSuffix),
         id: stringifyStellarAsset(selectedAsset),
       }
     : undefined;
