@@ -25,7 +25,6 @@ enum ClaimStep {
 
 function ClaimRewardsDialog(props: Props) {
   const { userRewardsBalance = '0', tokenSymbol, visible, onClose } = props;
-  console.log(userRewardsBalance);
   const { createClaimRewardExtrinsic } = useStakingPallet();
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
