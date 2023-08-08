@@ -127,7 +127,7 @@ const Table = <T,>({
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id} className="bg-base-200 bg-base-100">
+                      <td key={cell.id} className="bg-base-200">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     );
