@@ -128,13 +128,6 @@ export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant
   }
 }
 
-export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrencyId, tenant: TenantName = TenantName.Pendulum) {
-  if (!currency.isStellar) {
-    throw Error('Not an Stellar asset');
-  }
-  return currencyToString(currency,tenant)?.split(':')[0];
-}
-
 function tryConvertCodeToAscii(code: U8aFixed) {
   const ascii = hex_to_ascii(code.toHex());
   if (ascii !== ascii.trim()) {
