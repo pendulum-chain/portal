@@ -1,4 +1,4 @@
-import { roundNumber } from './parseNumbers';
+import { roundNumber } from '../shared/parseNumbers';
 
 export type Percent = number;
 

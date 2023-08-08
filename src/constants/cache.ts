@@ -23,7 +23,6 @@ const getOptions =
     cacheTime: time,
     staleTime: time,
     retry: 2,
-    //refetchOnMount: active,
     refetchOnReconnect: active,
     refetchOnWindowFocus: active,
   });

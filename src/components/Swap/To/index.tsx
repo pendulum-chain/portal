@@ -8,10 +8,10 @@ import { config } from '../../../config';
 import { nablaConfig } from '../../../config/apps/nabla';
 import { getAssets } from '../../../helpers/array';
 import { calcPercentage } from '../../../helpers/calc';
-import { roundNumber } from '../../../helpers/parseNumbers';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { useGetTenantData } from '../../../hooks/useGetTenantData';
+import { roundNumber } from '../../../shared/parseNumbers';
 import TokenPrice from '../../Asset/Price';
 import Balance from '../../Balance';
 import { Skeleton } from '../../Skeleton';
@@ -25,7 +25,7 @@ export interface ToProps {
 const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
   const { assets } = useGetTenantData(nablaConfig) || {};
   const [isOpen, { toggle }] = useBoolean();
-  const { setValue, control } = useFormContext<SwapFormValues>();
+  const { /* setValue, */ control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',

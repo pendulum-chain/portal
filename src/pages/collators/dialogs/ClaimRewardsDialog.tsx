@@ -5,9 +5,9 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
-import { nativeToDecimal, nativeToFormat } from '../../../helpers/parseNumbers';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
+import { nativeToDecimal, nativeToFormat } from '../../../shared/parseNumbers';
 
 interface Props {
   userRewardsBalance?: string;

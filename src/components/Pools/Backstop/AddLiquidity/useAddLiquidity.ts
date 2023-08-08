@@ -1,19 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
-import { decimalToNative } from '../../../../helpers/parseNumbers';
-import { useBalance } from '../../../../hooks/useBalance';
-import { useContractWrite } from '../../../../hooks/useContractWrite';
 import { createOptions } from '../../../../services/api/helpers';
 import { useModalToggle } from '../../../../services/modal';
+import { decimalToNative } from '../../../../shared/parseNumbers';
+import { useBalance } from '../../../../shared/useBalance';
+import { useContractWrite } from '../../../../shared/useContractWrite';
 import schema from './schema';
 import { AddLiquidityValues } from './types';
 
 export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   const toggle = useModalToggle();
 
-  const balanceQuery = useBalance(tokenAddress);
-  const depositQuery = useBalance(poolAddress);
+  const balanceQuery = useBalance({ token: tokenAddress });
+  const depositQuery = useBalance({ token: poolAddress });
 
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),

@@ -11,12 +11,12 @@ import WarningDialogIcon from '../../assets/dialog-status-warning';
 import { CloseButton } from '../../components/CloseButton';
 import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
-import { nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, currencyToString, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { nativeToDecimal } from '../../shared/parseNumbers';
 import { TTransfer, TransferType } from './TransfersColumns';
 
 interface BaseTransferDialogProps {

@@ -1,21 +1,25 @@
-import { useGlobalState } from '../GlobalStateProvider';
-import { cacheKeys, inactiveOptions } from '../constants/cache';
+import { cacheKeys } from '../constants/cache';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { nativeToDecimal } from '../helpers/parseNumbers';
 import { createOptions } from '../services/api/helpers';
+import { QueryOptions } from './helpers';
+import { nativeToDecimal } from './parseNumbers';
 import { useContract } from './useContract';
 
 export type UseTokenAllowance = {
   token?: string;
   spender: string | undefined;
   owner: string | undefined;
-  enabled?: boolean;
 };
 
-export const useTokenAllowance = ({ token, owner, spender, enabled = true }: UseTokenAllowance) => {
-  const { tenantName } = useGlobalState();
-  const isEnabled = Boolean(token && owner && spender && enabled);
-  return useContract([cacheKeys.tokenAllowance, tenantName, token, owner], {
+export const useTokenAllowance = ({ token, owner, spender }: UseTokenAllowance, options?: QueryOptions) => {
+  const isEnabled = Boolean(token && owner && spender && options?.enabled);
+  return useContract([cacheKeys.tokenAllowance, spender, token, owner], {
+    cacheTime: 180000,
+    staleTime: 180000,
+    retry: 2,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    ...options,
     abi: mockERC20,
     address: token,
     fn:
@@ -25,7 +29,6 @@ export const useTokenAllowance = ({ token, owner, spender, enabled = true }: Use
         if (!data?.result?.isOk || data?.output === undefined) throw new Error(data);
         return nativeToDecimal(parseFloat(data.output.toString()) || 0);
       },
-    ...inactiveOptions['3m'],
     enabled: isEnabled,
   });
 };

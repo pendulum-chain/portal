@@ -10,13 +10,13 @@ import { storageKeys } from '../../constants/localStorage';
 import { routerAbi } from '../../contracts/nabla/Router';
 import { calcPercentage } from '../../helpers/calc';
 import { debounce } from '../../helpers/function';
-import { decimalToNative } from '../../helpers/parseNumbers';
-import { useContractWrite } from '../../hooks/useContractWrite';
 import { useGetTenantData } from '../../hooks/useGetTenantData';
 import { Asset } from '../../models/Asset';
 import { SwapSettings } from '../../models/Swap';
 import { createOptions } from '../../services/api/helpers';
 import { storageService } from '../../services/storage/local';
+import { decimalToNative } from '../../shared/parseNumbers';
+import { useContractWrite } from '../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';
 

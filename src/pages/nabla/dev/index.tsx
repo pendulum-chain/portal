@@ -3,11 +3,11 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { config } from '../../../config';
 import { nablaConfig } from '../../../config/apps/nabla';
 import { mockERC20 } from '../../../contracts/nabla/MockERC20';
-import { decimalToNative } from '../../../helpers/parseNumbers';
-import { UseContractWriteProps, useContractWrite } from '../../../hooks/useContractWrite';
 import { useGetTenantData } from '../../../hooks/useGetTenantData';
 import { Asset } from '../../../models/Asset';
 import { createOptions } from '../../../services/api/helpers';
+import { decimalToNative } from '../../../shared/parseNumbers';
+import { UseContractWriteProps, useContractWrite } from '../../../shared/useContractWrite';
 
 const amount = decimalToNative(1000).toString();
 const mintFn: UseContractWriteProps<typeof mockERC20>['fn'] = ({ contract, api, walletAccount }) =>

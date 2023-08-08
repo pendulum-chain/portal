@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
 import { QueryKey, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { useNodeInfoState } from '../NodeInfoProvider';
-import { QueryOptions } from '../constants/cache';
-import { emptyFn } from '../helpers/general';
+import { QueryOptions, emptyCacheKey, emptyFn } from './helpers';
 
 export type UseContractProps<T, TFn> = QueryOptions & {
   abi: T;
@@ -29,6 +28,9 @@ export const useContract = <
     [abi, address, api],
   );
   const enabled = !!contract && rest.enabled !== false && !!api;
-  const query = useQuery(enabled ? key : [''], enabled ? fn({ contract, api }) : emptyFn, { ...rest, enabled });
+  const query = useQuery(enabled ? key : emptyCacheKey, enabled ? fn({ contract, api }) : emptyFn, {
+    ...rest,
+    enabled,
+  });
   return { ...query, enabled };
 };

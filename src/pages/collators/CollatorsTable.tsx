@@ -3,9 +3,9 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Table from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { nativeToFormat } from '../../helpers/parseNumbers';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
+import { nativeToFormat } from '../../shared/parseNumbers';
 import {
   TCollator,
   UserStaking,

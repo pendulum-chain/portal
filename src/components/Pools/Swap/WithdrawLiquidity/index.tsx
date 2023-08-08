@@ -3,7 +3,7 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage } from '../../../../helpers/calc';
-import { nativeToDecimal } from '../../../../helpers/parseNumbers';
+import { nativeToDecimal } from '../../../../shared/parseNumbers';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
 import { SwapPoolColumn } from '../columns';

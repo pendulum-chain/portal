@@ -3,7 +3,7 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
-import { TransactionsStatus } from '../../../hooks/useContractWrite';
+import { TransactionsStatus } from '../../../shared/useContractWrite';
 
 export interface TransactionProgressProps {
   mutation: Pick<

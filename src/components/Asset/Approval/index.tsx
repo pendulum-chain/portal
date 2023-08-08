@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { ApprovalState, useTokenApproval } from '../../../hooks/useTokenApproval';
+import { ApprovalState, useTokenApproval } from '../../../shared/useTokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {
   token: string | undefined;

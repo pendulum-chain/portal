@@ -4,8 +4,8 @@ import AmplitudeLogo from '../../../assets/AmplitudeLogo';
 import { CloseButton } from '../../../components/CloseButton';
 import LabelledInputField from '../../../components/LabelledInputField';
 import { PublicKey } from '../../../components/PublicKey';
-import { nativeToDecimal } from '../../../helpers/parseNumbers';
 import { ParachainStakingCandidate, ParachainStakingInflationInflationInfo } from '../../../hooks/staking/staking';
+import { nativeToDecimal } from '../../../shared/parseNumbers';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface DelegateToCollatorDialogProps {

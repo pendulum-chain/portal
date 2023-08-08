@@ -12,7 +12,6 @@ import LabelledInputField from '../../components/LabelledInputField';
 import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import OpenWallet from '../../components/Wallet';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import {
   StellarPublicKeyPattern,
@@ -25,6 +24,7 @@ import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;

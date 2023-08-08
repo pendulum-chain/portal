@@ -2,8 +2,8 @@
 import { useMemo, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { decimalToNative } from '../helpers/parseNumbers';
 import { createOptions } from '../services/api/helpers';
+import { decimalToNative } from './parseNumbers';
 import { UseContractWriteProps, useContractWrite } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
 
@@ -27,6 +27,7 @@ interface UseTokenApprovalParams {
 
 const maxInt = decimalToNative(Number.MAX_SAFE_INTEGER).toString();
 
+// TODO: refactor useGlobalState
 export const useTokenApproval = ({
   token,
   amount = 0,
@@ -37,6 +38,7 @@ export const useTokenApproval = ({
   onSuccess,
 }: UseTokenApprovalParams) => {
   const { address } = useGlobalState().walletAccount || {};
+
   const [pending, setPending] = useState(false);
   const amountBI = decimalToNative(amount);
   const isEnabled = Boolean(token && spender && address && enabled);
@@ -44,12 +46,14 @@ export const useTokenApproval = ({
     data: allowance,
     isLoading: isAllowanceLoading,
     refetch,
-  } = useTokenAllowance({
-    token,
-    owner: address,
-    spender,
-    enabled: isEnabled,
-  });
+  } = useTokenAllowance(
+    {
+      token,
+      owner: address,
+      spender,
+    },
+    { enabled: isEnabled },
+  );
 
   const mutation = useContractWrite({
     abi: mockERC20,

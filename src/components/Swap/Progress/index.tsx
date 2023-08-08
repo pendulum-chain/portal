@@ -1,12 +1,11 @@
-import { UseMutationResult } from '@tanstack/react-query';
 import { ComponentChildren, JSX } from 'preact';
 import { Modal, ModalProps } from 'react-daisyui';
 import ModalCloseButton from '../../Button/ModalClose';
-import TransactionProgress from '../../Transaction/Progress';
+import TransactionProgress, { TransactionProgressProps } from '../../Transaction/Progress';
 
 export type SwapProgressProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mutation?: UseMutationResult<any, any, any, any>;
+  mutation?: TransactionProgressProps['mutation'];
   onClose: () => void;
   children?: ComponentChildren;
 } & ModalProps;

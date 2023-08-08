@@ -3,7 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableResultValue } from '@polkadot/api-base/types';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
-import { ExtrinsicStatus } from '@polkadot/types/interfaces';
+import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
@@ -19,7 +19,7 @@ export type TransactionsStatus = {
 export type UseContractWriteProps<
   TAbi extends Abi | Record<string, unknown> = Record<string, unknown>,
   TVariables = void,
-> = Partial<MutationOptions<undefined, unknown, TVariables>> & {
+> = Partial<MutationOptions<TransactionsStatus | undefined, DispatchError, TVariables>> & {
   abi: TAbi;
   address?: string;
   fn?: (
@@ -32,6 +32,7 @@ export type UseContractWriteProps<
   ) => any;
 };
 
+// TODO: refactor useNodeInfoState and useGlobalState
 export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVariables = void>({
   abi,
   address,
@@ -40,6 +41,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
 }: UseContractWriteProps<TAbi, TVariables>) => {
   const { api } = useNodeInfoState().state;
   const walletAccount = useGlobalState().walletAccount;
+
   const [transaction, setTransaction] = useState<TransactionsStatus | undefined>();
   const contract = useMemo(
     () => (api && address ? new ContractPromise(api, abi, address) : undefined),
@@ -47,17 +49,18 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
   );
   const isReady = !!contract && !!fn && !!api && !!walletAccount && !!walletAccount.signer;
   const submit = async (variables: TVariables) => {
-    if (!isReady) return undefined;
-    return new Promise<undefined>((resolve, reject) => {
+    return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
+      if (!isReady) return reject(undefined);
       setTransaction({ status: 'Pending' });
       const unsubPromise: Promise<Fn> | undefined = fn({ contract, api, walletAccount }, variables)
         .signAndSend(walletAccount.address, { signer: walletAccount.signer }, (result: SubmittableResultValue) => {
-          setTransaction({
+          const tx = {
             hex: result.txHash.toHex(),
             status: result.status.type,
-          });
+          };
+          setTransaction(tx);
           if (result.dispatchError) {
-            // TODO: complete
+            // TODO: improve this part - log and format errors
             if (result.dispatchError.isModule) {
               // for module errors, we have the section indexed, lookup
               const decoded = api.registry.findMetaError(result.dispatchError.asModule);
@@ -73,7 +76,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
             if (unsubPromise) {
               unsubPromise.then((unsub) => (typeof unsub === 'function' ? unsub() : undefined));
             }
-            resolve(undefined);
+            resolve(tx);
           }
         })
         .catch((err: Error) => {
@@ -86,5 +89,3 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
   const mutation = useMutation(submit, rest);
   return { ...mutation, data: transaction, isReady };
 };
-
-export type UseContractWriteResponse = ReturnType<typeof useContractWrite>;

@@ -16,7 +16,6 @@ import { CopyableAddress, PublicKey } from '../../components/PublicKey';
 import { AssetSelector, VaultSelector } from '../../components/Selector';
 import TransferCountdown from '../../components/TransferCountdown';
 import OpenWallet from '../../components/Wallet';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey, isCompatibleStellarAmount, stringifyStellarAsset } from '../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../helpers/substrate';
@@ -24,6 +23,7 @@ import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
