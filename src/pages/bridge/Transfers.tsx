@@ -53,7 +53,7 @@ function Transfers(): JSX.Element {
       const entries: TTransfer[] = [];
 
       issueEntries.forEach((e) => {
-        if (!walletAccount || e.request.requester.eq(walletAccount?.address)) {
+        if (!walletAccount || !e.request.requester.eq(walletAccount?.address)) {
           return;
         }
 
