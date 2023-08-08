@@ -76,7 +76,7 @@ function Transfers(): JSX.Element {
       });
 
       redeemEntries.forEach((e) => {
-        if (!walletAccount || e.request.redeemer.eq(walletAccount?.address)) {
+        if (!walletAccount || !e.request.redeemer.eq(walletAccount?.address)) {
           return;
         }
         entries.push({
