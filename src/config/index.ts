@@ -50,5 +50,8 @@ export const config = {
   alchemyPay: {
     prodUrl: `https://ramp.alchemypay.org/?appId=wNxCyQNce01WLqyL&network=PEN&crypto=PENDULUM&showTable=buy&type=buy`,
     testUrl: `https://ramptest.alchemypay.org/?appId=f83Is2y7L425rxl8&network=PEN&crypto=PENDULUM&showTable=buy&type=buy`,
+    encodeUrlWithRedirection: (sourceUrl: string, redirectUrl: string) => {
+      return sourceUrl + '&redirectURL=' + encodeURI(redirectUrl);
+    }
   }
 };

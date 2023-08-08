@@ -117,7 +117,7 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: config.alchemyPay.prodUrl,
+    link: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
     title: 'Buy PEN',
     prefix: <OnrampIcon />,
     suffix: arrow,
