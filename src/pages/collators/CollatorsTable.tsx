@@ -3,6 +3,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormat } from '../../helpers/parseNumbers';
 
+import { ColumnDef } from '@tanstack/react-table';
 import Table from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
@@ -94,12 +95,16 @@ function CollatorsTable() {
   }, [candidates, inflationInfo?.delegator.rewardRate.annual, tokenSymbol, identityOf]);
 
   const columns = useMemo(() => {
+    let stakedCol = undefined;
+    if (walletAccount && userStaking) {
+      stakedCol = myStakedColumn({ userAccountAddress, tokenSymbol });
+    }
     return [
       nameColumn,
       stakedColumn,
       delegatorsColumn,
       apyColumn,
-      myStakedColumn({ userAccountAddress, tokenSymbol }),
+      stakedCol,
       actionsColumn({
         userAccountAddress,
         walletAccount,
@@ -107,7 +112,7 @@ function CollatorsTable() {
         setSelectedCandidate,
         setUnstaking,
       }),
-    ];
+    ].filter((c) => !!c) as ColumnDef<TCollator>[];
   }, [tokenSymbol, userAccountAddress, userStaking, walletAccount, setUnstaking]);
 
   return (
