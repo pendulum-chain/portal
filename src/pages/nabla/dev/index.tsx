@@ -10,8 +10,8 @@ import { decimalToNative } from '../../../shared/parseNumbers';
 import { UseContractWriteProps, useContractWrite } from '../../../shared/useContractWrite';
 
 const amount = decimalToNative(1000).toString();
-const mintFn: UseContractWriteProps<typeof mockERC20>['fn'] = ({ contract, api, walletAccount }) =>
-  contract.tx.mint(createOptions(api), walletAccount.address, amount);
+const mintFn: UseContractWriteProps<typeof mockERC20>['fn'] = ({ contract, api, address }) =>
+  contract.tx.mint(createOptions(api), address, amount);
 
 const TokenItem = ({ token }: { token: Asset }) => {
   const { mutate, isLoading } = useContractWrite({

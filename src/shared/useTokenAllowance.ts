@@ -1,6 +1,5 @@
-import { cacheKeys } from '../constants/cache';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { createOptions } from '../services/api/helpers';
+import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { nativeToDecimal } from './parseNumbers';
 import { useContract } from './useContract';
@@ -25,7 +24,18 @@ export const useTokenAllowance = ({ token, owner, spender }: UseTokenAllowance, 
     fn:
       ({ contract, api }) =>
       async () => {
-        const data = await contract.query.allowance(owner, createOptions(api), owner, spender);
+        const data = await contract.query.allowance(
+          owner,
+          {
+            gasLimit: api.createType('WeightV2', {
+              refTime: '100000000000',
+              proofSize: '1000000',
+            }),
+            storageDepositLimit: null,
+          },
+          owner,
+          spender,
+        );
         if (!data?.result?.isOk || data?.output === undefined) throw new Error(data);
         return nativeToDecimal(parseFloat(data.output.toString()) || 0);
       },

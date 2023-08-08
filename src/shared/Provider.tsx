@@ -1,22 +1,23 @@
 import { ApiPromise } from '@polkadot/api';
-import { Signer } from '@polkadot/types/types';
 import { ComponentChildren, createContext } from 'preact';
 import { useContext, useMemo } from 'preact/compat';
 
 export interface State {
   api?: ApiPromise;
-  signer?: Signer;
+  signer?: unknown; // TODO: fix type
+  address?: string;
 }
 
 const SharedStateContext = createContext<State | undefined>(undefined);
 
-export const SharedStateProvider = ({ children, api, signer }: { children: ComponentChildren } & State) => {
+export const SharedStateProvider = ({ children, api, signer, address }: { children: ComponentChildren } & State) => {
   const providerValue = useMemo<State>(
     () => ({
       api,
       signer,
+      address,
     }),
-    [api, signer],
+    [api, signer, address],
   );
   return <SharedStateContext.Provider value={providerValue}>{children}</SharedStateContext.Provider>;
 };

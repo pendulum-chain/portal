@@ -16,6 +16,7 @@ const ApprovalSubmit = ({ token }: ApprovalProps): JSX.Element | null => {
     useWatch({
       control,
       name: 'fromAmount',
+      defaultValue: 0,
     }),
   );
   return (

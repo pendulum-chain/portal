@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { cacheKeys } from '../../constants/cache';
@@ -13,7 +12,7 @@ import { debounce } from '../../helpers/function';
 import { useGetTenantData } from '../../hooks/useGetTenantData';
 import { Asset } from '../../models/Asset';
 import { SwapSettings } from '../../models/Swap';
-import { createOptions } from '../../services/api/helpers';
+import { createWriteOptions } from '../../services/api/helpers';
 import { storageService } from '../../services/storage/local';
 import { decimalToNative } from '../../shared/parseNumbers';
 import { useContractWrite } from '../../shared/useContractWrite';
@@ -38,9 +37,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { assets } = useGetTenantData(nablaConfig) || {};
   const hadMountedRef = useRef(false);
   const queryClient = useQueryClient();
-  const { walletAccount } = useGlobalState();
   const { router } = useGetTenantData(nablaConfig) || {};
-  const { address } = walletAccount || {};
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
   const storageState = useRef(getInitialValues());
@@ -78,16 +75,16 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   const swapMutation = useContractWrite({
     abi: routerAbi, // ? should be chain specific
     address: router,
-    fn: ({ contract, api, walletAccount }, variables: SwapFormValues) => {
+    fn: ({ contract, address, api }, variables: SwapFormValues) => {
       // ! TODO: complete and test
       const time = Math.floor(Date.now() / 1000) + variables.deadline;
       const deadline = decimalToNative(time);
       const slippage = variables.slippage ?? defaultValues.slippage;
       const fromAmount = decimalToNative(variables.fromAmount).toString();
       const toMinAmount = decimalToNative(calcPercentage(variables.toAmount, slippage)).toString();
-      const spender = walletAccount.address;
+      const spender = address;
       return contract.tx.swapExactTokensForTokens(
-        createOptions(api, false),
+        createWriteOptions(api),
         spender,
         fromAmount,
         toMinAmount,

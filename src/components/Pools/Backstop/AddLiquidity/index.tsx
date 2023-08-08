@@ -5,6 +5,7 @@ import { PoolProgress } from '../..';
 import { calcSharePercentage } from '../../../../helpers/calc';
 import { BackstopPool } from '../../../../models/BackstopPool';
 import { nativeToDecimal } from '../../../../shared/parseNumbers';
+import TokenApproval from '../../../Asset/Approval';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
 import { useAddLiquidity } from './useAddLiquidity';
@@ -103,9 +104,17 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               </div>
             </div>
           </div>
-          <Button color="primary" className="mt-8 w-full" type="submit">
-            Deposit
-          </Button>
+          <TokenApproval
+            className="mt-8 w-full"
+            spender={data.address}
+            token={data.asset.address}
+            amount={amount}
+            enabled={amount > 0}
+          >
+            <Button color="primary" className="mt-8 w-full" type="submit" disabled={!amount}>
+              Deposit
+            </Button>
+          </TokenApproval>
           <Button
             color="secondary"
             className="mt-2 w-full"

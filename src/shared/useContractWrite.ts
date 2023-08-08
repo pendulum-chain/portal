@@ -4,11 +4,9 @@ import { ApiPromise } from '@polkadot/api';
 import { SubmittableResultValue } from '@polkadot/api-base/types';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
-import { WalletAccount } from '@talismn/connect-wallets';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
-import { useGlobalState } from '../GlobalStateProvider';
-import { useNodeInfoState } from '../NodeInfoProvider';
+import { useSharedState } from './Provider';
 
 // TODO: fix types
 export type TransactionsStatus = {
@@ -26,34 +24,33 @@ export type UseContractWriteProps<
     data: {
       contract: any; //ContractPromise;
       api: ApiPromise;
-      walletAccount: WalletAccount;
+      address: string;
+      signer: unknown;
     },
     variables: TVariables,
   ) => any;
 };
 
-// TODO: refactor useNodeInfoState and useGlobalState
 export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVariables = void>({
   abi,
   address,
   fn,
   ...rest
 }: UseContractWriteProps<TAbi, TVariables>) => {
-  const { api } = useNodeInfoState().state;
-  const walletAccount = useGlobalState().walletAccount;
+  const { api, signer, address: walletAddress } = useSharedState();
 
   const [transaction, setTransaction] = useState<TransactionsStatus | undefined>();
   const contract = useMemo(
     () => (api && address ? new ContractPromise(api, abi, address) : undefined),
     [abi, address, api],
   );
-  const isReady = !!contract && !!fn && !!api && !!walletAccount && !!walletAccount.signer;
+  const isReady = !!contract && !!fn && !!api && !!walletAddress && !!signer;
   const submit = async (variables: TVariables) => {
     return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
       if (!isReady) return reject(undefined);
       setTransaction({ status: 'Pending' });
-      const unsubPromise: Promise<Fn> | undefined = fn({ contract, api, walletAccount }, variables)
-        .signAndSend(walletAccount.address, { signer: walletAccount.signer }, (result: SubmittableResultValue) => {
+      const unsubPromise: Promise<Fn> | undefined = fn({ contract, api, signer, address: walletAddress }, variables)
+        .signAndSend(walletAddress, { signer }, (result: SubmittableResultValue) => {
           const tx = {
             hex: result.txHash.toHex(),
             status: result.status.type,

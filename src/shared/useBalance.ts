@@ -1,10 +1,8 @@
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { useGlobalState } from '../GlobalStateProvider';
-import { useNodeInfoState } from '../NodeInfoProvider';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { createOptions } from '../services/api/helpers';
+import { useSharedState } from './Provider';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers';
@@ -22,13 +20,9 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
   enabled: boolean;
 };
 
-// TODO: refactor useNodeInfoState and useGlobalState
 export const useBalance = ({ token, account }: UseBalanceProps, options?: QueryOptions): UseBalanceResponse => {
-  const {
-    state: { api },
-  } = useNodeInfoState();
-  const wallet = useGlobalState().walletAccount;
-  const address = account || wallet?.address;
+  const { api, address: defAddress } = useSharedState();
+  const address = account || defAddress;
 
   const enabled = !!api && !!address && options?.enabled !== false;
   const query = useContract([cacheKeys.balance, token, address], {
@@ -43,7 +37,17 @@ export const useBalance = ({ token, account }: UseBalanceProps, options?: QueryO
     fn:
       ({ contract, api }) =>
       () =>
-        contract.query.balanceOf(address, createOptions(api), address),
+        contract.query.balanceOf(
+          address,
+          {
+            gasLimit: api.createType('WeightV2', {
+              refTime: '100000000000',
+              proofSize: '1000000',
+            }),
+            storageDepositLimit: null,
+          },
+          address,
+        ),
     enabled,
   });
   const { data } = query;

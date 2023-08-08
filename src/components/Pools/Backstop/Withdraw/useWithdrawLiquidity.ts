@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
 import { calcPercentage } from '../../../../helpers/calc';
-import { createOptions } from '../../../../services/api/helpers';
+import { createWriteOptions } from '../../../../services/api/helpers';
 import { useModalToggle } from '../../../../services/modal';
 import { decimalToNative } from '../../../../shared/parseNumbers';
 import { useBalance } from '../../../../shared/useBalance';
@@ -26,7 +26,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
     address: poolAddress,
     fn: ({ contract, api }, variables: WithdrawLiquidityValues) =>
       contract.tx.withdraw(
-        createOptions(api, false),
+        createWriteOptions(api),
         decimalToNative(calcPercentage(variables.amount, 0.01)).toString(),
         decimalToNative(variables.amount).toString(),
       ),

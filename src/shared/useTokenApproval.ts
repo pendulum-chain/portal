@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'react';
-import { useGlobalState } from '../GlobalStateProvider';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { createOptions } from '../services/api/helpers';
+import { useSharedState } from './Provider';
 import { decimalToNative } from './parseNumbers';
 import { UseContractWriteProps, useContractWrite } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
@@ -27,7 +26,6 @@ interface UseTokenApprovalParams {
 
 const maxInt = decimalToNative(Number.MAX_SAFE_INTEGER).toString();
 
-// TODO: refactor useGlobalState
 export const useTokenApproval = ({
   token,
   amount = 0,
@@ -37,8 +35,7 @@ export const useTokenApproval = ({
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
-  const { address } = useGlobalState().walletAccount || {};
-
+  const { address } = useSharedState();
   const [pending, setPending] = useState(false);
   const amountBI = decimalToNative(amount);
   const isEnabled = Boolean(token && spender && address && enabled);
@@ -61,7 +58,17 @@ export const useTokenApproval = ({
     fn:
       isEnabled && allowance !== undefined && !isAllowanceLoading
         ? ({ contract, api }) =>
-            contract.tx.approve(createOptions(api, false), spender, approveMax ? maxInt : amountBI.toString())
+            contract.tx.approve(
+              {
+                gasLimit: api.createType('WeightV2', {
+                  refTime: '100000000000',
+                  proofSize: '100000000000',
+                }),
+                storageDepositLimit: null,
+              },
+              spender,
+              approveMax ? maxInt : amountBI.toString(),
+            )
         : undefined,
     onError: (err) => {
       setPending(false);

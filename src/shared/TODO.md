@@ -1,5 +1,4 @@
-- [ ] move address, api and signer to shared state provider
-- [ ] move wallet account address to hook arguments
-- [ ] refactor createOptions
+Shared hooks that will be moved to a separate library
+
 - [ ] improve types
-- [ ] improve hook arguments - add additional options
+- [ ] improve hook arguments - add additional options where possible

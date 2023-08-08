@@ -3,7 +3,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
 import { QueryKey, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { useNodeInfoState } from '../NodeInfoProvider';
+import { useSharedState } from './Provider';
 import { QueryOptions, emptyCacheKey, emptyFn } from './helpers';
 
 export type UseContractProps<T, TFn> = QueryOptions & {
@@ -22,7 +22,7 @@ export const useContract = <
   key: QueryKey,
   { abi, address, fn, ...rest }: UseContractProps<T, TFn>,
 ) => {
-  const { api } = useNodeInfoState().state;
+  const { api } = useSharedState();
   const contract = useMemo(
     () => (api && address ? new ContractPromise(api, abi, address) : undefined),
     [abi, address, api],

@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
-import { createOptions } from '../../../../services/api/helpers';
+import { createWriteOptions } from '../../../../services/api/helpers';
 import { useModalToggle } from '../../../../services/modal';
 import { decimalToNative } from '../../../../shared/parseNumbers';
 import { useBalance } from '../../../../shared/useBalance';
@@ -24,7 +24,7 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
     abi: swapPoolAbi,
     address: poolAddress,
     fn: ({ contract, api }, variables: AddLiquidityValues) =>
-      contract.tx.deposit(createOptions(api, false), decimalToNative(variables.amount).toString()),
+      contract.tx.deposit(createWriteOptions(api), decimalToNative(variables.amount).toString()),
     onSuccess: () => {
       balanceQuery.refetch();
       depositQuery.refetch();
