@@ -32,7 +32,7 @@ function Transfers(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
   const { subscribeActiveBlockNumber } = useSecurityPallet();
-  const { tenantName } = useGlobalState();
+  const { tenantName, walletAccount } = useGlobalState();
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
@@ -53,6 +53,10 @@ function Transfers(): JSX.Element {
       const entries: TTransfer[] = [];
 
       issueEntries.forEach((e) => {
+        if (!walletAccount || e.request.requester.eq(walletAccount?.address)) {
+          return;
+        }
+
         const deadline = calculateDeadline(
           activeBlockNumber as number,
           e.request.opentime.toNumber(),
@@ -60,7 +64,6 @@ function Transfers(): JSX.Element {
         );
 
         const timedOut = deadline < DateTime.now();
-
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
@@ -73,6 +76,9 @@ function Transfers(): JSX.Element {
       });
 
       redeemEntries.forEach((e) => {
+        if (!walletAccount || e.request.redeemer.eq(walletAccount?.address)) {
+          return;
+        }
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
@@ -87,7 +93,7 @@ function Transfers(): JSX.Element {
       return entries;
     };
     fetchAllEntries().then((res) => setData(res));
-  }, [activeBlockNumber, getIssueRequests, getRedeemRequests]);
+  }, [activeBlockNumber, walletAccount, getIssueRequests, getRedeemRequests]);
 
   const columns = useMemo(() => {
     const detailsColumn = detailsColumnCreator(setCurrentTransfer);
