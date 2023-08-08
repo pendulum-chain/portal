@@ -64,13 +64,14 @@ function Transfers(): JSX.Element {
         );
 
         const timedOut = deadline < DateTime.now();
+        const pending = e.request.status.type === 'Pending';
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
           asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.issue,
-          status: timedOut ? 'Cancelled' : e.request.status.type,
+          status: timedOut && pending ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
@@ -79,13 +80,23 @@ function Transfers(): JSX.Element {
         if (!walletAccount || !e.request.redeemer.eq(walletAccount?.address)) {
           return;
         }
+
+        const deadline = calculateDeadline(
+          activeBlockNumber as number,
+          e.request.opentime.toNumber(),
+          e.request.period.toNumber(),
+        );
+
+        const timedOut = deadline < DateTime.now();
+        const pending = e.request.status.type === 'Pending';
+
         entries.push({
           updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
           amount: nativeToDecimal(e.request.amount.toString()).toString(),
           asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.redeem,
-          status: e.request.status.type,
+          status: timedOut && pending ? 'Cancelled' : e.request.status.type,
           original: e.request,
         });
       });
