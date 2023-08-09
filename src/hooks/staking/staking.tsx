@@ -1,7 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Option } from '@polkadot/types-codec';
 import Big from 'big.js';
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
@@ -56,11 +56,11 @@ export function useStakingPallet() {
   const [estimatedRewards, setEstimatedRewards] = useState<string>('0');
   const [fees, setFees] = useState<ParachainStakingFees>(defaultTransactionFees);
 
-  const fetchEstimatedReward = async () => {
-    if (!api || !walletAccount) return '0';
+  const fetchEstimatedReward = useCallback(async () => {
+    if (!api || !walletAccount?.address) return '0';
     const formattedAddr = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
     return (await api.query.parachainStaking.rewards(formattedAddr)).toString();
-  };
+  }, [api, ss58Format, walletAccount?.address]);
 
   useEffect(() => {
     if (!api) {
@@ -119,7 +119,7 @@ export function useStakingPallet() {
     if (api.consts.parachainStaking?.minDelegatorStake) {
       setMinDelegatorStake((api.consts.parachainStaking.minDelegatorStake.toHuman() as string) || '0');
     }
-  }, [api, walletAccount, walletAccount?.address, fees, ss58Format]);
+  }, [api, walletAccount, walletAccount?.address, fees, ss58Format, fetchEstimatedReward]);
 
   const memo = useMemo(() => {
     return {
@@ -188,7 +188,7 @@ export function useStakingPallet() {
         return api.tx.utility.batch(txs);
       },
     };
-  }, [api, candidates, inflationInfo, fees, minDelegatorStake, estimatedRewards]);
+  }, [candidates, inflationInfo, minDelegatorStake, estimatedRewards, fees, fetchEstimatedReward, api]);
 
   return memo;
 }

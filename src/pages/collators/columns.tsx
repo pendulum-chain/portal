@@ -4,9 +4,9 @@ import { StateUpdater } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyableAddress } from '../../components/PublicKey';
-import { nativeToFormat } from '../../helpers/parseNumbers';
 import { ParachainStakingCandidate } from '../../hooks/staking/staking';
 import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
+import { nativeToFormat } from '../../shared/parseNumbers';
 
 export interface TCollator {
   candidate: ParachainStakingCandidate;
