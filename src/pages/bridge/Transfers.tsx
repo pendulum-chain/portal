@@ -96,7 +96,7 @@ function Transfers(): JSX.Element {
           asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
           transactionId: e.id.toString(),
           type: TransferType.redeem,
-          status: timedOut && pending ? 'Cancelled' : e.request.status.type,
+          status: timedOut && pending ? 'Failed' : e.request.status.type,
           original: e.request,
         });
       });
