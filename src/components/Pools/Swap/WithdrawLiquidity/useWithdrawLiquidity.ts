@@ -5,15 +5,15 @@ import { calcPercentage } from '../../../../helpers/calc';
 import { createWriteOptions } from '../../../../services/api/helpers';
 import { useModalToggle } from '../../../../services/modal';
 import { decimalToNative } from '../../../../shared/parseNumbers';
-import { useBalance } from '../../../../shared/useBalance';
+import { useContractBalance } from '../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../shared/useContractWrite';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 
 export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
   const toggle = useModalToggle();
-  const balanceQuery = useBalance({ token: tokenAddress });
-  const depositQuery = useBalance({ token: poolAddress });
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress });
 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),

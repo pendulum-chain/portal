@@ -1,5 +1,5 @@
 import { TenantName } from '../models/Tenant';
 
-export function builtTenantPath(current: TenantName | undefined, next: TenantName, location: string) {
+export function buildTenantPath(current: TenantName | undefined, next: TenantName, location: string) {
   return current ? location.replace(current, next) : location;
 }

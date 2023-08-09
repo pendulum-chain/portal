@@ -51,7 +51,7 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
       )}
       <Button
         tag="a"
-        href={mutation.data?.hex} // ! TODO: mutation returns transaction hash and build url
+        href={mutation.data?.hex} // ! TODO: build url to transaction details on polkadot explorer
         rel="noopener noreferrer"
         onClick={onClose}
         color="secondary"

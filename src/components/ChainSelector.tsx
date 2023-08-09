@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import AmplitudeLogo from '../assets/AmplitudeLogo';
 import PendulumLogo from '../assets/PendulumLogo';
 import { toTitle } from '../helpers/string';
-import { builtTenantPath } from '../helpers/url';
+import { buildTenantPath } from '../helpers/url';
 import { TenantName } from '../models/Tenant';
 
 const options = [TenantName.Pendulum, TenantName.Amplitude, TenantName.Foucoco];
@@ -34,7 +34,7 @@ const ChainSelector = ({ tenantName }: { tenantName: TenantName | undefined }): 
             <Dropdown.Item
               key={i}
               onClick={() => {
-                navigateTo(builtTenantPath(tenantName, option, location));
+                navigateTo(buildTenantPath(tenantName, option, location));
                 window.location.reload();
               }}
             >

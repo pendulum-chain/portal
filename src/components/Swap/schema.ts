@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { transformNumber } from '../../helpers/validation';
+import { transformNumber } from '../../helpers/yup';
 import { SwapFormValues } from './types';
 
 const schema = Yup.object<SwapFormValues>().shape({

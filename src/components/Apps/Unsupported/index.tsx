@@ -1,7 +1,7 @@
 import { Button } from 'react-daisyui';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Apps } from '../../../config/apps';
-import { builtTenantPath } from '../../../helpers/url';
+import { buildTenantPath } from '../../../helpers/url';
 import { TenantName } from '../../../models/Tenant';
 
 export interface UnsupportedProps {
@@ -27,7 +27,7 @@ const Unsupported = ({ app, tenant, supportedTenants }: UnsupportedProps): JSX.E
             variant="secondary"
             type="button"
             onClick={() => {
-              navigateTo(builtTenantPath(tenant, st, location));
+              navigateTo(buildTenantPath(tenant, st, location));
             }}
           >
             {st}

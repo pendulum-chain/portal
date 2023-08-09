@@ -7,7 +7,7 @@ import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { nablaConfig } from '../../../config/apps/nabla';
 import { getAssets } from '../../../helpers/array';
 import { useGetTenantData } from '../../../hooks/useGetTenantData';
-import { useBalance } from '../../../shared/useBalance';
+import { useContractBalance } from '../../../shared/useContractBalance';
 import TokenPrice from '../../Asset/Price';
 import { SwapFormValues } from '../types';
 
@@ -27,7 +27,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
     () => (from.length > 0 ? getAssets(assets || [], { [from]: true }) : {}),
     [assets, from],
   );
-  const { formatted, balance } = useBalance({ token: token?.address });
+  const { formatted, balance } = useContractBalance({ contractAddress: token?.address });
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>

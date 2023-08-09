@@ -10,7 +10,7 @@ import { useContract } from './useContract';
 
 export type UseBalanceProps = {
   /** token or contract address */
-  token?: string;
+  contractAddress?: string;
   /** account address */
   account?: string;
 };
@@ -20,12 +20,15 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
   enabled: boolean;
 };
 
-export const useBalance = ({ token, account }: UseBalanceProps, options?: QueryOptions): UseBalanceResponse => {
+export const useContractBalance = (
+  { contractAddress, account }: UseBalanceProps,
+  options?: QueryOptions,
+): UseBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
   const address = account || defAddress;
 
   const enabled = !!api && !!address && options?.enabled !== false;
-  const query = useContract([cacheKeys.balance, token, address], {
+  const query = useContract([cacheKeys.balance, contractAddress, address], {
     cacheTime: 180000,
     staleTime: 180000,
     retry: 2,
@@ -33,7 +36,7 @@ export const useBalance = ({ token, account }: UseBalanceProps, options?: QueryO
     refetchOnWindowFocus: false,
     ...options,
     abi: mockERC20,
-    address: token,
+    address: contractAddress,
     fn:
       ({ contract, api }) =>
       () =>
