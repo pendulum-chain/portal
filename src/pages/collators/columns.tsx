@@ -81,19 +81,19 @@ export const actionsColumn = ({
   walletAccount,
   userStaking,
   setSelectedCandidate,
-  setUnbonding,
+  setUnstaking,
 }: {
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
   setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
-  setUnbonding: StateUpdater<boolean>;
+  setUnstaking: StateUpdater<boolean>;
 }): ColumnDef<TCollator> => ({
   header: '',
   accessorKey: 'actions',
   cell: ({ row }) => {
-    const showUnbond = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
-    const showDelegate = walletAccount && (!userStaking || showUnbond);
+    const showUnstake = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
+    const showStake = walletAccount && (!userStaking || showUnstake);
     return (
       <div className="flex flex-row justify-center">
         <Button
@@ -101,13 +101,13 @@ export const actionsColumn = ({
           size="sm"
           color="ghost"
           onClick={() => {
-            setUnbonding(true);
+            setUnstaking(true);
             setSelectedCandidate(row.original.candidate);
           }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
-          style={{ display: showUnbond ? undefined : 'none' }}
+          style={{ display: showUnstake ? undefined : 'none' }}
         >
-          Unbond
+          Unstake
         </Button>
         <Button
           size="sm"
@@ -116,9 +116,9 @@ export const actionsColumn = ({
           onClick={() => {
             setSelectedCandidate(row.original.candidate);
           }}
-          disabled={!showDelegate}
+          disabled={!showStake}
         >
-          Delegate
+          Stake
         </Button>
       </div>
     );

@@ -9,7 +9,7 @@ const NetworkId: FC = memo(() => {
 
   return (
     <div className="pendulum-network-id">
-      <span>Network: </span>
+      <span>Block No: </span>
       <svg height="5" width="5">
         <circle cx="2.5" cy="2.5" r="2.5" />
       </svg>

@@ -28,7 +28,7 @@ function CollatorsTable() {
   const [selectedCandidate, setSelectedCandidate] = useState<ParachainStakingCandidate | undefined>(undefined);
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
-  const [unbonding, setUnbonding] = useState<boolean>(false);
+  const [unstaking, setUnstaking] = useState<boolean>(false);
   const [data, setData] = useState<TCollator[] | undefined>();
 
   const userAccountAddress = useMemo(() => {
@@ -105,10 +105,10 @@ function CollatorsTable() {
         walletAccount,
         userStaking,
         setSelectedCandidate,
-        setUnbonding,
+        setUnstaking,
       }),
     ];
-  }, [tokenSymbol, userAccountAddress, userStaking, walletAccount, setUnbonding]);
+  }, [tokenSymbol, userAccountAddress, userStaking, walletAccount, setUnstaking]);
 
   return (
     <>
@@ -117,11 +117,11 @@ function CollatorsTable() {
         userStake={userStaking?.amount}
         selectedCandidate={selectedCandidate}
         mode={
-          unbonding ? 'undelegating' : userStaking?.candidateId === selectedCandidate?.id ? 'delegatingMore' : 'joining'
+          unstaking ? 'unstaking' : userStaking?.candidateId === selectedCandidate?.id ? 'delegatingMore' : 'joining'
         }
         onClose={() => {
           setSelectedCandidate(undefined);
-          setUnbonding(false);
+          setUnstaking(false);
         }}
       />
       <Table

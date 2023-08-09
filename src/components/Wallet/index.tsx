@@ -26,6 +26,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
             color="ghost"
             className="text-sm border-base-300 border-1 bg-base-200 min-h-[2.1rem] h-auto px-1 sm:px-3"
             title={wallet?.title}
+            type="button"
           >
             {query.isLoading ? (
               <Skeleton className="bg-[rgba(0,0,0,.06)] px-2 py-1 mr-2 hidden sm:flex">10000.00 TKN</Skeleton>
@@ -57,7 +58,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
             open={false}
             showAccountsList={true}
             triggerComponent={
-              <Button size="sm" className={`text-sm min-h-[2.1rem] h-auto px-1 sm:px-3`} color="primary">
+              <Button size="sm" className={`text-sm min-h-[2.1rem] h-auto px-1 sm:px-3`} color="primary" type="button">
                 Connect to Wallet
               </Button>
             }

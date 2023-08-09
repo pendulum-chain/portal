@@ -7,7 +7,7 @@ import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
-import { nativeToDecimal, nativeToFormat } from '../../../shared/parseNumbers';
+import { nativeToDecimal, format } from '../../../shared/parseNumbers';
 
 interface Props {
   userRewardsBalance?: string;
@@ -25,7 +25,6 @@ enum ClaimStep {
 
 function ClaimRewardsDialog(props: Props) {
   const { userRewardsBalance = '0', tokenSymbol, visible, onClose } = props;
-
   const { createClaimRewardExtrinsic } = useStakingPallet();
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -78,7 +77,7 @@ function ClaimRewardsDialog(props: Props) {
         return (
           <div className="rounded-lg bg-base-200 flex flex-col p-8 items-center w-fit center m-auto">
             <p className="flex">Amount</p>
-            <h1 className="flex text-4xl">{nativeToFormat(amount, tokenSymbol, true)}</h1>
+            <h1 className="flex text-4xl">{format(amount.toNumber(), tokenSymbol)}</h1>
           </div>
         );
       case ClaimStep.Success:
