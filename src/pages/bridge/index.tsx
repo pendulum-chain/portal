@@ -9,17 +9,17 @@ function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(0);
   const { chain } = useNodeInfoState().state;
   const nativeCurrency = chain === 'Amplitude' ? 'AMPE' : 'PEN';
-  const wrappedCurrencyPrefix = chain === 'Amplitude' ? 'a' : 'p';
+  const wrappedCurrencySuffix = '.s';
 
   const Content = useMemo(() => {
     if (!chain) return;
     switch (tabValue) {
       case 0:
-        return <Issue network={chain} nativeCurrency={nativeCurrency} wrappedCurrencyPrefix={wrappedCurrencyPrefix} />;
+        return <Issue network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
       case 1:
-        return <Redeem network={chain} nativeCurrency={nativeCurrency} wrappedCurrencyPrefix={wrappedCurrencyPrefix} />;
+        return <Redeem network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
     }
-  }, [chain, nativeCurrency, tabValue, wrappedCurrencyPrefix]);
+  }, [chain, nativeCurrency, tabValue, wrappedCurrencySuffix]);
 
   return chain ? (
     <div className="h-full flex items-center justify-center mt-4">
