@@ -14,6 +14,15 @@ import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
 import { GlobalFilter } from './GlobalFilter';
 
+export enum SortingOrder {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
+export type MultiSort = {
+  [key: string]: SortingOrder;
+};
+
 export type TableProps<T> = {
   /** data */
   data?: T[];
@@ -27,9 +36,13 @@ export type TableProps<T> = {
   isLoading?: boolean;
   /** table className */
   className?: string;
-  /** default sorting */
-  sortBy?: string;
-  sortDesc?: boolean;
+  /** The default sorting of the table.
+   * Consist in a { key: value } object, the key is the name of the column to be sorted, the value is the order (see SortingOrder).
+   * Multiple key/value allows for multisorting (but you might want to make sure that multisort is enabled in the column definition, see https://tanstack.com/table/v8/docs/api/features/sorting#enablemultisort)
+   * Example: {age: SortingOrder.ASC, name: SortingOrder.ASC}
+   *
+   */
+  sortBy?: MultiSort;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,22 +57,14 @@ const Table = <T,>({
   isLoading,
   className,
   sortBy,
-  sortDesc = false,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
-  const initialSort = useMemo(
-    () =>
-      sortBy
-        ? [
-            {
-              id: sortBy,
-              desc: sortDesc,
-            },
-          ]
-        : undefined,
-    [sortBy, sortDesc],
-  );
+  const initialSort = useMemo(() => {
+    return sortBy
+      ? Object.keys(sortBy).map((columnName) => ({ id: columnName, desc: sortBy[columnName] === SortingOrder.DESC }))
+      : undefined;
+  }, [sortBy]);
 
   const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState } =
     useReactTable({
@@ -72,6 +77,7 @@ const Table = <T,>({
         sorting: initialSort,
       },
       autoResetAll: false,
+      enableMultiSort: true,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
