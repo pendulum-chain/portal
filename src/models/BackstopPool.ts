@@ -1,5 +1,8 @@
 import type { Asset } from './Asset';
 
 export interface BackstopPool {
-  assets: Asset[];
+  address: string;
+  asset: Asset;
+  liabilities: number;
+  totalSupply: number;
 }

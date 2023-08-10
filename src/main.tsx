@@ -4,6 +4,7 @@ import { Theme } from 'react-daisyui';
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
 import { NodeInfoProvider } from './NodeInfoProvider';
+import SharedProvider from './SharedProvider';
 import { App } from './app';
 import { emptyFn } from './helpers/general';
 import './index.css';
@@ -20,9 +21,11 @@ render(
             const { tenantRPC, getThemeName = emptyFn } = globalState as GlobalState;
             return (
               <NodeInfoProvider tenantRPC={tenantRPC}>
-                <Theme dataTheme={`${getThemeName()}`} className={tenantTheme[getThemeName() || ThemeName.Pendulum]}>
-                  <App />
-                </Theme>
+                <SharedProvider>
+                  <Theme dataTheme={`${getThemeName()}`} className={tenantTheme[getThemeName() || ThemeName.Pendulum]}>
+                    <App />
+                  </Theme>
+                </SharedProvider>
               </NodeInfoProvider>
             );
           }}

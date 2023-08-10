@@ -1,30 +1,35 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { createWriteOptions } from '../../../../services/api/helpers';
 import { useModalToggle } from '../../../../services/modal';
+import { decimalToNative } from '../../../../shared/parseNumbers';
+import { useContractBalance } from '../../../../shared/useContractBalance';
+import { useContractWrite } from '../../../../shared/useContractWrite';
 import schema from './schema';
 import { AddLiquidityValues } from './types';
 
-export const useAddLiquidity = (_address: string) => {
+export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   const toggle = useModalToggle();
+
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress });
 
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      amount: 0,
+    defaultValues: {},
+  });
+
+  const mutation = useContractWrite({
+    abi: swapPoolAbi,
+    address: poolAddress,
+    fn: ({ contract, api }, variables: AddLiquidityValues) =>
+      contract.tx.deposit(createWriteOptions(api), decimalToNative(variables.amount).toString()),
+    onSuccess: () => {
+      balanceQuery.refetch();
+      depositQuery.refetch();
     },
   });
 
-  const mutation = useMutation<unknown, unknown, AddLiquidityValues>(
-    async (data) => {
-      console.log(data);
-    },
-    {
-      onSuccess: () => {
-        toggle();
-      },
-    },
-  );
-
-  return { form, mutation, toggle };
+  return { form, mutation, toggle, balanceQuery, depositQuery };
 };

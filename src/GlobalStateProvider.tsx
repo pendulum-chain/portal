@@ -1,5 +1,5 @@
 import { WalletAccount, getWalletBySource } from '@talismn/connect-wallets';
-import { createContext } from 'preact';
+import { ComponentChildren, createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { useLocation } from 'react-router-dom';
 import { config } from './config';
@@ -41,7 +41,7 @@ const initWalletConnect = async (chainId: string) => {
   return await walletConnectService.init(provider?.session, chainId);
 };
 
-const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
+const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
   const tenantRef = useRef<string>();
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
   const { pathname } = useLocation();

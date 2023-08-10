@@ -9,9 +9,9 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Banner from '../../assets/banner-spacewalk-4x.png';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { nativeToDecimal, prettyNumbers } from '../../helpers/parseNumbers';
 import { currencyToString } from '../../helpers/spacewalk';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { nativeToDecimal, prettyNumbers } from '../../shared/parseNumbers';
 import './styles.css';
 
 interface TokenBalances {

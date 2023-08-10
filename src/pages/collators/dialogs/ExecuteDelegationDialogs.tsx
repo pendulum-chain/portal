@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import { decimalToNative, nativeToDecimal } from '../../../helpers/parseNumbers';
 import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
+import { decimalToNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
 import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';

@@ -3,11 +3,11 @@ import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 import { useGlobalState } from '../../GlobalStateProvider';
 import Table from '../../components/Table';
-import { nativeToDecimal } from '../../helpers/parseNumbers';
 import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { nativeToDecimal } from '../../shared/parseNumbers';
 import {
   CancelledTransferDialog,
   CompletedTransferDialog,

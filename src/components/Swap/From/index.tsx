@@ -1,9 +1,13 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
+import { useMemo } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
-import { useBalance } from '../../../hooks/useBalance';
+import { nablaConfig } from '../../../config/apps/nabla';
+import { getAssets } from '../../../helpers/array';
+import { useGetTenantData } from '../../../hooks/useGetTenantData';
+import { useContractBalance } from '../../../shared/useContractBalance';
 import TokenPrice from '../../Asset/Price';
 import { SwapFormValues } from '../types';
 
@@ -13,13 +17,17 @@ export interface FromProps {
 }
 
 const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
+  const { assets } = useGetTenantData(nablaConfig) || {};
   const { register, setValue, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',
   });
-  const token = { symbol: 'ETH', address: '6jceNg9gHuob4LBURVto44LtTsWBNpL2vHoUSa184FVcu57t' }; // ! TODO: get token info
-  const { balance } = useBalance(token.address);
+  const { [from]: token } = useMemo(
+    () => (from.length > 0 ? getAssets(assets || [], { [from]: true }) : {}),
+    [assets, from],
+  );
+  const { formatted, balance } = useContractBalance({ contractAddress: token?.address });
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -41,7 +49,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
             <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
-            <strong className="font-bold">{token.symbol}</strong>
+            <strong className="font-bold">{token?.symbol}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
           </Button>
         </div>
@@ -50,7 +58,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>
-                <span className="mr-1">Balance: {balance}</span>
+                <span className="mr-1">Balance: {formatted}</span>
                 <button
                   className="text-primary hover:underline"
                   onClick={() => setValue('fromAmount', Number(balance))}
