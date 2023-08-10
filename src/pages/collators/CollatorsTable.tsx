@@ -4,7 +4,7 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormat } from '../../helpers/parseNumbers';
 
 import { ColumnDef } from '@tanstack/react-table';
-import Table from '../../components/Table';
+import Table, { SortingOrder } from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
@@ -134,7 +134,7 @@ function CollatorsTable() {
         data={data}
         columns={columns}
         isLoading={!candidates}
-        sortBy="collator"
+        sortBy={{ myStaked: SortingOrder.DESC, collator: SortingOrder.ASC }}
         search={false}
         pageSize={8}
       />
