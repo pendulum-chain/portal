@@ -9,10 +9,12 @@ import { config } from '../../config';
 export const walletConnectService = {
   provider: undefined as UniversalProvider | undefined,
   getProvider: async function getProvider(): Promise<UniversalProvider> {
-    this.provider = this.provider || await UniversalProvider.init({
-      projectId: config.walletConnect.projectId,
-      relayUrl: config.walletConnect.url,
-    });
+    this.provider =
+      this.provider ||
+      (await UniversalProvider.init({
+        projectId: config.walletConnect.projectId,
+        relayUrl: config.walletConnect.url,
+      }));
     return this.provider;
   },
   init: async function init(session: SessionTypes.Struct, chainId: string): Promise<WalletAccount> {

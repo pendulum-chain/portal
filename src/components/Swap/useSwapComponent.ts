@@ -1,14 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { config } from '../../config';
+import { nablaConfig } from '../../config/apps/nabla';
+import { cacheKeys } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
+import { routerAbi } from '../../contracts/nabla/Router';
+import { calcPercentage } from '../../helpers/calc';
 import { debounce } from '../../helpers/function';
+import { useGetTenantData } from '../../hooks/useGetTenantData';
 import { Asset } from '../../models/Asset';
 import { SwapSettings } from '../../models/Swap';
+import { createWriteOptions } from '../../services/api/helpers';
 import { storageService } from '../../services/storage/local';
+import { decimalToNative } from '../../shared/parseNumbers';
+import { useContractWrite } from '../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';
 
@@ -27,9 +34,10 @@ const storageSet = debounce(storageService.set, 1000);
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { onChange } = props;
+  const { assets } = useGetTenantData(nablaConfig) || {};
   const hadMountedRef = useRef(false);
-  const { walletAccount } = useGlobalState();
-  const { address } = walletAccount || {};
+  const queryClient = useQueryClient();
+  const { router } = useGetTenantData(nablaConfig) || {};
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
   const storageState = useRef(getInitialValues());
@@ -44,7 +52,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     resolver: yupResolver(schema) as Resolver<SwapFormValues>,
     defaultValues: defaultFormValues,
   });
-  const { setValue, reset, getValues, handleSubmit, control } = form;
+  const { setValue, reset, getValues, control } = form;
   const from = useWatch({
     control,
     name: 'from',
@@ -64,37 +72,38 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     [getValues],
   );
 
-  const swapMutation = useMutation<unknown, unknown, SwapFormValues>(
-    async (data) => new Promise((r) => setTimeout(() => r(data), 6500)),
-    {
-      onError: () => {
-        // ! TODO: display error to user
-      },
-      onSuccess: () => {
-        reset();
-        // ! TODO: display response
-        // ! update balances
-      },
+  const swapMutation = useContractWrite({
+    abi: routerAbi, // ? should be chain specific
+    address: router,
+    fn: ({ contract, address, api }, variables: SwapFormValues) => {
+      // ! TODO: complete and test
+      const time = Math.floor(Date.now() / 1000) + variables.deadline;
+      const deadline = decimalToNative(time);
+      const slippage = variables.slippage ?? defaultValues.slippage;
+      const fromAmount = decimalToNative(variables.fromAmount).toString();
+      const toMinAmount = decimalToNative(calcPercentage(variables.toAmount, slippage)).toString();
+      const spender = address;
+      return contract.tx.swapExactTokensForTokens(
+        createWriteOptions(api),
+        spender,
+        fromAmount,
+        toMinAmount,
+        [variables.from, variables.to],
+        address,
+        deadline,
+      );
     },
-  );
-  const { mutate: swap } = swapMutation;
-
-  const onSubmit = useMemo(
-    () =>
-      handleSubmit(async (data) => {
-        if (!address) return; // TODO: error alert
-        console.log(data, swap);
-        /* const time = Math.floor(Date.now() / 1000) + data.deadline;
-        const deadline = BigNumber.from(time).toBigInt();
-        const slippage = data.slippage ?? defaultValues.slippage;
-        const fromAmount = parseEther(`${data.fromAmount}`);
-        const toMinAmount = parseEther(`${calcPercentage(data.toAmount, slippage)}`);
-        swap({
-          args: [fromAmount, toMinAmount, [data.from, data.to], address, deadline],
-        }); */
-      }),
-    [address, handleSubmit, swap],
-  );
+    onError: () => {
+      // ? log error
+    },
+    onSuccess: () => {
+      // update token balances
+      queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('from')], type: 'active' });
+      queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('to')], type: 'active' });
+      // reset form
+      reset();
+    },
+  });
 
   const onFromChange = useCallback(
     (a: string | Asset, event = true) => {
@@ -147,13 +156,16 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   return {
     form,
+    assets,
     swapMutation,
     tokensModal,
     onFromChange,
     onToChange,
     onReverse,
-    onSubmit,
     updateStorage,
     from,
+    progressClose: () => {
+      swapMutation.reset();
+    },
   };
 };

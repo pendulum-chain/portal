@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import CopyIcon from '../../assets/CopyIcon';
-import { useClipboard } from '../../hooks/userinterface';
+import { useClipboard } from '../../hooks/useClipboard';
 
 type Variant = 'full' | 'short' | 'shorter' | 'hexa';
 

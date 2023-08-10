@@ -1,13 +1,12 @@
+import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { nativeToFormat } from '../../helpers/parseNumbers';
-
-import { ColumnDef } from '@tanstack/react-table';
 import Table, { SortingOrder } from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
+import { nativeToFormat } from '../../shared/parseNumbers';
 import {
   TCollator,
   UserStaking,
@@ -63,6 +62,7 @@ function CollatorsTable() {
   }, [api, walletAccount]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const identitiesPrefetch = async (candidatesArray: any) => {
       const m: Map<string, PalletIdentityInfo | undefined> = new Map();
       for (let i = 0; i < candidatesArray.length; i++) {

@@ -5,9 +5,11 @@ import { GlobalState } from '../../GlobalStateProvider';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
+import OnrampIcon from '../../assets/onramp';
 import SpacewalkIcon from '../../assets/spacewalk';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
+import { config } from '../../config';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
 
@@ -113,5 +115,18 @@ export const links: Links = ({ tenantName }) => [
         title: 'Backstop Pool',
       },
     ],
+  },
+  {
+    link: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
+    title: 'Buy PEN',
+    prefix: <OnrampIcon />,
+    suffix: arrow,
+    props: {
+      style: {
+        visibility: tenantName === TenantName.Pendulum ? 'visible' : 'hidden',
+      },
+      target: '_blank',
+      rel: 'nofollow noreferrer',
+    },
   },
 ];

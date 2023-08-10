@@ -39,6 +39,8 @@
   --text-primary-disabled: rgba(88, 102, 126, 0.4);
   --tag-background: rgba(78, 229, 154, 0.16); /* --primary 16% */
   --network-bg: #252733;
+  --scroll-track: rgba(0, 0, 0, 0.5);
+  --scroll-bg: rgba(255, 255, 255, 0.3);
 }
 
 [data-theme='pendulum'] {
@@ -59,6 +61,25 @@
   --text-primary-disabled: rgba(88, 102, 126, 0.4);
   --tag-background: rgba(144, 126, 160, 0.16); /* --primary 16% */
   --network-bg: hsla(0, 0%, 0%, 0.04);
+  --scroll-track: rgba(0, 0, 0, 0.12);
+  --scroll-bg: rgba(0, 0, 0, 0.25);
+}
+
+::-webkit-scrollbar {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  z-index: 9999999;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px var(--scroll-track);
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--scroll-bg);
 }
 
 body {
@@ -267,6 +288,16 @@ table th .sort:not(.desc):not(.asc) {
 }
 table th:hover .sort {
   opacity: 0.8 !important;
+}
+
+.btn-disabled,
+.btn-disabled:hover,
+.btn[disabled],
+.btn[disabled]:hover {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: hsl(var(--s));
+  opacity: 0.3;
 }
 
 w3m-modal {

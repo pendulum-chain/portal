@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import { Button, Modal } from 'react-daisyui';
 import { CloseButton } from '../../../components/CloseButton';
-import { nativeToDecimal } from '../../../helpers/parseNumbers';
+import { nativeToDecimal } from '../../../shared/parseNumbers';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface ConfirmDelegateDialogProps {

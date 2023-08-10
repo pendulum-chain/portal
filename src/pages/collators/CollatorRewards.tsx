@@ -6,9 +6,9 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { nativeToFormat } from '../../helpers/parseNumbers';
 import { getErrors } from '../../helpers/substrate';
 import { useStakingPallet } from '../../hooks/staking/staking';
+import { nativeToFormat } from '../../shared/parseNumbers';
 import { UserStaking } from './columns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 
@@ -58,7 +58,7 @@ function CollatorRewards() {
 
     fetchUnstaking();
     fetchAvailableBalance();
-  }, [api, walletAccount]);
+  }, [api, tokenSymbol, walletAccount]);
 
   const updateRewardsExtrinsic = useMemo(() => {
     if (!api) {
@@ -74,6 +74,7 @@ function CollatorRewards() {
     }
     setSubmissionPending(true);
     updateRewardsExtrinsic
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
         const { status, events } = result;
         const errors = getErrors(events, api);
@@ -97,7 +98,7 @@ function CollatorRewards() {
         });
         setSubmissionPending(false);
       });
-  }, [api, setSubmissionPending, updateRewardsExtrinsic, walletAccount]);
+  }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount]);
 
   return (
     <>

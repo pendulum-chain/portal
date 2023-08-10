@@ -4,7 +4,7 @@ import { Button, Dropdown } from 'react-daisyui';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getAddressForFormat, trimAddress } from '../../helpers/addressFormatter';
-import { useAccountBalance } from '../../hooks/useAccountBalance';
+import { useAccountBalance } from '../../shared/useAccountBalance';
 import { Skeleton } from '../Skeleton';
 import WalletConnect from './WalletConnect';
 
