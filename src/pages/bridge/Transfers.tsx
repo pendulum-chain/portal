@@ -2,7 +2,7 @@ import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 import { useGlobalState } from '../../GlobalStateProvider';
-import Table from '../../components/Table';
+import Table, { SortingOrder } from '../../components/Table';
 import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
@@ -139,8 +139,7 @@ function Transfers(): JSX.Element {
         isLoading={false}
         search={false}
         pageSize={8}
-        sortBy="updated"
-        sortDesc={true}
+        sortBy={{ updated: SortingOrder.DESC }}
       />
     </div>
   );

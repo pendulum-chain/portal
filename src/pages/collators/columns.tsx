@@ -28,6 +28,7 @@ const getAmountDelegated = (candidate: ParachainStakingCandidate, address: strin
 export const nameColumn: ColumnDef<TCollator> = {
   header: 'Collator',
   accessorKey: 'collator',
+  enableMultiSort: true,
   accessorFn: ({ identityInfo }) => identityInfo?.display || '0',
   cell: ({ row }) => {
     const desc = row.original.identityInfo
@@ -53,6 +54,8 @@ export const stakedColumn: ColumnDef<TCollator> = {
 export const delegatorsColumn: ColumnDef<TCollator> = {
   header: 'Delegators',
   accessorKey: 'delegators',
+  enableMultiSort: true,
+
   accessorFn: ({ delegators }) => delegators?.toString(),
 };
 
@@ -70,6 +73,8 @@ export const myStakedColumn = ({
 }): ColumnDef<TCollator> => ({
   header: 'My Staked',
   accessorKey: 'myStaked',
+  enableMultiSort: true,
+  accessorFn: ({ candidate }) => getAmountDelegated(candidate, userAccountAddress) || '0',
   cell: ({ row }) => {
     const amountDelegated = getAmountDelegated(row.original.candidate, userAccountAddress);
     return <div>{amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}</div>;
@@ -90,12 +95,13 @@ export const actionsColumn = ({
   setUnstaking: StateUpdater<boolean>;
 }): ColumnDef<TCollator> => ({
   header: '',
+  enableSorting: false,
   accessorKey: 'actions',
   cell: ({ row }) => {
     const showUnstake = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
     const showStake = walletAccount && (!userStaking || showUnstake);
     return (
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-row justify-start">
         <Button
           className="mr-2 text-primary"
           size="sm"
@@ -105,7 +111,8 @@ export const actionsColumn = ({
             setSelectedCandidate(row.original.candidate);
           }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
-          style={{ display: showUnstake ? undefined : 'none' }}
+          disabled={!showUnstake}
+          style={{ opacity: showUnstake ? '1' : '0' }}
         >
           Unstake
         </Button>
