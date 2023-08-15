@@ -1,11 +1,13 @@
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/20/solid';
 import { WalletSelect } from '@talismn/connect-components';
-import { Button, Dropdown } from 'react-daisyui';
+import { Button, Divider, Dropdown } from 'react-daisyui';
+import { isMobile } from 'react-device-detect';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getAddressForFormat, trimAddress } from '../../helpers/addressFormatter';
 import { useAccountBalance } from '../../shared/useAccountBalance';
 import { Skeleton } from '../Skeleton';
+import NovaWallet from './NovaWallet';
 import WalletConnect from './WalletConnect';
 
 const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
@@ -63,7 +65,17 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
               </Button>
             }
             onAccountSelected={setWalletAccount}
-            footer={<WalletConnect setWalletAccount={setWalletAccount} />}
+            footer={
+              <>
+                {isMobile && (
+                  <>
+                    <NovaWallet setWalletAccount={setWalletAccount} />
+                    <Divider className="before:bg-transparent after:bg-transparent" />
+                  </>
+                )}
+                <WalletConnect setWalletAccount={setWalletAccount} />
+              </>
+            }
           />
         </>
       )}
