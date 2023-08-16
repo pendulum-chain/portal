@@ -10,8 +10,9 @@ export type QueryOptions<TFnData = any, TError = any, TData = any> = Partial<
 export const emptyFn = () => undefined;
 export const emptyCacheKey = [''];
 
-export const parseTransactionError = (result: SubmittableResultValue, api: ApiPromise) => {
-  if (!result.dispatchError) return undefined;
+// TODO: complete
+export const parseTransactionError = (result: SubmittableResultValue | undefined, api: ApiPromise) => {
+  if (!result?.dispatchError) return undefined;
   if (result.dispatchError.isModule) {
     // for module errors, we have the section indexed, lookup
     const decoded = api.registry.findMetaError(result.dispatchError.asModule);

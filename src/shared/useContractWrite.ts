@@ -9,6 +9,7 @@ import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
 import { useSharedState } from './Provider';
+import { parseTransactionError } from './helpers';
 
 // TODO: fix/improve types
 export type TransactionsStatus = {
@@ -65,7 +66,6 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
         gasLimit: api.registry.createType('WeightV2', gasRequired) as WeightV2,
         storageDepositLimit: null,
       };
-      console.log(gasRequired, contractOptions);
     }
 
     return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
@@ -76,7 +76,10 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
             status: result.status.type,
           };
           setTransaction(tx);
-          if (result.dispatchError) reject(result.dispatchError);
+          if (result.dispatchError) {
+            parseTransactionError(result, api);
+            reject(result);
+          }
           if (result.status.isFinalized) {
             if (unsubPromise) {
               unsubPromise.then((unsub) => (typeof unsub === 'function' ? unsub() : undefined));

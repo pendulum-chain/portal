@@ -24,7 +24,7 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
     address: poolAddress,
     method: 'deposit',
     onError: () => {
-      // TODO: handle error
+      // ? log error - no need to show an alert as the transaction modal dispays the error
     },
     onSuccess: () => {
       balanceQuery.refetch();
