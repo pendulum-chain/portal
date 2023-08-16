@@ -10,7 +10,7 @@ export interface ApprovalProps {
 }
 
 const ApprovalSubmit = ({ token }: ApprovalProps): JSX.Element | null => {
-  const { router } = useGetTenantData(nablaConfig) || {};
+  const { router } = useGetTenantData(nablaConfig)[0] || {};
   const { control } = useFormContext<SwapFormValues>();
   const amount = Number(
     useWatch({

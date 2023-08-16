@@ -1,6 +1,6 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Button } from 'react-daisyui';
-import { SwapPool } from '../../../models/SwapPool';
+import { SwapPool } from '../../../../gql/graphql';
 import { useModalToggle } from '../../../services/modal';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
@@ -13,7 +13,7 @@ export type SwapPoolColumn = SwapPool & {
 export const nameColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Name',
   accessorKey: 'name',
-  accessorFn: (row) => row.asset?.name || '',
+  accessorFn: (row) => row.token?.name || '',
   enableSorting: true,
 } as const;
 
@@ -48,7 +48,7 @@ export const coverageColumn: ColumnDef<SwapPoolColumn> = {
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
   header: 'APR',
   accessorKey: 'apr',
-  accessorFn: (row) => row.apr?.toString(),
+  accessorFn: (row) => row.reserves?.toString(), // TODO: get apr
   enableSorting: true,
 } as const;
 

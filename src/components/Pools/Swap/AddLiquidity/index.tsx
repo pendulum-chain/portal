@@ -20,7 +20,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
     balanceQuery,
     depositQuery,
     form: { register, handleSubmit, setValue, watch },
-  } = useAddLiquidity(data.address, data.asset.address);
+  } = useAddLiquidity(data.id, data.token.id);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
@@ -29,7 +29,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.asset.symbol} amount={amount} />
+        <PoolProgress symbol={data.token.symbol} amount={amount} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
@@ -43,10 +43,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             <div className="flex justify-between align-end text-sm text-initial my-3">
               <p>
                 Deposited:{' '}
-                {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.asset.symbol}`}
+                {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
               </p>
               <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.asset.symbol}`}
+                Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
               </p>
             </div>
             <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700">
@@ -78,7 +78,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${deposit + amount} ${data.asset.symbol}`}</div>
+              <div>{depositQuery.isLoading ? numberLoader : `${deposit + amount} ${data.token.symbol}`}</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool Share</div>
@@ -93,8 +93,8 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
           <div>
             <TokenApproval
               className="mt-8 w-full"
-              spender={data.address}
-              token={data.asset.address}
+              spender={data.id}
+              token={data.token.id}
               amount={amount}
               enabled={amount > 0}
             >
