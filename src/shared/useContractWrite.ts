@@ -53,13 +53,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     if (!contractOptions) {
       const { gasRequired /* result, output */ } = await contract.query[method](
         walletAddress,
-        {
-          gasLimit: api.createType('WeightV2', {
-            refTime: '100000000000',
-            proofSize: '1000000',
-          }),
-          storageDepositLimit: null,
-        },
+        { storageDepositLimit: null, gasLimit: -1 },
         ...fnArgs,
       );
       contractOptions = {
