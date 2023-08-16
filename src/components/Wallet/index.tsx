@@ -4,8 +4,9 @@ import { Button, Divider, Dropdown } from 'react-daisyui';
 import { isMobile } from 'react-device-detect';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { getAddressForFormat, trimAddress } from '../../helpers/addressFormatter';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { useAccountBalance } from '../../shared/useAccountBalance';
+import { CopyableAddress } from '../PublicKey';
 import { Skeleton } from '../Skeleton';
 import NovaWallet from './NovaWallet';
 import WalletConnect from './WalletConnect';
@@ -16,12 +17,9 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   const { query, balance } = useAccountBalance();
   const { ss58Format, tokenSymbol } = useNodeInfoState().state;
 
-  const trimmedAddress = address
-    ? trimAddress(ss58Format ? getAddressForFormat(address, ss58Format) : address, 4)
-    : undefined;
   return (
     <>
-      {trimmedAddress ? (
+      {address ? (
         <Dropdown vertical="end" end>
           <Button
             size="sm"
@@ -37,12 +35,17 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
                 {balance} {tokenSymbol}
               </span>
             )}
-            {trimmedAddress}
+            {walletAccount?.name}
             <img src={wallet?.logo?.src || ''} className="w-[20px] ml-2" alt={wallet?.logo?.alt || ''} />
           </Button>
-          <Dropdown.Menu className="card card-compact bg-base-200 shadow-lg min-w-[240px] p-3">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <strong>{trimmedAddress}</strong>
+          <Dropdown.Menu className="card card-compact text-center bg-base-200 shadow-lg min-w-[240px] p-3">
+            <div className="text-sm text-neutral-400">{walletAccount?.name}</div>
+            <div className="text-neutral-500">
+              <CopyableAddress
+                publicKey={ss58Format ? getAddressForFormat(address, ss58Format) : address}
+                variant="short"
+                inline={true}
+              />
             </div>
             <p className="truncate my-6 text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
               {balance} {tokenSymbol}
@@ -70,7 +73,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
                 {isMobile && (
                   <>
                     <NovaWallet setWalletAccount={setWalletAccount} />
-                    <Divider className="before:bg-transparent after:bg-transparent" />
+                    <Divider className="before:bg-transparent after:bg-transparent h-2" />
                   </>
                 )}
                 <WalletConnect setWalletAccount={setWalletAccount} />
