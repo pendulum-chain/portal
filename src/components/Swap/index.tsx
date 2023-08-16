@@ -19,6 +19,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     onFromChange,
     onToChange,
     swapMutation,
+    onSubmit,
     form,
     from,
     updateStorage,
@@ -26,7 +27,6 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   } = useSwapComponent(props);
   const {
     setValue,
-    handleSubmit,
     register,
     getValues,
     formState: { errors },
@@ -47,10 +47,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     <>
       <Card bordered className="w-full max-w-xl bg-base-200 shadow-0">
         <FormProvider {...form}>
-          <form
-            className="card-body dark:text-neutral-200 text-neutral-800"
-            onSubmit={handleSubmit((data) => swapMutation.mutate(data))}
-          >
+          <form className="card-body dark:text-neutral-200 text-neutral-800" onSubmit={onSubmit}>
             <div className="flex justify-between mb-2">
               <Card.Title tag="h2" className="text-3xl font-normal">
                 Swap

@@ -22,11 +22,3 @@ export const createOptions = (api: ApiPromise, opts?: ContractOptions) => ({
   storageDepositLimit: null,
   ...opts,
 });
-export const createWriteOptions = (api: ApiPromise, opts?: ContractOptions) => ({
-  gasLimit: api.createType('WeightV2', {
-    refTime: '100000000000',
-    proofSize: '1000000',
-  }),
-  storageDepositLimit: null,
-  ...opts,
-});

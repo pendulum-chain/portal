@@ -17,9 +17,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const {
     toggle,
     mutation,
+    onSubmit,
     balanceQuery,
     depositQuery,
-    form: { register, handleSubmit, setValue, watch },
+    form: { register, setValue, watch },
   } = useAddLiquidity(data.address, data.asset.address);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
@@ -38,7 +39,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         <h3 className="text-3xl font-normal">Confirm deposit</h3>
       </div>
       <div className={hideCss}>
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
+        <form onSubmit={onSubmit}>
           <div>
             <div className="flex justify-between align-end text-sm text-initial my-3">
               <p>

@@ -1,7 +1,6 @@
 import { Button } from 'react-daisyui';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { Apps } from '../../../config/apps';
-import { buildTenantPath } from '../../../helpers/url';
+import useSwitchChain from '../../../hooks/useSwitchChain';
 import { TenantName } from '../../../models/Tenant';
 
 export interface UnsupportedProps {
@@ -11,8 +10,7 @@ export interface UnsupportedProps {
 }
 
 const Unsupported = ({ app, tenant, supportedTenants }: UnsupportedProps): JSX.Element | null => {
-  const navigateTo = useNavigate();
-  const location = useLocation().pathname;
+  const { switchChain } = useSwitchChain();
   return (
     <div className="text-center py-8">
       <h2 className="text-xl mb-6">
@@ -26,9 +24,7 @@ const Unsupported = ({ app, tenant, supportedTenants }: UnsupportedProps): JSX.E
             className="capitalize text-lg"
             variant="secondary"
             type="button"
-            onClick={() => {
-              navigateTo(buildTenantPath(tenant, st, location));
-            }}
+            onClick={() => switchChain(st)}
           >
             {st}
           </Button>

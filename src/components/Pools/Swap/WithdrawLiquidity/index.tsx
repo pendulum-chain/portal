@@ -17,9 +17,10 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   const {
     toggle,
     mutation,
+    onSubmit,
     balanceQuery,
     depositQuery,
-    form: { register, handleSubmit, setValue, watch },
+    form: { register, setValue, watch },
   } = useWithdrawLiquidity(data.address, data.asset.address);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
@@ -38,7 +39,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
           </Button>
           <h3 className="text-3xl font-normal">Withdraw {data.asset?.symbol}</h3>
         </div>
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
+        <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
             <p>
               Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.asset.symbol}`}

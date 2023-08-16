@@ -88,7 +88,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
                 <ArrowPathRoundedSquareIcon className="w-7 h-7" />
               </button>
             ) : (
-              <>&nbsp;</>
+              <>0</>
             )}
           </div>
           <Button

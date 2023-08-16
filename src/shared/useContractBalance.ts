@@ -37,20 +37,9 @@ export const useContractBalance = (
     ...options,
     abi: mockERC20,
     address: contractAddress,
-    fn:
-      ({ contract, api }) =>
-      () =>
-        contract.query.balanceOf(
-          address,
-          {
-            gasLimit: api.createType('WeightV2', {
-              refTime: '100000000000',
-              proofSize: '1000000',
-            }),
-            storageDepositLimit: null,
-          },
-          address,
-        ),
+    method: 'balanceOf',
+    args: [address],
+    owner: address,
     enabled,
   });
   const { data } = query;
