@@ -2,10 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import request from 'graphql-request';
 import { graphql } from '../../../gql/gql';
 import { Token } from '../../../gql/graphql';
-import { nablaConfig } from '../../config/apps/nabla';
 import { QueryOptions, cacheKeys, inactiveOptions } from '../../constants/cache';
 import { emptyCacheKey, emptyFn } from '../../helpers/general';
-import { useGetTenantData } from '../useGetTenantData';
+import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 
 export type TokensData = {
   tokensMap: Record<string, Token>;
@@ -13,7 +12,7 @@ export type TokensData = {
 };
 
 export const useTokens = (options?: QueryOptions) => {
-  const { indexerUrl } = useGetTenantData(nablaConfig)[0] || {};
+  const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const enabled = !!indexerUrl && options?.enabled !== false;
   return useQuery<TokensData | undefined>(
     enabled ? [cacheKeys.tokens, indexerUrl] : emptyCacheKey,

@@ -1,7 +1,6 @@
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { nablaConfig } from '../../../config/apps/nabla';
-import { useGetTenantData } from '../../../hooks/useGetTenantData';
+import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import TokenApproval from '../../Asset/Approval';
 import { SwapFormValues } from '../types';
 
@@ -10,7 +9,7 @@ export interface ApprovalProps {
 }
 
 const ApprovalSubmit = ({ token }: ApprovalProps): JSX.Element | null => {
-  const { router } = useGetTenantData(nablaConfig)[0] || {};
+  const { router } = useGetAppDataByTenant('nabla').data || {};
   const { control } = useFormContext<SwapFormValues>();
   const amount = Number(
     useWatch({

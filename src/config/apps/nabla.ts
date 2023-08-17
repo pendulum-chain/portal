@@ -1,6 +1,5 @@
 import { TenantName } from '../../models/Tenant';
-import type { AppConfig } from './types';
-
+import { AppConfig } from './types';
 export type NablaConfig = AppConfig &
   Partial<
     Record<
@@ -14,7 +13,7 @@ export type NablaConfig = AppConfig &
     >
   >;
 
-export const nablaConfig = {
+export const nablaConfig: NablaConfig = {
   tenants: [TenantName.Foucoco],
   foucoco: {
     indexerUrl: 'https://squid.subsquid.io/foucoco-squid/graphql',
@@ -22,4 +21,4 @@ export const nablaConfig = {
     oracle: '6n32n4F11qfFXfFYhVj15fChZTXpVP5zJSM98361gK5QKrxW',
     curve: '6mnENTpY6B5mqtUHsjv3BxwKucT9hqF761QrYGfD22ccLzdC',
   },
-} satisfies NablaConfig;
+};
