@@ -1,29 +1,28 @@
 import { useNavigate } from 'react-router-dom';
+import { Token } from '../../../../gql/graphql';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { config } from '../../../config';
-import { nablaConfig } from '../../../config/apps/nabla';
 import { mockERC20 } from '../../../contracts/nabla/MockERC20';
-import { useGetTenantData } from '../../../hooks/useGetTenantData';
-import { Asset } from '../../../models/Asset';
+import { useTokens } from '../../../hooks/nabla/useTokens';
 import { decimalToNative } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 
 const amount = decimalToNative(1000).toString();
 
-const TokenItem = ({ token }: { token: Asset }) => {
+const TokenItem = ({ token }: { token: Token }) => {
   const { address } = useGlobalState().walletAccount || {};
   const { mutate, isLoading } = useContractWrite({
     abi: mockERC20,
-    address: token.address,
+    address: token.id,
     method: 'mint',
     args: [address, amount],
     onError: console.error,
   });
   return (
-    <div className="flex items-center justify-between gap-3" key={token.address}>
+    <div className="flex items-center justify-between gap-3" key={token.id}>
       <div>
         <p>{token.name}</p>
-        <p className="w-full truncate text-xs text-gray-500">{token.address}</p>
+        <p className="w-full truncate text-xs text-gray-500">{token.id}</p>
       </div>
       <div>
         <button
@@ -41,7 +40,8 @@ const TokenItem = ({ token }: { token: Asset }) => {
 const DevPage = () => {
   const nav = useNavigate();
   const wallet = useGlobalState().walletAccount;
-  const { assets } = useGetTenantData(nablaConfig) || {};
+  const { data } = useTokens();
+  const { tokens } = data || {};
 
   if (!config.isDev) nav('/');
   if (!wallet?.address) {
@@ -52,8 +52,8 @@ const DevPage = () => {
       <div className="card w-full max-w-[36rem] bg-base-200 shadow-xl">
         <div className="card-body">
           <h3 className="mb-2 text-2xl">Tokens</h3>
-          {assets?.map((token) => (
-            <TokenItem key={token.address} token={token} />
+          {tokens?.map((token) => (
+            <TokenItem key={token.id} token={token} />
           ))}
         </div>
       </div>

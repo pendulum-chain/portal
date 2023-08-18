@@ -14,7 +14,7 @@ const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
-    assets,
+    tokensQuery,
     tokensModal: [modalType, setModalType],
     onFromChange,
     onToChange,
@@ -31,17 +31,18 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     getValues,
     formState: { errors },
   } = form;
+  const { tokens, tokensMap } = tokensQuery.data || {};
 
   const progressUi = useMemo(() => {
     if (!swapMutation.isLoading) return '';
     const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
     // TODO: optimize finding tokens with object map
-    const fromAsset = assets?.find((x) => x.address === fromV);
-    const toAsset = assets?.find((x) => x.address === toV);
+    const fromAsset = tokensMap?.[fromV];
+    const toAsset = tokensMap?.[toV];
     return (
       <p className="text-center text-neutral-500">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
     );
-  }, [assets, getValues, swapMutation.isLoading]);
+  }, [tokensMap, getValues, swapMutation.isLoading]);
 
   return (
     <>
@@ -145,7 +146,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         </FormProvider>
       </Card>
       <AssetSelectorModal
-        assets={assets}
+        assets={tokens}
         open={!!modalType}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}

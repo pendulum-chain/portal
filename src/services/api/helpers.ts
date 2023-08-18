@@ -2,7 +2,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type { ApiPromise } from '@polkadot/api';
 import { ContractOptions } from '@polkadot/api-contract/types';
+import { BN, BN_ONE } from '@polkadot/util';
 import { emptyFn } from '../../helpers/general';
+
+export const MAX_CALL_WEIGHT = new BN(5_000_000_000_0).isub(BN_ONE);
+export const PROOFSIZE = new BN(1_000_000);
 
 export type ApiArgs<T extends Dict<any> = [never]> = { api: ApiPromise } & T;
 

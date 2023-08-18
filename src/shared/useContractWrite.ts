@@ -47,20 +47,13 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     if (!isReady) throw undefined;
     setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
-    let contractOptions = typeof options === 'function' ? options(api) : options;
-
-    // TODO: extract this into helper
-    if (!contractOptions) {
-      const { gasRequired /* result, output */ } = await contract.query[method](
-        walletAddress,
-        { storageDepositLimit: null, gasLimit: -1 },
-        ...fnArgs,
-      );
-      contractOptions = {
-        gasLimit: api.registry.createType('WeightV2', gasRequired) as WeightV2,
-        storageDepositLimit: null,
-      };
-    }
+    const contractOptions = (typeof options === 'function' ? options(api) : options) || {
+      gasLimit: api.registry.createType('WeightV2', {
+        refTime: 18000000000,
+        proofSize: 1750000,
+      }) as WeightV2,
+      storageDepositLimit: null,
+    };
 
     return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
       const unsubPromise = contract.tx[method](contractOptions || {}, ...fnArgs)

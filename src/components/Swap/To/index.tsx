@@ -1,16 +1,13 @@
 import { ArrowPathRoundedSquareIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { useMemo } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { config } from '../../../config';
-import { nablaConfig } from '../../../config/apps/nabla';
-import { getAssets } from '../../../helpers/array';
 import { calcPercentage } from '../../../helpers/calc';
+import { useTokens } from '../../../hooks/nabla/useTokens';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { useGetTenantData } from '../../../hooks/useGetTenantData';
 import { roundNumber } from '../../../shared/parseNumbers';
 import TokenPrice from '../../Asset/Price';
 import Balance from '../../Balance';
@@ -23,7 +20,8 @@ export interface ToProps {
 }
 
 const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
-  const { assets } = useGetTenantData(nablaConfig) || {};
+  const tokensQuery = useTokens();
+  const { tokensMap } = tokensQuery.data || {};
   const [isOpen, { toggle }] = useBoolean();
   const { /* setValue, */ control } = useFormContext<SwapFormValues>();
   const from = useWatch({
@@ -47,14 +45,8 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
       name: 'slippage',
     }),
   );
-  const { [from]: fromToken, [to]: toToken } = useMemo(
-    () =>
-      getAssets(assets || [], {
-        [from]: true,
-        [to]: true,
-      }),
-    [assets, from, to],
-  );
+  const fromToken = tokensMap?.[from];
+  const toToken = tokensMap?.[to];
   const debouncedFromAmount = useDebouncedValue(fromAmount, 800);
   const { isLoading, data, refetch } = {
     data: debouncedFromAmount,
@@ -105,65 +97,69 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
-          <div className="text-sm mt-px">{!!toToken && <TokenPrice address={toToken.address} />}</div>
+          <div className="text-sm mt-px">{!!toToken && <TokenPrice address={toToken.id} />}</div>
           <div className="flex gap-1 text-sm">
-            Balance: <Balance address={toToken?.address} />
+            Balance: <Balance address={toToken?.id} />
           </div>
         </div>
-        <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
-        <div
-          className={`collapse overflow-visible dark:text-neutral-300 text-neutral-500 -mx-4 text-sm${
-            isOpen ? ' collapse-open' : ''
-          }`}
-        >
-          <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
-            <div className="flex items-center">
-              {fromToken && toToken && value && fromAmount ? (
-                <>
-                  <div className="tooltip" data-tip="! TODO" title="! TODO">
-                    <InformationCircleIcon className="w-5 h-5 mr-1" />
+        {fromAmount > 0 && (
+          <>
+            <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
+            <div
+              className={`collapse overflow-visible dark:text-neutral-300 text-neutral-500 -mx-4 text-sm${
+                isOpen ? ' collapse-open' : ''
+              }`}
+            >
+              <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
+                <div className="flex items-center">
+                  {fromToken && toToken && value && fromAmount ? (
+                    <>
+                      <div className="tooltip" data-tip="! TODO" title="! TODO">
+                        <InformationCircleIcon className="w-5 h-5 mr-1" />
+                      </div>
+                      {`1${fromToken.symbol} = ${roundNumber(Number(value) / fromAmount, 6)}${toToken.symbol}`}
+                    </>
+                  ) : null}
+                </div>
+                <div>
+                  <div
+                    title="More info"
+                    className="w-6 h-6 ml-1 flex items-center justify-center rounded-full bg-blackAlpha-200 dark:bg-whiteAlpha-200 hover:opacity-80"
+                  >
+                    <ChevronDownIcon className="w-5 h-5 inline" />
                   </div>
-                  {`1${fromToken.symbol} = ${roundNumber(Number(value) / fromAmount, 6)}${toToken.symbol}`}
-                </>
-              ) : null}
-            </div>
-            <div>
-              <div
-                title="More info"
-                className="w-6 h-6 ml-1 flex items-center justify-center rounded-full bg-blackAlpha-200 dark:bg-whiteAlpha-200 hover:opacity-80"
-              >
-                <ChevronDownIcon className="w-5 h-5 inline" />
+                </div>
+              </div>
+              <div className="collapse-content flex flex-col gap-4">
+                <div className="mt-3 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
+                <div className="flex justify-between px-4">
+                  <div>Expected Output:</div>
+                  <div>
+                    <Skeleton isLoading={loading}>
+                      {value} {toToken?.symbol}
+                    </Skeleton>
+                  </div>
+                </div>
+                <div className="flex justify-between px-4">
+                  <div>Minimum received:</div>
+                  <div>
+                    <Skeleton isLoading={loading}>
+                      {calcPercentage(Number(value), slippage ?? config.swap.defaults.slippage)} {toToken?.symbol}
+                    </Skeleton>
+                  </div>
+                </div>
+                <div className="flex justify-between px-4">
+                  <div>Price Impact:</div>
+                  <div>{'! TODO'}%</div>
+                </div>
+                <div className="flex justify-between px-4">
+                  <div>Network Fee:</div>
+                  <div>{'! TODO'}</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="collapse-content flex flex-col gap-4">
-            <div className="mt-3 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
-            <div className="flex justify-between px-4">
-              <div>Expected Output:</div>
-              <div>
-                <Skeleton isLoading={loading}>
-                  {value} {toToken?.symbol}
-                </Skeleton>
-              </div>
-            </div>
-            <div className="flex justify-between px-4">
-              <div>Minimum received:</div>
-              <div>
-                <Skeleton isLoading={loading}>
-                  {calcPercentage(Number(value), slippage ?? config.swap.defaults.slippage)} {toToken.symbol}
-                </Skeleton>
-              </div>
-            </div>
-            <div className="flex justify-between px-4">
-              <div>Price Impact:</div>
-              <div>{'! TODO'}%</div>
-            </div>
-            <div className="flex justify-between px-4">
-              <div>Network Fee:</div>
-              <div>{'! TODO'}</div>
-            </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </>
   );

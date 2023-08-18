@@ -3,6 +3,7 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
+import { useGetTenantConfig } from '../../../hooks/useGetTenantConfig';
 import { TransactionsStatus } from '../../../shared/useContractWrite';
 
 export interface TransactionProgressProps {
@@ -16,14 +17,19 @@ export interface TransactionProgressProps {
 }
 
 const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
+  const { explorer } = useGetTenantConfig();
   if (mutation.isIdle) return null;
   if (mutation.isLoading) {
+    const status = mutation.data?.status;
+    const isPending = !status || status === 'Pending';
     return (
       <>
         <div className="flex flex-col items-center justify-center text-center mt-4">
           <Spinner size={100} color="#ddd" />
-          <h4 className="text-2xl mt-10">Waiting for confirmation</h4>
-          <p className="text-neutral-500 mt-4">Please confirm this transaction in your wallet</p>
+          <h4 className="text-2xl mt-12">{isPending ? 'Waiting for confirmation' : 'Executing transaction'}</h4>
+          <p className="text-neutral-500 mt-2">
+            {isPending ? 'Please confirm this transaction in your wallet' : 'Waiting for transaction to complete'}
+          </p>
         </div>
         {children}
       </>
@@ -49,16 +55,19 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
           Close
         </Button>
       )}
-      <Button
-        tag="a"
-        href={mutation.data?.hex} // ! TODO: build url to transaction details on polkadot explorer
-        rel="noopener noreferrer"
-        onClick={onClose}
-        color="secondary"
-        className="w-full mt-2"
-      >
-        Transaction details
-      </Button>
+      {!!mutation.data?.hex && (
+        <Button
+          tag="a"
+          href={`${explorer}/${mutation.data.hex}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+          color="secondary"
+          className="w-full mt-2"
+        >
+          Transaction details
+        </Button>
+      )}
     </>
   );
 };

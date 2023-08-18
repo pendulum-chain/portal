@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
+import { defineConfig } from 'vite';
 
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
@@ -45,6 +45,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
+    exclude: [],
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
