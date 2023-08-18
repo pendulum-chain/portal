@@ -1,14 +1,14 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useCallback, useMemo, useState } from 'preact/compat';
+import { useCallback, useState } from 'preact/compat';
 import { Button, ButtonProps } from 'react-daisyui';
+import { Token } from '../../../../gql/graphql';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
-import { useAssets } from '../../../hooks/useAssets';
+import { useTokens } from '../../../hooks/nabla/useTokens';
 import useBoolean from '../../../hooks/useBoolean';
-import { Asset } from '../../../models/Asset';
 import { AssetSelectorModal } from './Modal';
 
 export type AssetSelectorProps = {
-  onSelect: (asset: Asset) => void;
+  onSelect: (asset: Token) => void;
   selected?: string;
 } & ButtonProps;
 
@@ -20,14 +20,15 @@ const iconSizes = {
 };
 
 const AssetSelector = ({ onSelect, selected, size = 'xs', ...rest }: AssetSelectorProps): JSX.Element | null => {
-  const { isLoading, data: assets } = useAssets();
+  const { isLoading, data } = useTokens();
+  const { tokens, tokensMap } = data || {};
   const [open, { setFalse, setTrue }] = useBoolean();
-  const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>();
-  const initialSelected = useMemo(() => assets?.find((i) => i.address === selected), [assets, selected]);
+  const [selectedAsset, setSelectedAsset] = useState<Token | undefined>();
+  const initialSelected = selected ? tokensMap?.[selected] : undefined;
   const selectedAssetVal = selectedAsset || initialSelected;
 
   const internalOnSelect = useCallback(
-    (asset: Asset) => {
+    (asset: Token) => {
       setSelectedAsset(asset);
       onSelect(asset);
       setFalse();
@@ -55,10 +56,10 @@ const AssetSelector = ({ onSelect, selected, size = 'xs', ...rest }: AssetSelect
       </Button>
       <AssetSelectorModal
         open={open}
-        assets={assets || []}
+        assets={tokens || []}
         className="modal-top"
         onSelect={internalOnSelect}
-        selected={selectedAssetVal?.address}
+        selected={selectedAssetVal?.id}
         isLoading={isLoading}
         onClose={setFalse}
       />

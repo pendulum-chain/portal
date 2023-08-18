@@ -2,15 +2,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
+import { Token } from '../../../gql/graphql';
 import { config } from '../../config';
-import { nablaConfig } from '../../config/apps/nabla';
 import { cacheKeys } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
 import { routerAbi } from '../../contracts/nabla/Router';
 import { calcPercentage } from '../../helpers/calc';
 import { debounce } from '../../helpers/function';
-import { useGetTenantData } from '../../hooks/useGetTenantData';
-import { Asset } from '../../models/Asset';
+import { useTokens } from '../../hooks/nabla/useTokens';
+import { useGetAppDataByTenant } from '../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../models/Swap';
 import { createWriteOptions } from '../../services/api/helpers';
 import { storageService } from '../../services/storage/local';
@@ -34,10 +34,10 @@ const storageSet = debounce(storageService.set, 1000);
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { onChange } = props;
-  const { assets } = useGetTenantData(nablaConfig) || {};
+  const tokensQuery = useTokens();
   const hadMountedRef = useRef(false);
   const queryClient = useQueryClient();
-  const { router } = useGetTenantData(nablaConfig) || {};
+  const { router } = useGetAppDataByTenant('nabla').data || {};
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
   const storageState = useRef(getInitialValues());
@@ -106,8 +106,8 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   });
 
   const onFromChange = useCallback(
-    (a: string | Asset, event = true) => {
-      const f = typeof a === 'string' ? a : a.address;
+    (a: string | Token, event = true) => {
+      const f = typeof a === 'string' ? a : a.id;
       const prev = getValues();
       const updated = {
         from: f,
@@ -123,8 +123,8 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   );
 
   const onToChange = useCallback(
-    (a: string | Asset, event = true) => {
-      const t = typeof a === 'string' ? a : a.address;
+    (a: string | Token, event = true) => {
+      const t = typeof a === 'string' ? a : a.id;
       const prev = getValues();
       const updated = {
         to: t,
@@ -156,7 +156,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   return {
     form,
-    assets,
+    tokensQuery,
     swapMutation,
     tokensModal,
     onFromChange,
