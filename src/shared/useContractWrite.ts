@@ -3,40 +3,38 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableResultValue } from '@polkadot/api-base/types';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
+import { ContractOptions } from '@polkadot/api-contract/types';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
+import { createWriteOptions } from '../services/api/helpers';
 import { useSharedState } from './Provider';
+import { parseTransactionError } from './helpers';
 
-// TODO: fix types
+// TODO: fix/improve types
 export type TransactionsStatus = {
   hex?: string;
   status?: ExtrinsicStatus['type'] | 'Pending';
 };
 
-export type UseContractWriteProps<
-  TAbi extends Abi | Record<string, unknown> = Record<string, unknown>,
-  TVariables = void,
-> = Partial<MutationOptions<TransactionsStatus | undefined, DispatchError, TVariables>> & {
+export type UseContractWriteProps<TAbi extends Abi | Record<string, unknown> = Record<string, unknown>> = Partial<
+  MutationOptions<TransactionsStatus | undefined, DispatchError, any[] | void>
+> & {
   abi: TAbi;
   address?: string;
-  fn?: (
-    data: {
-      contract: any; //ContractPromise;
-      api: ApiPromise;
-      address: string;
-      signer: unknown;
-    },
-    variables: TVariables,
-  ) => any;
+  method: string;
+  args?: any[];
+  options?: ContractOptions | ((api: ApiPromise) => ContractOptions);
 };
 
-export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVariables = void>({
+export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
   abi,
   address,
-  fn,
+  method,
+  args,
+  options,
   ...rest
-}: UseContractWriteProps<TAbi, TVariables>) => {
+}: UseContractWriteProps<TAbi>) => {
   const { api, signer, address: walletAddress } = useSharedState();
 
   const [transaction, setTransaction] = useState<TransactionsStatus | undefined>();
@@ -44,12 +42,15 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
     () => (api && address ? new ContractPromise(api, abi, address) : undefined),
     [abi, address, api],
   );
-  const isReady = !!contract && !!fn && !!api && !!walletAddress && !!signer;
-  const submit = async (variables: TVariables) => {
+  const isReady = !!contract && !!api && !!walletAddress && !!signer;
+  const submit = async (submitArgs?: any[] | void) => {
+    if (!isReady) throw undefined;
+    setTransaction({ status: 'Pending' });
+    const fnArgs = submitArgs || args || [];
+    const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
+
     return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
-      if (!isReady) return reject(undefined);
-      setTransaction({ status: 'Pending' });
-      const unsubPromise: Promise<Fn> | undefined = fn({ contract, api, signer, address: walletAddress }, variables)
+      const unsubPromise = contract.tx[method](contractOptions || {}, ...fnArgs)
         .signAndSend(walletAddress, { signer }, (result: SubmittableResultValue) => {
           const tx = {
             hex: result.txHash.toHex(),
@@ -57,17 +58,8 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
           };
           setTransaction(tx);
           if (result.dispatchError) {
-            // TODO: improve this part - log and format errors
-            if (result.dispatchError.isModule) {
-              // for module errors, we have the section indexed, lookup
-              const decoded = api.registry.findMetaError(result.dispatchError.asModule);
-              const { docs, name, section } = decoded;
-              console.log(`${section}.${name}: ${docs.join(' ')}`);
-            } else {
-              // Other, CannotLookup, BadOrigin, no extra info
-              console.log(result.dispatchError.toString());
-            }
-            reject(result.dispatchError);
+            parseTransactionError(result, api);
+            reject(result);
           }
           if (result.status.isFinalized) {
             if (unsubPromise) {
@@ -77,7 +69,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>, TVa
           }
         })
         .catch((err: Error) => {
-          console.log(err);
+          console.error(err);
           setTransaction(undefined);
           reject(err);
         });

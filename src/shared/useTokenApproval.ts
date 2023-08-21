@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { useSharedState } from './Provider';
-import { decimalToNative } from './parseNumbers';
+import { decimalToNative, nativeToDecimal } from './parseNumbers';
 import { UseContractWriteProps, useContractWrite } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
 
@@ -40,7 +40,7 @@ export const useTokenApproval = ({
   const amountBI = decimalToNative(amount);
   const isEnabled = Boolean(token && spender && address && enabled);
   const {
-    data: allowance,
+    data: allowanceData,
     isLoading: isAllowanceLoading,
     refetch,
   } = useTokenAllowance(
@@ -55,21 +55,15 @@ export const useTokenApproval = ({
   const mutation = useContractWrite({
     abi: mockERC20,
     address: token,
-    fn:
-      isEnabled && allowance !== undefined && !isAllowanceLoading
-        ? ({ contract, api }) =>
-            contract.tx.approve(
-              {
-                gasLimit: api.createType('WeightV2', {
-                  refTime: '100000000000',
-                  proofSize: '100000000000',
-                }),
-                storageDepositLimit: null,
-              },
-              spender,
-              approveMax ? maxInt : amountBI.toString(),
-            )
-        : undefined,
+    method: 'approve',
+    args: [spender, approveMax ? maxInt : amountBI.toString()],
+    options: (api) => ({
+      gasLimit: api.createType('WeightV2', {
+        refTime: '100000000000',
+        proofSize: '1000000',
+      }),
+      storageDepositLimit: null,
+    }),
     onError: (err) => {
       setPending(false);
       if (onError) onError(err);
@@ -83,6 +77,11 @@ export const useTokenApproval = ({
       }, 2000);
     },
   });
+
+  const allowance = useMemo(
+    () => nativeToDecimal(parseFloat(allowanceData?.output?.toString() || '0') || 0).toNumber(),
+    [allowanceData],
+  );
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {
     let state = ApprovalState.UNKNOWN;

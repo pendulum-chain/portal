@@ -39,6 +39,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
               </Button>
               <Button
                 className="w-full"
+                color="secondary"
                 onClick={() =>
                   toggle({
                     type: ModalTypes.WithdrawLiquidity,

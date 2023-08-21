@@ -3,8 +3,8 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../gql/graphql';
-import { calcSharePercentage } from '../../../../helpers/calc';
-import { nativeToDecimal } from '../../../../shared/parseNumbers';
+import { calcSharePercentage, minMax } from '../../../../helpers/calc';
+import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import TokenApproval from '../../../Asset/Approval';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
@@ -17,15 +17,17 @@ export type AddLiquidityProps = {
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const {
     toggle,
+    onSubmit,
     mutation,
     balanceQuery,
     depositQuery,
-    form: { register, handleSubmit, setValue, watch },
+    form: { register, setValue, watch },
   } = useAddLiquidity(data.id, data.token.id);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
+  const deposit = depositQuery.balance || 0;
 
-  const hideCss = mutation.isLoading ? 'hidden' : '';
+  const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
@@ -38,7 +40,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         <h3 className="text-3xl font-normal">Deposit {data.token.symbol}</h3>
       </div>
       <div className={hideCss}>
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
+        <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
             <p>
               Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
@@ -85,21 +87,29 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               }
             />
           </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 p-4 mt-4">
+          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
               <div>Fee</div>
               <div>! TODO</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${balance + amount} ${data.token.symbol}`}</div>
+              <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>Deposit after</div>
+              <div>
+                {depositQuery.isLoading ? numberLoader : `${roundNumber(deposit + amount)} ${data.token.symbol}`}
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool Share</div>
               <div>
                 {depositQuery.isLoading
                   ? numberLoader
-                  : calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() + amount, balance + amount)}
+                  : minMax(
+                      calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() + amount, deposit + amount),
+                    )}
                 %
               </div>
             </div>

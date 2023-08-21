@@ -18,16 +18,24 @@ BigNumber.NE = -20;
 
 // Converts a decimal number to the native representation (a large integer)
 export const decimalToNative = (value: BigNumber | number | string) => {
-  const bigIntValue = new BigNumber(value);
+  let bigIntValue;
+  try {
+    bigIntValue = new BigNumber(value);
+  } catch (error) {
+    bigIntValue = new BigNumber(0);
+  }
   const multiplier = new BigNumber(10).pow(ChainDecimals);
-
-  return bigIntValue.times(multiplier);
+  return bigIntValue.times(multiplier).round(0);
 };
 
 export const decimalToStellarNative = (value: BigNumber | number | string) => {
-  const bigIntValue = new BigNumber(value);
+  let bigIntValue;
+  try {
+    bigIntValue = new BigNumber(value);
+  } catch (error) {
+    bigIntValue = new BigNumber(0);
+  }
   const multiplier = new BigNumber(10).pow(StellarDecimals);
-
   return bigIntValue.times(multiplier);
 };
 

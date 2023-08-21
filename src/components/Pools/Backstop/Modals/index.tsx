@@ -3,7 +3,7 @@ import { Modal } from 'react-daisyui';
 import { useModal } from '../../../../services/modal';
 import ModalCloseButton from '../../../Button/ModalClose';
 import AddLiquidity from '../AddLiquidity';
-import WithdrawLiquidity from '../Withdraw';
+import WithdrawLiquidity from '../WithdrawLiquidity';
 import { LiquidityModalProps } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

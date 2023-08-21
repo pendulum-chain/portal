@@ -4,19 +4,18 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { config } from '../../../config';
 import { mockERC20 } from '../../../contracts/nabla/MockERC20';
 import { useTokens } from '../../../hooks/nabla/useTokens';
-import { createOptions } from '../../../services/api/helpers';
 import { decimalToNative } from '../../../shared/parseNumbers';
-import { UseContractWriteProps, useContractWrite } from '../../../shared/useContractWrite';
+import { useContractWrite } from '../../../shared/useContractWrite';
 
 const amount = decimalToNative(1000).toString();
-const mintFn: UseContractWriteProps<typeof mockERC20>['fn'] = ({ contract, api, address }) =>
-  contract.tx.mint(createOptions(api), address, amount);
 
 const TokenItem = ({ token }: { token: Token }) => {
+  const { address } = useGlobalState().walletAccount || {};
   const { mutate, isLoading } = useContractWrite({
     abi: mockERC20,
     address: token.id,
-    fn: mintFn,
+    method: 'mint',
+    args: [address, amount],
     onError: console.error,
   });
   return (
@@ -29,7 +28,7 @@ const TokenItem = ({ token }: { token: Token }) => {
         <button
           className={`btn btn-secondary btn-sm ${isLoading ? 'loading' : ''}`}
           disabled={isLoading}
-          onClick={() => mutate(undefined)}
+          onClick={() => mutate()}
         >
           {isLoading ? 'Loading' : 'Mint 1000'}
         </button>

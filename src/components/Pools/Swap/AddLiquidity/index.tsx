@@ -1,8 +1,8 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { calcSharePercentage } from '../../../../helpers/calc';
-import { nativeToDecimal } from '../../../../shared/parseNumbers';
+import { calcSharePercentage, minMax } from '../../../../helpers/calc';
+import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import TokenApproval from '../../../Asset/Approval';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
@@ -17,9 +17,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const {
     toggle,
     mutation,
+    onSubmit,
     balanceQuery,
     depositQuery,
-    form: { register, handleSubmit, setValue, watch },
+    form: { register, setValue, watch },
   } = useAddLiquidity(data.id, data.token.id);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
@@ -38,7 +39,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         <h3 className="text-3xl font-normal">Confirm deposit</h3>
       </div>
       <div className={hideCss}>
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
+        <form onSubmit={onSubmit}>
           <div>
             <div className="flex justify-between align-end text-sm text-initial my-3">
               <p>
@@ -78,14 +79,25 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${deposit + amount} ${data.token.symbol}`}</div>
+              <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>Deposit after</div>
+              <div>
+                {depositQuery.isLoading ? numberLoader : `${roundNumber(deposit + amount)} ${data.token.symbol}`}
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool Share</div>
               <div>
                 {depositQuery.isLoading
                   ? numberLoader
-                  : calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() + amount, deposit + amount)}
+                  : minMax(
+                      calcSharePercentage(
+                        nativeToDecimal(data.totalSupply || deposit).toNumber() + amount,
+                        deposit + amount,
+                      ),
+                    )}
                 %
               </div>
             </div>
