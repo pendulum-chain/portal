@@ -25,7 +25,7 @@ export const decimalToNative = (value: BigNumber | number | string) => {
     bigIntValue = new BigNumber(0);
   }
   const multiplier = new BigNumber(10).pow(ChainDecimals);
-  return bigIntValue.times(multiplier);
+  return bigIntValue.times(multiplier).round(0);
 };
 
 export const decimalToStellarNative = (value: BigNumber | number | string) => {

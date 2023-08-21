@@ -47,6 +47,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     if (!isReady) throw undefined;
     setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
+    console.log(fnArgs);
     const contractOptions = (typeof options === 'function' ? options(api) : options) || {
       gasLimit: api.registry.createType('WeightV2', {
         refTime: 18000000000,
