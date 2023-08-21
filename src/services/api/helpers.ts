@@ -18,10 +18,18 @@ export const fnOrEmpty =
     isApiConnected(api) ? () => fn(api, ...args) : emptyFn;
 
 // https://substrate.stackexchange.com/questions/6401/smart-contract-function-call-error/6402#6402
-export const createOptions = (api: ApiPromise, opts?: ContractOptions) => ({
+export const createReadOptions = (api: ApiPromise, opts?: ContractOptions) => ({
   gasLimit: api.createType('WeightV2', {
-    refTime: '100000000000',
-    proofSize: '1000000',
+    refTime: 100000000000,
+    proofSize: 1000000,
+  }),
+  storageDepositLimit: null,
+  ...opts,
+});
+export const createWriteOptions = (api: ApiPromise, opts?: ContractOptions) => ({
+  gasLimit: api.createType('WeightV2', {
+    refTime: 18000000000,
+    proofSize: 1750000,
   }),
   storageDepositLimit: null,
   ...opts,

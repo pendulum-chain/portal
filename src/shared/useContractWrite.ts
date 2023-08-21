@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
-import { WeightV2 } from '@pendulum-chain/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableResultValue } from '@polkadot/api-base/types';
 import { Abi, ContractPromise } from '@polkadot/api-contract';
@@ -8,6 +7,7 @@ import { ContractOptions } from '@polkadot/api-contract/types';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
+import { createWriteOptions } from '../services/api/helpers';
 import { useSharedState } from './Provider';
 import { parseTransactionError } from './helpers';
 
@@ -47,14 +47,7 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     if (!isReady) throw undefined;
     setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
-    console.log(fnArgs);
-    const contractOptions = (typeof options === 'function' ? options(api) : options) || {
-      gasLimit: api.registry.createType('WeightV2', {
-        refTime: 18000000000,
-        proofSize: 1750000,
-      }) as WeightV2,
-      storageDepositLimit: null,
-    };
+    const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
 
     return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
       const unsubPromise = contract.tx[method](contractOptions || {}, ...fnArgs)
