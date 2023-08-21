@@ -2,7 +2,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage } from '../../../../helpers/calc';
-import { nativeToDecimal } from '../../../../shared/parseNumbers';
+import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import TokenApproval from '../../../Asset/Approval';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
@@ -79,7 +79,13 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${deposit + amount} ${data.token.symbol}`}</div>
+              <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>Deposit after</div>
+              <div>
+                {depositQuery.isLoading ? numberLoader : `${roundNumber(deposit + amount)} ${data.token.symbol}`}
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool Share</div>

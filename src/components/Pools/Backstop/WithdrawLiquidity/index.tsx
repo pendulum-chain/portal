@@ -3,8 +3,8 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../gql/graphql';
-import { calcSharePercentage } from '../../../../helpers/calc';
-import { nativeToDecimal } from '../../../../shared/parseNumbers';
+import { calcSharePercentage, minMax } from '../../../../helpers/calc';
+import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -86,19 +86,26 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               }
             />
           </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 p-4 mt-4">
+          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
               <div>Fee</div>
               <div>{'! TODO'}</div>
             </div>
             <div className="flex items-center justify-between">
+              <div>Deposit</div>
+              <div>{roundNumber(deposit || 0)}</div>
+            </div>
+            <div className="flex items-center justify-between">
               <div>Remaining deposit</div>
-              <div>{deposit - amount || 0}</div>
+              <div>{roundNumber(deposit - amount || 0)}</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Remaining pool share</div>
               <div>
-                {calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() - amount, deposit - amount)}%
+                {minMax(
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() - amount, deposit - amount),
+                )}
+                %
               </div>
             </div>
           </div>
