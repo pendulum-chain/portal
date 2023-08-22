@@ -1,7 +1,8 @@
+import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import Table from '../../components/Table';
+import Table, { SortingOrder } from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
@@ -94,12 +95,16 @@ function CollatorsTable() {
   }, [candidates, inflationInfo?.delegator.rewardRate.annual, tokenSymbol, identityOf]);
 
   const columns = useMemo(() => {
+    let stakedCol = undefined;
+    if (walletAccount && userStaking) {
+      stakedCol = myStakedColumn({ userAccountAddress, tokenSymbol });
+    }
     return [
       nameColumn,
       stakedColumn,
       delegatorsColumn,
       apyColumn,
-      myStakedColumn({ userAccountAddress, tokenSymbol }),
+      stakedCol,
       actionsColumn({
         userAccountAddress,
         walletAccount,
@@ -107,7 +112,7 @@ function CollatorsTable() {
         setSelectedCandidate,
         setUnstaking,
       }),
-    ];
+    ].filter((c) => !!c) as ColumnDef<TCollator>[];
   }, [tokenSymbol, userAccountAddress, userStaking, walletAccount, setUnstaking]);
 
   return (
@@ -129,7 +134,7 @@ function CollatorsTable() {
         data={data}
         columns={columns}
         isLoading={!candidates}
-        sortBy="collator"
+        sortBy={{ myStaked: SortingOrder.DESC, collator: SortingOrder.ASC }}
         search={false}
         pageSize={8}
       />
