@@ -57,9 +57,13 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
           installed: true,
           extension: undefined,
           signer,
-          getAccounts: () => Promise.resolve([]), // TODO
-          subscribeAccounts: () => undefined, // TODO
-          transformError: (err: any) => err, // TODO
+          /**
+           * The following methods are tagged as 'Unused' since they are only required by the @talisman package,
+           * which we are not using to handle this wallet connection.
+           */
+          getAccounts: () => Promise.resolve([]), // Unused
+          subscribeAccounts: () => undefined, // Unused
+          transformError: (err: any) => err, // Unused
         },
       };
     }
