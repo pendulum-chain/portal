@@ -2,9 +2,9 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { calcSharePercentage } from '../../../../helpers/calc';
-import { BackstopPool } from '../../../../models/BackstopPool';
-import { nativeToDecimal } from '../../../../shared/parseNumbers';
+import { BackstopPool } from '../../../../../gql/graphql';
+import { calcSharePercentage, minMax } from '../../../../helpers/calc';
+import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -17,34 +17,35 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   const {
     toggle,
     mutation,
+    onSubmit,
     balanceQuery,
     depositQuery,
-    form: { register, handleSubmit, setValue, watch },
-  } = useWithdrawLiquidity(data.address, data.asset.address);
+    form: { register, setValue, watch },
+  } = useWithdrawLiquidity(data.id, data.token.id);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
-  const hideCss = mutation.isLoading ? 'hidden' : '';
+  const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.asset.symbol} amount={amount} />
+        <PoolProgress symbol={data.token.symbol} amount={amount} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
           <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
         </Button>
-        <h3 className="text-3xl font-normal">Withdraw {data.asset.symbol}</h3>
+        <h3 className="text-3xl font-normal">Withdraw {data.token.symbol}</h3>
       </div>
       <div className={hideCss}>
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))}>
+        <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
             <p>
-              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.asset.symbol}`}
+              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
             </p>
             <p className="text-neutral-500 dark:text-neutral-400 text-right">
-              Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.asset.symbol}`}
+              Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
             </p>
           </div>
           <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
@@ -85,19 +86,26 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               }
             />
           </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 p-4 mt-4">
+          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
               <div>Fee</div>
               <div>{'! TODO'}</div>
             </div>
             <div className="flex items-center justify-between">
+              <div>Deposit</div>
+              <div>{roundNumber(deposit || 0)}</div>
+            </div>
+            <div className="flex items-center justify-between">
               <div>Remaining deposit</div>
-              <div>{deposit - amount || 0}</div>
+              <div>{roundNumber(deposit - amount || 0)}</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Remaining pool share</div>
               <div>
-                {calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() - amount, deposit - amount)}%
+                {minMax(
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() - amount, deposit - amount),
+                )}
+                %
               </div>
             </div>
           </div>

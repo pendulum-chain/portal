@@ -1,4 +1,4 @@
-import { BackstopPool } from '../../../../models/BackstopPool';
+import { BackstopPool } from '../../../../../gql/graphql';
 
 export const ModalTypes = {
   AddLiquidity: 2,
