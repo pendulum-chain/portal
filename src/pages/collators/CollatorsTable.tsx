@@ -130,7 +130,7 @@ function CollatorsTable() {
         }}
       />
       <Table
-        className="collators-list-table bg-base-100 text-md"
+        className="collators-list-table bg-base-100 text-md w-full"
         data={data}
         columns={columns}
         isLoading={!candidates}

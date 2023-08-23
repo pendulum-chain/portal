@@ -53,7 +53,6 @@ module.exports = {
           'base-200': '#1c1c1c',
           'base-300': '#2c2c2c',
           'base-content': '#fff',
-
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
         },
