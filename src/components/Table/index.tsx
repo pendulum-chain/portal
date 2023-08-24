@@ -103,27 +103,32 @@ const Table = <T,>({
           <thead>
             {getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-base-100">
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''}`}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    <div className="flex flex-row items-center font-sm text-neutral-400 normal-case font-semibold">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() ? (
-                        <div className={`sort ${header.column.getIsSorted()} ml-2 text-neutral-400 mb-0.5`}>
-                          {header.column.getIsSorted() === 'desc' ? (
-                            <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
-                          ) : (
-                            <ChevronUpIcon className="w-3 h-3" stroke-width="2" />
-                          )}
-                        </div>
-                      ) : null}
-                    </div>
-                  </th>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const isSortable = header.column.getCanSort();
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={`${isSortable ? ' cursor-pointer' : ''} ${
+                        header.column.columnDef.meta?.className || ''
+                      }`}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <div className="inline-flex flex-row items-center font-sm text-neutral-400 normal-case font-semibold">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {isSortable ? (
+                          <div className={`sort ${header.column.getIsSorted()} ml-2 mr text-neutral-400`}>
+                            {header.column.getIsSorted() === 'desc' ? (
+                              <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
+                            ) : (
+                              <ChevronUpIcon className="w-3 h-3" stroke-width="2" />
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
@@ -133,7 +138,7 @@ const Table = <T,>({
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id} className="bg-base-200">
+                      <td key={cell.id} className={`bg-base-200 ${cell.column.columnDef.meta?.className || ''}`}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     );

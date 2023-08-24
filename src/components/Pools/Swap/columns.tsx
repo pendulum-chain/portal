@@ -2,12 +2,11 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Button } from 'react-daisyui';
 import { SwapPool } from '../../../../gql/graphql';
 import { useModalToggle } from '../../../services/modal';
+import { nativeToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
 export type SwapPoolColumn = SwapPool & {
-  wallet?: unknown;
-  myAmount?: unknown;
-  coverage?: unknown;
+  myAmount?: number;
 };
 
 export const nameColumn: ColumnDef<SwapPoolColumn> = {
@@ -17,45 +16,50 @@ export const nameColumn: ColumnDef<SwapPoolColumn> = {
   enableSorting: true,
 } as const;
 
-export const walletColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'Wallet',
-  accessorKey: 'wallet',
-  accessorFn: (row) => row.wallet?.toString(),
-  enableSorting: true,
-} as const;
-
-export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'My Pool Amount',
-  accessorKey: 'myAmount',
-  accessorFn: (row) => row.myAmount?.toString(),
-  enableSorting: true,
-} as const;
-
 export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Pool liabilities',
   accessorKey: 'liabilities',
-  accessorFn: (row) => row.liabilities?.toString(),
+  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.liabilities || 0).toNumber()),
   enableSorting: true,
+  meta: {
+    className: 'text-right',
+  },
 } as const;
 
-export const coverageColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'Coverage Ratio',
-  accessorKey: 'coverage',
-  accessorFn: (row) => row.coverage?.toString(),
+export const reservesColumn: ColumnDef<SwapPoolColumn> = {
+  header: 'Reserves',
+  accessorKey: 'reserves',
+  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.reserves || 0).toNumber()),
   enableSorting: true,
+  meta: {
+    className: 'text-right',
+  },
 } as const;
 
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
   header: 'APR',
   accessorKey: 'apr',
-  accessorFn: (row) => row.reserves?.toString(), // TODO: get apr
+  accessorFn: () => '0%', // TODO: get apr
   enableSorting: true,
+  meta: {
+    className: 'text-right',
+  },
+} as const;
+
+export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
+  header: 'My Pool Amount',
+  accessorKey: 'myAmount',
+  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.myAmount || 0).toNumber()),
+  enableSorting: true,
+  meta: {
+    className: 'text-right',
+  },
 } as const;
 
 const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknown>): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
   return (
-    <div className="flex items-center gap-2 text-right">
+    <div className="flex items-center justify-end gap-2 text-right">
       <Button
         onClick={() => toggle({ type: ModalTypes.AddLiquidity, props: { data: original } })}
         size="sm"
@@ -91,12 +95,4 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   cell: (props): JSX.Element | null => <ActionsColumn {...props} />,
 } as const;
 
-export const columns = [
-  nameColumn,
-  walletColumn,
-  myAmountColumn,
-  liabilitiesColumn,
-  coverageColumn,
-  aprColumn,
-  actionsColumn,
-];
+export const columns = [nameColumn, liabilitiesColumn, aprColumn, myAmountColumn, actionsColumn];
