@@ -23,5 +23,4 @@ export const colors = {
     800: 'rgba(0, 0, 0, 0.80)',
     900: 'rgba(0, 0, 0, 0.92)',
   },
-  "table-row": '#F5F9FA'
 };
