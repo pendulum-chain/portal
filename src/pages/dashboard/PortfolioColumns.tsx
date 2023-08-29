@@ -1,13 +1,14 @@
 import { ColumnDef } from '@tanstack/table-core';
 import CoinIcon from '../../assets/coin-placeholder.png';
-export interface TAsset {
+export interface PortfolioAsset {
   token: string;
   tokenIcon?: () => Element;
   price: number;
   amount: number;
+  usdValue?: number;
 }
 
-export const tokenColumn: ColumnDef<TAsset> = {
+export const tokenColumn: ColumnDef<PortfolioAsset> = {
   header: 'Token',
   accessorKey: 'token',
   cell: ({ row }) => {
@@ -20,18 +21,18 @@ export const tokenColumn: ColumnDef<TAsset> = {
   },
 };
 
-export const priceColumn: ColumnDef<TAsset> = {
+export const priceColumn: ColumnDef<PortfolioAsset> = {
   header: 'Price',
   accessorKey: 'price',
 };
 
-export const amountColumn: ColumnDef<TAsset> = {
+export const amountColumn: ColumnDef<PortfolioAsset> = {
   header: 'Amount',
   accessorKey: 'amount',
 };
 
-export const usdValueColumn: ColumnDef<TAsset> = {
+export const usdValueColumn: ColumnDef<PortfolioAsset> = {
   header: 'USD Value',
   accessorKey: 'usdValue',
-  accessorFn: ({ price, amount }) => (price * amount).toFixed(2),
+  accessorFn: ({ price, amount }) => '$ ' + (price * amount).toFixed(2),
 };

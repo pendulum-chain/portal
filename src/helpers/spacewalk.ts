@@ -8,6 +8,10 @@ import { Asset, Keypair } from 'stellar-sdk';
 import { TenantName } from '../models/Tenant';
 import { convertRawHexKeyToPublicKey } from './stellar';
 
+export const SpacewalkConstants = {
+  WrappedCurrencySuffix: '.s',
+};
+
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
   const hex = hexString.toString();
@@ -50,6 +54,10 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
     console.error('Error converting currency to stellar asset', e);
     return null;
   }
+}
+
+export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrencyId) {
+  return convertCurrencyToStellarAsset(currency)?.getCode() + SpacewalkConstants.WrappedCurrencySuffix;
 }
 
 export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): SpacewalkPrimitivesCurrencyId {

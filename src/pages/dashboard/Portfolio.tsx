@@ -9,10 +9,11 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Table, { SortingOrder } from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { currencyToString } from '../../helpers/spacewalk';
+import { currencyToStellarAssetCode } from '../../helpers/spacewalk';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 import { nativeToDecimal, prettyNumbers } from '../../shared/parseNumbers';
-import { TAsset, amountColumn, priceColumn, tokenColumn, usdValueColumn } from './PortfolioColumns';
+import { PortfolioAsset, amountColumn, priceColumn, tokenColumn, usdValueColumn } from './PortfolioColumns';
 
 type Props = {};
 
@@ -32,13 +33,13 @@ interface TokenBalances {
 function Portfolio(props: Props) {
   const { walletAccount, tenantName, tenantRPC } = useGlobalState();
   const {
-    state: { api, tokenSymbol, ss58Format },
+    state: { api, ss58Format },
   } = useNodeInfoState();
   const { getVaults } = useVaultRegistryPallet();
 
   const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
-  const [accountTokenBalances, setAccountTokenBalances] = useState<TokenBalances>({});
-  const [data, setData] = useState<TAsset[] | undefined>();
+  const [data, setData] = useState<PortfolioAsset[] | undefined>();
+  const { pricesCache } = usePriceFetcher();
 
   useEffect(() => {
     if (!walletAccount?.address || !tenantRPC) {
@@ -60,7 +61,7 @@ function Portfolio(props: Props) {
 
   const vaults = getVaults();
 
-  const availableCurrencies = useMemo(() => {
+  const spacewalkCurrencies = useMemo(() => {
     const currencies: SpacewalkPrimitivesCurrencyId[] = [];
     vaults.forEach((vault) => {
       currencies.push(vault.id.currencies.wrapped);
@@ -72,31 +73,39 @@ function Portfolio(props: Props) {
   }, [vaults]);
 
   useEffect(() => {
-    setData(mockData);
-
-    if (!walletAccount || !availableCurrencies) return;
+    if (!walletAccount || !spacewalkCurrencies) return;
 
     async function fetchBridgedTokens(address: string, asset: SpacewalkPrimitivesCurrencyId) {
       if (!api) return;
       return api.query.tokens.accounts(address, asset);
     }
 
-    availableCurrencies.forEach((currencyId) => {
-      const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
-      fetchBridgedTokens(walletAddress, currencyId).then((balance) => {
-        const tokenId = currencyToString(currencyId, tenantName);
-        setAccountTokenBalances((balances) => {
-          let newBalances = balances;
-          if (tokenId && balance) {
-            newBalances[tokenId] = balance;
-            newBalances = Object.assign({}, balances);
-          }
+    function getPorfolioAssetsForSpacewalk() {
+      if (!walletAccount || !spacewalkCurrencies) return [];
 
-          return newBalances;
-        });
+      return spacewalkCurrencies.map(async (currencyId) => {
+        const walletAddress = ss58Format
+          ? getAddressForFormat(walletAccount.address, ss58Format)
+          : walletAccount.address;
+
+        console.log(currencyId);
+        const balance = await fetchBridgedTokens(walletAddress, currencyId);
+        const token = currencyToStellarAssetCode(currencyId);
+        const amount = nativeToDecimal(balance?.free || '0').toNumber();
+        const price: number = ((await pricesCache) as any)[token];
+        return {
+          token,
+          price,
+          amount,
+          usdValue: price * amount,
+        };
       });
-    });
-  }, [availableCurrencies, walletAccount, api, ss58Format, tenantName]);
+    }
+
+    Promise.all(getPorfolioAssetsForSpacewalk()).then((data) => setData(data));
+  }, [spacewalkCurrencies, walletAccount, api, ss58Format, tenantName]);
+
+  const accountTotalBalance = '$ 345,23';
 
   const columns = useMemo(() => {
     return [tokenColumn, priceColumn, amountColumn, usdValueColumn];
@@ -106,7 +115,7 @@ function Portfolio(props: Props) {
     <div className="card portfolio rounded-md bg-base-200 mr-20">
       <div className="p-4 flex flex-row justify-between">
         <div className="font-bold text-xl">Wallet</div>
-        <div className="text-xl">345,23 USD</div>
+        <div className="text-xl">{walletAccount && accountTotalBalance}</div>
       </div>
       {walletAccount && (
         <Table
@@ -125,37 +134,4 @@ function Portfolio(props: Props) {
   );
 }
 
-/* <div className="card-body">
-        <h2 className="card-title float-left">Portfolio</h2>
-        <div className="balance">
-          {cachedBalance && (
-            <div className="self-center">
-              <h2 className="flex">
-                {cachedBalance} {tokenSymbol}
-              </h2>
-            </div>
-          )}
-          <ul>
-            <li />
-            {Object.entries(accountTokenBalances).map(([tokenId, balance]) => {
-              if (!balance.free.isZero()) {
-                // If it's a Stellar asset we are interested in the code which is the first part of the stringified token id
-                const assetCode = tokenId.split(':')[0];
-                return (
-                  <li key={tokenId} title={tokenId}>
-                    <h2 className="flex">
-                      {nativeToDecimal(balance.free.toString()).toFixed()} {assetCode}
-                    </h2>
-                  </li>
-                );
-              }
-            })}
-          </ul>
-          {!cachedBalance && (
-            <>
-              <p>You have to connect a wallet to see your available balance. </p>
-            </>
-          )}
-        </div>
-      </div> */
 export default Portfolio;
