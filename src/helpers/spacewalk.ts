@@ -92,9 +92,11 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
 const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
   pendulum: {
     '0': 'DOT',
+    '1': 'USDT',
   },
   amplitude: {
     '0': 'KSM',
+    '1': 'USDT',
   },
 };
 
