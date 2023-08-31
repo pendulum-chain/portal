@@ -202,7 +202,6 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
 
 export function ReimbursedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const tenant = useGlobalState().tenantName;
 
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const collateralAsset = transfer.original.vault.currencies.collateral;

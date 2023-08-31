@@ -1,8 +1,6 @@
 import BannerImage from '../../assets/banner-spacewalk-4x.png';
 
-type Props = {};
-
-function Banner({}: Props) {
+function Banner() {
   return (
     <div className="card card-compact sm:w-2/3 banner rounded-md mb-6 bg-base-200">
       <a target="blank" href="https://pendulumchain.org/spacewalk">
