@@ -91,7 +91,7 @@ const getMexcAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
   //   console.error(e);
   // }
 
-  return 0;
+  return 0.5;
 };
 
 const getDIAAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {

@@ -1,4 +1,4 @@
-import { PalletBalancesAccountData, SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -18,22 +18,10 @@ function Portfolio() {
   } = useNodeInfoState();
   const { getVaults } = useVaultRegistryPallet();
 
-  const [accountBalance, setAccountBalance] = useState<PalletBalancesAccountData | undefined>(undefined);
+  const [accountTotalBalance, setAccountTotalBalance] = useState<number>(0);
+
   const [data, setData] = useState<PortfolioAsset[] | undefined>();
   const { pricesCache } = usePriceFetcher();
-
-  useEffect(() => {
-    if (!walletAccount?.address || !tenantRPC) {
-      setAccountBalance(undefined);
-      return;
-    }
-    api?.query.system
-      .account(walletAccount.address)
-      .then((data) => {
-        setAccountBalance(data.data);
-      })
-      .catch((e) => console.error(e));
-  }, [api, walletAccount, tenantRPC]);
 
   const vaults = getVaults();
 
@@ -61,8 +49,7 @@ function Portfolio() {
 
       return spacewalkCurrencies.map(async (currencyId) => {
         let token = currencyToString(currencyId)?.split(':')[0];
-
-        if (!token) return undefined;
+        if (!token) return;
 
         token = currencyId.isStellar ? addSuffix(token) : token;
 
@@ -73,27 +60,34 @@ function Portfolio() {
         const balance = await fetchBridgedTokens(walletAddress, currencyId);
         const amount = nativeToDecimal(balance?.free || '0').toNumber();
         const price: number = (await pricesCache)[token];
+        const usdValue = price * amount;
 
         return {
           token,
           price,
           amount,
-          usdValue: price * amount,
+          usdValue,
         };
       });
     }
 
     async function getPorfolioAssetsNative() {
-      if (!tokenSymbol || !accountBalance) return Promise.resolve(undefined);
+      if (!walletAccount?.address || !tenantRPC) {
+        return;
+      }
+      const balance = (await api?.query.system.account(walletAccount.address))?.data;
+
+      if (!tokenSymbol || !balance) return;
 
       const price: number = (await pricesCache)[tokenSymbol];
+      const usdValue = price * nativeToDecimal(balance.free).toNumber();
 
-      return Promise.resolve({
+      return {
         token: tokenSymbol,
         price,
-        amount: nativeToDecimal(accountBalance.free).toNumber(),
-        usdValue: price * nativeToDecimal(accountBalance.free).toNumber(),
-      });
+        amount: nativeToDecimal(balance.free).toNumber(),
+        usdValue,
+      };
     }
 
     const allPortfolioAssets: Promise<PortfolioAsset | undefined>[] = getPorfolioAssetsFromSpacewalk().concat([
@@ -103,9 +97,12 @@ function Portfolio() {
     Promise.all(allPortfolioAssets).then((data) => {
       setData(data.filter((e) => e !== undefined) as PortfolioAsset[]);
     });
-  }, [spacewalkCurrencies, walletAccount, api, ss58Format, tenantName, accountBalance, tokenSymbol, pricesCache]);
+  }, [spacewalkCurrencies, walletAccount, api, ss58Format, tenantName, tenantRPC, tokenSymbol, pricesCache]);
 
-  const accountTotalBalance = '$ 345,23';
+  useEffect(() => {
+    if (!data) return;
+    setAccountTotalBalance(data.map(({ usdValue }) => usdValue || 0).reduce((acc, val) => acc + val, 0));
+  }, [data]);
 
   const columns = useMemo(() => {
     return [tokenColumn, priceColumn, amountColumn, usdValueColumn];
@@ -115,7 +112,7 @@ function Portfolio() {
     <div className="card portfolio rounded-md bg-base-200 mr-20">
       <div className="p-4 flex flex-row justify-between">
         <div className="font-bold text-xl">Wallet</div>
-        <div className="text-xl">{walletAccount && accountTotalBalance}</div>
+        <div className="text-xl">$ {accountTotalBalance.toFixed(4)}</div>
       </div>
       {walletAccount && (
         <Table
