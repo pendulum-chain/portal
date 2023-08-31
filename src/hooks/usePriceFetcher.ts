@@ -79,16 +79,17 @@ const assets: PriceFetcherAsset[] = [
   },
 ];
 
-const getMexcAssetPrice = async (asset: PriceFetcherAsset) => {
-  const data = await fetch(`https://api.mexc.com/api/v3/avgPrice?symbol=${asset.assetId}`);
+// FIXME avoid CORS policy from MEXC
+const getMexcAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
+  // const data = await fetch(`https://api.mexc.com/api/v3/avgPrice?symbol=${asset.assetId}`);
 
-  try {
-    if (data.ok) {
-      return ((await data.json()) as any)['price'];
-    }
-  } catch (e) {
-    console.error(e);
-  }
+  // try {
+  //   if (data.ok) {
+  //     return (await data.json())['price'];
+  //   }
+  // } catch (e) {
+  //   console.error(e);
+  // }
 
   return 0;
 };
