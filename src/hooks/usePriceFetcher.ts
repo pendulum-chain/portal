@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useGlobalState } from '../GlobalStateProvider';
 import { TenantName } from '../models/Tenant';
 
 interface PriceFetcherAsset {
@@ -9,6 +8,10 @@ interface PriceFetcherAsset {
   exclude?: TenantName[];
   provider: 'dia' | 'diaForeign' | 'mexc';
 }
+
+type PricesCache = {
+  [key: string]: number;
+};
 
 const assets: PriceFetcherAsset[] = [
   {
@@ -90,13 +93,13 @@ const getMexcAssetPrice = async (asset: PriceFetcherAsset) => {
   return 0;
 };
 
-const getDIAAssetPrice = async (asset: PriceFetcherAsset) => {
+const getDIAAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
   if (!asset.assetId) return 0;
 
   try {
     const data = await fetch(`https://api.diadata.org/v1/assetQuotation/${asset.blockchain}/${asset.assetId}`);
     if (data.ok) {
-      return ((await data.json()) as any)['Price'];
+      return (await data.json())['Price'];
     }
   } catch (e) {
     console.error(e);
@@ -105,12 +108,12 @@ const getDIAAssetPrice = async (asset: PriceFetcherAsset) => {
   return 0;
 };
 
-const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset) => {
+const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset): Promise<number> => {
   if (!asset.assetId) return 0;
   try {
     const data = await fetch(`https://api.diadata.org/v1/foreignQuotation/${asset.blockchain}/${asset.assetId}`);
     if (data.ok) {
-      return ((await data.json()) as any)['Price'];
+      return (await data.json())['Price'];
     }
   } catch (e) {
     console.error(e);
@@ -142,17 +145,15 @@ const getPrice = async (asset: PriceFetcherAsset) => {
 };
 
 export const usePriceFetcher = () => {
-  const { walletAccount } = useGlobalState();
-
-  const pricesCache = useMemo(async () => {
+  const pricesCache: Promise<PricesCache> = useMemo(async () => {
     let cache = {};
     for (let i = 0; i < assets.length; i++) {
       cache = { ...cache, [assets[i].assetName]: await getPrice(assets[i]) };
     }
     return cache;
-  }, [walletAccount]);
+  }, []);
 
-  const fetcher = async (assetCode: string) => {
+  const fetch = async (assetCode: string) => {
     try {
       return await getPrice(lookup(assetCode));
     } catch (e) {
@@ -160,5 +161,5 @@ export const usePriceFetcher = () => {
     }
   };
 
-  return { fetcher, pricesCache };
+  return { fetch, pricesCache };
 };
