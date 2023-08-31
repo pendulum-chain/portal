@@ -56,6 +56,10 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
   }
 }
 
+export function addSuffix(s: string) {
+  return s + SpacewalkConstants.WrappedCurrencySuffix;
+}
+
 export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrencyId) {
   return convertCurrencyToStellarAsset(currency)?.getCode() + SpacewalkConstants.WrappedCurrencySuffix;
 }
