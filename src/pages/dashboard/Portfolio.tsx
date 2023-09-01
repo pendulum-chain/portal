@@ -48,7 +48,7 @@ function Portfolio() {
       if (!walletAccount || !spacewalkCurrencies) return [];
 
       return spacewalkCurrencies.map(async (currencyId) => {
-        let token = currencyToString(currencyId)?.split(':')[0];
+        let token = currencyToString(currencyId, tenantName)?.split(':')[0];
         if (!token) return;
 
         token = currencyId.isStellar ? addSuffix(token) : token;
