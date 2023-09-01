@@ -44,7 +44,7 @@ function Portfolio() {
       return api.query.tokens.accounts(address, asset);
     }
 
-    function getPorfolioAssetsFromSpacewalk(): Promise<PortfolioAsset | undefined>[] {
+    function getPortfolioAssetsFromSpacewalk(): Promise<PortfolioAsset | undefined>[] {
       if (!walletAccount || !spacewalkCurrencies) return [];
 
       return spacewalkCurrencies.map(async (currencyId) => {
@@ -71,7 +71,7 @@ function Portfolio() {
       });
     }
 
-    async function getPorfolioAssetsNative() {
+    async function getPortfolioAssetsNative() {
       if (!walletAccount?.address || !tenantRPC) {
         return;
       }
@@ -90,8 +90,8 @@ function Portfolio() {
       };
     }
 
-    const allPortfolioAssets: Promise<PortfolioAsset | undefined>[] = getPorfolioAssetsFromSpacewalk().concat([
-      getPorfolioAssetsNative(),
+    const allPortfolioAssets: Promise<PortfolioAsset | undefined>[] = getPortfolioAssetsFromSpacewalk().concat([
+      getPortfolioAssetsNative(),
     ]);
 
     Promise.all(allPortfolioAssets).then((data) => {
