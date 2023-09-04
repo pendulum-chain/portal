@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'react';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { useSharedState } from './Provider';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';
-import { UseContractWriteProps, useContractWrite } from './useContractWrite';
+import { useSharedState } from './Provider';
+import { useContractWrite, UseContractWriteProps } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
 
 export enum ApprovalState {
@@ -59,8 +59,8 @@ export const useTokenApproval = ({
     args: [spender, approveMax ? maxInt : amountBI.toString()],
     options: (api) => ({
       gasLimit: api.createType('WeightV2', {
-        refTime: '100000000000',
-        proofSize: '1000000',
+        refTime: '12000000000',
+        proofSize: '1200000',
       }),
       storageDepositLimit: null,
     }),

@@ -17,6 +17,7 @@ export const nablaConfig: NablaConfig = {
   tenants: [TenantName.Foucoco],
   foucoco: {
     indexerUrl: 'https://squid.subsquid.io/foucoco-squid/graphql',
+
     // TODO: if these addresses change we will need to fetch them from the indexer
     router: '6nHNN8GfwaUcSvp7QhRJZtXY5yQLBeVz3J2RCx395ma9MbeV',
     oracle: '6guy27fyEZpKyBwWfysB6X2N3RDgrVertCaZ4ont8FPqdD9C',

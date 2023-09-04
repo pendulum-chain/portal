@@ -5,8 +5,8 @@ import { Abi, ContractPromise } from '@polkadot/api-contract';
 import { ContractOptions } from '@polkadot/api-contract/types';
 import { QueryKey, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
+import { emptyCacheKey, emptyFn, QueryOptions } from './helpers';
 import { useSharedState } from './Provider';
-import { QueryOptions, emptyCacheKey, emptyFn } from './helpers';
 
 export type UseContractProps<T> = QueryOptions & {
   abi: T;
@@ -35,8 +35,8 @@ export const useContract = <T extends Abi | Record<string, unknown>>(
               ? options(api)
               : options || {
                   gasLimit: api.createType('WeightV2', {
-                    refTime: '100000000000',
-                    proofSize: '1000000',
+                    refTime: '120000000000',
+                    proofSize: '1200000',
                   }),
                   storageDepositLimit: null,
                 };

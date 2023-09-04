@@ -1,14 +1,16 @@
 import { ArrowPathRoundedSquareIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { useEffect } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { config } from '../../../config';
-import { calcPercentage } from '../../../helpers/calc';
+import { subtractPercentage } from '../../../helpers/calc';
 import { useTokens } from '../../../hooks/nabla/useTokens';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { roundNumber } from '../../../shared/parseNumbers';
+import { useTokenOutAmount } from '../../../hooks/useTokenOutAmount';
+import { nativeToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers';
 import TokenPrice from '../../Asset/Price';
 import Balance from '../../Balance';
 import { Skeleton } from '../../Skeleton';
@@ -23,7 +25,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
   const tokensQuery = useTokens();
   const { tokensMap } = tokensQuery.data || {};
   const [isOpen, { toggle }] = useBoolean();
-  const { /* setValue, */ control } = useFormContext<SwapFormValues>();
+  const { setValue, setError, clearErrors, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',
@@ -48,24 +50,24 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
   const fromToken = tokensMap?.[from];
   const toToken = tokensMap?.[to];
   const debouncedFromAmount = useDebouncedValue(fromAmount, 800);
-  const { isLoading, data, refetch } = {
-    data: debouncedFromAmount,
-    isLoading: false,
-    refetch: () => undefined,
-  };
-  /* useTokenOutAmount({
-    chainId,
+  const { isLoading, data, refetch, isError, error } = useTokenOutAmount({
     amount: debouncedFromAmount,
     from,
     to,
     enabled: debouncedFromAmount > 0 && !!from && !!to,
     onSuccess: (val) => {
-      setValue('toAmount', Number(BigInt(val)));
+      setValue('toAmount', Number(val));
     },
-  }); */
-  const loading = isLoading || fromAmount !== debouncedFromAmount;
-  const value = data;
+  });
 
+  useEffect(() => {
+    if (isError) setError('toAmount', { message: error || 'Something went wrong' });
+    else clearErrors('toAmount');
+  }, [isError, error, setError, clearErrors]);
+
+  const loading = isLoading || fromAmount !== debouncedFromAmount;
+  console.log(data);
+  const value = data ? prettyNumbers(nativeToDecimal(data.data.free).toNumber()) : 0; // TODO
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -144,7 +146,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
                   <div>Minimum received:</div>
                   <div>
                     <Skeleton isLoading={loading}>
-                      {calcPercentage(Number(value), slippage ?? config.swap.defaults.slippage)} {toToken?.symbol}
+                      {subtractPercentage(Number(value), slippage ?? config.swap.defaults.slippage)} {toToken?.symbol}
                     </Skeleton>
                   </div>
                 </div>

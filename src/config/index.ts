@@ -23,13 +23,13 @@ export const config = {
       name: 'Amplitude',
       rpc: 'wss://rpc-amplitude.pendulumchain.tech',
       theme: ThemeName.Amplitude,
-      explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer',
+      explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer/query',
     },
     [TenantName.Pendulum]: {
       name: 'Pendulum',
       rpc: 'wss://rpc-pendulum.prd.pendulumchain.tech',
       theme: ThemeName.Pendulum,
-      explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer',
+      explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer/query',
     },
     [TenantName.Foucoco]: {
       name: 'Foucoco',
@@ -41,7 +41,7 @@ export const config = {
       name: 'Local',
       rpc: 'ws://localhost:9944',
       theme: ThemeName.Amplitude,
-      explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer',
+      explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer/query',
     },
   } satisfies TenantConfig,
   swap: {

@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
-import { calcPercentage } from '../../../../helpers/calc';
+import { subtractPercentage } from '../../../../helpers/calc';
 import { useModalToggle } from '../../../../services/modal';
 import { decimalToNative } from '../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../shared/useContractBalance';
@@ -28,6 +28,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
       // ? log error - alert not needed as the transaction modal dispays the error
     },
     onSuccess: () => {
+      form.reset();
       balanceQuery.refetch();
       depositQuery.refetch();
     },
@@ -36,7 +37,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const onSubmit = form.handleSubmit((variables: WithdrawLiquidityValues) =>
     mutation.mutate([
       decimalToNative(variables.amount).toString(),
-      decimalToNative(calcPercentage(variables.amount, 0.1)).toString(),
+      decimalToNative(subtractPercentage(variables.amount, 0.1)).toString(),
     ]),
   );
 

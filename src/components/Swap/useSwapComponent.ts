@@ -3,12 +3,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { Token } from '../../../gql/graphql';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { config } from '../../config';
 import { cacheKeys } from '../../constants/cache';
 import { storageKeys } from '../../constants/localStorage';
 import { routerAbi } from '../../contracts/nabla/Router';
-import { calcPercentage } from '../../helpers/calc';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { subtractPercentage } from '../../helpers/calc';
 import { debounce } from '../../helpers/function';
 import { useTokens } from '../../hooks/nabla/useTokens';
 import { useGetAppDataByTenant } from '../../hooks/useGetAppDataByTenant';
@@ -74,7 +74,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   );
 
   const swapMutation = useContractWrite({
-    abi: routerAbi, // ? should be chain specific
+    abi: routerAbi,
     address: router,
     method: 'swapExactTokensForTokens',
     onSuccess: () => {
@@ -91,9 +91,8 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     const deadline = decimalToNative(time);
     const slippage = variables.slippage ?? defaultValues.slippage;
     const fromAmount = decimalToNative(variables.fromAmount).toString();
-    const toMinAmount = decimalToNative(calcPercentage(variables.toAmount, slippage)).toString();
+    const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, slippage)).toString();
     const spender = address;
-
     return swapMutation.mutate([spender, fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });
 

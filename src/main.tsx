@@ -1,16 +1,24 @@
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { persistQueryClient } from '@tanstack/react-query-persist-client';
 import { render } from 'preact';
 import { Theme } from 'react-daisyui';
 import { BrowserRouter } from 'react-router-dom';
-import { GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
-import { NodeInfoProvider } from './NodeInfoProvider';
-import SharedProvider from './SharedProvider';
 import { App } from './app';
+import { GlobalState, GlobalStateContext, GlobalStateProvider } from './GlobalStateProvider';
 import { emptyFn } from './helpers/general';
 import './index.css';
-import { ThemeName, tenantTheme } from './models/Theme';
+import { tenantTheme, ThemeName } from './models/Theme';
+import { NodeInfoProvider } from './NodeInfoProvider';
+import SharedProvider from './SharedProvider';
 
 const queryClient = new QueryClient();
+
+const localStoragePersister = createSyncStoragePersister({ storage: window.localStorage });
+persistQueryClient({
+  queryClient,
+  persister: localStoragePersister,
+});
 
 render(
   <QueryClientProvider client={queryClient}>
