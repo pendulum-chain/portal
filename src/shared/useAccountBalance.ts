@@ -37,7 +37,7 @@ export const useAccountBalance = (
   const { data } = query;
 
   const balance = useMemo(() => {
-    if (!data?.data || !accountAddress) return undefined;
+    if (data?.data.free === undefined || !accountAddress) return undefined;
     return prettyNumbers(nativeToDecimal(data.data.free).toNumber());
   }, [data?.data, accountAddress]);
 
