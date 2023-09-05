@@ -1,8 +1,8 @@
+import { SignerPayloadJSON } from '@polkadot/types/types';
 import { WalletAccount } from '@talismn/connect-wallets';
 import type { SessionTypes } from '@walletconnect/types/dist/types/sign-client/session';
 import UniversalProvider from '@walletconnect/universal-provider';
 import logo from '../../assets/wallet-connect.svg';
-import { SignerPayloadJSON } from '@polkadot/types/types';
 import { config } from '../../config';
 
 // TODO: improve this
@@ -61,9 +61,13 @@ export const walletConnectService = {
         installed: true,
         extension: undefined,
         signer,
-        getAccounts: () => Promise.resolve([]), // TODO
-        subscribeAccounts: () => undefined, // TODO
-        transformError: (err) => err, // TODO
+        /**
+         * The following methods are tagged as 'Unused' since they are only required by the @talisman package,
+         * which we are not using to handle this wallet connection.
+         */
+        getAccounts: () => Promise.resolve([]), // Unused
+        subscribeAccounts: () => undefined, // Unused
+        transformError: (err: any) => err, // Unused
       },
     };
   },

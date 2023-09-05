@@ -4,6 +4,7 @@ build/
 lib/
 types/
 coverage/
+gql/
 
 *.d.ts
 *.config.*
