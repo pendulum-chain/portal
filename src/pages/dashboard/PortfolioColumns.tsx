@@ -20,11 +20,11 @@ export const tokenColumn: ColumnDef<PortfolioAsset> = {
           className="mr-2"
           style={{
             objectFit: 'cover',
-            width: '40px',
-            height: '40px',
+            width: '32px',
+            height: '32px',
           }}
         />
-        <div className="leading-10"> {row.original.token} </div>
+        <div className="leading-8"> {row.original.token} </div>
       </div>
     );
   },

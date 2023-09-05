@@ -118,7 +118,7 @@ function Portfolio() {
       </div>
       {walletAccount && (
         <Table
-          className="bg-base-100 text-lg"
+          className="bg-base-100 text-md"
           data={data}
           columns={columns}
           isLoading={!data}
