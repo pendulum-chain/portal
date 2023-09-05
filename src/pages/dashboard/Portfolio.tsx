@@ -112,7 +112,9 @@ function Portfolio() {
     <div className="card portfolio rounded-md bg-base-200 mr-20">
       <div className="p-4 flex flex-row justify-between">
         <div className="font-bold text-xl">Wallet</div>
-        <div className="text-xl">$ {accountTotalBalance.toFixed(4)}</div>
+        <div className="text-xl" title={accountTotalBalance.toString()}>
+          $ {accountTotalBalance.toFixed(2)}
+        </div>
       </div>
       {walletAccount && (
         <Table

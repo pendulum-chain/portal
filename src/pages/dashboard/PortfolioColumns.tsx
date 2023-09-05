@@ -37,7 +37,7 @@ export const priceColumn: ColumnDef<PortfolioAsset> = {
   cell: ({ row }) => {
     return (
       <div title={row.original.price ? row.original.price.toString() : undefined}>
-        {row.original.price ? row.original.price.toFixed(5) : '-'}
+        {row.original.price ? '$ ' + row.original.price.toFixed(4) : '-'}
       </div>
     );
   },
@@ -57,4 +57,10 @@ export const usdValueColumn: ColumnDef<PortfolioAsset> = {
   accessorKey: 'usdValue',
   enableMultiSort: true,
   accessorFn: ({ price, amount }) => (price ? '$ ' + (price * amount).toFixed(2) : '-'),
+  cell: ({ row }) => {
+    const { price, amount } = row.original;
+    return (
+      <div title={price ? (price * amount).toString() : '-'}>{price ? '$ ' + (price * amount).toFixed(2) : '-'}</div>
+    );
+  },
 };
