@@ -59,7 +59,7 @@ const assets: PriceFetcherAsset[] = [
   {
     assetName: 'DOT',
     blockchain: 'Polkadot',
-    assetId: '0x0000000000000000000000000000000000000000/',
+    assetId: '0x0000000000000000000000000000000000000000',
     provider: 'dia',
     exclude: [TenantName.Amplitude],
   },
