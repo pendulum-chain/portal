@@ -17,14 +17,14 @@ BigNumber.PE = 100;
 BigNumber.NE = -20;
 
 // Converts a decimal number to the native representation (a large integer)
-export const decimalToNative = (value: BigNumber | number | string) => {
+export const decimalToNative = (value: BigNumber | number | string, decimals: number = ChainDecimals) => {
   let bigIntValue;
   try {
     bigIntValue = new BigNumber(value);
   } catch (error) {
     bigIntValue = new BigNumber(0);
   }
-  const multiplier = new BigNumber(10).pow(ChainDecimals);
+  const multiplier = new BigNumber(10).pow(decimals);
   return bigIntValue.times(multiplier).round(0);
 };
 
@@ -46,13 +46,13 @@ export const fixedPointToDecimal = (value: BigNumber | number | string) => {
   return bigIntValue.div(divisor);
 };
 
-export const nativeToDecimal = (value: BigNumber | number | string | u128) => {
+export const nativeToDecimal = (value: BigNumber | number | string | u128, decimals: number = ChainDecimals) => {
   if (typeof value === 'string' || value instanceof u128) {
     // Replace the unnecessary ',' with '' to prevent BigNumber from throwing an error
     value = new BigNumber(value.toString().replaceAll(',', ''));
   }
   const bigIntValue = new BigNumber(value);
-  const divisor = new BigNumber(10).pow(ChainDecimals);
+  const divisor = new BigNumber(10).pow(decimals);
 
   return bigIntValue.div(divisor);
 };
