@@ -7,7 +7,7 @@ import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
-import { nativeToDecimal, format } from '../../../shared/parseNumbers';
+import { format, nativeToDecimal } from '../../../shared/parseNumbers';
 
 interface Props {
   userRewardsBalance?: string;
@@ -42,6 +42,8 @@ function ClaimRewardsDialog(props: Props) {
   const submitExtrinsic = useCallback(() => {
     if (!walletAccount || !api || !amount) return;
 
+    setLoading(true);
+
     const extrinsic = createClaimRewardExtrinsic(userRewardsBalance);
 
     extrinsic
@@ -57,8 +59,7 @@ function ClaimRewardsDialog(props: Props) {
             toast(errorMessage, { type: 'error' });
           }
         } else if (status.isFinalized) {
-          setLoading(true);
-
+          setLoading(false);
           if (errors.length === 0) {
             setStep(ClaimStep.Success);
           }
