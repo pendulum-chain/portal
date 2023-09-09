@@ -5,20 +5,20 @@ import { Abi, ContractPromise } from '@polkadot/api-contract';
 import { ContractOptions } from '@polkadot/api-contract/types';
 import { QueryKey, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { emptyCacheKey, emptyFn, QueryOptions } from './helpers';
+import { emptyCacheKey, emptyFn, gasDefaults, QueryOptions } from './helpers';
 import { useSharedState } from './Provider';
 
-export type UseContractProps<T> = QueryOptions & {
-  abi: T;
+export type UseContractProps<TAbi> = QueryOptions & {
+  abi: TAbi;
   address?: string;
   owner?: string;
   method: string;
   args?: any[];
   options?: ContractOptions | ((api: ApiPromise) => ContractOptions);
 };
-export const useContract = <T extends Abi | Record<string, unknown>>(
+export const useContract = <TAbi extends Abi | Record<string, unknown>>(
   key: QueryKey,
-  { abi, address, owner, method, args, options, ...rest }: UseContractProps<T>,
+  { abi, address, owner, method, args, options, ...rest }: UseContractProps<TAbi>,
 ) => {
   const { api } = useSharedState();
   const contract = useMemo(
@@ -34,15 +34,15 @@ export const useContract = <T extends Abi | Record<string, unknown>>(
             typeof options === 'function'
               ? options(api)
               : options || {
-                  gasLimit: api.createType('WeightV2', {
-                    refTime: '120000000000',
-                    proofSize: '1200000',
-                  }),
+                  // { gasLimit: -1 }
+                  gasLimit: api.createType('WeightV2', gasDefaults),
                   storageDepositLimit: null,
                 };
           const response = await contract.query[method](owner, opts, ...(args || []));
           if (!response?.result?.isOk || response?.output === undefined) throw response;
-          return response;
+          // ? TODO: maybe not ideal to cache only output
+          // caching the whole object causes the output to be converted to hex string
+          return response.output?.toString();
         }
       : emptyFn,
     {

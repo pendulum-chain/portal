@@ -12,6 +12,8 @@ export interface UseAccountBalanceResponse {
   enabled: boolean;
 }
 
+const isValid = (value: unknown) => value !== undefined && typeof value !== 'string';
+
 export const useAccountBalance = (
   address?: string,
   options?: QueryOptions<FrameSystemAccountInfo | undefined, unknown>,
@@ -22,7 +24,14 @@ export const useAccountBalance = (
   const enabled = !!api && !!accountAddress && options?.enabled !== false;
   const query = useQuery<FrameSystemAccountInfo | undefined, unknown>(
     enabled ? [cacheKeys.accountBalance, accountAddress] : emptyCacheKey,
-    enabled ? () => api.query.system.account(accountAddress) : emptyFn,
+    enabled
+      ? async () => {
+          const response = await api.query.system.account(accountAddress);
+          const val = response?.data?.free;
+          if (!isValid(val)) throw new Error('Error!');
+          return response;
+        }
+      : emptyFn,
     {
       cacheTime: 0,
       staleTime: 0,
@@ -37,9 +46,10 @@ export const useAccountBalance = (
   const { data } = query;
 
   const balance = useMemo(() => {
-    if (data?.data.free === undefined || !accountAddress) return undefined;
-    return prettyNumbers(nativeToDecimal(data.data.free).toNumber());
-  }, [data?.data, accountAddress]);
+    const val = data?.data.free;
+    if (!isValid(val)) return undefined;
+    return prettyNumbers(nativeToDecimal(val || 0).toNumber());
+  }, [data?.data]);
 
   return {
     query,

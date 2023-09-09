@@ -11,7 +11,7 @@ const useSwitchChain = () => {
   const switchChain = useCallback(
     (tenant: TenantName) => {
       navigateTo(buildTenantPath(tenantName, tenant, location));
-      setTimeout(() => window.location.reload(), 50);
+      setTimeout(() => window.location.reload(), 35);
     },
     [location, navigateTo, tenantName],
   );

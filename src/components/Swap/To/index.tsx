@@ -50,6 +50,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
   const fromToken = tokensMap?.[from];
   const toToken = tokensMap?.[to];
   const debouncedFromAmount = useDebouncedValue(fromAmount, 800);
+  // TODO:
   const { isLoading, data, refetch, isError, error } = useTokenOutAmount({
     amount: debouncedFromAmount,
     from,
@@ -61,13 +62,12 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
   });
 
   useEffect(() => {
-    if (isError) setError('toAmount', { message: error || 'Something went wrong' });
+    if (isError) setError('toAmount', { message: error ? String(error) : 'Something went wrong' });
     else clearErrors('toAmount');
   }, [isError, error, setError, clearErrors]);
 
   const loading = isLoading || fromAmount !== debouncedFromAmount;
-  console.log(data);
-  const value = data ? prettyNumbers(nativeToDecimal(data.data.free).toNumber()) : 0; // TODO
+  const value = data?.data?.free ? prettyNumbers(nativeToDecimal(data.data.free).toNumber()) : 0;
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>

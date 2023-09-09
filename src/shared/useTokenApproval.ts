@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'react';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
+import { gasDefaults } from './helpers';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContractWrite, UseContractWriteProps } from './useContractWrite';
@@ -58,10 +59,7 @@ export const useTokenApproval = ({
     method: 'approve',
     args: [spender, approveMax ? maxInt : amountBI.toString()],
     options: (api) => ({
-      gasLimit: api.createType('WeightV2', {
-        refTime: '12000000000',
-        proofSize: '1200000',
-      }),
+      gasLimit: api.createType('WeightV2', gasDefaults),
       storageDepositLimit: null,
     }),
     onError: (err) => {
@@ -78,10 +76,7 @@ export const useTokenApproval = ({
     },
   });
 
-  const allowance = useMemo(
-    () => nativeToDecimal(parseFloat(allowanceData?.output?.toString() || '0') || 0).toNumber(),
-    [allowanceData],
-  );
+  const allowance = useMemo(() => nativeToDecimal(parseFloat(allowanceData || '0')).toNumber(), [allowanceData]);
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {
     let state = ApprovalState.UNKNOWN;

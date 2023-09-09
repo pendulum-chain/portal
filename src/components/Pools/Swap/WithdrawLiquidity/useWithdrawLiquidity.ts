@@ -26,7 +26,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
     address: poolAddress,
     method: 'withdraw',
     onError: () => {
-      // ? log error - alert not needed as the transaction modal dispays the error
+      // ? log error - alert not needed as the transaction modal displays the error
     },
     onSuccess: () => {
       form.reset();
