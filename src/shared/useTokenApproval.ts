@@ -21,11 +21,10 @@ interface UseTokenApprovalParams {
   amount?: number;
   approveMax?: boolean;
   enabled?: boolean;
+  decimals?: number;
   onError?: (err: any) => void;
   onSuccess?: UseContractWriteProps['onSuccess'];
 }
-
-const maxInt = decimalToNative(Number.MAX_SAFE_INTEGER).toString();
 
 export const useTokenApproval = ({
   token,
@@ -33,13 +32,15 @@ export const useTokenApproval = ({
   spender,
   enabled = true,
   approveMax,
+  decimals,
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
   const { address } = useSharedState();
   const [pending, setPending] = useState(false);
-  const amountBI = decimalToNative(amount);
+  const amountBI = decimalToNative(amount, decimals);
   const isEnabled = Boolean(token && spender && address && enabled);
+  const maxInt = useMemo(() => decimalToNative(Number.MAX_SAFE_INTEGER, decimals).toString(), [decimals]);
   const {
     data: allowanceData,
     isLoading: isAllowanceLoading,
@@ -76,7 +77,10 @@ export const useTokenApproval = ({
     },
   });
 
-  const allowance = useMemo(() => nativeToDecimal(parseFloat(allowanceData || '0')).toNumber(), [allowanceData]);
+  const allowance = useMemo(
+    () => nativeToDecimal(parseFloat(allowanceData || '0'), decimals).toNumber(),
+    [allowanceData, decimals],
+  );
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {
     let state = ApprovalState.UNKNOWN;

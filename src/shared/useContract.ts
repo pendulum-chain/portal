@@ -8,7 +8,7 @@ import { useMemo } from 'preact/compat';
 import { emptyCacheKey, emptyFn, gasDefaults, QueryOptions } from './helpers';
 import { useSharedState } from './Provider';
 
-export type UseContractProps<TAbi> = QueryOptions & {
+export type UseContractProps<TAbi extends Abi | Record<string, unknown>> = QueryOptions & {
   abi: TAbi;
   address?: string;
   owner?: string;

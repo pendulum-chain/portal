@@ -4,6 +4,7 @@ import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { useTokens } from '../../../hooks/nabla/useTokens';
+import { FixedU128Decimals } from '../../../shared/parseNumbers';
 import { useContractBalance } from '../../../shared/useContractBalance';
 import TokenPrice from '../../Asset/Price';
 import { SwapFormValues } from '../types';
@@ -22,7 +23,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
     name: 'from',
   });
   const token = tokensMap?.[from];
-  const { formatted, balance } = useContractBalance({ contractAddress: token?.id });
+  const { formatted, balance } = useContractBalance({ contractAddress: token?.id, decimals: FixedU128Decimals });
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>

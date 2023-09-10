@@ -14,7 +14,7 @@ import { useTokens } from '../../hooks/nabla/useTokens';
 import { useGetAppDataByTenant } from '../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../models/Swap';
 import { storageService } from '../../services/storage/local';
-import { decimalToNative } from '../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../shared/parseNumbers';
 import { useContractWrite } from '../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';
@@ -88,10 +88,10 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   const onSubmit = form.handleSubmit((variables: SwapFormValues) => {
     const time = Math.floor(Date.now() / 1000) + variables.deadline;
-    const deadline = decimalToNative(time);
+    const deadline = decimalToNative(time, FixedU128Decimals);
     const slippage = variables.slippage ?? defaultValues.slippage;
-    const fromAmount = decimalToNative(variables.fromAmount).toString();
-    const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, slippage)).toString();
+    const fromAmount = decimalToNative(variables.fromAmount, FixedU128Decimals).toString();
+    const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, slippage), FixedU128Decimals).toString();
     const spender = address;
     return swapMutation.mutate([spender, fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });

@@ -4,7 +4,7 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../gql/graphql';
 import { calcSharePercentage, minMax } from '../../../../helpers/calc';
-import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -103,7 +103,10 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               <div>Remaining pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() - amount, deposit - amount),
+                  calcSharePercentage(
+                    nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber() - amount,
+                    deposit - amount,
+                  ),
                 )}
                 %
               </div>

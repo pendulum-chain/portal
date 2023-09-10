@@ -16,7 +16,7 @@ const isValid = (value: unknown) => value !== undefined && typeof value !== 'str
 
 export const useAccountBalance = (
   address?: string,
-  options?: QueryOptions<FrameSystemAccountInfo | undefined, unknown>,
+  options?: QueryOptions<FrameSystemAccountInfo | undefined, unknown> & { decimals?: number },
 ): UseAccountBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
 
@@ -44,12 +44,12 @@ export const useAccountBalance = (
     },
   );
   const { data } = query;
-
+  const decimals = options?.decimals;
   const balance = useMemo(() => {
     const val = data?.data.free;
     if (!isValid(val)) return undefined;
-    return prettyNumbers(nativeToDecimal(val || 0).toNumber());
-  }, [data?.data]);
+    return prettyNumbers(nativeToDecimal(val || 0, decimals).toNumber());
+  }, [data?.data, decimals]);
 
   return {
     query,

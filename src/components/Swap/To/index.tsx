@@ -10,7 +10,7 @@ import { useTokens } from '../../../hooks/nabla/useTokens';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { useTokenOutAmount } from '../../../hooks/useTokenOutAmount';
-import { nativeToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers';
 import TokenPrice from '../../Asset/Price';
 import Balance from '../../Balance';
 import { Skeleton } from '../../Skeleton';
@@ -67,7 +67,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
   }, [isError, error, setError, clearErrors]);
 
   const loading = isLoading || fromAmount !== debouncedFromAmount;
-  const value = data?.data?.free ? prettyNumbers(nativeToDecimal(data.data.free).toNumber()) : 0;
+  const value = data?.data?.free ? prettyNumbers(nativeToDecimal(data.data.free, FixedU128Decimals).toNumber()) : 0;
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -101,7 +101,7 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
           <div className="text-sm mt-px">{!!toToken && <TokenPrice address={toToken.id} />}</div>
           <div className="flex gap-1 text-sm">
-            Balance: <Balance address={toToken?.id} />
+            Balance: <Balance address={toToken?.id} decimals={FixedU128Decimals} />
           </div>
         </div>
         {fromAmount > 0 && (

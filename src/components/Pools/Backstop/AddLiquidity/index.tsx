@@ -4,7 +4,7 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../gql/graphql';
 import { calcSharePercentage, minMax } from '../../../../helpers/calc';
-import { nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../shared/parseNumbers';
 import TokenApproval from '../../../Asset/Approval';
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
@@ -108,7 +108,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 {depositQuery.isLoading
                   ? numberLoader
                   : minMax(
-                      calcSharePercentage(nativeToDecimal(data.totalSupply || 0).toNumber() + amount, deposit + amount),
+                      calcSharePercentage(
+                        nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber() + amount,
+                        deposit + amount,
+                      ),
                     )}
                 %
               </div>

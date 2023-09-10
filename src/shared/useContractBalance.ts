@@ -9,7 +9,7 @@ import { nativeToDecimal, prettyNumbers } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContract } from './useContract';
 
-export type UseBalanceProps<TAbi extends Abi> = {
+export type UseBalanceProps<TAbi extends Abi | Record<string, unknown>> = {
   /** token or contract address */
   contractAddress?: string;
   /** account address */
@@ -25,7 +25,7 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
   enabled: boolean;
 };
 
-export const useContractBalance = <TAbi extends Abi>(
+export const useContractBalance = <TAbi extends Abi | Record<string, unknown>>(
   { contractAddress, account, abi, decimals }: UseBalanceProps<TAbi>,
   options?: QueryOptions,
 ): UseBalanceResponse => {

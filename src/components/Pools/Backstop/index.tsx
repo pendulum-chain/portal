@@ -1,6 +1,7 @@
 import { Button, Card } from 'react-daisyui';
 import { useBackstopPools } from '../../../hooks/nabla/useBackstopPools';
 import ModalProvider, { useModalToggle } from '../../../services/modal';
+import { FixedU128Decimals } from '../../../shared/parseNumbers';
 import Balance from '../../Balance';
 import { Skeleton } from '../../Skeleton';
 import Modals from './Modals';
@@ -21,7 +22,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>
-                <Balance address={pool.id} />
+                <Balance address={pool.id} decimals={FixedU128Decimals} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">

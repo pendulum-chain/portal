@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
 import { subtractPercentage } from '../../../../helpers/calc';
 import { useModalToggle } from '../../../../services/modal';
-import { decimalToNative } from '../../../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../shared/useContractWrite';
 import schema from './schema';
@@ -11,8 +11,8 @@ import { WithdrawLiquidityValues } from './types';
 
 export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
   const toggle = useModalToggle();
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress });
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
@@ -37,8 +37,8 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
 
   const onSubmit = form.handleSubmit((variables: WithdrawLiquidityValues) =>
     mutation.mutate([
-      decimalToNative(variables.amount).toString(),
-      decimalToNative(subtractPercentage(variables.amount, 0.1)).toString(),
+      decimalToNative(variables.amount, FixedU128Decimals).toString(),
+      decimalToNative(subtractPercentage(variables.amount, 0.1), FixedU128Decimals).toString(),
     ]),
   );
 

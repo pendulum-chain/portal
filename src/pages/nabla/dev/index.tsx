@@ -6,7 +6,7 @@ import { config } from '../../../config';
 import { mockERC20 } from '../../../contracts/nabla/MockERC20';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokens } from '../../../hooks/nabla/useTokens';
-import { decimalToNative } from '../../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 
 const TokenItem = ({ token }: { token: Token }) => {
@@ -31,7 +31,7 @@ const TokenItem = ({ token }: { token: Token }) => {
             color="secondary"
             type="button"
             disabled={isLoading}
-            onClick={() => mutate([address, decimalToNative(1000).toString()])}
+            onClick={() => mutate([address, decimalToNative(1000, FixedU128Decimals).toString()])}
           >
             {isLoading ? 'Loading' : 'Mint 1000'}
           </Button>
@@ -44,7 +44,7 @@ const TokenItem = ({ token }: { token: Token }) => {
                 <div
                   role="button"
                   className={`btn-sm`}
-                  onClick={() => mutate([address, decimalToNative(10000).toString()])}
+                  onClick={() => mutate([address, decimalToNative(10000, FixedU128Decimals).toString()])}
                 >
                   10000
                 </div>
@@ -53,7 +53,7 @@ const TokenItem = ({ token }: { token: Token }) => {
                 <div
                   role="button"
                   className={`btn-sm`}
-                  onClick={() => mutate([address, decimalToNative(100000).toString()])}
+                  onClick={() => mutate([address, decimalToNative(100000, FixedU128Decimals).toString()])}
                 >
                   100000
                 </div>

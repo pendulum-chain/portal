@@ -9,13 +9,22 @@ export type UseTokenOutAmountProps = {
   amount?: number;
   from?: string;
   to?: string;
+  decimals?: number;
   onSuccess?: (val: bigint) => void;
   onError?: (err: Error) => void;
   enabled?: boolean;
 };
 
-export const useTokenOutAmount = ({ amount, from, to, onSuccess, onError, enabled }: UseTokenOutAmountProps) => {
-  const amountIn = decimalToNative(amount || 0).toString();
+export const useTokenOutAmount = ({
+  amount,
+  from,
+  to,
+  decimals,
+  onSuccess,
+  onError,
+  enabled,
+}: UseTokenOutAmountProps) => {
+  const amountIn = decimalToNative(amount || 0, decimals).toString();
   const { address } = useGlobalState().walletAccount || {};
   const { router } = useGetAppDataByTenant('nabla').data || {};
   return useContract([cacheKeys.tokenOutAmount, from, to, amountIn], {
