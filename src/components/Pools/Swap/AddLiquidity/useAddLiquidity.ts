@@ -1,6 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { cacheKeys } from '../../../../constants/cache';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { useGetAppDataByTenant } from '../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../services/modal';
 import { decimalToNative, FixedU128Decimals } from '../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../shared/useContractBalance';
@@ -9,6 +12,8 @@ import schema from './schema';
 import { AddLiquidityValues } from './types';
 
 export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
+  const queryClient = useQueryClient();
+  const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
   const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
@@ -17,6 +22,22 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
     abi: swapPoolAbi,
     decimals: FixedU128Decimals,
   });
+
+  /* const { api } = useNodeInfoState().state;
+  const { address } = useGlobalState().walletAccount || {};
+  useEffect(() => {
+    const run = async () => {
+      if (!api || !address) return;
+      const contract = new ContractPromise(api, swapPoolAbi, poolAddress);
+      const response = await contract.query.balanceOf(address, createReadOptions(api), address);
+      console.log(
+        response,
+        response?.output?.toString(),
+        nativeToDecimal(parseFloat(response?.output?.toString() || '0'), 18).toNumber(),
+      );
+    };
+    run();
+  }, [api, address, poolAddress]); */
 
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),
@@ -34,6 +55,7 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
       form.reset();
       balanceQuery.refetch();
       depositQuery.refetch();
+      queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
     },
   });
 
