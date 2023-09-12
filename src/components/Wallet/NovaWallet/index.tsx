@@ -75,15 +75,16 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
         })
         .catch((error) => console.error(error));
     }
-  }, [selectedAccount]);
+  }, [selectedAccount, setWalletAccount]);
 
   return (
     <div className="-mt-8">
       <Modal open={openModal} responsive={true}>
         <h1 className="text-lg">Select your Nova account</h1>
         <div>
-          {accounts.map((a) => (
+          {accounts.map((a, index) => (
             <button
+              key={index}
               className={`flex items-center gap-4 p-4 rounded-xl text-left w-full bg-[var(--modal-control-background)] hover:bg-[var(--modal-active-background)]`}
               onClick={() => setSelectedAccount(a)}
             >
