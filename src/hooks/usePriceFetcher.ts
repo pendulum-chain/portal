@@ -6,7 +6,7 @@ interface PriceFetcherAsset {
   blockchain: string;
   assetId: string | undefined;
   exclude?: TenantName[];
-  provider: 'dia' | 'diaForeign' | 'mexc';
+  provider: 'dia' | 'diaForeign';
 }
 
 type PricesCache = {
@@ -73,26 +73,11 @@ const assets: PriceFetcherAsset[] = [
   {
     assetName: 'PEN',
     blockchain: 'Pendulum',
-    assetId: 'PENDULUMUSDT',
-    provider: 'mexc',
+    assetId: '0x0000000000000000000000000000000000000000',
+    provider: 'dia',
     exclude: [TenantName.Amplitude],
   },
 ];
-
-// FIXME avoid CORS policy from MEXC
-const getMexcAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
-  // const data = await fetch(`https://api.mexc.com/api/v3/avgPrice?symbol=${asset.assetId}`);
-
-  // try {
-  //   if (data.ok) {
-  //     return (await data.json())['price'];
-  //   }
-  // } catch (e) {
-  //   console.error(e);
-  // }
-
-  return 0.5;
-};
 
 const getDIAAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
   if (!asset.assetId) return 0;
@@ -126,7 +111,6 @@ const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset): Promise<number
 const providers = {
   dia: getDIAAssetPrice,
   diaForeign: getDIAAssetForeignPrice,
-  mexc: getMexcAssetPrice,
 };
 
 const lookup = (assetCode: string) => {
