@@ -7,6 +7,7 @@ import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../sha
 import { numberLoader } from '../../../Loader';
 import TransactionProgress from '../../../Transaction/Progress';
 import { SwapPoolColumn } from '../columns';
+import BackstopPoolRedeem from './BackstopPoolRedeem';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 
 export interface WithdrawLiquidityProps {
@@ -17,16 +18,18 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   const {
     toggle,
     mutation,
+    redeemMutation,
     onSubmit,
+    onRedeem,
     balanceQuery,
     depositQuery,
     form: { register, setValue, watch },
-  } = useWithdrawLiquidity(data.id, data.token.id);
+  } = useWithdrawLiquidity(data.id, data.token.id, data.backstop.id);
   const amount = Number(watch('amount') || 0);
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
-  const hideCss = !mutation.isIdle ? 'hidden' : '';
+  const hideCss = !mutation.isIdle || !redeemMutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
@@ -112,18 +115,21 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               </div>
             </div>
           </div>
-          <Button color="primary" className="mt-8 w-full" type="submit">
-            Withdraw
-          </Button>
-          <Button
-            color="secondary"
-            className="mt-2 w-full"
-            type="button"
-            disable={mutation.isLoading}
-            onClick={() => toggle()}
-          >
-            Cancel
-          </Button>
+          <div className="mt-8">
+            <BackstopPoolRedeem pool={data} amount={amount} onSubmit={onRedeem} />
+            <Button color="primary" className="w-full" type="submit">
+              Withdraw
+            </Button>
+            <Button
+              color="secondary"
+              className="mt-2 w-full"
+              type="button"
+              disable={mutation.isLoading}
+              onClick={() => toggle()}
+            >
+              Cancel
+            </Button>
+          </div>
         </form>
       </div>
     </div>

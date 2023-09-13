@@ -23,22 +23,6 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
     decimals: FixedU128Decimals,
   });
 
-  /* const { api } = useNodeInfoState().state;
-  const { address } = useGlobalState().walletAccount || {};
-  useEffect(() => {
-    const run = async () => {
-      if (!api || !address) return;
-      const contract = new ContractPromise(api, swapPoolAbi, poolAddress);
-      const response = await contract.query.balanceOf(address, createReadOptions(api), address);
-      console.log(
-        response,
-        response?.output?.toString(),
-        nativeToDecimal(parseFloat(response?.output?.toString() || '0'), 18).toNumber(),
-      );
-    };
-    run();
-  }, [api, address, poolAddress]); */
-
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),
     defaultValues: {},

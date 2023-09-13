@@ -43,7 +43,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const onSubmit = form.handleSubmit((variables: WithdrawLiquidityValues) =>
     mutation.mutate([
       decimalToNative(variables.amount, FixedU128Decimals).toString(),
-      decimalToNative(subtractPercentage(variables.amount, 0.1), FixedU128Decimals).toString(),
+      decimalToNative(subtractPercentage(variables.amount, 0.5), FixedU128Decimals).toString(),
     ]),
   );
 

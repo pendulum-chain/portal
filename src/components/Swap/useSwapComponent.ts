@@ -88,7 +88,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   const onSubmit = form.handleSubmit((variables: SwapFormValues) => {
     const time = Math.floor(Date.now() / 1000) + variables.deadline;
-    const deadline = decimalToNative(time, FixedU128Decimals);
+    const deadline = decimalToNative(time, FixedU128Decimals).toString();
     const slippage = variables.slippage ?? defaultValues.slippage;
     const fromAmount = decimalToNative(variables.fromAmount, FixedU128Decimals).toString();
     const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, slippage), FixedU128Decimals).toString();

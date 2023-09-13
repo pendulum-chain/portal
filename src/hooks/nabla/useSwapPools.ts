@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import request from 'graphql-request';
 import { graphql } from '../../../gql/gql';
 import { SwapPool } from '../../../gql/graphql';
