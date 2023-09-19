@@ -34,7 +34,7 @@ module.exports = {
           neutral: '#EFF2F5',
           'base-100': '#fbfcfe',
           'base-200': '#fff',
-          'base-300': '#eff2f5',
+          'base-300': '#F7F7F7',
           'base-content': '#58667E',
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
