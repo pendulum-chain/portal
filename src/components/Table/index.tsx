@@ -43,6 +43,10 @@ export type TableProps<T> = {
    *
    */
   sortBy?: MultiSort;
+  /** Gives a className to even rows (2,4,6,8,...), to help table rows readability. */
+  evenRowsClassname?: string;
+  /** Gives a className to odd rows (1,3,5,7,...), to help table rows readability. */
+  oddRowsClassname?: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,6 +61,8 @@ const Table = <T,>({
   isLoading,
   className,
   sortBy,
+  evenRowsClassname,
+  oddRowsClassname,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
@@ -128,12 +134,13 @@ const Table = <T,>({
             ))}
           </thead>
           <tbody>
-            {getRowModel().rows.map((row) => {
+            {getRowModel().rows.map((row, index) => {
+              const even = index % 2;
               return (
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id} className="bg-base-200">
+                      <td key={cell.id} className={(even ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     );
