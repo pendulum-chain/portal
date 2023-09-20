@@ -50,7 +50,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-          <div className="text-sm mt-px">{!!token && <TokenPrice address={token.id} />}</div>
+          <div className="text-sm mt-px">{!!token && <TokenPrice address={token.id} symbol={token.symbol} />}</div>
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>

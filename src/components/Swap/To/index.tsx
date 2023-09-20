@@ -99,7 +99,9 @@ const To = ({ onOpenSelector, className }: ToProps): JSX.Element | null => {
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
-          <div className="text-sm mt-px">{!!toToken && <TokenPrice address={toToken.id} />}</div>
+          <div className="text-sm mt-px">
+            {!!toToken && <TokenPrice address={toToken.id} symbol={toToken.symbol} />}
+          </div>
           <div className="flex gap-1 text-sm">
             Balance: <Balance address={toToken?.id} decimals={FixedU128Decimals} />
           </div>
