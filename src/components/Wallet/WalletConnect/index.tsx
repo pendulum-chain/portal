@@ -31,6 +31,9 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
         modal?.openModal({ uri, onclose: () => setLoading(false) });
       }
       const session = await approval();
+
+      console.log('session', session);
+
       setWalletAccount(await walletConnectService.init(session, chainId));
       modal?.closeModal();
       setLoading(false);
