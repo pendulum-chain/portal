@@ -84,6 +84,19 @@
   background-color: rgba(255, 255, 255, 0.06);
 }
 
+
+.bridge-card .tabs-boxed .tab-active > svg{
+  fill: var(--gray-3, #828282);
+}
+
+.bridge-card .tabs-boxed :not(.tab-active) {
+  color: var(--gray-3, #828282);
+}
+
+.bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
+  background-color: #f7f7f7;
+}
+
 .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]),
 .bridge-card button.btn-primary {
   color: #202020;

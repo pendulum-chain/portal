@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'preact/hooks';
 import { Card, Tabs } from 'react-daisyui';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import AmplitudeLogo from '../../assets/AmplitudeLogo';
+import PendulumLogo from '../../assets/PendulumLogo';
 import Issue from './Issue';
 import Redeem from './Redeem';
 import './styles.css';
@@ -27,6 +29,8 @@ function Bridge(): JSX.Element | null {
         <div className="flex justify-between px-4 xs:px-10 mt-5">
           <Tabs className="flex flex-grow" boxed value={tabValue} onChange={setTabValue}>
             <Tabs.Tab className="w-2/4 h-fit p-2" value={0}>
+              {chain === 'Pendulum' && <PendulumLogo className="w-6 h-6" />}
+              {chain === 'Amplitude' && <AmplitudeLogo className="w-6 h-6" />}
               To {chain}
             </Tabs.Tab>
             <Tabs.Tab className="w-2/4 h-fit p-2" value={1}>

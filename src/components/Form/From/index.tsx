@@ -12,6 +12,7 @@ export type IssueFormValues = {
 
 export interface FromProps {
   onOpenSelector?: () => void;
+  balance?: number;
   className?: string;
   max?: number;
   min?: number;
@@ -20,16 +21,21 @@ export interface FromProps {
   error?: string;
 }
 
-const From = ({ onOpenSelector, className, inputProps, max, setValue, error }: FromProps): JSX.Element | null => {
-  const balance = '10';
-  const formatted = balance + ' USDC';
-
+const From = ({
+  onOpenSelector,
+  className,
+  inputProps,
+  max,
+  setValue,
+  error,
+  balance,
+}: FromProps): JSX.Element | null => {
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
         {error && <div>{error}</div>}
         <div className="w-full flex justify-between">
-          <div className="flex-grow text-4xl text-[inherit] font-2">
+          <div className="flex-grow text-4xl text-black font-2">
             <input
               autoFocus
               className="input-ghost w-full text-4xl font-2"
@@ -52,11 +58,11 @@ const From = ({ onOpenSelector, className, inputProps, max, setValue, error }: F
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-          {/* <div className="text-sm mt-px">{<TokenPrice address={'USDC'} />}</div> */}
+          <div className="text-sm mt-px text-secondary-content">From Stellar</div>
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>
-                <span className="mr-1">Balance: {formatted}</span>
+                <span className="mr-1">Available: {balance}</span>
                 <button className="text-primary hover:underline" onClick={() => setValue(Number(max))} type="button">
                   MAX
                 </button>

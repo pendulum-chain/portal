@@ -3,14 +3,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { Button, Checkbox } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From, { IssueFormValues } from '../../../components/Form/From';
-import { VaultSelector } from '../../../components/Selector';
 import OpenWallet from '../../../components/Wallet';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../../helpers/stellar';
@@ -19,8 +18,11 @@ import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../../hooks/spacewalk/vaultRegistry';
 import { decimalToStellarNative } from '../../../shared/parseNumbers';
 import { ConfirmationDialog } from './ConfirmationDialog';
+import Disclaimer from './Disclaimer';
 import { FeeBox } from './FeeBox';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+
+const disclaimerText = 'Lorem ipsun';
 
 interface IssueProps {
   network: string;
@@ -54,7 +56,6 @@ function Issue(props: IssueProps): JSX.Element {
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
-  console.log(amount);
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
     getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
@@ -184,6 +185,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
+      {/* <SettingsDialog /> */}
       <ConfirmationDialog
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
@@ -197,26 +199,6 @@ function Issue(props: IssueProps): JSX.Element {
             setValue={(n: number) => setValue('amount', n)}
             max={10} // Account Balance
           />
-          <div className="flex align-center mt-4">
-            <Checkbox
-              size="sm"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                if (e.target instanceof HTMLInputElement) {
-                  setManualVaultSelection(e.target.checked);
-                }
-              }}
-              checked={manualVaultSelection}
-            />
-            <span className="ml-2">Manually select vault</span>
-          </div>
-          {manualVaultSelection && vaultsForCurrency && (
-            <VaultSelector
-              vaults={vaultsForCurrency}
-              onChange={setSelectedVault}
-              selectedVault={selectedVault}
-              showMaxTokensFor="issuableTokens"
-            />
-          )}
           <FeeBox
             amountNative={amountNative}
             bridgedAsset={selectedAsset}
@@ -239,6 +221,7 @@ function Issue(props: IssueProps): JSX.Element {
           ) : (
             <OpenWallet dAppName={dAppName} />
           )}
+          <Disclaimer text={disclaimerText} />
         </form>
       </div>
     </div>

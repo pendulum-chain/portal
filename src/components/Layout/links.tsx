@@ -54,10 +54,10 @@ export const links: Links = ({ tenantName }) => [
     link: './spacewalk',
     title: 'Spacewalk',
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
+      className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
     prefix: <SpacewalkIcon />,
-    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
+    // suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
     submenu: [
       {
         link: './spacewalk/bridge',
@@ -96,8 +96,6 @@ export const links: Links = ({ tenantName }) => [
     link: '/nabla',
     title: 'Nabla',
     prefix: <NablaIcon />,
-    suffix: <ComingSoonTag />,
-    hidden: true,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },

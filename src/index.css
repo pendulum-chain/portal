@@ -257,10 +257,6 @@ input[type='number'] {
   color: inherit;
 }
 
-.collapse .collapse-content {
-  padding: 0;
-}
-
 .collapse-title,
 :where(.collapse > input[type='checkbox']) {
   min-height: 0;

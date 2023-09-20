@@ -17,11 +17,8 @@ interface FeeBoxProps {
 
 export function FeeBox(props: FeeBoxProps): JSX.Element {
   const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency } = props;
-
   const amount = props.amountNative;
-
   const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
-
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
 
@@ -52,32 +49,35 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
 
     return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
-
   return (
-    <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col text-sm xs:text-base">
-      <div className="flex justify-between">
-        <span>To {network}</span>
-        <span>
-          {totalAmount.toString()} {wrappedCurrencyName}
-        </span>
+    <div tabIndex={0} className="bg-base-300 rounded-lg my-4 collapse collapse-arrow">
+      <div className="collapse-title cursor-opinter">
+        <div className="flex justify-between">
+          <span>To {network}</span>
+          <span>
+            {totalAmount.toString()} {wrappedCurrencyName}
+          </span>
+        </div>
       </div>
-      <div className="flex justify-between mt-2">
-        <span>Bridge Fee</span>
-        <span className="text-right">
-          {bridgeFee.toString()} {bridgedAsset?.getCode()}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Security Deposit</span>
-        <span className="text-right">
-          {griefingCollateral.toString()} {nativeCurrency}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Transaction Fee</span>
-        <span className="text-right">
-          {transactionFee.toFixed(12)} {nativeCurrency}
-        </span>
+      <div className="collapse-content p-4 text-sm xs:text-base flex flex-col ">
+        <div className="flex justify-between mt-2">
+          <span>Bridge Fee</span>
+          <span className="text-right">
+            {bridgeFee.toString()} {bridgedAsset?.getCode()}
+          </span>
+        </div>
+        <div className="flex justify-between mt-2">
+          <span>Security Deposit</span>
+          <span className="text-right">
+            {griefingCollateral.toString()} {nativeCurrency}
+          </span>
+        </div>
+        <div className="flex justify-between mt-2">
+          <span>Transaction Fee</span>
+          <span className="text-right">
+            {transactionFee.toFixed(12)} {nativeCurrency}
+          </span>
+        </div>
       </div>
     </div>
   );
