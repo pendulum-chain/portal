@@ -9,7 +9,7 @@ export default function Disclaimer({ text }: Props) {
     <div tabIndex={0} className="collapse collapse-arrow bg-base-300 rounded-lg my-4">
       <div className="collapse-title flex flex-row items-center">
         <BellIcon />
-        <span className="ml-2">Disclaimer</span>
+        <strong className="ml-2">Disclaimer</strong>
       </div>
       <div className="collapse-content">{text}</div>
     </div>

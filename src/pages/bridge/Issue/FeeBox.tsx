@@ -59,7 +59,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
           </span>
         </div>
       </div>
-      <div className="collapse-content p-4 text-sm xs:text-base flex flex-col ">
+      <div className="collapse-content">
         <div className="flex justify-between mt-2">
           <span>Bridge Fee</span>
           <span className="text-right">
