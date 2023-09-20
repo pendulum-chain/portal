@@ -1,224 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
-import { VoidFn } from '@polkadot/api-base/types';
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
 import _ from 'lodash';
-import { DateTime } from 'luxon';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { Button, Checkbox, Divider, Modal } from 'react-daisyui';
+import { Button, Checkbox } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From, { IssueFormValues } from '../../../components/Form/From';
-import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import { VaultSelector } from '../../../components/Selector';
-import TransferCountdown from '../../../components/TransferCountdown';
 import OpenWallet from '../../../components/Wallet';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey, stringifyStellarAsset } from '../../../helpers/stellar';
+import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
+import { stringifyStellarAsset } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { useFeePallet } from '../../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
-import { useSecurityPallet } from '../../../hooks/spacewalk/security';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../../hooks/spacewalk/vaultRegistry';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative } from '../../../shared/parseNumbers';
+import { ConfirmationDialog } from './ConfirmationDialog';
+import { FeeBox } from './FeeBox';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-
-interface FeeBoxProps {
-  bridgedAsset?: Asset;
-  // The amount of the bridged asset denoted in the smallest unit of the asset
-  amountNative: Big;
-  extrinsic?: SubmittableExtrinsic;
-  network: string;
-  wrappedCurrencySuffix?: string;
-  nativeCurrency: string;
-}
-
-function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency } = props;
-
-  const amount = props.amountNative;
-
-  const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
-
-  const { getFees, getTransactionFee } = useFeePallet();
-  const fees = getFees();
-
-  const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
-
-  useEffect(() => {
-    if (!extrinsic) {
-      return;
-    }
-
-    getTransactionFee(extrinsic).then((fee) => {
-      setTransactionFee(nativeToDecimal(fee));
-    });
-  }, [extrinsic, getTransactionFee, setTransactionFee]);
-
-  const bridgeFee = useMemo(() => {
-    return nativeStellarToDecimal(amount.mul(fees.issueFee));
-  }, [amount, fees]);
-
-  const griefingCollateral = useMemo(() => {
-    return nativeStellarToDecimal(amount.mul(fees.issueGriefingCollateral));
-  }, [amount, fees]);
-
-  const totalAmount = useMemo(() => {
-    if (amount.cmp(0) === 0) {
-      return 0;
-    }
-
-    return nativeStellarToDecimal(amount).sub(bridgeFee);
-  }, [amount, bridgeFee]);
-
-  return (
-    <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col text-sm xs:text-base">
-      <div className="flex justify-between">
-        <span>To {network}</span>
-        <span>
-          {totalAmount.toString()} {wrappedCurrencyName}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Bridge Fee</span>
-        <span className="text-right">
-          {bridgeFee.toString()} {bridgedAsset?.getCode()}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Security Deposit</span>
-        <span className="text-right">
-          {griefingCollateral.toString()} {nativeCurrency}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Transaction Fee</span>
-        <span className="text-right">
-          {transactionFee.toFixed(12)} {nativeCurrency}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-interface ConfirmationDialogProps {
-  issueRequest: RichIssueRequest | undefined;
-  onClose: () => void;
-  visible: boolean;
-}
-
-function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { issueRequest, visible, onClose } = props;
-
-  const { subscribeActiveBlockNumber } = useSecurityPallet();
-  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [_, setRemainingDurationString] = useState<string>('');
-
-  const totalAmount = useMemo(
-    () =>
-      issueRequest
-        ? nativeStellarToDecimal(issueRequest.request.amount.add(issueRequest.request.fee).toString()).toString()
-        : '',
-    [issueRequest],
-  );
-
-  const asset = useMemo(() => {
-    const currency = issueRequest?.request.asset;
-    return currency && convertCurrencyToStellarAsset(currency);
-  }, [issueRequest?.request.asset]);
-
-  const destination = useMemo(() => {
-    const rawDestinationAddress = issueRequest?.request.stellarAddress;
-    return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
-  }, [issueRequest?.request.stellarAddress]);
-
-  const expectedStellarMemo = useMemo(() => {
-    if (!issueRequest) {
-      return '';
-    }
-    // For issue requests we use a shorter identifier for the memo
-    return deriveShortenedRequestId(issueRequest.id);
-  }, [issueRequest]);
-
-  useEffect(() => {
-    let unsub: VoidFn = () => undefined;
-    subscribeActiveBlockNumber((blockNumber) => {
-      setActiveBlockNumber(blockNumber);
-    }).then((u) => (unsub = u));
-
-    return unsub;
-  }, [subscribeActiveBlockNumber]);
-
-  const deadline = useMemo(() => {
-    const openTime = issueRequest?.request.opentime.toNumber() || 0;
-    const period = issueRequest?.request.period.toNumber() || 0;
-    const end = calculateDeadline(activeBlockNumber, openTime, period, 12);
-
-    return end;
-  }, [activeBlockNumber, issueRequest]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newDeadlineString = deadline.diff(DateTime.now()).toFormat('hh:mm:ss');
-      setRemainingDurationString(newDeadlineString);
-    });
-
-    return () => clearInterval(interval);
-  }, [deadline]);
-
-  return (
-    <Modal open={visible}>
-      <Modal.Header className="font-bold">Deposit</Modal.Header>
-      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
-        ✕
-      </Button>
-      <Modal.Body>
-        <div className="text-center">
-          <div className="text-xl">
-            Send {totalAmount} {asset?.getCode()}
-          </div>
-          <div className="text-sm">
-            {asset && asset.getIssuer() && (
-              <>
-                issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
-              </>
-            )}
-          </div>
-          <div className="text mt-4">With the text memo</div>
-          {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
-          <div className="text mt-4">In a single transaction to</div>
-          <CopyableAddress variant="short" publicKey={destination} />
-          <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
-        </div>
-        <Divider />
-        <div>
-          {asset?.getAssetType() !== 'native' && (
-            <div className="text-sm">
-              Warning: Make sure that the {asset?.code} you are sending are issued by the correct issuer.
-            </div>
-          )}
-        </div>
-        <div className="text-sm mt-4">
-          Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
-        </div>
-      </Modal.Body>
-
-      <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose}>
-          I have made the payment
-        </Button>
-      </Modal.Actions>
-    </Modal>
-  );
-}
-
-interface IssueFormInputs {
-  amount: string;
-}
 
 interface IssueProps {
   network: string;
