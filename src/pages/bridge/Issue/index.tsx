@@ -22,7 +22,8 @@ import Disclaimer from './Disclaimer';
 import { FeeBox } from './FeeBox';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 
-const disclaimerText = 'Lorem ipsun';
+const disclaimerText =
+  '1. Sed ut perspiciatis unde omnis iste natus error sit voluptatem\n2. accusantium doloremque laudantium, totam rem aperiam eaque \n3. quae ab illo inventore veritatis et quasi architecto beatae vitae dicta\n4. explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspe';
 
 interface IssueProps {
   network: string;

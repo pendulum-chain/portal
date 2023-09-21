@@ -11,7 +11,7 @@ export default function Disclaimer({ text }: Props) {
         <BellIcon />
         <strong className="ml-2">Disclaimer</strong>
       </div>
-      <div className="collapse-content">{text}</div>
+      <p className="text-sm collapse-content whitespace-pre-line">{text}</p>
     </div>
   );
 }
