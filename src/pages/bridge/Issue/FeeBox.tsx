@@ -51,7 +51,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   }, [amount, bridgeFee]);
   return (
     <div tabIndex={0} className="bg-base-300 rounded-lg my-4 collapse collapse-arrow">
-      <div className="collapse-title cursor-opinter">
+      <div className="collapse-title">
         <div className="flex justify-between">
           <span>To {network}</span>
           <span>
