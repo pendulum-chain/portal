@@ -3,6 +3,7 @@ import { Card, Tabs } from 'react-daisyui';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import AmplitudeLogo from '../../assets/AmplitudeLogo';
 import PendulumLogo from '../../assets/PendulumLogo';
+import { SpacewalkConstants } from '../../helpers/spacewalk';
 import Issue from './Issue';
 import Redeem from './Redeem';
 import './styles.css';
@@ -11,7 +12,7 @@ function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(0);
   const { chain } = useNodeInfoState().state;
   const nativeCurrency = chain === 'Amplitude' ? 'AMPE' : 'PEN';
-  const wrappedCurrencySuffix = '.s';
+  const wrappedCurrencySuffix = SpacewalkConstants.WrappedCurrencySuffix;
 
   const Content = useMemo(() => {
     if (!chain) return;

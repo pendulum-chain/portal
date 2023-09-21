@@ -32,7 +32,7 @@ module.exports = {
           'secondary-content': '#58667E',
           accent: '#1DE7DF',
           neutral: '#EFF2F5',
-          'base-100': '#fbfcfe',
+          'base-100': '#F5F9FA',
           'base-200': '#fff',
           'base-300': '#F7F7F7',
           'base-content': '#58667E',
@@ -53,7 +53,6 @@ module.exports = {
           'base-200': '#1c1c1c',
           'base-300': '#2c2c2c',
           'base-content': '#fff',
-
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
         },
