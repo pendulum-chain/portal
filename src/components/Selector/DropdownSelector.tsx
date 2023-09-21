@@ -1,4 +1,4 @@
-import { Button, Dropdown } from 'react-daisyui';
+import { Dropdown } from 'react-daisyui';
 
 function ArrowIcon() {
   return (
@@ -24,30 +24,25 @@ interface Props<T> {
   items: T[];
   onChange: (item: T) => void;
   value?: T;
+  buttonComponent?: any;
 }
 
 function DropdownSelector<T extends { id: unknown; displayName: string }>(props: Props<T>) {
-  const { items, onChange, value } = props;
+  const { items, onChange, value, buttonComponent } = props;
 
   return (
-    <div>
-      <div className="row-pick-coin">
-        <Dropdown>
-          <Dropdown.Toggle>
-            <Button animation={false} endIcon={<ArrowIcon />}>
-              <span className="normal-case">{value?.displayName}</span>
-            </Button>
-          </Dropdown.Toggle>
-          <Dropdown.Menu className="w-52">
-            {items.map((item) => (
-              <Dropdown.Item key={item.id} onClick={() => onChange(item)}>
-                {item.displayName}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
-        <div className="h-10" />
+    <div className="flex flex-grow">
+      <div className="dropdown min-w-[90px]">
+        {buttonComponent}
+        <Dropdown.Menu className="w-52">
+          {items.map((item) => (
+            <Dropdown.Item key={item.id} onClick={() => onChange(item)}>
+              {item.displayName}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
       </div>
+      <div className="h-10" />
     </div>
   );
 }

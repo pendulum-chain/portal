@@ -1,17 +1,9 @@
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
-import { Button } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import pendulumIcon from '../../../assets/pendulum-icon.svg';
-
-export type IssueFormValues = {
-  amount: number;
-  to: number;
-  deadline: number;
-};
+import { Asset } from 'stellar-sdk';
+import AssetSelector from '../../Selector/AssetSelector';
 
 export interface FromProps {
-  onOpenSelector?: () => void;
   balance?: number;
   className?: string;
   max?: number;
@@ -19,16 +11,21 @@ export interface FromProps {
   inputProps: UseFormRegisterReturn;
   setValue: (n: number) => void;
   error?: string;
+  assets?: Asset[];
+  selectedAsset?: Asset;
+  setSelectedAsset: (a: Asset) => void;
 }
 
 const From = ({
-  onOpenSelector,
+  setSelectedAsset,
   className,
   inputProps,
   max,
   setValue,
   error,
   balance,
+  assets,
+  selectedAsset,
 }: FromProps): JSX.Element | null => {
   return (
     <>
@@ -44,18 +41,14 @@ const From = ({
               {...inputProps}
             />
           </div>
-          <Button
-            size="xs"
-            className="rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
-            onClick={onOpenSelector}
-            type="button"
-          >
-            <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
-              <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
-            </span>
-            <strong className="font-bold">{'USDC'}</strong>
-            <ChevronDownIcon className="w-4 h-4 inline ml-px" />
-          </Button>
+          {assets && (
+            <AssetSelector
+              selectedAsset={selectedAsset}
+              assets={assets}
+              onChange={setSelectedAsset}
+              style={{ flexGrow: 1 }}
+            />
+          )}
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
           <div className="text-sm mt-px text-secondary-content">From Stellar</div>

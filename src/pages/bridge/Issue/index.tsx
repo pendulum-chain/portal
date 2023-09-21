@@ -195,9 +195,12 @@ function Issue(props: IssueProps): JSX.Element {
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => {})}>
           <From
             inputProps={register('amount')}
-            error={formState.errors.amount?.message}
+            error={formState.errors.amount?.message?.toString()}
             setValue={(n: number) => setValue('amount', n)}
             max={10} // Account Balance
+            assets={wrappedAssets}
+            setSelectedAsset={setSelectedAsset}
+            selectedAsset={selectedAsset}
           />
           <FeeBox
             amountNative={amountNative}
