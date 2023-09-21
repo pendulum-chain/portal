@@ -96,7 +96,6 @@
   fill: #32253E;
 }
 
-.bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]),
-.bridge-card button.btn-primary {
+.bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
   color: #32253E;
 }

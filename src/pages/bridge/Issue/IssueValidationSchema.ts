@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { IssueFormValues } from '../../../components/Form/From/index';
+import { IssueFormValues } from '.';
 import { transformNumber } from '../../../helpers/yup';
 
 export function getIssueValidationSchema(max: number) {
@@ -7,7 +7,7 @@ export function getIssueValidationSchema(max: number) {
     amount: Yup.number()
       .typeError('Value is invalid.')
       .transform(transformNumber)
-      .min(10)
+      .min(10, 'The minimum amount to bridge is 10.')
       .max(max, "You don't have enough balance."),
   });
 }

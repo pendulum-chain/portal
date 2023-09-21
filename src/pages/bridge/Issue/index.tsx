@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import From, { IssueFormValues } from '../../../components/Form/From';
+import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../../helpers/stellar';
@@ -30,7 +30,11 @@ interface IssueProps {
   wrappedCurrencySuffix: string;
   nativeCurrency: string;
 }
-
+export type IssueFormValues = {
+  amount: number;
+  to: number;
+  deadline: number;
+};
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencySuffix, nativeCurrency } = props;
 
@@ -214,7 +218,7 @@ function Issue(props: IssueProps): JSX.Element {
 
           {walletAccount ? (
             <Button
-              className="w-full"
+              className="w-full text-primary-content"
               color="primary"
               loading={submissionPending}
               type="submit"
