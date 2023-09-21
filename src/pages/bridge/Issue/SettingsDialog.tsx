@@ -1,36 +1,21 @@
 import { useState } from 'react';
-import { Button, Checkbox, Modal } from 'react-daisyui';
-import { VaultSelector } from '../../../components/Selector';
-import { ExtendedRegistryVault } from '../../../hooks/spacewalk/vaultRegistry';
+import { Button, Modal } from 'react-daisyui';
 
 interface Props {
   onClose: () => void;
   visible: boolean;
-  vaultsForCurrency: ExtendedRegistryVault[];
-  selectedVault: ExtendedRegistryVault;
-  setSelectedVault: (v: ExtendedRegistryVault) => void;
-  manualVaultSelection: boolean;
-  setManualVaultSelection: (v: boolean) => void;
 }
 
-export function SettingsDialog({
-  visible,
-  onClose,
-  vaultsForCurrency,
-  selectedVault,
-  setSelectedVault,
-  manualVaultSelection,
-  setManualVaultSelection,
-}: Props) {
+export function SettingsDialog({ visible, onClose }: Props) {
   const [,] = useState(false);
   return (
     <Modal open={visible}>
-      <Modal.Header className="font-bold">Deposit</Modal.Header>
+      <Modal.Header className="font-bold">Select Vault</Modal.Header>
       <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
         ✕
       </Button>
       <Modal.Body>
-        <div className="text-center">
+        {/* <div className="text-center">
           <div className="flex align-center mt-4">
             <Checkbox
               size="sm"
@@ -51,7 +36,7 @@ export function SettingsDialog({
               showMaxTokensFor="issuableTokens"
             />
           )}
-        </div>
+        </div> */}
       </Modal.Body>
 
       <Modal.Actions className="justify-center">
