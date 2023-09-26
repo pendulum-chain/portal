@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Button, Modal } from 'react-daisyui';
+import { Button, Checkbox, Modal } from 'react-daisyui';
+import VaultSelector from '../../../components/Selector/VaultSelector';
+import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 
 interface Props {
   onClose?: () => void;
@@ -7,7 +8,8 @@ interface Props {
 }
 
 export function SettingsDialog({ visible, onClose }: Props) {
-  const [,] = useState(false);
+  const { manualVaultSelection, vaultsForCurrency, setManualVaultSelection, selectedVault, setSelectedVault } =
+    useBridgeSettings();
   return (
     <Modal open={visible}>
       <Modal.Header className="font-bold">Select Vault</Modal.Header>
@@ -15,7 +17,7 @@ export function SettingsDialog({ visible, onClose }: Props) {
         ✕
       </Button>
       <Modal.Body>
-        {/* <div className="text-center">
+        <div className="text-center">
           <div className="flex align-center mt-4">
             <Checkbox
               size="sm"
@@ -36,11 +38,13 @@ export function SettingsDialog({ visible, onClose }: Props) {
               showMaxTokensFor="issuableTokens"
             />
           )}
-        </div> */}
+        </div>
       </Modal.Body>
 
       <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose}></Button>
+        <Button color="primary" onClick={onClose}>
+          Ok
+        </Button>
       </Modal.Actions>
     </Modal>
   );

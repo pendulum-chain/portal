@@ -1,22 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
-import _ from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import Validation from '../../../components/Form/Validation';
 import OpenWallet from '../../../components/Wallet';
-import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { stringifyStellarAsset } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
-import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../../hooks/spacewalk/vaultRegistry';
+import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -40,19 +36,14 @@ export type IssueFormValues = {
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencySuffix, nativeCurrency } = props;
 
-  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
-  const [selectedAsset, setSelectedAsset] = useState<Asset>();
-  const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
-  const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
 
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { getVaults, getVaultsWithIssuableTokens } = useVaultRegistryPallet();
   const { walletAccount, dAppName } = useGlobalState();
-
   const { api } = useNodeInfoState().state;
+  const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(10)),
@@ -60,69 +51,11 @@ function Issue(props: IssueProps): JSX.Element {
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
-  useEffect(() => {
-    const combinedVaults: ExtendedRegistryVault[] = [];
-    getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
-      getVaults().forEach((vaultFromRegistry) => {
-        const found = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-        const extended: ExtendedRegistryVault = vaultFromRegistry;
-        extended.issuableTokens = found ? found[1] : undefined;
-        combinedVaults.push(extended);
-      });
-      setExtendedVaults(combinedVaults);
-    });
-  }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens]);
 
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
-
-  const wrappedAssets = useMemo(() => {
-    if (!vaults) return;
-    const assets = vaults
-      .map((vault) => {
-        const currency = vault.id.currencies.wrapped;
-        return convertCurrencyToStellarAsset(currency);
-      })
-      .filter((asset): asset is Asset => {
-        return asset != null;
-      });
-    // Deduplicate assets
-    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
-  }, [vaults]);
-
-  const vaultsForCurrency = useMemo(() => {
-    if (!vaults) return;
-
-    return vaults.filter((vault) => {
-      if (!selectedAsset) {
-        return false;
-      }
-
-      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
-      return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
-    });
-  }, [selectedAsset, vaults]);
-
-  useEffect(() => {
-    if (vaultsForCurrency && wrappedAssets) {
-      if (!manualVaultSelection) {
-        // TODO build a better algorithm for automatically selecting a vault
-        if (vaultsForCurrency.length > 0) {
-          setSelectedVault(vaultsForCurrency[0]);
-        }
-        if (!selectedAsset && wrappedAssets.length > 0) {
-          setSelectedAsset(wrappedAssets[0]);
-        }
-      } else {
-        // If the user manually selected a vault, but it's not available anymore, we reset the selection
-        if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
-          setSelectedVault(vaultsForCurrency[0]);
-        }
-      }
-    }
-  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
 
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !api) {
@@ -187,6 +120,8 @@ function Issue(props: IssueProps): JSX.Element {
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
 
+  const a = selectedVault?.issuableTokens;
+
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
       {/* <SettingsDialog /> */}
@@ -200,7 +135,8 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
-            max={selectedVault?.issuableTokens?.toNumber()}
+            balance={a?.toNumber()}
+            max={a?.toNumber()}
             assets={wrappedAssets}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
@@ -228,7 +164,7 @@ function Issue(props: IssueProps): JSX.Element {
           ) : (
             <OpenWallet dAppName={dAppName} />
           )}
-          <Disclaimer text={disclaimerText} className="" />
+          <Disclaimer text={disclaimerText} />
         </form>
       </div>
     </div>

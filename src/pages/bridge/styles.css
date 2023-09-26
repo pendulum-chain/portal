@@ -89,6 +89,10 @@
   color: #32253E;
 }
 
+.bridge-card input[type='number'] {
+  outline: 0px;
+}
+
 [data-theme='pendulum'] {
   .bridge-card .tabs-boxed :not(.tab-active) > svg{
     fill: var(--gray-3, #828282);
@@ -105,6 +109,10 @@
   .bridge-card .disclaimer svg{
     fill: #32253E
   }
+
+  .bridge-card .settings svg {
+    stroke: #58667E;
+  }
 }
 
 [data-theme='amplitude'] {
@@ -120,12 +128,15 @@
     background-color: var(--primary);
   }
 
-  .bridge-card input[type='number'] {
-    color: #FFF;
-    outline: 0px;
-  }
-
   .bridge-card .disclaimer svg {
     fill: #fff;
+  }
+
+  .bridge-card input[type='number'] {
+    color: #fff;
+  }  
+
+  .bridge-card .settings svg {
+    stroke: #fff;
   }
 }

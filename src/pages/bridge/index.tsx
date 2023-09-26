@@ -17,7 +17,8 @@ enum BridgeTabs {
 }
 
 function Bridge(): JSX.Element | null {
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const { chain } = useNodeInfoState().state;
   const nativeCurrency = chain === 'Amplitude' ? 'AMPE' : 'PEN';
   const wrappedCurrencySuffix = SpacewalkConstants.WrappedCurrencySuffix;
@@ -32,19 +33,9 @@ function Bridge(): JSX.Element | null {
     }
   }, [chain, nativeCurrency, tabValue, wrappedCurrencySuffix]);
 
-  const settingsModal = useMemo(() => {
-    if (!chain) return;
-    switch (tabValue) {
-      case BridgeTabs.Issue:
-        return <SettingsDialog />;
-      case BridgeTabs.Redeem:
-        return undefined;
-    }
-  }, [tabValue]);
-
   return chain ? (
     <div className="h-full flex items-center justify-center mt-4">
-      {settingsModal}
+      <SettingsDialog visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
       <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
         <div className="flex justify-between px-5 mt-5">
           <Tabs className="flex w-5/6 flex-grow justify-center" boxed value={tabValue} onChange={setTabValue}>
@@ -58,11 +49,9 @@ function Bridge(): JSX.Element | null {
               Back To Stellar
             </Tabs.Tab>
           </Tabs>
-          {!!settingsModal && (
-            <Button color="ghost" className="p-1 min-h-0 h-fit m-auto">
-              <SettingsIcon />
-            </Button>
-          )}
+          <Button color="ghost" className="settings p-1 min-h-0 h-fit m-auto" onClick={() => setSettingsVisible(true)}>
+            <SettingsIcon />
+          </Button>
         </div>
         {Content}
       </Card>
