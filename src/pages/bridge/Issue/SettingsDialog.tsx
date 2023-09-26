@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Button, Modal } from 'react-daisyui';
 
 interface Props {
-  onClose: () => void;
-  visible: boolean;
+  onClose?: () => void;
+  visible?: boolean;
 }
 
 export function SettingsDialog({ visible, onClose }: Props) {

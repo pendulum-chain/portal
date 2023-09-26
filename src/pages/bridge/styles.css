@@ -80,17 +80,6 @@
   fill: var(--table-text);
 }
 
-.bridge-card .tabs-boxed :not(.tab-active) > svg{
-  fill: var(--gray-3, #828282);
-}
-
-.bridge-card .tabs-boxed :not(.tab-active) {
-  color: var(--gray-3, #828282);
-}
-
-.bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
-  background-color: #f7f7f7;
-}
 
 .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) > svg {
   fill: #32253E;
@@ -98,4 +87,45 @@
 
 .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
   color: #32253E;
+}
+
+[data-theme='pendulum'] {
+  .bridge-card .tabs-boxed :not(.tab-active) > svg{
+    fill: var(--gray-3, #828282);
+  }
+
+  .bridge-card .tabs-boxed :not(.tab-active) {
+    color: var(--gray-3, #828282);
+  }
+
+  .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
+    background-color: #f7f7f7;
+  }
+
+  .bridge-card .disclaimer svg{
+    fill: #32253E
+  }
+}
+
+[data-theme='amplitude'] {
+  .bridge-card .tabs-boxed :not(.tab-active) > svg{
+    fill: var(--primary);
+  }
+
+  .bridge-card .tabs-boxed :not(.tab-active) {
+    color: #fff;
+  }
+
+  .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
+    background-color: var(--primary);
+  }
+
+  .bridge-card input[type='number'] {
+    color: #FFF;
+    outline: 0px;
+  }
+
+  .bridge-card .disclaimer svg {
+    fill: #fff;
+  }
 }

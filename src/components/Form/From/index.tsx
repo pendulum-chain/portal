@@ -1,4 +1,5 @@
 import { Fragment } from 'preact';
+import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import { Asset } from 'stellar-sdk';
 import AssetSelector from '../../Selector/AssetSelector';
@@ -8,37 +9,45 @@ export interface FromProps {
   className?: string;
   max?: number;
   min?: number;
-  inputProps: UseFormRegisterReturn;
+  register: UseFormRegisterReturn;
   setValue: (n: number) => void;
-  error?: string;
   assets?: Asset[];
   selectedAsset?: Asset;
   setSelectedAsset: (a: Asset) => void;
+  network?: string;
+  assetSuffix?: string;
+  error?: string;
 }
 
 const From = ({
   setSelectedAsset,
   className,
-  inputProps,
+  register,
   max,
   setValue,
-  error,
   balance,
   assets,
   selectedAsset,
+  network,
+  assetSuffix,
+  error,
 }: FromProps): JSX.Element | null => {
   return (
     <>
-      <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
-        {error && <div>{error}</div>}
+      <div className={`rounded-lg bg-base-300 px-4 py-3 ${className || ''} ${error ? '' : 'border-neutral-500'}`}>
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-black font-2">
-            <input
-              autoFocus
+            <Input
               className="input-ghost w-full text-4xl font-2"
               type="number"
+              step="any"
+              onKeyPress={(e: KeyboardEvent) => {
+                if (e.code === 'Minus' || e.code === 'KeyE') {
+                  e.preventDefault();
+                }
+              }}
               placeholder="0.0"
-              {...inputProps}
+              {...register}
             />
           </div>
           {assets && (
@@ -47,11 +56,12 @@ const From = ({
               assets={assets}
               onChange={setSelectedAsset}
               style={{ flexGrow: 1 }}
+              assetSuffix={assetSuffix}
             />
           )}
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-          <div className="text-sm mt-px text-secondary-content">From Stellar</div>
+          {network && <div className="text-sm mt-px text-secondary-content">From {network}</div>}
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>

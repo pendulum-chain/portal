@@ -42,7 +42,6 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
         const newAsset = assets.find((asset) => {
           return asset.getCode() === newItem.id;
         });
-        console.log(newAsset);
         newAsset && props.onChange(newAsset);
       }}
       buttonComponent={
@@ -54,7 +53,7 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
           <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full mr-1 ">
             <img src={getIcon(selectedAsset?.code)} alt="Pendulum" className="h-full w-auto " />
           </span>
-          <strong className="font-bold">{selectedAsset?.getCode()}</strong>
+          <strong className="font-bold">{selectedAssetItem?.displayName}</strong>
           <ChevronDownIcon className="w-4 h-4 inline ml-px" />
         </Button>
       }

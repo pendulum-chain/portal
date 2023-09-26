@@ -1,159 +1,31 @@
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { Button, Checkbox, Modal } from 'react-daisyui';
-import { Controller, useForm } from 'react-hook-form';
+import { Button } from 'react-daisyui';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
+import From from '../../../components/Form/From';
+import Validation from '../../../components/Form/Validation';
 import LabelledInputField from '../../../components/LabelledInputField';
-import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
-import { AssetSelector, VaultSelector } from '../../../components/Selector';
 import OpenWallet from '../../../components/Wallet';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import {
-  StellarPublicKeyPattern,
-  convertRawHexKeyToPublicKey,
-  isCompatibleStellarAmount,
-  isPublicKey,
-  stringifyStellarAsset,
-} from '../../../helpers/stellar';
+import { isPublicKey, stringifyStellarAsset } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { useFeePallet } from '../../../hooks/spacewalk/fee';
 import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../../hooks/spacewalk/vaultRegistry';
-import { decimalToStellarNative, nativeStellarToDecimal, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { FeeBox } from '../FeeBox';
+import { ConfirmationDialog } from './ConfirmationDialog';
+import { getRedeemValidationSchema } from './RedeemValidationSchema';
 
-interface FeeBoxProps {
-  bridgedAsset?: Asset;
-  // The amount of the bridged asset denoted in the smallest unit of the asset
-  amountNative: Big;
-  extrinsic?: SubmittableExtrinsic;
-  network: string;
-  nativeCurrency: string;
-  wrappedCurrencySuffix?: string;
-}
-
-function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, nativeCurrency, wrappedCurrencySuffix, network } = props;
-  const amount = props.amountNative;
-
-  const wrappedCurrencyName = bridgedAsset ? (wrappedCurrencySuffix || '') + bridgedAsset.getCode() : '';
-
-  const { getFees, getTransactionFee } = useFeePallet();
-  const fees = getFees();
-
-  const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
-
-  useEffect(() => {
-    if (!extrinsic) {
-      return;
-    }
-
-    getTransactionFee(extrinsic).then((fee) => {
-      setTransactionFee(nativeToDecimal(fee));
-    });
-  }, [extrinsic, getTransactionFee, setTransactionFee]);
-
-  const bridgeFee = useMemo(() => {
-    return nativeStellarToDecimal(amount.mul(fees.redeemFee));
-  }, [amount, fees]);
-
-  const totalAmount = useMemo(() => {
-    if (amount.cmp(0) === 0) {
-      return 0;
-    }
-
-    return nativeStellarToDecimal(amount).sub(bridgeFee);
-  }, [amount, bridgeFee]);
-
-  return (
-    <div className="shadow bg-base-100 rounded-lg p-4 my-4 flex flex-col">
-      <div className="flex justify-between">
-        <span>To {network}</span>
-        <span>
-          {totalAmount.toString()} {wrappedCurrencyName}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Bridge Fee</span>
-        <span>
-          {bridgeFee.toString()} {bridgedAsset?.getCode()}
-        </span>
-      </div>
-      <div className="flex justify-between mt-2">
-        <span>Transaction Fee</span>
-        <span>
-          {transactionFee.toFixed(12)} {nativeCurrency}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-interface ConfirmationDialogProps {
-  redeemRequest: RichRedeemRequest | undefined;
-  onClose: () => void;
-  visible: boolean;
-}
-
-function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { redeemRequest, visible, onClose } = props;
-
-  const totalAmount = redeemRequest ? nativeStellarToDecimal(redeemRequest.request.amount.toString()).toString() : '';
-  const currency = redeemRequest?.request.asset;
-  const asset = currency && convertCurrencyToStellarAsset(currency);
-
-  const destination = useMemo(() => {
-    const rawDestinationAddress = redeemRequest?.request.stellarAddress;
-    return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
-  }, [redeemRequest?.request.stellarAddress]);
-
-  return (
-    <Modal open={visible}>
-      <Modal.Header className="font-bold">Back to Stellar</Modal.Header>
-      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
-        ✕
-      </Button>
-      <Modal.Body>
-        <div className="text-center">
-          <div className="text-xl">
-            You will receive {totalAmount} {asset?.getCode()}
-          </div>
-          {asset && asset.getIssuer() && (
-            <>
-              issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
-            </>
-          )}
-          <div className="text-sm text-secondary mt-4">Your request is being processed</div>
-        </div>
-        <div className="mt-6 text-secondary">
-          <div className="flex items-center justify-between">
-            <span>Stellar destination address</span>
-            <CopyableAddress variant="short" publicKey={destination} />
-          </div>
-          <div className="text-sm mt-2">
-            We will inform you when the PEN payment is executed. This typically takes only a few minutes but may
-            sometimes take up to 6 hours.
-          </div>
-        </div>
-      </Modal.Body>
-
-      <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose}>
-          View Progress
-        </Button>
-      </Modal.Actions>
-    </Modal>
-  );
-}
-
-interface RedeemFormInputs {
-  amount: string;
-  stellarAddress: string;
-}
+export type RedeemFormValues = {
+  amount: number;
+  to: string;
+};
 
 interface RedeemProps {
   network: string;
@@ -175,18 +47,19 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
-  const { control, handleSubmit, watch } = useForm<RedeemFormInputs>({
+  const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {
-      amount: '0',
-      stellarAddress: '',
+      amount: 0,
+      to: '',
     },
+    resolver: yupResolver(getRedeemValidationSchema(10)),
   });
 
-  const { wrappedCurrencySuffix, nativeCurrency } = props;
+  const { wrappedCurrencySuffix, nativeCurrency, network } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
-  const stellarAddress = watch('stellarAddress');
+  const stellarAddress = watch('to');
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
@@ -322,105 +195,31 @@ function Redeem(props: RedeemProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col">
-          <div className="flex items-center">
-            <Controller
-              control={control}
-              rules={{
-                required: 'Amount is required',
-                validate: (value) => {
-                  if (!isCompatibleStellarAmount(value)) {
-                    return 'Max 7 decimals';
-                  }
-                  if (selectedVault?.issuableTokens) {
-                    const bigValue = new Big(value);
-                    const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens?.toString());
-                    if (bigValue.gt(maxIssuable)) {
-                      return 'Amount is higher than the vault can issue.';
-                    }
-                  }
-                  if (parseFloat(value) <= 0) {
-                    return 'Amount should be a positive number.';
-                  }
-                },
-              }}
-              name="amount"
-              render={({ field, fieldState: { error } }) => (
-                <LabelledInputField
-                  autoSelect
-                  error={error?.message}
-                  label="From Amplitude"
-                  type="number"
-                  min="0"
-                  step="any"
-                  style={{ flexGrow: 2 }}
-                  onKeyPress={(e: KeyboardEvent) => {
-                    if (e.code === 'Minus' || e.code === 'KeyE') {
-                      e.preventDefault();
-                    }
-                  }}
-                  {...field}
-                />
-              )}
-            />
-            <div className="px-1" />
-            {wrappedAssets && (
-              <AssetSelector
-                assetSuffix={wrappedCurrencySuffix}
-                selectedAsset={selectedAsset}
-                assets={wrappedAssets}
-                onChange={setSelectedAsset}
-                style={{ flexGrow: 1 }}
-              />
-            )}
-          </div>
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic, () => {})}>
+          <From
+            register={register('amount')}
+            setValue={(n: number) => setValue('amount', n)}
+            max={10} // Max issuable tokens
+            assets={wrappedAssets}
+            setSelectedAsset={setSelectedAsset}
+            selectedAsset={selectedAsset}
+            network={network}
+            assetSuffix={wrappedCurrencySuffix}
+            error={formState.errors.amount?.message}
+          />
           <div className="flex align-center mt-4">
             <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
               selectedVault?.redeemableTokens?.toString() || 0,
             ).toFixed(2)} 
               ${selectedAsset?.code}`}</span>
           </div>
-
-          <div className="flex align-center mt-4">
-            <Checkbox
-              size="sm"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                if (e.target instanceof HTMLInputElement) {
-                  setManualVaultSelection(e.target.checked);
-                }
-              }}
-              checked={manualVaultSelection}
-            />
-            <span className="ml-2">Manually select vault</span>
-          </div>
-          {manualVaultSelection && vaultsForCurrency && (
-            <VaultSelector
-              vaults={vaultsForCurrency}
-              onChange={setSelectedVault}
-              selectedVault={selectedVault}
-              showMaxTokensFor="redeemableTokens"
-            />
-          )}
-          <Controller
-            control={control}
-            rules={{
-              required: 'Stellar address is required',
-              pattern: {
-                value: StellarPublicKeyPattern,
-                message: 'Stellar address is invalid',
-              },
-            }}
-            render={({ field, fieldState: { error } }) => (
-              <LabelledInputField
-                label="Stellar Address"
-                error={error?.message}
-                placeholder="Enter target Stellar address"
-                type="text"
-                {...field}
-                style={{ marginTop: 8 }}
-              />
-            )}
-            name="stellarAddress"
+          <LabelledInputField
+            label="Stellar Address"
+            error={formState.errors.to?.message}
+            placeholder="Enter target Stellar address"
+            type="text"
+            style={{ marginTop: 8 }}
+            className="border-base-400 bg-base-200"
           />
           <FeeBox
             amountNative={amountNative}
@@ -429,13 +228,14 @@ function Redeem(props: RedeemProps): JSX.Element {
             network="Stellar"
             nativeCurrency={nativeCurrency}
           />
+          <Validation errors={formState.errors} className="" />
           {walletAccount ? (
             <Button
               className="w-full"
               color="primary"
               loading={submissionPending}
               onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
-              type="button"
+              type="submit"
             >
               Bridge
             </Button>

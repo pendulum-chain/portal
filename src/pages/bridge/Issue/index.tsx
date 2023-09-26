@@ -10,6 +10,7 @@ import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
+import Validation from '../../../components/Form/Validation';
 import OpenWallet from '../../../components/Wallet';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../../helpers/stellar';
@@ -17,9 +18,9 @@ import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrat
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../../hooks/spacewalk/vaultRegistry';
 import { decimalToStellarNative } from '../../../shared/parseNumbers';
+import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
-import { FeeBox } from './FeeBox';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 
 const disclaimerText =
@@ -30,11 +31,12 @@ interface IssueProps {
   wrappedCurrencySuffix: string;
   nativeCurrency: string;
 }
+
 export type IssueFormValues = {
   amount: number;
   to: number;
-  deadline: number;
 };
+
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencySuffix, nativeCurrency } = props;
 
@@ -53,9 +55,6 @@ function Issue(props: IssueProps): JSX.Element {
   const { api } = useNodeInfoState().state;
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
-    defaultValues: {
-      amount: 0,
-    },
     resolver: yupResolver(getIssueValidationSchema(10)),
   });
 
@@ -199,13 +198,13 @@ function Issue(props: IssueProps): JSX.Element {
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => {})}>
           <From
-            inputProps={register('amount')}
-            error={formState.errors.amount?.message?.toString()}
+            register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
-            max={10} // Account Balance
+            max={selectedVault?.issuableTokens?.toNumber()}
             assets={wrappedAssets}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
+            error={formState.errors.amount?.message?.toString()}
           />
           <FeeBox
             amountNative={amountNative}
@@ -215,21 +214,21 @@ function Issue(props: IssueProps): JSX.Element {
             wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
           />
-
+          <Validation errors={formState.errors} />
           {walletAccount ? (
             <Button
               className="w-full text-primary-content"
               color="primary"
               loading={submissionPending}
               type="submit"
-              // disabled={!!form.formState.errors.from}
+              disabled={!!formState.errors.amount}
             >
               Bridge
             </Button>
           ) : (
             <OpenWallet dAppName={dAppName} />
           )}
-          <Disclaimer text={disclaimerText} />
+          <Disclaimer text={disclaimerText} className="" />
         </form>
       </div>
     </div>

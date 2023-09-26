@@ -2,8 +2,8 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'react';
 import { Asset } from 'stellar-sdk';
-import { useFeePallet } from '../../../hooks/spacewalk/fee';
-import { nativeStellarToDecimal, nativeToDecimal } from '../../../shared/parseNumbers';
+import { useFeePallet } from '../../hooks/spacewalk/fee';
+import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;

@@ -24,7 +24,7 @@ interface Props<T> {
   items: T[];
   onChange: (item: T) => void;
   value?: T;
-  buttonComponent?: any;
+  buttonComponent: any;
 }
 
 function DropdownSelector<T extends { id: unknown; displayName: string }>(props: Props<T>) {
@@ -32,7 +32,7 @@ function DropdownSelector<T extends { id: unknown; displayName: string }>(props:
 
   return (
     <div className="flex flex-grow">
-      <div className="dropdown min-w-[90px]">
+      <div className="dropdown min-w-[95px]">
         {buttonComponent}
         <Dropdown.Menu className="w-52">
           {items.map((item) => (

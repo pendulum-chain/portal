@@ -11,6 +11,11 @@ import SettingsDialog from './Issue/SettingsDialog';
 import Redeem from './Redeem';
 import './styles.css';
 
+enum BridgeTabs {
+  Issue = 0,
+  Redeem = 1,
+}
+
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(0);
   const { chain } = useNodeInfoState().state;
@@ -20,26 +25,26 @@ function Bridge(): JSX.Element | null {
   const Content = useMemo(() => {
     if (!chain) return;
     switch (tabValue) {
-      case 0:
+      case BridgeTabs.Issue:
         return <Issue network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
-      case 1:
+      case BridgeTabs.Redeem:
         return <Redeem network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
     }
   }, [chain, nativeCurrency, tabValue, wrappedCurrencySuffix]);
 
-  const SettingsContent = useMemo(() => {
+  const settingsModal = useMemo(() => {
     if (!chain) return;
     switch (tabValue) {
-      case 0:
-        return <Issue network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
-      case 1:
-        return <Redeem network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
+      case BridgeTabs.Issue:
+        return <SettingsDialog />;
+      case BridgeTabs.Redeem:
+        return undefined;
     }
-  }, [chain, nativeCurrency, tabValue, wrappedCurrencySuffix]);
+  }, [tabValue]);
 
   return chain ? (
     <div className="h-full flex items-center justify-center mt-4">
-      <SettingsDialog visible={false} onClose={() => {}} />
+      {settingsModal}
       <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
         <div className="flex justify-between px-5 mt-5">
           <Tabs className="flex w-5/6 flex-grow justify-center" boxed value={tabValue} onChange={setTabValue}>
@@ -53,9 +58,11 @@ function Bridge(): JSX.Element | null {
               Back To Stellar
             </Tabs.Tab>
           </Tabs>
-          <Button color="ghost" className="p-1 min-h-0 h-fit m-auto">
-            <SettingsIcon />
-          </Button>
+          {!!settingsModal && (
+            <Button color="ghost" className="p-1 min-h-0 h-fit m-auto">
+              <SettingsIcon />
+            </Button>
+          )}
         </div>
         {Content}
       </Card>
