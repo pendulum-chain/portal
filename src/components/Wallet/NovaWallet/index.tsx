@@ -21,7 +21,7 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
   const [selectedAccount, setSelectedAccount] = useState<ExtensionAccount>();
 
   const onClick = useCallback(async () => {
-    const allInjected = await web3Enable('Pendulum Chain Portal');
+    const _ = await web3Enable('Pendulum Chain Portal');
     const allAccounts = await web3Accounts();
     setAccounts(
       allAccounts
@@ -63,7 +63,7 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
            */
           getAccounts: () => Promise.resolve([]), // Unused
           subscribeAccounts: () => undefined, // Unused
-          transformError: (err: any) => err, // Unused
+          transformError: (err: Error) => err, // Unused
         },
       };
     }
@@ -75,15 +75,16 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
         })
         .catch((error) => console.error(error));
     }
-  }, [selectedAccount]);
+  }, [selectedAccount, setWalletAccount]);
 
   return (
     <div className="-mt-8">
       <Modal open={openModal} responsive={true}>
         <h1 className="text-lg">Select your Nova account</h1>
         <div>
-          {accounts.map((a) => (
+          {accounts.map((a, i) => (
             <button
+              key={i}
               className={`flex items-center gap-4 p-4 rounded-xl text-left w-full bg-[var(--modal-control-background)] hover:bg-[var(--modal-active-background)]`}
               onClick={() => setSelectedAccount(a)}
             >
