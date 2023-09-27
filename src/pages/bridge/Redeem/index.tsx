@@ -1,22 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
-import _ from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import Validation from '../../../components/Form/Validation';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
-import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { isPublicKey, stringifyStellarAsset } from '../../../helpers/stellar';
+import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
-import { ExtendedRegistryVault, useVaultRegistryPallet } from '../../../hooks/spacewalk/vaultRegistry';
+import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -34,24 +31,17 @@ interface RedeemProps {
 }
 
 function Redeem(props: RedeemProps): JSX.Element {
-  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
-  const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<RichRedeemRequest | undefined>(undefined);
-  const [manualVaultSelection, setManualVaultSelection] = useState(false);
-  const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
-  const { getVaults, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
+  const { selectedVault, selectedAsset, wrappedAssets, setSelectedAsset } = useBridgeSettings();
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
-    defaultValues: {
-      amount: 0,
-      to: '',
-    },
+    defaultValues: {},
     resolver: yupResolver(getRedeemValidationSchema(10)),
   });
 
@@ -61,70 +51,10 @@ function Redeem(props: RedeemProps): JSX.Element {
   const amount = watch('amount');
   const stellarAddress = watch('to');
 
-  useEffect(() => {
-    const combinedVaults: ExtendedRegistryVault[] = [];
-    getVaultsWithRedeemableTokens().then((vaultsWithRedeemableTokens) => {
-      getVaults().forEach((vaultFromRegistry) => {
-        const found = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-        const extended: ExtendedRegistryVault = vaultFromRegistry;
-        extended.redeemableTokens = found ? found[1] : undefined;
-        combinedVaults.push(extended);
-      });
-      setExtendedVaults(combinedVaults);
-    });
-  }, [getVaults, setExtendedVaults, getVaultsWithRedeemableTokens]);
-
   // The amount represented in the units of the native currency (as integer)
   const amountNative = useMemo(() => {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
-
-  const wrappedAssets = useMemo(() => {
-    if (!vaults) return;
-
-    const assets = vaults
-      .map((vault) => {
-        const currency = vault.id.currencies.wrapped;
-        return convertCurrencyToStellarAsset(currency);
-      })
-      .filter((asset): asset is Asset => {
-        return asset != null;
-      });
-    // Deduplicate assets
-    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
-  }, [vaults]);
-
-  const vaultsForCurrency = useMemo(() => {
-    if (!vaults) return;
-
-    return vaults.filter((vault) => {
-      if (!selectedAsset) {
-        return false;
-      }
-
-      const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
-      return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
-    });
-  }, [selectedAsset, vaults]);
-
-  useEffect(() => {
-    if (vaultsForCurrency && wrappedAssets) {
-      if (!manualVaultSelection) {
-        // TODO build a better algorithm for automatically selecting a vault
-        if (vaultsForCurrency.length > 0) {
-          setSelectedVault(vaultsForCurrency[0]);
-        }
-        if (!selectedAsset && wrappedAssets.length > 0) {
-          setSelectedAsset(wrappedAssets[0]);
-        }
-      } else {
-        // If the user manually selected a vault, but it's not available anymore, we reset the selection
-        if (selectedVault && vaultsForCurrency.length > 0 && !vaultsForCurrency.includes(selectedVault)) {
-          setSelectedVault(vaultsForCurrency[0]);
-        }
-      }
-    }
-  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
 
   const requestRedeemExtrinsic = useMemo(() => {
     if (!selectedVault || !api || !stellarAddress || !isPublicKey(stellarAddress)) {

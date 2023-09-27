@@ -13,7 +13,7 @@ import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
@@ -120,11 +120,8 @@ function Issue(props: IssueProps): JSX.Element {
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
 
-  const a = selectedVault?.issuableTokens;
-
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
-      {/* <SettingsDialog /> */}
       <ConfirmationDialog
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
@@ -135,11 +132,11 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
-            balance={a?.toNumber()}
-            max={a?.toNumber()}
+            max={nativeToDecimal(selectedVault?.issuableTokens).toNumber()}
             assets={wrappedAssets}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
+            network="Stellar"
             error={formState.errors.amount?.message?.toString()}
           />
           <FeeBox
