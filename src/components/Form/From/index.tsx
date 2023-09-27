@@ -5,7 +5,6 @@ import { Asset } from 'stellar-sdk';
 import AssetSelector from '../../Selector/AssetSelector';
 
 export interface FromProps {
-  balance?: number;
   className?: string;
   max?: number;
   min?: number;
@@ -25,7 +24,6 @@ const From = ({
   register,
   max,
   setValue,
-  balance,
   assets,
   selectedAsset,
   network,
@@ -38,7 +36,7 @@ const From = ({
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-black font-2">
             <Input
-              className="input-ghost w-full text-4xl font-2"
+              className="input-ghost w-full text-4xl font-2 pl-0"
               type="number"
               step="any"
               onKeyPress={(e: KeyboardEvent) => {
@@ -63,9 +61,9 @@ const From = ({
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
           {network && <div className="text-sm mt-px text-secondary-content">From {network}</div>}
           <div className="flex gap-1 text-sm">
-            {balance !== undefined && (
+            {max !== undefined && (
               <Fragment>
-                <span className="mr-1">Available: {balance}</span>
+                <span className="mr-1">Available: {max.toFixed(2)}</span>
                 <button className="text-primary hover:underline" onClick={() => setValue(Number(max))} type="button">
                   MAX
                 </button>

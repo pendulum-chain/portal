@@ -38,27 +38,26 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
   return (
     <DropdownSelector
       items={items}
+      value={selectedAssetItem}
       onChange={(newItem) => {
         const newAsset = assets.find((asset) => {
           return asset.getCode() === newItem.id;
         });
         newAsset && props.onChange(newAsset);
       }}
-      buttonComponent={
-        <Button
-          size="xs"
-          className="btn rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
-          type="button"
-        >
-          <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full mr-1 ">
-            <img src={getIcon(selectedAsset?.code)} alt="Pendulum" className="h-full w-auto " />
-          </span>
-          <strong className="font-bold">{selectedAssetItem?.displayName}</strong>
-          <ChevronDownIcon className="w-4 h-4 inline ml-px" />
-        </Button>
-      }
-      value={selectedAssetItem}
-    />
+    >
+      <Button
+        size="xs"
+        className="btn rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
+        type="button"
+      >
+        <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full mr-1 ">
+          <img src={getIcon(selectedAsset?.code)} alt="Pendulum" className="h-full w-auto " />
+        </span>
+        <strong className="font-bold">{selectedAssetItem?.displayName}</strong>
+        <ChevronDownIcon className="w-4 h-4 inline ml-px" />
+      </Button>
+    </DropdownSelector>
   );
 }
 
