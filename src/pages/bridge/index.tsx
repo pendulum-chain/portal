@@ -39,12 +39,12 @@ function Bridge(): JSX.Element | null {
       <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
         <div className="flex justify-between px-5 mt-5">
           <Tabs className="flex w-5/6 flex-grow justify-center" boxed value={tabValue} onChange={setTabValue}>
-            <Tabs.Tab className="w-1/3 h-fit p-2" value={0}>
+            <Tabs.Tab className="w-2/5 h-fit p-2" value={0}>
               {chain === 'Pendulum' && <PendulumLogo className="w-6 h-6 mr-1" />}
               {chain === 'Amplitude' && <AmplitudeLogo className="w-6 h-6 mr-1" />}
               To {chain}
             </Tabs.Tab>
-            <Tabs.Tab className="w-1/3 h-fit p-2" value={1}>
+            <Tabs.Tab className="w-2/5 h-fit p-2" value={1}>
               <StellarLogo className="w-6 h-6 mr-1" />
               Back To Stellar
             </Tabs.Tab>
