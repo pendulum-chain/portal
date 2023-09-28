@@ -17,7 +17,7 @@ export interface BridgeSettings {
   setManualVaultSelection: StateUpdater<boolean>;
 }
 
-function useVaults(): BridgeSettings {
+function useBridgeSettings(): BridgeSettings {
   const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const { getVaults, getVaultsWithIssuableTokens } = useVaultRegistryPallet();
@@ -96,4 +96,4 @@ function useVaults(): BridgeSettings {
   };
 }
 
-export default useVaults;
+export default useBridgeSettings;
