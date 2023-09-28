@@ -1,6 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
 import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers';
@@ -22,6 +22,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const { getFees, getTransactionFee } = useFeePallet();
   const fees = getFees();
 
+  const [collapseVisibility, setCollapseVisibility] = useState('');
   const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
 
   useEffect(() => {
@@ -42,6 +43,18 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     return nativeStellarToDecimal(amount.mul(fees.issueGriefingCollateral));
   }, [amount, fees]);
 
+  const toggle = useCallback(() => {
+    if (collapseVisibility === '') {
+      setCollapseVisibility('collapse-open');
+    } else {
+      setCollapseVisibility('');
+      const elem = document.activeElement;
+      if (elem && elem instanceof HTMLElement) {
+        elem.blur();
+      }
+    }
+  }, [collapseVisibility, setCollapseVisibility]);
+
   const totalAmount = useMemo(() => {
     if (amount.cmp(0) === 0) {
       return 0;
@@ -50,7 +63,11 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
   return (
-    <div tabIndex={0} className="bg-base-300 rounded-lg my-4 collapse collapse-arrow">
+    <div
+      tabIndex={0}
+      onClick={toggle}
+      className={`collapse cursor-pointer collapse-arrow bg-base-300 rounded-lg my-4 ${collapseVisibility}`}
+    >
       <div className="collapse-title">
         <div className="flex justify-between">
           <span>To {network}</span>
