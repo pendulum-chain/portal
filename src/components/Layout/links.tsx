@@ -57,7 +57,7 @@ export const links: Links = ({ tenantName }) => [
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
     prefix: <SpacewalkIcon />,
-    // suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
+    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
     submenu: [
       {
         link: './spacewalk/bridge',
