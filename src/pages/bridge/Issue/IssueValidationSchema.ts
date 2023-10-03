@@ -7,7 +7,7 @@ export function getIssueValidationSchema(max: number) {
     amount: Yup.number()
       .typeError('Value is invalid.')
       .transform(transformNumber)
-      .min(10, 'The minimum amount to bridge is 10.')
+      .positive()
       .max(max, "You don't have enough balance."),
   });
 }

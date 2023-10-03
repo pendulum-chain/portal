@@ -9,7 +9,7 @@ export function getRedeemValidationSchema(max: number) {
     amount: Yup.number()
       .typeError('Value is invalid.')
       .transform(transformNumber)
-      .min(10, 'The specified amount is below the minimum (10).')
+      .positive()
       .max(max, "The vault doesn't have enough issuable tokens."),
     to: Yup.string()
       .required('The Stellar target address is required.')
