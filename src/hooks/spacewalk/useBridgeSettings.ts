@@ -20,22 +20,24 @@ export interface BridgeSettings {
 function useBridgeSettings(): BridgeSettings {
   const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
-  const { getVaults, getVaultsWithIssuableTokens } = useVaultRegistryPallet();
+  const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
-    getVaultsWithIssuableTokens().then((vaultsWithIssuableTokens) => {
+    Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()]).then((data) => {
       getVaults().forEach((vaultFromRegistry) => {
-        const found = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+        const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+        const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
         const extended: ExtendedRegistryVault = vaultFromRegistry;
-        extended.issuableTokens = found ? found[1] : undefined;
+        extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
+        extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
         combinedVaults.push(extended);
       });
       setExtendedVaults(combinedVaults);
     });
-  }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens]);
+  }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens]);
 
   const wrappedAssets = useMemo(() => {
     if (!vaults) return;

@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -10,10 +11,12 @@ import From from '../../../components/Form/From';
 import Validation from '../../../components/Form/Validation';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
+import { assetDisplayName } from '../../../helpers/spacewalk';
 import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
+import useBalances from '../../../hooks/useBalances';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -34,18 +37,27 @@ function Redeem(props: RedeemProps): JSX.Element {
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedRedeemRequest, setSubmittedRedeemRequest] = useState<RichRedeemRequest | undefined>(undefined);
+  const [selectedAssetsBalance, setSelectedAssetsBalance] = useState(0);
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { selectedVault, selectedAsset, wrappedAssets, setSelectedAsset } = useBridgeSettings();
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
+  const { balances } = useBalances();
+  const { wrappedCurrencySuffix, nativeCurrency, network } = props;
+
+  useEffect(() => {
+    const secletdAssetName = assetDisplayName(selectedAsset, '', wrappedCurrencySuffix);
+    const { amount } = balances?.find(({ token }) => token === secletdAssetName) || { amount: 0 };
+    setSelectedAssetsBalance(amount);
+  }, [selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
+
+  const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {},
-    resolver: yupResolver(getRedeemValidationSchema(10)),
+    resolver: yupResolver(getRedeemValidationSchema(maxRedeemable, selectedAssetsBalance)),
   });
-
-  const { wrappedCurrencySuffix, nativeCurrency, network } = props;
 
   // We watch the amount because we need to re-render the FeeBox constantly
   const amount = watch('amount');
@@ -129,7 +141,7 @@ function Redeem(props: RedeemProps): JSX.Element {
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
-            max={10} // Max issuable tokens
+            max={selectedAssetsBalance}
             assets={wrappedAssets}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
@@ -137,13 +149,14 @@ function Redeem(props: RedeemProps): JSX.Element {
             assetSuffix={wrappedCurrencySuffix}
             error={formState.errors.amount?.message}
           />
-          <div className="flex align-center mt-4">
+          <label className="label flex align-center">
             <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
               selectedVault?.redeemableTokens?.toString() || 0,
             ).toFixed(2)} 
               ${selectedAsset?.code}`}</span>
-          </div>
+          </label>
           <LabelledInputField
+            register={register('to')}
             label="Stellar Address"
             error={formState.errors.to?.message}
             placeholder="Enter target Stellar address"

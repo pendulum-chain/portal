@@ -13,7 +13,7 @@ import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
@@ -132,7 +132,6 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
-            max={nativeToDecimal(selectedVault?.issuableTokens).toNumber()}
             assets={wrappedAssets}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
