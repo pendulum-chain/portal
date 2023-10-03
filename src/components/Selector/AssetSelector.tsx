@@ -2,6 +2,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { CSSProperties } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
+import { assetDisplayName } from '../../helpers/spacewalk';
 import { getIcon } from '../../shared/AssetIcons';
 import DropdownSelector from './DropdownSelector';
 
@@ -14,23 +15,19 @@ interface AssetSelectorProps {
   assetSuffix?: string;
 }
 
-function getDisplayName(asset: Asset, assetPrefix?: string, assetSuffix?: string): string {
-  return `${assetPrefix || ''}${asset.getCode()}${assetSuffix || ''}`;
-}
-
 function AssetSelector(props: AssetSelectorProps): JSX.Element {
   const { assets, selectedAsset, assetPrefix, assetSuffix } = props;
 
   const items = assets.map((asset) => {
     return {
-      displayName: getDisplayName(asset, assetPrefix, assetSuffix),
+      displayName: assetDisplayName(asset, assetPrefix, assetSuffix),
       id: asset.getCode(),
     };
   });
 
   const selectedAssetItem = selectedAsset
     ? {
-        displayName: getDisplayName(selectedAsset, assetPrefix, assetSuffix),
+        displayName: assetDisplayName(selectedAsset, assetPrefix, assetSuffix),
         id: selectedAsset.getCode(),
       }
     : undefined;
