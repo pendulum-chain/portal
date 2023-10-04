@@ -47,10 +47,10 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { wrappedCurrencySuffix, nativeCurrency, network } = props;
 
   useEffect(() => {
-    const secletdAssetName = assetDisplayName(selectedAsset, '', wrappedCurrencySuffix);
-    const { amount } = balances?.find(({ token }) => token === secletdAssetName) || { amount: 0 };
+    const selectedAssetName = assetDisplayName(selectedAsset, '', wrappedCurrencySuffix);
+    const { amount } = balances?.find(({ token }) => token === selectedAssetName) || { amount: 0 };
     setSelectedAssetsBalance(amount);
-  }, [selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
+  }, [balances, selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
 
   const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens).toNumber();
 
