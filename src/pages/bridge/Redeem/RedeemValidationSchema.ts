@@ -12,7 +12,7 @@ export function getRedeemValidationSchema(maxRedeemable: number, balance: number
       .max(maxRedeemable, "The vault doesn't have enough redeemable tokens.")
       .max(balance, "You don't have enough balance."),
     to: Yup.string()
-      .required('The Stellar target address is required.')
+      .required('This field is required.')
       .matches(StellarPublicKeyPattern, 'The supplied address is not a valid Stellar address.'),
   });
 }

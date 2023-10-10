@@ -32,7 +32,6 @@ const From = ({
 }: FromProps): JSX.Element | null => {
   return (
     <>
-      <label className="label">{error && <span className="label-text">{error}</span>}</label>
       <div
         className={`rounded-lg bg-base-300 px-4 py-3 ${className || ''} ${
           error ? 'border border-solid border-red-400' : ''
@@ -84,6 +83,7 @@ const From = ({
           </div>
         </div>
       </div>
+      <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>
     </>
   );
 };
