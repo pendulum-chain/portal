@@ -155,7 +155,6 @@ function Issue(props: IssueProps): JSX.Element {
             wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
           />
-          <Validation errors={formState.errors} />
           {walletAccount ? (
             <Button
               className="w-full text-primary-content"

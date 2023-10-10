@@ -8,7 +8,7 @@ export function getRedeemValidationSchema(maxRedeemable: number, balance: number
     amount: Yup.number()
       .typeError('Value is invalid.')
       .transform(transformNumber)
-      .positive()
+      .positive('You need to enter a positive number')
       .max(maxRedeemable, "The vault doesn't have enough redeemable tokens.")
       .max(balance, "You don't have enough balance."),
     to: Yup.string()

@@ -25,7 +25,7 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
   const inputColor = error ? 'error' : color;
 
   return (
-    <div className="flex w-full component-preview items-center justify-center gap-2 font-sans" style={style}>
+    <div className="flex w-full component-preview items-center justify-center gap-2" style={style}>
       <div className="form-control w-full">
         <label className="label">
           {label && <span className="label-text">{error ? error : label}</span>}

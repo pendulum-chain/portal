@@ -32,7 +32,12 @@ const From = ({
 }: FromProps): JSX.Element | null => {
   return (
     <>
-      <div className={`rounded-lg bg-base-300 px-4 py-3 ${className || ''} ${error ? '' : 'border-neutral-500'}`}>
+      <label className="label">{error && <span className="label-text">{error}</span>}</label>
+      <div
+        className={`rounded-lg bg-base-300 px-4 py-3 ${className || ''} ${
+          error ? 'border border-solid border-red-400' : ''
+        }`}
+      >
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-black font-2">
             <Input
