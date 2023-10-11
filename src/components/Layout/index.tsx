@@ -2,7 +2,7 @@ import { Bars3Icon } from '@heroicons/react/20/solid';
 import { memo, useState } from 'preact/compat';
 import { Outlet } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
-import AmplitudeLogo from '../../assets/amplitud-logo.svg';
+import AmplitudeLogo from '../../assets/amplitude-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
 import { TenantName } from '../../models/Tenant';
 import ChainSelector from '../ChainSelector';

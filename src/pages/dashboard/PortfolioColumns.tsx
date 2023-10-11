@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/table-core';
-import { getIcon } from './PortfolioIcons';
+import { getIcon } from '../../shared/AssetIcons';
 
 export interface PortfolioAsset {
   token: string;

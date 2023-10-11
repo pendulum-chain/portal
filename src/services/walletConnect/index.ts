@@ -67,7 +67,7 @@ export const walletConnectService = {
          */
         getAccounts: () => Promise.resolve([]), // Unused
         subscribeAccounts: () => undefined, // Unused
-        transformError: (err: any) => err, // Unused
+        transformError: (err: Error) => err, // Unused
       },
     };
   },
