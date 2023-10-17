@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
-import Validation from '../../../components/Form/Validation';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
 import { assetDisplayName } from '../../../helpers/spacewalk';
@@ -171,7 +170,6 @@ function Redeem(props: RedeemProps): JSX.Element {
             network="Stellar"
             nativeCurrency={nativeCurrency}
           />
-          <Validation errors={formState.errors} className="" />
           {walletAccount ? (
             <Button
               className="w-full"

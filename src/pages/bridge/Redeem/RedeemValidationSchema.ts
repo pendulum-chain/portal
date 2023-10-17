@@ -8,11 +8,11 @@ export function getRedeemValidationSchema(maxRedeemable: number, balance: number
     amount: Yup.number()
       .typeError('Value is invalid.')
       .transform(transformNumber)
-      .positive()
+      .positive('You need to enter a positive number.')
       .max(maxRedeemable, "The vault doesn't have enough redeemable tokens.")
       .max(balance, "You don't have enough balance."),
     to: Yup.string()
-      .required('The Stellar target address is required.')
+      .required('This field is required.')
       .matches(StellarPublicKeyPattern, 'The supplied address is not a valid Stellar address.'),
   });
 }

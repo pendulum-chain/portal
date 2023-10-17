@@ -8,12 +8,11 @@ import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
-import Validation from '../../../components/Form/Validation';
 import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
@@ -45,8 +44,10 @@ function Issue(props: IssueProps): JSX.Element {
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
 
+  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens).toNumber();
+
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(10)),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable)),
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -138,6 +139,13 @@ function Issue(props: IssueProps): JSX.Element {
             network="Stellar"
             error={formState.errors.amount?.message?.toString()}
           />
+          <label className="label flex align-center">
+            <span className="text-sm">{`Max issuable: ${nativeToDecimal(
+              selectedVault?.issuableTokens?.toString() || 0,
+            ).toFixed(2)} 
+              ${selectedAsset?.code}`}</span>
+          </label>
+
           <FeeBox
             amountNative={amountNative}
             bridgedAsset={selectedAsset}
@@ -146,7 +154,6 @@ function Issue(props: IssueProps): JSX.Element {
             wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
           />
-          <Validation errors={formState.errors} />
           {walletAccount ? (
             <Button
               className="w-full text-primary-content"
