@@ -1,8 +1,6 @@
-import { DocumentMagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
 import { DateTime } from 'luxon';
-import { Button } from 'react-daisyui';
 import { CopyableAddress } from '../../components/PublicKey';
 import { toTitle } from '../../helpers/string';
 import { TenantName } from '../../models/Tenant';
@@ -60,31 +58,18 @@ export const typeColumnCreator = (tenantName: TenantName | undefined): ColumnDef
   accessorFn: (row) => (row.type === TransferType.issue ? `To ${toTitle(tenantName || '')}` : 'Back to Stellar'),
 });
 
-export const statusColumn: ColumnDef<TTransfer> = {
+export const statusColumnCreator = (onClick: (t: TTransfer) => void): ColumnDef<TTransfer> => ({
   header: 'Status',
   accessorKey: 'status',
   cell: ({ row }) => {
     return (
-      <div className={'status-box ' + row.original.status.toLowerCase()}>
+      <div
+        className={'cursor-pointer status-box ' + row.original.status.toLowerCase()}
+        onClick={() => onClick(row.original)}
+      >
         <div className={'status-dot ' + row.original.status.toLowerCase()}></div>
         <div>{row.original.status}</div>
       </div>
-    );
-  },
-};
-
-export const detailsColumnCreator = (onClick: (t: TTransfer) => void): ColumnDef<TTransfer> => ({
-  header: 'Details',
-  accessorKey: 'details',
-  cell: ({ row }) => {
-    return (
-      row.original.status !== 'Retried' && (
-        <Button color="ghost" onClick={() => onClick(row.original)}>
-          <div className="w-5 m-auto details-link">
-            <DocumentMagnifyingGlassIcon />
-          </div>
-        </Button>
-      )
     );
   },
 });

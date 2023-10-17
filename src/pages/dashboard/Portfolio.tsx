@@ -29,7 +29,8 @@ function Portfolio() {
           sortBy={{ amount: SortingOrder.DESC, token: SortingOrder.ASC }}
           search={false}
           pageSize={5}
-          oddRowsClassname="bg-table-row"
+          oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
+          evenRowsClassname="border-b-base-300 table-border"
         />
       )}
       {!walletAccount && <div className="p-5"> You need to connect a wallet in order to see your Portfolio. </div>}
