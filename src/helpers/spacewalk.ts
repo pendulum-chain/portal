@@ -183,3 +183,7 @@ export function estimateRequestCreationTime(
   const now = DateTime.now();
   return now.minus({ seconds: secondsAgo });
 }
+
+export function assetDisplayName(asset?: Asset, assetPrefix?: string, assetSuffix?: string): string {
+  return asset ? `${assetPrefix || ''}${asset.getCode()}${assetSuffix || ''}` : '';
+}
