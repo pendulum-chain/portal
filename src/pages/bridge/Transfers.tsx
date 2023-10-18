@@ -149,7 +149,6 @@ function Transfers(): JSX.Element {
         />
       )}
       <Table
-        className="transfer-list-table bg-base-200 text-md w-full"
         data={data}
         columns={columns}
         isLoading={false}

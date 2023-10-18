@@ -48,7 +48,7 @@ export type TableProps<T> = {
   evenRowsClassname?: string;
   /** Gives a className to odd rows (1,3,5,7,...), to help table rows readability. */
   oddRowsClassname?: string;
-  title?: string;
+  title?: string | JSX.Element;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,9 +107,9 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className="table-border rounded-lg overflow-x-auto border border-base-300">
+      <div className={`bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${className}`}>
         {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
-        <table className={`table w-full ${className}`}>
+        <table className="table w-full">
           <thead>
             {getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b table-border">
