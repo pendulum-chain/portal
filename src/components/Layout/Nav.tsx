@@ -74,6 +74,7 @@ const Nav = memo(({ onClick }: NavProps) => {
   return (
     <nav>
       {links(state).map((item, i) => {
+        if (item.show === false) return;
         return item.submenu ? (
           <CollapseMenu
             key={i}
