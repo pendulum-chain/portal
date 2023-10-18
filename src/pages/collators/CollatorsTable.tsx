@@ -137,6 +137,8 @@ function CollatorsTable() {
         sortBy={{ myStaked: SortingOrder.DESC, collator: SortingOrder.ASC }}
         search={false}
         pageSize={8}
+        oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
+        evenRowsClassname="border-b-base-300 table-border"
       />
     </>
   );
