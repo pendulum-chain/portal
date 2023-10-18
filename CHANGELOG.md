@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/pendulum-chain/portal/compare/v1.1.2...v1.2.0) (2023-10-18)
+
+
+### Features
+
+* redirect zenlink menu item only on amplitude ([#274](https://github.com/pendulum-chain/portal/issues/274)) ([4491e6c](https://github.com/pendulum-chain/portal/commit/4491e6cdf1af0a73e8419396f36b8f217c08f818))
+
 ## [1.1.2](https://github.com/pendulum-chain/portal/compare/v1.1.1...v1.1.2) (2023-10-18)
 
 
