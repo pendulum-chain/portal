@@ -13,6 +13,7 @@ import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
 import { GlobalFilter } from './GlobalFilter';
+import './styles.css';
 
 export enum SortingOrder {
   ASC = 'asc',
@@ -153,16 +154,16 @@ const Table = <T,>({
             })}
           </tbody>
         </table>
+        <Pagination
+          className="justify-end text-neutral-400 normal-case font-normal text-sm mt-2 mb-2"
+          currentIndex={pageIndex}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          pageCount={getPageCount()}
+          onPrev={previousPage}
+          onNext={nextPage}
+        />
       </div>
-      <Pagination
-        className="justify-end text-neutral-400 normal-case font-normal text-sm mt-1"
-        currentIndex={pageIndex}
-        pageSize={pageSize}
-        totalCount={totalCount}
-        pageCount={getPageCount()}
-        onPrev={previousPage}
-        onNext={nextPage}
-      />
     </>
   );
 };

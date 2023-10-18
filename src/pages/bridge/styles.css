@@ -78,20 +78,8 @@
     stroke: #58667E;
   }
 
-  .odd-rows {
-    background-color: #F5F9FA;
-  }
-
-  .table-border {
-    border-color: #DFE0EB;
-  }
-  
   .status-box {
     color: #828282;
-  }
-
-  .table-header {
-    color: #9FA2B4;
   }
 }
 
@@ -118,18 +106,6 @@
 
   .bridge-card .settings svg {
     stroke: #fff;
-  }
-
-  .odd-rows {
-    background-color: #2A2A2A;
-  }
-
-  .table-border {
-    border-color: #434343;
-  }
-
-  .table-header {
-    color: rgba(221, 221, 221, 0.87);
   }
 }
 
