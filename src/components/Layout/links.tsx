@@ -24,6 +24,7 @@ export type BaseLinkItem = {
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
   hidden?: boolean;
+  show?: boolean;
 };
 export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
@@ -45,6 +46,7 @@ export const links: Links = ({ tenantName }) => [
   {
     link: 'https://app.zenlink.pro/',
     title: 'Zenlink AMM',
+    show: tenantName === TenantName.Amplitude,
     props: {
       target: '_blank',
       rel: 'nofollow noreferrer',
