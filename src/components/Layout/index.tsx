@@ -10,7 +10,6 @@ import OpenWallet from '../Wallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
-import Versions from './Versions';
 import './styles.sass';
 
 export default function Layout(): JSX.Element | null {
@@ -59,8 +58,7 @@ export default function Layout(): JSX.Element | null {
             </a>
           </div>
           <Nav onClick={() => setVisible(false)} />
-          <div className="sidebar-footer">
-            <Versions tenantName={tenantName} />
+          <div className="sidebar-footer mx-auto">
             <NetworkId />
             <SocialAndTermLinks />
           </div>

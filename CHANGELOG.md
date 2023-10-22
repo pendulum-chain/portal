@@ -1,3 +1,26 @@
+# [1.2.0](https://github.com/pendulum-chain/portal/compare/v1.1.2...v1.2.0) (2023-10-18)
+
+
+### Features
+
+* redirect zenlink menu item only on amplitude ([#274](https://github.com/pendulum-chain/portal/issues/274)) ([4491e6c](https://github.com/pendulum-chain/portal/commit/4491e6cdf1af0a73e8419396f36b8f217c08f818))
+* indexer ([#232](https://github.com/pendulum-chain/portal/issues/232))  ([2c58c70](https://github.com/pendulum-chain/portal/pull/275/commits/2c58c70))
+* contract hooks ([#233](https://github.com/pendulum-chain/portal/issues/233))  ([f338f37](https://github.com/pendulum-chain/portal/pull/275/commits/f338f37))
+* add nova wallet support to the mobile version of portal ([#234](https://github.com/pendulum-chain/portal/issues/234)) ([3e3c44a](https://github.com/pendulum-chain/portal/pull/275/commits/3e3c44a))
+
+### Bug Fixes
+
+
+* remove irrelevant info from UI ([#273](https://github.com/pendulum-chain/portal/issues/273)) ([f8e3a5e](https://github.com/pendulum-chain/portal/commit/f8e3a5ede3483e8b0b5f9c4a6009358844e655b9))
+* fix loading in claiming steps ([#245](https://github.com/pendulum-chain/portal/issues/245)) ([1b61f41](https://github.com/pendulum-chain/portal/pull/275/commits/1b61f41))
+* show connected accounts token wise breakdown on the dashboard ([#240](https://github.com/pendulum-chain/portal/issues/240))  ([e82b9f2](https://github.com/pendulum-chain/portal/pull/275/commits/e82b9f2))
+* remove indicator ([#252](https://github.com/pendulum-chain/portal/issues/252)) ([c937cde](https://github.com/pendulum-chain/portal/pull/275/commits/c937cde))
+* update design for Spacewalk Issue and Redeeem ([#253](https://github.com/pendulum-chain/portal/issues/253))  ([bdf34e8](https://github.com/pendulum-chain/portal/pull/275/commits/bdf34e8))
+* update pendulum spacewalk transfers page design ([#271](https://github.com/pendulum-chain/portal/issues/271))  ([c1b7bd8](https://github.com/pendulum-chain/portal/pull/275/commits/c1b7bd8))
+* remove irrelevant info from UI ([#273](https://github.com/pendulum-chain/portal/issues/273))  ([f8e3a5e](https://github.com/pendulum-chain/portal/pull/275/commits/f8e3a5e))
+* redirect zenlink menu item only on amplitude ([#274](https://github.com/pendulum-chain/portal/issues/274))  ([4491e6c](https://github.com/pendulum-chain/portal/pull/275/commits/4491e6c))
+
+
 # [1.1.0](https://github.com/pendulum-chain/portal/compare/v1.0.0...v1.1.0) (2023-08-24)
 
 

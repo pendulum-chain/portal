@@ -13,6 +13,7 @@ import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
 import { GlobalFilter } from './GlobalFilter';
+import './styles.css';
 
 export enum SortingOrder {
   ASC = 'asc',
@@ -47,6 +48,7 @@ export type TableProps<T> = {
   evenRowsClassname?: string;
   /** Gives a className to odd rows (1,3,5,7,...), to help table rows readability. */
   oddRowsClassname?: string;
+  title?: string | JSX.Element;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,6 +65,7 @@ const Table = <T,>({
   sortBy,
   evenRowsClassname,
   oddRowsClassname,
+  title,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
@@ -104,11 +107,12 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className="rounded-lg overflow-x-auto">
-        <table className={`table w-full ${className}`}>
+      <div className={`bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${className}`}>
+        {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
+        <table className="table w-full">
           <thead>
             {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b border-base-100">
+              <tr key={headerGroup.id} className="border-b table-border">
                 {headerGroup.headers.map((header) => {
                   const isSortable = header.column.getCanSort();
                   return (
@@ -120,10 +124,10 @@ const Table = <T,>({
                       }`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                      <div className="inline-flex flex-row items-center font-sm text-neutral-400 normal-case font-semibold">
+                    <div className="flex flex-row items-center font-normal text-sm normal-case table-header">
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {isSortable ? (
-                          <div className={`sort ${header.column.getIsSorted()} ml-2 mr text-neutral-400`}>
+                        <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>
                             {header.column.getIsSorted() === 'desc' ? (
                               <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
                             ) : (
@@ -157,16 +161,16 @@ const Table = <T,>({
             ))}
           </tbody>
         </table>
+        <Pagination
+          className="justify-end text-neutral-400 normal-case font-normal text-sm mt-2 mb-2"
+          currentIndex={pageIndex}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          pageCount={getPageCount()}
+          onPrev={previousPage}
+          onNext={nextPage}
+        />
       </div>
-      <Pagination
-        className="justify-end text-neutral-400 normal-case font-normal text-sm mt-1"
-        currentIndex={pageIndex}
-        pageSize={pageSize}
-        totalCount={totalCount}
-        pageCount={getPageCount()}
-        onPrev={previousPage}
-        onNext={nextPage}
-      />
     </>
   );
 };

@@ -4,24 +4,12 @@
   font-weight: 600;
   font-size: 14px;
   border-radius: 5px;
-  color: #828282;
+  color: rgba(221, 221, 221, 0.87);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 5px;
   background: rgba(255, 255, 255, 0.07);
-}
-
-.status-box.completed {
-  background: rgba(28, 203, 138, 0.07);
-}
-
-.status-box.pending {
-  background: rgba(238, 185, 49, 0.07);
-}
-
-.status-box.cancelled {
-  background: rgba(238, 63, 20, 0.07);
 }
 
 .status-dot {
@@ -32,52 +20,28 @@
   background-color: #fff;
 }
 
-.status-dot.completed {
-  background-color: #1ccb8a;
+.status-box.completed, .status-box.reimbursed {
+  background: rgba(28, 203, 138, 0.07);
 }
 
-.status-dot.pending {
-  background-color: #eeb931;
+.status-dot.completed, .status-dot.reimbursed {
+  background-color: #1CCB8A;
+}
+
+.status-box.pending, .status-box.failed, .status-box.retried {
+  background: rgba(238, 185, 49, 0.07);
+}
+
+.status-dot.pending, .status-dot.failed, .status-dot.retried{
+  background-color: #EEB931;
+}
+
+.status-box.cancelled {
+  background: rgba(238, 63, 20, 0.07);
 }
 
 .status-dot.cancelled {
-  background-color: #ee3f14;
-}
-
-.transfer-list-table th {
-  background-color: var(--table-background);
-  border-bottom: 1px solid var(--table-border);
-  color: var(--table-header-text);
-  font-size: 14px;
-}
-
-.transfer-list-table {
-  border: 1px solid var(--table-border);
-  border-radius: 10px;
-  border-collapse: collapse;
-}
-
-.transfer-list-table thead svg {
-  display: inline;
-}
-
-.transfer-list-table td {
-  background-color: var(--table-background);
-  border-bottom: 1px solid var(--table-border);
-  color: var(--table-text);
-}
-
-#details {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-#details > div {
-  color: var(--table-text);
-  margin: 0.5em 0;
-}
-
-.details-link {
-  fill: var(--table-text);
+  background-color: #F14445;
 }
 
 
@@ -113,6 +77,10 @@
   .bridge-card .settings svg {
     stroke: #58667E;
   }
+
+  .status-box {
+    color: #828282;
+  }
 }
 
 [data-theme='amplitude'] {
@@ -140,3 +108,4 @@
     stroke: #fff;
   }
 }
+

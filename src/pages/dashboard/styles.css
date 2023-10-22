@@ -29,11 +29,6 @@
   border-bottom-right-radius: 5px;
 }
 
-.portfolio {
-  background-color: var(--portfolio-bg);
-  border: 1px solid var(--portfolio-border);
-}
-
 .banner.card-compact .card-title {
   padding: 1rem;
   margin: 0;
