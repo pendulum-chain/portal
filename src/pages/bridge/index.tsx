@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'preact/hooks';
+import React from 'preact/compat';
+import { StateUpdater, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
+import { Asset } from 'stellar-sdk';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import AmplitudeLogo from '../../assets/AmplitudeLogo';
 import PendulumLogo from '../../assets/PendulumLogo';
@@ -16,12 +18,20 @@ enum BridgeTabs {
   Redeem = 1,
 }
 
+interface BridgeContextValue {
+  selectedAsset?: Asset;
+  setSelectedAsset: StateUpdater<Asset | undefined>;
+}
+
+export const BridgeContext = React.createContext<BridgeContextValue>({ setSelectedAsset: () => {} });
+
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const { chain } = useNodeInfoState().state;
   const nativeCurrency = chain === 'Amplitude' ? 'AMPE' : 'PEN';
   const wrappedCurrencySuffix = SpacewalkConstants.WrappedCurrencySuffix;
+  const [selectedAsset, setSelectedAsset] = useState<Asset>();
 
   const Content = useMemo(() => {
     if (!chain) return;
@@ -34,28 +44,34 @@ function Bridge(): JSX.Element | null {
   }, [chain, nativeCurrency, tabValue, wrappedCurrencySuffix]);
 
   return chain ? (
-    <div className="h-full flex items-center justify-center mt-4">
-      <SettingsDialog visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
-      <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
-        <div className="flex justify-between px-5 mt-5">
-          <Tabs className="flex w-5/6 flex-grow justify-center" boxed value={tabValue} onChange={setTabValue}>
-            <Tabs.Tab className="w-2/5 h-fit p-2" value={0}>
-              {chain === 'Pendulum' && <PendulumLogo className="w-6 h-6 mr-1" />}
-              {chain === 'Amplitude' && <AmplitudeLogo className="w-6 h-6 mr-1" />}
-              To {chain}
-            </Tabs.Tab>
-            <Tabs.Tab className="w-2/5 h-fit p-2" value={1}>
-              <StellarLogo className="w-6 h-6 mr-1" />
-              Back To Stellar
-            </Tabs.Tab>
-          </Tabs>
-          <Button color="ghost" className="settings p-1 min-h-0 h-fit m-auto" onClick={() => setSettingsVisible(true)}>
-            <SettingsIcon />
-          </Button>
-        </div>
-        {Content}
-      </Card>
-    </div>
+    <BridgeContext.Provider value={{ selectedAsset, setSelectedAsset }}>
+      <div className="h-full flex items-center justify-center mt-4">
+        <SettingsDialog visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
+        <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
+          <div className="flex justify-between px-5 mt-5">
+            <Tabs className="flex w-5/6 flex-grow justify-center" boxed value={tabValue} onChange={setTabValue}>
+              <Tabs.Tab className="w-2/5 h-fit p-2" value={0}>
+                {chain === 'Pendulum' && <PendulumLogo className="w-6 h-6 mr-1" />}
+                {chain === 'Amplitude' && <AmplitudeLogo className="w-6 h-6 mr-1" />}
+                To {chain}
+              </Tabs.Tab>
+              <Tabs.Tab className="w-2/5 h-fit p-2" value={1}>
+                <StellarLogo className="w-6 h-6 mr-1" />
+                Back To Stellar
+              </Tabs.Tab>
+            </Tabs>
+            <Button
+              color="ghost"
+              className="settings p-1 min-h-0 h-fit m-auto"
+              onClick={() => setSettingsVisible(true)}
+            >
+              <SettingsIcon />
+            </Button>
+          </div>
+          {Content}
+        </Card>
+      </div>
+    </BridgeContext.Provider>
   ) : (
     <></>
   );
