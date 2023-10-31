@@ -42,9 +42,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
       <div className={hideCss}>
         <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>
-              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
-            </p>
+            <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
             <p className="text-neutral-500 dark:text-neutral-400 text-right">
               Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
             </p>
@@ -95,13 +93,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Deposit after</div>
-              <div>
-                {depositQuery.isLoading ? numberLoader : `${roundNumber(deposit + amount)} ${data.token.symbol}`}
-              </div>
+              <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} LP`}</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool Share</div>
@@ -110,34 +102,36 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   ? numberLoader
                   : minMax(
                       calcSharePercentage(
-                        nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber() + amount,
-                        deposit + amount,
+                        nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(),
+                        deposit,
                       ),
                     )}
                 %
               </div>
             </div>
           </div>
-          <TokenApproval
-            className="mt-8 w-full"
-            spender={data.id}
-            token={data.token.id}
-            amount={amount}
-            enabled={amount > 0}
-          >
-            <Button color="primary" className="mt-8 w-full" type="submit" disabled={!amount}>
-              Deposit
+          <div className="mt-8">
+            <TokenApproval
+              className="w-full"
+              spender={data.id}
+              token={data.token.id}
+              amount={amount}
+              enabled={amount > 0}
+            >
+              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!amount}>
+                Deposit
+              </Button>
+            </TokenApproval>
+            <Button
+              color="secondary"
+              className="mt-2 w-full"
+              type="button"
+              disable={mutation.isLoading}
+              onClick={() => toggle()}
+            >
+              Cancel
             </Button>
-          </TokenApproval>
-          <Button
-            color="secondary"
-            className="mt-2 w-full"
-            type="button"
-            disable={mutation.isLoading}
-            onClick={() => toggle()}
-          >
-            Cancel
-          </Button>
+          </div>
         </form>
       </div>
     </div>

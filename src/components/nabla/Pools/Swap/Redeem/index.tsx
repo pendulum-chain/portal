@@ -4,7 +4,6 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import TokenApproval from '../../../../Asset/Approval';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
@@ -26,7 +25,6 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
     updateStorage,
     form: { register, setValue },
   } = useRedeem(data);
-  const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
@@ -40,13 +38,11 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
           <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
             <ArrowLeftIcon className="w-4 h-4" />
           </Button>
-          <h3 className="text-3xl font-normal">Withdraw {data.token?.symbol}</h3>
+          <h3 className="text-3xl font-normal">Redeem {data.token?.symbol}</h3>
         </div>
         <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>
-              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
-            </p>
+            <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
             <p className="text-neutral-500 text-right">
               Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
             </p>
@@ -58,7 +54,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                 autoFocus
                 className="input-ghost w-full text-4xl font-2"
                 placeholder="0.0"
-                max={depositQuery.balance || 0}
+                max={deposit}
                 {...register('amount')}
               />
               <Button
@@ -66,7 +62,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                 size="sm"
                 type="button"
                 onClick={() =>
-                  setValue('amount', balance, {
+                  setValue('amount', deposit, {
                     shouldDirty: true,
                     shouldTouch: true,
                   })
@@ -109,37 +105,22 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
             </div>
             <div className="flex items-center justify-between">
               <div>Deposit</div>
-              <div>{roundNumber(deposit || 0)}</div>
+              <div>{roundNumber(deposit)}</div>
             </div>
             <div className="flex items-center justify-between">
-              <div>Remaining deposit</div>
-              <div>{roundNumber(deposit - amount || 0)}</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Remaining pool share</div>
+              <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(
-                    nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber() - amount,
-                    deposit - amount,
-                  ),
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(), deposit),
                 )}
                 %
               </div>
             </div>
           </div>
           <div className="mt-8">
-            <TokenApproval
-              className="mt-8 w-full"
-              spender={data.backstop?.id}
-              token={data.token.id}
-              amount={amount}
-              enabled={amount > 0}
-            >
-              <Button color="primary" className="w-full" type="submit">
-                Redeem
-              </Button>
-            </TokenApproval>
+            <Button color="primary" className="w-full" type="submit">
+              Redeem
+            </Button>
             <Button
               color="secondary"
               className="mt-2 w-full"

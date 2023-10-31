@@ -73,7 +73,11 @@ const TransactionSettings = ({
 export const TransactionSettingsDropdown = (props: TransactionSettingsProps & { button?: ReactNode }) => (
   <Dropdown vertical="bottom" end>
     {props.button || (
-      <button className="btn btn-xs btn-circle btn-ghost text-gray-600 ml-1" type="button" title="Open settings">
+      <button
+        className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400 ml-1"
+        type="button"
+        title="Open settings"
+      >
         <Cog8ToothIcon className="h-6 w-6" />
       </button>
     )}

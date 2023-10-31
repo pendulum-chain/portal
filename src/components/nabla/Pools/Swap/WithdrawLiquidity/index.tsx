@@ -4,7 +4,6 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import TokenApproval from '../../../../Asset/Approval';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { SwapPoolColumn } from '../columns';
@@ -25,7 +24,6 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
     amount,
     form: { register, setValue },
   } = useWithdrawLiquidity(data.id, data.token.id);
-  const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
@@ -43,9 +41,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
         </div>
         <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>
-              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
-            </p>
+            <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
             <p className="text-neutral-500 text-right">
               Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
             </p>
@@ -57,7 +53,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 autoFocus
                 className="input-ghost w-full text-4xl font-2"
                 placeholder="0.0"
-                max={balance}
+                max={deposit}
                 {...register('amount')}
               />
               <Button
@@ -65,7 +61,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 size="sm"
                 type="button"
                 onClick={() =>
-                  setValue('amount', balance, {
+                  setValue('amount', deposit, {
                     shouldDirty: true,
                     shouldTouch: true,
                   })
@@ -98,17 +94,10 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               <div>{roundNumber(deposit)}</div>
             </div>
             <div className="flex items-center justify-between">
-              <div>Remaining deposit</div>
-              <div>{roundNumber(deposit - amount)}</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Remaining pool share</div>
+              <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(
-                    nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber() - amount,
-                    deposit - amount,
-                  ),
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(), deposit),
                 )}
                 %
               </div>
@@ -129,17 +118,9 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 Redeem from backstop pool
               </button>
             </div>
-            <TokenApproval
-              className="w-full"
-              spender={data.id}
-              token={data.token.id}
-              amount={amount}
-              enabled={amount > 0}
-            >
-              <Button color="primary" className="w-full" type="submit">
-                Withdraw
-              </Button>
-            </TokenApproval>
+            <Button color="primary" className="w-full" type="submit">
+              Withdraw
+            </Button>
             <Button
               color="secondary"
               className="mt-2 w-full"

@@ -42,10 +42,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         <form onSubmit={onSubmit}>
           <div>
             <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>
-                Deposited:{' '}
-                {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
-              </p>
+              <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
               <p className="text-neutral-500 dark:text-neutral-400 text-right">
                 Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
               </p>
@@ -55,6 +52,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 autoFocus
                 className="input-ghost w-full text-4xl font-2 py-7 px-4"
                 placeholder="Amount"
+                max={balance}
                 {...register('amount')}
               />
               <Button
@@ -82,20 +80,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
             </div>
             <div className="flex items-center justify-between">
-              <div>Deposit after</div>
-              <div>
-                {depositQuery.isLoading ? numberLoader : `${roundNumber(deposit + amount)} ${data.token.symbol}`}
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
               <div>Pool Share</div>
               <div>
                 {depositQuery.isLoading
                   ? numberLoader
                   : minMax(
                       calcSharePercentage(
-                        nativeToDecimal(data.totalSupply, FixedU128Decimals).toNumber() + amount,
-                        deposit + amount,
+                        nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(),
+                        deposit,
                       ),
                     )}
                 %

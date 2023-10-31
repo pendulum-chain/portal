@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { cacheKeys } from '../../../../../constants/cache';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
@@ -43,9 +43,18 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const onSubmit = form.handleSubmit((variables: WithdrawLiquidityValues) =>
     mutation.mutate([
       decimalToNative(variables.amount, FixedU128Decimals).toString(),
-      decimalToNative(subtractPercentage(variables.amount, 0.5), FixedU128Decimals).toString(),
+      decimalToNative(subtractPercentage(variables.amount, 1), FixedU128Decimals).toString(),
     ]),
   );
 
-  return { form, mutation, onSubmit, toggle, balanceQuery, depositQuery };
+  const amount =
+    Number(
+      useWatch({
+        control: form.control,
+        name: 'amount',
+        defaultValue: 0,
+      }),
+    ) || 0;
+
+  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
 };

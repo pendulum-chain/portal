@@ -5,7 +5,6 @@ import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import TokenApproval from '../../../../Asset/Approval';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -21,10 +20,9 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
     onSubmit,
     balanceQuery,
     depositQuery,
-    form: { register, setValue, watch },
+    amount,
+    form: { register, setValue },
   } = useWithdrawLiquidity(data.id, data.token.id);
-  const amount = Number(watch('amount') || 0);
-  const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
@@ -42,9 +40,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
       <div className={hideCss}>
         <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>
-              Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} ${data.token.symbol}`}
-            </p>
+            <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
             <p className="text-neutral-500 dark:text-neutral-400 text-right">
               Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
             </p>
@@ -56,6 +52,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                   autoFocus
                   className="input-ghost w-full text-4xl font-2 p-2"
                   placeholder="Amount"
+                  max={deposit}
                   {...register('amount')}
                 />
                 <Button
@@ -63,7 +60,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                   size="sm"
                   type="button"
                   onClick={() =>
-                    setValue('amount', balance, {
+                    setValue('amount', deposit, {
                       shouldDirty: true,
                       shouldTouch: true,
                     })
@@ -94,45 +91,32 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             </div>
             <div className="flex items-center justify-between">
               <div>Deposit</div>
-              <div>{roundNumber(deposit || 0)}</div>
+              <div>{roundNumber(deposit || 0)} LP</div>
             </div>
             <div className="flex items-center justify-between">
-              <div>Remaining deposit</div>
-              <div>{roundNumber(deposit - amount || 0)}</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Remaining pool share</div>
+              <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(
-                    nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber() - amount,
-                    deposit - amount,
-                  ),
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(), deposit),
                 )}
                 %
               </div>
             </div>
           </div>
-          <TokenApproval
-            className="mt-8 w-full"
-            spender={data.id}
-            token={data.token.id}
-            amount={amount}
-            enabled={amount > 0}
-          >
+          <div className="mt-8">
             <Button color="primary" className="w-full" type="submit">
               Withdraw
             </Button>
-          </TokenApproval>
-          <Button
-            color="secondary"
-            className="mt-2 w-full"
-            type="button"
-            disable={mutation.isLoading}
-            onClick={() => toggle()}
-          >
-            Cancel
-          </Button>
+            <Button
+              color="secondary"
+              className="mt-2 w-full"
+              type="button"
+              disable={mutation.isLoading}
+              onClick={() => toggle()}
+            >
+              Cancel
+            </Button>
+          </div>
         </form>
       </div>
     </div>

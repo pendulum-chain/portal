@@ -56,17 +56,15 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
         </Button>
       )}
       {!!mutation.data?.hex && (
-        <Button
-          tag="a"
+        <a
+          className="btn btn-secondary w-full mt-2"
           href={`${explorer}/${mutation.data.hex}`}
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}
-          color="secondary"
-          className="w-full mt-2"
         >
           Transaction details
-        </Button>
+        </a>
       )}
     </>
   );
