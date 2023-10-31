@@ -5,17 +5,17 @@ import { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
+import { useGlobalState } from '../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../helpers/spacewalk';
 import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../hooks/useBalances';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -88,7 +88,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
     requestRedeemExtrinsic
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result: any) => {
         const { status, events } = result;
 
         const errors = getErrors(events, api);
@@ -107,7 +107,8 @@ function Redeem(props: RedeemProps): JSX.Element {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const redeemId = (requestRedeemEvent.data as any).redeemId;
 
-            getRedeemRequest(redeemId).then((redeemRequest) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            getRedeemRequest(redeemId).then((redeemRequest: any) => {
               setSubmittedRedeemRequest(redeemRequest);
             });
           }
@@ -119,9 +120,9 @@ function Redeem(props: RedeemProps): JSX.Element {
           }
         }
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error('Transaction submission failed', error);
-        toast('Transaction submission failed:' + error.toString(), {
+        toast(`Transaction submission failed: ${String(error)}`, {
           type: 'error',
         });
         setSubmissionPending(false);
@@ -136,7 +137,7 @@ function Redeem(props: RedeemProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic, () => {})}>
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}

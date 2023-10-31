@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
 import React, { StateUpdater, useEffect, useMemo, useState } from 'react';
 import { Asset } from 'stellar-sdk';
@@ -23,12 +24,12 @@ function useBridgeSettings(): BridgeSettings {
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
-  const { selectedAsset, setSelectedAsset } = React.useContext(BridgeContext);
+  const { selectedAsset, setSelectedAsset } = (React.useContext(BridgeContext) || {}) as any;
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
     Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()]).then((data) => {
-      getVaults().forEach((vaultFromRegistry) => {
+      getVaults().forEach((vaultFromRegistry: any) => {
         const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
         const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
         const extended: ExtendedRegistryVault = vaultFromRegistry;
@@ -84,7 +85,7 @@ function useBridgeSettings(): BridgeSettings {
         }
       }
     }
-  }, [manualVaultSelection, selectedAsset, selectedVault, vaultsForCurrency, wrappedAssets]);
+  }, [manualVaultSelection, selectedAsset, selectedVault, setSelectedAsset, vaultsForCurrency, wrappedAssets]);
 
   return {
     selectedVault,
