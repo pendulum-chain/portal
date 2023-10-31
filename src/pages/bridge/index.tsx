@@ -2,12 +2,12 @@ import React from 'preact/compat';
 import { StateUpdater, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import AmplitudeLogo from '../../assets/AmplitudeLogo';
 import PendulumLogo from '../../assets/PendulumLogo';
 import SettingsIcon from '../../assets/SettingsIcon';
 import StellarLogo from '../../assets/StellarLogo';
 import { SpacewalkConstants } from '../../helpers/spacewalk';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import Issue from './Issue';
 import SettingsDialog from './Issue/SettingsDialog';
 import Redeem from './Redeem';
@@ -23,7 +23,7 @@ interface BridgeContextValue {
   setSelectedAsset: StateUpdater<Asset | undefined>;
 }
 
-export const BridgeContext = React.createContext<BridgeContextValue>({ setSelectedAsset: () => {} });
+export const BridgeContext = React.createContext<BridgeContextValue>({ setSelectedAsset: () => undefined });
 
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);

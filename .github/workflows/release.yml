@@ -47,7 +47,7 @@ jobs:
 
       - name: 🧩 Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --prefer-offline --frozen-lockfile
+        run: yarn install --immutable --inline-builds
 
       - name: 📦 Release
         run: yarn release

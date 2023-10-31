@@ -5,13 +5,13 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
+import { useGlobalState } from '../../../GlobalStateProvider';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -67,7 +67,7 @@ function Issue(props: IssueProps): JSX.Element {
   }, [amountNative, api, createIssueRequestExtrinsic, selectedVault]);
 
   const submitRequestIssueExtrinsic = useCallback(
-    (values: IssueFormValues) => {
+    (_values: IssueFormValues) => {
       if (!requestIssueExtrinsic || !api || !selectedVault) {
         return;
       }
@@ -129,7 +129,7 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => {})}>
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
