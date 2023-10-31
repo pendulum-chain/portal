@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/pendulum-chain/portal/compare/v1.2.0...v1.2.1) (2023-10-31)
+
+
+### Bug Fixes
+
+* github action ([0b9f207](https://github.com/pendulum-chain/portal/commit/0b9f20798f4f33b7a97ae674f460b7b3dfcde8c0))
+* release ([5ebfd88](https://github.com/pendulum-chain/portal/commit/5ebfd88596580307633e3c3dc10d3360f43be8e5))
+* Show vaults for selected asset on Bridge Settings ([#278](https://github.com/pendulum-chain/portal/issues/278)) ([62037d7](https://github.com/pendulum-chain/portal/commit/62037d77cf7bd31c9be1cf9ce0c7d03c831ac90e))
+
 # [1.2.0](https://github.com/pendulum-chain/portal/compare/v1.1.2...v1.2.0) (2023-10-18)
 
 

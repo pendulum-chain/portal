@@ -88,7 +88,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
     requestRedeemExtrinsic
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result: any) => {
         const { status, events } = result;
 
         const errors = getErrors(events, api);
@@ -107,7 +107,8 @@ function Redeem(props: RedeemProps): JSX.Element {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const redeemId = (requestRedeemEvent.data as any).redeemId;
 
-            getRedeemRequest(redeemId).then((redeemRequest) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            getRedeemRequest(redeemId).then((redeemRequest: any) => {
               setSubmittedRedeemRequest(redeemRequest);
             });
           }
@@ -119,9 +120,9 @@ function Redeem(props: RedeemProps): JSX.Element {
           }
         }
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error('Transaction submission failed', error);
-        toast('Transaction submission failed:' + error.toString(), {
+        toast(`Transaction submission failed: ${String(error)}`, {
           type: 'error',
         });
         setSubmissionPending(false);
@@ -136,7 +137,7 @@ function Redeem(props: RedeemProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic, () => {})}>
+        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
