@@ -1,9 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { Button, Card } from 'react-daisyui';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { cacheKeys } from '../../../constants/cache';
-import { BackstopPool } from '../../../models/BackstopPool';
-import { backstopPool } from '../../../services/mocks';
+import { useBackstopPools } from '../../../hooks/nabla/useBackstopPools';
 import ModalProvider, { useModalToggle } from '../../../services/modal';
 import Balance from '../../Balance';
 import { Skeleton } from '../../Skeleton';
@@ -12,10 +8,7 @@ import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
 const BackstopPoolsBody = (): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
-  const { tenantName } = useGlobalState();
-  const { data, isLoading } = useQuery<BackstopPool[] | undefined>([cacheKeys.backstopPools, tenantName], () => {
-    return backstopPool;
-  });
+  const { data, isLoading } = useBackstopPools();
 
   if (isLoading) return <Skeleton className="bg-neutral-200 h-48 w-full" />;
   const pool = data?.[0];
@@ -28,7 +21,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>
-                <Balance address={pool.address} />
+                <Balance address={pool.id} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
@@ -46,6 +39,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
               </Button>
               <Button
                 className="w-full"
+                color="secondary"
                 onClick={() =>
                   toggle({
                     type: ModalTypes.WithdrawLiquidity,

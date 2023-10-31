@@ -1,4 +1,4 @@
-import { u128 } from '@polkadot/types-codec';
+import { UInt, u128 } from '@polkadot/types-codec';
 import BigNumber from 'big.js';
 
 // These are the decimals used for the native currency on the Amplitude network
@@ -18,16 +18,24 @@ BigNumber.NE = -20;
 
 // Converts a decimal number to the native representation (a large integer)
 export const decimalToNative = (value: BigNumber | number | string) => {
-  const bigIntValue = new BigNumber(value);
+  let bigIntValue;
+  try {
+    bigIntValue = new BigNumber(value);
+  } catch (error) {
+    bigIntValue = new BigNumber(0);
+  }
   const multiplier = new BigNumber(10).pow(ChainDecimals);
-
-  return bigIntValue.times(multiplier);
+  return bigIntValue.times(multiplier).round(0);
 };
 
 export const decimalToStellarNative = (value: BigNumber | number | string) => {
-  const bigIntValue = new BigNumber(value);
+  let bigIntValue;
+  try {
+    bigIntValue = new BigNumber(value);
+  } catch (error) {
+    bigIntValue = new BigNumber(0);
+  }
   const multiplier = new BigNumber(10).pow(StellarDecimals);
-
   return bigIntValue.times(multiplier);
 };
 
@@ -38,8 +46,10 @@ export const fixedPointToDecimal = (value: BigNumber | number | string) => {
   return bigIntValue.div(divisor);
 };
 
-export const nativeToDecimal = (value: BigNumber | number | string | u128) => {
-  if (typeof value === 'string' || value instanceof u128) {
+export const nativeToDecimal = (value?: BigNumber | number | string | u128 | UInt) => {
+  if (!value) return new BigNumber(0);
+
+  if (typeof value === 'string' || value instanceof u128 || value instanceof UInt) {
     // Replace the unnecessary ',' with '' to prevent BigNumber from throwing an error
     value = new BigNumber(value.toString().replaceAll(',', ''));
   }

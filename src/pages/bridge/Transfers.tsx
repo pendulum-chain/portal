@@ -20,8 +20,7 @@ import {
   TransferType,
   amountColumn,
   assetColumn,
-  detailsColumnCreator,
-  statusColumn,
+  statusColumnCreator,
   transactionIdColumn,
   typeColumnCreator,
   updatedColumn,
@@ -107,9 +106,9 @@ function Transfers(): JSX.Element {
   }, [activeBlockNumber, walletAccount, getIssueRequests, getRedeemRequests]);
 
   const columns = useMemo(() => {
-    const detailsColumn = detailsColumnCreator(setCurrentTransfer);
+    const statusColumn = statusColumnCreator(setCurrentTransfer);
     const typeColumn = typeColumnCreator(tenantName);
-    return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn, detailsColumn];
+    return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn];
   }, [tenantName, setCurrentTransfer]);
 
   return (
@@ -150,13 +149,15 @@ function Transfers(): JSX.Element {
         />
       )}
       <Table
-        className="transfer-list-table bg-base-100 text-md"
         data={data}
         columns={columns}
         isLoading={false}
         search={false}
         pageSize={8}
+        title="Transfers"
         sortBy={{ updated: SortingOrder.DESC }}
+        oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
+        evenRowsClassname="bg-base-200 border-b-base-300 table-border"
       />
     </div>
   );

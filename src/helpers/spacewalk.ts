@@ -8,6 +8,10 @@ import { Asset, Keypair } from 'stellar-sdk';
 import { TenantName } from '../models/Tenant';
 import { convertRawHexKeyToPublicKey } from './stellar';
 
+export const SpacewalkConstants = {
+  WrappedCurrencySuffix: '.s',
+};
+
 // Convert a hex string to an ASCII string
 function hex_to_ascii(hexString: string, leading0x = true) {
   const hex = hexString.toString();
@@ -52,6 +56,14 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
   }
 }
 
+export function addSuffix(s: string) {
+  return s + SpacewalkConstants.WrappedCurrencySuffix;
+}
+
+export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrencyId) {
+  return convertCurrencyToStellarAsset(currency)?.getCode() + SpacewalkConstants.WrappedCurrencySuffix;
+}
+
 export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): SpacewalkPrimitivesCurrencyId {
   if (asset.isNative()) {
     return api.createType('SpacewalkPrimitivesCurrencyId', 'StellarNative');
@@ -84,9 +96,11 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
 const XCM_ASSETS: { [network: string]: { [xcmIndex: string]: string } } = {
   pendulum: {
     '0': 'DOT',
+    '1': 'USDT',
   },
   amplitude: {
     '0': 'KSM',
+    '1': 'USDT',
   },
 };
 
@@ -168,4 +182,8 @@ export function estimateRequestCreationTime(
   const secondsAgo = activeBlocksPassed * blockTimeSec;
   const now = DateTime.now();
   return now.minus({ seconds: secondsAgo });
+}
+
+export function assetDisplayName(asset?: Asset, assetPrefix?: string, assetSuffix?: string): string {
+  return asset ? `${assetPrefix || ''}${asset.getCode()}${assetSuffix || ''}` : '';
 }

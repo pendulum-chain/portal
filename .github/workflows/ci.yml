@@ -1,4 +1,4 @@
-name: pr
+name: ci
 on:
   pull_request:
     branches: [main, staging, develop]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Running pr
+    name: Running ci
     if:
       "!contains(toJSON(github.event.commits.*.message), 'chore(release):') &&
       github.event.pull_request.draft != true"
@@ -45,7 +45,7 @@ jobs:
 
       - name: 🧩 Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install
+        run: yarn install --immutable --inline-builds
 
       - name: 📋 Yarn Lock Changes
         uses: Simek/yarn-lock-changes@main 

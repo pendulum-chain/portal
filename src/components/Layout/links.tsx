@@ -2,6 +2,7 @@ import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { GlobalState } from '../../GlobalStateProvider';
+import ExternalIcon from '../../assets/ExternalIcon';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
@@ -23,6 +24,7 @@ export type BaseLinkItem = {
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
   hidden?: boolean;
+  show?: boolean;
 };
 export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
@@ -42,19 +44,21 @@ export const links: Links = ({ tenantName }) => [
     suffix: arrow,
   },
   {
-    link: './amm',
+    link: 'https://app.zenlink.pro/',
     title: 'Zenlink AMM',
+    show: tenantName === TenantName.Amplitude,
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : 'coming-soon'),
+      target: '_blank',
+      rel: 'nofollow noreferrer',
     },
     prefix: <SwapIcon className="p-1" />,
-    suffix: <ComingSoonTag />,
+    suffix: <ExternalIcon />,
   },
   {
     link: './spacewalk',
     title: 'Spacewalk',
     props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'coming-soon' : ''),
+      className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
     prefix: <SpacewalkIcon />,
     suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
@@ -86,18 +90,12 @@ export const links: Links = ({ tenantName }) => [
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-5 h-3 ml-auto">
-        <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144V400c0 44.2 35.8 80 80 80H336c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
-      </svg>
-    ),
+    suffix: <ExternalIcon />,
   },
   {
     link: '/nabla',
     title: 'Nabla',
     prefix: <NablaIcon />,
-    suffix: <ComingSoonTag />,
-    hidden: true,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },

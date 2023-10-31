@@ -2,7 +2,7 @@ import { Bars3Icon } from '@heroicons/react/20/solid';
 import { memo, useState } from 'preact/compat';
 import { Outlet } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
-import AmplitudeLogo from '../../assets/amplitud-logo.svg';
+import AmplitudeLogo from '../../assets/amplitude-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
 import { TenantName } from '../../models/Tenant';
 import ChainSelector from '../ChainSelector';
@@ -10,7 +10,6 @@ import OpenWallet from '../Wallet';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
-import Versions from './Versions';
 import './styles.sass';
 
 export default function Layout(): JSX.Element | null {
@@ -59,8 +58,7 @@ export default function Layout(): JSX.Element | null {
             </a>
           </div>
           <Nav onClick={() => setVisible(false)} />
-          <div className="sidebar-footer">
-            <Versions tenantName={tenantName} />
+          <div className="sidebar-footer mx-auto">
             <NetworkId />
             <SocialAndTermLinks />
           </div>
@@ -75,7 +73,7 @@ export default function Layout(): JSX.Element | null {
               </button>
             </div>
             <OpenWallet dAppName={dAppName} />
-            <ChainSelector tenantName={tenantName} />
+            <ChainSelector />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>

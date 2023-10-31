@@ -4,7 +4,6 @@
 
 :root {
   --border-light: #eff2f5;
-  --border-dark: rgba(0, 0, 0, 0.1);
   --nice-light: #907ea0;
   --clear-light: #ffffff;
   --footer-links-light: #58667e;
@@ -26,7 +25,7 @@
   --border: var(--border-dark);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-dark);
-  --card-border: var(--border-dark);
+  --card-border: #434343;
   --table-text: #bbbbbb;
   --table-text-header: #fff;
   --table-background: #1c1c1c;
@@ -48,7 +47,7 @@
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
-  --card-border: var(--border-dark);
+  --card-border: #DFE0EB;
   --table-text: #252733;
   --table-text-header: #9fa2b4;
   --table-background: #fff;
@@ -114,7 +113,6 @@ strong {
   background-color: var(--network-bg);
   border-radius: 4px;
   width: 160px;
-  margin-left: 30px;
   padding: 8px;
 }
 
@@ -128,6 +126,7 @@ strong {
 
 .pendulum-network-id,
 .pendulum-versions {
+  position: relative;
   text-align: left;
   font-size: 12px;
   justify-content: end;
@@ -254,10 +253,6 @@ input[type='number'] {
 
 .input-ghost:focus {
   color: inherit;
-}
-
-.collapse .collapse-content {
-  padding: 0;
 }
 
 .collapse-title,

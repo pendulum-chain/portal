@@ -1,12 +1,9 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
-import { useMemo } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
-import { nablaConfig } from '../../../config/apps/nabla';
-import { getAssets } from '../../../helpers/array';
-import { useGetTenantData } from '../../../hooks/useGetTenantData';
+import { useTokens } from '../../../hooks/nabla/useTokens';
 import { useContractBalance } from '../../../shared/useContractBalance';
 import TokenPrice from '../../Asset/Price';
 import { SwapFormValues } from '../types';
@@ -17,17 +14,15 @@ export interface FromProps {
 }
 
 const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
-  const { assets } = useGetTenantData(nablaConfig) || {};
+  const { data } = useTokens();
+  const { tokensMap } = data || {};
   const { register, setValue, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',
   });
-  const { [from]: token } = useMemo(
-    () => (from.length > 0 ? getAssets(assets || [], { [from]: true }) : {}),
-    [assets, from],
-  );
-  const { formatted, balance } = useContractBalance({ contractAddress: token?.address });
+  const token = tokensMap?.[from];
+  const { formatted, balance } = useContractBalance({ contractAddress: token?.id });
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -54,7 +49,7 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-          <div className="text-sm mt-px">{!!token && <TokenPrice address={token.address} />}s</div>
+          <div className="text-sm mt-px">{!!token && <TokenPrice address={token.id} />}</div>
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>

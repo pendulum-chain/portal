@@ -15,20 +15,26 @@ interface VaultSelectorProps {
 function VaultSelector(props: VaultSelectorProps): JSX.Element {
   const { vaults, selectedVault, showMaxTokensFor, onChange } = props;
   return (
-    <Dropdown vertical="end" className="w-full mt-3">
+    <div className="dropdown w-full mt-3">
       <Button
         type="button"
         color="ghost"
-        className="flex content-center place-content-between w-full border-neutral-500 bg-base-200 rounded-md no-animation"
+        className="flex content-center place-content-between w-full border-base-200 bg-base-300 rounded-md no-animation"
       >
         <PublicKey publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''} variant="full" />
         <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
       </Button>
-      <Dropdown.Menu className="w-full mt-1.5 p-1 border border-neutral-500 bg-base-200 rounded-md shadow-none">
+      <Dropdown.Menu className="dropdown-content w-full mt-1.5 p-1 border border-base-200 bg-base-300 rounded-md shadow-none">
         {vaults.map((vault) => (
           <Dropdown.Item
             key={vault.id.accountId.toString()}
-            onClick={() => onChange(vault)}
+            onClick={() => {
+              const elem = document.activeElement;
+              if (elem && elem instanceof HTMLElement) {
+                elem.blur();
+              }
+              onChange(vault);
+            }}
             className="w-full rounded-md"
           >
             <span className="w-full flex place-content-between">
@@ -45,7 +51,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
           </Dropdown.Item>
         ))}
       </Dropdown.Menu>
-    </Dropdown>
+    </div>
   );
 }
 

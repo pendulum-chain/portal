@@ -2,14 +2,14 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, Button, Input, Modal, ModalProps } from 'react-daisyui';
+import { Token } from '../../../../../gql/graphql';
 import { repeat } from '../../../../helpers/general';
-import { Asset } from '../../../../models/Asset';
 import ModalCloseButton from '../../../Button/ModalClose';
 import { Skeleton } from '../../../Skeleton';
 
 export interface AssetListProps {
-  assets?: Asset[];
-  onSelect: (asset: Asset) => void;
+  assets?: Token[];
+  onSelect: (asset: Token) => void;
   selected?: string;
 }
 
@@ -35,13 +35,13 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
             type="button"
             size="lg"
             variant="secondary"
-            key={token.address}
+            key={token.id}
             onClick={() => onSelect(token)}
             className="w-full items-center justify-start gap-4 px-3 py-1 border-0 bg-[rgba(0,0,0,.2)] text-left hover:opacity-80 dark:bg-[rgba(255,255,255,.12)]"
           >
             <span className="relative">
-              <Avatar size="xs" letters={token.symbol} src={token.logoURI} shape="circle" className="text-xs" />
-              {selected == token.address && (
+              <Avatar size="xs" letters={token.symbol} /* src={token.logoURI} */ shape="circle" className="text-xs" />
+              {selected == token.id && (
                 <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
               )}
             </span>

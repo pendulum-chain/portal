@@ -1,3 +1,4 @@
+import { Abi } from '@polkadot/api-contract';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
@@ -8,11 +9,13 @@ import { QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers';
 import { useContract } from './useContract';
 
-export type UseBalanceProps = {
+export type UseBalanceProps<TAbi extends Abi> = {
   /** token or contract address */
   contractAddress?: string;
   /** account address */
   account?: string;
+  /** contract abi */
+  abi?: TAbi;
 };
 export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefined, unknown> & {
   balance?: number;
@@ -20,8 +23,8 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
   enabled: boolean;
 };
 
-export const useContractBalance = (
-  { contractAddress, account }: UseBalanceProps,
+export const useContractBalance = <TAbi extends Abi>(
+  { contractAddress, account, abi }: UseBalanceProps<TAbi>,
   options?: QueryOptions,
 ): UseBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
@@ -35,27 +38,16 @@ export const useContractBalance = (
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     ...options,
-    abi: mockERC20,
+    abi: abi || mockERC20,
     address: contractAddress,
-    fn:
-      ({ contract, api }) =>
-      () =>
-        contract.query.balanceOf(
-          address,
-          {
-            gasLimit: api.createType('WeightV2', {
-              refTime: '100000000000',
-              proofSize: '1000000',
-            }),
-            storageDepositLimit: null,
-          },
-          address,
-        ),
+    owner: address,
+    method: 'balanceOf',
+    args: [address],
     enabled,
   });
   const { data } = query;
   const val = useMemo(() => {
-    if (!data?.result?.isOk || data?.output === undefined) return {};
+    if (!data?.result?.isOk || data?.output === undefined) return undefined;
     const balance = nativeToDecimal(parseFloat(data.output.toString()) || 0).toNumber();
     return { balance, formatted: prettyNumbers(balance) };
   }, [data]);
