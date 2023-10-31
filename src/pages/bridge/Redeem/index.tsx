@@ -5,17 +5,17 @@ import { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
+import { useGlobalState } from '../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../helpers/spacewalk';
 import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../hooks/useBalances';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -51,7 +51,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSelectedAssetsBalance(amount);
   }, [balances, selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
 
-  const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens).toNumber();
+  const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {},

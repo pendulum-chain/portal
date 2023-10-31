@@ -50,6 +50,24 @@ export const config = {
       deadline: 30,
     },
   },
+  backstop: {
+    defaults: {
+      slippage: 0.1,
+    },
+    securityFee: 0.01, // 1%
+  },
+  transaction: {
+    settings: {
+      slippage: {
+        min: 0.1,
+        max: 99.9,
+      },
+      deadline: {
+        min: 1,
+        max: 1440, // 1 day
+      },
+    },
+  },
   walletConnect: {
     url: 'wss://relay.walletconnect.com',
     projectId: '299fda67fbf3b60a31ba8695524534cd',

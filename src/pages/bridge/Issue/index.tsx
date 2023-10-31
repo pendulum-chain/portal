@@ -5,13 +5,13 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
+import { useGlobalState } from '../../../GlobalStateProvider';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -44,7 +44,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
 
-  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens).toNumber();
+  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable)),

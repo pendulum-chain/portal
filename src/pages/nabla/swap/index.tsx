@@ -1,6 +1,6 @@
 import { useCallback } from 'preact/compat';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Swap from '../../../components/Swap';
+import Swap from '../../../components/nabla/Swap';
 
 const SwapPage = (): JSX.Element | null => {
   const [params] = useSearchParams();
