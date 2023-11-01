@@ -45,7 +45,7 @@ export function App() {
             <Route path="swap" element={SwapPage} />
             <Route path="swap-pools" element={SwapPoolsPage} />
             <Route path="backstop-pools" element={BackstopPoolsPage} />
-            {config.isDev && <Route path="dev" element={DevPage} />}
+            {!config.isProd && <Route path="dev" element={DevPage} />}
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="staking" element={Staking} />

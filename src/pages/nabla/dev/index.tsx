@@ -67,12 +67,12 @@ const TokenItem = ({ token }: { token: Token }) => {
 };
 
 const DevPage = () => {
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const wallet = useGlobalState().walletAccount;
   const { data } = useTokens();
   const { tokens } = data || {};
 
-  if (!config.isDev) nav('/');
+  if (config.isProd) navigate('/');
   if (!wallet?.address) {
     return <>Please connect your wallet.</>;
   }
