@@ -7,13 +7,14 @@ import Unsupported from './Unsupported';
 
 export type AppsProviderProps = {
   app: Apps;
-  environment?: Environment;
+  environment?: Environment | Environment[];
 };
 
 const AppsProvider = ({ app, environment }: AppsProviderProps): JSX.Element | null => {
   const tenant = useGlobalState().tenantName;
   const supportedTenants = appsConfigs[app].tenants;
-  if (environment && config.env !== environment) return <Navigate to={config.defaultPage} replace />;
+  const envs = Array.isArray(environment) ? environment : [environment];
+  if (environment && !envs.includes(config.env)) return <Navigate to={config.defaultPage} replace />;
   if (!(supportedTenants as TenantName[]).includes(tenant)) {
     return <Unsupported app={app} tenant={tenant} supportedTenants={supportedTenants} />;
   }
