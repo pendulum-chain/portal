@@ -10,20 +10,11 @@ export type UseTokenOutAmountProps = {
   from?: string;
   to?: string;
   decimals?: number;
-  onSuccess?: (val: bigint) => void;
+  onSuccess?: (val: string) => void;
   onError?: (err: Error) => void;
-  enabled?: boolean;
 };
 
-export const useTokenOutAmount = ({
-  amount,
-  from,
-  to,
-  decimals,
-  onSuccess,
-  onError,
-  enabled,
-}: UseTokenOutAmountProps) => {
+export const useTokenOutAmount = ({ amount, from, to, decimals, onSuccess, onError }: UseTokenOutAmountProps) => {
   const amountIn = decimalToNative(amount || 0, decimals).toString();
   const { address } = useGlobalState().walletAccount || {};
   const { router } = useGetAppDataByTenant('nabla').data || {};
@@ -34,7 +25,7 @@ export const useTokenOutAmount = ({
     owner: address,
     method: 'getAmountOut',
     args: [amountIn, [from, to]],
-    enabled: !!amount && !!from && !!to && enabled !== false,
+    enabled: !!amount && !!from && !!to,
     onSuccess,
     onError: (err) => {
       if (onError) onError(err);

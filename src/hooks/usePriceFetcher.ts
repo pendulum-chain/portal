@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo } from 'preact/compat';
 import { TenantName } from '../models/Tenant';
 
 interface PriceFetcherAsset {

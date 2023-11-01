@@ -10,11 +10,12 @@ import { routerAbi } from '../../../contracts/nabla/Router';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { subtractPercentage } from '../../../helpers/calc';
 import { debounce } from '../../../helpers/function';
+import { getValidDeadline, getValidSlippage } from '../../../helpers/transaction';
 import { useTokens } from '../../../hooks/nabla/useTokens';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../../models/Swap';
 import { storageService } from '../../../services/storage/local';
-import { decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
+import { calcDeadline, decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';
@@ -26,9 +27,12 @@ export interface UseSwapComponentProps {
 }
 
 export const defaultValues = config.swap.defaults;
+const storageValues = storageService.getParsed<SwapSettings>(storageKeys.SWAP_SETTINGS);
 const getInitialValues = () => ({
   ...defaultValues,
-  ...storageService.getParsed<SwapSettings>(storageKeys.SWAP_SETTINGS),
+  ...storageValues,
+  slippage: getValidSlippage(storageValues?.slippage),
+  deadline: getValidDeadline(storageValues?.deadline || defaultValues.deadline),
 });
 const storageSet = debounce(storageService.set, 1000);
 
@@ -87,11 +91,14 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   });
 
   const onSubmit = form.handleSubmit((variables: SwapFormValues) => {
-    const time = Math.floor(Date.now() / 1000) + variables.deadline;
-    const deadline = decimalToNative(time, FixedU128Decimals).toString();
-    const slippage = variables.slippage ?? defaultValues.slippage;
+    const vDeadline = getValidDeadline(variables.deadline || defaultValues.deadline);
+    const vSlippage = getValidSlippage(variables.slippage || defaultValues.slippage);
+    const deadline = calcDeadline(vDeadline).toString();
     const fromAmount = decimalToNative(variables.fromAmount, FixedU128Decimals).toString();
-    const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, slippage), FixedU128Decimals).toString();
+    const toMinAmount = decimalToNative(
+      subtractPercentage(variables.toAmount, vSlippage),
+      FixedU128Decimals,
+    ).toString();
     const spender = address;
     return swapMutation.mutate([spender, fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });

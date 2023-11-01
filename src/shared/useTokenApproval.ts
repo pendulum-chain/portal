@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'preact/compat';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { gasDefaults } from './helpers';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';

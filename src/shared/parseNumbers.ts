@@ -103,3 +103,6 @@ export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberF
 export const roundNumber = (value: number | string = 0, round = 6) => {
   return +Number(value).toFixed(round);
 };
+
+/** Calculate deadline from minutes */
+export const calcDeadline = (min: number) => decimalToNative(`${Math.floor(Date.now() / 1000) + min * 60}`);

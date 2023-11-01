@@ -1,24 +1,24 @@
-import { ComponentChildren, JSX } from 'preact';
-import { Modal, ModalProps } from 'react-daisyui';
+import { JSX } from 'preact';
+import { Modal } from 'react-daisyui';
 import ModalCloseButton from '../../../Button/ModalClose';
 import TransactionProgress, { TransactionProgressProps } from '../../../Transaction/Progress';
 
 export type SwapProgressProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mutation?: TransactionProgressProps['mutation'];
+  open: boolean;
+  children?: JSX.Element | null;
   onClose: () => void;
-  children?: ComponentChildren;
-} & ModalProps;
+  mutation?: TransactionProgressProps['mutation'];
+};
 
-const SwapProgress = ({ onClose, children, mutation, ...rest }: SwapProgressProps): JSX.Element | null => {
+const SwapProgress = ({ mutation, children, ...rest }: SwapProgressProps): JSX.Element | null => {
   return (
-    <Modal {...rest}>
+    <Modal className="modal-top" {...rest}>
       <Modal.Header className="mb-0">
-        <ModalCloseButton onClick={onClose} />
+        <ModalCloseButton onClick={rest.onClose} />
       </Modal.Header>
       <Modal.Body>
         {!!mutation && (
-          <TransactionProgress mutation={mutation} onClose={onClose}>
+          <TransactionProgress mutation={mutation} onClose={rest.onClose}>
             {children}
           </TransactionProgress>
         )}

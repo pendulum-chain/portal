@@ -11,11 +11,8 @@ import SwapProgress from './Progress';
 import To from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 
-const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200';
-
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
-    tokensQuery,
     tokensModal: [modalType, setModalType],
     onFromChange,
     onToChange,
@@ -25,6 +22,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     from,
     updateStorage,
     progressClose,
+    tokensQuery,
   } = useSwapComponent(props);
   const {
     setValue,
@@ -35,15 +33,14 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const { tokens, tokensMap } = tokensQuery.data || {};
 
   const progressUi = useMemo(() => {
-    if (!swapMutation.isLoading) return '';
+    if (!swapMutation?.isLoading) return null;
     const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
-    // TODO: optimize finding tokens with object map
     const fromAsset = tokensMap?.[fromV];
     const toAsset = tokensMap?.[toV];
     return (
       <p className="text-center text-neutral-500">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
     );
-  }, [tokensMap, getValues, swapMutation.isLoading]);
+  }, [getValues, swapMutation?.isLoading, tokensMap]);
 
   return (
     <>
@@ -80,10 +77,12 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               />
             </div>
             <From
+              tokensMap={tokensMap}
               onOpenSelector={() => setModalType('from')}
               className={`border ${errorClass(errors.fromAmount, 'border-red-600', 'border-transparent')}`}
             />
             <To
+              tokensMap={tokensMap}
               onOpenSelector={() => setModalType('to')}
               className={`border ${errorClass(errors.to, 'border-red-600', 'border-transparent')}`}
             />
@@ -101,7 +100,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}
         onClose={() => setModalType(undefined)}
       />
-      <SwapProgress open={!swapMutation.isIdle} className="modal-top" onClose={progressClose} mutation={swapMutation}>
+      <SwapProgress open={!!progressUi} mutation={swapMutation} onClose={progressClose}>
         {progressUi}
       </SwapProgress>
     </>

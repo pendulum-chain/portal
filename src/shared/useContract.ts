@@ -8,14 +8,25 @@ import { useMemo } from 'preact/compat';
 import { emptyCacheKey, emptyFn, gasDefaults, QueryOptions } from './helpers';
 import { useSharedState } from './Provider';
 
+type ContractOpts = ContractOptions | ((api: ApiPromise) => ContractOptions);
 export type UseContractProps<TAbi extends Abi | Record<string, unknown>> = QueryOptions & {
   abi: TAbi;
   address?: string;
   owner?: string;
   method: string;
   args?: any[];
-  options?: ContractOptions | ((api: ApiPromise) => ContractOptions);
+  options?: ContractOpts;
 };
+
+const getOptions = (options: ContractOpts | undefined, api: ApiPromise) =>
+  typeof options === 'function'
+    ? options(api)
+    : options || {
+        // { gasLimit: -1 }
+        gasLimit: api.createType('WeightV2', gasDefaults),
+        storageDepositLimit: null,
+      };
+
 export const useContract = <TAbi extends Abi | Record<string, unknown>>(
   key: QueryKey,
   { abi, address, owner, method, args, options, ...rest }: UseContractProps<TAbi>,
@@ -30,14 +41,7 @@ export const useContract = <TAbi extends Abi | Record<string, unknown>>(
     enabled ? key : emptyCacheKey,
     enabled
       ? async () => {
-          const opts =
-            typeof options === 'function'
-              ? options(api)
-              : options || {
-                  // { gasLimit: -1 }
-                  gasLimit: api.createType('WeightV2', gasDefaults),
-                  storageDepositLimit: null,
-                };
+          const opts = getOptions(options, api);
           const response = await contract.query[method](owner, opts, ...(args || []));
           if (!response?.result?.isOk || response?.output === undefined) throw response;
           // ? TODO: maybe not ideal to cache only output

@@ -3,20 +3,19 @@ import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
-import { useTokens } from '../../../../hooks/nabla/useTokens';
+import { TokensData } from '../../../../hooks/nabla/useTokens';
 import { FixedU128Decimals } from '../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../shared/useContractBalance';
 import TokenPrice from '../../../Asset/Price';
 import { SwapFormValues } from '../types';
 
 export interface FromProps {
+  tokensMap?: TokensData['tokensMap'];
   onOpenSelector: () => void;
   className?: string;
 }
 
-const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
-  const { data } = useTokens();
-  const { tokensMap } = data || {};
+const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element | null => {
   const { register, setValue, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
@@ -50,24 +49,26 @@ const From = ({ onOpenSelector, className }: FromProps): JSX.Element | null => {
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-          <div className="text-sm mt-px">{!!token && <TokenPrice address={token.id} symbol={token.symbol} />}</div>
+          <div className="text-sm mt-px">
+            {token ? <TokenPrice address={token.id} symbol={token.symbol} fallback="$ -" /> : '$ -'}
+          </div>
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>
                 <span className="mr-1">Balance: {formatted}</span>
                 <button
                   className="text-primary hover:underline"
-                  onClick={() => setValue('fromAmount', Number(balance))}
-                  type="button"
-                >
-                  MAX
-                </button>
-                <button
-                  className="text-primary hover:underline"
                   onClick={() => setValue('fromAmount', Number(balance) * 0.5)}
                   type="button"
                 >
                   50%
+                </button>
+                <button
+                  className="text-primary hover:underline"
+                  onClick={() => setValue('fromAmount', Number(balance))}
+                  type="button"
+                >
+                  MAX
                 </button>
               </Fragment>
             )}

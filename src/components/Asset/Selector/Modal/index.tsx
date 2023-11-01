@@ -22,10 +22,10 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
   );
 
   return (
-    <>
+    <div className="relative">
       <Input
         bordered
-        className="w-full mb-8"
+        className="sticky top-0 w-full mb-8 z-10"
         onChange={(ev: ChangeEvent<HTMLInputElement>) => setFilter(ev.currentTarget.value)}
         placeholder="Find by name or address"
       />
@@ -54,7 +54,7 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
           </Button>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

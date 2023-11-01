@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
