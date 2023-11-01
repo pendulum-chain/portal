@@ -40,7 +40,7 @@ export function App() {
             <Route path="bridge" element={Bridge} />
             <Route path="transfers" element={TransfersPage} />
           </Route>
-          <Route path="nabla" Component={() => <AppsProvider environment={['staging', 'development']} app="nabla" />}>
+          <Route path="nabla" Component={() => <AppsProvider app="nabla" />}>
             <Route path="" element={NablaPage} />
             <Route path="swap" element={SwapPage} />
             <Route path="swap-pools" element={SwapPoolsPage} />

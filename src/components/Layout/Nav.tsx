@@ -2,34 +2,29 @@ import { memo, useMemo } from 'preact/compat';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
-import { TenantName } from '../../models/Tenant';
 import { LinkItem, links } from './links';
 
 const CollapseMenu = ({
   link,
-  hidden,
+  disabled,
   button,
   children,
 }: {
   link: string;
-  hidden?: boolean;
+  disabled?: boolean;
   button: JSX.Element | null;
   children: JSX.Element | null;
 }) => {
   const { pathname } = useLocation();
-  const { tenantName } = useGlobalState();
-  const isPendulum = tenantName === TenantName.Pendulum;
-
   const isActive = useMemo(() => {
     const [path] = pathname.split('?');
     const paths = path.split('/').filter(Boolean);
     return paths[1].startsWith(link.replace('/', '')) ? true : false;
   }, [link, pathname]);
-
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <div className={(hidden && !isActive) || isPendulum ? 'coming-soon' : ''}>
+    <div className={disabled ? 'disabled' : ''}>
       <button
         type="button"
         className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
@@ -43,7 +38,8 @@ const CollapseMenu = ({
 };
 
 const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
-  const { link, prefix, suffix, title, props } = item;
+  const { link, prefix, suffix, title, props, hidden } = item;
+  if (hidden) return null;
   const isExternal = link.startsWith('http');
   const linkUi = (
     <>
@@ -74,12 +70,12 @@ const Nav = memo(({ onClick }: NavProps) => {
   return (
     <nav>
       {links(state).map((item, i) => {
-        if (item.show === false) return;
+        if (item.hidden) return;
         return item.submenu ? (
           <CollapseMenu
             key={i}
             link={item.link}
-            hidden={item.hidden}
+            disabled={item.disabled}
             button={
               <>
                 {item.prefix}

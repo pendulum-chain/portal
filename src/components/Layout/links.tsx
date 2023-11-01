@@ -1,9 +1,8 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { GlobalState } from '../../GlobalStateProvider';
-import ExternalIcon from '../../assets/ExternalIcon';
 import DashboardIcon from '../../assets/dashboard';
+import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
@@ -11,6 +10,8 @@ import SpacewalkIcon from '../../assets/spacewalk';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { config } from '../../config';
+import { nablaConfig } from '../../config/apps/nabla';
+import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
 
@@ -24,7 +25,7 @@ export type BaseLinkItem = {
   prefix?: ComponentChildren;
   suffix?: ComponentChildren;
   hidden?: boolean;
-  show?: boolean;
+  disabled?: boolean;
 };
 export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
@@ -46,7 +47,7 @@ export const links: Links = ({ tenantName }) => [
   {
     link: 'https://app.zenlink.pro/',
     title: 'Zenlink AMM',
-    show: tenantName === TenantName.Amplitude,
+    hidden: tenantName !== TenantName.Amplitude,
     props: {
       target: '_blank',
       rel: 'nofollow noreferrer',
@@ -61,7 +62,8 @@ export const links: Links = ({ tenantName }) => [
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
     prefix: <SpacewalkIcon />,
-    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : <></>,
+    disabled: tenantName === TenantName.Pendulum,
+    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : null,
     submenu: [
       {
         link: './spacewalk/bridge',
@@ -95,6 +97,7 @@ export const links: Links = ({ tenantName }) => [
   {
     link: '/nabla',
     title: 'Nabla',
+    hidden: nablaConfig.environment && !nablaConfig.environment.includes(config.env),
     prefix: <NablaIcon />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),

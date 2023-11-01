@@ -15,6 +15,7 @@ export type NablaConfig = AppConfig &
 
 export const nablaConfig: NablaConfig = {
   tenants: [TenantName.Foucoco],
+  environment: ['staging', 'development'],
   foucoco: {
     indexerUrl: 'https://squid.subsquid.io/foucoco-squid/graphql',
 
