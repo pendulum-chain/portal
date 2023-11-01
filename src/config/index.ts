@@ -11,9 +11,12 @@ type TenantConfig = Record<
   }
 >;
 
-const env = process.env.NODE_ENV;
+export type Environment = 'development' | 'staging' | 'production';
+const nodeEnv = process.env.NODE_ENV as Environment;
+const env = (import.meta.env.VITE_ENVIRONMENT || nodeEnv) as Environment;
 
 export const config = {
+  nodeEnv,
   env,
   isProd: env === 'production',
   isDev: env === 'development',
