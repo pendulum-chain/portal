@@ -1,12 +1,15 @@
+import request from 'graphql-request';
 import { useMemo } from 'react';
 import { TenantName } from '../models/Tenant';
+
+const AMPLITUDE_INDEXER_URL = 'https://squid.subsquid.io/amplitude-squid/graphql';
 
 interface PriceFetcherAsset {
   assetName: string;
   blockchain: string;
   assetId: string | undefined;
   exclude?: TenantName[];
-  provider: 'dia' | 'diaForeign';
+  provider: 'dia' | 'diaForeign' | 'subsquid';
 }
 
 type PricesCache = {
@@ -55,7 +58,6 @@ const assets: PriceFetcherAsset[] = [
     assetId: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     provider: 'dia',
   },
-
   {
     assetName: 'DOT',
     blockchain: 'Polkadot',
@@ -66,8 +68,8 @@ const assets: PriceFetcherAsset[] = [
   {
     assetName: 'AMPE',
     blockchain: 'Amplitude',
-    assetId: undefined,
-    provider: 'dia',
+    assetId: 'eth',
+    provider: 'subsquid',
     exclude: [TenantName.Pendulum],
   },
   {
@@ -108,9 +110,37 @@ const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset): Promise<number
   return 0;
 };
 
+interface SubsquidResponse {
+  data: {
+    bundleById: {
+      ethPrice: string;
+    };
+  };
+}
+
+const getSubsquidAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
+  if (!asset.assetId) return 0;
+  const query = `
+    query GetAMPEPrice {
+      bundleById(id: "1") {
+        ethPrice
+      }
+    }
+  `;
+  try {
+    const response = (await request(AMPLITUDE_INDEXER_URL, query)) as SubsquidResponse;
+    console.log('price', response.data.bundleById.ethPrice);
+  } catch (e) {
+    console.error(e);
+  }
+
+  return 0;
+};
+
 const providers = {
   dia: getDIAAssetPrice,
   diaForeign: getDIAAssetForeignPrice,
+  subsquid: getSubsquidAssetPrice,
 };
 
 const lookup = (assetCode: string) => {
