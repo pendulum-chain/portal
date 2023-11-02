@@ -1,4 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
+import { FixedU128Decimals } from '../../../shared/parseNumbers';
 import { ApprovalState, useTokenApproval } from '../../../shared/useTokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {
@@ -24,6 +25,7 @@ const TokenApproval = ({
     token,
     spender,
     enabled,
+    decimals: FixedU128Decimals,
   });
 
   if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;

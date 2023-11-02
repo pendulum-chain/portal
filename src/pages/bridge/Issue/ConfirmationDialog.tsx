@@ -1,6 +1,6 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'preact/compat';
 import { Button, Divider, Modal } from 'react-daisyui';
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';

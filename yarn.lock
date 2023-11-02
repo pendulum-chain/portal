@@ -6031,7 +6031,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^4.32.6":
+"@tanstack/query-persist-client-core@npm:4.32.6":
+  version: 4.32.6
+  resolution: "@tanstack/query-persist-client-core@npm:4.32.6"
+  dependencies:
+    "@tanstack/query-core": "npm:4.32.6"
+  checksum: 6aa6d453985a1953c859bad41321cd1392d56281fbb77856d17788b4b7fbbc43cc3fc6a28b4a2f0afbf056403a4da79337d0830366bbfefdedf366a1a700e257
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-sync-storage-persister@npm:~4.32.6":
+  version: 4.32.6
+  resolution: "@tanstack/query-sync-storage-persister@npm:4.32.6"
+  dependencies:
+    "@tanstack/query-persist-client-core": "npm:4.32.6"
+  checksum: c3cf3304796987474554026207cfad0ab686a4c283d2c29797c5da940de501c249b7b668aa87b44cd2511c351e49e2c80e414f007f9c54f7afbe85dba14e02df
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-persist-client@npm:~4.32.6":
+  version: 4.32.6
+  resolution: "@tanstack/react-query-persist-client@npm:4.32.6"
+  dependencies:
+    "@tanstack/query-persist-client-core": "npm:4.32.6"
+  peerDependencies:
+    "@tanstack/react-query": ^4.32.6
+  checksum: 1eefef54f5bd98ebc48a21e5a95898852f0b4ac5d5f2592ebed864380b8b81e6a43814e70b518fbb409f929a27f60ba6af315b02af6f0ea176a703d425dc884d
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:~4.32.6":
   version: 4.32.6
   resolution: "@tanstack/react-query@npm:4.32.6"
   dependencies:
@@ -8063,17 +8092,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001449, caniuse-lite@npm:^1.0.30001464":
-  version: 1.0.30001482
-  resolution: "caniuse-lite@npm:1.0.30001482"
-  checksum: c2757a2c18b5f8dcfaffd3f5e8bb97c526f4378d70be8b88d3dc188235ccdc89144550ffa66d034b58ebc9d9ce8a5905f1ad538527e7d0290e884eef89becbb5
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001517":
-  version: 1.0.30001521
-  resolution: "caniuse-lite@npm:1.0.30001521"
-  checksum: a3bbd379b96a2f6512fecbabbdf12eb79e076271ab23aeb77b8f66b7ba49cec41db3c2163ca70000d457e5bf78385a5b8a712a03f7a3734c8a9cb71636bc9daf
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001449, caniuse-lite@npm:^1.0.30001464, caniuse-lite@npm:^1.0.30001517":
+  version: 1.0.30001559
+  resolution: "caniuse-lite@npm:1.0.30001559"
+  checksum: 32377e386580dcb977f552b488e7b56fb489aa0a83f4f43087af6e8fe1fe7fda529bc29e76ef38c0f9c56c964389d322059a0dd7a544859a7b88063f7fc761d7
   languageName: node
   linkType: hard
 
@@ -15784,7 +15806,9 @@ __metadata:
     "@talismn/connect-components": "npm:^1.1.7"
     "@talismn/connect-ui": "npm:^1.1.2"
     "@talismn/connect-wallets": "npm:^1.2.3"
-    "@tanstack/react-query": "npm:^4.32.6"
+    "@tanstack/query-sync-storage-persister": "npm:~4.32.6"
+    "@tanstack/react-query": "npm:~4.32.6"
+    "@tanstack/react-query-persist-client": "npm:~4.32.6"
     "@tanstack/react-table": "npm:^8.9.3"
     "@testing-library/jest-dom": "npm:^5.16.5"
     "@testing-library/preact": "npm:^3.2.3"

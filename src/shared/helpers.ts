@@ -23,3 +23,8 @@ export const parseTransactionError = (result: SubmittableResultValue | undefined
     console.log(result.dispatchError.toString());
   }
 };
+
+export const gasDefaults = {
+  refTime: '120000000000',
+  proofSize: '1200000',
+};

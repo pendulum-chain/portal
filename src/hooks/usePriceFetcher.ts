@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo } from 'preact/compat';
 import { TenantName } from '../models/Tenant';
 
 interface PriceFetcherAsset {
@@ -129,6 +129,7 @@ const getPrice = async (asset: PriceFetcherAsset) => {
   }
 };
 
+// TODO: using react-query will do caching, loading states, refetching... out of the box
 export const usePriceFetcher = () => {
   const pricesCache: Promise<PricesCache> = useMemo(async () => {
     let cache = {};

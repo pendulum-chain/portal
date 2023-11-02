@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'preact/compat';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { useSharedState } from './Provider';
+import { gasDefaults } from './helpers';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';
-import { UseContractWriteProps, useContractWrite } from './useContractWrite';
+import { useSharedState } from './Provider';
+import { useContractWrite, UseContractWriteProps } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
 
 export enum ApprovalState {
@@ -20,11 +21,10 @@ interface UseTokenApprovalParams {
   amount?: number;
   approveMax?: boolean;
   enabled?: boolean;
+  decimals?: number;
   onError?: (err: any) => void;
   onSuccess?: UseContractWriteProps['onSuccess'];
 }
-
-const maxInt = decimalToNative(Number.MAX_SAFE_INTEGER).toString();
 
 export const useTokenApproval = ({
   token,
@@ -32,13 +32,15 @@ export const useTokenApproval = ({
   spender,
   enabled = true,
   approveMax,
+  decimals,
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
   const { address } = useSharedState();
   const [pending, setPending] = useState(false);
-  const amountBI = decimalToNative(amount);
+  const amountBI = decimalToNative(amount, decimals);
   const isEnabled = Boolean(token && spender && address && enabled);
+  const maxInt = useMemo(() => decimalToNative(Number.MAX_SAFE_INTEGER, decimals).toString(), [decimals]);
   const {
     data: allowanceData,
     isLoading: isAllowanceLoading,
@@ -58,10 +60,7 @@ export const useTokenApproval = ({
     method: 'approve',
     args: [spender, approveMax ? maxInt : amountBI.toString()],
     options: (api) => ({
-      gasLimit: api.createType('WeightV2', {
-        refTime: '100000000000',
-        proofSize: '1000000',
-      }),
+      gasLimit: api.createType('WeightV2', gasDefaults),
       storageDepositLimit: null,
     }),
     onError: (err) => {
@@ -79,8 +78,8 @@ export const useTokenApproval = ({
   });
 
   const allowance = useMemo(
-    () => nativeToDecimal(parseFloat(allowanceData?.output?.toString() || '0') || 0).toNumber(),
-    [allowanceData],
+    () => nativeToDecimal(parseFloat(allowanceData || '0'), decimals).toNumber(),
+    [allowanceData, decimals],
   );
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {

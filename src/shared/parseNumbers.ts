@@ -1,4 +1,4 @@
-import { UInt, u128 } from '@polkadot/types-codec';
+import { u128, UInt } from '@polkadot/types-codec';
 import BigNumber from 'big.js';
 
 // These are the decimals used for the native currency on the Amplitude network
@@ -17,14 +17,14 @@ BigNumber.PE = 100;
 BigNumber.NE = -20;
 
 // Converts a decimal number to the native representation (a large integer)
-export const decimalToNative = (value: BigNumber | number | string) => {
+export const decimalToNative = (value: BigNumber | number | string, decimals: number = ChainDecimals) => {
   let bigIntValue;
   try {
     bigIntValue = new BigNumber(value);
   } catch (error) {
     bigIntValue = new BigNumber(0);
   }
-  const multiplier = new BigNumber(10).pow(ChainDecimals);
+  const multiplier = new BigNumber(10).pow(decimals);
   return bigIntValue.times(multiplier).round(0);
 };
 
@@ -46,7 +46,7 @@ export const fixedPointToDecimal = (value: BigNumber | number | string) => {
   return bigIntValue.div(divisor);
 };
 
-export const nativeToDecimal = (value?: BigNumber | number | string | u128 | UInt) => {
+export const nativeToDecimal = (value: BigNumber | number | string | u128 | UInt, decimals: number = ChainDecimals) => {
   if (!value) return new BigNumber(0);
 
   if (typeof value === 'string' || value instanceof u128 || value instanceof UInt) {
@@ -54,7 +54,7 @@ export const nativeToDecimal = (value?: BigNumber | number | string | u128 | UIn
     value = new BigNumber(value.toString().replaceAll(',', ''));
   }
   const bigIntValue = new BigNumber(value);
-  const divisor = new BigNumber(10).pow(ChainDecimals);
+  const divisor = new BigNumber(10).pow(decimals);
 
   return bigIntValue.div(divisor);
 };
@@ -103,3 +103,6 @@ export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberF
 export const roundNumber = (value: number | string = 0, round = 6) => {
   return +Number(value).toFixed(round);
 };
+
+/** Calculate deadline from minutes */
+export const calcDeadline = (min: number) => decimalToNative(`${Math.floor(Date.now() / 1000) + min * 60}`);

@@ -44,7 +44,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
 
-  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens).toNumber();
+  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable)),

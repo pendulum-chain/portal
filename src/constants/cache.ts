@@ -10,6 +10,7 @@ export const cacheKeys = {
   balance: 'balance',
   walletBalance: 'walletBalance',
   walletBalances: 'walletBalances',
+  tokenOutAmount: 'tokenOutAmount',
 };
 
 export type QueryOptions = Partial<

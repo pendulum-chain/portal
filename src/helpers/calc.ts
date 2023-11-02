@@ -14,7 +14,8 @@ export function calcFiatValuePriceImpact(
 }
 
 /** Calculate percentage */
-export const calcPercentage = (value = 0, percent = 0, round = 2) => roundNumber(value * (1 - percent / 100), round);
+export const subtractPercentage = (value = 0, percent = 0, round = 2) =>
+  roundNumber(value * (1 - percent / 100), round);
 
 /** Calculate share percentage */
 export const calcSharePercentage = (total = 0, share = 0, round = 2) => roundNumber((share / total) * 100, round) || 0;
