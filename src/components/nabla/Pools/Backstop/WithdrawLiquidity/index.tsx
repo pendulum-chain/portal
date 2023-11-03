@@ -3,7 +3,6 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
-import { config } from '../../../../../config';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
@@ -89,10 +88,6 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             />
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
-            <div className="flex items-center justify-between">
-              <div>Security fee</div>
-              <div>{selectedPool.token.id === data.token.id ? `${config.backstop.securityFee * 100}%` : '0%'}</div>
-            </div>
             <div className="flex items-center justify-between">
               <div>Amount</div>
               <div>

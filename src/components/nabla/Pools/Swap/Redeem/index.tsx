@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
+import { config } from '../../../../../config';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { numberLoader } from '../../../../Loader';
@@ -100,8 +101,8 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
-              <div>Fee</div>
-              <div>{'! TODO'}</div>
+              <div>Security fee</div>
+              <div>{config.backstop.securityFee * 100}%</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Deposit</div>

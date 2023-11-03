@@ -6,7 +6,7 @@ import { Skeleton } from '../../../Skeleton';
 
 export interface TokenAmountProps {
   address: string;
-  abi?: Abi;
+  abi?: Abi | Record<string, unknown>;
   amount?: number;
   debounce?: number;
   loader?: boolean;
