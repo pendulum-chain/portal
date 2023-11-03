@@ -1,6 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
+import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
 import { cacheKeys } from '../../../../../constants/cache';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
@@ -12,7 +14,10 @@ import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 
-export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
+export const useWithdrawLiquidity = (pool: BackstopPool) => {
+  const { id: poolAddress, token, router } = pool;
+  const tokenAddress = token.id;
+  const swapPools = router?.swapPools;
   const queryClient = useQueryClient();
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
@@ -23,6 +28,20 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
     defaultValues: {},
+  });
+
+  const amount =
+    Number(
+      useWatch({
+        control: form.control,
+        name: 'amount',
+        defaultValue: 0,
+      }),
+    ) || 0;
+
+  const address = useWatch({
+    control: form.control,
+    name: 'address',
   });
 
   const mutation = useContractWrite({
@@ -47,14 +66,20 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
     ]),
   );
 
-  const amount =
-    Number(
-      useWatch({
-        control: form.control,
-        name: 'amount',
-        defaultValue: 0,
-      }),
-    ) || 0;
+  const pools = useMemo(
+    () =>
+      [
+        {
+          id: '',
+          token: {
+            ...token,
+            id: '',
+          },
+        } as SwapPool,
+      ].concat(swapPools || []),
+    [swapPools, token],
+  );
+  const selectedPool = useMemo(() => pools.find((t) => t.id === address) || pools[0], [address, pools]);
 
-  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
+  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery, selectedPool, pools };
 };

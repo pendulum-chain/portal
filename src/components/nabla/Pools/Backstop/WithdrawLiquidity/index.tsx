@@ -3,10 +3,13 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
+import { config } from '../../../../../config';
+import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
+import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 
 export type WithdrawLiquidityProps = {
@@ -22,7 +25,8 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
     depositQuery,
     amount,
     form: { register, setValue },
-  } = useWithdrawLiquidity(data.id, data.token.id);
+    selectedPool,
+  } = useWithdrawLiquidity(data);
   const deposit = depositQuery.balance || 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
@@ -86,8 +90,20 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
             <div className="flex items-center justify-between">
-              <div>Fee</div>
-              <div>{'! TODO'}</div>
+              <div>Security fee</div>
+              <div>{selectedPool.token.id === data.token.id ? `${config.backstop.securityFee * 100}%` : '0%'}</div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>Amount</div>
+              <div>
+                <TokenAmount
+                  address={data.id}
+                  abi={backstopPoolAbi}
+                  amount={amount}
+                  symbol={` ${data.token.symbol}`}
+                  fallback={0}
+                />
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div>Deposit</div>
