@@ -4,7 +4,7 @@ import { usePriceFetcher } from '../../../hooks/usePriceFetcher';
 import { Skeleton } from '../../Skeleton';
 
 export type TokenPriceProps = {
-  address: string;
+  address?: string;
   symbol: string;
   //amount?: number;
   prefix?: ReactNode;
@@ -13,26 +13,24 @@ export type TokenPriceProps = {
   fallback?: ReactNode;
 };
 
-const TokenPrice = memo(
-  ({ address, symbol, prefix = '', loader, fallback = null }: TokenPriceProps): JSX.Element | null => {
-    const { pricesCache } = usePriceFetcher();
-    const [price, setPrice] = useState<number | undefined | null>(null);
-    useEffect(() => {
-      const run = async () => {
-        const p = (await pricesCache)[symbol];
-        setPrice(p);
-      };
-      run();
-    }, [pricesCache, symbol]);
+const TokenPrice = memo(({ symbol, prefix = null, loader, fallback = null }: TokenPriceProps): JSX.Element | null => {
+  const { pricesCache } = usePriceFetcher();
+  const [price, setPrice] = useState<number | undefined | null>(null);
+  useEffect(() => {
+    const run = async () => {
+      const p = (await pricesCache)[symbol];
+      setPrice(p);
+    };
+    run();
+  }, [pricesCache, symbol]);
 
-    const isLoading = price === null;
-    if (isLoading) return <>{loader}</> || <Skeleton className="inline-flex">10000</Skeleton>;
-    if (!price) return <>{fallback}</>;
-    return (
-      <span>
-        {prefix}${price}
-      </span>
-    );
-  },
-);
+  const isLoading = price === null;
+  if (isLoading) return <>{loader}</> || <Skeleton className="inline-flex">10000</Skeleton>;
+  if (!price) return <>{fallback}</>;
+  return (
+    <span>
+      {prefix}${price}
+    </span>
+  );
+});
 export default TokenPrice;
