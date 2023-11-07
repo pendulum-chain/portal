@@ -3,13 +3,22 @@ import { ChangeEvent, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
+import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
+=======
+import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
 import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
+>>>>>>> local
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import TransactionProgress from '../../../../Transaction/Progress';
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
 import TokenAmount from '../../TokenAmount';
+=======
+import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
+>>>>>>> local
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 
 export type WithdrawLiquidityProps = {
@@ -27,6 +36,10 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
     balanceQuery,
     depositQuery,
     form: { register, setValue },
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
+    selectedPool,
+  } = useWithdrawLiquidity(data);
+=======
     amount,
     address,
     pools,
@@ -38,6 +51,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
   } = useWithdrawLiquidity(data);
   const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
   const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
+>>>>>>> local
   const deposit = depositQuery.balance || 0;
   const withdrawLimit = nativeToDecimal(spw.withdrawLimit || 0, FixedU128Decimals).toNumber();
 

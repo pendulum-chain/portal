@@ -1,6 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
+import { useMemo } from 'preact/compat';
+=======
 import { useCallback, useMemo } from 'preact/compat';
+>>>>>>> local
 import { useForm, useWatch } from 'react-hook-form';
 import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
 import { cacheKeys } from '../../../../../constants/cache';
@@ -18,11 +22,16 @@ import { WithdrawLiquidityValues } from './types';
 import { useBackstopWithdraw } from './useBackstopWithdraw';
 import { useSwapPoolWithdraw } from './useSwapPoolWithdraw';
 
-const storageSet = debounce(storageService.set, 1000);
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
 export const useWithdrawLiquidity = (pool: BackstopPool) => {
   const { id: poolAddress, token, router } = pool;
   const tokenAddress = token.id;
   const swapPools = router?.swapPools;
+  const queryClient = useQueryClient();
+=======
+const storageSet = debounce(storageService.set, 1000);
+export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
+>>>>>>> local
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const queryClient = useQueryClient();
   const toggle = useModalToggle();
@@ -36,7 +45,8 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     resolver: yupResolver(schema),
     defaultValues: {},
   });
-  const { reset, getValues, handleSubmit } = form;
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
+
   const amount =
     Number(
       useWatch({
@@ -51,6 +61,30 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     name: 'address',
   });
 
+  const mutation = useContractWrite({
+    abi: backstopPoolAbi,
+    address: poolAddress,
+    method: 'withdraw',
+    onError: () => {
+      // ? log error - alert not needed as the transaction modal displays the error
+    },
+    onSuccess: () => {
+      form.reset();
+      balanceQuery.refetch();
+      depositQuery.refetch();
+      queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
+    },
+  });
+
+  const onSubmit = form.handleSubmit((variables: WithdrawLiquidityValues) =>
+    mutation.mutate([
+      decimalToNative(variables.amount, FixedU128Decimals).toString(),
+      decimalToNative(subtractPercentage(variables.amount, 1), FixedU128Decimals).toString(),
+    ]),
+  );
+=======
+  const { reset, getValues, handleSubmit } = form;
+>>>>>>> local
 
   const pools = useMemo(
     () =>
@@ -67,6 +101,9 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
   );
   const selectedPool = useMemo(() => pools.find((t) => t.id === address) || pools[0], [address, pools]);
 
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
+  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery, selectedPool, pools };
+=======
   const onWithdrawSuccess = useCallback(() => {
     reset();
     balanceRefetch();
@@ -116,4 +153,5 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     updateStorage,
     onSubmit: handleSubmit(address && address.length > 5 ? swapPoolWithdraw.onSubmit : backstopWithdraw.onSubmit),
   };
+>>>>>>> local
 };

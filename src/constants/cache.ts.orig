@@ -12,7 +12,10 @@ export const cacheKeys = {
   walletBalances: 'walletBalances',
   tokenOutAmount: 'tokenOutAmount',
   sharesTargetWorth: 'sharesTargetWorth',
+<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
+=======
   tokenPrice: 'tokenPrice',
+>>>>>>> local
 };
 
 export type QueryOptions = Partial<
