@@ -1,9 +1,0 @@
-export type WithdrawLiquidityValues = {
-  amount: number;
-<<<<<<< 286-add-info-to-the-redeem-from-backstop-pool-ui
-  address: string;
-=======
-  address?: string | null;
-  slippage?: number | null;
->>>>>>> local
-};
