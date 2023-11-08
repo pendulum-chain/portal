@@ -1,5 +1,5 @@
 import request from 'graphql-request';
-import { useMemo } from 'react';
+import { useMemo } from 'preact/compat';
 import { TenantName } from '../models/Tenant';
 
 const AMPLITUDE_INDEXER_URL = 'https://squid.subsquid.io/amplitude-squid/graphql';
