@@ -111,17 +111,15 @@ const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset): Promise<number
 };
 
 interface SubsquidResponse {
-  data: {
-    bundleById: {
-      ethPrice: string;
-    };
+  bundleById: {
+    ethPrice: string;
   };
 }
 
 const getSubsquidAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
   if (!asset.assetId) return 0;
   const query = `
-    query GetAMPEPrice {
+    query MyQuery {
       bundleById(id: "1") {
         ethPrice
       }
@@ -129,7 +127,7 @@ const getSubsquidAssetPrice = async (asset: PriceFetcherAsset): Promise<number> 
   `;
   try {
     const response = (await request(AMPLITUDE_INDEXER_URL, query)) as SubsquidResponse;
-    console.log('price', response.data.bundleById.ethPrice);
+    return parseFloat(response.bundleById.ethPrice);
   } catch (e) {
     console.error(e);
   }
@@ -155,7 +153,7 @@ const getPrice = async (asset: PriceFetcherAsset) => {
   try {
     return await providers[asset.provider](asset);
   } catch (e) {
-    console.error('Not able fetch to price for asset: ', e);
+    console.error('Not able to fetch price for asset: ', e);
   }
 };
 
