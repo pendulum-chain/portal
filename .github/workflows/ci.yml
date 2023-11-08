@@ -45,7 +45,7 @@ jobs:
 
       - name: 🧩 Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install
+        run: yarn install --immutable --inline-builds
 
       - name: 📋 Yarn Lock Changes
         uses: Simek/yarn-lock-changes@main 

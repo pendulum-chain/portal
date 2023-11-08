@@ -2,10 +2,11 @@
 import { nablaConfig } from './nabla';
 import { AppConfig } from './types';
 
-export type Apps = 'nabla';
+export const apps = ['nabla'] as const;
+export type Apps = (typeof apps)[number];
 
 export const appsConfigs = {
   nabla: nablaConfig,
-} satisfies Record<Apps, AppConfig>;
+} as const satisfies Record<Apps, AppConfig>;
 
 export type AppsConfig = typeof appsConfigs;

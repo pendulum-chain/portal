@@ -1,4 +1,4 @@
-import SwapPools from '../../../components/Pools/Swap';
+import SwapPools from '../../../components/nabla/Pools/Swap';
 
 const SwapPoolsPage = (): JSX.Element | null => {
   return (

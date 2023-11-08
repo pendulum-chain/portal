@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo } from 'preact/compat';
 import { Button, Modal } from 'react-daisyui';
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';

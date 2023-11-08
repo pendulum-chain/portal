@@ -7,12 +7,20 @@ export type BalanceProps = {
   address?: string;
   fallback?: string | number;
   loader?: boolean;
+  decimals?: number;
   options?: QueryOptions;
   children?: ComponentChildren;
 };
 
-const Balance = ({ address, fallback = 0, loader = true, options, children }: BalanceProps): JSX.Element | null => {
-  const { isLoading, formatted, enabled } = useContractBalance({ contractAddress: address }, options);
+const Balance = ({
+  address,
+  fallback = 0,
+  loader = true,
+  decimals,
+  options,
+  children,
+}: BalanceProps): JSX.Element | null => {
+  const { isLoading, formatted, enabled } = useContractBalance({ contractAddress: address, decimals }, options);
   if (!address || !enabled) return <>{fallback ?? null}</>;
   if (isLoading) return loader ? numberLoader : null;
   return (

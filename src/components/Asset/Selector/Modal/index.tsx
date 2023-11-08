@@ -22,10 +22,10 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
   );
 
   return (
-    <>
+    <div className="relative">
       <Input
         bordered
-        className="w-full mb-8"
+        className="sticky top-0 w-full mb-8 z-10"
         onChange={(ev: ChangeEvent<HTMLInputElement>) => setFilter(ev.currentTarget.value)}
         placeholder="Find by name or address"
       />
@@ -34,7 +34,7 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
           <Button
             type="button"
             size="lg"
-            variant="secondary"
+            color="secondary"
             key={token.id}
             onClick={() => onSelect(token)}
             className="w-full items-center justify-start gap-4 px-3 py-1 border-0 bg-[rgba(0,0,0,.2)] text-left hover:opacity-80 dark:bg-[rgba(255,255,255,.12)]"
@@ -54,7 +54,7 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
           </Button>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

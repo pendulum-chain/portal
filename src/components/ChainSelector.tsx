@@ -11,7 +11,7 @@ const options = [TenantName.Pendulum, TenantName.Amplitude, TenantName.Foucoco];
 const ChainSelector = (): JSX.Element => {
   const { switchChain, currentTenant } = useSwitchChain();
   return (
-    <Dropdown vertical="end" className="w-30">
+    <Dropdown vertical="bottom" end className="w-30">
       <Button
         size="sm"
         color="ghost"

@@ -1,4 +1,4 @@
-import BackstopPools from '../../../components/Pools/Backstop';
+import BackstopPools from '../../../components/nabla/Pools/Backstop';
 
 const BackstopPoolsPage = (): JSX.Element | null => {
   return (

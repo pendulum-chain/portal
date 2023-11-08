@@ -22,7 +22,7 @@ const Unsupported = ({ app, tenant, supportedTenants }: UnsupportedProps): JSX.E
           <Button
             key={st}
             className="capitalize text-lg"
-            variant="secondary"
+            color="secondary"
             type="button"
             onClick={() => switchChain(st)}
           >

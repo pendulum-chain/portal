@@ -15,10 +15,13 @@ export type NablaConfig = AppConfig &
 
 export const nablaConfig: NablaConfig = {
   tenants: [TenantName.Foucoco],
+  environment: ['staging', 'development'],
   foucoco: {
     indexerUrl: 'https://squid.subsquid.io/foucoco-squid/graphql',
-    router: '6mrTyH54tYXKsVxrahapG1S54cVMqqwqtnmTLLbj3NZT2f1k',
-    oracle: '6n32n4F11qfFXfFYhVj15fChZTXpVP5zJSM98361gK5QKrxW',
-    curve: '6mnENTpY6B5mqtUHsjv3BxwKucT9hqF761QrYGfD22ccLzdC',
+
+    // TODO: if these addresses change we will need to fetch them from the indexer
+    router: '6nHNN8GfwaUcSvp7QhRJZtXY5yQLBeVz3J2RCx395ma9MbeV',
+    oracle: '6guy27fyEZpKyBwWfysB6X2N3RDgrVertCaZ4ont8FPqdD9C',
+    curve: '6mxUgPWk76RzqnUnEryZkFNZ3tqqdtwyrXmaWwMJ2n311cZE',
   },
 };
