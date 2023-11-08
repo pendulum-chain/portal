@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/compat';
-import Table, { SortingOrder } from '../../components/Table';
 import { useGlobalState } from '../../GlobalStateProvider';
+import Table, { SortingOrder } from '../../components/Table';
 import useBalances from '../../hooks/useBalances';
 import { amountColumn, priceColumn, tokenColumn, usdValueColumn } from './PortfolioColumns';
 
