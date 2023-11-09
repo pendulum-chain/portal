@@ -68,7 +68,7 @@ const assets: PriceFetcherAsset[] = [
   {
     assetName: 'AMPE',
     blockchain: 'Amplitude',
-    assetId: 'eth',
+    assetId: 'ampe',
     provider: 'subsquid',
     exclude: [TenantName.Pendulum],
   },
