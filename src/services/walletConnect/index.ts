@@ -1,11 +1,11 @@
-import { SignerPayloadJSON } from '@polkadot/types/types';
+import { Signer } from '@polkadot/types/types';
 import { WalletAccount } from '@talismn/connect-wallets';
 import type { SessionTypes } from '@walletconnect/types/dist/types/sign-client/session';
 import UniversalProvider from '@walletconnect/universal-provider';
 import logo from '../../assets/wallet-connect.svg';
 import { config } from '../../config';
 
-// TODO: improve this
+// TODO: improve (missing methods)
 export const walletConnectService = {
   provider: undefined as UniversalProvider | undefined,
   getProvider: async function getProvider(): Promise<UniversalProvider> {
@@ -28,8 +28,8 @@ export const walletConnectService = {
       return address;
     });
 
-    const signer = {
-      signPayload: async (data: SignerPayloadJSON) => {
+    const signer: Signer = {
+      signPayload: async (data) => {
         const { address } = data;
         return provider.client.request({
           chainId,
@@ -48,7 +48,7 @@ export const walletConnectService = {
       address: accounts[0],
       source: 'walletConnect',
       name: 'WalletConnect',
-      signer,
+      signer: signer as WalletAccount['signer'], // TODO: improve - not type safe
       wallet: {
         enable: () => undefined,
         extensionName: 'WalletConnect',

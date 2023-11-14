@@ -4,11 +4,13 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
+import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
 import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import TransactionProgress from '../../../../Transaction/Progress';
+import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 
@@ -28,8 +30,6 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
     depositQuery,
     form: { register, setValue },
     amount,
-    address,
-    pools,
     backstopWithdraw: bpw,
     swapPoolWithdraw: spw,
     isSwapPoolWithdraw,
@@ -39,7 +39,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
   const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
   const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
   const deposit = depositQuery.balance || 0;
-  const withdrawLimit = nativeToDecimal(spw.withdrawLimit || 0, FixedU128Decimals).toNumber();
+  const withdrawLimit = nativeToDecimal(spw.withdrawLimit?.toString() || 0, FixedU128Decimals).toNumber();
 
   const hideCss = !isIdle ? 'hidden' : '';
   return (

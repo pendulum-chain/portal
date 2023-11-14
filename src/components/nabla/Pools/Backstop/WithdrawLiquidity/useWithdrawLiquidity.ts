@@ -10,7 +10,7 @@ import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenan
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { FixedU128Decimals } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { defaultValues } from '../../../Swap/useSwapComponent';
 import schema from './schema';
@@ -51,7 +51,6 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     name: 'address',
   });
 
-
   const pools = useMemo(
     () =>
       [
@@ -82,7 +81,7 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
   const isSwapPoolWithdraw = !!address && address.length > 5;
   const swapPoolWithdraw = useSwapPoolWithdraw({
     pool,
-    deposit: BigInt(decimalToNative(depositQuery.balance || 0).toString()),
+    deposit: depositQuery.balance || 0,
     selectedPool,
     enabled: isSwapPoolWithdraw,
     onSuccess: onWithdrawSuccess,

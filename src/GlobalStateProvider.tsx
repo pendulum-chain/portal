@@ -1,4 +1,4 @@
-import { WalletAccount, getWalletBySource } from '@talismn/connect-wallets';
+import { getWalletBySource, WalletAccount } from '@talismn/connect-wallets';
 import { ComponentChildren, createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { useLocation } from 'react-router-dom';

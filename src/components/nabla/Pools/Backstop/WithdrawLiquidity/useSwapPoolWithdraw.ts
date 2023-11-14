@@ -13,7 +13,7 @@ import { WithdrawLiquidityValues } from './types';
 export type UseSwapPoolWithdrawProps = {
   pool: BackstopPool;
   selectedPool: SwapPool;
-  deposit: bigint | undefined;
+  deposit: number | undefined;
   onSuccess: () => void;
   enabled: boolean;
 };
@@ -60,7 +60,7 @@ export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, en
     () =>
       calcAvailablePoolWithdraw({
         selectedPool,
-        deposit,
+        deposit: BigInt(decimalToNative(deposit || 0).toString()),
         shares,
         bpPrice: bpPrice ? BigInt(bpPrice) : undefined,
         spPrice: spPrice ? BigInt(spPrice) : undefined,
