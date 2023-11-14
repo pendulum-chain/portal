@@ -154,13 +154,17 @@ interface TransferDialogProps {
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
+  const { tenantName } = useGlobalState();
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const content = (
     <>
-      <div className="text-md">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <div className="text-sm text-[#7C818D]">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <label className="rounded bg-black bg-opacity-3 px-4 py-2 my-4 text font-semibold text-black">
+        {`To ${toTitle(tenantName)}`}
+      </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
-        <div className="text-sm">Spacewalk transaction</div>
+        <div className="text-sm text-[#7C818D]">Spacewalk transaction</div>
         <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
