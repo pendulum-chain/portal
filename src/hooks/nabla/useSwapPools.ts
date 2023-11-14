@@ -25,7 +25,7 @@ export const useSwapPools = (options?: UseSwapPoolsProps) => {
 
 export const getSwapPools = graphql(`
   query getSwapPools {
-    swapPools {
+    swapPools(where: { paused_eq: false }) {
       id
       liabilities
       paused
