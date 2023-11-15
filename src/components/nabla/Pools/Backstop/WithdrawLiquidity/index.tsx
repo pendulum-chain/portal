@@ -91,13 +91,13 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
             {isSwapPoolWithdraw && (
               <div className="flex items-center justify-between text-sm">
                 <div>
-                  <span className="text-[--sc2] mr-1">Withdraw limit:</span>
+                  <span className="mr-1">Withdraw limit:</span>
                   {spw.isLoading ? numberLoader : <>{withdrawLimit} LP</>}
                 </div>
               </div>
             )}
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <input
                   autoFocus
                   className="input-ghost w-full text-4xl font-2 p-2"
@@ -106,7 +106,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
                   {...register('amount')}
                 />
                 <Button
-                  className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
+                  className="bg-neutral-200 dark:bg-neutral-800 px-2 rounded-2xl"
                   size="sm"
                   type="button"
                   onClick={tokenModal[1].setTrue}
