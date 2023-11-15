@@ -2,18 +2,31 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, Button, Input, Modal, ModalProps } from 'react-daisyui';
-import { Token } from '../../../../../gql/graphql';
 import { repeat } from '../../../../helpers/general';
 import ModalCloseButton from '../../../Button/ModalClose';
 import { Skeleton } from '../../../Skeleton';
 
-export interface AssetListProps {
-  assets?: Token[];
-  onSelect: (asset: Token) => void;
+export type SelectorToken = {
+  decimals: number;
+  id: string;
+  name: string;
+  symbol: string;
+};
+export type SelectorValue = SelectorToken | Dict;
+
+export interface AssetListProps<T extends SelectorValue> {
+  assets?: T[];
+  map?: (value: T) => SelectorToken | undefined;
+  onSelect: (asset: T) => void;
   selected?: string;
 }
 
-const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element | null => {
+const AssetList = <T extends SelectorValue>({
+  assets,
+  onSelect,
+  selected,
+  map,
+}: AssetListProps<T>): JSX.Element | null => {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
@@ -30,48 +43,52 @@ const AssetList = ({ assets, onSelect, selected }: AssetListProps): JSX.Element 
         placeholder="Find by name or address"
       />
       <div className="flex flex-col gap-1">
-        {filteredTokens?.map((token) => (
-          <Button
-            type="button"
-            size="lg"
-            color="secondary"
-            key={token.id}
-            onClick={() => onSelect(token)}
-            className="w-full items-center justify-start gap-4 px-3 py-1 border-0 bg-[rgba(0,0,0,.2)] text-left hover:opacity-80 dark:bg-[rgba(255,255,255,.12)]"
-          >
-            <span className="relative">
-              <Avatar size="xs" letters={token.symbol} /* src={token.logoURI} */ shape="circle" className="text-xs" />
-              {selected == token.id && (
-                <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
-              )}
-            </span>
-            <span className="flex flex-col">
-              <span className="text-lg leading-5">
-                <strong>{token.symbol}</strong>
+        {filteredTokens?.map((value) => {
+          const token = (map ? map(value) : value) as SelectorToken | undefined;
+          if (!token || !('symbol' in token)) return null;
+          return (
+            <Button
+              type="button"
+              size="lg"
+              color="secondary"
+              key={token.id}
+              onClick={() => onSelect(value)}
+              className="w-full items-center justify-start gap-4 px-3 py-1 border-0 bg-[rgba(0,0,0,.2)] text-left hover:opacity-80 dark:bg-[rgba(255,255,255,.12)]"
+            >
+              <span className="relative">
+                <Avatar size="xs" letters={token.symbol} /* src={token.logoURI} */ shape="circle" className="text-xs" />
+                {selected == token.id && (
+                  <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
+                )}
               </span>
-              <span className="text-sm leading-5">{token.name}</span>
-            </span>
-          </Button>
-        ))}
+              <span className="flex flex-col">
+                <span className="text-lg leading-5">
+                  <strong>{token.symbol}</strong>
+                </span>
+                <span className="text-sm leading-5">{token.name}</span>
+              </span>
+            </Button>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-export type AssetSelectorModalProps = {
+export type AssetSelectorModalProps<T extends SelectorValue> = {
   isLoading?: boolean;
   onClose: () => void;
-} & AssetListProps &
+} & AssetListProps<T> &
   Omit<ModalProps, 'onSelect' | 'selected'>;
 
-export const AssetSelectorModal = ({
+export const AssetSelectorModal = <T extends SelectorValue>({
   assets,
   selected,
   isLoading,
   onSelect,
   onClose,
   ...rest
-}: AssetSelectorModalProps) => {
+}: AssetSelectorModalProps<T>) => {
   return (
     <Modal {...rest}>
       <Modal.Header className="mb-0">

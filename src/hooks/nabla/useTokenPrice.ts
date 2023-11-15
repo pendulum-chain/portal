@@ -1,4 +1,5 @@
 import { cacheKeys, inactiveOptions, QueryOptions } from '../../constants/cache';
+import { swapPoolAbi } from '../../contracts/nabla/SwapPool';
 import { useContract } from '../../shared/useContract';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 
@@ -11,7 +12,7 @@ export const useTokenPrice = (address: string, options?: QueryOptions) => {
     ...inactiveOptions['1m'],
     ...options,
     address: oracle,
-    abi: oracleAbi,
+    abi: swapPoolAbi, // ! TODO: oracleABI
     method: 'getAssetPrice',
     args: [address],
   });

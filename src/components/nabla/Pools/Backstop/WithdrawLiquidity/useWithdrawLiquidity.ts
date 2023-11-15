@@ -6,6 +6,7 @@ import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
 import { cacheKeys } from '../../../../../constants/cache';
 import { storageKeys } from '../../../../../constants/localStorage';
 import { debounce } from '../../../../../helpers/function';
+import useBoolean from '../../../../../hooks/useBoolean';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
@@ -26,6 +27,7 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const queryClient = useQueryClient();
   const toggle = useModalToggle();
+  const tokenModal = useBoolean();
 
   const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
   const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
@@ -111,6 +113,7 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     pools,
     selectedPool,
     swapPoolWithdraw,
+    tokenModal,
     toggle,
     updateStorage,
     onSubmit: handleSubmit(address && address.length > 5 ? swapPoolWithdraw.onSubmit : backstopWithdraw.onSubmit),

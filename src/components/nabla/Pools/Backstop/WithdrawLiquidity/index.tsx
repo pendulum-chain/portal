@@ -1,3 +1,4 @@
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
@@ -7,6 +8,7 @@ import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
 import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import TransactionProgress from '../../../../Transaction/Progress';
@@ -30,6 +32,9 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
     depositQuery,
     form: { register, setValue },
     amount,
+    pools,
+    selectedPool,
+    tokenModal,
     backstopWithdraw: bpw,
     swapPoolWithdraw: spw,
     isSwapPoolWithdraw,
@@ -62,7 +67,22 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
       <div className={hideCss}>
         <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
+            <p>
+              Deposited:{' '}
+              {depositQuery.isLoading ? (
+                numberLoader
+              ) : (
+                <span
+                  role="button"
+                  onClick={() =>
+                    setValue('amount', deposit, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    })
+                  }
+                >{`${depositQuery.formatted || 0} LP`}</span>
+              )}
+            </p>
             <p className="text-neutral-500 dark:text-neutral-400 text-right">
               Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
             </p>
@@ -89,14 +109,10 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
                   className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
                   size="sm"
                   type="button"
-                  onClick={() =>
-                    setValue('amount', deposit, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    })
-                  }
+                  onClick={tokenModal[1].setTrue}
                 >
-                  MAX
+                  <strong className="font-bold">{selectedPool.token.symbol}</strong>
+                  <ChevronDownIcon className="w-4 h-4 inline ml-px" />
                 </Button>
                 <TransactionSettingsDropdown
                   setSlippage={(slippage) => {
@@ -164,6 +180,17 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
           </div>
         </form>
       </div>
+      <AssetSelectorModal
+        assets={pools}
+        open={tokenModal[0]}
+        onSelect={(value) => {
+          setValue('address', value.id && value.id.length > 5 ? value.id : null);
+          tokenModal[1].setFalse();
+        }}
+        map={(pool) => pool.token}
+        selected={selectedPool.token.id}
+        onClose={tokenModal[1].setFalse}
+      />
     </div>
   );
 };
