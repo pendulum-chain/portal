@@ -257,6 +257,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
+  const { tenantName } = useGlobalState();
   const { getActiveBlockNumber } = useSecurityPallet();
   const [, setDeadline] = useState<DateTime>();
 
@@ -277,24 +278,32 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     <>
       <>
         <div
-          className="text-xl"
+          className="text-xl text-black text-semibold"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-2" />
-        <div className="text">With the text memo</div>
-        <div className="mt-2" />
-        <CopyableAddress inline={true} variant="short" publicKey={expectedStellarMemo} />
-        <div className="mt-2" />
-        <div className="text-md">In a single transaction to</div>
-        <div className="mt-2" />
-        <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={destinationStellarAddress} />
-        <div className="text-md mt-2">
+        <div className="flex justify'center text text-[#7C818D]">
+          <div className="mr-2">With the text memo</div>
+          <CopyableAddress inline={true} variant="short" publicKey={expectedStellarMemo} className="text-[#7C818D]" />
+        </div>
+        <div className="flex justify-center text-md text-[#7C818D]">
+          <div className="mr-2">In a single transaction to</div>
+          <CopyableAddress
+            inline={true}
+            className="text-sm p-0 text-[#7C818D]"
+            variant="short"
+            publicKey={destinationStellarAddress}
+          />
+        </div>
+        <div className="text-md mt-2 text-[#7C818D]">
           Within <TransferCountdown request={transfer.original} />
         </div>
       </>
+      <label className="rounded bg-black bg-opacity-3 px-4 py-2 my-4 text font-semibold text-black">
+        {`To ${toTitle(tenantName)}`}
+      </label>
       <div className="mt-4" />
-      <div className="mt-4" />
-      <div className="text-sm">
+      <div className="text-sm px-5 text-[#7C818D]">
         Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
       </div>
       <div className="mt-4" />
@@ -337,7 +346,7 @@ export function FailedTransferDialog(props: TransferDialogProps) {
     </>
   );
   const footer = (
-    <div className="px-5 py-2">
+    <div className="px-6 py-2">
       <div className="text-sm">
         The vault did not send PEN to you on time. Don`t worry - your funds are safe! You`ll get {compensation} PEN
         compensation.
