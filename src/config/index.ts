@@ -25,7 +25,7 @@ export const config = {
     [TenantName.Amplitude]: {
       name: 'Amplitude',
       rpc: 'wss://rpc-amplitude.pendulumchain.tech',
-      theme: ThemeName.Pendulum,
+      theme: ThemeName.Amplitude,
       explorer: 'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-foucoco.pendulumchain.tech#/explorer/query',
     },
     [TenantName.Pendulum]: {
