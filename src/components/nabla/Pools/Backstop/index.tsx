@@ -12,7 +12,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
   const { data, isLoading } = useBackstopPools();
 
   if (isLoading) return <Skeleton className="bg-neutral-200 h-48 w-full" />;
-  const pool = data?.[0];
+  const pool = data?.[data.length - 1];
   if (!pool) return null; // TODO: empty state UI
   return (
     <>
