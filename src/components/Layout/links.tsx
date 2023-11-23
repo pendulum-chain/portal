@@ -1,8 +1,9 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
-import DashboardIcon from '../../assets/dashboard';
+import { NavLinkProps } from 'react-router-dom';
+import { GlobalState } from '../../GlobalStateProvider';
 import ExternalIcon from '../../assets/ExternalIcon';
+import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
@@ -11,7 +12,6 @@ import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
-import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
 
@@ -19,7 +19,7 @@ export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
   link: string;
   title: ComponentChildren;
-  props?: Omit<HTMLAttributes<HTMLAnchorElement>, 'className'> & {
+  props?: Omit<NavLinkProps, 'className'> & {
     className?: (params?: LinkParameter) => string;
   };
   prefix?: ComponentChildren;
