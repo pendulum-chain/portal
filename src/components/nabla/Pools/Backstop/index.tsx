@@ -12,7 +12,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
   const { data, isLoading } = useBackstopPools();
 
   if (isLoading) return <Skeleton className="bg-neutral-200 h-48 w-full" />;
-  const pool = data?.[data.length - 1];
+  const pool = data?.[0];
   if (!pool) return <h3 className="text-center">No backstop pools</h3>;
   return (
     <>

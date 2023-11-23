@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
 import { config } from '../../../../../config';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
+import { useGlobalState } from '../../../../../GlobalStateProvider';
 import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
@@ -20,6 +21,7 @@ export type UseSwapPoolWithdrawProps = {
 
 export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, enabled }: UseSwapPoolWithdrawProps) => {
   const swapPoolAddress = selectedPool.id;
+  const { address: owner } = useGlobalState().walletAccount || {};
 
   const mutation = useContractWrite({
     abi: backstopPoolAbi,
@@ -51,8 +53,8 @@ export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, en
     { enabled },
   );
   const shares = sharesQuery.data;
-  const bpPriceQuery = useTokenPrice(pool.token.id, { enabled });
-  const spPriceQuery = useTokenPrice(selectedPool.token.id, { enabled });
+  const bpPriceQuery = useTokenPrice(pool.token.id, owner, { enabled });
+  const spPriceQuery = useTokenPrice(selectedPool.token.id, owner, { enabled });
   const bpPrice = bpPriceQuery.data;
   const spPrice = spPriceQuery.data;
 

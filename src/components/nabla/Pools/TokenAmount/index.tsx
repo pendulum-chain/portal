@@ -2,7 +2,7 @@ import { Abi } from '@polkadot/api-contract';
 import { useSharesTargetWorth } from '../../../../hooks/nabla/useSharesTargetWorth';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
-import { Skeleton } from '../../../Skeleton';
+import { numberLoader } from '../../../Loader';
 
 export interface TokenAmountProps {
   address: string;
@@ -30,10 +30,10 @@ const TokenAmount = ({
     abi,
     amount: arg,
   });
-  if (isLoading || (!!debounce && amount !== debouncedAmount)) {
-    return loader ? <Skeleton className="inline-flex">10000</Skeleton> : null;
-  }
 
+  if (amount && (isLoading || (!!debounce && amount !== debouncedAmount))) {
+    return loader ? numberLoader : null;
+  }
   return (
     <span title={data?.toString()}>
       {data ? prettyNumbers(nativeToDecimal(data || '0', FixedU128Decimals).toNumber()) : fallback ?? null}

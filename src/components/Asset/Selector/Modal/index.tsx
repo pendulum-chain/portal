@@ -30,7 +30,12 @@ const AssetList = <T extends SelectorValue>({
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
-    () => (filter && assets ? matchSorter(assets, filter, { keys: ['name', 'address', 'symbol'] }) : assets),
+    () =>
+      filter && assets
+        ? matchSorter(assets, filter, {
+            keys: ['name', 'address', 'symbol', 'token.name', 'token.address', 'token.symbol'],
+          })
+        : assets,
     [assets, filter],
   );
 
@@ -87,6 +92,7 @@ export const AssetSelectorModal = <T extends SelectorValue>({
   isLoading,
   onSelect,
   onClose,
+  map,
   ...rest
 }: AssetSelectorModalProps<T>) => {
   return (
@@ -100,7 +106,7 @@ export const AssetSelectorModal = <T extends SelectorValue>({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} />
+            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} map={map} />
           )}
         </div>
       </Modal.Body>

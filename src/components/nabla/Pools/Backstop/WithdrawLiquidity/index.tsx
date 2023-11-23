@@ -21,8 +21,14 @@ export type WithdrawLiquidityProps = {
 };
 
 const filter = (pool: BackstopPool): BackstopPool => {
-  pool.router.swapPools = pool.router.swapPools?.filter((pool) => !!getPoolSurplus(pool));
-  return pool;
+  const filteredPools = pool.router.swapPools?.filter((pool) => !!getPoolSurplus(pool));
+  return {
+    ...pool,
+    router: {
+      ...pool.router,
+      swapPools: filteredPools,
+    },
+  };
 };
 
 const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {

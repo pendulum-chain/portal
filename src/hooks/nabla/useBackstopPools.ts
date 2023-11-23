@@ -37,6 +37,12 @@ export const getBackstopPools = graphql(`
         name
         symbol
       }
+      router {
+        swapPools(where: { router_isNull: false, paused_not_eq: true }) {
+          id
+        }
+        id
+      }
     }
   }
 `);
