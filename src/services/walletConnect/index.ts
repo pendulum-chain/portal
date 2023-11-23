@@ -5,7 +5,6 @@ import UniversalProvider from '@walletconnect/universal-provider';
 import logo from '../../assets/wallet-connect.svg';
 import { config } from '../../config';
 
-// TODO: improve (missing methods)
 export const walletConnectService = {
   provider: undefined as UniversalProvider | undefined,
   getProvider: async function getProvider(): Promise<UniversalProvider> {

@@ -1,7 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import { memo, useEffect, useState } from 'preact/compat';
 import { usePriceFetcher } from '../../../hooks/usePriceFetcher';
-import { Skeleton } from '../../Skeleton';
+import { numberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
   address?: string;
@@ -25,7 +25,7 @@ const TokenPrice = memo(({ symbol, prefix = null, loader, fallback = null }: Tok
   }, [pricesCache, symbol]);
 
   const isLoading = price === null;
-  if (isLoading) return <>{loader}</> || <Skeleton className="inline-flex">10000</Skeleton>;
+  if (isLoading) return <>{loader}</> || numberLoader;
   if (!price) return <>{fallback}</>;
   return (
     <span>

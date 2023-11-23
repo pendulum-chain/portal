@@ -40,8 +40,7 @@ export const getBackstopPool = graphql(`
         symbol
       }
       router {
-        id
-        swapPools(where: { paused_eq: false }) {
+        swapPools(where: { router_isNull: false, paused_not_eq: true }) {
           id
           liabilities
           paused
@@ -54,6 +53,7 @@ export const getBackstopPool = graphql(`
             symbol
           }
         }
+        id
       }
     }
   }

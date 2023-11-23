@@ -5,10 +5,10 @@ import { PoolProgress } from '../..';
 import { config } from '../../../../../config';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import TokenPrice from '../../../../Asset/Price';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
+import TokenPrice from '../../../Price';
 import { SwapPoolColumn } from '../columns';
 import { useRedeem } from './useRedeem';
 
@@ -108,12 +108,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
             <div className="flex items-center justify-between">
               <div>Price</div>
               <div>
-                <TokenPrice
-                  address={data.token.id}
-                  symbol={data.token.symbol}
-                  prefix={`1 ${data.token.symbol} = `}
-                  fallback="-"
-                />
+                <TokenPrice address={data.token.id} prefix={`1 ${data.token.symbol} = `} fallback="-" />
               </div>
             </div>
             <div className="flex items-center justify-between">
