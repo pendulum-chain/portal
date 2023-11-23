@@ -1,8 +1,8 @@
 import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { Modal } from 'react-daisyui';
-import { GlobalState } from '../../../GlobalStateProvider';
 import logo from '../../../assets/nova-wallet.png';
+import { GlobalState } from '../../../GlobalStateProvider';
 import { PublicKey } from '../../PublicKey';
 
 export type NovaWalletProps = {
@@ -38,7 +38,8 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
   }, [setOpenModal]);
 
   useEffect(() => {
-    async function buildWalletAccount(extAcc: ExtensionAccount) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async function buildWalletAccount(extAcc: ExtensionAccount): Promise<any> {
       const signer = await web3FromAddress(extAcc.address);
       return {
         address: extAcc.address,
@@ -69,6 +70,7 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
     }
     if (selectedAccount) {
       buildWalletAccount(selectedAccount)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((account) => setWalletAccount(account))
         .then(() => {
           setOpenModal(false);

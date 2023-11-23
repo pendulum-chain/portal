@@ -28,7 +28,8 @@ export const walletConnectService = {
       return address;
     });
 
-    const signer = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const signer: any = {
       signPayload: async (data: SignerPayloadJSON) => {
         const { address } = data;
         return provider.client.request({

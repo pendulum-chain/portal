@@ -24,7 +24,6 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
     depositQuery,
     amount,
     form: { register, setValue },
-    selectedPool,
   } = useWithdrawLiquidity(data);
   const deposit = depositQuery.balance || 0;
 
