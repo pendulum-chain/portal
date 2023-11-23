@@ -76,20 +76,20 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   }, [transfer]);
 
   return (
-    <Modal id={id} open={visible} className="rounded-md bg-base-200 px-2">
+    <Modal id={id} open={visible} className="transfer-dialog rounded-md px-2">
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
           {statusIcon}
           <div className="mt-5" />
-          <h1 className="text-2xl text-black font-semibold mb-1">{title}</h1>
+          <h1 className="text-2xl transfer-dialog-contrast-text font-semibold mb-1">{title}</h1>
           {content}
           <Divider className="mx-5 mb-2 mt-1" />
           <div
             id="details"
             tabIndex={0}
             onClick={toggle}
-            className={`collapse collapse-arrow rounded-lg bg-black bg-opacity-3 text-[#7C818D] flex flex-col w-11/12 ${collapseVisibility}`}
+            className={`collapse collapse-arrow rounded-lg bg-black bg-opacity-3 transfer-dialog-text flex flex-col w-11/12 ${collapseVisibility}`}
           >
             <div className="collapse-title flex flex-row justify-between">
               <div className="text-sm">Bridge fee</div>
@@ -158,13 +158,13 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const content = (
     <>
-      <div className="text-sm text-[#7C818D]">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
-      <label className="rounded bg-black bg-opacity-3 px-4 py-2 my-4 text font-semibold text-black">
+      <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
         {`To ${toTitle(tenantName)}`}
       </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
-        <div className="text-sm text-[#7C818D]">Spacewalk transaction</div>
+        <div className="text-sm transfer-dialog-text">Spacewalk transaction</div>
         <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
@@ -190,12 +190,14 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
-      <div className="text-md p-5 text-[#7C818D] align-middle text-center">
+      <div className="text-md p-5 transfer-dialog-text align-middle text-center">
         {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend} 
           ${stellarAsset}.`}
       </div>
-      <div className="text-md text-[#907EA0]">Contact the team for debugging if you think this is an error.</div>
-      <label className="rounded bg-black bg-opacity-3 px-4 py-2 my-4 text font-semibold text-black">
+      <div className="transfer-dialog-colored-text text-md ">
+        Contact the team for debugging if you think this is an error.
+      </div>
+      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
         {`To ${toTitle(tenantName)}`}
       </label>
       <div className="flex flex-row justify-between w-11/12">
@@ -278,32 +280,37 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     <>
       <>
         <div
-          className="text-xl text-black text-semibold"
+          className="text-xl transfer-dialog-contrast-text text-semibold"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-2" />
-        <div className="flex justify'center text text-[#7C818D]">
+        <div className="transfer-dialog-text flex justify'center text ">
           <div className="mr-2">With the text memo</div>
-          <CopyableAddress inline={true} variant="short" publicKey={expectedStellarMemo} className="text-[#7C818D]" />
+          <CopyableAddress
+            inline={true}
+            variant="short"
+            publicKey={expectedStellarMemo}
+            className="transfer-dialog-text"
+          />
         </div>
-        <div className="flex justify-center text-md text-[#7C818D]">
+        <div className="flex justify-center text-md transfer-dialog-text">
           <div className="mr-2">In a single transaction to</div>
           <CopyableAddress
             inline={true}
-            className="text-sm p-0 text-[#7C818D]"
+            className="text-sm p-0 transfer-dialog-text"
             variant="short"
             publicKey={destinationStellarAddress}
           />
         </div>
-        <div className="text-md mt-2 text-[#7C818D]">
+        <div className="transfer-dialog-text text-md mt-2">
           Within <TransferCountdown request={transfer.original} />
         </div>
       </>
-      <label className="rounded bg-black bg-opacity-3 px-4 py-2 my-4 text font-semibold text-black">
+      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
         {`To ${toTitle(tenantName)}`}
       </label>
       <div className="mt-4" />
-      <div className="text-sm px-5 text-[#7C818D]">
+      <div className="text-sm px-5 transfer-dialog-text">
         Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
       </div>
       <div className="mt-4" />

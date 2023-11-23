@@ -108,7 +108,7 @@ const Table = <T,>({
         </div>
       ) : null}
       <div
-        className={`bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 text-sm font-semibold text-[#252733] ${className})`}
+        className={`table-container bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 text-sm font-semibold ${className})`}
       >
         {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
         <table className="table w-full">
