@@ -14761,7 +14761,7 @@ __metadata:
     postcss: "npm:^8.4.21"
     preact: "npm:^10.12.1"
     prettier: "npm:^2.8.4"
-    react-daisyui: "npm:^4.0.0"
+    react-daisyui: "npm:^3.0.3"
     react-device-detect: "npm:^2.2.3"
     react-hook-form: "npm:^7.43.2"
     react-router-dom: "npm:^6.8.1"
@@ -15699,15 +15699,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-daisyui@npm:^4.0.0":
-  version: 4.1.2
-  resolution: "react-daisyui@npm:4.1.2"
+"react-daisyui@npm:^3.0.3":
+  version: 3.1.2
+  resolution: "react-daisyui@npm:3.1.2"
   peerDependencies:
-    daisyui: ^3.0.22
+    daisyui: ^2.51.5
     react: ">=16"
     react-dom: ">=16"
     tailwindcss: ">=3.2.7"
-  checksum: 9c39121acf79ee45f2beb30bde0c8a34c112043785d69429d2b5a715a4bd134e8124204f6702405d601b5434ad224ba35b22866891b64912b524ef5cb68d733e
+  checksum: 276eed03bb032e798ec9257a9864a2f39fe8f8e45b2e11c62cd99d77025df4dd813ff1b644953fc3fcc44280ac71a811e54ca06562a48e529416753f690ed63d
   languageName: node
   linkType: hard
 
