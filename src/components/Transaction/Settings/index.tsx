@@ -8,7 +8,7 @@ export interface TransactionSettingsProps {
   deadlineProps?: React.HTMLAttributes<HTMLInputElement>;
 }
 
-const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200';
+const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200 input-sm';
 
 const TransactionSettings = ({
   setSlippage,
@@ -31,7 +31,6 @@ const TransactionSettings = ({
           </Button>
           <div className="relative flex dark:text-neutral-400 text-neutral-600">
             <Input
-              size="sm"
               bordered
               className={`${inputCls} pr-6 w-full`}
               type="number"
@@ -54,9 +53,8 @@ const TransactionSettings = ({
         </div>
         <div className="flex items-center gap-2 mt-2">
           <Input
-            size="sm"
             bordered
-            className={`${inputCls} w-20 pr-2`}
+            className={`${inputCls} input-sm w-20 pr-2`}
             type="number"
             placeholder="30"
             min={config.transaction.settings.deadline.min}
