@@ -5,21 +5,25 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
-import { useGlobalState } from '../../../GlobalStateProvider';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 
-const disclaimerText =
-  '1. Sed ut perspiciatis unde omnis iste natus error sit voluptatem\n2. accusantium doloremque laudantium, totam rem aperiam eaque \n3. quae ab illo inventore veritatis et quasi architecto beatae vitae dicta\n4. explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspe';
+const disclaimerText = `• Issue Fee: 0.10% of the transaction amount.
+  • Redeem Fee: 0.10% of the transaction amount.
+  • Security deposit: 0.50% of the transaction amount.
+  • Max issuable amount: 20,000 USD.
+  • Estimated time for issuing: 2mins - 3hrs (applicable after the user makes the Stellar transaction to the vault).
+`;
 
 interface IssueProps {
   network: string;
