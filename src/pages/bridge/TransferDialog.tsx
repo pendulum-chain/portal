@@ -106,7 +106,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
                 />
               </div>
               <div className="flex flex-row justify-between">
-                <div className="text-sm">Vault PEN Address ({tenantNameCapitalized})</div>
+                <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
                 <CopyableAddress
                   inline={true}
                   className="text-sm p-0"
@@ -116,7 +116,7 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
               </div>
               {vaultStellarPublicKey && (
                 <div className="flex flex-row justify-between">
-                  <div className="text-sm">Vault PEN Address</div>
+                  <div className="text-sm">Vault Address (Stellar)</div>
                   <CopyableAddress
                     inline={true}
                     className="text-sm p-0"
