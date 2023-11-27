@@ -22,7 +22,7 @@ const disclaimerText = `• Issue Fee: 0.10% of the transaction amount.
   • Redeem Fee: 0.10% of the transaction amount.
   • Security deposit: 0.50% of the transaction amount.
   • Max issuable amount: 20,000 USD.
-  • Estimated time for issuing: 2mins - 3hrs (applicable after the user makes the Stellar transaction to the vault).
+  • Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).
 `;
 
 interface IssueProps {
