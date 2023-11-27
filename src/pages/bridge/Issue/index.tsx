@@ -10,6 +10,7 @@ import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
+import { useFeePallet } from '../../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
@@ -17,13 +18,6 @@ import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-
-const disclaimerText = `• Issue Fee: 0.10% of the transaction amount.
-  • Redeem Fee: 0.10% of the transaction amount.
-  • Security deposit: 0.50% of the transaction amount.
-  • Max issuable amount: 20,000 USD.
-  • Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).
-`;
 
 interface IssueProps {
   network: string;
@@ -47,7 +41,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-
+  const { issueFee, redeemFee, issueGriefingCollateral } = useFeePallet().getFees();
   const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
@@ -61,6 +55,16 @@ function Issue(props: IssueProps): JSX.Element {
   const amountNative = useMemo(() => {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
+
+  const disclaimerText = useMemo(
+    () =>
+      `• Issue Fee: ${issueFee.mul(100)}% of the transaction amount.
+       • Redeem Fee: ${redeemFee.mul(100)}% of the transaction amount.
+       • Security deposit: ${issueGriefingCollateral.mul(100)}% of the transaction amount.
+       • Total issuable amount (in USD): 20,000 USD.
+       • Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`,
+    [issueFee, redeemFee, issueGriefingCollateral],
+  );
 
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !api) {
