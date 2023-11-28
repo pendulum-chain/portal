@@ -2,7 +2,7 @@ import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
-import { Button, Divider, Modal } from 'react-daisyui';
+import { Divider, Link, Modal } from 'react-daisyui';
 import { useGlobalState } from '../../GlobalStateProvider';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
@@ -159,8 +159,8 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   const content = (
     <>
       <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
-        {`To ${toTitle(tenantName)}`}
+      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
       </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
@@ -198,7 +198,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
         Contact the team for debugging if you think this is an error.
       </div>
       <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
-        {`To ${toTitle(tenantName)}`}
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
       </label>
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-xs">Spacewalk transaction</div>
@@ -307,7 +307,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         </div>
       </>
       <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
-        {`To ${toTitle(tenantName)}`}
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
       </label>
       <div className="mt-4" />
       <div className="text-sm px-5 transfer-dialog-text">
@@ -343,13 +343,16 @@ export function PendingTransferDialog(props: TransferDialogProps) {
 
 export function FailedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
+  const { tenantName } = useGlobalState();
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const compensation = 0.05;
   const content = (
     <>
       <div className="text-xl">{`${amountToSend} ${stellarAsset}`}</div>
-      <div className="mt-4" />
+      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+      </label>
     </>
   );
   const footer = (
@@ -363,23 +366,14 @@ export function FailedTransferDialog(props: TransferDialogProps) {
         To redeem your {stellarAsset}, you must now pick one of the two options:
       </div>
       <div className="text-md pl-2 pb-1">
-        1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.
+        1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.{' '}
+        <Link className="font-semibold underline">Compensate</Link>
       </div>
       <div className="text-md pl-2">
         2. Burn {stellarAsset} and get {amountToSend} {stellarAsset} with added {compensation} {stellarAsset} as
-        compensation.
+        compensation. <Link className="font-semibold underline">Reimburse</Link>
       </div>
     </div>
-  );
-  const actions = () => (
-    <>
-      <Button className="px-6" variant="outline" color="primary" onClick={() => undefined}>
-        1. Compensate
-      </Button>
-      <Button className="px-6" variant="outline" color="primary" onClick={() => undefined}>
-        2. Remburse
-      </Button>
-    </>
   );
   return (
     <BaseTransferDialog
@@ -392,7 +386,6 @@ export function FailedTransferDialog(props: TransferDialogProps) {
       statusIcon={<WarningDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
-      actions={actions}
     />
   );
 }
