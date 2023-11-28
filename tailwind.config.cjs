@@ -17,6 +17,9 @@ module.exports = {
       screens: {
         xs: '480px',
       },
+      opacity: {
+        '3': '0.03',
+      }
     },
   },
   daisyui: {

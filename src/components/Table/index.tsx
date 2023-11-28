@@ -107,7 +107,9 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className={`bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${className}`}>
+      <div
+        className={`table-container bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 text-sm font-semibold ${className})`}
+      >
         {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
         <table className="table w-full">
           <thead>
@@ -124,10 +126,10 @@ const Table = <T,>({
                       }`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                    <div className="flex flex-row items-center font-normal text-sm normal-case table-header">
+                      <div className="flex flex-row items-center font-normal text-sm normal-case table-header">
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {isSortable ? (
-                        <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>
+                          <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>
                             {header.column.getIsSorted() === 'desc' ? (
                               <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
                             ) : (
