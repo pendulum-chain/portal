@@ -161,6 +161,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
       <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
       <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+
       </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
