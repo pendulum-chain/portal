@@ -20,7 +20,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   return (
     <>
       {address ? (
-        <Dropdown vertical="end" end>
+        <Dropdown vertical="top" end>
           <Button
             size="sm"
             color="ghost"

@@ -1,11 +1,12 @@
 import { Cog8ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { Button, Dropdown, Input } from 'react-daisyui';
+import { InputProps } from 'react-daisyui/dist/Input/Input';
 import { config } from '../../../config';
 
 export interface TransactionSettingsProps {
   setSlippage: (slippage: number | undefined) => void;
   slippageProps: React.HTMLAttributes<HTMLInputElement>;
-  deadlineProps?: React.HTMLAttributes<HTMLInputElement>;
+  deadlineProps?: InputProps;
 }
 
 const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200';
@@ -39,7 +40,7 @@ const TransactionSettings = ({
               min={config.transaction.settings.slippage.min}
               max={config.transaction.settings.slippage.max}
               placeholder="Auto"
-              {...slippageProps}
+              {...deadlineProps}
             />
             <div className="absolute right-0 top-0 w-5 h-full flex items-center">%</div>
           </div>
@@ -56,7 +57,7 @@ const TransactionSettings = ({
           <Input
             size="sm"
             bordered
-            className={`${inputCls} w-20 pr-2`}
+            className={`${inputCls} w-20 pr-2v `}
             type="number"
             placeholder="30"
             min={config.transaction.settings.deadline.min}
