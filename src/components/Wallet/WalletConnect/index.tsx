@@ -34,7 +34,7 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
       setWalletAccount(await walletConnectService.init(session, chainId));
       modal?.closeModal();
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       toast(error, { type: 'error' });
       setLoading(false);
     }
@@ -46,7 +46,6 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
     setModal(
       new WalletConnectModal({
         projectId: config.walletConnect.projectId,
-        walletConnectVersion: 2,
       }),
     );
   }, [provider]);

@@ -9,7 +9,7 @@ export function useClipboard() {
           await navigator.clipboard.writeText(value);
           const message = notificationMessage || `Copied ${value} to clipboard`;
           toast(message, { type: 'info' });
-        } catch (error) {
+        } catch (error: any) {
           toast(error, { type: 'error' });
         }
       },

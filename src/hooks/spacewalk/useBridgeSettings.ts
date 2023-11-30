@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
-import { StateUpdater, useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { StateUpdater } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';

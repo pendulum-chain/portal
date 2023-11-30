@@ -30,7 +30,7 @@ export const updatedColumn: ColumnDef<TTransfer> = {
   header: 'Updated',
   accessorKey: 'updated',
   cell: ({ row }) => {
-    return <div>{row.original.updated.toLocaleString(DateTime.DATETIME_SHORT)}</div>;
+    return <div>{row.original.updated.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS)}</div>;
   },
 };
 

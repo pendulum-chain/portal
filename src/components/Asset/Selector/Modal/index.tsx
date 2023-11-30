@@ -61,7 +61,7 @@ const AssetList = <T extends SelectorValue>({
               className="w-full items-center justify-start gap-4 px-3 py-1 border-0 bg-[rgba(0,0,0,.2)] text-left hover:opacity-80 dark:bg-[rgba(255,255,255,.12)]"
             >
               <span className="relative">
-                <Avatar size="xs" letters={token.symbol} /* src={token.logoURI} */ shape="circle" className="text-xs" />
+                <Avatar letters={token.symbol} /* src={token.logoURI} */ shape="circle" className="text-xs " />
                 {selected == token.id && (
                   <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
                 )}

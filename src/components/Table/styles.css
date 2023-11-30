@@ -10,6 +10,34 @@
   .table-header {
     color: #9FA2B4;
   }
+
+  .table-container {
+    color: #252733; 
+  }
+
+
+  .transfer-dialog {
+    background-color: #FFF;
+    border: 1px solid rgba(67, 67, 67, 0.26);
+  }
+
+  .transfer-dialog-text {
+    color: #7C818D;
+  }
+
+  .transfer-dialog-label {
+    background: rgba(0, 0, 0, 0.03);
+    color: black;
+  }
+
+  .transfer-dialog-colored-text {
+    color: #907EA0;
+  }
+
+  #details {
+    background-color: rgba(0, 0, 0, 0.03);   
+  }
+
 }
 
 [data-theme='amplitude'] {
@@ -23,5 +51,27 @@
 
   .table-header {
     color: rgba(221, 221, 221, 0.87);
+  }
+
+  .table-container {
+    color: #fff; 
+  }
+
+  .transfer-dialog {
+    background-color: #1C1C1C;
+    color: #FFF;
+    border: 1px solid rgba(67, 67, 67, 0.26);
+  }
+
+  .transfer-dialog-colored-text {
+    color: #FFF;
+  }
+
+  .transfer-dialog-text {
+    color: #FFF;
+  }
+
+  #details {
+    background-color: #2A2A2A;   
   }
 }
