@@ -11,11 +11,7 @@ export interface TransactionSettingsProps {
 
 const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200';
 
-const TransactionSettings = ({
-  setSlippage,
-  slippageProps,
-  deadlineProps,
-}: TransactionSettingsProps): JSX.Element | null => {
+const TransactionSettings = ({ setSlippage, deadlineProps }: TransactionSettingsProps): JSX.Element | null => {
   return (
     <div className="w-full">
       <h4 className="font-semibold">Settings</h4>

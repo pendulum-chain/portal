@@ -53,15 +53,16 @@ export const calcAvailablePoolWithdraw = ({ selectedPool, shares, deposit, bpPri
   if (surplus === undefined || !bpPrice || !spPrice || !shares || !deposit) {
     return undefined;
   }
-  const surplusVal = Big(nativeToDecimal(surplus.toString()).toString());
-  if (surplusVal.lte(0)) return BigInt(0);
-  const depositVal = Big(nativeToDecimal(deposit.toString()));
-  const sharesVal = Big(nativeToDecimal(shares.toString()));
-  const spPriceVal = Big(nativeToDecimal(spPrice.toString()));
-  const bpPriceVal = Big(nativeToDecimal(bpPrice.toString()));
+  const surplusVal = Big(nativeToDecimal(surplus.toString(), decimals).toString());
+  if (surplusVal.lte(0)) return Big(0);
+  const depositVal = Big(nativeToDecimal(deposit.toString(), decimals));
+  const sharesVal = Big(nativeToDecimal(shares.toString(), decimals));
+  const spPriceVal = Big(nativeToDecimal(spPrice.toString(), decimals));
+  const bpPriceVal = Big(nativeToDecimal(bpPrice.toString(), decimals));
   const spMax = surplusVal.mul(spPriceVal);
   const bpMax = sharesVal.mul(bpPriceVal);
   const maxValue = bpMax.gt(spMax) ? spMax : bpMax;
   const maxLP = maxValue.div(bpPriceVal);
-  return decimalToNative((maxLP.gt(depositVal) ? depositVal : maxLP).toString(), decimals);
+  const final = maxLP.gt(depositVal) ? depositVal : maxLP;
+  return decimalToNative(final.toString(), decimals);
 };
