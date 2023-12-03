@@ -47,16 +47,29 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
               </p>
             </div>
-            <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700">
+            <div className="relative flex gap-1 items-center rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
               <input
                 autoFocus
-                className="input-ghost w-full text-4xl font-2 py-7 px-4"
+                className="input-ghost flex-grow w-full text-4xl font-2 py-3 px-0"
                 placeholder="Amount"
                 max={balance}
                 {...register('amount')}
               />
               <Button
-                className="absolute bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl right-3 top-1/2 -mt-4"
+                className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
+                size="sm"
+                type="button"
+                onClick={() =>
+                  setValue('amount', balance / 2, {
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              >
+                50%
+              </Button>
+              <Button
+                className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
                 size="sm"
                 type="button"
                 onClick={() =>

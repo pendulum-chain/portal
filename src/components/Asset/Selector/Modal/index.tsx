@@ -102,7 +102,7 @@ export const AssetSelectorModal = <T extends SelectorValue>({
   ...rest
 }: AssetSelectorModalProps<T>) => {
   return (
-    <Modal {...rest}>
+    <Modal className="bg-[--bg-modal]" {...rest}>
       <Modal.Header className="mb-0">
         <ModalCloseButton onClick={onClose} />
         <h3 className="text-2xl font-normal">Select a token</h3>

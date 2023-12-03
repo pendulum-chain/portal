@@ -71,7 +71,7 @@ export const TransactionSettingsDropdown = (props: TransactionSettingsProps & { 
   <Dropdown vertical="bottom" end>
     {props.button || (
       <button
-        className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400 ml-1"
+        className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400"
         type="button"
         title="Open settings"
       >

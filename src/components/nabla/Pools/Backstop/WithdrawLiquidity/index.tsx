@@ -106,7 +106,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
               <div className="flex items-center gap-1">
                 <input
                   autoFocus
-                  className="input-ghost w-full text-4xl font-2 p-2"
+                  className="input-ghost w-full text-4xl font-2 py-3 px-0"
                   placeholder="Amount"
                   max={deposit}
                   {...register('amount')}
@@ -118,7 +118,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
                   onClick={tokenModal[1].setTrue}
                 >
                   <strong className="font-bold">{selectedPool.token.symbol}</strong>
-                  <ChevronDownIcon className="w-4 h-4 inline ml-px" />
+                  <ChevronDownIcon className="w-4 h-4 inline" />
                 </Button>
                 <TransactionSettingsDropdown
                   setSlippage={(slippage) => {
