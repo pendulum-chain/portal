@@ -37,7 +37,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
           </div>
           <Button
             size="xs"
-            className="rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
+            className="rounded-full h-7 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-sm font-medium"
             onClick={onOpenSelector}
             type="button"
           >

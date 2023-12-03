@@ -33,14 +33,14 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const { tokens, tokensMap } = tokensQuery.data || {};
 
   const progressUi = useMemo(() => {
-    if (!swapMutation?.isLoading) return null;
+    if (swapMutation?.isIdle) return null;
     const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
     const fromAsset = tokensMap?.[fromV];
     const toAsset = tokensMap?.[toV];
     return (
-      <p className="text-center text-neutral-500">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
+      <p className="text-center text-[--text]">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
     );
-  }, [getValues, swapMutation?.isLoading, tokensMap]);
+  }, [getValues, swapMutation?.isIdle, tokensMap]);
 
   return (
     <>
