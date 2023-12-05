@@ -1,5 +1,6 @@
 module.exports = {
   roots: ['<rootDir>/src'],
+  maxWorkers: 1,
   transform: {
     '\\.(ts|tsx)?$': 'babel-jest',
   },

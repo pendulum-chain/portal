@@ -2,6 +2,7 @@ import { Abi } from '@polkadot/api-contract';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { swapPoolAbi } from '../../contracts/nabla/SwapPool';
 import { QueryOptions } from '../../shared/helpers';
+import { decimalToNative } from '../../shared/parseNumbers';
 import { useContract } from '../../shared/useContract';
 
 export type UseSharesTargetWorthProps = {
@@ -20,7 +21,7 @@ export const useSharesTargetWorth = (
     address,
     abi,
     method: 'sharesTargetWorth',
-    args: [amount],
+    args: [decimalToNative(amount || 0).toString()],
     enabled: Boolean(address && amount && options?.enabled !== false),
   });
 };

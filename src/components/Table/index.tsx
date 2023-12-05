@@ -49,6 +49,7 @@ export type TableProps<T> = {
   /** Gives a className to odd rows (1,3,5,7,...), to help table rows readability. */
   oddRowsClassname?: string;
   title?: string | JSX.Element;
+  fontSize?: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,6 +66,7 @@ const Table = <T,>({
   sortBy,
   evenRowsClassname,
   oddRowsClassname,
+  fontSize,
   title,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
@@ -108,7 +110,9 @@ const Table = <T,>({
         </div>
       ) : null}
       <div
-        className={`table-container bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 text-sm font-semibold ${className})`}
+        className={`table-container bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${
+          fontSize || 'text-sm'
+        } font-semibold ${className})`}
       >
         {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
         <table className="table w-full">
@@ -121,12 +125,14 @@ const Table = <T,>({
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      className={`${isSortable ? ' cursor-pointer' : ''} ${
-                        header.column.columnDef.meta?.className || ''
-                      }`}
+                      className={`${isSortable ? ' cursor-pointer' : ''}`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                      <div className="flex flex-row items-center font-normal text-sm normal-case table-header">
+                      <div
+                        className={`flex flex-row items-center font-normal ${
+                          fontSize || 'text-sm'
+                        } normal-case table-header ${header.column.columnDef.meta?.className || ''}`}
+                      >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {isSortable ? (
                           <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>

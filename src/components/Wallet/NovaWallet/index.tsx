@@ -1,8 +1,9 @@
 import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
+import { WalletAccount } from '@talismn/connect-wallets';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { Modal } from 'react-daisyui';
-import { GlobalState } from '../../../GlobalStateProvider';
 import logo from '../../../assets/nova-wallet.png';
+import { GlobalState } from '../../../GlobalStateProvider';
 import { PublicKey } from '../../PublicKey';
 
 export type NovaWalletProps = {
@@ -44,7 +45,7 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
         address: extAcc.address,
         source: extAcc.source,
         name: extAcc.name,
-        signer,
+        signer: signer as WalletAccount['signer'],
         wallet: {
           enable: () => undefined,
           extensionName: 'polkadot-js',

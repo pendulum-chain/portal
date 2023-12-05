@@ -18,7 +18,7 @@ const Modals = () => {
   const Component = type ? modalsUi[type] : undefined;
   return (
     <>
-      <Modal open={!!Component}>
+      <Modal className="bg-[--bg-modal]" open={!!Component}>
         <Modal.Header className="mb-0">
           <ModalCloseButton onClick={() => setModal()} />
         </Modal.Header>

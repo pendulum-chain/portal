@@ -8,10 +8,11 @@ import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
 import { createWriteOptions } from '../services/api/helpers';
-import { useSharedState } from './Provider';
 import { parseTransactionError } from './helpers';
+import { useSharedState } from './Provider';
 
 // TODO: fix/improve types
+// - parse abi file
 export type TransactionsStatus = {
   hex?: string;
   status?: ExtrinsicStatus['type'] | 'Pending';

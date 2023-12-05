@@ -1,13 +1,18 @@
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { ChangeEvent } from 'preact/compat';
+import { ChangeEvent, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
+import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
+import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
 import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
 import { numberLoader } from '../../../../Loader';
+import FormLoader from '../../../../Loader/Form';
 import TransactionProgress from '../../../../Transaction/Progress';
+import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 
@@ -15,23 +20,48 @@ export type WithdrawLiquidityProps = {
   data: BackstopPool;
 };
 
-const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
+const filter = (pool: BackstopPool): BackstopPool => {
+  const filteredPools = pool.router.swapPools?.filter((pool) => !!getPoolSurplus(pool));
+  return {
+    ...pool,
+    router: {
+      ...pool.router,
+      swapPools: filteredPools,
+    },
+  };
+};
+
+const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
   const {
     toggle,
-    mutation,
-    onSubmit,
     balanceQuery,
     depositQuery,
-    amount,
     form: { register, setValue },
+    amount,
+    pools,
     selectedPool,
+    tokenModal,
+    backstopWithdraw: bpw,
+    swapPoolWithdraw: spw,
+    isSwapPoolWithdraw,
+    updateStorage,
+    onSubmit,
   } = useWithdrawLiquidity(data);
+  const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
+  const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
   const deposit = depositQuery.balance || 0;
+  const withdrawLimit = nativeToDecimal(spw.withdrawLimit?.toString() || 0, FixedU128Decimals).toNumber();
 
-  const hideCss = !mutation.isIdle ? 'hidden' : '';
+  const hideCss = !isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
-      <TransactionProgress mutation={mutation} onClose={mutation.reset}>
+      <TransactionProgress
+        mutation={bpw.mutation.isLoading ? bpw.mutation : spw.mutation}
+        onClose={() => {
+          bpw.mutation.reset();
+          spw.mutation.reset();
+        }}
+      >
         <PoolProgress symbol={data.token.symbol} amount={amount} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
@@ -43,34 +73,66 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
       <div className={hideCss}>
         <form onSubmit={onSubmit}>
           <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
-            <p className="text-neutral-500 dark:text-neutral-400 text-right">
-              Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
-            </p>
-          </div>
-          <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <input
-                  autoFocus
-                  className="input-ghost w-full text-4xl font-2 p-2"
-                  placeholder="Amount"
-                  max={deposit}
-                  {...register('amount')}
-                />
-                <Button
-                  className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
-                  size="sm"
-                  type="button"
+            <p>
+              Deposited:{' '}
+              {depositQuery.isLoading ? (
+                numberLoader
+              ) : (
+                <span
+                  role="button"
                   onClick={() =>
                     setValue('amount', deposit, {
                       shouldDirty: true,
                       shouldTouch: true,
                     })
                   }
+                >{`${depositQuery.formatted || 0} LP`}</span>
+              )}
+            </p>
+            <p className="text-neutral-500 dark:text-neutral-400 text-right">
+              Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+            </p>
+          </div>
+          <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
+            {isSwapPoolWithdraw && (
+              <div className="flex items-center justify-between text-sm">
+                <div>
+                  <span className="mr-1">Withdraw limit:</span>
+                  {spw.isLoading ? numberLoader : <>{withdrawLimit} LP</>}
+                </div>
+              </div>
+            )}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-1">
+                <input
+                  autoFocus
+                  className="input-ghost w-full text-4xl font-2 py-3 px-0"
+                  placeholder="Amount"
+                  max={deposit}
+                  {...register('amount')}
+                />
+                <Button
+                  className="bg-neutral-200 dark:bg-neutral-800 px-2 rounded-2xl"
+                  size="sm"
+                  type="button"
+                  onClick={tokenModal[1].setTrue}
                 >
-                  MAX
+                  <strong className="font-bold">{selectedPool.token.symbol}</strong>
+                  <ChevronDownIcon className="w-4 h-4 inline" />
                 </Button>
+                <TransactionSettingsDropdown
+                  setSlippage={(slippage) => {
+                    setValue('slippage', slippage);
+                    updateStorage({ slippage });
+                  }}
+                  slippageProps={register('slippage', {
+                    valueAsNumber: true,
+                    onChange: (ev) =>
+                      updateStorage({
+                        slippage: Number(ev.currentTarget.value),
+                      }),
+                  })}
+                />
               </div>
             </div>
             <Range
@@ -115,22 +177,37 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             </div>
           </div>
           <div className="mt-8">
-            <Button color="primary" className="w-full" type="submit">
+            <Button color="primary" className="w-full" type="submit" disable={isLoading}>
               Withdraw
             </Button>
-            <Button
-              color="secondary"
-              className="mt-2 w-full"
-              type="button"
-              disable={mutation.isLoading}
-              onClick={() => toggle()}
-            >
+            <Button color="secondary" className="mt-2 w-full" type="button" onClick={() => toggle()}>
               Cancel
             </Button>
           </div>
         </form>
       </div>
+      <AssetSelectorModal
+        assets={pools}
+        open={tokenModal[0]}
+        onSelect={(value) => {
+          setValue('address', value.id && value.id.length > 5 ? value.id : null);
+          tokenModal[1].setFalse();
+        }}
+        map={(pool) => pool.token}
+        selected={selectedPool.token.id}
+        onClose={tokenModal[1].setFalse}
+      />
     </div>
   );
 };
+
+const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps) => {
+  const { data: pool, isLoading } = useBackstopPool(data.id);
+  const filtered = useMemo(() => (pool ? filter(pool) : pool), [pool]);
+
+  if (isLoading) return <FormLoader inputs={2} className="mt-8" />;
+  if (!filtered) return <>Nothing found</>;
+  return <WithdrawLiquidityBody data={filtered} />;
+};
+
 export default WithdrawLiquidity;

@@ -49,17 +49,30 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             </p>
           </div>
           <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-1 justify-between mb-4">
               <input
                 type="text"
                 autoFocus
-                className="input-ghost w-full text-4xl font-2"
+                className="input-ghost flex-grow w-full text-4xl font-2"
                 placeholder="0.0"
                 max={deposit}
                 {...register('amount')}
               />
               <Button
-                className="bg-neutral-200 dark:bg-neutral-800 px-4 rounded-2xl"
+                className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
+                size="sm"
+                type="button"
+                onClick={() =>
+                  setValue('amount', deposit / 2, {
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              >
+                50%
+              </Button>
+              <Button
+                className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
                 size="sm"
                 type="button"
                 onClick={() =>

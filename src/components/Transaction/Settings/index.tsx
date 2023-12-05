@@ -11,11 +11,7 @@ export interface TransactionSettingsProps {
 
 const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200';
 
-const TransactionSettings = ({
-  setSlippage,
-  slippageProps,
-  deadlineProps,
-}: TransactionSettingsProps): JSX.Element | null => {
+const TransactionSettings = ({ setSlippage, deadlineProps }: TransactionSettingsProps): JSX.Element | null => {
   return (
     <div className="w-full">
       <h4 className="font-semibold">Settings</h4>
@@ -75,7 +71,7 @@ export const TransactionSettingsDropdown = (props: TransactionSettingsProps & { 
   <Dropdown vertical="bottom" end>
     {props.button || (
       <button
-        className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400 ml-1"
+        className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400"
         type="button"
         title="Open settings"
       >

@@ -6,14 +6,16 @@ import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { emptyCacheKey, emptyFn } from '../../helpers/general';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 
-export type UseBackstopPoolsProps = UseQueryOptions<BackstopPool[] | undefined>;
+export type UseBackstopPoolProps = UseQueryOptions<BackstopPool | undefined>;
 
-export const useBackstopPools = (options?: UseBackstopPoolsProps) => {
+export const useBackstopPool = (id: string, options?: UseBackstopPoolProps) => {
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const enabled = !!indexerUrl && options?.enabled !== false;
-  return useQuery<BackstopPool[] | undefined>(
-    enabled ? [cacheKeys.backstopPools, indexerUrl] : emptyCacheKey,
-    enabled ? async () => (await request(indexerUrl, getBackstopPools))?.backstopPools as BackstopPool[] : emptyFn,
+  return useQuery<BackstopPool | undefined>(
+    enabled ? [cacheKeys.backstopPools, id, indexerUrl] : emptyCacheKey,
+    enabled
+      ? async () => (await request(indexerUrl, getBackstopPool, { id }))?.backstopPoolById as BackstopPool
+      : emptyFn,
     {
       ...inactiveOptions['1m'],
       refetchInterval: 30000,
@@ -23,23 +25,33 @@ export const useBackstopPools = (options?: UseBackstopPoolsProps) => {
   );
 };
 
-export const getBackstopPools = graphql(`
-  query getBackstopPools {
-    backstopPools(where: { paused_eq: false }) {
+export const getBackstopPool = graphql(`
+  query getBackstopPool($id: String!) {
+    backstopPoolById(id: $id) {
       id
       liabilities
       paused
       reserves
       totalSupply
       token {
-        id
         decimals
+        id
         name
         symbol
       }
       router {
         swapPools(where: { router_isNull: false, paused_not_eq: true }) {
           id
+          liabilities
+          paused
+          reserves
+          totalSupply
+          token {
+            decimals
+            id
+            name
+            symbol
+          }
         }
         id
       }
