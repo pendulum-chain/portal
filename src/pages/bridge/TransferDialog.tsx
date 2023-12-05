@@ -11,7 +11,12 @@ import WarningDialogIcon from '../../assets/dialog-status-warning';
 import { CloseButton } from '../../components/CloseButton';
 import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import {
+  addSuffix,
+  calculateDeadline,
+  convertCurrencyToStellarAsset,
+  deriveShortenedRequestId,
+} from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
@@ -155,13 +160,15 @@ interface TransferDialogProps {
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
   const { tenantName } = useGlobalState();
-  const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
+  let stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
+  if (stellarAsset && transfer.type === TransferType.issue) {
+    stellarAsset = addSuffix(stellarAsset);
+  }
   const content = (
     <>
       <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
       <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
-
       </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
