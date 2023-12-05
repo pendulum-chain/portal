@@ -46,6 +46,27 @@ const assets: PriceFetcherAsset[] = [
     exclude: [TenantName.Pendulum],
   },
   {
+    assetName: 'NGNC.s',
+    blockchain: 'YahooFinance',
+    assetId: 'NGN-USD',
+    provider: 'diaForeign',
+    exclude: [TenantName.Pendulum],
+  },
+  {
+    assetName: 'EURC.s',
+    blockchain: 'YahooFinance',
+    assetId: 'EUR-USD',
+    provider: 'diaForeign',
+    exclude: [TenantName.Pendulum],
+  },
+  {
+    assetName: 'AUDD.s',
+    blockchain: 'YahooFinance',
+    assetId: 'AUD-USD',
+    provider: 'diaForeign',
+    exclude: [TenantName.Pendulum],
+  },
+  {
     assetName: 'KSM',
     blockchain: 'Kusama',
     assetId: '0x0000000000000000000000000000000000000000',
