@@ -10,6 +10,9 @@ export const cacheKeys = {
   balance: 'balance',
   walletBalance: 'walletBalance',
   walletBalances: 'walletBalances',
+  tokenOutAmount: 'tokenOutAmount',
+  sharesTargetWorth: 'sharesTargetWorth',
+  tokenPrice: 'tokenPrice',
 };
 
 export type QueryOptions = Partial<

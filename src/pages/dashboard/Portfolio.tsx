@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo } from 'preact/compat';
 import { useGlobalState } from '../../GlobalStateProvider';
 import Table, { SortingOrder } from '../../components/Table';
 import useBalances from '../../hooks/useBalances';

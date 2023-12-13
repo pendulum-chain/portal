@@ -1,8 +1,8 @@
 import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
-import { Button, Divider, Modal } from 'react-daisyui';
+import { Divider, Link, Modal } from 'react-daisyui';
 import { useGlobalState } from '../../GlobalStateProvider';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
@@ -11,7 +11,12 @@ import WarningDialogIcon from '../../assets/dialog-status-warning';
 import { CloseButton } from '../../components/CloseButton';
 import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../helpers/spacewalk';
+import {
+  addSuffix,
+  calculateDeadline,
+  convertCurrencyToStellarAsset,
+  deriveShortenedRequestId,
+} from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
@@ -33,12 +38,6 @@ interface BaseTransferDialogProps {
   onConfirm?: () => void;
 }
 
-const defaultActions = (onConfirm: (() => void) | undefined) => (
-  <Button className="px-6" color="primary" onClick={onConfirm}>
-    OK
-  </Button>
-);
-
 function BaseTransferDialog(props: BaseTransferDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
 
@@ -46,6 +45,19 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   const tenantNameCapitalized = tenantName ? toTitle(tenantName) : 'Pendulum';
 
   const [vaultStellarPublicKey, setVaultStellarPublicKey] = useState<string | undefined>(undefined);
+  const [collapseVisibility, setCollapseVisibility] = useState('');
+
+  const toggle = useCallback(() => {
+    if (collapseVisibility === '') {
+      setCollapseVisibility('collapse-open');
+    } else {
+      setCollapseVisibility('');
+      const elem = document.activeElement;
+      if (elem && elem instanceof HTMLElement) {
+        elem.blur();
+      }
+    }
+  }, [collapseVisibility, setCollapseVisibility]);
 
   // The `stellarAddress` contained in the request will either be the user's Stellar address or the vault's Stellar address (i.e. equal to `vaultStellarPublicKey`).
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
@@ -69,66 +81,72 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   }, [transfer]);
 
   return (
-    <Modal id={id} open={visible} className="bg-base-200">
+    <Modal id={id} open={visible} className="transfer-dialog rounded-md px-2">
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
           {statusIcon}
-          <div className="mt-4" />
-          <h1 className="text-xl mb-5">{title}</h1>
+          <div className="mt-5" />
+          <h1 className="text-2xl transfer-dialog-contrast-text font-semibold mb-1">{title}</h1>
           {content}
-          <div id="details" className="rounded flex flex-col p-5 mt-1 w-11/12">
-            <div className="flex flex-row justify-between">
+          <Divider className="mx-5 mb-2 mt-1" />
+          <div
+            id="details"
+            tabIndex={0}
+            onClick={toggle}
+            className={`collapse collapse-arrow rounded-lg bg-black bg-opacity-3 transfer-dialog-text flex flex-col w-11/12 ${collapseVisibility}`}
+          >
+            <div className="collapse-title flex flex-row justify-between">
               <div className="text-sm">Bridge fee</div>
               <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
             </div>
-            <div className="flex flex-row justify-between">
-              <div className="text-sm">Destination Address (Stellar)</div>
-              <CopyableAddress
-                inline={true}
-                className="text-sm p0"
-                variant="short"
-                publicKey={destinationStellarAddress}
-              />
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
-              <CopyableAddress
-                inline={true}
-                className="text-sm p-0"
-                variant="short"
-                publicKey={transfer.original.vault.accountId.toString()}
-              />
-            </div>
-            {vaultStellarPublicKey && (
+            <div className="collapse-content space-y-4">
               <div className="flex flex-row justify-between">
-                <div className="text-sm">Vault Address (Stellar)</div>
+                <div className="text-sm">Destination Address (Stellar)</div>
+                <CopyableAddress
+                  inline={true}
+                  className="text-sm p0"
+                  variant="short"
+                  publicKey={destinationStellarAddress}
+                />
+              </div>
+              <div className="flex flex-row justify-between">
+                <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
                 <CopyableAddress
                   inline={true}
                   className="text-sm p-0"
                   variant="short"
-                  publicKey={vaultStellarPublicKey}
+                  publicKey={transfer.original.vault.accountId.toString()}
                 />
               </div>
-            )}
-            {showMemo && (
-              <div className="flex flex-row justify-between">
-                <div className="text-sm">Memo</div>
-                <CopyableAddress
-                  inline={true}
-                  className="text-sm p-0"
-                  variant="short"
-                  publicKey={expectedStellarMemo}
-                />
-              </div>
-            )}
+              {vaultStellarPublicKey && (
+                <div className="flex flex-row justify-between">
+                  <div className="text-sm">Vault Address (Stellar)</div>
+                  <CopyableAddress
+                    inline={true}
+                    className="text-sm p-0"
+                    variant="short"
+                    publicKey={vaultStellarPublicKey}
+                  />
+                </div>
+              )}
+              {showMemo && (
+                <div className="flex flex-row justify-between">
+                  <div className="text-sm">Memo</div>
+                  <CopyableAddress
+                    inline={true}
+                    className="text-sm p-0"
+                    variant="short"
+                    publicKey={expectedStellarMemo}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {footer}
       </Modal.Body>
-      <Modal.Actions className="justify-center">
-        {actions ? actions(onConfirm) : defaultActions(onConfirm)}
-      </Modal.Actions>
+      <Modal.Actions className="justify-center">{actions && actions(onConfirm)}</Modal.Actions>
     </Modal>
   );
 }
@@ -141,13 +159,20 @@ interface TransferDialogProps {
 
 export function CompletedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
-  const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
+  const { tenantName } = useGlobalState();
+  let stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
+  if (stellarAsset && transfer.type === TransferType.issue) {
+    stellarAsset = addSuffix(stellarAsset);
+  }
   const content = (
     <>
-      <div className="text-md">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+      </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
-        <div className="text-sm">Spacewalk transaction</div>
+        <div className="text-sm transfer-dialog-text">Spacewalk transaction</div>
         <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
@@ -168,18 +193,21 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
 
 export function CancelledTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
+  const { tenantName } = useGlobalState();
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
-      <div className="text-sm">
+      <div className="text-md p-5 transfer-dialog-text align-middle text-center">
         {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend} 
           ${stellarAsset}.`}
       </div>
-      <div className="mt-4" />
-      <div className="text-sm text-accent ">Contact the team for debugging if you think this is an error.</div>
-      <Divider />
-      <div className="mt-5" />
+      <div className="transfer-dialog-colored-text text-md ">
+        Contact the team for debugging if you think this is an error.
+      </div>
+      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+      </label>
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-xs">Spacewalk transaction</div>
         <CopyableAddress inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
@@ -239,6 +267,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber());
+  const { tenantName } = useGlobalState();
   const { getActiveBlockNumber } = useSecurityPallet();
   const [, setDeadline] = useState<DateTime>();
 
@@ -259,24 +288,37 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     <>
       <>
         <div
-          className="text-xl"
+          className="text-xl transfer-dialog-contrast-text text-semibold"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-2" />
-        <div className="text">With the text memo</div>
-        <div className="mt-2" />
-        <CopyableAddress inline={true} variant="short" publicKey={expectedStellarMemo} />
-        <div className="mt-2" />
-        <div className="text-md">In a single transaction to</div>
-        <div className="mt-2" />
-        <CopyableAddress inline={true} className="text-sm p-0" variant="short" publicKey={destinationStellarAddress} />
-        <div className="text-md mt-2">
+        <div className="transfer-dialog-text flex justify'center text ">
+          <div className="mr-2">With the text memo</div>
+          <CopyableAddress
+            inline={true}
+            variant="short"
+            publicKey={expectedStellarMemo}
+            className="transfer-dialog-text"
+          />
+        </div>
+        <div className="flex justify-center text-md transfer-dialog-text">
+          <div className="mr-2">In a single transaction to</div>
+          <CopyableAddress
+            inline={true}
+            className="text-sm p-0 transfer-dialog-text"
+            variant="short"
+            publicKey={destinationStellarAddress}
+          />
+        </div>
+        <div className="transfer-dialog-text text-md mt-2">
           Within <TransferCountdown request={transfer.original} />
         </div>
       </>
+      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+      </label>
       <div className="mt-4" />
-      <div className="mt-4" />
-      <div className="text-sm">
+      <div className="text-sm px-5 transfer-dialog-text">
         Note: If you already made the payment, please wait for a few minutes for it to be confirmed.
       </div>
       <div className="mt-4" />
@@ -309,17 +351,20 @@ export function PendingTransferDialog(props: TransferDialogProps) {
 
 export function FailedTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
+  const { tenantName } = useGlobalState();
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const compensation = 0.05;
   const content = (
     <>
       <div className="text-xl">{`${amountToSend} ${stellarAsset}`}</div>
-      <div className="mt-4" />
+      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+      </label>
     </>
   );
   const footer = (
-    <div className="px-5 py-2">
+    <div className="px-6 py-2">
       <div className="text-sm">
         The vault did not send PEN to you on time. Don`t worry - your funds are safe! You`ll get {compensation} PEN
         compensation.
@@ -329,23 +374,14 @@ export function FailedTransferDialog(props: TransferDialogProps) {
         To redeem your {stellarAsset}, you must now pick one of the two options:
       </div>
       <div className="text-md pl-2 pb-1">
-        1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.
+        1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.{' '}
+        <Link className="font-semibold underline">Compensate</Link>
       </div>
       <div className="text-md pl-2">
         2. Burn {stellarAsset} and get {amountToSend} {stellarAsset} with added {compensation} {stellarAsset} as
-        compensation.
+        compensation. <Link className="font-semibold underline">Reimburse</Link>
       </div>
     </div>
-  );
-  const actions = () => (
-    <>
-      <Button className="px-6" variant="outline" color="primary" onClick={() => undefined}>
-        1. Compensate
-      </Button>
-      <Button className="px-6" variant="outline" color="primary" onClick={() => undefined}>
-        2. Remburse
-      </Button>
-    </>
   );
   return (
     <BaseTransferDialog
@@ -358,7 +394,6 @@ export function FailedTransferDialog(props: TransferDialogProps) {
       statusIcon={<WarningDialogIcon />}
       onClose={onClose}
       onConfirm={onClose}
-      actions={actions}
     />
   );
 }

@@ -49,6 +49,7 @@ export type TableProps<T> = {
   /** Gives a className to odd rows (1,3,5,7,...), to help table rows readability. */
   oddRowsClassname?: string;
   title?: string | JSX.Element;
+  fontSize?: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,6 +66,7 @@ const Table = <T,>({
   sortBy,
   evenRowsClassname,
   oddRowsClassname,
+  fontSize,
   title,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
@@ -107,51 +109,64 @@ const Table = <T,>({
           </div>
         </div>
       ) : null}
-      <div className={`bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${className}`}>
+      <div
+        className={`table-container bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${
+          fontSize || 'text-sm'
+        } font-semibold ${className})`}
+      >
         {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
         <table className="table w-full">
           <thead>
             {getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b table-border">
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className={`${header.column.getCanSort() ? ' cursor-pointer' : ''}`}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    <div className="flex flex-row items-center font-normal text-sm normal-case table-header">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() ? (
-                        <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>
-                          {header.column.getIsSorted() === 'desc' ? (
-                            <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
-                          ) : (
-                            <ChevronUpIcon className="w-3 h-3" stroke-width="2" />
-                          )}
-                        </div>
-                      ) : null}
-                    </div>
-                  </th>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const isSortable = header.column.getCanSort();
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={`${isSortable ? ' cursor-pointer' : ''}`}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <div
+                        className={`flex flex-row items-center font-normal ${
+                          fontSize || 'text-sm'
+                        } normal-case table-header ${header.column.columnDef.meta?.className || ''}`}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {isSortable ? (
+                          <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>
+                            {header.column.getIsSorted() === 'desc' ? (
+                              <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
+                            ) : (
+                              <ChevronUpIcon className="w-3 h-3" stroke-width="2" />
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
           <tbody>
-            {getRowModel().rows.map((row, index) => {
-              const even = index % 2;
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id} className={(even ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            {getRowModel().rows.map((row, index) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  return (
+                    <td
+                      key={cell.id}
+                      className={`${cell.column.columnDef.meta?.className || ''} ${
+                        (index % 2 ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'
+                      }`}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
           </tbody>
         </table>
         <Pagination

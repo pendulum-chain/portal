@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import request from 'graphql-request';
 import { graphql } from '../../../gql/gql';
 import { SwapPool } from '../../../gql/graphql';
@@ -25,7 +25,7 @@ export const useSwapPools = (options?: UseSwapPoolsProps) => {
 
 export const getSwapPools = graphql(`
   query getSwapPools {
-    swapPools {
+    swapPools(where: { paused_eq: false }) {
       id
       liabilities
       paused

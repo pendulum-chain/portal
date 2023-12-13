@@ -1,10 +1,10 @@
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'preact/compat';
 import { useGlobalState } from '../GlobalStateProvider';
-import { useNodeInfoState } from '../NodeInfoProvider';
 import { getAddressForFormat } from '../helpers/addressFormatter';
 import { addSuffix, currencyToString } from '../helpers/spacewalk';
+import { useNodeInfoState } from '../NodeInfoProvider';
 import { PortfolioAsset } from '../pages/dashboard/PortfolioColumns';
 import { nativeToDecimal } from '../shared/parseNumbers';
 import { useVaultRegistryPallet } from './spacewalk/vaultRegistry';

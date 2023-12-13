@@ -17,6 +17,9 @@ module.exports = {
       screens: {
         xs: '480px',
       },
+      opacity: {
+        3: '0.03',
+      },
     },
   },
   daisyui: {
@@ -37,6 +40,8 @@ module.exports = {
           'base-300': '#F7F7F7',
           'base-400': '#E7E7E7',
           'base-content': '#58667E',
+          '--text': '#111',
+          '--bg-modal': '#fff',
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
         },
@@ -55,6 +60,8 @@ module.exports = {
           'base-300': '#2c2c2c',
           'base-400': '#E7E7E7',
           'base-content': '#fff',
+          '--text': '#fff',
+          '--bg-modal': '#191D24',
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
         },

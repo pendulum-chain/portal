@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { toast } from 'react-toastify';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
+import { useGlobalState } from '../../GlobalStateProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { getErrors } from '../../helpers/substrate';
 import { useStakingPallet } from '../../hooks/staking/staking';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormat } from '../../shared/parseNumbers';
 import { UserStaking } from './columns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';

@@ -10,6 +10,11 @@
   .table-header {
     color: #9FA2B4;
   }
+
+  .table-container {
+    color: #252733; 
+  }
+
 }
 
 [data-theme='amplitude'] {
@@ -23,5 +28,9 @@
 
   .table-header {
     color: rgba(221, 221, 221, 0.87);
+  }
+
+  .table-container {
+    color: #fff; 
   }
 }

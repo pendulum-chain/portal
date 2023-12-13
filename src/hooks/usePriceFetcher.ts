@@ -1,12 +1,15 @@
-import { useMemo } from 'react';
+import request from 'graphql-request';
+import { useMemo } from 'preact/compat';
 import { TenantName } from '../models/Tenant';
+
+const AMPLITUDE_INDEXER_URL = 'https://squid.subsquid.io/amplitude-squid/graphql';
 
 interface PriceFetcherAsset {
   assetName: string;
   blockchain: string;
   assetId: string | undefined;
   exclude?: TenantName[];
-  provider: 'dia' | 'diaForeign';
+  provider: 'dia' | 'diaForeign' | 'subsquid';
 }
 
 type PricesCache = {
@@ -43,6 +46,27 @@ const assets: PriceFetcherAsset[] = [
     exclude: [TenantName.Pendulum],
   },
   {
+    assetName: 'NGNC.s',
+    blockchain: 'YahooFinance',
+    assetId: 'NGN-USD',
+    provider: 'diaForeign',
+    exclude: [TenantName.Pendulum],
+  },
+  {
+    assetName: 'EURC.s',
+    blockchain: 'YahooFinance',
+    assetId: 'EUR-USD',
+    provider: 'diaForeign',
+    exclude: [TenantName.Pendulum],
+  },
+  {
+    assetName: 'AUDD.s',
+    blockchain: 'YahooFinance',
+    assetId: 'AUD-USD',
+    provider: 'diaForeign',
+    exclude: [TenantName.Pendulum],
+  },
+  {
     assetName: 'KSM',
     blockchain: 'Kusama',
     assetId: '0x0000000000000000000000000000000000000000',
@@ -55,7 +79,6 @@ const assets: PriceFetcherAsset[] = [
     assetId: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     provider: 'dia',
   },
-
   {
     assetName: 'DOT',
     blockchain: 'Polkadot',
@@ -66,8 +89,8 @@ const assets: PriceFetcherAsset[] = [
   {
     assetName: 'AMPE',
     blockchain: 'Amplitude',
-    assetId: undefined,
-    provider: 'dia',
+    assetId: 'ampe',
+    provider: 'subsquid',
     exclude: [TenantName.Pendulum],
   },
   {
@@ -108,9 +131,35 @@ const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset): Promise<number
   return 0;
 };
 
+interface SubsquidResponse {
+  bundleById: {
+    ethPrice: string;
+  };
+}
+
+const getSubsquidAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
+  if (!asset.assetId) return 0;
+  const query = `
+    query MyQuery {
+      bundleById(id: "1") {
+        ethPrice
+      }
+    }
+  `;
+  try {
+    const response = (await request(AMPLITUDE_INDEXER_URL, query)) as SubsquidResponse;
+    return parseFloat(response.bundleById.ethPrice);
+  } catch (e) {
+    console.error(e);
+  }
+
+  return 0;
+};
+
 const providers = {
   dia: getDIAAssetPrice,
   diaForeign: getDIAAssetForeignPrice,
+  subsquid: getSubsquidAssetPrice,
 };
 
 const lookup = (assetCode: string) => {
@@ -125,7 +174,7 @@ const getPrice = async (asset: PriceFetcherAsset) => {
   try {
     return await providers[asset.provider](asset);
   } catch (e) {
-    console.error('Not able fetch to price for asset: ', e);
+    console.error('Not able to fetch price for asset: ', e);
   }
 };
 

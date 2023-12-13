@@ -1,29 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { memo } from 'preact/compat';
-import { Skeleton } from '../../Skeleton';
+import { UseQueryOptions } from '@tanstack/react-query';
+import { memo, useEffect, useState } from 'preact/compat';
+import { usePriceFetcher } from '../../../hooks/usePriceFetcher';
+import { numberLoader } from '../../Loader';
 
-// ! TODO: implement this component for fetching token prices
 export type TokenPriceProps = {
-  address: string;
-  amount?: number;
+  address?: string;
+  symbol: string;
+  //amount?: number;
   prefix?: ReactNode;
-  options?: any;
+  options?: UseQueryOptions;
   loader?: ReactNode;
   fallback?: ReactNode;
 };
 
-const TokenPrice = memo(
-  ({ address, amount = 1, prefix, loader, fallback = null, options }: TokenPriceProps): JSX.Element | null => {
-    const { data, isLoading } = { data: 120.3, isLoading: false }; //useTokenPrice(address, chainId, options);
-    if (isLoading) return <>{loader}</> || <Skeleton className="inline-flex">10000</Skeleton>;
-    if (!data) return <>{fallback}</>;
-    const price = data;
-    return (
-      <span>
-        {prefix}${price}
-      </span>
-    );
-  },
-);
+const TokenPrice = memo(({ symbol, prefix = null, loader, fallback = null }: TokenPriceProps): JSX.Element | null => {
+  const { pricesCache } = usePriceFetcher();
+  const [price, setPrice] = useState<number | undefined | null>(null);
+  useEffect(() => {
+    const run = async () => {
+      const p = (await pricesCache)[symbol];
+      setPrice(p);
+    };
+    run();
+  }, [pricesCache, symbol]);
+
+  const isLoading = price === null;
+  if (isLoading) return <>{loader}</> || numberLoader;
+  if (!price) return <>{fallback}</>;
+  return (
+    <span>
+      {prefix}${price}
+    </span>
+  );
+});
 export default TokenPrice;

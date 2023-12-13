@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import request from 'graphql-request';
 import { graphql } from '../../../gql/gql';
 import { BackstopPool } from '../../../gql/graphql';
@@ -25,7 +25,7 @@ export const useBackstopPools = (options?: UseBackstopPoolsProps) => {
 
 export const getBackstopPools = graphql(`
   query getBackstopPools {
-    backstopPools {
+    backstopPools(where: { paused_eq: false }) {
       id
       liabilities
       paused
@@ -36,6 +36,12 @@ export const getBackstopPools = graphql(`
         decimals
         name
         symbol
+      }
+      router {
+        swapPools(where: { router_isNull: false, paused_not_eq: true }) {
+          id
+        }
+        id
       }
     }
   }

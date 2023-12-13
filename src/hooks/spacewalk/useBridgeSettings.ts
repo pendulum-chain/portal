@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
-import React, { StateUpdater, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { StateUpdater } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
@@ -24,7 +25,7 @@ function useBridgeSettings(): BridgeSettings {
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
-  const { selectedAsset, setSelectedAsset } = (React.useContext(BridgeContext) || {}) as any;
+  const { selectedAsset, setSelectedAsset } = (useContext(BridgeContext) || {}) as any;
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];

@@ -3,19 +3,21 @@ import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { useSharedState } from './Provider';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers';
+import { useSharedState } from './Provider';
 import { useContract } from './useContract';
 
-export type UseBalanceProps<TAbi extends Abi> = {
+export type UseBalanceProps<TAbi extends Abi | Record<string, unknown>> = {
   /** token or contract address */
   contractAddress?: string;
   /** account address */
   account?: string;
   /** contract abi */
   abi?: TAbi;
+  /** parse decimals */
+  decimals?: number;
 };
 export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefined, unknown> & {
   balance?: number;
@@ -23,8 +25,8 @@ export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefin
   enabled: boolean;
 };
 
-export const useContractBalance = <TAbi extends Abi>(
-  { contractAddress, account, abi }: UseBalanceProps<TAbi>,
+export const useContractBalance = <TAbi extends Abi | Record<string, unknown>>(
+  { contractAddress, account, abi, decimals }: UseBalanceProps<TAbi>,
   options?: QueryOptions,
 ): UseBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
@@ -32,11 +34,12 @@ export const useContractBalance = <TAbi extends Abi>(
 
   const enabled = !!api && !!address && options?.enabled !== false;
   const query = useContract([cacheKeys.balance, contractAddress, address], {
-    cacheTime: 180000,
-    staleTime: 180000,
+    cacheTime: 120000,
+    staleTime: 120000,
     retry: 2,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
+    onError: console.error,
     ...options,
     abi: abi || mockERC20,
     address: contractAddress,
@@ -47,10 +50,10 @@ export const useContractBalance = <TAbi extends Abi>(
   });
   const { data } = query;
   const val = useMemo(() => {
-    if (!data?.result?.isOk || data?.output === undefined) return undefined;
-    const balance = nativeToDecimal(parseFloat(data.output.toString()) || 0).toNumber();
+    if (!data) return undefined;
+    const balance = nativeToDecimal(parseFloat(data || '0'), decimals).toNumber();
     return { balance, formatted: prettyNumbers(balance) };
-  }, [data]);
+  }, [data, decimals]);
 
   return {
     ...query,

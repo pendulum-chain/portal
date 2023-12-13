@@ -2,10 +2,10 @@ import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { toast } from 'react-toastify';
-import { GlobalState, useGlobalState } from '../../../GlobalStateProvider';
 import logo from '../../../assets/wallet-connect.svg';
 import { config } from '../../../config';
 import { chainIds, walletConnectConfig } from '../../../config/walletConnect';
+import { GlobalState, useGlobalState } from '../../../GlobalStateProvider';
 import { walletConnectService } from '../../../services/walletConnect';
 
 export type WalletConnectProps = {
@@ -34,7 +34,8 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
       setWalletAccount(await walletConnectService.init(session, chainId));
       modal?.closeModal();
       setLoading(false);
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast(error, { type: 'error' });
       setLoading(false);
     }
@@ -46,7 +47,6 @@ const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
     setModal(
       new WalletConnectModal({
         projectId: config.walletConnect.projectId,
-        walletConnectVersion: 2,
       }),
     );
   }, [provider]);

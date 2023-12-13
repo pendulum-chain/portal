@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'preact/compat';
 import { debounce } from '../helpers/function';
 
 export const useDebouncedValue = <T>(value: T, delay = 1000) => {

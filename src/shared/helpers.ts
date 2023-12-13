@@ -10,7 +10,7 @@ export type QueryOptions<TFnData = any, TError = any, TData = any> = Partial<
 export const emptyFn = () => undefined;
 export const emptyCacheKey = [''];
 
-// TODO: complete
+// TODO: complete - improve error parsing
 export const parseTransactionError = (result: SubmittableResultValue | undefined, api: ApiPromise) => {
   if (!result?.dispatchError) return undefined;
   if (result.dispatchError.isModule) {
@@ -22,4 +22,9 @@ export const parseTransactionError = (result: SubmittableResultValue | undefined
     // Other, CannotLookup, BadOrigin, no extra info
     console.log(result.dispatchError.toString());
   }
+};
+
+export const gasDefaults = {
+  refTime: '120000000000',
+  proofSize: '1200000',
 };
