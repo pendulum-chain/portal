@@ -70,6 +70,7 @@ const MetamaskWallet = ({ setWalletAccount }: MetamaskWalletProps) => {
           extensionName: 'polkadot-js',
           title: 'Metamask Wallet',
           installUrl: 'https://metamask.io/',
+          signer: extAcc.signer,
           logo: {
             src: logo,
             alt: 'Metamask Wallet',
