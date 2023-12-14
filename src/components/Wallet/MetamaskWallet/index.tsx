@@ -1,5 +1,6 @@
 import { Signer } from '@polkadot/api/types';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import { WalletAccount } from '@talismn/connect-wallets';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { Modal } from 'react-daisyui';
 import { GlobalState, useGlobalState } from '../../../GlobalStateProvider';
@@ -43,11 +44,18 @@ const MetamaskWallet = ({ setWalletAccount }: MetamaskWalletProps) => {
         signer: {
           signPayload: async (payload: SignerPayloadJSON) => {
             const stringResult = await api.signPayloadJSON(payload);
-            return JSON.parse(stringResult) as SignerResult;
+            // Metamask snap doesn't provide a request Id, but just the hex string, so
+            // adding id: 1 to be compliant with SignerResult
+            return { id: 1, signature: stringResult } as SignerResult;
           },
           signRaw: async (raw: SignerPayloadRaw) => {
             const stringResult = await api.signPayloadRaw(raw);
-            return JSON.parse(stringResult) as SignerResult;
+            // Metamask snap doesn't provide a request Id, but just the hex string, so
+            // adding id: 1 to be compliant with SignerResult
+            return { id: 1, signature: stringResult } as SignerResult;
+          },
+          update: (id, status) => {
+            console.log('Status update for Id %d: %s', id, status.toHuman());
           },
         },
       };
@@ -65,18 +73,19 @@ const MetamaskWallet = ({ setWalletAccount }: MetamaskWalletProps) => {
         address: extAcc.address,
         source: extAcc.source,
         name: extAcc.name,
+        signer: extAcc.signer as WalletAccount['signer'],
         wallet: {
           enable: () => undefined,
           extensionName: 'polkadot-js',
           title: 'Metamask Wallet',
           installUrl: 'https://metamask.io/',
-          signer: extAcc.signer,
           logo: {
             src: logo,
             alt: 'Metamask Wallet',
           },
           installed: true,
           extension: undefined,
+          signer: extAcc.signer,
           /**
            * The following methods are tagged as 'Unused' since they are only required by the @talisman package,
            * which we are not using to handle this wallet connection.
