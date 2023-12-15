@@ -1,7 +1,7 @@
 name: release
 on:
   push:
-    branches: [staging, develop]
+    branches: [staging, develop, test]
 
   workflow_dispatch:
 
@@ -52,6 +52,6 @@ jobs:
       - name: 📦 Release
         run: yarn release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
