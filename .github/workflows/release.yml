@@ -1,7 +1,7 @@
 name: release
 on:
   push:
-    branches: [staging, develop, test]
+    branches: [staging, develop]
 
   workflow_dispatch:
 
