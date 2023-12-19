@@ -1,3 +1,4 @@
+// https://www.npmjs.com/package/@pendulum-chain/api-solang?activeTab=readme
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 import { ApiPromise } from '@polkadot/api';
@@ -22,7 +23,6 @@ const getOptions = (options: ContractOpts | undefined, api: ApiPromise) =>
   typeof options === 'function'
     ? options(api)
     : options || {
-        // { gasLimit: -1 }
         gasLimit: api.createType('WeightV2', gasDefaults),
         storageDepositLimit: null,
       };

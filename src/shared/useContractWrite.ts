@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
+import { Limits, messageCall } from '@pendulum-chain/api-solang';
 import { ApiPromise } from '@polkadot/api';
-import { SubmittableResultValue } from '@polkadot/api-base/types';
-import { Abi, ContractPromise } from '@polkadot/api-contract';
-import { ContractOptions } from '@polkadot/api-contract/types';
+import { Abi } from '@polkadot/api-contract';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
-import { useMemo, useState } from 'preact/compat';
+import { useState } from 'preact/compat';
 import { createWriteOptions } from '../services/api/helpers';
 import { useSharedState } from './Provider';
-import { parseTransactionError } from './helpers';
 
 // TODO: fix/improve types
 export type TransactionsStatus = {
@@ -24,7 +22,15 @@ export type UseContractWriteProps<TAbi extends Abi | Record<string, unknown> = R
   address?: string;
   method: string;
   args?: any[];
-  options?: ContractOptions | ((api: ApiPromise) => ContractOptions);
+  options?: Limits | ((api: ApiPromise) => Limits);
+};
+
+const defaultLimits: Limits = {
+  gas: {
+    refTime: '18000000000',
+    proofSize: '1750000',
+  },
+  storageDeposit: undefined,
 };
 
 export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
@@ -36,20 +42,17 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
   ...rest
 }: UseContractWriteProps<TAbi>) => {
   const { api, signer, address: walletAddress } = useSharedState();
-
   const [transaction, setTransaction] = useState<TransactionsStatus | undefined>();
-  const contract = useMemo(
-    () => (api && address ? new ContractPromise(api, abi, address) : undefined),
-    [abi, address, api],
-  );
-  const isReady = !!contract && !!api && !!walletAddress && !!signer;
-  const submit = async (submitArgs?: any[] | void) => {
-    if (!isReady) throw undefined;
+
+  const isReady = !!abi && !!address && !!api && !!walletAddress && !!signer;
+  const submit = async (submitArgs?: any[] | void): Promise<any> => {
+    if (!isReady) throw 'Missing data';
     setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
     const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
 
-    return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
+    /**
+     * return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
       const unsubPromise = contract.tx[method](contractOptions || {}, ...fnArgs)
         .signAndSend(walletAddress, { signer }, (result: SubmittableResultValue) => {
           const tx = {
@@ -73,6 +76,22 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
           setTransaction(undefined);
           reject(err);
         });
+    });
+     */
+    return messageCall({
+      abi: abi as Abi,
+      api,
+      callerAddress: address,
+      contractDeploymentAddress: '',
+      getSigner: () =>
+        Promise.resolve({
+          type: 'signer',
+          address: walletAddress,
+          signer: signer,
+        }),
+      messageName: method,
+      messageArguments: fnArgs,
+      limits: { ...defaultLimits, ...contractOptions },
     });
   };
   const mutation = useMutation(submit, rest);
