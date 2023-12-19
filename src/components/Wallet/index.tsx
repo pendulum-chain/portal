@@ -3,8 +3,8 @@ import { WalletSelect } from '@talismn/connect-components';
 import { Button, Divider, Dropdown } from 'react-daisyui';
 import { isMobile } from 'react-device-detect';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import { useAccountBalance } from '../../shared/useAccountBalance';
 import { CopyableAddress } from '../PublicKey';
 import { Skeleton } from '../Skeleton';
@@ -20,7 +20,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   return (
     <>
       {address ? (
-        <Dropdown vertical="top" end>
+        <Dropdown vertical="bottom">
           <Button
             size="sm"
             color="ghost"
@@ -38,7 +38,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
             {walletAccount?.name}
             <img src={wallet?.logo?.src || ''} className="w-[20px] ml-2" alt={wallet?.logo?.alt || ''} />
           </Button>
-          <Dropdown.Menu className="card card-compact text-center bg-base-200 shadow-lg min-w-[240px] p-3">
+          <Dropdown.Menu className="text-center border border-base-300 bg-base-200 shadow-lg min-w-[240px] p-3 mt-2">
             <div className="text-sm text-neutral-400">{walletAccount?.name}</div>
             <div className="text-neutral-500">
               <CopyableAddress

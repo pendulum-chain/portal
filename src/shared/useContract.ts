@@ -43,7 +43,9 @@ export const useContract = <TAbi extends Abi | Record<string, unknown>>(
       ? async () => {
           const opts = getOptions(options, api);
           const response = await contract.query[method](owner, opts, ...(args || []));
-          if (!response?.result?.isOk || response?.output === undefined) throw response;
+          if (!response?.result?.isOk || response?.output === undefined) {
+            throw response;
+          }
           // ? TODO: maybe not ideal to cache only output
           // caching the whole object causes the output to be converted to hex string
           return response.output?.toString();

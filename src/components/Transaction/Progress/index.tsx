@@ -26,12 +26,14 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
       <>
         <div className="flex flex-col items-center justify-center text-center mt-4">
           <Spinner size={100} color="#ddd" />
-          <h4 className="text-2xl mt-12">{isPending ? 'Waiting for confirmation' : 'Executing transaction'}</h4>
-          <p className="text-neutral-500 mt-2">
-            {isPending ? 'Please confirm this transaction in your wallet' : 'Waiting for transaction to complete'}
+          <h4 className="text-2xl mt-12 text-[--text]">
+            {isPending ? 'Waiting for confirmation' : 'Executing transaction'}
+          </h4>
+          {children}
+          <p className="text-neutral-500 my-5">
+            {isPending ? 'Confirm this transaction in your wallet' : 'Waiting for transaction to complete'}
           </p>
         </div>
-        {children}
       </>
     );
   }
@@ -39,17 +41,16 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
     <>
       <div className="center mt-6">
         {mutation.isSuccess ? (
-          <CheckCircleIcon className="w-32 h-32 text-green-400" />
+          <CheckCircleIcon className="w-36 h-36 text-green-400" stroke-width={1} />
         ) : (
-          <ExclamationCircleIcon className="w-32 h-32 text-red-400" />
+          <ExclamationCircleIcon className="w-36 h-36 text-red-400" stroke-width={1} />
         )}
       </div>
-      <div className="text-center mt-6">
-        <h4 className="text-2xl font-bold text-bold">
-          {mutation.isSuccess ? 'Transaction successfull' : 'Transaction failed'}
+      <div className="text-center mt-4">
+        <h4 className="text-2xl text-[--text]">
+          {mutation.isSuccess ? 'Transaction successful' : 'Transaction failed'}
         </h4>
       </div>
-      {children}
       {!!onClose && (
         <Button color="primary" className="w-full mt-6" onClick={onClose}>
           Close

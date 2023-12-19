@@ -1,6 +1,6 @@
 import { TenantName } from '../../models/Tenant';
-import { AppConfig } from './types';
-export type NablaConfig = AppConfig &
+import { AppConfigBase } from './types';
+export type NablaConfig = AppConfigBase &
   Partial<
     Record<
       TenantName,

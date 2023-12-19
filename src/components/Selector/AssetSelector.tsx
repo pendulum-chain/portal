@@ -18,13 +18,10 @@ interface AssetSelectorProps {
 function AssetSelector(props: AssetSelectorProps): JSX.Element {
   const { assets, selectedAsset, assetPrefix, assetSuffix } = props;
 
-  const items = assets.map((asset) => {
-    return {
-      displayName: assetDisplayName(asset, assetPrefix, assetSuffix),
-      id: asset.getCode(),
-    };
-  });
-
+  const items = assets.map((asset) => ({
+    displayName: assetDisplayName(asset, assetPrefix, assetSuffix),
+    id: asset.getCode(),
+  }));
   const selectedAssetItem = selectedAsset
     ? {
         displayName: assetDisplayName(selectedAsset, assetPrefix, assetSuffix),

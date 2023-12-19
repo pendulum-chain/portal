@@ -10,7 +10,7 @@ const SwapPools = (): JSX.Element | null => {
   return (
     <ModalProvider>
       <PoolsModals />
-      <Table data={data} isLoading={isLoading} columns={columns} search />
+      <Table data={data} isLoading={isLoading} columns={columns} fontSize="text-base" search />
     </ModalProvider>
   );
 };

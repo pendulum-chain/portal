@@ -6,7 +6,7 @@ import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import { TokensData } from '../../../../hooks/nabla/useTokens';
 import { FixedU128Decimals } from '../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../shared/useContractBalance';
-import TokenPrice from '../../../Asset/Price';
+import TokenPrice from '../../Price';
 import { SwapFormValues } from '../types';
 
 export interface FromProps {
@@ -37,7 +37,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
           </div>
           <Button
             size="xs"
-            className="rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
+            className="rounded-full h-7 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-sm font-medium"
             onClick={onOpenSelector}
             type="button"
           >
@@ -49,9 +49,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-          <div className="text-sm mt-px">
-            {token ? <TokenPrice address={token.id} symbol={token.symbol} fallback="$ -" /> : '$ -'}
-          </div>
+          <div className="text-sm mt-px">{token ? <TokenPrice address={token.id} fallback="$ -" /> : '$ -'}</div>
           <div className="flex gap-1 text-sm">
             {balance !== undefined && (
               <Fragment>

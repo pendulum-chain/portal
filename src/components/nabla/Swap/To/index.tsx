@@ -11,9 +11,10 @@ import useBoolean from '../../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useTokenOutAmount } from '../../../../hooks/useTokenOutAmount';
 import { FixedU128Decimals, nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
-import TokenPrice from '../../../Asset/Price';
 import Balance from '../../../Balance';
+import { numberLoader } from '../../../Loader';
 import { Skeleton } from '../../../Skeleton';
+import TokenPrice from '../../Price';
 import { SwapFormValues } from '../types';
 
 export interface ToProps {
@@ -44,6 +45,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
     useWatch({
       control,
       name: 'slippage',
+      defaultValue: config.swap.defaults.slippage,
     }),
   );
   const fromToken = tokensMap?.[from];
@@ -76,7 +78,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-[inherit] font-2">
             {loading ? (
-              <Skeleton className="inline-flex">10000</Skeleton>
+              numberLoader
             ) : value ? (
               `${value}`
             ) : fromAmount > 0 ? (
@@ -89,7 +91,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
           </div>
           <Button
             size="xs"
-            className="rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
+            className="rounded-full h-7 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-sm font-medium"
             onClick={onOpenSelector}
             type="button"
           >
@@ -101,9 +103,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
-          <div className="text-sm mt-px">
-            {toToken ? <TokenPrice address={toToken.id} symbol={toToken.symbol} fallback="$ -" /> : '$ -'}
-          </div>
+          <div className="text-sm mt-px">{toToken ? <TokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
           <div className="flex gap-1 text-sm">
             Balance: <Balance address={toToken?.id} decimals={FixedU128Decimals} />
           </div>
@@ -136,9 +136,9 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
               </div>
             </div>
           </div>
-          <div className="collapse-content flex flex-col gap-4">
+          <div className="collapse-content flex flex-col gap-5">
             <div className="flex justify-between pt-6">
-              <div>Expected received:</div>
+              <div>Expected Output:</div>
               <div>
                 <Skeleton isLoading={loading}>
                   {value} {toToken?.symbol || ''}
@@ -146,16 +146,16 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
               </div>
             </div>
             <div className="flex justify-between">
-              <div>Minimum received:</div>
+              <div>Minimum received after slippage ({slippage}%)</div>
               <div>
                 <Skeleton isLoading={loading}>
-                  {subtractPercentage(Number(value), slippage ?? config.swap.defaults.slippage)} {toToken?.symbol || ''}
+                  {subtractPercentage(Number(value), slippage)} {toToken?.symbol || ''}
                 </Skeleton>
               </div>
             </div>
             <div className="flex justify-between">
               <div>Swap fee:</div>
-              <div>{'! TODO'}</div>
+              <div>-</div>
             </div>
           </div>
         </div>

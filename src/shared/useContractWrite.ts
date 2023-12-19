@@ -10,6 +10,7 @@ import { createWriteOptions } from '../services/api/helpers';
 import { useSharedState } from './Provider';
 
 // TODO: fix/improve types
+// - parse abi file
 export type TransactionsStatus = {
   hex?: string;
   status?: ExtrinsicStatus['type'] | 'Pending';

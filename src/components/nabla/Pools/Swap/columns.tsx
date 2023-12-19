@@ -1,5 +1,5 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Button } from 'react-daisyui';
+import { Badge, Button } from 'react-daisyui';
 import { SwapPool } from '../../../../../gql/graphql';
 import { useModalToggle } from '../../../../services/modal';
 import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
@@ -22,7 +22,7 @@ export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
   accessorFn: (row) => prettyNumbers(nativeToDecimal(row.liabilities || 0, FixedU128Decimals).toNumber()),
   enableSorting: true,
   meta: {
-    className: 'text-right',
+    className: 'text-right justify-end',
   },
 } as const;
 
@@ -32,17 +32,22 @@ export const reservesColumn: ColumnDef<SwapPoolColumn> = {
   accessorFn: (row) => prettyNumbers(nativeToDecimal(row.reserves || 0, FixedU128Decimals).toNumber()),
   enableSorting: true,
   meta: {
-    className: 'text-right',
+    className: 'text-right justify-end',
   },
 } as const;
 
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
   header: 'APR',
   accessorKey: 'apr',
-  accessorFn: () => '0%', // TODO: get apr
+  accessorFn: (_row) => 0,
+  cell: (props): JSX.Element | null => (
+    <Badge color="success" className="py-1 px-2 h-auto rounded-md text-blackAlpha-700">
+      {props.renderValue()}%
+    </Badge>
+  ),
   enableSorting: true,
   meta: {
-    className: 'text-right',
+    className: 'text-right justify-end',
   },
 } as const;
 
@@ -52,7 +57,7 @@ export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
   accessorFn: (row) => prettyNumbers(nativeToDecimal(row.myAmount || 0, FixedU128Decimals).toNumber()),
   enableSorting: true,
   meta: {
-    className: 'text-right',
+    className: 'text-right justify-end',
   },
 } as const;
 
@@ -95,4 +100,4 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   cell: (props): JSX.Element | null => <ActionsColumn {...props} />,
 } as const;
 
-export const columns = [nameColumn, liabilitiesColumn, aprColumn, myAmountColumn, actionsColumn];
+export const columns = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, myAmountColumn, actionsColumn];

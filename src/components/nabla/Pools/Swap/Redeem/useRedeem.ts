@@ -51,7 +51,7 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     resolver: yupResolver(schema),
     defaultValues: getInitialValues(),
   });
-  const { handleSubmit, setValue, getValues, control, reset } = form;
+  const { handleSubmit, getValues, control } = form;
 
   const mutation = useContractWrite({
     abi: backstopPoolAbi,

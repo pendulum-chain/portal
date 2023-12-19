@@ -9,6 +9,7 @@ export function useClipboard() {
           await navigator.clipboard.writeText(value);
           const message = notificationMessage || `Copied ${value} to clipboard`;
           toast(message, { type: 'info' });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           toast(error, { type: 'error' });
         }

@@ -12,7 +12,7 @@ export type SwapProgressProps = {
 
 const SwapProgress = ({ mutation, children, ...rest }: SwapProgressProps): JSX.Element | null => {
   return (
-    <Modal className="modal-top" {...rest}>
+    <Modal className="modal-top bg-[--bg-modal]" {...rest}>
       <Modal.Header className="mb-0">
         <ModalCloseButton onClick={rest.onClose} />
       </Modal.Header>

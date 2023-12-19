@@ -12,6 +12,7 @@ export const cacheKeys = {
   walletBalances: 'walletBalances',
   tokenOutAmount: 'tokenOutAmount',
   sharesTargetWorth: 'sharesTargetWorth',
+  tokenPrice: 'tokenPrice',
 };
 
 export type QueryOptions = Partial<
