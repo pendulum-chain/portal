@@ -3,7 +3,7 @@ import CollatorsTable from './CollatorsTable';
 
 function Collators() {
   return (
-    <div className="overflow-x-auto collators-list-container">
+    <div className="overflow-x-auto">
       <CollatorRewards />
       <CollatorsTable />
     </div>
