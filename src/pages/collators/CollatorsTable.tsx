@@ -16,7 +16,7 @@ import {
   myStakedColumn,
   nameColumn,
   stakedColumn,
-} from './columns';
+} from './CollatorColumns';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
 function CollatorsTable() {
@@ -138,7 +138,7 @@ function CollatorsTable() {
         search={false}
         pageSize={8}
         oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
-        evenRowsClassname="border-b-base-300 table-border"
+        evenRowsClassname="bg-base-200 border-b-base-300 table-border"
       />
     </>
   );
