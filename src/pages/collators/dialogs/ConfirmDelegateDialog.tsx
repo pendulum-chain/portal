@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button, Modal } from 'react-daisyui';
 import { CloseButton } from '../../../components/CloseButton';
 import { nativeToDecimal } from '../../../shared/parseNumbers';
@@ -53,6 +53,8 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
     }
   }, [collapseVisibility, setCollapseVisibility]);
 
+  const titleAction = useMemo(() => (mode === 'unstaking' ? 'Unstake' : 'Stake'), [mode]);
+
   return (
     <Modal open={visible} className="bg-base-200 rounded-md">
       <Modal.Header className="text-2xl">Settlement Confirmation</Modal.Header>
@@ -95,7 +97,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
       </Modal.Body>
       <div className="flex-col align-center mt-4">
         <Button className="px-6 w-full mb-2" color="primary" loading={submissionPending} onClick={onConfirm}>
-          Stake
+          {titleAction}
         </Button>
         <Button className="px-6 w-full mr-0 ml-0" color="primary" variant="outline" onClick={onCancel}>
           Cancel
