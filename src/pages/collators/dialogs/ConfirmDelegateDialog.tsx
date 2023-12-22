@@ -33,13 +33,13 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   } = props;
 
   const balanceDecimal = nativeToDecimal(availableBalance);
-  const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
+  const transactionFeeDecimal = nativeToDecimal(transactionFee.toFixed(2));
   const [collapseVisibility, setCollapseVisibility] = useState('');
 
   const resultingBalance =
     mode === 'unstaking'
-      ? Big(balanceDecimal).plus(delegationAmountDecimal).minus(transactionFeeDecimal).toString()
-      : Big(balanceDecimal).minus(delegationAmountDecimal).minus(transactionFeeDecimal).toString();
+      ? Big(balanceDecimal).plus(delegationAmountDecimal).minus(transactionFeeDecimal).toFixed(2)
+      : Big(balanceDecimal).minus(delegationAmountDecimal).minus(transactionFeeDecimal).toFixed(2);
 
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {
@@ -67,7 +67,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         <div className="flex justify-between px-2 mt-3">
           <span className="text-neutral-content">Available Balance</span>
           <span>
-            {nativeToDecimal(availableBalance).toString()} {tokenSymbol}
+            {nativeToDecimal(availableBalance).toFixed(2)} {tokenSymbol}
           </span>
         </div>
         <div
@@ -87,20 +87,20 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
             <div className="flex justify-between mt-4">
               <span className="text-neutral-content">Fees</span>
               <span>
-                {nativeToDecimal(transactionFee).toString()} {tokenSymbol}
+                {nativeToDecimal(transactionFee).toFixed(2)} {tokenSymbol}
               </span>
             </div>
           </div>
         </div>
       </Modal.Body>
-      <Modal.Actions className="flex-col align-center">
+      <div className="flex-col align-center mt-4">
         <Button className="px-6 w-full mb-2" color="primary" loading={submissionPending} onClick={onConfirm}>
           Stake
         </Button>
-        <Button className="px-6 w-full mr-0 ml-0" variant="outline" onClick={onCancel}>
+        <Button className="px-6 w-full mr-0 ml-0" color="primary" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-      </Modal.Actions>
+      </div>
     </Modal>
   );
 }
