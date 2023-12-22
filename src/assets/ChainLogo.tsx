@@ -10,7 +10,7 @@ interface Props extends HTMLAttributes<SVGSVGElement> {
 
 const ChainLogo = (props: Props) => {
   const { tenantName } = useGlobalState();
-  if (tenantName === TenantName.Pendulum || tenantName === TenantName.Foucoco) {
+  if (tenantName === TenantName.Pendulum) {
     return <PendulumLogo {...props} />;
   } else {
     return <AmplitudeLogo {...props} />;
