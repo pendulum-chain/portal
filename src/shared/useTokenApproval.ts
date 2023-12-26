@@ -59,10 +59,9 @@ export const useTokenApproval = ({
     address: token,
     method: 'approve',
     args: [spender, approveMax ? maxInt : amountBI.toString()],
-    options: (api) => ({
-      gasLimit: api.createType('WeightV2', gasDefaults),
-      storageDepositLimit: null,
-    }),
+    options: {
+      gas: gasDefaults,
+    },
     onError: (err) => {
       setPending(false);
       if (onError) onError(err);

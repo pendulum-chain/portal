@@ -47,6 +47,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [],
     esbuildOptions: {
+      target: 'esnext',
       // Node.js global to browser globalThis
       define: {
         global: 'globalThis',
@@ -62,6 +63,7 @@ export default defineConfig({
     },
   },
   build: {
+    target: ['esnext'],
     rollupOptions: {
       plugins: [
         // Enable rollup polyfills plugin

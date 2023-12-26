@@ -9,11 +9,13 @@ import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 export type UseSwapPoolsProps = UseQueryOptions<SwapPool[] | undefined>;
 
 export const useSwapPools = (options?: UseSwapPoolsProps) => {
-  const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
-  const enabled = !!indexerUrl && options?.enabled !== false;
+  const { indexerUrl, swapPools } = useGetAppDataByTenant('nabla').data || {};
+  const enabled = !!indexerUrl && !!swapPools && options?.enabled !== false;
   return useQuery<SwapPool[] | undefined>(
     enabled ? [cacheKeys.swapPools, indexerUrl] : emptyCacheKey,
-    enabled ? async () => (await request(indexerUrl, getSwapPools))?.swapPools as SwapPool[] : emptyFn,
+    enabled
+      ? async () => (await request(indexerUrl, getSwapPools, { ids: swapPools }))?.swapPools as SwapPool[]
+      : emptyFn,
     {
       ...inactiveOptions['1m'],
       refetchInterval: 30000,
@@ -24,8 +26,8 @@ export const useSwapPools = (options?: UseSwapPoolsProps) => {
 };
 
 export const getSwapPools = graphql(`
-  query getSwapPools {
-    swapPools(where: { paused_eq: false }) {
+  query getSwapPools($ids: [String!]) {
+    swapPools(where: { paused_eq: false, id_in: $ids }) {
       id
       liabilities
       paused

@@ -96,5 +96,6 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     });
   };
   const mutation = useMutation(submit, rest);
+  console.log(mutation.data);
   return { ...mutation, data: transaction, isReady };
 };
