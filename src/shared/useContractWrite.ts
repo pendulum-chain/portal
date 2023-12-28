@@ -82,13 +82,13 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     return messageCall({
       abi: abi as Abi,
       api,
-      callerAddress: address,
-      contractDeploymentAddress: '',
+      callerAddress: walletAddress,
+      contractDeploymentAddress: address,
       getSigner: () =>
         Promise.resolve({
           type: 'signer',
           address: walletAddress,
-          signer: signer,
+          signer,
         }),
       messageName: method,
       messageArguments: fnArgs,
@@ -96,6 +96,6 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
     });
   };
   const mutation = useMutation(submit, rest);
-  console.log(mutation.data);
+  console.log('test', mutation.data);
   return { ...mutation, data: transaction, isReady };
 };

@@ -5,6 +5,7 @@ import { SwapPool } from '../../../gql/graphql';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { emptyCacheKey, emptyFn } from '../../helpers/general';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
+import { mockSwapPools } from './mock';
 
 export type UseSwapPoolsProps = UseQueryOptions<SwapPool[] | undefined>;
 
@@ -14,7 +15,9 @@ export const useSwapPools = (options?: UseSwapPoolsProps) => {
   return useQuery<SwapPool[] | undefined>(
     enabled ? [cacheKeys.swapPools, indexerUrl] : emptyCacheKey,
     enabled
-      ? async () => (await request(indexerUrl, getSwapPools, { ids: swapPools }))?.swapPools as SwapPool[]
+      ? async () =>
+          // TODO: temporary solution
+          (mockSwapPools || (await request(indexerUrl, getSwapPools, { ids: swapPools }))?.swapPools) as SwapPool[]
       : emptyFn,
     {
       ...inactiveOptions['1m'],

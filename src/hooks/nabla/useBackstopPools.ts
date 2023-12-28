@@ -5,6 +5,7 @@ import { BackstopPool } from '../../../gql/graphql';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { emptyCacheKey, emptyFn } from '../../helpers/general';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
+import { mockBackstopPools } from './mock';
 
 export type UseBackstopPoolsProps = UseQueryOptions<BackstopPool[] | undefined>;
 
@@ -15,7 +16,8 @@ export const useBackstopPools = (options?: UseBackstopPoolsProps) => {
     enabled ? [cacheKeys.backstopPools, indexerUrl] : emptyCacheKey,
     enabled
       ? async () =>
-          (await request(indexerUrl, getBackstopPools, { ids: backstopPools }))?.backstopPools as BackstopPool[]
+          (mockBackstopPools || // TODO: temporary solution
+            (await request(indexerUrl, getBackstopPools, { ids: backstopPools }))?.backstopPools) as BackstopPool[]
       : emptyFn,
     {
       ...inactiveOptions['1m'],

@@ -5,6 +5,7 @@ import { Token } from '../../../gql/graphql';
 import { cacheKeys, inactiveOptions, QueryOptions } from '../../constants/cache';
 import { emptyCacheKey, emptyFn } from '../../helpers/general';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
+import { mockTokens } from './mock';
 
 export type TokensData = {
   tokensMap: Record<string, Token>;
@@ -18,7 +19,8 @@ export const useTokens = (options?: QueryOptions) => {
     enabled ? [cacheKeys.tokens, indexerUrl] : emptyCacheKey,
     enabled
       ? async () => {
-          const response = (await request(indexerUrl, getTokens, { ids: assets }))?.nablaTokens as Token[];
+          const response = (mockTokens || // TODO: temporary solution
+            (await request(indexerUrl, getTokens, { ids: assets }))?.nablaTokens) as Token[];
           return response?.reduce(
             (acc, curr) => {
               acc.tokensMap[curr.id] = curr;
