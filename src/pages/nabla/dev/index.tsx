@@ -3,7 +3,7 @@ import { Button, Dropdown } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
 import { Token } from '../../../../gql/graphql';
 import { config } from '../../../config';
-import { mockERC20 } from '../../../contracts/nabla/MockERC20';
+import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokens } from '../../../hooks/nabla/useTokens';
 import { decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
@@ -12,7 +12,7 @@ import { useContractWrite } from '../../../shared/useContractWrite';
 const TokenItem = ({ token }: { token: Token }) => {
   const { address } = useGlobalState().walletAccount || {};
   const { mutate, isLoading } = useContractWrite({
-    abi: mockERC20,
+    abi: erc20WrapperAbi,
     address: token.id,
     method: 'mint',
     onError: console.error,

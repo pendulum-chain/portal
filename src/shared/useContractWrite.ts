@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Abi } from '@polkadot/api-contract';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
-import { useState } from 'preact/compat';
+import { useMemo, useState } from 'preact/compat';
 import { createWriteOptions } from '../services/api/helpers';
 import { useSharedState } from './Provider';
 
@@ -16,7 +16,7 @@ export type TransactionsStatus = {
   status?: ExtrinsicStatus['type'] | 'Pending';
 };
 
-export type UseContractWriteProps<TAbi extends Abi | Record<string, unknown> = Record<string, unknown>> = Partial<
+export type UseContractWriteProps<TAbi extends Record<string, unknown>> = Partial<
   MutationOptions<TransactionsStatus | undefined, DispatchError, any[] | void>
 > & {
   abi: TAbi;
@@ -34,7 +34,7 @@ const defaultLimits: Limits = {
   storageDeposit: undefined,
 };
 
-export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
+export const useContractWrite = <TAbi extends Record<string, unknown>>({
   abi,
   address,
   method,
@@ -44,43 +44,21 @@ export const useContractWrite = <TAbi extends Abi | Record<string, unknown>>({
 }: UseContractWriteProps<TAbi>) => {
   const { api, signer, address: walletAddress } = useSharedState();
   const [transaction, setTransaction] = useState<TransactionsStatus | undefined>();
+  const contractAbi = useMemo(
+    () => (abi && api?.registry ? new Abi(abi, api.registry.getChainProperties()) : undefined),
+    [abi, api?.registry],
+  );
 
-  const isReady = !!abi && !!address && !!api && !!walletAddress && !!signer;
+  console.log(contractAbi, { address, method, args });
+
+  const isReady = !!contractAbi && !!address && !!api && !!walletAddress && !!signer;
   const submit = async (submitArgs?: any[] | void): Promise<any> => {
     if (!isReady) throw 'Missing data';
     setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
     const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
-
-    /**
-     * return new Promise<TransactionsStatus | undefined>((resolve, reject) => {
-      const unsubPromise = contract.tx[method](contractOptions || {}, ...fnArgs)
-        .signAndSend(walletAddress, { signer }, (result: SubmittableResultValue) => {
-          const tx = {
-            hex: result.txHash.toHex(),
-            status: result.status.type,
-          };
-          setTransaction(tx);
-          if (result.dispatchError) {
-            parseTransactionError(result, api);
-            reject(result);
-          }
-          if (result.status.isFinalized) {
-            if (unsubPromise) {
-              unsubPromise.then((unsub) => (typeof unsub === 'function' ? unsub() : undefined));
-            }
-            resolve(tx);
-          }
-        })
-        .catch((err: Error) => {
-          console.error(err);
-          setTransaction(undefined);
-          reject(err);
-        });
-    });
-     */
     return messageCall({
-      abi: abi as Abi,
+      abi: contractAbi,
       api,
       callerAddress: walletAddress,
       contractDeploymentAddress: address,

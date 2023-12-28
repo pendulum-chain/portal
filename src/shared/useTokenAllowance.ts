@@ -1,5 +1,5 @@
 import { Abi } from '@polkadot/api-contract';
-import { mockERC20 } from '../contracts/nabla/MockERC20';
+import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { useContract } from './useContract';
@@ -27,7 +27,7 @@ export const useTokenAllowance = <TAbi extends Abi>(
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     ...options,
-    abi: abi || mockERC20,
+    abi: abi || erc20WrapperAbi,
     address: token,
     owner,
     method: 'allowance',

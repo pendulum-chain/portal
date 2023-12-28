@@ -2,7 +2,7 @@ import { Abi } from '@polkadot/api-contract';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { mockERC20 } from '../contracts/nabla/MockERC20';
+import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers';
@@ -41,7 +41,7 @@ export const useContractBalance = <TAbi extends Abi | Record<string, unknown>>(
     refetchOnWindowFocus: false,
     onError: console.error,
     ...options,
-    abi: abi || mockERC20,
+    abi: abi || erc20WrapperAbi,
     address: contractAddress,
     owner: address,
     method: 'balanceOf',

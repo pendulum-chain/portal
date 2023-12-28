@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'preact/compat';
-import { mockERC20 } from '../contracts/nabla/MockERC20';
+import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { gasDefaults } from './helpers';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';
 import { useSharedState } from './Provider';
@@ -55,7 +55,7 @@ export const useTokenApproval = ({
   );
 
   const mutation = useContractWrite({
-    abi: mockERC20,
+    abi: erc20WrapperAbi,
     address: token,
     method: 'approve',
     args: [spender, approveMax ? maxInt : amountBI.toString()],

@@ -61,7 +61,7 @@ module.exports = {
           'base-400': '#E7E7E7',
           'base-content': '#fff',
           '--text': '#fff',
-          '--bg-modal': '#191D24',
+          '--bg-modal': '#292a2b',
           '--rounded-btn': '9px',
           '--btn-text-case': 'none',
         },
