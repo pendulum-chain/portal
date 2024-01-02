@@ -1,9 +1,24 @@
+import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { toast } from 'react-toastify';
 import { config } from '../config';
 
 export const transactionErrorToast = (err: unknown) => {
   const cancelled = String(err).startsWith('Error: Cancelled');
   toast(cancelled ? 'Transaction cancelled' : 'Transaction failed', { type: 'error' });
+};
+
+export const getErrorMessage = (data?: MessageCallResult['result']) => {
+  if (!data) return undefined;
+  switch (data.type) {
+    case 'error':
+      return data.error;
+    case 'panic':
+      return data.explanation;
+    case 'reverted':
+      return data.description;
+    default:
+      return undefined;
+  }
 };
 
 const { slippage, deadline } = config.transaction.settings;

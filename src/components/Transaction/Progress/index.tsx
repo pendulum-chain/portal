@@ -1,8 +1,8 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
+import { getErrorMessage } from '../../../helpers/transaction';
 import { useGetTenantConfig } from '../../../hooks/useGetTenantConfig';
 import { UseContractWriteResponse } from '../../../shared/useContractWrite';
 
@@ -15,26 +15,12 @@ export interface TransactionProgressProps {
   onClose: () => void;
 }
 
-const getErrorMsg = (data?: MessageCallResult['result']) => {
-  if (!data) return undefined;
-  switch (data.type) {
-    case 'error':
-      return data.error;
-    case 'panic':
-      return data.explanation;
-    case 'reverted':
-      return data.description;
-    default:
-      return undefined;
-  }
-};
-
 const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
   const { explorer } = useGetTenantConfig();
   if (mutation.isIdle) return null;
   const status = mutation.data?.result?.type;
   const isSuccess = status === 'success';
-  const errorMsg = getErrorMsg(mutation.data?.result);
+  const errorMsg = getErrorMessage(mutation.data?.result);
   if (mutation.isLoading) {
     const isPending = false; // TODO: currently there is not status for this (waiting confirmation in wallet)
     return (
