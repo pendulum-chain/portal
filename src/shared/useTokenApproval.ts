@@ -23,7 +23,7 @@ interface UseTokenApprovalParams {
   enabled?: boolean;
   decimals?: number;
   onError?: (err: any) => void;
-  onSuccess?: UseContractWriteProps['onSuccess'];
+  onSuccess?: UseContractWriteProps<Dict>['onSuccess'];
 }
 
 export const useTokenApproval = ({

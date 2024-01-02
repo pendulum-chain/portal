@@ -1,27 +1,42 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { UseMutationResult } from '@tanstack/react-query';
+import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
 import { useGetTenantConfig } from '../../../hooks/useGetTenantConfig';
-import { TransactionsStatus } from '../../../shared/useContractWrite';
+import { UseContractWriteResponse } from '../../../shared/useContractWrite';
 
 export interface TransactionProgressProps {
   mutation: Pick<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    UseMutationResult<TransactionsStatus, any, any, any>,
-    'isIdle' | 'isLoading' | 'isSuccess' | 'isError' | 'data'
+    UseContractWriteResponse,
+    'isIdle' | 'isLoading' | 'isSuccess' | 'isError' | 'data' | 'status' | 'transaction'
   >;
   children?: ComponentChildren;
   onClose: () => void;
 }
 
+const getErrorMsg = (data?: MessageCallResult['result']) => {
+  if (!data) return undefined;
+  switch (data.type) {
+    case 'error':
+      return data.error;
+    case 'panic':
+      return data.explanation;
+    case 'reverted':
+      return data.description;
+    default:
+      return undefined;
+  }
+};
+
 const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
   const { explorer } = useGetTenantConfig();
   if (mutation.isIdle) return null;
+  const status = mutation.data?.result?.type;
+  const isSuccess = status === 'success';
+  const errorMsg = getErrorMsg(mutation.data?.result);
   if (mutation.isLoading) {
-    const status = mutation.data?.status;
-    const isPending = !status || status === 'Pending';
+    const isPending = false; // TODO: currently there is not status for this (waiting confirmation in wallet)
     return (
       <>
         <div className="flex flex-col items-center justify-center text-center mt-4">
@@ -40,26 +55,25 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
   return (
     <>
       <div className="center mt-6">
-        {mutation.isSuccess ? (
+        {isSuccess ? (
           <CheckCircleIcon className="w-36 h-36 text-green-400" stroke-width={1} />
         ) : (
           <ExclamationCircleIcon className="w-36 h-36 text-red-400" stroke-width={1} />
         )}
       </div>
       <div className="text-center mt-4">
-        <h4 className="text-2xl text-[--text]">
-          {mutation.isSuccess ? 'Transaction successful' : 'Transaction failed'}
-        </h4>
+        <h4 className="text-2xl text-[--text]">{isSuccess ? 'Transaction successful' : 'Transaction failed'}</h4>
       </div>
+      {!isSuccess && !!errorMsg && <p className="text-center mt-1">{errorMsg}</p>}
       {!!onClose && (
         <Button color="primary" className="w-full mt-6" onClick={onClose}>
           Close
         </Button>
       )}
-      {!!mutation.data?.hex && (
+      {!!mutation.transaction?.hex && (
         <a
           className="btn btn-secondary w-full mt-2"
-          href={`${explorer}/${mutation.data.hex}`}
+          href={`${explorer}/${mutation.transaction.hex}`}
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}

@@ -41,7 +41,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   accessorKey: 'apr',
   accessorFn: (_row) => 0,
   cell: (props): JSX.Element | null => (
-    <Badge color="success" className="py-1 px-2 h-auto rounded-md text-blackAlpha-700">
+    <Badge className="py-1 px-2 h-auto rounded-lg text-blackAlpha-700 dark:text-white bg-success/35">
       {props.renderValue()}%
     </Badge>
   ),
