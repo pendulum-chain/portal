@@ -1,8 +1,9 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Badge, Button } from 'react-daisyui';
 import { SwapPool } from '../../../../../gql/graphql';
+import { defaultDecimals } from '../../../../config/apps/nabla';
 import { useModalToggle } from '../../../../services/modal';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
+import { nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
 export type SwapPoolColumn = SwapPool & {
@@ -19,7 +20,7 @@ export const nameColumn: ColumnDef<SwapPoolColumn> = {
 export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Pool liabilities',
   accessorKey: 'liabilities',
-  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.liabilities || 0, FixedU128Decimals).toNumber()),
+  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.liabilities || 0, defaultDecimals).toNumber()),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',
@@ -29,7 +30,7 @@ export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
 export const reservesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Reserves',
   accessorKey: 'reserves',
-  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.reserves || 0, FixedU128Decimals).toNumber()),
+  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.reserves || 0, defaultDecimals).toNumber()),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',
@@ -54,7 +55,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
 export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
   header: 'My Pool Amount',
   accessorKey: 'myAmount',
-  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.myAmount || 0, FixedU128Decimals).toNumber()),
+  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.myAmount || 0, defaultDecimals).toNumber()),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',

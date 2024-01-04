@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
 import { config } from '../../../../../config';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { storageKeys } from '../../../../../constants/localStorage';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
@@ -13,7 +14,7 @@ import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenan
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { SwapPoolColumn } from '../columns';
@@ -44,8 +45,8 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
   const poolAddress = swapPoolData.id;
   const tokenAddress = swapPoolData.token.id;
   const backstopPoolAddress = swapPoolData.backstop?.id;
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
 
   const form = useForm<RedeemLiquidityValues>({
     resolver: yupResolver(schema),
@@ -75,8 +76,8 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
         const vSlippage = getValidSlippage(variables.slippage || config.backstop.defaults.slippage);
         return mutate([
           poolAddress,
-          decimalToNative(variables.amount, FixedU128Decimals).toString(),
-          decimalToNative(subtractPercentage(variables.amount, vSlippage), FixedU128Decimals).toString(),
+          decimalToNative(variables.amount, defaultDecimals).toString(),
+          decimalToNative(subtractPercentage(variables.amount, vSlippage), defaultDecimals).toString(),
         ]);
       }),
     [handleSubmit, poolAddress, mutate],

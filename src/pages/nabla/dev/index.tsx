@@ -3,10 +3,11 @@ import { Button, Dropdown } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
 import { Token } from '../../../../gql/graphql';
 import { config } from '../../../config';
+import { defaultDecimals } from '../../../config/apps/nabla';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokens } from '../../../hooks/nabla/useTokens';
-import { decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
+import { decimalToNative } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 
 const TokenItem = ({ token }: { token: Token }) => {
@@ -31,7 +32,7 @@ const TokenItem = ({ token }: { token: Token }) => {
             color="secondary"
             type="button"
             disabled={isLoading}
-            onClick={() => mutate([address, decimalToNative(1000, FixedU128Decimals).toString()])}
+            onClick={() => mutate([address, decimalToNative(1000, defaultDecimals).toString()])}
           >
             {isLoading ? 'Loading' : 'Mint 1000'}
           </Button>
@@ -44,7 +45,7 @@ const TokenItem = ({ token }: { token: Token }) => {
                 <div
                   role="button"
                   className={`btn-sm`}
-                  onClick={() => mutate([address, decimalToNative(10000, FixedU128Decimals).toString()])}
+                  onClick={() => mutate([address, decimalToNative(10000, defaultDecimals).toString()])}
                 >
                   10000
                 </div>
@@ -53,7 +54,7 @@ const TokenItem = ({ token }: { token: Token }) => {
                 <div
                   role="button"
                   className={`btn-sm`}
-                  onClick={() => mutate([address, decimalToNative(100000, FixedU128Decimals).toString()])}
+                  onClick={() => mutate([address, decimalToNative(100000, defaultDecimals).toString()])}
                 >
                   100000
                 </div>
@@ -81,9 +82,7 @@ const DevPage = () => {
       <div className="card w-full max-w-[36rem] bg-base-200 shadow-xl">
         <div className="card-body">
           <h3 className="mb-2 text-2xl">Tokens</h3>
-          {tokens?.map((token) => (
-            <TokenItem key={token.id} token={token} />
-          ))}
+          {tokens?.map((token) => <TokenItem key={token.id} token={token} />)}
         </div>
       </div>
     </div>

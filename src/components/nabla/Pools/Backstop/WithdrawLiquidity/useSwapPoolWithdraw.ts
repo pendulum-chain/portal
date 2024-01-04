@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from 'react';
 import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
 import { config } from '../../../../../config';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { useGlobalState } from '../../../../../GlobalStateProvider';
 import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
 import { useTokenPrice } from '../../../../../hooks/nabla/useTokenPrice';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative } from '../../../../../shared/parseNumbers';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
 
@@ -37,8 +38,8 @@ export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, en
       const vSlippage = getValidSlippage(variables.slippage || config.backstop.defaults.slippage);
       mutate([
         swapPoolAddress,
-        decimalToNative(variables.amount, FixedU128Decimals).toString(),
-        decimalToNative(subtractPercentage(variables.amount, vSlippage), FixedU128Decimals).toString(),
+        decimalToNative(variables.amount, defaultDecimals).toString(),
+        decimalToNative(subtractPercentage(variables.amount, vSlippage), defaultDecimals).toString(),
       ]);
     },
     [mutate, swapPoolAddress],
@@ -66,7 +67,7 @@ export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, en
         shares,
         bpPrice: bpPrice ? BigInt(bpPrice) : undefined,
         spPrice: spPrice ? BigInt(spPrice) : undefined,
-        decimals: FixedU128Decimals,
+        decimals: defaultDecimals,
       }),
     [selectedPool, deposit, shares, bpPrice, spPrice],
   );

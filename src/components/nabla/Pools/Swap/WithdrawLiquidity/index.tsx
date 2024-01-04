@@ -2,9 +2,10 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import TokenAmount from '../../TokenAmount';
@@ -120,7 +121,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(), deposit),
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
                 )}
                 %
               </div>

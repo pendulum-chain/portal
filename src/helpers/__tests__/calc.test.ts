@@ -1,5 +1,6 @@
 import Big from 'big.js';
-import { decimalToNative, FixedU128Decimals } from '../../shared/parseNumbers';
+import { defaultDecimals } from '../../config/apps/nabla';
+import { decimalToNative } from '../../shared/parseNumbers';
 import * as helpers from '../calc';
 
 describe('calc', () => {
@@ -14,7 +15,7 @@ describe('calc', () => {
         deposit: BigInt('1000000000000000000000'), // 1000
         bpPrice: BigInt('100000000'), // 1
         spPrice: BigInt('200000000'), // 2
-        decimals: FixedU128Decimals,
+        decimals: defaultDecimals,
       }),
     ).toBe(undefined);
 
@@ -28,7 +29,7 @@ describe('calc', () => {
         deposit: BigInt('1000000000000000000000'), // 1000
         bpPrice: BigInt('100000000'), // 1
         spPrice: BigInt('200000000'), // 2
-        decimals: FixedU128Decimals,
+        decimals: defaultDecimals,
       }),
     ).toEqual(Big(0));
 
@@ -42,9 +43,9 @@ describe('calc', () => {
         deposit: BigInt('1000000000000000000000'), // 1000
         bpPrice: BigInt('110000000'), // 1.1
         spPrice: BigInt('220000000'), // 2.2
-        decimals: FixedU128Decimals,
+        decimals: defaultDecimals,
       }),
-    ).toEqual(decimalToNative('400', FixedU128Decimals));
+    ).toEqual(decimalToNative('400', defaultDecimals));
 
     expect(
       helpers.calcAvailablePoolWithdraw({
@@ -56,8 +57,8 @@ describe('calc', () => {
         deposit: BigInt('1000000000000000000000'), // 1000
         bpPrice: BigInt('110000000'), // 1.1
         spPrice: BigInt('220000000'), // 2.2
-        decimals: FixedU128Decimals,
+        decimals: defaultDecimals,
       }),
-    ).toEqual(decimalToNative('1000', FixedU128Decimals));
+    ).toEqual(decimalToNative('1000', defaultDecimals));
   });
 });

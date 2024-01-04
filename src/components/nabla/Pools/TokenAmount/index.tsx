@@ -1,7 +1,8 @@
 import { Abi } from '@polkadot/api-contract';
+import { defaultDecimals } from '../../../../config/apps/nabla';
 import { useSharesTargetWorth } from '../../../../hooks/nabla/useSharesTargetWorth';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
+import { nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
 import { numberLoader } from '../../../Loader';
 
 export interface TokenAmountProps {
@@ -36,7 +37,7 @@ const TokenAmount = ({
   }
   return (
     <span title={data?.toString()}>
-      {data ? prettyNumbers(nativeToDecimal(data || '0', FixedU128Decimals).toNumber()) : fallback ?? null}
+      {data ? prettyNumbers(nativeToDecimal(data || '0', defaultDecimals).toNumber()) : fallback ?? null}
       {symbol ? symbol : null}
     </span>
   );

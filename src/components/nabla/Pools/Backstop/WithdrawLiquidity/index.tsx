@@ -4,10 +4,11 @@ import { ChangeEvent, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
 import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
@@ -50,7 +51,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
   const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
   const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
   const deposit = depositQuery.balance || 0;
-  const withdrawLimit = nativeToDecimal(spw.withdrawLimit?.toString() || 0, FixedU128Decimals).toNumber();
+  const withdrawLimit = nativeToDecimal(spw.withdrawLimit?.toString() || 0, defaultDecimals).toNumber();
 
   const hideCss = !isIdle ? 'hidden' : '';
   return (
@@ -170,7 +171,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
               <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(), deposit),
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
                 )}
                 %
               </div>

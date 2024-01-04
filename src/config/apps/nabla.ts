@@ -16,6 +16,8 @@ export type NablaConfig = AppConfigBase &
     >
   >;
 
+export const defaultDecimals = 12;
+
 export const nablaConfig: NablaConfig = {
   tenants: [TenantName.Foucoco],
   environment: ['staging', 'development'],

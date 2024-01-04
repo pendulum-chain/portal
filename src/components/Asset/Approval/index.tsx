@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { FixedU128Decimals } from '../../../shared/parseNumbers';
+import { defaultDecimals } from '../../../config/apps/nabla';
 import { ApprovalState, useTokenApproval } from '../../../shared/useTokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {
@@ -25,7 +25,7 @@ const TokenApproval = ({
     token,
     spender,
     enabled,
-    decimals: FixedU128Decimals,
+    decimals: defaultDecimals,
   });
 
   if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;

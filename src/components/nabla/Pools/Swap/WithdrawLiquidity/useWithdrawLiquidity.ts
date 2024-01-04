@@ -2,12 +2,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';
@@ -18,8 +19,8 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
@@ -50,8 +51,8 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
       handleSubmit((variables) => {
         if (!variables.amount) return;
         return mutate([
-          decimalToNative(variables.amount, FixedU128Decimals).toString(),
-          decimalToNative(subtractPercentage(variables.amount, 0.5), FixedU128Decimals).toString(),
+          decimalToNative(variables.amount, defaultDecimals).toString(),
+          decimalToNative(subtractPercentage(variables.amount, 0.5), defaultDecimals).toString(),
         ]);
       }),
     [handleSubmit, mutate],

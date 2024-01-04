@@ -1,11 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, useWatch } from 'react-hook-form';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';
@@ -16,8 +17,8 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
 
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),
@@ -40,7 +41,7 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   });
 
   const onSubmit = form.handleSubmit((variables: AddLiquidityValues) =>
-    mutation.mutate([decimalToNative(variables.amount, FixedU128Decimals).toString()]),
+    mutation.mutate([decimalToNative(variables.amount, defaultDecimals).toString()]),
   );
 
   const amount =

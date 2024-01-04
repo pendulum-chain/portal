@@ -3,8 +3,9 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { config } from '../../../../../config';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
@@ -119,7 +120,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
               <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(), deposit),
+                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
                 )}
                 %
               </div>

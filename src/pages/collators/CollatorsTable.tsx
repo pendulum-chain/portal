@@ -9,7 +9,7 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormat } from '../../shared/parseNumbers';
 import {
   actionsColumn,
-  aprColumn,
+  apyColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
@@ -103,7 +103,7 @@ function CollatorsTable() {
       nameColumn,
       stakedColumn,
       delegatorsColumn,
-      aprColumn,
+      apyColumn,
       stakedCol,
       actionsColumn({
         userAccountAddress,
