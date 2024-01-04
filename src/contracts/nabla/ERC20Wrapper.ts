@@ -216,7 +216,7 @@ export const erc20WrapperAbi = {
         default: false,
         docs: [''],
         label: 'totalSupply',
-        mutates: true,
+        mutates: false,
         payable: false,
         returnType: {
           displayName: ['uint256'],
@@ -237,7 +237,7 @@ export const erc20WrapperAbi = {
         default: false,
         docs: [''],
         label: 'balanceOf',
-        mutates: true,
+        mutates: false,
         payable: false,
         returnType: {
           displayName: ['uint256'],
@@ -293,7 +293,7 @@ export const erc20WrapperAbi = {
         default: false,
         docs: [''],
         label: 'allowance',
-        mutates: true,
+        mutates: false,
         payable: false,
         returnType: {
           displayName: ['uint256'],
