@@ -44,7 +44,7 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
     },
   });
 
-  const onSubmit = form.handleSubmit((variables: AddLiquidityValues) =>
+  const onSubmit = form.handleSubmit((variables) =>
     mutation.mutate([decimalToNative(variables.amount, defaultDecimals).toString()]),
   );
 

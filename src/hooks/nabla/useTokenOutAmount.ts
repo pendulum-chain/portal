@@ -1,9 +1,9 @@
-import { activeOptions, cacheKeys } from '../constants/cache';
-import { routerAbi } from '../contracts/nabla/Router';
-import { useGlobalState } from '../GlobalStateProvider';
-import { decimalToNative } from '../shared/parseNumbers';
-import { useContract } from '../shared/useContract';
-import { useGetAppDataByTenant } from './useGetAppDataByTenant';
+import { activeOptions, cacheKeys } from '../../constants/cache';
+import { routerAbi } from '../../contracts/nabla/Router';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { decimalToNative } from '../../shared/parseNumbers';
+import { useContract } from '../../shared/useContract';
+import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 
 export type UseTokenOutAmountProps = {
   amount?: number;
@@ -18,6 +18,7 @@ export const useTokenOutAmount = ({ amount, from, to, decimals, onSuccess, onErr
   const amountIn = decimalToNative(amount || 0, decimals).toString();
   const { address } = useGlobalState().walletAccount || {};
   const { router } = useGetAppDataByTenant('nabla').data || {};
+
   return useContract([cacheKeys.tokenOutAmount, from, to, amountIn], {
     ...activeOptions['30s'],
     abi: routerAbi,
