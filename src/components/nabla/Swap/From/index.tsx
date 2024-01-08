@@ -44,7 +44,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
             <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
-            <strong className="font-bold">{token?.symbol}</strong>
+            <strong className="font-bold">{token?.symbol || 'Select'}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
           </Button>
         </div>

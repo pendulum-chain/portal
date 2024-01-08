@@ -48,7 +48,6 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
 
   const onSubmit = useCallback(
     (variables: WithdrawLiquidityValues) => {
-      console.log(variables);
       if (!variables.amount) return;
       return mutate([
         decimalToNative(variables.amount, defaultDecimals).toString(),
