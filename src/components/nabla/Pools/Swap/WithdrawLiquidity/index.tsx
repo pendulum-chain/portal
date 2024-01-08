@@ -6,6 +6,7 @@ import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import TokenAmount from '../../TokenAmount';
@@ -25,7 +26,11 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
     balanceQuery,
     depositQuery,
     amount,
-    form: { register, setValue },
+    form: {
+      register,
+      setValue,
+      formState: { errors },
+    },
   } = useWithdrawLiquidity(data.id, data.token.id);
   const deposit = depositQuery.balance || 0;
 
@@ -142,6 +147,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 Redeem from backstop pool
               </button>
             </div>
+            <Validation className="text-center mb-2" errors={errors} />
             <Button color="primary" className="w-full" type="submit">
               Withdraw
             </Button>

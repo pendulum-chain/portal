@@ -6,14 +6,12 @@ export type PoolProgressProps = {
 
 export const PoolProgress = ({ symbol, amount, className = '' }: PoolProgressProps) => {
   return (
-    <div
-      className={`flex items-center justify-between rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4 mt-6 gap-2 ${className}`}
-    >
-      <div className="text-lg">
-        <strong>{symbol}</strong>
-      </div>
-      <div className="text-3xl font-2 truncate" title={String(amount)}>
-        {amount}
+    <div className="flex items-center justify-center mt-6">
+      <div className={`inline-flex rounded-xl bg-neutral-100 dark:bg-neutral-700 p-4 gap-2 ${className}`}>
+        <span className="font-2 font-medium truncate" title={String(amount)}>
+          <strong className="text-3xl mr-1">{amount}</strong>
+          <span className="text-xl">{symbol}</span>
+        </span>
       </div>
     </div>
   );

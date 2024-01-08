@@ -10,6 +10,7 @@ import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../help
 import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
 import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
+import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import TransactionProgress from '../../../../Transaction/Progress';
@@ -37,7 +38,11 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
     toggle,
     balanceQuery,
     depositQuery,
-    form: { register, setValue },
+    form: {
+      register,
+      setValue,
+      formState: { errors },
+    },
     amount,
     pools,
     selectedPool,
@@ -178,6 +183,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
             </div>
           </div>
           <div className="mt-8">
+            <Validation className="text-center mb-2" errors={errors} />
             <Button color="primary" className="w-full" type="submit" disable={isLoading}>
               Withdraw
             </Button>

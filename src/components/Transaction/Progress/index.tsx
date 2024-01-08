@@ -17,6 +17,7 @@ export interface TransactionProgressProps {
 
 const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
   const { explorer } = useGetTenantConfig();
+  console.log(mutation);
   if (mutation.isIdle) return null;
   const status = mutation.data?.result?.type;
   const isSuccess = status === 'success';

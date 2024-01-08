@@ -31,7 +31,7 @@ const getInitialValues = (): Partial<RedeemLiquidityValues> => {
   const storageValues = storageService.getParsed<TransactionSettings>(storageKeys.POOL_SETTINGS);
   return {
     ...defaultValues,
-    amount: 0,
+    amount: undefined,
     slippage: getValidSlippage(storageValues?.slippage),
   };
 };

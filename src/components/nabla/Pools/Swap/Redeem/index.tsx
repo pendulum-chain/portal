@@ -6,6 +6,7 @@ import { config } from '../../../../../config';
 import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
@@ -26,7 +27,11 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
     depositQuery,
     amount,
     updateStorage,
-    form: { register, setValue },
+    form: {
+      register,
+      setValue,
+      formState: { errors },
+    },
   } = useRedeem(data);
   const deposit = depositQuery.balance || 0;
 
@@ -127,6 +132,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
             </div>
           </div>
           <div className="mt-8">
+            <Validation className="text-center mb-2" errors={errors} />
             <Button color="primary" className="w-full" type="submit">
               Redeem
             </Button>

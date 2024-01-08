@@ -25,7 +25,7 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
     defaultValues: {
-      amount: 0,
+      amount: undefined,
     },
   });
   const { handleSubmit, reset } = form;
@@ -47,15 +47,15 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
   const { mutate } = mutation;
 
   const onSubmit = useCallback(
-    () =>
-      handleSubmit((variables) => {
-        if (!variables.amount) return;
-        return mutate([
-          decimalToNative(variables.amount, defaultDecimals).toString(),
-          decimalToNative(subtractPercentage(variables.amount, 0.5), defaultDecimals).toString(),
-        ]);
-      }),
-    [handleSubmit, mutate],
+    (variables: WithdrawLiquidityValues) => {
+      console.log(variables);
+      if (!variables.amount) return;
+      return mutate([
+        decimalToNative(variables.amount, defaultDecimals).toString(),
+        decimalToNative(subtractPercentage(variables.amount, 0.5), defaultDecimals).toString(),
+      ]);
+    },
+    [mutate],
   );
 
   const amount =
@@ -67,5 +67,5 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
       }),
     ) || 0;
 
-  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
+  return { form, amount, mutation, onSubmit: handleSubmit(onSubmit), toggle, balanceQuery, depositQuery };
 };
