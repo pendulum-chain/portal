@@ -106,10 +106,10 @@ function Transfers(): JSX.Element {
   }, [activeBlockNumber, walletAccount, getIssueRequests, getRedeemRequests]);
 
   const columns = useMemo(() => {
-    const statusColumn = statusColumnCreator(setCurrentTransfer);
+    const statusColumn = statusColumnCreator();
     const typeColumn = typeColumnCreator(tenantName);
     return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn];
-  }, [tenantName, setCurrentTransfer]);
+  }, [tenantName]);
 
   return (
     <div className="overflow-x-auto mt-10">
@@ -154,6 +154,7 @@ function Transfers(): JSX.Element {
         isLoading={false}
         search={false}
         pageSize={8}
+        rowCallback={(row, index) => setCurrentTransfer(row.original)}
         title="Transfers"
         sortBy={{ updated: SortingOrder.DESC }}
         oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"

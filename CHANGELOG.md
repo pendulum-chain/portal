@@ -1,3 +1,30 @@
+# [1.3.0](https://github.com/pendulum-chain/portal/compare/v1.2.1...v1.3.0) (2023-12-15)
+
+
+### Bug Fixes
+
+* github action ([0b9f207](https://github.com/pendulum-chain/portal/commit/0b9f20798f4f33b7a97ae674f460b7b3dfcde8c0))
+* release ([5ebfd88](https://github.com/pendulum-chain/portal/commit/5ebfd88596580307633e3c3dc10d3360f43be8e5))
+* Update disclaimer text for Spacewalk ([#303](https://github.com/pendulum-chain/portal/issues/303)) ([70c2a94](https://github.com/pendulum-chain/portal/commit/70c2a940c94aca49b4ef269dce25527084160dfd))
+
+
+### Features
+
+* 288 allow users to withdraw from backstop pool in other assets ([#292](https://github.com/pendulum-chain/portal/issues/292)) ([8322b11](https://github.com/pendulum-chain/portal/commit/8322b1136033d0d531660c4f1502ec6529f49d29))
+* Add AMPE price to the Dashboard ([#293](https://github.com/pendulum-chain/portal/issues/293)) ([cdf598e](https://github.com/pendulum-chain/portal/commit/cdf598ee91c55edcb0b8dcfe7d95b20cc8c5970d))
+* Add info to the Bedeem from Backstop pool UI ([#291](https://github.com/pendulum-chain/portal/issues/291)) ([208dacd](https://github.com/pendulum-chain/portal/commit/208dacd858deec372b128b282eb37360c3e01ebe))
+* Add support for NGN, EUR and AUD assets for Spacewalk ([#302](https://github.com/pendulum-chain/portal/issues/302)) ([c377019](https://github.com/pendulum-chain/portal/commit/c377019fdbf4f5e4b8ae2dd45b2047213489aa66))
+* added pool filtering by paused flag ([#289](https://github.com/pendulum-chain/portal/issues/289)) ([6e09bce](https://github.com/pendulum-chain/portal/commit/6e09bce49c45e5c999c260242a8f36a23e74525a))
+* nabla UI and functionality ([#279](https://github.com/pendulum-chain/portal/issues/279)) ([331aabe](https://github.com/pendulum-chain/portal/commit/331aabe696c9671337645fc04da77b40f3cb065b))
+* Update Spacewalk dialogs for "Back to Stellar" transactions ([#305](https://github.com/pendulum-chain/portal/issues/305)) ([c80d7a5](https://github.com/pendulum-chain/portal/commit/c80d7a5fc85ae4f11efc5019e5ba990ee1946d96))
+* Update transfer dialogs design ([#295](https://github.com/pendulum-chain/portal/issues/295)) ([8fe2791](https://github.com/pendulum-chain/portal/commit/8fe27919c82a5237313cdd4d545054513d791f55))
+
+
+### Reverts
+
+* Put back GH_TOKEN into the release config ([#282](https://github.com/pendulum-chain/portal/issues/282)) ([e2b142a](https://github.com/pendulum-chain/portal/commit/e2b142a73052e5d2505b094acf833add01520b7c))
+* release config ([38ada27](https://github.com/pendulum-chain/portal/commit/38ada2736d5d93dff27dbc75497fd889d85d085c))
+
 ## [1.2.1](https://github.com/pendulum-chain/portal/compare/v1.2.0...v1.2.1) (2023-10-31)
 
 

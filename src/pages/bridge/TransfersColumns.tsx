@@ -1,7 +1,7 @@
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
 import { DateTime } from 'luxon';
-import { CopyableAddress } from '../../components/PublicKey';
+import { PublicKey } from '../../components/PublicKey';
 import { toTitle } from '../../helpers/string';
 import { TenantName } from '../../models/Tenant';
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
@@ -48,7 +48,7 @@ export const transactionIdColumn: ColumnDef<TTransfer> = {
   header: 'Request ID',
   accessorKey: 'transactionId',
   cell: ({ row }) => {
-    return <CopyableAddress publicKey={row.original.transactionId} variant="hexa" />;
+    return <PublicKey publicKey={row.original.transactionId} variant="hexa" />;
   },
 };
 
@@ -58,15 +58,12 @@ export const typeColumnCreator = (tenantName: TenantName | undefined): ColumnDef
   accessorFn: (row) => (row.type === TransferType.issue ? `To ${toTitle(tenantName || '')}` : 'Back to Stellar'),
 });
 
-export const statusColumnCreator = (onClick: (t: TTransfer) => void): ColumnDef<TTransfer> => ({
+export const statusColumnCreator = (): ColumnDef<TTransfer> => ({
   header: 'Status',
   accessorKey: 'status',
   cell: ({ row }) => {
     return (
-      <div
-        className={'cursor-pointer status-box ' + row.original.status.toLowerCase()}
-        onClick={() => onClick(row.original)}
-      >
+      <div className={'status-box ' + row.original.status.toLowerCase()}>
         <div className={'status-dot ' + row.original.status.toLowerCase()}></div>
         <div>{row.original.status}</div>
       </div>
