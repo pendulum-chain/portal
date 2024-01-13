@@ -1,10 +1,9 @@
-import { Abi } from '@polkadot/api-contract';
 import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { useContract } from './useContract';
 
-export type UseTokenAllowance<TAbi extends Abi> = {
+export type UseTokenAllowance<TAbi extends Record<string, unknown>> = {
   /** contract/token address */
   token?: string;
   /** spender address */
@@ -15,7 +14,7 @@ export type UseTokenAllowance<TAbi extends Abi> = {
   abi?: TAbi;
 };
 
-export const useTokenAllowance = <TAbi extends Abi>(
+export const useTokenAllowance = <TAbi extends Record<string, unknown>>(
   { token, owner, spender, abi }: UseTokenAllowance<TAbi>,
   options?: QueryOptions,
 ) => {

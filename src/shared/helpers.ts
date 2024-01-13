@@ -1,3 +1,4 @@
+import { Limits, MessageCallResult } from '@pendulum-chain/api-solang';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableResultValue } from '@polkadot/api-base/types';
 import type { QueryKey, UseQueryOptions } from '@tanstack/react-query';
@@ -24,7 +25,22 @@ export const parseTransactionError = (result: SubmittableResultValue | undefined
   }
 };
 
-export const gasDefaults = {
-  refTime: '120000000000',
-  proofSize: '1200000',
+export const defaultReadLimits: Limits = {
+  gas: {
+    refTime: '120000000000',
+    proofSize: '1200000',
+  },
+  storageDeposit: undefined,
+};
+
+export const defaultWriteLimits: Limits = {
+  gas: {
+    refTime: '30000000000',
+    proofSize: '2400000',
+  },
+  storageDeposit: undefined,
+};
+
+export const getMessageCallValue = (response: MessageCallResult | undefined) => {
+  return response?.result.type === 'success' ? response.result.value : undefined;
 };

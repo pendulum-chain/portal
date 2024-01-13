@@ -1,4 +1,3 @@
-import { Abi } from '@polkadot/api-contract';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { swapPoolAbi } from '../../contracts/nabla/SwapPool';
 import { QueryOptions } from '../../shared/helpers';
@@ -8,7 +7,7 @@ import { useContract } from '../../shared/useContract';
 export type UseSharesTargetWorthProps = {
   address: string | undefined;
   amount: number | undefined;
-  abi?: Abi | Dict;
+  abi?: Dict;
 };
 
 export const useSharesTargetWorth = (

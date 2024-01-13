@@ -1,15 +1,14 @@
-import { Abi } from '@polkadot/api-contract';
-import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
-import { QueryOptions } from './helpers';
+import { getMessageCallValue, QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContract } from './useContract';
 
-export type UseBalanceProps<TAbi extends Abi | Record<string, unknown>> = {
+export type UseBalanceProps<TAbi extends Record<string, unknown>> = {
   /** token or contract address */
   contractAddress?: string;
   /** account address */
@@ -19,13 +18,13 @@ export type UseBalanceProps<TAbi extends Abi | Record<string, unknown>> = {
   /** parse decimals */
   decimals?: number;
 };
-export type UseBalanceResponse = UseQueryResult<FrameSystemAccountInfo | undefined, unknown> & {
+export type UseBalanceResponse = UseQueryResult<MessageCallResult | undefined, unknown> & {
   balance?: number;
   formatted?: string;
   enabled: boolean;
 };
 
-export const useContractBalance = <TAbi extends Abi | Record<string, unknown>>(
+export const useContractBalance = <TAbi extends Record<string, unknown>>(
   { contractAddress, account, abi, decimals }: UseBalanceProps<TAbi>,
   options?: QueryOptions,
 ): UseBalanceResponse => {
@@ -50,8 +49,9 @@ export const useContractBalance = <TAbi extends Abi | Record<string, unknown>>(
   });
   const { data } = query;
   const val = useMemo(() => {
-    if (!data) return undefined;
-    const balance = nativeToDecimal(parseFloat(data || '0'), decimals).toNumber();
+    if (!data || !data.result) return undefined;
+    const value = getMessageCallValue(data);
+    const balance = nativeToDecimal(parseFloat(value || '0'), decimals).toNumber();
     return { balance, formatted: prettyNumbers(balance) };
   }, [data, decimals]);
 

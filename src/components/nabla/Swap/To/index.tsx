@@ -11,6 +11,7 @@ import { useTokenOutAmount } from '../../../../hooks/nabla/useTokenOutAmount';
 import { TokensData } from '../../../../hooks/nabla/useTokens';
 import useBoolean from '../../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
+import { getMessageCallValue } from '../../../../shared/helpers';
 import { nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
 import Balance from '../../../Balance';
 import { numberLoader } from '../../../Loader';
@@ -72,7 +73,8 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
   }, [isError, error, setError, clearErrors]);
 
   const loading = (isLoading && isLoading && fetchStatus !== 'idle') || fromAmount !== debouncedFromAmount;
-  const value = data?.data?.free ? prettyNumbers(nativeToDecimal(data.data.free, defaultDecimals).toNumber()) : 0;
+  const outValue = getMessageCallValue(data);
+  const value = outValue ? prettyNumbers(nativeToDecimal(outValue, defaultDecimals).toNumber()) : 0;
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>

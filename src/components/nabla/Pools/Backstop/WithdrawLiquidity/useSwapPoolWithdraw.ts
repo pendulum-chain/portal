@@ -8,6 +8,7 @@ import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../he
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
 import { useTokenPrice } from '../../../../../hooks/nabla/useTokenPrice';
+import { getMessageCallValue } from '../../../../../shared/helpers';
 import { decimalToNative } from '../../../../../shared/parseNumbers';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
@@ -53,11 +54,11 @@ export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, en
     },
     { enabled },
   );
-  const shares = sharesQuery.data;
+  const shares = getMessageCallValue(sharesQuery.data);
   const bpPriceQuery = useTokenPrice(pool.token.id, owner, { enabled });
   const spPriceQuery = useTokenPrice(selectedPool.token.id, owner, { enabled });
-  const bpPrice = bpPriceQuery.data;
-  const spPrice = spPriceQuery.data;
+  const bpPrice = getMessageCallValue(bpPriceQuery.data);
+  const spPrice = getMessageCallValue(spPriceQuery.data);
 
   const withdrawLimit = useMemo(
     () =>

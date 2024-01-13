@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
 import { Limits, messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
 import { ApiPromise } from '@polkadot/api';
 import { Abi } from '@polkadot/api-contract';
@@ -7,6 +6,7 @@ import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
 import { createWriteOptions } from '../services/api/helpers';
+import { defaultWriteLimits } from './helpers';
 import { useSharedState } from './Provider';
 
 // TODO: fix/improve types - parse abi file
@@ -23,14 +23,6 @@ export type UseContractWriteProps<TAbi extends Record<string, unknown>> = Partia
   method: string;
   args?: any[];
   options?: Limits | ((api: ApiPromise) => Limits);
-};
-
-const defaultLimits: Limits = {
-  gas: {
-    refTime: '30000000000',
-    proofSize: '2400000',
-  },
-  storageDeposit: undefined,
 };
 
 export const useContractWrite = <TAbi extends Record<string, unknown>>({
@@ -67,7 +59,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
         }),
       messageName: method,
       messageArguments: fnArgs,
-      limits: { ...defaultLimits, ...contractOptions },
+      limits: { ...defaultWriteLimits, ...contractOptions },
     });
   };
   const mutation = useMutation(submit, rest);

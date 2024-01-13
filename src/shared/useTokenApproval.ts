@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'preact/compat';
 import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
-import { gasDefaults } from './helpers';
+import { getMessageCallValue } from './helpers';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContractWrite, UseContractWriteProps } from './useContractWrite';
@@ -59,9 +59,6 @@ export const useTokenApproval = ({
     address: token,
     method: 'approve',
     args: [spender, approveMax ? maxInt : amountBI.toString()],
-    options: {
-      gas: gasDefaults,
-    },
     onError: (err) => {
       setPending(false);
       if (onError) onError(err);
@@ -76,9 +73,10 @@ export const useTokenApproval = ({
     },
   });
 
+  const allowanceValue = getMessageCallValue(allowanceData);
   const allowance = useMemo(
-    () => nativeToDecimal(parseFloat(allowanceData || '0'), decimals).toNumber(),
-    [allowanceData, decimals],
+    () => nativeToDecimal(parseFloat(allowanceValue || '0'), decimals).toNumber(),
+    [allowanceValue, decimals],
   );
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {
