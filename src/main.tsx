@@ -1,5 +1,6 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';
 import { render } from 'preact';
 import { Theme } from 'react-daisyui';
@@ -40,6 +41,7 @@ render(
         </GlobalStateContext.Consumer>
       </GlobalStateProvider>
     </BrowserRouter>
+    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
   </QueryClientProvider>,
   document.getElementById('app') as HTMLElement,
 );
