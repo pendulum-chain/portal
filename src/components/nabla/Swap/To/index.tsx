@@ -57,7 +57,8 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
     amount: debouncedFromAmount,
     from,
     to,
-    onSuccess: (val) => {
+    onSuccess: (response) => {
+      const val = getMessageCallValue(response);
       const toAmount = val ? nativeToDecimal(val, defaultDecimals).toNumber() : 0;
       setValue('toAmount', toAmount, {
         shouldDirty: true,

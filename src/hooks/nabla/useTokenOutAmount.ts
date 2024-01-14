@@ -1,3 +1,4 @@
+import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { activeOptions, cacheKeys } from '../../constants/cache';
 import { routerAbi } from '../../contracts/nabla/Router';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -10,8 +11,8 @@ export type UseTokenOutAmountProps = {
   from?: string;
   to?: string;
   decimals?: number;
-  onSuccess?: (val: string) => void;
-  onError?: (err: Error) => void;
+  onSuccess?: (val: MessageCallResult) => void;
+  onError?: (err: Error | MessageCallResult) => void;
 };
 
 export const useTokenOutAmount = ({ amount, from, to, decimals, onSuccess, onError }: UseTokenOutAmountProps) => {
