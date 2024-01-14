@@ -5,8 +5,8 @@ import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 
 export const useTokenPrice = (address: string, owner?: string, options?: QueryOptions) => {
   const { oracle } = useGetAppDataByTenant('nabla').data || {};
-  const enabled = !!address && !!oracle && options?.enabled !== false;
 
+  const enabled = !!address && !!oracle && options?.enabled !== false;
   return useContract([cacheKeys.tokenPrice, address], {
     ...inactiveOptions['1m'],
     ...options,

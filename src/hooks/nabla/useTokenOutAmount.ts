@@ -19,6 +19,7 @@ export const useTokenOutAmount = ({ amount, from, to, decimals, onSuccess, onErr
   const { address } = useGlobalState().walletAccount || {};
   const { router } = useGetAppDataByTenant('nabla').data || {};
 
+  const enabled = !!amount && !!from && !!to;
   return useContract([cacheKeys.tokenOutAmount, from, to, amountIn], {
     ...activeOptions['30s'],
     abi: routerAbi,
@@ -26,7 +27,7 @@ export const useTokenOutAmount = ({ amount, from, to, decimals, onSuccess, onErr
     owner: address,
     method: 'getAmountOut',
     args: [amountIn, [from, to]],
-    enabled: !!amount && !!from && !!to,
+    enabled,
     onSuccess,
     onError: (err) => {
       if (onError) onError(err);
