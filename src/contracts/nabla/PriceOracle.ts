@@ -166,7 +166,7 @@ export const priceOracleAbi = {
           'Returns the asset price in USD. This is called by Nabla and expected by their IPriceOracleGetter interface',
         ],
         label: 'getAssetPrice',
-        mutates: true,
+        mutates: false,
         payable: false,
         returnType: {
           displayName: ['uint256'],
