@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { Token } from '../../../../gql/graphql';
 import { config } from '../../../config';
+import { defaultDecimals } from '../../../config/apps/nabla';
 import { cacheKeys } from '../../../constants/cache';
 import { storageKeys } from '../../../constants/localStorage';
 import { routerAbi } from '../../../contracts/nabla/Router';
@@ -15,7 +16,7 @@ import { useTokens } from '../../../hooks/nabla/useTokens';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../../models/Swap';
 import { storageService } from '../../../services/storage/local';
-import { calcDeadline, decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
+import { calcDeadline, decimalToNative } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';
@@ -94,13 +95,9 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     const vDeadline = getValidDeadline(variables.deadline || defaultValues.deadline);
     const vSlippage = getValidSlippage(variables.slippage || defaultValues.slippage);
     const deadline = calcDeadline(vDeadline).toString();
-    const fromAmount = decimalToNative(variables.fromAmount, FixedU128Decimals).toString();
-    const toMinAmount = decimalToNative(
-      subtractPercentage(variables.toAmount, vSlippage),
-      FixedU128Decimals,
-    ).toString();
-    const spender = address;
-    return swapMutation.mutate([spender, fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
+    const fromAmount = decimalToNative(variables.fromAmount, defaultDecimals).toString();
+    const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, vSlippage), defaultDecimals).toString();
+    return swapMutation.mutate([fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });
 
   const onFromChange = useCallback(

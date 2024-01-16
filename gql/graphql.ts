@@ -20,6 +20,8 @@ export type Scalars = {
   Bytes: { input: any; output: any; }
   /** A date-time string in simplified extended ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ) */
   DateTime: { input: any; output: any; }
+  /** A scalar that can represent any JSON value */
+  JSON: { input: any; output: any; }
 };
 
 export type BackstopPool = {
@@ -41,27 +43,49 @@ export type BackstopPoolEdge = {
 
 export enum BackstopPoolOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiabilitiesAsc = 'liabilities_ASC',
+  LiabilitiesAscNullsFirst = 'liabilities_ASC_NULLS_FIRST',
   LiabilitiesDesc = 'liabilities_DESC',
+  LiabilitiesDescNullsLast = 'liabilities_DESC_NULLS_LAST',
   PausedAsc = 'paused_ASC',
+  PausedAscNullsFirst = 'paused_ASC_NULLS_FIRST',
   PausedDesc = 'paused_DESC',
+  PausedDescNullsLast = 'paused_DESC_NULLS_LAST',
   ReservesAsc = 'reserves_ASC',
+  ReservesAscNullsFirst = 'reserves_ASC_NULLS_FIRST',
   ReservesDesc = 'reserves_DESC',
+  ReservesDescNullsLast = 'reserves_DESC_NULLS_LAST',
   RouterIdAsc = 'router_id_ASC',
+  RouterIdAscNullsFirst = 'router_id_ASC_NULLS_FIRST',
   RouterIdDesc = 'router_id_DESC',
+  RouterIdDescNullsLast = 'router_id_DESC_NULLS_LAST',
   RouterPausedAsc = 'router_paused_ASC',
+  RouterPausedAscNullsFirst = 'router_paused_ASC_NULLS_FIRST',
   RouterPausedDesc = 'router_paused_DESC',
+  RouterPausedDescNullsLast = 'router_paused_DESC_NULLS_LAST',
   TokenDecimalsAsc = 'token_decimals_ASC',
+  TokenDecimalsAscNullsFirst = 'token_decimals_ASC_NULLS_FIRST',
   TokenDecimalsDesc = 'token_decimals_DESC',
+  TokenDecimalsDescNullsLast = 'token_decimals_DESC_NULLS_LAST',
   TokenIdAsc = 'token_id_ASC',
+  TokenIdAscNullsFirst = 'token_id_ASC_NULLS_FIRST',
   TokenIdDesc = 'token_id_DESC',
+  TokenIdDescNullsLast = 'token_id_DESC_NULLS_LAST',
   TokenNameAsc = 'token_name_ASC',
+  TokenNameAscNullsFirst = 'token_name_ASC_NULLS_FIRST',
   TokenNameDesc = 'token_name_DESC',
+  TokenNameDescNullsLast = 'token_name_DESC_NULLS_LAST',
   TokenSymbolAsc = 'token_symbol_ASC',
+  TokenSymbolAscNullsFirst = 'token_symbol_ASC_NULLS_FIRST',
   TokenSymbolDesc = 'token_symbol_DESC',
+  TokenSymbolDescNullsLast = 'token_symbol_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
-  TotalSupplyDesc = 'totalSupply_DESC'
+  TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
+  TotalSupplyDesc = 'totalSupply_DESC',
+  TotalSupplyDescNullsLast = 'totalSupply_DESC_NULLS_LAST'
 }
 
 export type BackstopPoolWhereInput = {
@@ -127,6 +151,272 @@ export type BackstopPoolsConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
+export type Block = {
+  __typename?: 'Block';
+  calls: Array<Call>;
+  callsCount: Scalars['Int']['output'];
+  events: Array<Event>;
+  eventsCount: Scalars['Int']['output'];
+  extrinsics: Array<Extrinsic>;
+  extrinsicsCount: Scalars['Int']['output'];
+  extrinsicsicRoot: Scalars['Bytes']['output'];
+  hash: Scalars['Bytes']['output'];
+  height: Scalars['Int']['output'];
+  /** BlockHeight-blockHash - e.g. 0001812319-0001c */
+  id: Scalars['String']['output'];
+  implName: Scalars['String']['output'];
+  implVersion: Scalars['Int']['output'];
+  parentHash: Scalars['Bytes']['output'];
+  specName: Scalars['String']['output'];
+  specVersion: Scalars['Int']['output'];
+  stateRoot: Scalars['Bytes']['output'];
+  timestamp: Scalars['DateTime']['output'];
+  validator?: Maybe<Scalars['Bytes']['output']>;
+};
+
+
+export type BlockCallsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderByInput>>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+
+export type BlockEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderByInput>>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+
+export type BlockExtrinsicsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
+  where?: InputMaybe<ExtrinsicWhereInput>;
+};
+
+export type BlockEdge = {
+  __typename?: 'BlockEdge';
+  cursor: Scalars['String']['output'];
+  node: Block;
+};
+
+export enum BlockOrderByInput {
+  CallsCountAsc = 'callsCount_ASC',
+  CallsCountAscNullsFirst = 'callsCount_ASC_NULLS_FIRST',
+  CallsCountDesc = 'callsCount_DESC',
+  CallsCountDescNullsLast = 'callsCount_DESC_NULLS_LAST',
+  EventsCountAsc = 'eventsCount_ASC',
+  EventsCountAscNullsFirst = 'eventsCount_ASC_NULLS_FIRST',
+  EventsCountDesc = 'eventsCount_DESC',
+  EventsCountDescNullsLast = 'eventsCount_DESC_NULLS_LAST',
+  ExtrinsicsCountAsc = 'extrinsicsCount_ASC',
+  ExtrinsicsCountAscNullsFirst = 'extrinsicsCount_ASC_NULLS_FIRST',
+  ExtrinsicsCountDesc = 'extrinsicsCount_DESC',
+  ExtrinsicsCountDescNullsLast = 'extrinsicsCount_DESC_NULLS_LAST',
+  ExtrinsicsicRootAsc = 'extrinsicsicRoot_ASC',
+  ExtrinsicsicRootAscNullsFirst = 'extrinsicsicRoot_ASC_NULLS_FIRST',
+  ExtrinsicsicRootDesc = 'extrinsicsicRoot_DESC',
+  ExtrinsicsicRootDescNullsLast = 'extrinsicsicRoot_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  HeightAsc = 'height_ASC',
+  HeightAscNullsFirst = 'height_ASC_NULLS_FIRST',
+  HeightDesc = 'height_DESC',
+  HeightDescNullsLast = 'height_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  ImplNameAsc = 'implName_ASC',
+  ImplNameAscNullsFirst = 'implName_ASC_NULLS_FIRST',
+  ImplNameDesc = 'implName_DESC',
+  ImplNameDescNullsLast = 'implName_DESC_NULLS_LAST',
+  ImplVersionAsc = 'implVersion_ASC',
+  ImplVersionAscNullsFirst = 'implVersion_ASC_NULLS_FIRST',
+  ImplVersionDesc = 'implVersion_DESC',
+  ImplVersionDescNullsLast = 'implVersion_DESC_NULLS_LAST',
+  ParentHashAsc = 'parentHash_ASC',
+  ParentHashAscNullsFirst = 'parentHash_ASC_NULLS_FIRST',
+  ParentHashDesc = 'parentHash_DESC',
+  ParentHashDescNullsLast = 'parentHash_DESC_NULLS_LAST',
+  SpecNameAsc = 'specName_ASC',
+  SpecNameAscNullsFirst = 'specName_ASC_NULLS_FIRST',
+  SpecNameDesc = 'specName_DESC',
+  SpecNameDescNullsLast = 'specName_DESC_NULLS_LAST',
+  SpecVersionAsc = 'specVersion_ASC',
+  SpecVersionAscNullsFirst = 'specVersion_ASC_NULLS_FIRST',
+  SpecVersionDesc = 'specVersion_DESC',
+  SpecVersionDescNullsLast = 'specVersion_DESC_NULLS_LAST',
+  StateRootAsc = 'stateRoot_ASC',
+  StateRootAscNullsFirst = 'stateRoot_ASC_NULLS_FIRST',
+  StateRootDesc = 'stateRoot_DESC',
+  StateRootDescNullsLast = 'stateRoot_DESC_NULLS_LAST',
+  TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
+  ValidatorAsc = 'validator_ASC',
+  ValidatorAscNullsFirst = 'validator_ASC_NULLS_FIRST',
+  ValidatorDesc = 'validator_DESC',
+  ValidatorDescNullsLast = 'validator_DESC_NULLS_LAST'
+}
+
+export type BlockWhereInput = {
+  AND?: InputMaybe<Array<BlockWhereInput>>;
+  OR?: InputMaybe<Array<BlockWhereInput>>;
+  callsCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  callsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  callsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  callsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  callsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  callsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  callsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  callsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  callsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  calls_every?: InputMaybe<CallWhereInput>;
+  calls_none?: InputMaybe<CallWhereInput>;
+  calls_some?: InputMaybe<CallWhereInput>;
+  eventsCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  eventsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  eventsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  events_every?: InputMaybe<EventWhereInput>;
+  events_none?: InputMaybe<EventWhereInput>;
+  events_some?: InputMaybe<EventWhereInput>;
+  extrinsicsCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  extrinsicsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  extrinsicsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
+  extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
+  extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
+  extrinsicsicRoot_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  extrinsicsicRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  extrinsicsicRoot_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  hash_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  hash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  height_eq?: InputMaybe<Scalars['Int']['input']>;
+  height_gt?: InputMaybe<Scalars['Int']['input']>;
+  height_gte?: InputMaybe<Scalars['Int']['input']>;
+  height_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  height_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  height_lt?: InputMaybe<Scalars['Int']['input']>;
+  height_lte?: InputMaybe<Scalars['Int']['input']>;
+  height_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  height_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  implName_contains?: InputMaybe<Scalars['String']['input']>;
+  implName_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  implName_endsWith?: InputMaybe<Scalars['String']['input']>;
+  implName_eq?: InputMaybe<Scalars['String']['input']>;
+  implName_gt?: InputMaybe<Scalars['String']['input']>;
+  implName_gte?: InputMaybe<Scalars['String']['input']>;
+  implName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  implName_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  implName_lt?: InputMaybe<Scalars['String']['input']>;
+  implName_lte?: InputMaybe<Scalars['String']['input']>;
+  implName_not_contains?: InputMaybe<Scalars['String']['input']>;
+  implName_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  implName_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  implName_not_eq?: InputMaybe<Scalars['String']['input']>;
+  implName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  implName_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  implName_startsWith?: InputMaybe<Scalars['String']['input']>;
+  implVersion_eq?: InputMaybe<Scalars['Int']['input']>;
+  implVersion_gt?: InputMaybe<Scalars['Int']['input']>;
+  implVersion_gte?: InputMaybe<Scalars['Int']['input']>;
+  implVersion_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  implVersion_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  implVersion_lt?: InputMaybe<Scalars['Int']['input']>;
+  implVersion_lte?: InputMaybe<Scalars['Int']['input']>;
+  implVersion_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  implVersion_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  parentHash_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  parentHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  parentHash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  specName_contains?: InputMaybe<Scalars['String']['input']>;
+  specName_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  specName_endsWith?: InputMaybe<Scalars['String']['input']>;
+  specName_eq?: InputMaybe<Scalars['String']['input']>;
+  specName_gt?: InputMaybe<Scalars['String']['input']>;
+  specName_gte?: InputMaybe<Scalars['String']['input']>;
+  specName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  specName_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  specName_lt?: InputMaybe<Scalars['String']['input']>;
+  specName_lte?: InputMaybe<Scalars['String']['input']>;
+  specName_not_contains?: InputMaybe<Scalars['String']['input']>;
+  specName_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  specName_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  specName_not_eq?: InputMaybe<Scalars['String']['input']>;
+  specName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  specName_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  specName_startsWith?: InputMaybe<Scalars['String']['input']>;
+  specVersion_eq?: InputMaybe<Scalars['Int']['input']>;
+  specVersion_gt?: InputMaybe<Scalars['Int']['input']>;
+  specVersion_gte?: InputMaybe<Scalars['Int']['input']>;
+  specVersion_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  specVersion_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  specVersion_lt?: InputMaybe<Scalars['Int']['input']>;
+  specVersion_lte?: InputMaybe<Scalars['Int']['input']>;
+  specVersion_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  specVersion_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  stateRoot_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  stateRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  stateRoot_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  validator_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  validator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  validator_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+};
+
+export type BlocksConnection = {
+  __typename?: 'BlocksConnection';
+  edges: Array<BlockEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type Bundle = {
   __typename?: 'Bundle';
   /** BigDecimal */
@@ -142,9 +432,13 @@ export type BundleEdge = {
 
 export enum BundleOrderByInput {
   EthPriceAsc = 'ethPrice_ASC',
+  EthPriceAscNullsFirst = 'ethPrice_ASC_NULLS_FIRST',
   EthPriceDesc = 'ethPrice_DESC',
+  EthPriceDescNullsLast = 'ethPrice_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC'
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST'
 }
 
 export type BundleWhereInput = {
@@ -219,69 +513,133 @@ export type BurnEdge = {
 
 export enum BurnOrderByInput {
   Amount0Asc = 'amount0_ASC',
+  Amount0AscNullsFirst = 'amount0_ASC_NULLS_FIRST',
   Amount0Desc = 'amount0_DESC',
+  Amount0DescNullsLast = 'amount0_DESC_NULLS_LAST',
   Amount1Asc = 'amount1_ASC',
+  Amount1AscNullsFirst = 'amount1_ASC_NULLS_FIRST',
   Amount1Desc = 'amount1_DESC',
+  Amount1DescNullsLast = 'amount1_DESC_NULLS_LAST',
   AmountUsdAsc = 'amountUSD_ASC',
+  AmountUsdAscNullsFirst = 'amountUSD_ASC_NULLS_FIRST',
   AmountUsdDesc = 'amountUSD_DESC',
+  AmountUsdDescNullsLast = 'amountUSD_DESC_NULLS_LAST',
   FeeLiquidityAsc = 'feeLiquidity_ASC',
+  FeeLiquidityAscNullsFirst = 'feeLiquidity_ASC_NULLS_FIRST',
   FeeLiquidityDesc = 'feeLiquidity_DESC',
+  FeeLiquidityDescNullsLast = 'feeLiquidity_DESC_NULLS_LAST',
   FeeToAsc = 'feeTo_ASC',
+  FeeToAscNullsFirst = 'feeTo_ASC_NULLS_FIRST',
   FeeToDesc = 'feeTo_DESC',
+  FeeToDescNullsLast = 'feeTo_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityAsc = 'liquidity_ASC',
+  LiquidityAscNullsFirst = 'liquidity_ASC_NULLS_FIRST',
   LiquidityDesc = 'liquidity_DESC',
+  LiquidityDescNullsLast = 'liquidity_DESC_NULLS_LAST',
   LogIndexAsc = 'logIndex_ASC',
+  LogIndexAscNullsFirst = 'logIndex_ASC_NULLS_FIRST',
   LogIndexDesc = 'logIndex_DESC',
+  LogIndexDescNullsLast = 'logIndex_DESC_NULLS_LAST',
   NeedsCompleteAsc = 'needsComplete_ASC',
+  NeedsCompleteAscNullsFirst = 'needsComplete_ASC_NULLS_FIRST',
   NeedsCompleteDesc = 'needsComplete_DESC',
+  NeedsCompleteDescNullsLast = 'needsComplete_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   SenderAsc = 'sender_ASC',
+  SenderAscNullsFirst = 'sender_ASC_NULLS_FIRST',
   SenderDesc = 'sender_DESC',
+  SenderDescNullsLast = 'sender_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   ToAsc = 'to_ASC',
+  ToAscNullsFirst = 'to_ASC_NULLS_FIRST',
   ToDesc = 'to_DESC',
+  ToDescNullsLast = 'to_DESC_NULLS_LAST',
   TransactionBlockNumberAsc = 'transaction_blockNumber_ASC',
+  TransactionBlockNumberAscNullsFirst = 'transaction_blockNumber_ASC_NULLS_FIRST',
   TransactionBlockNumberDesc = 'transaction_blockNumber_DESC',
+  TransactionBlockNumberDescNullsLast = 'transaction_blockNumber_DESC_NULLS_LAST',
   TransactionIdAsc = 'transaction_id_ASC',
+  TransactionIdAscNullsFirst = 'transaction_id_ASC_NULLS_FIRST',
   TransactionIdDesc = 'transaction_id_DESC',
+  TransactionIdDescNullsLast = 'transaction_id_DESC_NULLS_LAST',
   TransactionTimestampAsc = 'transaction_timestamp_ASC',
-  TransactionTimestampDesc = 'transaction_timestamp_DESC'
+  TransactionTimestampAscNullsFirst = 'transaction_timestamp_ASC_NULLS_FIRST',
+  TransactionTimestampDesc = 'transaction_timestamp_DESC',
+  TransactionTimestampDescNullsLast = 'transaction_timestamp_DESC_NULLS_LAST'
 }
 
 export type BurnWhereInput = {
@@ -474,6 +832,781 @@ export type BurnsConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
+export type Call = {
+  __typename?: 'Call';
+  address: Array<Scalars['Int']['output']>;
+  args?: Maybe<Scalars['JSON']['output']>;
+  argsStr?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  block: Block;
+  error?: Maybe<Scalars['JSON']['output']>;
+  events: Array<Event>;
+  extrinsic?: Maybe<Extrinsic>;
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  pallet: Scalars['String']['output'];
+  parent?: Maybe<Call>;
+  subcalls: Array<Call>;
+  success: Scalars['Boolean']['output'];
+};
+
+
+export type CallEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderByInput>>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+
+export type CallSubcallsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderByInput>>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+export type CallEdge = {
+  __typename?: 'CallEdge';
+  cursor: Scalars['String']['output'];
+  node: Call;
+};
+
+export enum CallOrderByInput {
+  BlockCallsCountAsc = 'block_callsCount_ASC',
+  BlockCallsCountAscNullsFirst = 'block_callsCount_ASC_NULLS_FIRST',
+  BlockCallsCountDesc = 'block_callsCount_DESC',
+  BlockCallsCountDescNullsLast = 'block_callsCount_DESC_NULLS_LAST',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountAscNullsFirst = 'block_eventsCount_ASC_NULLS_FIRST',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
+  BlockEventsCountDescNullsLast = 'block_eventsCount_DESC_NULLS_LAST',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountAscNullsFirst = 'block_extrinsicsCount_ASC_NULLS_FIRST',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
+  BlockExtrinsicsCountDescNullsLast = 'block_extrinsicsCount_DESC_NULLS_LAST',
+  BlockExtrinsicsicRootAsc = 'block_extrinsicsicRoot_ASC',
+  BlockExtrinsicsicRootAscNullsFirst = 'block_extrinsicsicRoot_ASC_NULLS_FIRST',
+  BlockExtrinsicsicRootDesc = 'block_extrinsicsicRoot_DESC',
+  BlockExtrinsicsicRootDescNullsLast = 'block_extrinsicsicRoot_DESC_NULLS_LAST',
+  BlockHashAsc = 'block_hash_ASC',
+  BlockHashAscNullsFirst = 'block_hash_ASC_NULLS_FIRST',
+  BlockHashDesc = 'block_hash_DESC',
+  BlockHashDescNullsLast = 'block_hash_DESC_NULLS_LAST',
+  BlockHeightAsc = 'block_height_ASC',
+  BlockHeightAscNullsFirst = 'block_height_ASC_NULLS_FIRST',
+  BlockHeightDesc = 'block_height_DESC',
+  BlockHeightDescNullsLast = 'block_height_DESC_NULLS_LAST',
+  BlockIdAsc = 'block_id_ASC',
+  BlockIdAscNullsFirst = 'block_id_ASC_NULLS_FIRST',
+  BlockIdDesc = 'block_id_DESC',
+  BlockIdDescNullsLast = 'block_id_DESC_NULLS_LAST',
+  BlockImplNameAsc = 'block_implName_ASC',
+  BlockImplNameAscNullsFirst = 'block_implName_ASC_NULLS_FIRST',
+  BlockImplNameDesc = 'block_implName_DESC',
+  BlockImplNameDescNullsLast = 'block_implName_DESC_NULLS_LAST',
+  BlockImplVersionAsc = 'block_implVersion_ASC',
+  BlockImplVersionAscNullsFirst = 'block_implVersion_ASC_NULLS_FIRST',
+  BlockImplVersionDesc = 'block_implVersion_DESC',
+  BlockImplVersionDescNullsLast = 'block_implVersion_DESC_NULLS_LAST',
+  BlockParentHashAsc = 'block_parentHash_ASC',
+  BlockParentHashAscNullsFirst = 'block_parentHash_ASC_NULLS_FIRST',
+  BlockParentHashDesc = 'block_parentHash_DESC',
+  BlockParentHashDescNullsLast = 'block_parentHash_DESC_NULLS_LAST',
+  BlockSpecNameAsc = 'block_specName_ASC',
+  BlockSpecNameAscNullsFirst = 'block_specName_ASC_NULLS_FIRST',
+  BlockSpecNameDesc = 'block_specName_DESC',
+  BlockSpecNameDescNullsLast = 'block_specName_DESC_NULLS_LAST',
+  BlockSpecVersionAsc = 'block_specVersion_ASC',
+  BlockSpecVersionAscNullsFirst = 'block_specVersion_ASC_NULLS_FIRST',
+  BlockSpecVersionDesc = 'block_specVersion_DESC',
+  BlockSpecVersionDescNullsLast = 'block_specVersion_DESC_NULLS_LAST',
+  BlockStateRootAsc = 'block_stateRoot_ASC',
+  BlockStateRootAscNullsFirst = 'block_stateRoot_ASC_NULLS_FIRST',
+  BlockStateRootDesc = 'block_stateRoot_DESC',
+  BlockStateRootDescNullsLast = 'block_stateRoot_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'block_timestamp_ASC',
+  BlockTimestampAscNullsFirst = 'block_timestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'block_timestamp_DESC',
+  BlockTimestampDescNullsLast = 'block_timestamp_DESC_NULLS_LAST',
+  BlockValidatorAsc = 'block_validator_ASC',
+  BlockValidatorAscNullsFirst = 'block_validator_ASC_NULLS_FIRST',
+  BlockValidatorDesc = 'block_validator_DESC',
+  BlockValidatorDescNullsLast = 'block_validator_DESC_NULLS_LAST',
+  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
+  ExtrinsicFeeAscNullsFirst = 'extrinsic_fee_ASC_NULLS_FIRST',
+  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
+  ExtrinsicFeeDescNullsLast = 'extrinsic_fee_DESC_NULLS_LAST',
+  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
+  ExtrinsicHashAscNullsFirst = 'extrinsic_hash_ASC_NULLS_FIRST',
+  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
+  ExtrinsicHashDescNullsLast = 'extrinsic_hash_DESC_NULLS_LAST',
+  ExtrinsicIdAsc = 'extrinsic_id_ASC',
+  ExtrinsicIdAscNullsFirst = 'extrinsic_id_ASC_NULLS_FIRST',
+  ExtrinsicIdDesc = 'extrinsic_id_DESC',
+  ExtrinsicIdDescNullsLast = 'extrinsic_id_DESC_NULLS_LAST',
+  ExtrinsicIndexAsc = 'extrinsic_index_ASC',
+  ExtrinsicIndexAscNullsFirst = 'extrinsic_index_ASC_NULLS_FIRST',
+  ExtrinsicIndexDesc = 'extrinsic_index_DESC',
+  ExtrinsicIndexDescNullsLast = 'extrinsic_index_DESC_NULLS_LAST',
+  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
+  ExtrinsicSuccessAscNullsFirst = 'extrinsic_success_ASC_NULLS_FIRST',
+  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
+  ExtrinsicSuccessDescNullsLast = 'extrinsic_success_DESC_NULLS_LAST',
+  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
+  ExtrinsicTipAscNullsFirst = 'extrinsic_tip_ASC_NULLS_FIRST',
+  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
+  ExtrinsicTipDescNullsLast = 'extrinsic_tip_DESC_NULLS_LAST',
+  ExtrinsicVersionAsc = 'extrinsic_version_ASC',
+  ExtrinsicVersionAscNullsFirst = 'extrinsic_version_ASC_NULLS_FIRST',
+  ExtrinsicVersionDesc = 'extrinsic_version_DESC',
+  ExtrinsicVersionDescNullsLast = 'extrinsic_version_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
+  NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
+  PalletAsc = 'pallet_ASC',
+  PalletAscNullsFirst = 'pallet_ASC_NULLS_FIRST',
+  PalletDesc = 'pallet_DESC',
+  PalletDescNullsLast = 'pallet_DESC_NULLS_LAST',
+  ParentIdAsc = 'parent_id_ASC',
+  ParentIdAscNullsFirst = 'parent_id_ASC_NULLS_FIRST',
+  ParentIdDesc = 'parent_id_DESC',
+  ParentIdDescNullsLast = 'parent_id_DESC_NULLS_LAST',
+  ParentNameAsc = 'parent_name_ASC',
+  ParentNameAscNullsFirst = 'parent_name_ASC_NULLS_FIRST',
+  ParentNameDesc = 'parent_name_DESC',
+  ParentNameDescNullsLast = 'parent_name_DESC_NULLS_LAST',
+  ParentPalletAsc = 'parent_pallet_ASC',
+  ParentPalletAscNullsFirst = 'parent_pallet_ASC_NULLS_FIRST',
+  ParentPalletDesc = 'parent_pallet_DESC',
+  ParentPalletDescNullsLast = 'parent_pallet_DESC_NULLS_LAST',
+  ParentSuccessAsc = 'parent_success_ASC',
+  ParentSuccessAscNullsFirst = 'parent_success_ASC_NULLS_FIRST',
+  ParentSuccessDesc = 'parent_success_DESC',
+  ParentSuccessDescNullsLast = 'parent_success_DESC_NULLS_LAST',
+  SuccessAsc = 'success_ASC',
+  SuccessAscNullsFirst = 'success_ASC_NULLS_FIRST',
+  SuccessDesc = 'success_DESC',
+  SuccessDescNullsLast = 'success_DESC_NULLS_LAST'
+}
+
+export type CallWhereInput = {
+  AND?: InputMaybe<Array<CallWhereInput>>;
+  OR?: InputMaybe<Array<CallWhereInput>>;
+  address_containsAll?: InputMaybe<Array<Scalars['Int']['input']>>;
+  address_containsAny?: InputMaybe<Array<Scalars['Int']['input']>>;
+  address_containsNone?: InputMaybe<Array<Scalars['Int']['input']>>;
+  address_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  argsStr_containsAll?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  argsStr_containsAny?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  argsStr_containsNone?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  argsStr_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_eq?: InputMaybe<Scalars['JSON']['input']>;
+  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  block?: InputMaybe<BlockWhereInput>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  error_eq?: InputMaybe<Scalars['JSON']['input']>;
+  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  events_every?: InputMaybe<EventWhereInput>;
+  events_none?: InputMaybe<EventWhereInput>;
+  events_some?: InputMaybe<EventWhereInput>;
+  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
+  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_contains?: InputMaybe<Scalars['String']['input']>;
+  pallet_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  pallet_endsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_eq?: InputMaybe<Scalars['String']['input']>;
+  pallet_gt?: InputMaybe<Scalars['String']['input']>;
+  pallet_gte?: InputMaybe<Scalars['String']['input']>;
+  pallet_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  pallet_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pallet_lt?: InputMaybe<Scalars['String']['input']>;
+  pallet_lte?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_contains?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_eq?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  pallet_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_startsWith?: InputMaybe<Scalars['String']['input']>;
+  parent?: InputMaybe<CallWhereInput>;
+  parent_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  subcalls_every?: InputMaybe<CallWhereInput>;
+  subcalls_none?: InputMaybe<CallWhereInput>;
+  subcalls_some?: InputMaybe<CallWhereInput>;
+  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CallsConnection = {
+  __typename?: 'CallsConnection';
+  edges: Array<CallEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export enum CounterLevel {
+  Global = 'Global',
+  Item = 'Item',
+  Pallet = 'Pallet'
+}
+
+export type Event = {
+  __typename?: 'Event';
+  args?: Maybe<Scalars['JSON']['output']>;
+  argsStr?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  block: Block;
+  call?: Maybe<Call>;
+  extrinsic?: Maybe<Extrinsic>;
+  /** Event id - e.g. 0000000001-000000-272d6 */
+  id: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  pallet: Scalars['String']['output'];
+  phase: Scalars['String']['output'];
+};
+
+export type EventEdge = {
+  __typename?: 'EventEdge';
+  cursor: Scalars['String']['output'];
+  node: Event;
+};
+
+export enum EventOrderByInput {
+  BlockCallsCountAsc = 'block_callsCount_ASC',
+  BlockCallsCountAscNullsFirst = 'block_callsCount_ASC_NULLS_FIRST',
+  BlockCallsCountDesc = 'block_callsCount_DESC',
+  BlockCallsCountDescNullsLast = 'block_callsCount_DESC_NULLS_LAST',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountAscNullsFirst = 'block_eventsCount_ASC_NULLS_FIRST',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
+  BlockEventsCountDescNullsLast = 'block_eventsCount_DESC_NULLS_LAST',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountAscNullsFirst = 'block_extrinsicsCount_ASC_NULLS_FIRST',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
+  BlockExtrinsicsCountDescNullsLast = 'block_extrinsicsCount_DESC_NULLS_LAST',
+  BlockExtrinsicsicRootAsc = 'block_extrinsicsicRoot_ASC',
+  BlockExtrinsicsicRootAscNullsFirst = 'block_extrinsicsicRoot_ASC_NULLS_FIRST',
+  BlockExtrinsicsicRootDesc = 'block_extrinsicsicRoot_DESC',
+  BlockExtrinsicsicRootDescNullsLast = 'block_extrinsicsicRoot_DESC_NULLS_LAST',
+  BlockHashAsc = 'block_hash_ASC',
+  BlockHashAscNullsFirst = 'block_hash_ASC_NULLS_FIRST',
+  BlockHashDesc = 'block_hash_DESC',
+  BlockHashDescNullsLast = 'block_hash_DESC_NULLS_LAST',
+  BlockHeightAsc = 'block_height_ASC',
+  BlockHeightAscNullsFirst = 'block_height_ASC_NULLS_FIRST',
+  BlockHeightDesc = 'block_height_DESC',
+  BlockHeightDescNullsLast = 'block_height_DESC_NULLS_LAST',
+  BlockIdAsc = 'block_id_ASC',
+  BlockIdAscNullsFirst = 'block_id_ASC_NULLS_FIRST',
+  BlockIdDesc = 'block_id_DESC',
+  BlockIdDescNullsLast = 'block_id_DESC_NULLS_LAST',
+  BlockImplNameAsc = 'block_implName_ASC',
+  BlockImplNameAscNullsFirst = 'block_implName_ASC_NULLS_FIRST',
+  BlockImplNameDesc = 'block_implName_DESC',
+  BlockImplNameDescNullsLast = 'block_implName_DESC_NULLS_LAST',
+  BlockImplVersionAsc = 'block_implVersion_ASC',
+  BlockImplVersionAscNullsFirst = 'block_implVersion_ASC_NULLS_FIRST',
+  BlockImplVersionDesc = 'block_implVersion_DESC',
+  BlockImplVersionDescNullsLast = 'block_implVersion_DESC_NULLS_LAST',
+  BlockParentHashAsc = 'block_parentHash_ASC',
+  BlockParentHashAscNullsFirst = 'block_parentHash_ASC_NULLS_FIRST',
+  BlockParentHashDesc = 'block_parentHash_DESC',
+  BlockParentHashDescNullsLast = 'block_parentHash_DESC_NULLS_LAST',
+  BlockSpecNameAsc = 'block_specName_ASC',
+  BlockSpecNameAscNullsFirst = 'block_specName_ASC_NULLS_FIRST',
+  BlockSpecNameDesc = 'block_specName_DESC',
+  BlockSpecNameDescNullsLast = 'block_specName_DESC_NULLS_LAST',
+  BlockSpecVersionAsc = 'block_specVersion_ASC',
+  BlockSpecVersionAscNullsFirst = 'block_specVersion_ASC_NULLS_FIRST',
+  BlockSpecVersionDesc = 'block_specVersion_DESC',
+  BlockSpecVersionDescNullsLast = 'block_specVersion_DESC_NULLS_LAST',
+  BlockStateRootAsc = 'block_stateRoot_ASC',
+  BlockStateRootAscNullsFirst = 'block_stateRoot_ASC_NULLS_FIRST',
+  BlockStateRootDesc = 'block_stateRoot_DESC',
+  BlockStateRootDescNullsLast = 'block_stateRoot_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'block_timestamp_ASC',
+  BlockTimestampAscNullsFirst = 'block_timestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'block_timestamp_DESC',
+  BlockTimestampDescNullsLast = 'block_timestamp_DESC_NULLS_LAST',
+  BlockValidatorAsc = 'block_validator_ASC',
+  BlockValidatorAscNullsFirst = 'block_validator_ASC_NULLS_FIRST',
+  BlockValidatorDesc = 'block_validator_DESC',
+  BlockValidatorDescNullsLast = 'block_validator_DESC_NULLS_LAST',
+  CallIdAsc = 'call_id_ASC',
+  CallIdAscNullsFirst = 'call_id_ASC_NULLS_FIRST',
+  CallIdDesc = 'call_id_DESC',
+  CallIdDescNullsLast = 'call_id_DESC_NULLS_LAST',
+  CallNameAsc = 'call_name_ASC',
+  CallNameAscNullsFirst = 'call_name_ASC_NULLS_FIRST',
+  CallNameDesc = 'call_name_DESC',
+  CallNameDescNullsLast = 'call_name_DESC_NULLS_LAST',
+  CallPalletAsc = 'call_pallet_ASC',
+  CallPalletAscNullsFirst = 'call_pallet_ASC_NULLS_FIRST',
+  CallPalletDesc = 'call_pallet_DESC',
+  CallPalletDescNullsLast = 'call_pallet_DESC_NULLS_LAST',
+  CallSuccessAsc = 'call_success_ASC',
+  CallSuccessAscNullsFirst = 'call_success_ASC_NULLS_FIRST',
+  CallSuccessDesc = 'call_success_DESC',
+  CallSuccessDescNullsLast = 'call_success_DESC_NULLS_LAST',
+  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
+  ExtrinsicFeeAscNullsFirst = 'extrinsic_fee_ASC_NULLS_FIRST',
+  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
+  ExtrinsicFeeDescNullsLast = 'extrinsic_fee_DESC_NULLS_LAST',
+  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
+  ExtrinsicHashAscNullsFirst = 'extrinsic_hash_ASC_NULLS_FIRST',
+  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
+  ExtrinsicHashDescNullsLast = 'extrinsic_hash_DESC_NULLS_LAST',
+  ExtrinsicIdAsc = 'extrinsic_id_ASC',
+  ExtrinsicIdAscNullsFirst = 'extrinsic_id_ASC_NULLS_FIRST',
+  ExtrinsicIdDesc = 'extrinsic_id_DESC',
+  ExtrinsicIdDescNullsLast = 'extrinsic_id_DESC_NULLS_LAST',
+  ExtrinsicIndexAsc = 'extrinsic_index_ASC',
+  ExtrinsicIndexAscNullsFirst = 'extrinsic_index_ASC_NULLS_FIRST',
+  ExtrinsicIndexDesc = 'extrinsic_index_DESC',
+  ExtrinsicIndexDescNullsLast = 'extrinsic_index_DESC_NULLS_LAST',
+  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
+  ExtrinsicSuccessAscNullsFirst = 'extrinsic_success_ASC_NULLS_FIRST',
+  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
+  ExtrinsicSuccessDescNullsLast = 'extrinsic_success_DESC_NULLS_LAST',
+  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
+  ExtrinsicTipAscNullsFirst = 'extrinsic_tip_ASC_NULLS_FIRST',
+  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
+  ExtrinsicTipDescNullsLast = 'extrinsic_tip_DESC_NULLS_LAST',
+  ExtrinsicVersionAsc = 'extrinsic_version_ASC',
+  ExtrinsicVersionAscNullsFirst = 'extrinsic_version_ASC_NULLS_FIRST',
+  ExtrinsicVersionDesc = 'extrinsic_version_DESC',
+  ExtrinsicVersionDescNullsLast = 'extrinsic_version_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IndexAsc = 'index_ASC',
+  IndexAscNullsFirst = 'index_ASC_NULLS_FIRST',
+  IndexDesc = 'index_DESC',
+  IndexDescNullsLast = 'index_DESC_NULLS_LAST',
+  NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
+  NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
+  PalletAsc = 'pallet_ASC',
+  PalletAscNullsFirst = 'pallet_ASC_NULLS_FIRST',
+  PalletDesc = 'pallet_DESC',
+  PalletDescNullsLast = 'pallet_DESC_NULLS_LAST',
+  PhaseAsc = 'phase_ASC',
+  PhaseAscNullsFirst = 'phase_ASC_NULLS_FIRST',
+  PhaseDesc = 'phase_DESC',
+  PhaseDescNullsLast = 'phase_DESC_NULLS_LAST'
+}
+
+export type EventWhereInput = {
+  AND?: InputMaybe<Array<EventWhereInput>>;
+  OR?: InputMaybe<Array<EventWhereInput>>;
+  argsStr_containsAll?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  argsStr_containsAny?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  argsStr_containsNone?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  argsStr_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_eq?: InputMaybe<Scalars['JSON']['input']>;
+  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  block?: InputMaybe<BlockWhereInput>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  call?: InputMaybe<CallWhereInput>;
+  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
+  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  index_eq?: InputMaybe<Scalars['Int']['input']>;
+  index_gt?: InputMaybe<Scalars['Int']['input']>;
+  index_gte?: InputMaybe<Scalars['Int']['input']>;
+  index_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  index_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  index_lt?: InputMaybe<Scalars['Int']['input']>;
+  index_lte?: InputMaybe<Scalars['Int']['input']>;
+  index_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  index_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_contains?: InputMaybe<Scalars['String']['input']>;
+  pallet_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  pallet_endsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_eq?: InputMaybe<Scalars['String']['input']>;
+  pallet_gt?: InputMaybe<Scalars['String']['input']>;
+  pallet_gte?: InputMaybe<Scalars['String']['input']>;
+  pallet_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  pallet_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pallet_lt?: InputMaybe<Scalars['String']['input']>;
+  pallet_lte?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_contains?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_eq?: InputMaybe<Scalars['String']['input']>;
+  pallet_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  pallet_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  pallet_startsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_contains?: InputMaybe<Scalars['String']['input']>;
+  phase_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  phase_endsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_eq?: InputMaybe<Scalars['String']['input']>;
+  phase_gt?: InputMaybe<Scalars['String']['input']>;
+  phase_gte?: InputMaybe<Scalars['String']['input']>;
+  phase_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phase_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  phase_lt?: InputMaybe<Scalars['String']['input']>;
+  phase_lte?: InputMaybe<Scalars['String']['input']>;
+  phase_not_contains?: InputMaybe<Scalars['String']['input']>;
+  phase_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  phase_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_not_eq?: InputMaybe<Scalars['String']['input']>;
+  phase_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phase_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type EventsConnection = {
+  __typename?: 'EventsConnection';
+  edges: Array<EventEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Extrinsic = {
+  __typename?: 'Extrinsic';
+  block: Block;
+  call: Call;
+  calls: Array<Call>;
+  error?: Maybe<Scalars['JSON']['output']>;
+  events: Array<Event>;
+  fee?: Maybe<Scalars['BigInt']['output']>;
+  hash: Scalars['Bytes']['output'];
+  id: Scalars['String']['output'];
+  index: Scalars['Int']['output'];
+  signature?: Maybe<ExtrinsicSignature>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  tip?: Maybe<Scalars['BigInt']['output']>;
+  version: Scalars['Int']['output'];
+};
+
+
+export type ExtrinsicCallsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderByInput>>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+
+export type ExtrinsicEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderByInput>>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+export type ExtrinsicEdge = {
+  __typename?: 'ExtrinsicEdge';
+  cursor: Scalars['String']['output'];
+  node: Extrinsic;
+};
+
+export enum ExtrinsicOrderByInput {
+  BlockCallsCountAsc = 'block_callsCount_ASC',
+  BlockCallsCountAscNullsFirst = 'block_callsCount_ASC_NULLS_FIRST',
+  BlockCallsCountDesc = 'block_callsCount_DESC',
+  BlockCallsCountDescNullsLast = 'block_callsCount_DESC_NULLS_LAST',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountAscNullsFirst = 'block_eventsCount_ASC_NULLS_FIRST',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
+  BlockEventsCountDescNullsLast = 'block_eventsCount_DESC_NULLS_LAST',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountAscNullsFirst = 'block_extrinsicsCount_ASC_NULLS_FIRST',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
+  BlockExtrinsicsCountDescNullsLast = 'block_extrinsicsCount_DESC_NULLS_LAST',
+  BlockExtrinsicsicRootAsc = 'block_extrinsicsicRoot_ASC',
+  BlockExtrinsicsicRootAscNullsFirst = 'block_extrinsicsicRoot_ASC_NULLS_FIRST',
+  BlockExtrinsicsicRootDesc = 'block_extrinsicsicRoot_DESC',
+  BlockExtrinsicsicRootDescNullsLast = 'block_extrinsicsicRoot_DESC_NULLS_LAST',
+  BlockHashAsc = 'block_hash_ASC',
+  BlockHashAscNullsFirst = 'block_hash_ASC_NULLS_FIRST',
+  BlockHashDesc = 'block_hash_DESC',
+  BlockHashDescNullsLast = 'block_hash_DESC_NULLS_LAST',
+  BlockHeightAsc = 'block_height_ASC',
+  BlockHeightAscNullsFirst = 'block_height_ASC_NULLS_FIRST',
+  BlockHeightDesc = 'block_height_DESC',
+  BlockHeightDescNullsLast = 'block_height_DESC_NULLS_LAST',
+  BlockIdAsc = 'block_id_ASC',
+  BlockIdAscNullsFirst = 'block_id_ASC_NULLS_FIRST',
+  BlockIdDesc = 'block_id_DESC',
+  BlockIdDescNullsLast = 'block_id_DESC_NULLS_LAST',
+  BlockImplNameAsc = 'block_implName_ASC',
+  BlockImplNameAscNullsFirst = 'block_implName_ASC_NULLS_FIRST',
+  BlockImplNameDesc = 'block_implName_DESC',
+  BlockImplNameDescNullsLast = 'block_implName_DESC_NULLS_LAST',
+  BlockImplVersionAsc = 'block_implVersion_ASC',
+  BlockImplVersionAscNullsFirst = 'block_implVersion_ASC_NULLS_FIRST',
+  BlockImplVersionDesc = 'block_implVersion_DESC',
+  BlockImplVersionDescNullsLast = 'block_implVersion_DESC_NULLS_LAST',
+  BlockParentHashAsc = 'block_parentHash_ASC',
+  BlockParentHashAscNullsFirst = 'block_parentHash_ASC_NULLS_FIRST',
+  BlockParentHashDesc = 'block_parentHash_DESC',
+  BlockParentHashDescNullsLast = 'block_parentHash_DESC_NULLS_LAST',
+  BlockSpecNameAsc = 'block_specName_ASC',
+  BlockSpecNameAscNullsFirst = 'block_specName_ASC_NULLS_FIRST',
+  BlockSpecNameDesc = 'block_specName_DESC',
+  BlockSpecNameDescNullsLast = 'block_specName_DESC_NULLS_LAST',
+  BlockSpecVersionAsc = 'block_specVersion_ASC',
+  BlockSpecVersionAscNullsFirst = 'block_specVersion_ASC_NULLS_FIRST',
+  BlockSpecVersionDesc = 'block_specVersion_DESC',
+  BlockSpecVersionDescNullsLast = 'block_specVersion_DESC_NULLS_LAST',
+  BlockStateRootAsc = 'block_stateRoot_ASC',
+  BlockStateRootAscNullsFirst = 'block_stateRoot_ASC_NULLS_FIRST',
+  BlockStateRootDesc = 'block_stateRoot_DESC',
+  BlockStateRootDescNullsLast = 'block_stateRoot_DESC_NULLS_LAST',
+  BlockTimestampAsc = 'block_timestamp_ASC',
+  BlockTimestampAscNullsFirst = 'block_timestamp_ASC_NULLS_FIRST',
+  BlockTimestampDesc = 'block_timestamp_DESC',
+  BlockTimestampDescNullsLast = 'block_timestamp_DESC_NULLS_LAST',
+  BlockValidatorAsc = 'block_validator_ASC',
+  BlockValidatorAscNullsFirst = 'block_validator_ASC_NULLS_FIRST',
+  BlockValidatorDesc = 'block_validator_DESC',
+  BlockValidatorDescNullsLast = 'block_validator_DESC_NULLS_LAST',
+  CallIdAsc = 'call_id_ASC',
+  CallIdAscNullsFirst = 'call_id_ASC_NULLS_FIRST',
+  CallIdDesc = 'call_id_DESC',
+  CallIdDescNullsLast = 'call_id_DESC_NULLS_LAST',
+  CallNameAsc = 'call_name_ASC',
+  CallNameAscNullsFirst = 'call_name_ASC_NULLS_FIRST',
+  CallNameDesc = 'call_name_DESC',
+  CallNameDescNullsLast = 'call_name_DESC_NULLS_LAST',
+  CallPalletAsc = 'call_pallet_ASC',
+  CallPalletAscNullsFirst = 'call_pallet_ASC_NULLS_FIRST',
+  CallPalletDesc = 'call_pallet_DESC',
+  CallPalletDescNullsLast = 'call_pallet_DESC_NULLS_LAST',
+  CallSuccessAsc = 'call_success_ASC',
+  CallSuccessAscNullsFirst = 'call_success_ASC_NULLS_FIRST',
+  CallSuccessDesc = 'call_success_DESC',
+  CallSuccessDescNullsLast = 'call_success_DESC_NULLS_LAST',
+  FeeAsc = 'fee_ASC',
+  FeeAscNullsFirst = 'fee_ASC_NULLS_FIRST',
+  FeeDesc = 'fee_DESC',
+  FeeDescNullsLast = 'fee_DESC_NULLS_LAST',
+  HashAsc = 'hash_ASC',
+  HashAscNullsFirst = 'hash_ASC_NULLS_FIRST',
+  HashDesc = 'hash_DESC',
+  HashDescNullsLast = 'hash_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  IndexAsc = 'index_ASC',
+  IndexAscNullsFirst = 'index_ASC_NULLS_FIRST',
+  IndexDesc = 'index_DESC',
+  IndexDescNullsLast = 'index_DESC_NULLS_LAST',
+  SuccessAsc = 'success_ASC',
+  SuccessAscNullsFirst = 'success_ASC_NULLS_FIRST',
+  SuccessDesc = 'success_DESC',
+  SuccessDescNullsLast = 'success_DESC_NULLS_LAST',
+  TipAsc = 'tip_ASC',
+  TipAscNullsFirst = 'tip_ASC_NULLS_FIRST',
+  TipDesc = 'tip_DESC',
+  TipDescNullsLast = 'tip_DESC_NULLS_LAST',
+  VersionAsc = 'version_ASC',
+  VersionAscNullsFirst = 'version_ASC_NULLS_FIRST',
+  VersionDesc = 'version_DESC',
+  VersionDescNullsLast = 'version_DESC_NULLS_LAST'
+}
+
+export type ExtrinsicSignature = {
+  __typename?: 'ExtrinsicSignature';
+  address?: Maybe<Scalars['JSON']['output']>;
+  signature?: Maybe<Scalars['JSON']['output']>;
+  signedExtensions?: Maybe<Scalars['JSON']['output']>;
+};
+
+export type ExtrinsicSignatureWhereInput = {
+  address_eq?: InputMaybe<Scalars['JSON']['input']>;
+  address_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  address_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  address_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  address_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  signature_eq?: InputMaybe<Scalars['JSON']['input']>;
+  signature_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  signature_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  signature_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  signature_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  signedExtensions_eq?: InputMaybe<Scalars['JSON']['input']>;
+  signedExtensions_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  signedExtensions_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  signedExtensions_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  signedExtensions_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+};
+
+export type ExtrinsicWhereInput = {
+  AND?: InputMaybe<Array<ExtrinsicWhereInput>>;
+  OR?: InputMaybe<Array<ExtrinsicWhereInput>>;
+  block?: InputMaybe<BlockWhereInput>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  call?: InputMaybe<CallWhereInput>;
+  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  calls_every?: InputMaybe<CallWhereInput>;
+  calls_none?: InputMaybe<CallWhereInput>;
+  calls_some?: InputMaybe<CallWhereInput>;
+  error_eq?: InputMaybe<Scalars['JSON']['input']>;
+  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  events_every?: InputMaybe<EventWhereInput>;
+  events_none?: InputMaybe<EventWhereInput>;
+  events_some?: InputMaybe<EventWhereInput>;
+  fee_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  fee_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  fee_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  hash_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  hash_not_eq?: InputMaybe<Scalars['Bytes']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  index_eq?: InputMaybe<Scalars['Int']['input']>;
+  index_gt?: InputMaybe<Scalars['Int']['input']>;
+  index_gte?: InputMaybe<Scalars['Int']['input']>;
+  index_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  index_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  index_lt?: InputMaybe<Scalars['Int']['input']>;
+  index_lte?: InputMaybe<Scalars['Int']['input']>;
+  index_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  index_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  signature?: InputMaybe<ExtrinsicSignatureWhereInput>;
+  signature_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  tip_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  tip_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  tip_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  version_eq?: InputMaybe<Scalars['Int']['input']>;
+  version_gt?: InputMaybe<Scalars['Int']['input']>;
+  version_gte?: InputMaybe<Scalars['Int']['input']>;
+  version_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  version_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  version_lt?: InputMaybe<Scalars['Int']['input']>;
+  version_lte?: InputMaybe<Scalars['Int']['input']>;
+  version_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  version_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type ExtrinsicsConnection = {
+  __typename?: 'ExtrinsicsConnection';
+  edges: Array<ExtrinsicEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type FactoriesConnection = {
   __typename?: 'FactoriesConnection';
   edges: Array<FactoryEdge>;
@@ -527,25 +1660,45 @@ export type FactoryDayDataEdge = {
 
 export enum FactoryDayDataOrderByInput {
   DailyVolumeEthAsc = 'dailyVolumeETH_ASC',
+  DailyVolumeEthAscNullsFirst = 'dailyVolumeETH_ASC_NULLS_FIRST',
   DailyVolumeEthDesc = 'dailyVolumeETH_DESC',
+  DailyVolumeEthDescNullsLast = 'dailyVolumeETH_DESC_NULLS_LAST',
   DailyVolumeUsdAsc = 'dailyVolumeUSD_ASC',
+  DailyVolumeUsdAscNullsFirst = 'dailyVolumeUSD_ASC_NULLS_FIRST',
   DailyVolumeUsdDesc = 'dailyVolumeUSD_DESC',
+  DailyVolumeUsdDescNullsLast = 'dailyVolumeUSD_DESC_NULLS_LAST',
   DailyVolumeUntrackedAsc = 'dailyVolumeUntracked_ASC',
+  DailyVolumeUntrackedAscNullsFirst = 'dailyVolumeUntracked_ASC_NULLS_FIRST',
   DailyVolumeUntrackedDesc = 'dailyVolumeUntracked_DESC',
+  DailyVolumeUntrackedDescNullsLast = 'dailyVolumeUntracked_DESC_NULLS_LAST',
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   TotalLiquidityEthAsc = 'totalLiquidityETH_ASC',
+  TotalLiquidityEthAscNullsFirst = 'totalLiquidityETH_ASC_NULLS_FIRST',
   TotalLiquidityEthDesc = 'totalLiquidityETH_DESC',
+  TotalLiquidityEthDescNullsLast = 'totalLiquidityETH_DESC_NULLS_LAST',
   TotalLiquidityUsdAsc = 'totalLiquidityUSD_ASC',
+  TotalLiquidityUsdAscNullsFirst = 'totalLiquidityUSD_ASC_NULLS_FIRST',
   TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC',
+  TotalLiquidityUsdDescNullsLast = 'totalLiquidityUSD_DESC_NULLS_LAST',
   TotalVolumeEthAsc = 'totalVolumeETH_ASC',
+  TotalVolumeEthAscNullsFirst = 'totalVolumeETH_ASC_NULLS_FIRST',
   TotalVolumeEthDesc = 'totalVolumeETH_DESC',
+  TotalVolumeEthDescNullsLast = 'totalVolumeETH_DESC_NULLS_LAST',
   TotalVolumeUsdAsc = 'totalVolumeUSD_ASC',
+  TotalVolumeUsdAscNullsFirst = 'totalVolumeUSD_ASC_NULLS_FIRST',
   TotalVolumeUsdDesc = 'totalVolumeUSD_DESC',
+  TotalVolumeUsdDescNullsLast = 'totalVolumeUSD_DESC_NULLS_LAST',
   TxCountAsc = 'txCount_ASC',
-  TxCountDesc = 'txCount_DESC'
+  TxCountAscNullsFirst = 'txCount_ASC_NULLS_FIRST',
+  TxCountDesc = 'txCount_DESC',
+  TxCountDescNullsLast = 'txCount_DESC_NULLS_LAST'
 }
 
 export type FactoryDayDataWhereInput = {
@@ -715,21 +1868,37 @@ export type FactoryEdge = {
 
 export enum FactoryOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   PairCountAsc = 'pairCount_ASC',
+  PairCountAscNullsFirst = 'pairCount_ASC_NULLS_FIRST',
   PairCountDesc = 'pairCount_DESC',
+  PairCountDescNullsLast = 'pairCount_DESC_NULLS_LAST',
   TotalLiquidityEthAsc = 'totalLiquidityETH_ASC',
+  TotalLiquidityEthAscNullsFirst = 'totalLiquidityETH_ASC_NULLS_FIRST',
   TotalLiquidityEthDesc = 'totalLiquidityETH_DESC',
+  TotalLiquidityEthDescNullsLast = 'totalLiquidityETH_DESC_NULLS_LAST',
   TotalLiquidityUsdAsc = 'totalLiquidityUSD_ASC',
+  TotalLiquidityUsdAscNullsFirst = 'totalLiquidityUSD_ASC_NULLS_FIRST',
   TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC',
+  TotalLiquidityUsdDescNullsLast = 'totalLiquidityUSD_DESC_NULLS_LAST',
   TotalVolumeEthAsc = 'totalVolumeETH_ASC',
+  TotalVolumeEthAscNullsFirst = 'totalVolumeETH_ASC_NULLS_FIRST',
   TotalVolumeEthDesc = 'totalVolumeETH_DESC',
+  TotalVolumeEthDescNullsLast = 'totalVolumeETH_DESC_NULLS_LAST',
   TotalVolumeUsdAsc = 'totalVolumeUSD_ASC',
+  TotalVolumeUsdAscNullsFirst = 'totalVolumeUSD_ASC_NULLS_FIRST',
   TotalVolumeUsdDesc = 'totalVolumeUSD_DESC',
+  TotalVolumeUsdDescNullsLast = 'totalVolumeUSD_DESC_NULLS_LAST',
   TxCountAsc = 'txCount_ASC',
+  TxCountAscNullsFirst = 'txCount_ASC_NULLS_FIRST',
   TxCountDesc = 'txCount_DESC',
+  TxCountDescNullsLast = 'txCount_DESC_NULLS_LAST',
   UntrackedVolumeUsdAsc = 'untrackedVolumeUSD_ASC',
-  UntrackedVolumeUsdDesc = 'untrackedVolumeUSD_DESC'
+  UntrackedVolumeUsdAscNullsFirst = 'untrackedVolumeUSD_ASC_NULLS_FIRST',
+  UntrackedVolumeUsdDesc = 'untrackedVolumeUSD_DESC',
+  UntrackedVolumeUsdDescNullsLast = 'untrackedVolumeUSD_DESC_NULLS_LAST'
 }
 
 export type FactoryWhereInput = {
@@ -899,89 +2068,173 @@ export type FarmEdge = {
 
 export enum FarmOrderByInput {
   CreatedAtBlockAsc = 'createdAtBlock_ASC',
+  CreatedAtBlockAscNullsFirst = 'createdAtBlock_ASC_NULLS_FIRST',
   CreatedAtBlockDesc = 'createdAtBlock_DESC',
+  CreatedAtBlockDescNullsLast = 'createdAtBlock_DESC_NULLS_LAST',
   CreatedAtTimestampAsc = 'createdAtTimestamp_ASC',
+  CreatedAtTimestampAscNullsFirst = 'createdAtTimestamp_ASC_NULLS_FIRST',
   CreatedAtTimestampDesc = 'createdAtTimestamp_DESC',
+  CreatedAtTimestampDescNullsLast = 'createdAtTimestamp_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityStakedAsc = 'liquidityStaked_ASC',
+  LiquidityStakedAscNullsFirst = 'liquidityStaked_ASC_NULLS_FIRST',
   LiquidityStakedDesc = 'liquidityStaked_DESC',
+  LiquidityStakedDescNullsLast = 'liquidityStaked_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   PidAsc = 'pid_ASC',
+  PidAscNullsFirst = 'pid_ASC_NULLS_FIRST',
   PidDesc = 'pid_DESC',
+  PidDescNullsLast = 'pid_DESC_NULLS_LAST',
   RewardUsdPerDayAsc = 'rewardUSDPerDay_ASC',
+  RewardUsdPerDayAscNullsFirst = 'rewardUSDPerDay_ASC_NULLS_FIRST',
   RewardUsdPerDayDesc = 'rewardUSDPerDay_DESC',
+  RewardUsdPerDayDescNullsLast = 'rewardUSDPerDay_DESC_NULLS_LAST',
   SingleTokenLockIdAsc = 'singleTokenLock_id_ASC',
+  SingleTokenLockIdAscNullsFirst = 'singleTokenLock_id_ASC_NULLS_FIRST',
   SingleTokenLockIdDesc = 'singleTokenLock_id_DESC',
+  SingleTokenLockIdDescNullsLast = 'singleTokenLock_id_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityEthAsc = 'singleTokenLock_totalLiquidityETH_ASC',
+  SingleTokenLockTotalLiquidityEthAscNullsFirst = 'singleTokenLock_totalLiquidityETH_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityEthDesc = 'singleTokenLock_totalLiquidityETH_DESC',
+  SingleTokenLockTotalLiquidityEthDescNullsLast = 'singleTokenLock_totalLiquidityETH_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityUsdAsc = 'singleTokenLock_totalLiquidityUSD_ASC',
+  SingleTokenLockTotalLiquidityUsdAscNullsFirst = 'singleTokenLock_totalLiquidityUSD_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityUsdDesc = 'singleTokenLock_totalLiquidityUSD_DESC',
+  SingleTokenLockTotalLiquidityUsdDescNullsLast = 'singleTokenLock_totalLiquidityUSD_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityAsc = 'singleTokenLock_totalLiquidity_ASC',
+  SingleTokenLockTotalLiquidityAscNullsFirst = 'singleTokenLock_totalLiquidity_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityDesc = 'singleTokenLock_totalLiquidity_DESC',
+  SingleTokenLockTotalLiquidityDescNullsLast = 'singleTokenLock_totalLiquidity_DESC_NULLS_LAST',
   StableSwapAAsc = 'stableSwap_a_ASC',
+  StableSwapAAscNullsFirst = 'stableSwap_a_ASC_NULLS_FIRST',
   StableSwapADesc = 'stableSwap_a_DESC',
+  StableSwapADescNullsLast = 'stableSwap_a_DESC_NULLS_LAST',
   StableSwapAddressAsc = 'stableSwap_address_ASC',
+  StableSwapAddressAscNullsFirst = 'stableSwap_address_ASC_NULLS_FIRST',
   StableSwapAddressDesc = 'stableSwap_address_DESC',
+  StableSwapAddressDescNullsLast = 'stableSwap_address_DESC_NULLS_LAST',
   StableSwapAdminFeeAsc = 'stableSwap_adminFee_ASC',
+  StableSwapAdminFeeAscNullsFirst = 'stableSwap_adminFee_ASC_NULLS_FIRST',
   StableSwapAdminFeeDesc = 'stableSwap_adminFee_DESC',
+  StableSwapAdminFeeDescNullsLast = 'stableSwap_adminFee_DESC_NULLS_LAST',
   StableSwapBaseSwapAddressAsc = 'stableSwap_baseSwapAddress_ASC',
+  StableSwapBaseSwapAddressAscNullsFirst = 'stableSwap_baseSwapAddress_ASC_NULLS_FIRST',
   StableSwapBaseSwapAddressDesc = 'stableSwap_baseSwapAddress_DESC',
+  StableSwapBaseSwapAddressDescNullsLast = 'stableSwap_baseSwapAddress_DESC_NULLS_LAST',
   StableSwapIdAsc = 'stableSwap_id_ASC',
+  StableSwapIdAscNullsFirst = 'stableSwap_id_ASC_NULLS_FIRST',
   StableSwapIdDesc = 'stableSwap_id_DESC',
+  StableSwapIdDescNullsLast = 'stableSwap_id_DESC_NULLS_LAST',
   StableSwapLpTokenAsc = 'stableSwap_lpToken_ASC',
+  StableSwapLpTokenAscNullsFirst = 'stableSwap_lpToken_ASC_NULLS_FIRST',
   StableSwapLpTokenDesc = 'stableSwap_lpToken_DESC',
+  StableSwapLpTokenDescNullsLast = 'stableSwap_lpToken_DESC_NULLS_LAST',
   StableSwapLpTotalSupplyAsc = 'stableSwap_lpTotalSupply_ASC',
+  StableSwapLpTotalSupplyAscNullsFirst = 'stableSwap_lpTotalSupply_ASC_NULLS_FIRST',
   StableSwapLpTotalSupplyDesc = 'stableSwap_lpTotalSupply_DESC',
+  StableSwapLpTotalSupplyDescNullsLast = 'stableSwap_lpTotalSupply_DESC_NULLS_LAST',
   StableSwapNumTokensAsc = 'stableSwap_numTokens_ASC',
+  StableSwapNumTokensAscNullsFirst = 'stableSwap_numTokens_ASC_NULLS_FIRST',
   StableSwapNumTokensDesc = 'stableSwap_numTokens_DESC',
+  StableSwapNumTokensDescNullsLast = 'stableSwap_numTokens_DESC_NULLS_LAST',
   StableSwapSwapFeeAsc = 'stableSwap_swapFee_ASC',
+  StableSwapSwapFeeAscNullsFirst = 'stableSwap_swapFee_ASC_NULLS_FIRST',
   StableSwapSwapFeeDesc = 'stableSwap_swapFee_DESC',
+  StableSwapSwapFeeDescNullsLast = 'stableSwap_swapFee_DESC_NULLS_LAST',
   StableSwapTvlUsdAsc = 'stableSwap_tvlUSD_ASC',
+  StableSwapTvlUsdAscNullsFirst = 'stableSwap_tvlUSD_ASC_NULLS_FIRST',
   StableSwapTvlUsdDesc = 'stableSwap_tvlUSD_DESC',
+  StableSwapTvlUsdDescNullsLast = 'stableSwap_tvlUSD_DESC_NULLS_LAST',
   StableSwapVirtualPriceAsc = 'stableSwap_virtualPrice_ASC',
+  StableSwapVirtualPriceAscNullsFirst = 'stableSwap_virtualPrice_ASC_NULLS_FIRST',
   StableSwapVirtualPriceDesc = 'stableSwap_virtualPrice_DESC',
+  StableSwapVirtualPriceDescNullsLast = 'stableSwap_virtualPrice_DESC_NULLS_LAST',
   StableSwapVolumeUsdAsc = 'stableSwap_volumeUSD_ASC',
+  StableSwapVolumeUsdAscNullsFirst = 'stableSwap_volumeUSD_ASC_NULLS_FIRST',
   StableSwapVolumeUsdDesc = 'stableSwap_volumeUSD_DESC',
+  StableSwapVolumeUsdDescNullsLast = 'stableSwap_volumeUSD_DESC_NULLS_LAST',
   StakeAprAsc = 'stakeApr_ASC',
+  StakeAprAscNullsFirst = 'stakeApr_ASC_NULLS_FIRST',
   StakeAprDesc = 'stakeApr_DESC',
+  StakeAprDescNullsLast = 'stakeApr_DESC_NULLS_LAST',
   StakeTokenAsc = 'stakeToken_ASC',
+  StakeTokenAscNullsFirst = 'stakeToken_ASC_NULLS_FIRST',
   StakeTokenDesc = 'stakeToken_DESC',
+  StakeTokenDescNullsLast = 'stakeToken_DESC_NULLS_LAST',
   StakedUsdAsc = 'stakedUSD_ASC',
-  StakedUsdDesc = 'stakedUSD_DESC'
+  StakedUsdAscNullsFirst = 'stakedUSD_ASC_NULLS_FIRST',
+  StakedUsdDesc = 'stakedUSD_DESC',
+  StakedUsdDescNullsLast = 'stakedUSD_DESC_NULLS_LAST'
 }
 
 export type FarmWhereInput = {
@@ -1145,49 +2398,93 @@ export type IncentiveEdge = {
 
 export enum IncentiveOrderByInput {
   FarmCreatedAtBlockAsc = 'farm_createdAtBlock_ASC',
+  FarmCreatedAtBlockAscNullsFirst = 'farm_createdAtBlock_ASC_NULLS_FIRST',
   FarmCreatedAtBlockDesc = 'farm_createdAtBlock_DESC',
+  FarmCreatedAtBlockDescNullsLast = 'farm_createdAtBlock_DESC_NULLS_LAST',
   FarmCreatedAtTimestampAsc = 'farm_createdAtTimestamp_ASC',
+  FarmCreatedAtTimestampAscNullsFirst = 'farm_createdAtTimestamp_ASC_NULLS_FIRST',
   FarmCreatedAtTimestampDesc = 'farm_createdAtTimestamp_DESC',
+  FarmCreatedAtTimestampDescNullsLast = 'farm_createdAtTimestamp_DESC_NULLS_LAST',
   FarmIdAsc = 'farm_id_ASC',
+  FarmIdAscNullsFirst = 'farm_id_ASC_NULLS_FIRST',
   FarmIdDesc = 'farm_id_DESC',
+  FarmIdDescNullsLast = 'farm_id_DESC_NULLS_LAST',
   FarmLiquidityStakedAsc = 'farm_liquidityStaked_ASC',
+  FarmLiquidityStakedAscNullsFirst = 'farm_liquidityStaked_ASC_NULLS_FIRST',
   FarmLiquidityStakedDesc = 'farm_liquidityStaked_DESC',
+  FarmLiquidityStakedDescNullsLast = 'farm_liquidityStaked_DESC_NULLS_LAST',
   FarmPidAsc = 'farm_pid_ASC',
+  FarmPidAscNullsFirst = 'farm_pid_ASC_NULLS_FIRST',
   FarmPidDesc = 'farm_pid_DESC',
+  FarmPidDescNullsLast = 'farm_pid_DESC_NULLS_LAST',
   FarmRewardUsdPerDayAsc = 'farm_rewardUSDPerDay_ASC',
+  FarmRewardUsdPerDayAscNullsFirst = 'farm_rewardUSDPerDay_ASC_NULLS_FIRST',
   FarmRewardUsdPerDayDesc = 'farm_rewardUSDPerDay_DESC',
+  FarmRewardUsdPerDayDescNullsLast = 'farm_rewardUSDPerDay_DESC_NULLS_LAST',
   FarmStakeAprAsc = 'farm_stakeApr_ASC',
+  FarmStakeAprAscNullsFirst = 'farm_stakeApr_ASC_NULLS_FIRST',
   FarmStakeAprDesc = 'farm_stakeApr_DESC',
+  FarmStakeAprDescNullsLast = 'farm_stakeApr_DESC_NULLS_LAST',
   FarmStakeTokenAsc = 'farm_stakeToken_ASC',
+  FarmStakeTokenAscNullsFirst = 'farm_stakeToken_ASC_NULLS_FIRST',
   FarmStakeTokenDesc = 'farm_stakeToken_DESC',
+  FarmStakeTokenDescNullsLast = 'farm_stakeToken_DESC_NULLS_LAST',
   FarmStakedUsdAsc = 'farm_stakedUSD_ASC',
+  FarmStakedUsdAscNullsFirst = 'farm_stakedUSD_ASC_NULLS_FIRST',
   FarmStakedUsdDesc = 'farm_stakedUSD_DESC',
+  FarmStakedUsdDescNullsLast = 'farm_stakedUSD_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   RewardPerDayAsc = 'rewardPerDay_ASC',
+  RewardPerDayAscNullsFirst = 'rewardPerDay_ASC_NULLS_FIRST',
   RewardPerDayDesc = 'rewardPerDay_DESC',
+  RewardPerDayDescNullsLast = 'rewardPerDay_DESC_NULLS_LAST',
   RewardTokenDecimalsAsc = 'rewardToken_decimals_ASC',
+  RewardTokenDecimalsAscNullsFirst = 'rewardToken_decimals_ASC_NULLS_FIRST',
   RewardTokenDecimalsDesc = 'rewardToken_decimals_DESC',
+  RewardTokenDecimalsDescNullsLast = 'rewardToken_decimals_DESC_NULLS_LAST',
   RewardTokenDerivedEthAsc = 'rewardToken_derivedETH_ASC',
+  RewardTokenDerivedEthAscNullsFirst = 'rewardToken_derivedETH_ASC_NULLS_FIRST',
   RewardTokenDerivedEthDesc = 'rewardToken_derivedETH_DESC',
+  RewardTokenDerivedEthDescNullsLast = 'rewardToken_derivedETH_DESC_NULLS_LAST',
   RewardTokenIdAsc = 'rewardToken_id_ASC',
+  RewardTokenIdAscNullsFirst = 'rewardToken_id_ASC_NULLS_FIRST',
   RewardTokenIdDesc = 'rewardToken_id_DESC',
+  RewardTokenIdDescNullsLast = 'rewardToken_id_DESC_NULLS_LAST',
   RewardTokenNameAsc = 'rewardToken_name_ASC',
+  RewardTokenNameAscNullsFirst = 'rewardToken_name_ASC_NULLS_FIRST',
   RewardTokenNameDesc = 'rewardToken_name_DESC',
+  RewardTokenNameDescNullsLast = 'rewardToken_name_DESC_NULLS_LAST',
   RewardTokenSymbolAsc = 'rewardToken_symbol_ASC',
+  RewardTokenSymbolAscNullsFirst = 'rewardToken_symbol_ASC_NULLS_FIRST',
   RewardTokenSymbolDesc = 'rewardToken_symbol_DESC',
+  RewardTokenSymbolDescNullsLast = 'rewardToken_symbol_DESC_NULLS_LAST',
   RewardTokenTotalLiquidityAsc = 'rewardToken_totalLiquidity_ASC',
+  RewardTokenTotalLiquidityAscNullsFirst = 'rewardToken_totalLiquidity_ASC_NULLS_FIRST',
   RewardTokenTotalLiquidityDesc = 'rewardToken_totalLiquidity_DESC',
+  RewardTokenTotalLiquidityDescNullsLast = 'rewardToken_totalLiquidity_DESC_NULLS_LAST',
   RewardTokenTotalSupplyAsc = 'rewardToken_totalSupply_ASC',
+  RewardTokenTotalSupplyAscNullsFirst = 'rewardToken_totalSupply_ASC_NULLS_FIRST',
   RewardTokenTotalSupplyDesc = 'rewardToken_totalSupply_DESC',
+  RewardTokenTotalSupplyDescNullsLast = 'rewardToken_totalSupply_DESC_NULLS_LAST',
   RewardTokenTradeVolumeUsdAsc = 'rewardToken_tradeVolumeUSD_ASC',
+  RewardTokenTradeVolumeUsdAscNullsFirst = 'rewardToken_tradeVolumeUSD_ASC_NULLS_FIRST',
   RewardTokenTradeVolumeUsdDesc = 'rewardToken_tradeVolumeUSD_DESC',
+  RewardTokenTradeVolumeUsdDescNullsLast = 'rewardToken_tradeVolumeUSD_DESC_NULLS_LAST',
   RewardTokenTradeVolumeAsc = 'rewardToken_tradeVolume_ASC',
+  RewardTokenTradeVolumeAscNullsFirst = 'rewardToken_tradeVolume_ASC_NULLS_FIRST',
   RewardTokenTradeVolumeDesc = 'rewardToken_tradeVolume_DESC',
+  RewardTokenTradeVolumeDescNullsLast = 'rewardToken_tradeVolume_DESC_NULLS_LAST',
   RewardTokenTxCountAsc = 'rewardToken_txCount_ASC',
+  RewardTokenTxCountAscNullsFirst = 'rewardToken_txCount_ASC_NULLS_FIRST',
   RewardTokenTxCountDesc = 'rewardToken_txCount_DESC',
+  RewardTokenTxCountDescNullsLast = 'rewardToken_txCount_DESC_NULLS_LAST',
   RewardTokenUntrackedVolumeUsdAsc = 'rewardToken_untrackedVolumeUSD_ASC',
-  RewardTokenUntrackedVolumeUsdDesc = 'rewardToken_untrackedVolumeUSD_DESC'
+  RewardTokenUntrackedVolumeUsdAscNullsFirst = 'rewardToken_untrackedVolumeUSD_ASC_NULLS_FIRST',
+  RewardTokenUntrackedVolumeUsdDesc = 'rewardToken_untrackedVolumeUSD_DESC',
+  RewardTokenUntrackedVolumeUsdDescNullsLast = 'rewardToken_untrackedVolumeUSD_DESC_NULLS_LAST'
 }
 
 export type IncentiveWhereInput = {
@@ -1240,6 +2537,93 @@ export type IncentivesConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
+export enum ItemType {
+  Calls = 'Calls',
+  Events = 'Events',
+  Extrinsics = 'Extrinsics'
+}
+
+export type ItemsCounter = {
+  __typename?: 'ItemsCounter';
+  id: Scalars['String']['output'];
+  level: CounterLevel;
+  total: Scalars['Int']['output'];
+  type: ItemType;
+};
+
+export type ItemsCounterEdge = {
+  __typename?: 'ItemsCounterEdge';
+  cursor: Scalars['String']['output'];
+  node: ItemsCounter;
+};
+
+export enum ItemsCounterOrderByInput {
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  LevelAsc = 'level_ASC',
+  LevelAscNullsFirst = 'level_ASC_NULLS_FIRST',
+  LevelDesc = 'level_DESC',
+  LevelDescNullsLast = 'level_DESC_NULLS_LAST',
+  TotalAsc = 'total_ASC',
+  TotalAscNullsFirst = 'total_ASC_NULLS_FIRST',
+  TotalDesc = 'total_DESC',
+  TotalDescNullsLast = 'total_DESC_NULLS_LAST',
+  TypeAsc = 'type_ASC',
+  TypeAscNullsFirst = 'type_ASC_NULLS_FIRST',
+  TypeDesc = 'type_DESC',
+  TypeDescNullsLast = 'type_DESC_NULLS_LAST'
+}
+
+export type ItemsCounterWhereInput = {
+  AND?: InputMaybe<Array<ItemsCounterWhereInput>>;
+  OR?: InputMaybe<Array<ItemsCounterWhereInput>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  level_eq?: InputMaybe<CounterLevel>;
+  level_in?: InputMaybe<Array<CounterLevel>>;
+  level_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  level_not_eq?: InputMaybe<CounterLevel>;
+  level_not_in?: InputMaybe<Array<CounterLevel>>;
+  total_eq?: InputMaybe<Scalars['Int']['input']>;
+  total_gt?: InputMaybe<Scalars['Int']['input']>;
+  total_gte?: InputMaybe<Scalars['Int']['input']>;
+  total_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  total_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  total_lt?: InputMaybe<Scalars['Int']['input']>;
+  total_lte?: InputMaybe<Scalars['Int']['input']>;
+  total_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  total_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  type_eq?: InputMaybe<ItemType>;
+  type_in?: InputMaybe<Array<ItemType>>;
+  type_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  type_not_eq?: InputMaybe<ItemType>;
+  type_not_in?: InputMaybe<Array<ItemType>>;
+};
+
+export type ItemsCountersConnection = {
+  __typename?: 'ItemsCountersConnection';
+  edges: Array<ItemsCounterEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type LiquidityPosition = {
   __typename?: 'LiquidityPosition';
   id: Scalars['String']['output'];
@@ -1257,47 +2641,89 @@ export type LiquidityPositionEdge = {
 
 export enum LiquidityPositionOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityTokenBalanceAsc = 'liquidityTokenBalance_ASC',
+  LiquidityTokenBalanceAscNullsFirst = 'liquidityTokenBalance_ASC_NULLS_FIRST',
   LiquidityTokenBalanceDesc = 'liquidityTokenBalance_DESC',
+  LiquidityTokenBalanceDescNullsLast = 'liquidityTokenBalance_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   UserIdAsc = 'user_id_ASC',
+  UserIdAscNullsFirst = 'user_id_ASC_NULLS_FIRST',
   UserIdDesc = 'user_id_DESC',
+  UserIdDescNullsLast = 'user_id_DESC_NULLS_LAST',
   UserUsdSwappedAsc = 'user_usdSwapped_ASC',
-  UserUsdSwappedDesc = 'user_usdSwapped_DESC'
+  UserUsdSwappedAscNullsFirst = 'user_usdSwapped_ASC_NULLS_FIRST',
+  UserUsdSwappedDesc = 'user_usdSwapped_DESC',
+  UserUsdSwappedDescNullsLast = 'user_usdSwapped_DESC_NULLS_LAST'
 }
 
 export type LiquidityPositionSnapshot = {
@@ -1332,67 +2758,129 @@ export type LiquidityPositionSnapshotEdge = {
 
 export enum LiquidityPositionSnapshotOrderByInput {
   BlockAsc = 'block_ASC',
+  BlockAscNullsFirst = 'block_ASC_NULLS_FIRST',
   BlockDesc = 'block_DESC',
+  BlockDescNullsLast = 'block_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityPositionIdAsc = 'liquidityPosition_id_ASC',
+  LiquidityPositionIdAscNullsFirst = 'liquidityPosition_id_ASC_NULLS_FIRST',
   LiquidityPositionIdDesc = 'liquidityPosition_id_DESC',
+  LiquidityPositionIdDescNullsLast = 'liquidityPosition_id_DESC_NULLS_LAST',
   LiquidityPositionLiquidityTokenBalanceAsc = 'liquidityPosition_liquidityTokenBalance_ASC',
+  LiquidityPositionLiquidityTokenBalanceAscNullsFirst = 'liquidityPosition_liquidityTokenBalance_ASC_NULLS_FIRST',
   LiquidityPositionLiquidityTokenBalanceDesc = 'liquidityPosition_liquidityTokenBalance_DESC',
+  LiquidityPositionLiquidityTokenBalanceDescNullsLast = 'liquidityPosition_liquidityTokenBalance_DESC_NULLS_LAST',
   LiquidityTokenBalanceAsc = 'liquidityTokenBalance_ASC',
+  LiquidityTokenBalanceAscNullsFirst = 'liquidityTokenBalance_ASC_NULLS_FIRST',
   LiquidityTokenBalanceDesc = 'liquidityTokenBalance_DESC',
+  LiquidityTokenBalanceDescNullsLast = 'liquidityTokenBalance_DESC_NULLS_LAST',
   LiquidityTokenTotalSupplyAsc = 'liquidityTokenTotalSupply_ASC',
+  LiquidityTokenTotalSupplyAscNullsFirst = 'liquidityTokenTotalSupply_ASC_NULLS_FIRST',
   LiquidityTokenTotalSupplyDesc = 'liquidityTokenTotalSupply_DESC',
+  LiquidityTokenTotalSupplyDescNullsLast = 'liquidityTokenTotalSupply_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   Reserve0Asc = 'reserve0_ASC',
+  Reserve0AscNullsFirst = 'reserve0_ASC_NULLS_FIRST',
   Reserve0Desc = 'reserve0_DESC',
+  Reserve0DescNullsLast = 'reserve0_DESC_NULLS_LAST',
   Reserve1Asc = 'reserve1_ASC',
+  Reserve1AscNullsFirst = 'reserve1_ASC_NULLS_FIRST',
   Reserve1Desc = 'reserve1_DESC',
+  Reserve1DescNullsLast = 'reserve1_DESC_NULLS_LAST',
   ReserveUsdAsc = 'reserveUSD_ASC',
+  ReserveUsdAscNullsFirst = 'reserveUSD_ASC_NULLS_FIRST',
   ReserveUsdDesc = 'reserveUSD_DESC',
+  ReserveUsdDescNullsLast = 'reserveUSD_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   Token0PriceUsdAsc = 'token0PriceUSD_ASC',
+  Token0PriceUsdAscNullsFirst = 'token0PriceUSD_ASC_NULLS_FIRST',
   Token0PriceUsdDesc = 'token0PriceUSD_DESC',
+  Token0PriceUsdDescNullsLast = 'token0PriceUSD_DESC_NULLS_LAST',
   Token1PriceUsdAsc = 'token1PriceUSD_ASC',
+  Token1PriceUsdAscNullsFirst = 'token1PriceUSD_ASC_NULLS_FIRST',
   Token1PriceUsdDesc = 'token1PriceUSD_DESC',
+  Token1PriceUsdDescNullsLast = 'token1PriceUSD_DESC_NULLS_LAST',
   UserIdAsc = 'user_id_ASC',
+  UserIdAscNullsFirst = 'user_id_ASC_NULLS_FIRST',
   UserIdDesc = 'user_id_DESC',
+  UserIdDescNullsLast = 'user_id_DESC_NULLS_LAST',
   UserUsdSwappedAsc = 'user_usdSwapped_ASC',
-  UserUsdSwappedDesc = 'user_usdSwapped_DESC'
+  UserUsdSwappedAscNullsFirst = 'user_usdSwapped_ASC_NULLS_FIRST',
+  UserUsdSwappedDesc = 'user_usdSwapped_DESC',
+  UserUsdSwappedDescNullsLast = 'user_usdSwapped_DESC_NULLS_LAST'
 }
 
 export type LiquidityPositionSnapshotWhereInput = {
@@ -1642,67 +3130,129 @@ export type MintEdge = {
 
 export enum MintOrderByInput {
   Amount0Asc = 'amount0_ASC',
+  Amount0AscNullsFirst = 'amount0_ASC_NULLS_FIRST',
   Amount0Desc = 'amount0_DESC',
+  Amount0DescNullsLast = 'amount0_DESC_NULLS_LAST',
   Amount1Asc = 'amount1_ASC',
+  Amount1AscNullsFirst = 'amount1_ASC_NULLS_FIRST',
   Amount1Desc = 'amount1_DESC',
+  Amount1DescNullsLast = 'amount1_DESC_NULLS_LAST',
   AmountUsdAsc = 'amountUSD_ASC',
+  AmountUsdAscNullsFirst = 'amountUSD_ASC_NULLS_FIRST',
   AmountUsdDesc = 'amountUSD_DESC',
+  AmountUsdDescNullsLast = 'amountUSD_DESC_NULLS_LAST',
   FeeLiquidityAsc = 'feeLiquidity_ASC',
+  FeeLiquidityAscNullsFirst = 'feeLiquidity_ASC_NULLS_FIRST',
   FeeLiquidityDesc = 'feeLiquidity_DESC',
+  FeeLiquidityDescNullsLast = 'feeLiquidity_DESC_NULLS_LAST',
   FeeToAsc = 'feeTo_ASC',
+  FeeToAscNullsFirst = 'feeTo_ASC_NULLS_FIRST',
   FeeToDesc = 'feeTo_DESC',
+  FeeToDescNullsLast = 'feeTo_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityAsc = 'liquidity_ASC',
+  LiquidityAscNullsFirst = 'liquidity_ASC_NULLS_FIRST',
   LiquidityDesc = 'liquidity_DESC',
+  LiquidityDescNullsLast = 'liquidity_DESC_NULLS_LAST',
   LogIndexAsc = 'logIndex_ASC',
+  LogIndexAscNullsFirst = 'logIndex_ASC_NULLS_FIRST',
   LogIndexDesc = 'logIndex_DESC',
+  LogIndexDescNullsLast = 'logIndex_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   SenderAsc = 'sender_ASC',
+  SenderAscNullsFirst = 'sender_ASC_NULLS_FIRST',
   SenderDesc = 'sender_DESC',
+  SenderDescNullsLast = 'sender_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   ToAsc = 'to_ASC',
+  ToAscNullsFirst = 'to_ASC_NULLS_FIRST',
   ToDesc = 'to_DESC',
+  ToDescNullsLast = 'to_DESC_NULLS_LAST',
   TransactionBlockNumberAsc = 'transaction_blockNumber_ASC',
+  TransactionBlockNumberAscNullsFirst = 'transaction_blockNumber_ASC_NULLS_FIRST',
   TransactionBlockNumberDesc = 'transaction_blockNumber_DESC',
+  TransactionBlockNumberDescNullsLast = 'transaction_blockNumber_DESC_NULLS_LAST',
   TransactionIdAsc = 'transaction_id_ASC',
+  TransactionIdAscNullsFirst = 'transaction_id_ASC_NULLS_FIRST',
   TransactionIdDesc = 'transaction_id_DESC',
+  TransactionIdDescNullsLast = 'transaction_id_DESC_NULLS_LAST',
   TransactionTimestampAsc = 'transaction_timestamp_ASC',
-  TransactionTimestampDesc = 'transaction_timestamp_DESC'
+  TransactionTimestampAscNullsFirst = 'transaction_timestamp_ASC_NULLS_FIRST',
+  TransactionTimestampDesc = 'transaction_timestamp_DESC',
+  TransactionTimestampDescNullsLast = 'transaction_timestamp_DESC_NULLS_LAST'
 }
 
 export type MintWhereInput = {
@@ -1908,13 +3458,21 @@ export type NablaTokenEdge = {
 
 export enum NablaTokenOrderByInput {
   DecimalsAsc = 'decimals_ASC',
+  DecimalsAscNullsFirst = 'decimals_ASC_NULLS_FIRST',
   DecimalsDesc = 'decimals_DESC',
+  DecimalsDescNullsLast = 'decimals_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
   NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
   SymbolAsc = 'symbol_ASC',
-  SymbolDesc = 'symbol_DESC'
+  SymbolAscNullsFirst = 'symbol_ASC_NULLS_FIRST',
+  SymbolDesc = 'symbol_DESC',
+  SymbolDescNullsLast = 'symbol_DESC_NULLS_LAST'
 }
 
 export type NablaTokenWhereInput = {
@@ -2011,21 +3569,37 @@ export type OraclePriceEdge = {
 
 export enum OraclePriceOrderByInput {
   BlockchainAsc = 'blockchain_ASC',
+  BlockchainAscNullsFirst = 'blockchain_ASC_NULLS_FIRST',
   BlockchainDesc = 'blockchain_DESC',
+  BlockchainDescNullsLast = 'blockchain_DESC_NULLS_LAST',
   DecimalsAsc = 'decimals_ASC',
+  DecimalsAscNullsFirst = 'decimals_ASC_NULLS_FIRST',
   DecimalsDesc = 'decimals_DESC',
+  DecimalsDescNullsLast = 'decimals_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
   NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
   PriceAsc = 'price_ASC',
+  PriceAscNullsFirst = 'price_ASC_NULLS_FIRST',
   PriceDesc = 'price_DESC',
+  PriceDescNullsLast = 'price_DESC_NULLS_LAST',
   SupplyAsc = 'supply_ASC',
+  SupplyAscNullsFirst = 'supply_ASC_NULLS_FIRST',
   SupplyDesc = 'supply_DESC',
+  SupplyDescNullsLast = 'supply_DESC_NULLS_LAST',
   SymbolAsc = 'symbol_ASC',
+  SymbolAscNullsFirst = 'symbol_ASC_NULLS_FIRST',
   SymbolDesc = 'symbol_DESC',
+  SymbolDescNullsLast = 'symbol_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST'
 }
 
 export type OraclePriceWhereInput = {
@@ -2309,105 +3883,205 @@ export type PairDayDataEdge = {
 
 export enum PairDayDataOrderByInput {
   DailyTxnsAsc = 'dailyTxns_ASC',
+  DailyTxnsAscNullsFirst = 'dailyTxns_ASC_NULLS_FIRST',
   DailyTxnsDesc = 'dailyTxns_DESC',
+  DailyTxnsDescNullsLast = 'dailyTxns_DESC_NULLS_LAST',
   DailyVolumeToken0Asc = 'dailyVolumeToken0_ASC',
+  DailyVolumeToken0AscNullsFirst = 'dailyVolumeToken0_ASC_NULLS_FIRST',
   DailyVolumeToken0Desc = 'dailyVolumeToken0_DESC',
+  DailyVolumeToken0DescNullsLast = 'dailyVolumeToken0_DESC_NULLS_LAST',
   DailyVolumeToken1Asc = 'dailyVolumeToken1_ASC',
+  DailyVolumeToken1AscNullsFirst = 'dailyVolumeToken1_ASC_NULLS_FIRST',
   DailyVolumeToken1Desc = 'dailyVolumeToken1_DESC',
+  DailyVolumeToken1DescNullsLast = 'dailyVolumeToken1_DESC_NULLS_LAST',
   DailyVolumeUsdAsc = 'dailyVolumeUSD_ASC',
+  DailyVolumeUsdAscNullsFirst = 'dailyVolumeUSD_ASC_NULLS_FIRST',
   DailyVolumeUsdDesc = 'dailyVolumeUSD_DESC',
+  DailyVolumeUsdDescNullsLast = 'dailyVolumeUSD_DESC_NULLS_LAST',
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   PairAddressAsc = 'pairAddress_ASC',
+  PairAddressAscNullsFirst = 'pairAddress_ASC_NULLS_FIRST',
   PairAddressDesc = 'pairAddress_DESC',
+  PairAddressDescNullsLast = 'pairAddress_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   Reserve0Asc = 'reserve0_ASC',
+  Reserve0AscNullsFirst = 'reserve0_ASC_NULLS_FIRST',
   Reserve0Desc = 'reserve0_DESC',
+  Reserve0DescNullsLast = 'reserve0_DESC_NULLS_LAST',
   Reserve1Asc = 'reserve1_ASC',
+  Reserve1AscNullsFirst = 'reserve1_ASC_NULLS_FIRST',
   Reserve1Desc = 'reserve1_DESC',
+  Reserve1DescNullsLast = 'reserve1_DESC_NULLS_LAST',
   ReserveUsdAsc = 'reserveUSD_ASC',
+  ReserveUsdAscNullsFirst = 'reserveUSD_ASC_NULLS_FIRST',
   ReserveUsdDesc = 'reserveUSD_DESC',
+  ReserveUsdDescNullsLast = 'reserveUSD_DESC_NULLS_LAST',
   Token0DecimalsAsc = 'token0_decimals_ASC',
+  Token0DecimalsAscNullsFirst = 'token0_decimals_ASC_NULLS_FIRST',
   Token0DecimalsDesc = 'token0_decimals_DESC',
+  Token0DecimalsDescNullsLast = 'token0_decimals_DESC_NULLS_LAST',
   Token0DerivedEthAsc = 'token0_derivedETH_ASC',
+  Token0DerivedEthAscNullsFirst = 'token0_derivedETH_ASC_NULLS_FIRST',
   Token0DerivedEthDesc = 'token0_derivedETH_DESC',
+  Token0DerivedEthDescNullsLast = 'token0_derivedETH_DESC_NULLS_LAST',
   Token0IdAsc = 'token0_id_ASC',
+  Token0IdAscNullsFirst = 'token0_id_ASC_NULLS_FIRST',
   Token0IdDesc = 'token0_id_DESC',
+  Token0IdDescNullsLast = 'token0_id_DESC_NULLS_LAST',
   Token0NameAsc = 'token0_name_ASC',
+  Token0NameAscNullsFirst = 'token0_name_ASC_NULLS_FIRST',
   Token0NameDesc = 'token0_name_DESC',
+  Token0NameDescNullsLast = 'token0_name_DESC_NULLS_LAST',
   Token0SymbolAsc = 'token0_symbol_ASC',
+  Token0SymbolAscNullsFirst = 'token0_symbol_ASC_NULLS_FIRST',
   Token0SymbolDesc = 'token0_symbol_DESC',
+  Token0SymbolDescNullsLast = 'token0_symbol_DESC_NULLS_LAST',
   Token0TotalLiquidityAsc = 'token0_totalLiquidity_ASC',
+  Token0TotalLiquidityAscNullsFirst = 'token0_totalLiquidity_ASC_NULLS_FIRST',
   Token0TotalLiquidityDesc = 'token0_totalLiquidity_DESC',
+  Token0TotalLiquidityDescNullsLast = 'token0_totalLiquidity_DESC_NULLS_LAST',
   Token0TotalSupplyAsc = 'token0_totalSupply_ASC',
+  Token0TotalSupplyAscNullsFirst = 'token0_totalSupply_ASC_NULLS_FIRST',
   Token0TotalSupplyDesc = 'token0_totalSupply_DESC',
+  Token0TotalSupplyDescNullsLast = 'token0_totalSupply_DESC_NULLS_LAST',
   Token0TradeVolumeUsdAsc = 'token0_tradeVolumeUSD_ASC',
+  Token0TradeVolumeUsdAscNullsFirst = 'token0_tradeVolumeUSD_ASC_NULLS_FIRST',
   Token0TradeVolumeUsdDesc = 'token0_tradeVolumeUSD_DESC',
+  Token0TradeVolumeUsdDescNullsLast = 'token0_tradeVolumeUSD_DESC_NULLS_LAST',
   Token0TradeVolumeAsc = 'token0_tradeVolume_ASC',
+  Token0TradeVolumeAscNullsFirst = 'token0_tradeVolume_ASC_NULLS_FIRST',
   Token0TradeVolumeDesc = 'token0_tradeVolume_DESC',
+  Token0TradeVolumeDescNullsLast = 'token0_tradeVolume_DESC_NULLS_LAST',
   Token0TxCountAsc = 'token0_txCount_ASC',
+  Token0TxCountAscNullsFirst = 'token0_txCount_ASC_NULLS_FIRST',
   Token0TxCountDesc = 'token0_txCount_DESC',
+  Token0TxCountDescNullsLast = 'token0_txCount_DESC_NULLS_LAST',
   Token0UntrackedVolumeUsdAsc = 'token0_untrackedVolumeUSD_ASC',
+  Token0UntrackedVolumeUsdAscNullsFirst = 'token0_untrackedVolumeUSD_ASC_NULLS_FIRST',
   Token0UntrackedVolumeUsdDesc = 'token0_untrackedVolumeUSD_DESC',
+  Token0UntrackedVolumeUsdDescNullsLast = 'token0_untrackedVolumeUSD_DESC_NULLS_LAST',
   Token1DecimalsAsc = 'token1_decimals_ASC',
+  Token1DecimalsAscNullsFirst = 'token1_decimals_ASC_NULLS_FIRST',
   Token1DecimalsDesc = 'token1_decimals_DESC',
+  Token1DecimalsDescNullsLast = 'token1_decimals_DESC_NULLS_LAST',
   Token1DerivedEthAsc = 'token1_derivedETH_ASC',
+  Token1DerivedEthAscNullsFirst = 'token1_derivedETH_ASC_NULLS_FIRST',
   Token1DerivedEthDesc = 'token1_derivedETH_DESC',
+  Token1DerivedEthDescNullsLast = 'token1_derivedETH_DESC_NULLS_LAST',
   Token1IdAsc = 'token1_id_ASC',
+  Token1IdAscNullsFirst = 'token1_id_ASC_NULLS_FIRST',
   Token1IdDesc = 'token1_id_DESC',
+  Token1IdDescNullsLast = 'token1_id_DESC_NULLS_LAST',
   Token1NameAsc = 'token1_name_ASC',
+  Token1NameAscNullsFirst = 'token1_name_ASC_NULLS_FIRST',
   Token1NameDesc = 'token1_name_DESC',
+  Token1NameDescNullsLast = 'token1_name_DESC_NULLS_LAST',
   Token1SymbolAsc = 'token1_symbol_ASC',
+  Token1SymbolAscNullsFirst = 'token1_symbol_ASC_NULLS_FIRST',
   Token1SymbolDesc = 'token1_symbol_DESC',
+  Token1SymbolDescNullsLast = 'token1_symbol_DESC_NULLS_LAST',
   Token1TotalLiquidityAsc = 'token1_totalLiquidity_ASC',
+  Token1TotalLiquidityAscNullsFirst = 'token1_totalLiquidity_ASC_NULLS_FIRST',
   Token1TotalLiquidityDesc = 'token1_totalLiquidity_DESC',
+  Token1TotalLiquidityDescNullsLast = 'token1_totalLiquidity_DESC_NULLS_LAST',
   Token1TotalSupplyAsc = 'token1_totalSupply_ASC',
+  Token1TotalSupplyAscNullsFirst = 'token1_totalSupply_ASC_NULLS_FIRST',
   Token1TotalSupplyDesc = 'token1_totalSupply_DESC',
+  Token1TotalSupplyDescNullsLast = 'token1_totalSupply_DESC_NULLS_LAST',
   Token1TradeVolumeUsdAsc = 'token1_tradeVolumeUSD_ASC',
+  Token1TradeVolumeUsdAscNullsFirst = 'token1_tradeVolumeUSD_ASC_NULLS_FIRST',
   Token1TradeVolumeUsdDesc = 'token1_tradeVolumeUSD_DESC',
+  Token1TradeVolumeUsdDescNullsLast = 'token1_tradeVolumeUSD_DESC_NULLS_LAST',
   Token1TradeVolumeAsc = 'token1_tradeVolume_ASC',
+  Token1TradeVolumeAscNullsFirst = 'token1_tradeVolume_ASC_NULLS_FIRST',
   Token1TradeVolumeDesc = 'token1_tradeVolume_DESC',
+  Token1TradeVolumeDescNullsLast = 'token1_tradeVolume_DESC_NULLS_LAST',
   Token1TxCountAsc = 'token1_txCount_ASC',
+  Token1TxCountAscNullsFirst = 'token1_txCount_ASC_NULLS_FIRST',
   Token1TxCountDesc = 'token1_txCount_DESC',
+  Token1TxCountDescNullsLast = 'token1_txCount_DESC_NULLS_LAST',
   Token1UntrackedVolumeUsdAsc = 'token1_untrackedVolumeUSD_ASC',
+  Token1UntrackedVolumeUsdAscNullsFirst = 'token1_untrackedVolumeUSD_ASC_NULLS_FIRST',
   Token1UntrackedVolumeUsdDesc = 'token1_untrackedVolumeUSD_DESC',
+  Token1UntrackedVolumeUsdDescNullsLast = 'token1_untrackedVolumeUSD_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
-  TotalSupplyDesc = 'totalSupply_DESC'
+  TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
+  TotalSupplyDesc = 'totalSupply_DESC',
+  TotalSupplyDescNullsLast = 'totalSupply_DESC_NULLS_LAST'
 }
 
 export type PairDayDataWhereInput = {
@@ -2628,59 +4302,113 @@ export type PairHourDataEdge = {
 
 export enum PairHourDataOrderByInput {
   HourStartUnixAsc = 'hourStartUnix_ASC',
+  HourStartUnixAscNullsFirst = 'hourStartUnix_ASC_NULLS_FIRST',
   HourStartUnixDesc = 'hourStartUnix_DESC',
+  HourStartUnixDescNullsLast = 'hourStartUnix_DESC_NULLS_LAST',
   HourlyTxnsAsc = 'hourlyTxns_ASC',
+  HourlyTxnsAscNullsFirst = 'hourlyTxns_ASC_NULLS_FIRST',
   HourlyTxnsDesc = 'hourlyTxns_DESC',
+  HourlyTxnsDescNullsLast = 'hourlyTxns_DESC_NULLS_LAST',
   HourlyVolumeToken0Asc = 'hourlyVolumeToken0_ASC',
+  HourlyVolumeToken0AscNullsFirst = 'hourlyVolumeToken0_ASC_NULLS_FIRST',
   HourlyVolumeToken0Desc = 'hourlyVolumeToken0_DESC',
+  HourlyVolumeToken0DescNullsLast = 'hourlyVolumeToken0_DESC_NULLS_LAST',
   HourlyVolumeToken1Asc = 'hourlyVolumeToken1_ASC',
+  HourlyVolumeToken1AscNullsFirst = 'hourlyVolumeToken1_ASC_NULLS_FIRST',
   HourlyVolumeToken1Desc = 'hourlyVolumeToken1_DESC',
+  HourlyVolumeToken1DescNullsLast = 'hourlyVolumeToken1_DESC_NULLS_LAST',
   HourlyVolumeUsdAsc = 'hourlyVolumeUSD_ASC',
+  HourlyVolumeUsdAscNullsFirst = 'hourlyVolumeUSD_ASC_NULLS_FIRST',
   HourlyVolumeUsdDesc = 'hourlyVolumeUSD_DESC',
+  HourlyVolumeUsdDescNullsLast = 'hourlyVolumeUSD_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   Reserve0Asc = 'reserve0_ASC',
+  Reserve0AscNullsFirst = 'reserve0_ASC_NULLS_FIRST',
   Reserve0Desc = 'reserve0_DESC',
+  Reserve0DescNullsLast = 'reserve0_DESC_NULLS_LAST',
   Reserve1Asc = 'reserve1_ASC',
+  Reserve1AscNullsFirst = 'reserve1_ASC_NULLS_FIRST',
   Reserve1Desc = 'reserve1_DESC',
+  Reserve1DescNullsLast = 'reserve1_DESC_NULLS_LAST',
   ReserveUsdAsc = 'reserveUSD_ASC',
+  ReserveUsdAscNullsFirst = 'reserveUSD_ASC_NULLS_FIRST',
   ReserveUsdDesc = 'reserveUSD_DESC',
+  ReserveUsdDescNullsLast = 'reserveUSD_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
-  TotalSupplyDesc = 'totalSupply_DESC'
+  TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
+  TotalSupplyDesc = 'totalSupply_DESC',
+  TotalSupplyDescNullsLast = 'totalSupply_DESC_NULLS_LAST'
 }
 
 export type PairHourDataWhereInput = {
@@ -2846,83 +4574,161 @@ export type PairHourDataWhereInput = {
 
 export enum PairOrderByInput {
   CreatedAtBlockNumberAsc = 'createdAtBlockNumber_ASC',
+  CreatedAtBlockNumberAscNullsFirst = 'createdAtBlockNumber_ASC_NULLS_FIRST',
   CreatedAtBlockNumberDesc = 'createdAtBlockNumber_DESC',
+  CreatedAtBlockNumberDescNullsLast = 'createdAtBlockNumber_DESC_NULLS_LAST',
   CreatedAtTimestampAsc = 'createdAtTimestamp_ASC',
+  CreatedAtTimestampAscNullsFirst = 'createdAtTimestamp_ASC_NULLS_FIRST',
   CreatedAtTimestampDesc = 'createdAtTimestamp_DESC',
+  CreatedAtTimestampDescNullsLast = 'createdAtTimestamp_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityProviderCountAsc = 'liquidityProviderCount_ASC',
+  LiquidityProviderCountAscNullsFirst = 'liquidityProviderCount_ASC_NULLS_FIRST',
   LiquidityProviderCountDesc = 'liquidityProviderCount_DESC',
+  LiquidityProviderCountDescNullsLast = 'liquidityProviderCount_DESC_NULLS_LAST',
   Reserve0Asc = 'reserve0_ASC',
+  Reserve0AscNullsFirst = 'reserve0_ASC_NULLS_FIRST',
   Reserve0Desc = 'reserve0_DESC',
+  Reserve0DescNullsLast = 'reserve0_DESC_NULLS_LAST',
   Reserve1Asc = 'reserve1_ASC',
+  Reserve1AscNullsFirst = 'reserve1_ASC_NULLS_FIRST',
   Reserve1Desc = 'reserve1_DESC',
+  Reserve1DescNullsLast = 'reserve1_DESC_NULLS_LAST',
   ReserveEthAsc = 'reserveETH_ASC',
+  ReserveEthAscNullsFirst = 'reserveETH_ASC_NULLS_FIRST',
   ReserveEthDesc = 'reserveETH_DESC',
+  ReserveEthDescNullsLast = 'reserveETH_DESC_NULLS_LAST',
   ReserveUsdAsc = 'reserveUSD_ASC',
+  ReserveUsdAscNullsFirst = 'reserveUSD_ASC_NULLS_FIRST',
   ReserveUsdDesc = 'reserveUSD_DESC',
+  ReserveUsdDescNullsLast = 'reserveUSD_DESC_NULLS_LAST',
   Token0PriceAsc = 'token0Price_ASC',
+  Token0PriceAscNullsFirst = 'token0Price_ASC_NULLS_FIRST',
   Token0PriceDesc = 'token0Price_DESC',
+  Token0PriceDescNullsLast = 'token0Price_DESC_NULLS_LAST',
   Token0DecimalsAsc = 'token0_decimals_ASC',
+  Token0DecimalsAscNullsFirst = 'token0_decimals_ASC_NULLS_FIRST',
   Token0DecimalsDesc = 'token0_decimals_DESC',
+  Token0DecimalsDescNullsLast = 'token0_decimals_DESC_NULLS_LAST',
   Token0DerivedEthAsc = 'token0_derivedETH_ASC',
+  Token0DerivedEthAscNullsFirst = 'token0_derivedETH_ASC_NULLS_FIRST',
   Token0DerivedEthDesc = 'token0_derivedETH_DESC',
+  Token0DerivedEthDescNullsLast = 'token0_derivedETH_DESC_NULLS_LAST',
   Token0IdAsc = 'token0_id_ASC',
+  Token0IdAscNullsFirst = 'token0_id_ASC_NULLS_FIRST',
   Token0IdDesc = 'token0_id_DESC',
+  Token0IdDescNullsLast = 'token0_id_DESC_NULLS_LAST',
   Token0NameAsc = 'token0_name_ASC',
+  Token0NameAscNullsFirst = 'token0_name_ASC_NULLS_FIRST',
   Token0NameDesc = 'token0_name_DESC',
+  Token0NameDescNullsLast = 'token0_name_DESC_NULLS_LAST',
   Token0SymbolAsc = 'token0_symbol_ASC',
+  Token0SymbolAscNullsFirst = 'token0_symbol_ASC_NULLS_FIRST',
   Token0SymbolDesc = 'token0_symbol_DESC',
+  Token0SymbolDescNullsLast = 'token0_symbol_DESC_NULLS_LAST',
   Token0TotalLiquidityAsc = 'token0_totalLiquidity_ASC',
+  Token0TotalLiquidityAscNullsFirst = 'token0_totalLiquidity_ASC_NULLS_FIRST',
   Token0TotalLiquidityDesc = 'token0_totalLiquidity_DESC',
+  Token0TotalLiquidityDescNullsLast = 'token0_totalLiquidity_DESC_NULLS_LAST',
   Token0TotalSupplyAsc = 'token0_totalSupply_ASC',
+  Token0TotalSupplyAscNullsFirst = 'token0_totalSupply_ASC_NULLS_FIRST',
   Token0TotalSupplyDesc = 'token0_totalSupply_DESC',
+  Token0TotalSupplyDescNullsLast = 'token0_totalSupply_DESC_NULLS_LAST',
   Token0TradeVolumeUsdAsc = 'token0_tradeVolumeUSD_ASC',
+  Token0TradeVolumeUsdAscNullsFirst = 'token0_tradeVolumeUSD_ASC_NULLS_FIRST',
   Token0TradeVolumeUsdDesc = 'token0_tradeVolumeUSD_DESC',
+  Token0TradeVolumeUsdDescNullsLast = 'token0_tradeVolumeUSD_DESC_NULLS_LAST',
   Token0TradeVolumeAsc = 'token0_tradeVolume_ASC',
+  Token0TradeVolumeAscNullsFirst = 'token0_tradeVolume_ASC_NULLS_FIRST',
   Token0TradeVolumeDesc = 'token0_tradeVolume_DESC',
+  Token0TradeVolumeDescNullsLast = 'token0_tradeVolume_DESC_NULLS_LAST',
   Token0TxCountAsc = 'token0_txCount_ASC',
+  Token0TxCountAscNullsFirst = 'token0_txCount_ASC_NULLS_FIRST',
   Token0TxCountDesc = 'token0_txCount_DESC',
+  Token0TxCountDescNullsLast = 'token0_txCount_DESC_NULLS_LAST',
   Token0UntrackedVolumeUsdAsc = 'token0_untrackedVolumeUSD_ASC',
+  Token0UntrackedVolumeUsdAscNullsFirst = 'token0_untrackedVolumeUSD_ASC_NULLS_FIRST',
   Token0UntrackedVolumeUsdDesc = 'token0_untrackedVolumeUSD_DESC',
+  Token0UntrackedVolumeUsdDescNullsLast = 'token0_untrackedVolumeUSD_DESC_NULLS_LAST',
   Token1PriceAsc = 'token1Price_ASC',
+  Token1PriceAscNullsFirst = 'token1Price_ASC_NULLS_FIRST',
   Token1PriceDesc = 'token1Price_DESC',
+  Token1PriceDescNullsLast = 'token1Price_DESC_NULLS_LAST',
   Token1DecimalsAsc = 'token1_decimals_ASC',
+  Token1DecimalsAscNullsFirst = 'token1_decimals_ASC_NULLS_FIRST',
   Token1DecimalsDesc = 'token1_decimals_DESC',
+  Token1DecimalsDescNullsLast = 'token1_decimals_DESC_NULLS_LAST',
   Token1DerivedEthAsc = 'token1_derivedETH_ASC',
+  Token1DerivedEthAscNullsFirst = 'token1_derivedETH_ASC_NULLS_FIRST',
   Token1DerivedEthDesc = 'token1_derivedETH_DESC',
+  Token1DerivedEthDescNullsLast = 'token1_derivedETH_DESC_NULLS_LAST',
   Token1IdAsc = 'token1_id_ASC',
+  Token1IdAscNullsFirst = 'token1_id_ASC_NULLS_FIRST',
   Token1IdDesc = 'token1_id_DESC',
+  Token1IdDescNullsLast = 'token1_id_DESC_NULLS_LAST',
   Token1NameAsc = 'token1_name_ASC',
+  Token1NameAscNullsFirst = 'token1_name_ASC_NULLS_FIRST',
   Token1NameDesc = 'token1_name_DESC',
+  Token1NameDescNullsLast = 'token1_name_DESC_NULLS_LAST',
   Token1SymbolAsc = 'token1_symbol_ASC',
+  Token1SymbolAscNullsFirst = 'token1_symbol_ASC_NULLS_FIRST',
   Token1SymbolDesc = 'token1_symbol_DESC',
+  Token1SymbolDescNullsLast = 'token1_symbol_DESC_NULLS_LAST',
   Token1TotalLiquidityAsc = 'token1_totalLiquidity_ASC',
+  Token1TotalLiquidityAscNullsFirst = 'token1_totalLiquidity_ASC_NULLS_FIRST',
   Token1TotalLiquidityDesc = 'token1_totalLiquidity_DESC',
+  Token1TotalLiquidityDescNullsLast = 'token1_totalLiquidity_DESC_NULLS_LAST',
   Token1TotalSupplyAsc = 'token1_totalSupply_ASC',
+  Token1TotalSupplyAscNullsFirst = 'token1_totalSupply_ASC_NULLS_FIRST',
   Token1TotalSupplyDesc = 'token1_totalSupply_DESC',
+  Token1TotalSupplyDescNullsLast = 'token1_totalSupply_DESC_NULLS_LAST',
   Token1TradeVolumeUsdAsc = 'token1_tradeVolumeUSD_ASC',
+  Token1TradeVolumeUsdAscNullsFirst = 'token1_tradeVolumeUSD_ASC_NULLS_FIRST',
   Token1TradeVolumeUsdDesc = 'token1_tradeVolumeUSD_DESC',
+  Token1TradeVolumeUsdDescNullsLast = 'token1_tradeVolumeUSD_DESC_NULLS_LAST',
   Token1TradeVolumeAsc = 'token1_tradeVolume_ASC',
+  Token1TradeVolumeAscNullsFirst = 'token1_tradeVolume_ASC_NULLS_FIRST',
   Token1TradeVolumeDesc = 'token1_tradeVolume_DESC',
+  Token1TradeVolumeDescNullsLast = 'token1_tradeVolume_DESC_NULLS_LAST',
   Token1TxCountAsc = 'token1_txCount_ASC',
+  Token1TxCountAscNullsFirst = 'token1_txCount_ASC_NULLS_FIRST',
   Token1TxCountDesc = 'token1_txCount_DESC',
+  Token1TxCountDescNullsLast = 'token1_txCount_DESC_NULLS_LAST',
   Token1UntrackedVolumeUsdAsc = 'token1_untrackedVolumeUSD_ASC',
+  Token1UntrackedVolumeUsdAscNullsFirst = 'token1_untrackedVolumeUSD_ASC_NULLS_FIRST',
   Token1UntrackedVolumeUsdDesc = 'token1_untrackedVolumeUSD_DESC',
+  Token1UntrackedVolumeUsdDescNullsLast = 'token1_untrackedVolumeUSD_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
+  TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
   TotalSupplyDesc = 'totalSupply_DESC',
+  TotalSupplyDescNullsLast = 'totalSupply_DESC_NULLS_LAST',
   TrackedReserveEthAsc = 'trackedReserveETH_ASC',
+  TrackedReserveEthAscNullsFirst = 'trackedReserveETH_ASC_NULLS_FIRST',
   TrackedReserveEthDesc = 'trackedReserveETH_DESC',
+  TrackedReserveEthDescNullsLast = 'trackedReserveETH_DESC_NULLS_LAST',
   TxCountAsc = 'txCount_ASC',
+  TxCountAscNullsFirst = 'txCount_ASC_NULLS_FIRST',
   TxCountDesc = 'txCount_DESC',
+  TxCountDescNullsLast = 'txCount_DESC_NULLS_LAST',
   UntrackedVolumeUsdAsc = 'untrackedVolumeUSD_ASC',
+  UntrackedVolumeUsdAscNullsFirst = 'untrackedVolumeUSD_ASC_NULLS_FIRST',
   UntrackedVolumeUsdDesc = 'untrackedVolumeUSD_DESC',
+  UntrackedVolumeUsdDescNullsLast = 'untrackedVolumeUSD_DESC_NULLS_LAST',
   VolumeToken0Asc = 'volumeToken0_ASC',
+  VolumeToken0AscNullsFirst = 'volumeToken0_ASC_NULLS_FIRST',
   VolumeToken0Desc = 'volumeToken0_DESC',
+  VolumeToken0DescNullsLast = 'volumeToken0_DESC_NULLS_LAST',
   VolumeToken1Asc = 'volumeToken1_ASC',
+  VolumeToken1AscNullsFirst = 'volumeToken1_ASC_NULLS_FIRST',
   VolumeToken1Desc = 'volumeToken1_DESC',
+  VolumeToken1DescNullsLast = 'volumeToken1_DESC_NULLS_LAST',
   VolumeUsdAsc = 'volumeUSD_ASC',
-  VolumeUsdDesc = 'volumeUSD_DESC'
+  VolumeUsdAscNullsFirst = 'volumeUSD_ASC_NULLS_FIRST',
+  VolumeUsdDesc = 'volumeUSD_DESC',
+  VolumeUsdDescNullsLast = 'volumeUSD_DESC_NULLS_LAST'
 }
 
 export type PairWhereInput = {
@@ -3229,6 +5035,11 @@ export type Query = {
   backstopPoolByUniqueInput?: Maybe<BackstopPool>;
   backstopPools: Array<BackstopPool>;
   backstopPoolsConnection: BackstopPoolsConnection;
+  blockById?: Maybe<Block>;
+  /** @deprecated Use blockById */
+  blockByUniqueInput?: Maybe<Block>;
+  blocks: Array<Block>;
+  blocksConnection: BlocksConnection;
   bundleById?: Maybe<Bundle>;
   /** @deprecated Use bundleById */
   bundleByUniqueInput?: Maybe<Bundle>;
@@ -3239,6 +5050,21 @@ export type Query = {
   burnByUniqueInput?: Maybe<Burn>;
   burns: Array<Burn>;
   burnsConnection: BurnsConnection;
+  callById?: Maybe<Call>;
+  /** @deprecated Use callById */
+  callByUniqueInput?: Maybe<Call>;
+  calls: Array<Call>;
+  callsConnection: CallsConnection;
+  eventById?: Maybe<Event>;
+  /** @deprecated Use eventById */
+  eventByUniqueInput?: Maybe<Event>;
+  events: Array<Event>;
+  eventsConnection: EventsConnection;
+  extrinsicById?: Maybe<Extrinsic>;
+  /** @deprecated Use extrinsicById */
+  extrinsicByUniqueInput?: Maybe<Extrinsic>;
+  extrinsics: Array<Extrinsic>;
+  extrinsicsConnection: ExtrinsicsConnection;
   factories: Array<Factory>;
   factoriesConnection: FactoriesConnection;
   factoryById?: Maybe<Factory>;
@@ -3259,6 +5085,11 @@ export type Query = {
   incentiveByUniqueInput?: Maybe<Incentive>;
   incentives: Array<Incentive>;
   incentivesConnection: IncentivesConnection;
+  itemsCounterById?: Maybe<ItemsCounter>;
+  /** @deprecated Use itemsCounterById */
+  itemsCounterByUniqueInput?: Maybe<ItemsCounter>;
+  itemsCounters: Array<ItemsCounter>;
+  itemsCountersConnection: ItemsCountersConnection;
   liquidityPositionById?: Maybe<LiquidityPosition>;
   /** @deprecated Use liquidityPositionById */
   liquidityPositionByUniqueInput?: Maybe<LiquidityPosition>;
@@ -3459,6 +5290,32 @@ export type QueryBackstopPoolsConnectionArgs = {
 };
 
 
+export type QueryBlockByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryBlockByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryBlocksArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
+  where?: InputMaybe<BlockWhereInput>;
+};
+
+
+export type QueryBlocksConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<BlockOrderByInput>;
+  where?: InputMaybe<BlockWhereInput>;
+};
+
+
 export type QueryBundleByIdArgs = {
   id: Scalars['String']['input'];
 };
@@ -3508,6 +5365,84 @@ export type QueryBurnsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<BurnOrderByInput>;
   where?: InputMaybe<BurnWhereInput>;
+};
+
+
+export type QueryCallByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryCallByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryCallsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderByInput>>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+
+export type QueryCallsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<CallOrderByInput>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+
+export type QueryEventByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryEventByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderByInput>>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+
+export type QueryEventsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<EventOrderByInput>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+
+export type QueryExtrinsicByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryExtrinsicByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryExtrinsicsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
+  where?: InputMaybe<ExtrinsicWhereInput>;
+};
+
+
+export type QueryExtrinsicsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<ExtrinsicOrderByInput>;
+  where?: InputMaybe<ExtrinsicWhereInput>;
 };
 
 
@@ -3612,6 +5547,32 @@ export type QueryIncentivesConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<IncentiveOrderByInput>;
   where?: InputMaybe<IncentiveWhereInput>;
+};
+
+
+export type QueryItemsCounterByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryItemsCounterByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryItemsCountersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ItemsCounterOrderByInput>>;
+  where?: InputMaybe<ItemsCounterWhereInput>;
+};
+
+
+export type QueryItemsCountersConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<ItemsCounterOrderByInput>;
+  where?: InputMaybe<ItemsCounterWhereInput>;
 };
 
 
@@ -4530,9 +6491,13 @@ export type RouterEdge = {
 
 export enum RouterOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   PausedAsc = 'paused_ASC',
-  PausedDesc = 'paused_DESC'
+  PausedAscNullsFirst = 'paused_ASC_NULLS_FIRST',
+  PausedDesc = 'paused_DESC',
+  PausedDescNullsLast = 'paused_DESC_NULLS_LAST'
 }
 
 export type RouterWhereInput = {
@@ -4636,23 +6601,41 @@ export type SingleTokenLockDayDataEdge = {
 
 export enum SingleTokenLockDayDataOrderByInput {
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   SingleTokenLockIdAsc = 'singleTokenLock_id_ASC',
+  SingleTokenLockIdAscNullsFirst = 'singleTokenLock_id_ASC_NULLS_FIRST',
   SingleTokenLockIdDesc = 'singleTokenLock_id_DESC',
+  SingleTokenLockIdDescNullsLast = 'singleTokenLock_id_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityEthAsc = 'singleTokenLock_totalLiquidityETH_ASC',
+  SingleTokenLockTotalLiquidityEthAscNullsFirst = 'singleTokenLock_totalLiquidityETH_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityEthDesc = 'singleTokenLock_totalLiquidityETH_DESC',
+  SingleTokenLockTotalLiquidityEthDescNullsLast = 'singleTokenLock_totalLiquidityETH_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityUsdAsc = 'singleTokenLock_totalLiquidityUSD_ASC',
+  SingleTokenLockTotalLiquidityUsdAscNullsFirst = 'singleTokenLock_totalLiquidityUSD_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityUsdDesc = 'singleTokenLock_totalLiquidityUSD_DESC',
+  SingleTokenLockTotalLiquidityUsdDescNullsLast = 'singleTokenLock_totalLiquidityUSD_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityAsc = 'singleTokenLock_totalLiquidity_ASC',
+  SingleTokenLockTotalLiquidityAscNullsFirst = 'singleTokenLock_totalLiquidity_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityDesc = 'singleTokenLock_totalLiquidity_DESC',
+  SingleTokenLockTotalLiquidityDescNullsLast = 'singleTokenLock_totalLiquidity_DESC_NULLS_LAST',
   TotalLiquidityEthAsc = 'totalLiquidityETH_ASC',
+  TotalLiquidityEthAscNullsFirst = 'totalLiquidityETH_ASC_NULLS_FIRST',
   TotalLiquidityEthDesc = 'totalLiquidityETH_DESC',
+  TotalLiquidityEthDescNullsLast = 'totalLiquidityETH_DESC_NULLS_LAST',
   TotalLiquidityUsdAsc = 'totalLiquidityUSD_ASC',
+  TotalLiquidityUsdAscNullsFirst = 'totalLiquidityUSD_ASC_NULLS_FIRST',
   TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC',
+  TotalLiquidityUsdDescNullsLast = 'totalLiquidityUSD_DESC_NULLS_LAST',
   TotalLiquidityAsc = 'totalLiquidity_ASC',
-  TotalLiquidityDesc = 'totalLiquidity_DESC'
+  TotalLiquidityAscNullsFirst = 'totalLiquidity_ASC_NULLS_FIRST',
+  TotalLiquidityDesc = 'totalLiquidity_DESC',
+  TotalLiquidityDescNullsLast = 'totalLiquidity_DESC_NULLS_LAST'
 }
 
 export type SingleTokenLockDayDataWhereInput = {
@@ -4770,23 +6753,41 @@ export type SingleTokenLockHourDataEdge = {
 
 export enum SingleTokenLockHourDataOrderByInput {
   HourStartUnixAsc = 'hourStartUnix_ASC',
+  HourStartUnixAscNullsFirst = 'hourStartUnix_ASC_NULLS_FIRST',
   HourStartUnixDesc = 'hourStartUnix_DESC',
+  HourStartUnixDescNullsLast = 'hourStartUnix_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   SingleTokenLockIdAsc = 'singleTokenLock_id_ASC',
+  SingleTokenLockIdAscNullsFirst = 'singleTokenLock_id_ASC_NULLS_FIRST',
   SingleTokenLockIdDesc = 'singleTokenLock_id_DESC',
+  SingleTokenLockIdDescNullsLast = 'singleTokenLock_id_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityEthAsc = 'singleTokenLock_totalLiquidityETH_ASC',
+  SingleTokenLockTotalLiquidityEthAscNullsFirst = 'singleTokenLock_totalLiquidityETH_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityEthDesc = 'singleTokenLock_totalLiquidityETH_DESC',
+  SingleTokenLockTotalLiquidityEthDescNullsLast = 'singleTokenLock_totalLiquidityETH_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityUsdAsc = 'singleTokenLock_totalLiquidityUSD_ASC',
+  SingleTokenLockTotalLiquidityUsdAscNullsFirst = 'singleTokenLock_totalLiquidityUSD_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityUsdDesc = 'singleTokenLock_totalLiquidityUSD_DESC',
+  SingleTokenLockTotalLiquidityUsdDescNullsLast = 'singleTokenLock_totalLiquidityUSD_DESC_NULLS_LAST',
   SingleTokenLockTotalLiquidityAsc = 'singleTokenLock_totalLiquidity_ASC',
+  SingleTokenLockTotalLiquidityAscNullsFirst = 'singleTokenLock_totalLiquidity_ASC_NULLS_FIRST',
   SingleTokenLockTotalLiquidityDesc = 'singleTokenLock_totalLiquidity_DESC',
+  SingleTokenLockTotalLiquidityDescNullsLast = 'singleTokenLock_totalLiquidity_DESC_NULLS_LAST',
   TotalLiquidityEthAsc = 'totalLiquidityETH_ASC',
+  TotalLiquidityEthAscNullsFirst = 'totalLiquidityETH_ASC_NULLS_FIRST',
   TotalLiquidityEthDesc = 'totalLiquidityETH_DESC',
+  TotalLiquidityEthDescNullsLast = 'totalLiquidityETH_DESC_NULLS_LAST',
   TotalLiquidityUsdAsc = 'totalLiquidityUSD_ASC',
+  TotalLiquidityUsdAscNullsFirst = 'totalLiquidityUSD_ASC_NULLS_FIRST',
   TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC',
+  TotalLiquidityUsdDescNullsLast = 'totalLiquidityUSD_DESC_NULLS_LAST',
   TotalLiquidityAsc = 'totalLiquidity_ASC',
-  TotalLiquidityDesc = 'totalLiquidity_DESC'
+  TotalLiquidityAscNullsFirst = 'totalLiquidity_ASC_NULLS_FIRST',
+  TotalLiquidityDesc = 'totalLiquidity_DESC',
+  TotalLiquidityDescNullsLast = 'totalLiquidity_DESC_NULLS_LAST'
 }
 
 export type SingleTokenLockHourDataWhereInput = {
@@ -4875,35 +6876,65 @@ export type SingleTokenLockHourDataWhereInput = {
 
 export enum SingleTokenLockOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   TokenDecimalsAsc = 'token_decimals_ASC',
+  TokenDecimalsAscNullsFirst = 'token_decimals_ASC_NULLS_FIRST',
   TokenDecimalsDesc = 'token_decimals_DESC',
+  TokenDecimalsDescNullsLast = 'token_decimals_DESC_NULLS_LAST',
   TokenDerivedEthAsc = 'token_derivedETH_ASC',
+  TokenDerivedEthAscNullsFirst = 'token_derivedETH_ASC_NULLS_FIRST',
   TokenDerivedEthDesc = 'token_derivedETH_DESC',
+  TokenDerivedEthDescNullsLast = 'token_derivedETH_DESC_NULLS_LAST',
   TokenIdAsc = 'token_id_ASC',
+  TokenIdAscNullsFirst = 'token_id_ASC_NULLS_FIRST',
   TokenIdDesc = 'token_id_DESC',
+  TokenIdDescNullsLast = 'token_id_DESC_NULLS_LAST',
   TokenNameAsc = 'token_name_ASC',
+  TokenNameAscNullsFirst = 'token_name_ASC_NULLS_FIRST',
   TokenNameDesc = 'token_name_DESC',
+  TokenNameDescNullsLast = 'token_name_DESC_NULLS_LAST',
   TokenSymbolAsc = 'token_symbol_ASC',
+  TokenSymbolAscNullsFirst = 'token_symbol_ASC_NULLS_FIRST',
   TokenSymbolDesc = 'token_symbol_DESC',
+  TokenSymbolDescNullsLast = 'token_symbol_DESC_NULLS_LAST',
   TokenTotalLiquidityAsc = 'token_totalLiquidity_ASC',
+  TokenTotalLiquidityAscNullsFirst = 'token_totalLiquidity_ASC_NULLS_FIRST',
   TokenTotalLiquidityDesc = 'token_totalLiquidity_DESC',
+  TokenTotalLiquidityDescNullsLast = 'token_totalLiquidity_DESC_NULLS_LAST',
   TokenTotalSupplyAsc = 'token_totalSupply_ASC',
+  TokenTotalSupplyAscNullsFirst = 'token_totalSupply_ASC_NULLS_FIRST',
   TokenTotalSupplyDesc = 'token_totalSupply_DESC',
+  TokenTotalSupplyDescNullsLast = 'token_totalSupply_DESC_NULLS_LAST',
   TokenTradeVolumeUsdAsc = 'token_tradeVolumeUSD_ASC',
+  TokenTradeVolumeUsdAscNullsFirst = 'token_tradeVolumeUSD_ASC_NULLS_FIRST',
   TokenTradeVolumeUsdDesc = 'token_tradeVolumeUSD_DESC',
+  TokenTradeVolumeUsdDescNullsLast = 'token_tradeVolumeUSD_DESC_NULLS_LAST',
   TokenTradeVolumeAsc = 'token_tradeVolume_ASC',
+  TokenTradeVolumeAscNullsFirst = 'token_tradeVolume_ASC_NULLS_FIRST',
   TokenTradeVolumeDesc = 'token_tradeVolume_DESC',
+  TokenTradeVolumeDescNullsLast = 'token_tradeVolume_DESC_NULLS_LAST',
   TokenTxCountAsc = 'token_txCount_ASC',
+  TokenTxCountAscNullsFirst = 'token_txCount_ASC_NULLS_FIRST',
   TokenTxCountDesc = 'token_txCount_DESC',
+  TokenTxCountDescNullsLast = 'token_txCount_DESC_NULLS_LAST',
   TokenUntrackedVolumeUsdAsc = 'token_untrackedVolumeUSD_ASC',
+  TokenUntrackedVolumeUsdAscNullsFirst = 'token_untrackedVolumeUSD_ASC_NULLS_FIRST',
   TokenUntrackedVolumeUsdDesc = 'token_untrackedVolumeUSD_DESC',
+  TokenUntrackedVolumeUsdDescNullsLast = 'token_untrackedVolumeUSD_DESC_NULLS_LAST',
   TotalLiquidityEthAsc = 'totalLiquidityETH_ASC',
+  TotalLiquidityEthAscNullsFirst = 'totalLiquidityETH_ASC_NULLS_FIRST',
   TotalLiquidityEthDesc = 'totalLiquidityETH_DESC',
+  TotalLiquidityEthDescNullsLast = 'totalLiquidityETH_DESC_NULLS_LAST',
   TotalLiquidityUsdAsc = 'totalLiquidityUSD_ASC',
+  TotalLiquidityUsdAscNullsFirst = 'totalLiquidityUSD_ASC_NULLS_FIRST',
   TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC',
+  TotalLiquidityUsdDescNullsLast = 'totalLiquidityUSD_DESC_NULLS_LAST',
   TotalLiquidityAsc = 'totalLiquidity_ASC',
-  TotalLiquidityDesc = 'totalLiquidity_DESC'
+  TotalLiquidityAscNullsFirst = 'totalLiquidity_ASC_NULLS_FIRST',
+  TotalLiquidityDesc = 'totalLiquidity_DESC',
+  TotalLiquidityDescNullsLast = 'totalLiquidity_DESC_NULLS_LAST'
 }
 
 export type SingleTokenLockWhereInput = {
@@ -5026,13 +7057,21 @@ export type StableDayDataEdge = {
 
 export enum StableDayDataOrderByInput {
   DailyVolumeUsdAsc = 'dailyVolumeUSD_ASC',
+  DailyVolumeUsdAscNullsFirst = 'dailyVolumeUSD_ASC_NULLS_FIRST',
   DailyVolumeUsdDesc = 'dailyVolumeUSD_DESC',
+  DailyVolumeUsdDescNullsLast = 'dailyVolumeUSD_DESC_NULLS_LAST',
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   TvlUsdAsc = 'tvlUSD_ASC',
-  TvlUsdDesc = 'tvlUSD_DESC'
+  TvlUsdAscNullsFirst = 'tvlUSD_ASC_NULLS_FIRST',
+  TvlUsdDesc = 'tvlUSD_DESC',
+  TvlUsdDescNullsLast = 'tvlUSD_DESC_NULLS_LAST'
 }
 
 export type StableDayDataWhereInput = {
@@ -5201,37 +7240,69 @@ export type StableSwapDayDataEdge = {
 
 export enum StableSwapDayDataOrderByInput {
   DailyVolumeUsdAsc = 'dailyVolumeUSD_ASC',
+  DailyVolumeUsdAscNullsFirst = 'dailyVolumeUSD_ASC_NULLS_FIRST',
   DailyVolumeUsdDesc = 'dailyVolumeUSD_DESC',
+  DailyVolumeUsdDescNullsLast = 'dailyVolumeUSD_DESC_NULLS_LAST',
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   StableSwapAAsc = 'stableSwap_a_ASC',
+  StableSwapAAscNullsFirst = 'stableSwap_a_ASC_NULLS_FIRST',
   StableSwapADesc = 'stableSwap_a_DESC',
+  StableSwapADescNullsLast = 'stableSwap_a_DESC_NULLS_LAST',
   StableSwapAddressAsc = 'stableSwap_address_ASC',
+  StableSwapAddressAscNullsFirst = 'stableSwap_address_ASC_NULLS_FIRST',
   StableSwapAddressDesc = 'stableSwap_address_DESC',
+  StableSwapAddressDescNullsLast = 'stableSwap_address_DESC_NULLS_LAST',
   StableSwapAdminFeeAsc = 'stableSwap_adminFee_ASC',
+  StableSwapAdminFeeAscNullsFirst = 'stableSwap_adminFee_ASC_NULLS_FIRST',
   StableSwapAdminFeeDesc = 'stableSwap_adminFee_DESC',
+  StableSwapAdminFeeDescNullsLast = 'stableSwap_adminFee_DESC_NULLS_LAST',
   StableSwapBaseSwapAddressAsc = 'stableSwap_baseSwapAddress_ASC',
+  StableSwapBaseSwapAddressAscNullsFirst = 'stableSwap_baseSwapAddress_ASC_NULLS_FIRST',
   StableSwapBaseSwapAddressDesc = 'stableSwap_baseSwapAddress_DESC',
+  StableSwapBaseSwapAddressDescNullsLast = 'stableSwap_baseSwapAddress_DESC_NULLS_LAST',
   StableSwapIdAsc = 'stableSwap_id_ASC',
+  StableSwapIdAscNullsFirst = 'stableSwap_id_ASC_NULLS_FIRST',
   StableSwapIdDesc = 'stableSwap_id_DESC',
+  StableSwapIdDescNullsLast = 'stableSwap_id_DESC_NULLS_LAST',
   StableSwapLpTokenAsc = 'stableSwap_lpToken_ASC',
+  StableSwapLpTokenAscNullsFirst = 'stableSwap_lpToken_ASC_NULLS_FIRST',
   StableSwapLpTokenDesc = 'stableSwap_lpToken_DESC',
+  StableSwapLpTokenDescNullsLast = 'stableSwap_lpToken_DESC_NULLS_LAST',
   StableSwapLpTotalSupplyAsc = 'stableSwap_lpTotalSupply_ASC',
+  StableSwapLpTotalSupplyAscNullsFirst = 'stableSwap_lpTotalSupply_ASC_NULLS_FIRST',
   StableSwapLpTotalSupplyDesc = 'stableSwap_lpTotalSupply_DESC',
+  StableSwapLpTotalSupplyDescNullsLast = 'stableSwap_lpTotalSupply_DESC_NULLS_LAST',
   StableSwapNumTokensAsc = 'stableSwap_numTokens_ASC',
+  StableSwapNumTokensAscNullsFirst = 'stableSwap_numTokens_ASC_NULLS_FIRST',
   StableSwapNumTokensDesc = 'stableSwap_numTokens_DESC',
+  StableSwapNumTokensDescNullsLast = 'stableSwap_numTokens_DESC_NULLS_LAST',
   StableSwapSwapFeeAsc = 'stableSwap_swapFee_ASC',
+  StableSwapSwapFeeAscNullsFirst = 'stableSwap_swapFee_ASC_NULLS_FIRST',
   StableSwapSwapFeeDesc = 'stableSwap_swapFee_DESC',
+  StableSwapSwapFeeDescNullsLast = 'stableSwap_swapFee_DESC_NULLS_LAST',
   StableSwapTvlUsdAsc = 'stableSwap_tvlUSD_ASC',
+  StableSwapTvlUsdAscNullsFirst = 'stableSwap_tvlUSD_ASC_NULLS_FIRST',
   StableSwapTvlUsdDesc = 'stableSwap_tvlUSD_DESC',
+  StableSwapTvlUsdDescNullsLast = 'stableSwap_tvlUSD_DESC_NULLS_LAST',
   StableSwapVirtualPriceAsc = 'stableSwap_virtualPrice_ASC',
+  StableSwapVirtualPriceAscNullsFirst = 'stableSwap_virtualPrice_ASC_NULLS_FIRST',
   StableSwapVirtualPriceDesc = 'stableSwap_virtualPrice_DESC',
+  StableSwapVirtualPriceDescNullsLast = 'stableSwap_virtualPrice_DESC_NULLS_LAST',
   StableSwapVolumeUsdAsc = 'stableSwap_volumeUSD_ASC',
+  StableSwapVolumeUsdAscNullsFirst = 'stableSwap_volumeUSD_ASC_NULLS_FIRST',
   StableSwapVolumeUsdDesc = 'stableSwap_volumeUSD_DESC',
+  StableSwapVolumeUsdDescNullsLast = 'stableSwap_volumeUSD_DESC_NULLS_LAST',
   TvlUsdAsc = 'tvlUSD_ASC',
-  TvlUsdDesc = 'tvlUSD_DESC'
+  TvlUsdAscNullsFirst = 'tvlUSD_ASC_NULLS_FIRST',
+  TvlUsdDesc = 'tvlUSD_DESC',
+  TvlUsdDescNullsLast = 'tvlUSD_DESC_NULLS_LAST'
 }
 
 export type StableSwapDayDataWhereInput = {
@@ -5458,65 +7529,125 @@ export type StableSwapEventEdge = {
 
 export enum StableSwapEventOrderByInput {
   BlockAsc = 'block_ASC',
+  BlockAscNullsFirst = 'block_ASC_NULLS_FIRST',
   BlockDesc = 'block_DESC',
+  BlockDescNullsLast = 'block_DESC_NULLS_LAST',
   DataAdminFeeAsc = 'data_adminFee_ASC',
+  DataAdminFeeAscNullsFirst = 'data_adminFee_ASC_NULLS_FIRST',
   DataAdminFeeDesc = 'data_adminFee_DESC',
+  DataAdminFeeDescNullsLast = 'data_adminFee_DESC_NULLS_LAST',
   DataCallerAsc = 'data_caller_ASC',
+  DataCallerAscNullsFirst = 'data_caller_ASC_NULLS_FIRST',
   DataCallerDesc = 'data_caller_DESC',
+  DataCallerDescNullsLast = 'data_caller_DESC_NULLS_LAST',
   DataCurrentAAsc = 'data_currentA_ASC',
+  DataCurrentAAscNullsFirst = 'data_currentA_ASC_NULLS_FIRST',
   DataCurrentADesc = 'data_currentA_DESC',
+  DataCurrentADescNullsLast = 'data_currentA_DESC_NULLS_LAST',
   DataFutureTimeAsc = 'data_futureTime_ASC',
+  DataFutureTimeAscNullsFirst = 'data_futureTime_ASC_NULLS_FIRST',
   DataFutureTimeDesc = 'data_futureTime_DESC',
+  DataFutureTimeDescNullsLast = 'data_futureTime_DESC_NULLS_LAST',
   DataInitialTimeAsc = 'data_initialTime_ASC',
+  DataInitialTimeAscNullsFirst = 'data_initialTime_ASC_NULLS_FIRST',
   DataInitialTimeDesc = 'data_initialTime_DESC',
+  DataInitialTimeDescNullsLast = 'data_initialTime_DESC_NULLS_LAST',
   DataInvariantAsc = 'data_invariant_ASC',
+  DataInvariantAscNullsFirst = 'data_invariant_ASC_NULLS_FIRST',
   DataInvariantDesc = 'data_invariant_DESC',
+  DataInvariantDescNullsLast = 'data_invariant_DESC_NULLS_LAST',
   DataIsTypeOfAsc = 'data_isTypeOf_ASC',
+  DataIsTypeOfAscNullsFirst = 'data_isTypeOf_ASC_NULLS_FIRST',
   DataIsTypeOfDesc = 'data_isTypeOf_DESC',
+  DataIsTypeOfDescNullsLast = 'data_isTypeOf_DESC_NULLS_LAST',
   DataLpTokenSupplyAsc = 'data_lpTokenSupply_ASC',
+  DataLpTokenSupplyAscNullsFirst = 'data_lpTokenSupply_ASC_NULLS_FIRST',
   DataLpTokenSupplyDesc = 'data_lpTokenSupply_DESC',
+  DataLpTokenSupplyDescNullsLast = 'data_lpTokenSupply_DESC_NULLS_LAST',
   DataNewAAsc = 'data_newA_ASC',
+  DataNewAAscNullsFirst = 'data_newA_ASC_NULLS_FIRST',
   DataNewADesc = 'data_newA_DESC',
+  DataNewADescNullsLast = 'data_newA_DESC_NULLS_LAST',
   DataOldAAsc = 'data_oldA_ASC',
+  DataOldAAscNullsFirst = 'data_oldA_ASC_NULLS_FIRST',
   DataOldADesc = 'data_oldA_DESC',
+  DataOldADescNullsLast = 'data_oldA_DESC_NULLS_LAST',
   DataProviderAsc = 'data_provider_ASC',
+  DataProviderAscNullsFirst = 'data_provider_ASC_NULLS_FIRST',
   DataProviderDesc = 'data_provider_DESC',
+  DataProviderDescNullsLast = 'data_provider_DESC_NULLS_LAST',
   DataReceiverAsc = 'data_receiver_ASC',
+  DataReceiverAscNullsFirst = 'data_receiver_ASC_NULLS_FIRST',
   DataReceiverDesc = 'data_receiver_DESC',
+  DataReceiverDescNullsLast = 'data_receiver_DESC_NULLS_LAST',
   DataSwapFeeAsc = 'data_swapFee_ASC',
+  DataSwapFeeAscNullsFirst = 'data_swapFee_ASC_NULLS_FIRST',
   DataSwapFeeDesc = 'data_swapFee_DESC',
+  DataSwapFeeDescNullsLast = 'data_swapFee_DESC_NULLS_LAST',
   DataTimeAsc = 'data_time_ASC',
+  DataTimeAscNullsFirst = 'data_time_ASC_NULLS_FIRST',
   DataTimeDesc = 'data_time_DESC',
+  DataTimeDescNullsLast = 'data_time_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   StableSwapAAsc = 'stableSwap_a_ASC',
+  StableSwapAAscNullsFirst = 'stableSwap_a_ASC_NULLS_FIRST',
   StableSwapADesc = 'stableSwap_a_DESC',
+  StableSwapADescNullsLast = 'stableSwap_a_DESC_NULLS_LAST',
   StableSwapAddressAsc = 'stableSwap_address_ASC',
+  StableSwapAddressAscNullsFirst = 'stableSwap_address_ASC_NULLS_FIRST',
   StableSwapAddressDesc = 'stableSwap_address_DESC',
+  StableSwapAddressDescNullsLast = 'stableSwap_address_DESC_NULLS_LAST',
   StableSwapAdminFeeAsc = 'stableSwap_adminFee_ASC',
+  StableSwapAdminFeeAscNullsFirst = 'stableSwap_adminFee_ASC_NULLS_FIRST',
   StableSwapAdminFeeDesc = 'stableSwap_adminFee_DESC',
+  StableSwapAdminFeeDescNullsLast = 'stableSwap_adminFee_DESC_NULLS_LAST',
   StableSwapBaseSwapAddressAsc = 'stableSwap_baseSwapAddress_ASC',
+  StableSwapBaseSwapAddressAscNullsFirst = 'stableSwap_baseSwapAddress_ASC_NULLS_FIRST',
   StableSwapBaseSwapAddressDesc = 'stableSwap_baseSwapAddress_DESC',
+  StableSwapBaseSwapAddressDescNullsLast = 'stableSwap_baseSwapAddress_DESC_NULLS_LAST',
   StableSwapIdAsc = 'stableSwap_id_ASC',
+  StableSwapIdAscNullsFirst = 'stableSwap_id_ASC_NULLS_FIRST',
   StableSwapIdDesc = 'stableSwap_id_DESC',
+  StableSwapIdDescNullsLast = 'stableSwap_id_DESC_NULLS_LAST',
   StableSwapLpTokenAsc = 'stableSwap_lpToken_ASC',
+  StableSwapLpTokenAscNullsFirst = 'stableSwap_lpToken_ASC_NULLS_FIRST',
   StableSwapLpTokenDesc = 'stableSwap_lpToken_DESC',
+  StableSwapLpTokenDescNullsLast = 'stableSwap_lpToken_DESC_NULLS_LAST',
   StableSwapLpTotalSupplyAsc = 'stableSwap_lpTotalSupply_ASC',
+  StableSwapLpTotalSupplyAscNullsFirst = 'stableSwap_lpTotalSupply_ASC_NULLS_FIRST',
   StableSwapLpTotalSupplyDesc = 'stableSwap_lpTotalSupply_DESC',
+  StableSwapLpTotalSupplyDescNullsLast = 'stableSwap_lpTotalSupply_DESC_NULLS_LAST',
   StableSwapNumTokensAsc = 'stableSwap_numTokens_ASC',
+  StableSwapNumTokensAscNullsFirst = 'stableSwap_numTokens_ASC_NULLS_FIRST',
   StableSwapNumTokensDesc = 'stableSwap_numTokens_DESC',
+  StableSwapNumTokensDescNullsLast = 'stableSwap_numTokens_DESC_NULLS_LAST',
   StableSwapSwapFeeAsc = 'stableSwap_swapFee_ASC',
+  StableSwapSwapFeeAscNullsFirst = 'stableSwap_swapFee_ASC_NULLS_FIRST',
   StableSwapSwapFeeDesc = 'stableSwap_swapFee_DESC',
+  StableSwapSwapFeeDescNullsLast = 'stableSwap_swapFee_DESC_NULLS_LAST',
   StableSwapTvlUsdAsc = 'stableSwap_tvlUSD_ASC',
+  StableSwapTvlUsdAscNullsFirst = 'stableSwap_tvlUSD_ASC_NULLS_FIRST',
   StableSwapTvlUsdDesc = 'stableSwap_tvlUSD_DESC',
+  StableSwapTvlUsdDescNullsLast = 'stableSwap_tvlUSD_DESC_NULLS_LAST',
   StableSwapVirtualPriceAsc = 'stableSwap_virtualPrice_ASC',
+  StableSwapVirtualPriceAscNullsFirst = 'stableSwap_virtualPrice_ASC_NULLS_FIRST',
   StableSwapVirtualPriceDesc = 'stableSwap_virtualPrice_DESC',
+  StableSwapVirtualPriceDescNullsLast = 'stableSwap_virtualPrice_DESC_NULLS_LAST',
   StableSwapVolumeUsdAsc = 'stableSwap_volumeUSD_ASC',
+  StableSwapVolumeUsdAscNullsFirst = 'stableSwap_volumeUSD_ASC_NULLS_FIRST',
   StableSwapVolumeUsdDesc = 'stableSwap_volumeUSD_DESC',
+  StableSwapVolumeUsdDescNullsLast = 'stableSwap_volumeUSD_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   TransactionAsc = 'transaction_ASC',
-  TransactionDesc = 'transaction_DESC'
+  TransactionAscNullsFirst = 'transaction_ASC_NULLS_FIRST',
+  TransactionDesc = 'transaction_DESC',
+  TransactionDescNullsLast = 'transaction_DESC_NULLS_LAST'
 }
 
 export type StableSwapEventWhereInput = {
@@ -5652,49 +7783,93 @@ export type StableSwapExchangeEdge = {
 
 export enum StableSwapExchangeOrderByInput {
   BlockAsc = 'block_ASC',
+  BlockAscNullsFirst = 'block_ASC_NULLS_FIRST',
   BlockDesc = 'block_DESC',
+  BlockDescNullsLast = 'block_DESC_NULLS_LAST',
   DataBoughtIdAsc = 'data_boughtId_ASC',
+  DataBoughtIdAscNullsFirst = 'data_boughtId_ASC_NULLS_FIRST',
   DataBoughtIdDesc = 'data_boughtId_DESC',
+  DataBoughtIdDescNullsLast = 'data_boughtId_DESC_NULLS_LAST',
   DataBuyerAsc = 'data_buyer_ASC',
+  DataBuyerAscNullsFirst = 'data_buyer_ASC_NULLS_FIRST',
   DataBuyerDesc = 'data_buyer_DESC',
+  DataBuyerDescNullsLast = 'data_buyer_DESC_NULLS_LAST',
   DataIsTypeOfAsc = 'data_isTypeOf_ASC',
+  DataIsTypeOfAscNullsFirst = 'data_isTypeOf_ASC_NULLS_FIRST',
   DataIsTypeOfDesc = 'data_isTypeOf_DESC',
+  DataIsTypeOfDescNullsLast = 'data_isTypeOf_DESC_NULLS_LAST',
   DataSoldIdAsc = 'data_soldId_ASC',
+  DataSoldIdAscNullsFirst = 'data_soldId_ASC_NULLS_FIRST',
   DataSoldIdDesc = 'data_soldId_DESC',
+  DataSoldIdDescNullsLast = 'data_soldId_DESC_NULLS_LAST',
   DataTokensBoughtAsc = 'data_tokensBought_ASC',
+  DataTokensBoughtAscNullsFirst = 'data_tokensBought_ASC_NULLS_FIRST',
   DataTokensBoughtDesc = 'data_tokensBought_DESC',
+  DataTokensBoughtDescNullsLast = 'data_tokensBought_DESC_NULLS_LAST',
   DataTokensSoldAsc = 'data_tokensSold_ASC',
+  DataTokensSoldAscNullsFirst = 'data_tokensSold_ASC_NULLS_FIRST',
   DataTokensSoldDesc = 'data_tokensSold_DESC',
+  DataTokensSoldDescNullsLast = 'data_tokensSold_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   StableSwapAAsc = 'stableSwap_a_ASC',
+  StableSwapAAscNullsFirst = 'stableSwap_a_ASC_NULLS_FIRST',
   StableSwapADesc = 'stableSwap_a_DESC',
+  StableSwapADescNullsLast = 'stableSwap_a_DESC_NULLS_LAST',
   StableSwapAddressAsc = 'stableSwap_address_ASC',
+  StableSwapAddressAscNullsFirst = 'stableSwap_address_ASC_NULLS_FIRST',
   StableSwapAddressDesc = 'stableSwap_address_DESC',
+  StableSwapAddressDescNullsLast = 'stableSwap_address_DESC_NULLS_LAST',
   StableSwapAdminFeeAsc = 'stableSwap_adminFee_ASC',
+  StableSwapAdminFeeAscNullsFirst = 'stableSwap_adminFee_ASC_NULLS_FIRST',
   StableSwapAdminFeeDesc = 'stableSwap_adminFee_DESC',
+  StableSwapAdminFeeDescNullsLast = 'stableSwap_adminFee_DESC_NULLS_LAST',
   StableSwapBaseSwapAddressAsc = 'stableSwap_baseSwapAddress_ASC',
+  StableSwapBaseSwapAddressAscNullsFirst = 'stableSwap_baseSwapAddress_ASC_NULLS_FIRST',
   StableSwapBaseSwapAddressDesc = 'stableSwap_baseSwapAddress_DESC',
+  StableSwapBaseSwapAddressDescNullsLast = 'stableSwap_baseSwapAddress_DESC_NULLS_LAST',
   StableSwapIdAsc = 'stableSwap_id_ASC',
+  StableSwapIdAscNullsFirst = 'stableSwap_id_ASC_NULLS_FIRST',
   StableSwapIdDesc = 'stableSwap_id_DESC',
+  StableSwapIdDescNullsLast = 'stableSwap_id_DESC_NULLS_LAST',
   StableSwapLpTokenAsc = 'stableSwap_lpToken_ASC',
+  StableSwapLpTokenAscNullsFirst = 'stableSwap_lpToken_ASC_NULLS_FIRST',
   StableSwapLpTokenDesc = 'stableSwap_lpToken_DESC',
+  StableSwapLpTokenDescNullsLast = 'stableSwap_lpToken_DESC_NULLS_LAST',
   StableSwapLpTotalSupplyAsc = 'stableSwap_lpTotalSupply_ASC',
+  StableSwapLpTotalSupplyAscNullsFirst = 'stableSwap_lpTotalSupply_ASC_NULLS_FIRST',
   StableSwapLpTotalSupplyDesc = 'stableSwap_lpTotalSupply_DESC',
+  StableSwapLpTotalSupplyDescNullsLast = 'stableSwap_lpTotalSupply_DESC_NULLS_LAST',
   StableSwapNumTokensAsc = 'stableSwap_numTokens_ASC',
+  StableSwapNumTokensAscNullsFirst = 'stableSwap_numTokens_ASC_NULLS_FIRST',
   StableSwapNumTokensDesc = 'stableSwap_numTokens_DESC',
+  StableSwapNumTokensDescNullsLast = 'stableSwap_numTokens_DESC_NULLS_LAST',
   StableSwapSwapFeeAsc = 'stableSwap_swapFee_ASC',
+  StableSwapSwapFeeAscNullsFirst = 'stableSwap_swapFee_ASC_NULLS_FIRST',
   StableSwapSwapFeeDesc = 'stableSwap_swapFee_DESC',
+  StableSwapSwapFeeDescNullsLast = 'stableSwap_swapFee_DESC_NULLS_LAST',
   StableSwapTvlUsdAsc = 'stableSwap_tvlUSD_ASC',
+  StableSwapTvlUsdAscNullsFirst = 'stableSwap_tvlUSD_ASC_NULLS_FIRST',
   StableSwapTvlUsdDesc = 'stableSwap_tvlUSD_DESC',
+  StableSwapTvlUsdDescNullsLast = 'stableSwap_tvlUSD_DESC_NULLS_LAST',
   StableSwapVirtualPriceAsc = 'stableSwap_virtualPrice_ASC',
+  StableSwapVirtualPriceAscNullsFirst = 'stableSwap_virtualPrice_ASC_NULLS_FIRST',
   StableSwapVirtualPriceDesc = 'stableSwap_virtualPrice_DESC',
+  StableSwapVirtualPriceDescNullsLast = 'stableSwap_virtualPrice_DESC_NULLS_LAST',
   StableSwapVolumeUsdAsc = 'stableSwap_volumeUSD_ASC',
+  StableSwapVolumeUsdAscNullsFirst = 'stableSwap_volumeUSD_ASC_NULLS_FIRST',
   StableSwapVolumeUsdDesc = 'stableSwap_volumeUSD_DESC',
+  StableSwapVolumeUsdDescNullsLast = 'stableSwap_volumeUSD_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   TransactionAsc = 'transaction_ASC',
-  TransactionDesc = 'transaction_DESC'
+  TransactionAscNullsFirst = 'transaction_ASC_NULLS_FIRST',
+  TransactionDesc = 'transaction_DESC',
+  TransactionDescNullsLast = 'transaction_DESC_NULLS_LAST'
 }
 
 export type StableSwapExchangeWhereInput = {
@@ -5782,37 +7957,69 @@ export type StableSwapHourDataEdge = {
 
 export enum StableSwapHourDataOrderByInput {
   HourStartUnixAsc = 'hourStartUnix_ASC',
+  HourStartUnixAscNullsFirst = 'hourStartUnix_ASC_NULLS_FIRST',
   HourStartUnixDesc = 'hourStartUnix_DESC',
+  HourStartUnixDescNullsLast = 'hourStartUnix_DESC_NULLS_LAST',
   HourlyVolumeUsdAsc = 'hourlyVolumeUSD_ASC',
+  HourlyVolumeUsdAscNullsFirst = 'hourlyVolumeUSD_ASC_NULLS_FIRST',
   HourlyVolumeUsdDesc = 'hourlyVolumeUSD_DESC',
+  HourlyVolumeUsdDescNullsLast = 'hourlyVolumeUSD_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   StableSwapAAsc = 'stableSwap_a_ASC',
+  StableSwapAAscNullsFirst = 'stableSwap_a_ASC_NULLS_FIRST',
   StableSwapADesc = 'stableSwap_a_DESC',
+  StableSwapADescNullsLast = 'stableSwap_a_DESC_NULLS_LAST',
   StableSwapAddressAsc = 'stableSwap_address_ASC',
+  StableSwapAddressAscNullsFirst = 'stableSwap_address_ASC_NULLS_FIRST',
   StableSwapAddressDesc = 'stableSwap_address_DESC',
+  StableSwapAddressDescNullsLast = 'stableSwap_address_DESC_NULLS_LAST',
   StableSwapAdminFeeAsc = 'stableSwap_adminFee_ASC',
+  StableSwapAdminFeeAscNullsFirst = 'stableSwap_adminFee_ASC_NULLS_FIRST',
   StableSwapAdminFeeDesc = 'stableSwap_adminFee_DESC',
+  StableSwapAdminFeeDescNullsLast = 'stableSwap_adminFee_DESC_NULLS_LAST',
   StableSwapBaseSwapAddressAsc = 'stableSwap_baseSwapAddress_ASC',
+  StableSwapBaseSwapAddressAscNullsFirst = 'stableSwap_baseSwapAddress_ASC_NULLS_FIRST',
   StableSwapBaseSwapAddressDesc = 'stableSwap_baseSwapAddress_DESC',
+  StableSwapBaseSwapAddressDescNullsLast = 'stableSwap_baseSwapAddress_DESC_NULLS_LAST',
   StableSwapIdAsc = 'stableSwap_id_ASC',
+  StableSwapIdAscNullsFirst = 'stableSwap_id_ASC_NULLS_FIRST',
   StableSwapIdDesc = 'stableSwap_id_DESC',
+  StableSwapIdDescNullsLast = 'stableSwap_id_DESC_NULLS_LAST',
   StableSwapLpTokenAsc = 'stableSwap_lpToken_ASC',
+  StableSwapLpTokenAscNullsFirst = 'stableSwap_lpToken_ASC_NULLS_FIRST',
   StableSwapLpTokenDesc = 'stableSwap_lpToken_DESC',
+  StableSwapLpTokenDescNullsLast = 'stableSwap_lpToken_DESC_NULLS_LAST',
   StableSwapLpTotalSupplyAsc = 'stableSwap_lpTotalSupply_ASC',
+  StableSwapLpTotalSupplyAscNullsFirst = 'stableSwap_lpTotalSupply_ASC_NULLS_FIRST',
   StableSwapLpTotalSupplyDesc = 'stableSwap_lpTotalSupply_DESC',
+  StableSwapLpTotalSupplyDescNullsLast = 'stableSwap_lpTotalSupply_DESC_NULLS_LAST',
   StableSwapNumTokensAsc = 'stableSwap_numTokens_ASC',
+  StableSwapNumTokensAscNullsFirst = 'stableSwap_numTokens_ASC_NULLS_FIRST',
   StableSwapNumTokensDesc = 'stableSwap_numTokens_DESC',
+  StableSwapNumTokensDescNullsLast = 'stableSwap_numTokens_DESC_NULLS_LAST',
   StableSwapSwapFeeAsc = 'stableSwap_swapFee_ASC',
+  StableSwapSwapFeeAscNullsFirst = 'stableSwap_swapFee_ASC_NULLS_FIRST',
   StableSwapSwapFeeDesc = 'stableSwap_swapFee_DESC',
+  StableSwapSwapFeeDescNullsLast = 'stableSwap_swapFee_DESC_NULLS_LAST',
   StableSwapTvlUsdAsc = 'stableSwap_tvlUSD_ASC',
+  StableSwapTvlUsdAscNullsFirst = 'stableSwap_tvlUSD_ASC_NULLS_FIRST',
   StableSwapTvlUsdDesc = 'stableSwap_tvlUSD_DESC',
+  StableSwapTvlUsdDescNullsLast = 'stableSwap_tvlUSD_DESC_NULLS_LAST',
   StableSwapVirtualPriceAsc = 'stableSwap_virtualPrice_ASC',
+  StableSwapVirtualPriceAscNullsFirst = 'stableSwap_virtualPrice_ASC_NULLS_FIRST',
   StableSwapVirtualPriceDesc = 'stableSwap_virtualPrice_DESC',
+  StableSwapVirtualPriceDescNullsLast = 'stableSwap_virtualPrice_DESC_NULLS_LAST',
   StableSwapVolumeUsdAsc = 'stableSwap_volumeUSD_ASC',
+  StableSwapVolumeUsdAscNullsFirst = 'stableSwap_volumeUSD_ASC_NULLS_FIRST',
   StableSwapVolumeUsdDesc = 'stableSwap_volumeUSD_DESC',
+  StableSwapVolumeUsdDescNullsLast = 'stableSwap_volumeUSD_DESC_NULLS_LAST',
   TvlUsdAsc = 'tvlUSD_ASC',
-  TvlUsdDesc = 'tvlUSD_DESC'
+  TvlUsdAscNullsFirst = 'tvlUSD_ASC_NULLS_FIRST',
+  TvlUsdDesc = 'tvlUSD_DESC',
+  TvlUsdDescNullsLast = 'tvlUSD_DESC_NULLS_LAST'
 }
 
 export type StableSwapHourDataWhereInput = {
@@ -5910,15 +8117,25 @@ export type StableSwapInfoEdge = {
 
 export enum StableSwapInfoOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   PoolCountAsc = 'poolCount_ASC',
+  PoolCountAscNullsFirst = 'poolCount_ASC_NULLS_FIRST',
   PoolCountDesc = 'poolCount_DESC',
+  PoolCountDescNullsLast = 'poolCount_DESC_NULLS_LAST',
   TotalTvlUsdAsc = 'totalTvlUSD_ASC',
+  TotalTvlUsdAscNullsFirst = 'totalTvlUSD_ASC_NULLS_FIRST',
   TotalTvlUsdDesc = 'totalTvlUSD_DESC',
+  TotalTvlUsdDescNullsLast = 'totalTvlUSD_DESC_NULLS_LAST',
   TotalVolumeUsdAsc = 'totalVolumeUSD_ASC',
+  TotalVolumeUsdAscNullsFirst = 'totalVolumeUSD_ASC_NULLS_FIRST',
   TotalVolumeUsdDesc = 'totalVolumeUSD_DESC',
+  TotalVolumeUsdDescNullsLast = 'totalVolumeUSD_DESC_NULLS_LAST',
   TxCountAsc = 'txCount_ASC',
-  TxCountDesc = 'txCount_DESC'
+  TxCountAscNullsFirst = 'txCount_ASC_NULLS_FIRST',
+  TxCountDesc = 'txCount_DESC',
+  TxCountDescNullsLast = 'txCount_DESC_NULLS_LAST'
 }
 
 export type StableSwapInfoWhereInput = {
@@ -6021,37 +8238,69 @@ export type StableSwapLiquidityPositionEdge = {
 
 export enum StableSwapLiquidityPositionOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityTokenBalanceAsc = 'liquidityTokenBalance_ASC',
+  LiquidityTokenBalanceAscNullsFirst = 'liquidityTokenBalance_ASC_NULLS_FIRST',
   LiquidityTokenBalanceDesc = 'liquidityTokenBalance_DESC',
+  LiquidityTokenBalanceDescNullsLast = 'liquidityTokenBalance_DESC_NULLS_LAST',
   StableSwapAAsc = 'stableSwap_a_ASC',
+  StableSwapAAscNullsFirst = 'stableSwap_a_ASC_NULLS_FIRST',
   StableSwapADesc = 'stableSwap_a_DESC',
+  StableSwapADescNullsLast = 'stableSwap_a_DESC_NULLS_LAST',
   StableSwapAddressAsc = 'stableSwap_address_ASC',
+  StableSwapAddressAscNullsFirst = 'stableSwap_address_ASC_NULLS_FIRST',
   StableSwapAddressDesc = 'stableSwap_address_DESC',
+  StableSwapAddressDescNullsLast = 'stableSwap_address_DESC_NULLS_LAST',
   StableSwapAdminFeeAsc = 'stableSwap_adminFee_ASC',
+  StableSwapAdminFeeAscNullsFirst = 'stableSwap_adminFee_ASC_NULLS_FIRST',
   StableSwapAdminFeeDesc = 'stableSwap_adminFee_DESC',
+  StableSwapAdminFeeDescNullsLast = 'stableSwap_adminFee_DESC_NULLS_LAST',
   StableSwapBaseSwapAddressAsc = 'stableSwap_baseSwapAddress_ASC',
+  StableSwapBaseSwapAddressAscNullsFirst = 'stableSwap_baseSwapAddress_ASC_NULLS_FIRST',
   StableSwapBaseSwapAddressDesc = 'stableSwap_baseSwapAddress_DESC',
+  StableSwapBaseSwapAddressDescNullsLast = 'stableSwap_baseSwapAddress_DESC_NULLS_LAST',
   StableSwapIdAsc = 'stableSwap_id_ASC',
+  StableSwapIdAscNullsFirst = 'stableSwap_id_ASC_NULLS_FIRST',
   StableSwapIdDesc = 'stableSwap_id_DESC',
+  StableSwapIdDescNullsLast = 'stableSwap_id_DESC_NULLS_LAST',
   StableSwapLpTokenAsc = 'stableSwap_lpToken_ASC',
+  StableSwapLpTokenAscNullsFirst = 'stableSwap_lpToken_ASC_NULLS_FIRST',
   StableSwapLpTokenDesc = 'stableSwap_lpToken_DESC',
+  StableSwapLpTokenDescNullsLast = 'stableSwap_lpToken_DESC_NULLS_LAST',
   StableSwapLpTotalSupplyAsc = 'stableSwap_lpTotalSupply_ASC',
+  StableSwapLpTotalSupplyAscNullsFirst = 'stableSwap_lpTotalSupply_ASC_NULLS_FIRST',
   StableSwapLpTotalSupplyDesc = 'stableSwap_lpTotalSupply_DESC',
+  StableSwapLpTotalSupplyDescNullsLast = 'stableSwap_lpTotalSupply_DESC_NULLS_LAST',
   StableSwapNumTokensAsc = 'stableSwap_numTokens_ASC',
+  StableSwapNumTokensAscNullsFirst = 'stableSwap_numTokens_ASC_NULLS_FIRST',
   StableSwapNumTokensDesc = 'stableSwap_numTokens_DESC',
+  StableSwapNumTokensDescNullsLast = 'stableSwap_numTokens_DESC_NULLS_LAST',
   StableSwapSwapFeeAsc = 'stableSwap_swapFee_ASC',
+  StableSwapSwapFeeAscNullsFirst = 'stableSwap_swapFee_ASC_NULLS_FIRST',
   StableSwapSwapFeeDesc = 'stableSwap_swapFee_DESC',
+  StableSwapSwapFeeDescNullsLast = 'stableSwap_swapFee_DESC_NULLS_LAST',
   StableSwapTvlUsdAsc = 'stableSwap_tvlUSD_ASC',
+  StableSwapTvlUsdAscNullsFirst = 'stableSwap_tvlUSD_ASC_NULLS_FIRST',
   StableSwapTvlUsdDesc = 'stableSwap_tvlUSD_DESC',
+  StableSwapTvlUsdDescNullsLast = 'stableSwap_tvlUSD_DESC_NULLS_LAST',
   StableSwapVirtualPriceAsc = 'stableSwap_virtualPrice_ASC',
+  StableSwapVirtualPriceAscNullsFirst = 'stableSwap_virtualPrice_ASC_NULLS_FIRST',
   StableSwapVirtualPriceDesc = 'stableSwap_virtualPrice_DESC',
+  StableSwapVirtualPriceDescNullsLast = 'stableSwap_virtualPrice_DESC_NULLS_LAST',
   StableSwapVolumeUsdAsc = 'stableSwap_volumeUSD_ASC',
+  StableSwapVolumeUsdAscNullsFirst = 'stableSwap_volumeUSD_ASC_NULLS_FIRST',
   StableSwapVolumeUsdDesc = 'stableSwap_volumeUSD_DESC',
+  StableSwapVolumeUsdDescNullsLast = 'stableSwap_volumeUSD_DESC_NULLS_LAST',
   UserIdAsc = 'user_id_ASC',
+  UserIdAscNullsFirst = 'user_id_ASC_NULLS_FIRST',
   UserIdDesc = 'user_id_DESC',
+  UserIdDescNullsLast = 'user_id_DESC_NULLS_LAST',
   UserUsdSwappedAsc = 'user_usdSwapped_ASC',
-  UserUsdSwappedDesc = 'user_usdSwapped_DESC'
+  UserUsdSwappedAscNullsFirst = 'user_usdSwapped_ASC_NULLS_FIRST',
+  UserUsdSwappedDesc = 'user_usdSwapped_DESC',
+  UserUsdSwappedDescNullsLast = 'user_usdSwapped_DESC_NULLS_LAST'
 }
 
 export type StableSwapLiquidityPositionWhereInput = {
@@ -6112,39 +8361,73 @@ export type StableSwapNewFeeEventData = {
 
 export enum StableSwapOrderByInput {
   AAsc = 'a_ASC',
+  AAscNullsFirst = 'a_ASC_NULLS_FIRST',
   ADesc = 'a_DESC',
+  ADescNullsLast = 'a_DESC_NULLS_LAST',
   AddressAsc = 'address_ASC',
+  AddressAscNullsFirst = 'address_ASC_NULLS_FIRST',
   AddressDesc = 'address_DESC',
+  AddressDescNullsLast = 'address_DESC_NULLS_LAST',
   AdminFeeAsc = 'adminFee_ASC',
+  AdminFeeAscNullsFirst = 'adminFee_ASC_NULLS_FIRST',
   AdminFeeDesc = 'adminFee_DESC',
+  AdminFeeDescNullsLast = 'adminFee_DESC_NULLS_LAST',
   BaseSwapAddressAsc = 'baseSwapAddress_ASC',
+  BaseSwapAddressAscNullsFirst = 'baseSwapAddress_ASC_NULLS_FIRST',
   BaseSwapAddressDesc = 'baseSwapAddress_DESC',
+  BaseSwapAddressDescNullsLast = 'baseSwapAddress_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LpTokenAsc = 'lpToken_ASC',
+  LpTokenAscNullsFirst = 'lpToken_ASC_NULLS_FIRST',
   LpTokenDesc = 'lpToken_DESC',
+  LpTokenDescNullsLast = 'lpToken_DESC_NULLS_LAST',
   LpTotalSupplyAsc = 'lpTotalSupply_ASC',
+  LpTotalSupplyAscNullsFirst = 'lpTotalSupply_ASC_NULLS_FIRST',
   LpTotalSupplyDesc = 'lpTotalSupply_DESC',
+  LpTotalSupplyDescNullsLast = 'lpTotalSupply_DESC_NULLS_LAST',
   NumTokensAsc = 'numTokens_ASC',
+  NumTokensAscNullsFirst = 'numTokens_ASC_NULLS_FIRST',
   NumTokensDesc = 'numTokens_DESC',
+  NumTokensDescNullsLast = 'numTokens_DESC_NULLS_LAST',
   StableSwapInfoIdAsc = 'stableSwapInfo_id_ASC',
+  StableSwapInfoIdAscNullsFirst = 'stableSwapInfo_id_ASC_NULLS_FIRST',
   StableSwapInfoIdDesc = 'stableSwapInfo_id_DESC',
+  StableSwapInfoIdDescNullsLast = 'stableSwapInfo_id_DESC_NULLS_LAST',
   StableSwapInfoPoolCountAsc = 'stableSwapInfo_poolCount_ASC',
+  StableSwapInfoPoolCountAscNullsFirst = 'stableSwapInfo_poolCount_ASC_NULLS_FIRST',
   StableSwapInfoPoolCountDesc = 'stableSwapInfo_poolCount_DESC',
+  StableSwapInfoPoolCountDescNullsLast = 'stableSwapInfo_poolCount_DESC_NULLS_LAST',
   StableSwapInfoTotalTvlUsdAsc = 'stableSwapInfo_totalTvlUSD_ASC',
+  StableSwapInfoTotalTvlUsdAscNullsFirst = 'stableSwapInfo_totalTvlUSD_ASC_NULLS_FIRST',
   StableSwapInfoTotalTvlUsdDesc = 'stableSwapInfo_totalTvlUSD_DESC',
+  StableSwapInfoTotalTvlUsdDescNullsLast = 'stableSwapInfo_totalTvlUSD_DESC_NULLS_LAST',
   StableSwapInfoTotalVolumeUsdAsc = 'stableSwapInfo_totalVolumeUSD_ASC',
+  StableSwapInfoTotalVolumeUsdAscNullsFirst = 'stableSwapInfo_totalVolumeUSD_ASC_NULLS_FIRST',
   StableSwapInfoTotalVolumeUsdDesc = 'stableSwapInfo_totalVolumeUSD_DESC',
+  StableSwapInfoTotalVolumeUsdDescNullsLast = 'stableSwapInfo_totalVolumeUSD_DESC_NULLS_LAST',
   StableSwapInfoTxCountAsc = 'stableSwapInfo_txCount_ASC',
+  StableSwapInfoTxCountAscNullsFirst = 'stableSwapInfo_txCount_ASC_NULLS_FIRST',
   StableSwapInfoTxCountDesc = 'stableSwapInfo_txCount_DESC',
+  StableSwapInfoTxCountDescNullsLast = 'stableSwapInfo_txCount_DESC_NULLS_LAST',
   SwapFeeAsc = 'swapFee_ASC',
+  SwapFeeAscNullsFirst = 'swapFee_ASC_NULLS_FIRST',
   SwapFeeDesc = 'swapFee_DESC',
+  SwapFeeDescNullsLast = 'swapFee_DESC_NULLS_LAST',
   TvlUsdAsc = 'tvlUSD_ASC',
+  TvlUsdAscNullsFirst = 'tvlUSD_ASC_NULLS_FIRST',
   TvlUsdDesc = 'tvlUSD_DESC',
+  TvlUsdDescNullsLast = 'tvlUSD_DESC_NULLS_LAST',
   VirtualPriceAsc = 'virtualPrice_ASC',
+  VirtualPriceAscNullsFirst = 'virtualPrice_ASC_NULLS_FIRST',
   VirtualPriceDesc = 'virtualPrice_DESC',
+  VirtualPriceDescNullsLast = 'virtualPrice_DESC_NULLS_LAST',
   VolumeUsdAsc = 'volumeUSD_ASC',
-  VolumeUsdDesc = 'volumeUSD_DESC'
+  VolumeUsdAscNullsFirst = 'volumeUSD_ASC_NULLS_FIRST',
+  VolumeUsdDesc = 'volumeUSD_DESC',
+  VolumeUsdDescNullsLast = 'volumeUSD_DESC_NULLS_LAST'
 }
 
 export type StableSwapRampAEventData = {
@@ -6412,31 +8695,57 @@ export type StakePositionEdge = {
 
 export enum StakePositionOrderByInput {
   FarmCreatedAtBlockAsc = 'farm_createdAtBlock_ASC',
+  FarmCreatedAtBlockAscNullsFirst = 'farm_createdAtBlock_ASC_NULLS_FIRST',
   FarmCreatedAtBlockDesc = 'farm_createdAtBlock_DESC',
+  FarmCreatedAtBlockDescNullsLast = 'farm_createdAtBlock_DESC_NULLS_LAST',
   FarmCreatedAtTimestampAsc = 'farm_createdAtTimestamp_ASC',
+  FarmCreatedAtTimestampAscNullsFirst = 'farm_createdAtTimestamp_ASC_NULLS_FIRST',
   FarmCreatedAtTimestampDesc = 'farm_createdAtTimestamp_DESC',
+  FarmCreatedAtTimestampDescNullsLast = 'farm_createdAtTimestamp_DESC_NULLS_LAST',
   FarmIdAsc = 'farm_id_ASC',
+  FarmIdAscNullsFirst = 'farm_id_ASC_NULLS_FIRST',
   FarmIdDesc = 'farm_id_DESC',
+  FarmIdDescNullsLast = 'farm_id_DESC_NULLS_LAST',
   FarmLiquidityStakedAsc = 'farm_liquidityStaked_ASC',
+  FarmLiquidityStakedAscNullsFirst = 'farm_liquidityStaked_ASC_NULLS_FIRST',
   FarmLiquidityStakedDesc = 'farm_liquidityStaked_DESC',
+  FarmLiquidityStakedDescNullsLast = 'farm_liquidityStaked_DESC_NULLS_LAST',
   FarmPidAsc = 'farm_pid_ASC',
+  FarmPidAscNullsFirst = 'farm_pid_ASC_NULLS_FIRST',
   FarmPidDesc = 'farm_pid_DESC',
+  FarmPidDescNullsLast = 'farm_pid_DESC_NULLS_LAST',
   FarmRewardUsdPerDayAsc = 'farm_rewardUSDPerDay_ASC',
+  FarmRewardUsdPerDayAscNullsFirst = 'farm_rewardUSDPerDay_ASC_NULLS_FIRST',
   FarmRewardUsdPerDayDesc = 'farm_rewardUSDPerDay_DESC',
+  FarmRewardUsdPerDayDescNullsLast = 'farm_rewardUSDPerDay_DESC_NULLS_LAST',
   FarmStakeAprAsc = 'farm_stakeApr_ASC',
+  FarmStakeAprAscNullsFirst = 'farm_stakeApr_ASC_NULLS_FIRST',
   FarmStakeAprDesc = 'farm_stakeApr_DESC',
+  FarmStakeAprDescNullsLast = 'farm_stakeApr_DESC_NULLS_LAST',
   FarmStakeTokenAsc = 'farm_stakeToken_ASC',
+  FarmStakeTokenAscNullsFirst = 'farm_stakeToken_ASC_NULLS_FIRST',
   FarmStakeTokenDesc = 'farm_stakeToken_DESC',
+  FarmStakeTokenDescNullsLast = 'farm_stakeToken_DESC_NULLS_LAST',
   FarmStakedUsdAsc = 'farm_stakedUSD_ASC',
+  FarmStakedUsdAscNullsFirst = 'farm_stakedUSD_ASC_NULLS_FIRST',
   FarmStakedUsdDesc = 'farm_stakedUSD_DESC',
+  FarmStakedUsdDescNullsLast = 'farm_stakedUSD_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiquidityStakedBalanceAsc = 'liquidityStakedBalance_ASC',
+  LiquidityStakedBalanceAscNullsFirst = 'liquidityStakedBalance_ASC_NULLS_FIRST',
   LiquidityStakedBalanceDesc = 'liquidityStakedBalance_DESC',
+  LiquidityStakedBalanceDescNullsLast = 'liquidityStakedBalance_DESC_NULLS_LAST',
   UserIdAsc = 'user_id_ASC',
+  UserIdAscNullsFirst = 'user_id_ASC_NULLS_FIRST',
   UserIdDesc = 'user_id_DESC',
+  UserIdDescNullsLast = 'user_id_DESC_NULLS_LAST',
   UserUsdSwappedAsc = 'user_usdSwapped_ASC',
-  UserUsdSwappedDesc = 'user_usdSwapped_DESC'
+  UserUsdSwappedAscNullsFirst = 'user_usdSwapped_ASC_NULLS_FIRST',
+  UserUsdSwappedDesc = 'user_usdSwapped_DESC',
+  UserUsdSwappedDescNullsLast = 'user_usdSwapped_DESC_NULLS_LAST'
 }
 
 export type StakePositionWhereInput = {
@@ -6485,10 +8794,18 @@ export type Subscription = {
   __typename?: 'Subscription';
   backstopPoolById?: Maybe<BackstopPool>;
   backstopPools: Array<BackstopPool>;
+  blockById?: Maybe<Block>;
+  blocks: Array<Block>;
   bundleById?: Maybe<Bundle>;
   bundles: Array<Bundle>;
   burnById?: Maybe<Burn>;
   burns: Array<Burn>;
+  callById?: Maybe<Call>;
+  calls: Array<Call>;
+  eventById?: Maybe<Event>;
+  events: Array<Event>;
+  extrinsicById?: Maybe<Extrinsic>;
+  extrinsics: Array<Extrinsic>;
   factories: Array<Factory>;
   factoryById?: Maybe<Factory>;
   factoryDayData: Array<FactoryDayData>;
@@ -6497,6 +8814,8 @@ export type Subscription = {
   farms: Array<Farm>;
   incentiveById?: Maybe<Incentive>;
   incentives: Array<Incentive>;
+  itemsCounterById?: Maybe<ItemsCounter>;
+  itemsCounters: Array<ItemsCounter>;
   liquidityPositionById?: Maybe<LiquidityPosition>;
   liquidityPositionSnapshotById?: Maybe<LiquidityPositionSnapshot>;
   liquidityPositionSnapshots: Array<LiquidityPositionSnapshot>;
@@ -6581,6 +8900,19 @@ export type SubscriptionBackstopPoolsArgs = {
 };
 
 
+export type SubscriptionBlockByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type SubscriptionBlocksArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
+  where?: InputMaybe<BlockWhereInput>;
+};
+
+
 export type SubscriptionBundleByIdArgs = {
   id: Scalars['String']['input'];
 };
@@ -6604,6 +8936,45 @@ export type SubscriptionBurnsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<BurnOrderByInput>>;
   where?: InputMaybe<BurnWhereInput>;
+};
+
+
+export type SubscriptionCallByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type SubscriptionCallsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<CallOrderByInput>>;
+  where?: InputMaybe<CallWhereInput>;
+};
+
+
+export type SubscriptionEventByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type SubscriptionEventsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EventOrderByInput>>;
+  where?: InputMaybe<EventWhereInput>;
+};
+
+
+export type SubscriptionExtrinsicByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type SubscriptionExtrinsicsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
+  where?: InputMaybe<ExtrinsicWhereInput>;
 };
 
 
@@ -6656,6 +9027,19 @@ export type SubscriptionIncentivesArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<IncentiveOrderByInput>>;
   where?: InputMaybe<IncentiveWhereInput>;
+};
+
+
+export type SubscriptionItemsCounterByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type SubscriptionItemsCountersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ItemsCounterOrderByInput>>;
+  where?: InputMaybe<ItemsCounterWhereInput>;
 };
 
 
@@ -7125,67 +9509,129 @@ export type SwapEdge = {
 
 export enum SwapOrderByInput {
   Amount0InAsc = 'amount0In_ASC',
+  Amount0InAscNullsFirst = 'amount0In_ASC_NULLS_FIRST',
   Amount0InDesc = 'amount0In_DESC',
+  Amount0InDescNullsLast = 'amount0In_DESC_NULLS_LAST',
   Amount0OutAsc = 'amount0Out_ASC',
+  Amount0OutAscNullsFirst = 'amount0Out_ASC_NULLS_FIRST',
   Amount0OutDesc = 'amount0Out_DESC',
+  Amount0OutDescNullsLast = 'amount0Out_DESC_NULLS_LAST',
   Amount1InAsc = 'amount1In_ASC',
+  Amount1InAscNullsFirst = 'amount1In_ASC_NULLS_FIRST',
   Amount1InDesc = 'amount1In_DESC',
+  Amount1InDescNullsLast = 'amount1In_DESC_NULLS_LAST',
   Amount1OutAsc = 'amount1Out_ASC',
+  Amount1OutAscNullsFirst = 'amount1Out_ASC_NULLS_FIRST',
   Amount1OutDesc = 'amount1Out_DESC',
+  Amount1OutDescNullsLast = 'amount1Out_DESC_NULLS_LAST',
   AmountUsdAsc = 'amountUSD_ASC',
+  AmountUsdAscNullsFirst = 'amountUSD_ASC_NULLS_FIRST',
   AmountUsdDesc = 'amountUSD_DESC',
+  AmountUsdDescNullsLast = 'amountUSD_DESC_NULLS_LAST',
   FromAsc = 'from_ASC',
+  FromAscNullsFirst = 'from_ASC_NULLS_FIRST',
   FromDesc = 'from_DESC',
+  FromDescNullsLast = 'from_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LogIndexAsc = 'logIndex_ASC',
+  LogIndexAscNullsFirst = 'logIndex_ASC_NULLS_FIRST',
   LogIndexDesc = 'logIndex_DESC',
+  LogIndexDescNullsLast = 'logIndex_DESC_NULLS_LAST',
   PairCreatedAtBlockNumberAsc = 'pair_createdAtBlockNumber_ASC',
+  PairCreatedAtBlockNumberAscNullsFirst = 'pair_createdAtBlockNumber_ASC_NULLS_FIRST',
   PairCreatedAtBlockNumberDesc = 'pair_createdAtBlockNumber_DESC',
+  PairCreatedAtBlockNumberDescNullsLast = 'pair_createdAtBlockNumber_DESC_NULLS_LAST',
   PairCreatedAtTimestampAsc = 'pair_createdAtTimestamp_ASC',
+  PairCreatedAtTimestampAscNullsFirst = 'pair_createdAtTimestamp_ASC_NULLS_FIRST',
   PairCreatedAtTimestampDesc = 'pair_createdAtTimestamp_DESC',
+  PairCreatedAtTimestampDescNullsLast = 'pair_createdAtTimestamp_DESC_NULLS_LAST',
   PairIdAsc = 'pair_id_ASC',
+  PairIdAscNullsFirst = 'pair_id_ASC_NULLS_FIRST',
   PairIdDesc = 'pair_id_DESC',
+  PairIdDescNullsLast = 'pair_id_DESC_NULLS_LAST',
   PairLiquidityProviderCountAsc = 'pair_liquidityProviderCount_ASC',
+  PairLiquidityProviderCountAscNullsFirst = 'pair_liquidityProviderCount_ASC_NULLS_FIRST',
   PairLiquidityProviderCountDesc = 'pair_liquidityProviderCount_DESC',
+  PairLiquidityProviderCountDescNullsLast = 'pair_liquidityProviderCount_DESC_NULLS_LAST',
   PairReserve0Asc = 'pair_reserve0_ASC',
+  PairReserve0AscNullsFirst = 'pair_reserve0_ASC_NULLS_FIRST',
   PairReserve0Desc = 'pair_reserve0_DESC',
+  PairReserve0DescNullsLast = 'pair_reserve0_DESC_NULLS_LAST',
   PairReserve1Asc = 'pair_reserve1_ASC',
+  PairReserve1AscNullsFirst = 'pair_reserve1_ASC_NULLS_FIRST',
   PairReserve1Desc = 'pair_reserve1_DESC',
+  PairReserve1DescNullsLast = 'pair_reserve1_DESC_NULLS_LAST',
   PairReserveEthAsc = 'pair_reserveETH_ASC',
+  PairReserveEthAscNullsFirst = 'pair_reserveETH_ASC_NULLS_FIRST',
   PairReserveEthDesc = 'pair_reserveETH_DESC',
+  PairReserveEthDescNullsLast = 'pair_reserveETH_DESC_NULLS_LAST',
   PairReserveUsdAsc = 'pair_reserveUSD_ASC',
+  PairReserveUsdAscNullsFirst = 'pair_reserveUSD_ASC_NULLS_FIRST',
   PairReserveUsdDesc = 'pair_reserveUSD_DESC',
+  PairReserveUsdDescNullsLast = 'pair_reserveUSD_DESC_NULLS_LAST',
   PairToken0PriceAsc = 'pair_token0Price_ASC',
+  PairToken0PriceAscNullsFirst = 'pair_token0Price_ASC_NULLS_FIRST',
   PairToken0PriceDesc = 'pair_token0Price_DESC',
+  PairToken0PriceDescNullsLast = 'pair_token0Price_DESC_NULLS_LAST',
   PairToken1PriceAsc = 'pair_token1Price_ASC',
+  PairToken1PriceAscNullsFirst = 'pair_token1Price_ASC_NULLS_FIRST',
   PairToken1PriceDesc = 'pair_token1Price_DESC',
+  PairToken1PriceDescNullsLast = 'pair_token1Price_DESC_NULLS_LAST',
   PairTotalSupplyAsc = 'pair_totalSupply_ASC',
+  PairTotalSupplyAscNullsFirst = 'pair_totalSupply_ASC_NULLS_FIRST',
   PairTotalSupplyDesc = 'pair_totalSupply_DESC',
+  PairTotalSupplyDescNullsLast = 'pair_totalSupply_DESC_NULLS_LAST',
   PairTrackedReserveEthAsc = 'pair_trackedReserveETH_ASC',
+  PairTrackedReserveEthAscNullsFirst = 'pair_trackedReserveETH_ASC_NULLS_FIRST',
   PairTrackedReserveEthDesc = 'pair_trackedReserveETH_DESC',
+  PairTrackedReserveEthDescNullsLast = 'pair_trackedReserveETH_DESC_NULLS_LAST',
   PairTxCountAsc = 'pair_txCount_ASC',
+  PairTxCountAscNullsFirst = 'pair_txCount_ASC_NULLS_FIRST',
   PairTxCountDesc = 'pair_txCount_DESC',
+  PairTxCountDescNullsLast = 'pair_txCount_DESC_NULLS_LAST',
   PairUntrackedVolumeUsdAsc = 'pair_untrackedVolumeUSD_ASC',
+  PairUntrackedVolumeUsdAscNullsFirst = 'pair_untrackedVolumeUSD_ASC_NULLS_FIRST',
   PairUntrackedVolumeUsdDesc = 'pair_untrackedVolumeUSD_DESC',
+  PairUntrackedVolumeUsdDescNullsLast = 'pair_untrackedVolumeUSD_DESC_NULLS_LAST',
   PairVolumeToken0Asc = 'pair_volumeToken0_ASC',
+  PairVolumeToken0AscNullsFirst = 'pair_volumeToken0_ASC_NULLS_FIRST',
   PairVolumeToken0Desc = 'pair_volumeToken0_DESC',
+  PairVolumeToken0DescNullsLast = 'pair_volumeToken0_DESC_NULLS_LAST',
   PairVolumeToken1Asc = 'pair_volumeToken1_ASC',
+  PairVolumeToken1AscNullsFirst = 'pair_volumeToken1_ASC_NULLS_FIRST',
   PairVolumeToken1Desc = 'pair_volumeToken1_DESC',
+  PairVolumeToken1DescNullsLast = 'pair_volumeToken1_DESC_NULLS_LAST',
   PairVolumeUsdAsc = 'pair_volumeUSD_ASC',
+  PairVolumeUsdAscNullsFirst = 'pair_volumeUSD_ASC_NULLS_FIRST',
   PairVolumeUsdDesc = 'pair_volumeUSD_DESC',
+  PairVolumeUsdDescNullsLast = 'pair_volumeUSD_DESC_NULLS_LAST',
   SenderAsc = 'sender_ASC',
+  SenderAscNullsFirst = 'sender_ASC_NULLS_FIRST',
   SenderDesc = 'sender_DESC',
+  SenderDescNullsLast = 'sender_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   ToAsc = 'to_ASC',
+  ToAscNullsFirst = 'to_ASC_NULLS_FIRST',
   ToDesc = 'to_DESC',
+  ToDescNullsLast = 'to_DESC_NULLS_LAST',
   TransactionBlockNumberAsc = 'transaction_blockNumber_ASC',
+  TransactionBlockNumberAscNullsFirst = 'transaction_blockNumber_ASC_NULLS_FIRST',
   TransactionBlockNumberDesc = 'transaction_blockNumber_DESC',
+  TransactionBlockNumberDescNullsLast = 'transaction_blockNumber_DESC_NULLS_LAST',
   TransactionIdAsc = 'transaction_id_ASC',
+  TransactionIdAscNullsFirst = 'transaction_id_ASC_NULLS_FIRST',
   TransactionIdDesc = 'transaction_id_DESC',
+  TransactionIdDescNullsLast = 'transaction_id_DESC_NULLS_LAST',
   TransactionTimestampAsc = 'transaction_timestamp_ASC',
-  TransactionTimestampDesc = 'transaction_timestamp_DESC'
+  TransactionTimestampAscNullsFirst = 'transaction_timestamp_ASC_NULLS_FIRST',
+  TransactionTimestampDesc = 'transaction_timestamp_DESC',
+  TransactionTimestampDescNullsLast = 'transaction_timestamp_DESC_NULLS_LAST'
 }
 
 export type SwapPool = {
@@ -7208,37 +9654,69 @@ export type SwapPoolEdge = {
 
 export enum SwapPoolOrderByInput {
   BackstopIdAsc = 'backstop_id_ASC',
+  BackstopIdAscNullsFirst = 'backstop_id_ASC_NULLS_FIRST',
   BackstopIdDesc = 'backstop_id_DESC',
+  BackstopIdDescNullsLast = 'backstop_id_DESC_NULLS_LAST',
   BackstopLiabilitiesAsc = 'backstop_liabilities_ASC',
+  BackstopLiabilitiesAscNullsFirst = 'backstop_liabilities_ASC_NULLS_FIRST',
   BackstopLiabilitiesDesc = 'backstop_liabilities_DESC',
+  BackstopLiabilitiesDescNullsLast = 'backstop_liabilities_DESC_NULLS_LAST',
   BackstopPausedAsc = 'backstop_paused_ASC',
+  BackstopPausedAscNullsFirst = 'backstop_paused_ASC_NULLS_FIRST',
   BackstopPausedDesc = 'backstop_paused_DESC',
+  BackstopPausedDescNullsLast = 'backstop_paused_DESC_NULLS_LAST',
   BackstopReservesAsc = 'backstop_reserves_ASC',
+  BackstopReservesAscNullsFirst = 'backstop_reserves_ASC_NULLS_FIRST',
   BackstopReservesDesc = 'backstop_reserves_DESC',
+  BackstopReservesDescNullsLast = 'backstop_reserves_DESC_NULLS_LAST',
   BackstopTotalSupplyAsc = 'backstop_totalSupply_ASC',
+  BackstopTotalSupplyAscNullsFirst = 'backstop_totalSupply_ASC_NULLS_FIRST',
   BackstopTotalSupplyDesc = 'backstop_totalSupply_DESC',
+  BackstopTotalSupplyDescNullsLast = 'backstop_totalSupply_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   LiabilitiesAsc = 'liabilities_ASC',
+  LiabilitiesAscNullsFirst = 'liabilities_ASC_NULLS_FIRST',
   LiabilitiesDesc = 'liabilities_DESC',
+  LiabilitiesDescNullsLast = 'liabilities_DESC_NULLS_LAST',
   PausedAsc = 'paused_ASC',
+  PausedAscNullsFirst = 'paused_ASC_NULLS_FIRST',
   PausedDesc = 'paused_DESC',
+  PausedDescNullsLast = 'paused_DESC_NULLS_LAST',
   ReservesAsc = 'reserves_ASC',
+  ReservesAscNullsFirst = 'reserves_ASC_NULLS_FIRST',
   ReservesDesc = 'reserves_DESC',
+  ReservesDescNullsLast = 'reserves_DESC_NULLS_LAST',
   RouterIdAsc = 'router_id_ASC',
+  RouterIdAscNullsFirst = 'router_id_ASC_NULLS_FIRST',
   RouterIdDesc = 'router_id_DESC',
+  RouterIdDescNullsLast = 'router_id_DESC_NULLS_LAST',
   RouterPausedAsc = 'router_paused_ASC',
+  RouterPausedAscNullsFirst = 'router_paused_ASC_NULLS_FIRST',
   RouterPausedDesc = 'router_paused_DESC',
+  RouterPausedDescNullsLast = 'router_paused_DESC_NULLS_LAST',
   TokenDecimalsAsc = 'token_decimals_ASC',
+  TokenDecimalsAscNullsFirst = 'token_decimals_ASC_NULLS_FIRST',
   TokenDecimalsDesc = 'token_decimals_DESC',
+  TokenDecimalsDescNullsLast = 'token_decimals_DESC_NULLS_LAST',
   TokenIdAsc = 'token_id_ASC',
+  TokenIdAscNullsFirst = 'token_id_ASC_NULLS_FIRST',
   TokenIdDesc = 'token_id_DESC',
+  TokenIdDescNullsLast = 'token_id_DESC_NULLS_LAST',
   TokenNameAsc = 'token_name_ASC',
+  TokenNameAscNullsFirst = 'token_name_ASC_NULLS_FIRST',
   TokenNameDesc = 'token_name_DESC',
+  TokenNameDescNullsLast = 'token_name_DESC_NULLS_LAST',
   TokenSymbolAsc = 'token_symbol_ASC',
+  TokenSymbolAscNullsFirst = 'token_symbol_ASC_NULLS_FIRST',
   TokenSymbolDesc = 'token_symbol_DESC',
+  TokenSymbolDescNullsLast = 'token_symbol_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
-  TotalSupplyDesc = 'totalSupply_DESC'
+  TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
+  TotalSupplyDesc = 'totalSupply_DESC',
+  TotalSupplyDescNullsLast = 'totalSupply_DESC_NULLS_LAST'
 }
 
 export type SwapPoolWhereInput = {
@@ -7588,47 +10066,89 @@ export type TokenDayDataEdge = {
 
 export enum TokenDayDataOrderByInput {
   DailyTxnsAsc = 'dailyTxns_ASC',
+  DailyTxnsAscNullsFirst = 'dailyTxns_ASC_NULLS_FIRST',
   DailyTxnsDesc = 'dailyTxns_DESC',
+  DailyTxnsDescNullsLast = 'dailyTxns_DESC_NULLS_LAST',
   DailyVolumeEthAsc = 'dailyVolumeETH_ASC',
+  DailyVolumeEthAscNullsFirst = 'dailyVolumeETH_ASC_NULLS_FIRST',
   DailyVolumeEthDesc = 'dailyVolumeETH_DESC',
+  DailyVolumeEthDescNullsLast = 'dailyVolumeETH_DESC_NULLS_LAST',
   DailyVolumeTokenAsc = 'dailyVolumeToken_ASC',
+  DailyVolumeTokenAscNullsFirst = 'dailyVolumeToken_ASC_NULLS_FIRST',
   DailyVolumeTokenDesc = 'dailyVolumeToken_DESC',
+  DailyVolumeTokenDescNullsLast = 'dailyVolumeToken_DESC_NULLS_LAST',
   DailyVolumeUsdAsc = 'dailyVolumeUSD_ASC',
+  DailyVolumeUsdAscNullsFirst = 'dailyVolumeUSD_ASC_NULLS_FIRST',
   DailyVolumeUsdDesc = 'dailyVolumeUSD_DESC',
+  DailyVolumeUsdDescNullsLast = 'dailyVolumeUSD_DESC_NULLS_LAST',
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   PriceUsdAsc = 'priceUSD_ASC',
+  PriceUsdAscNullsFirst = 'priceUSD_ASC_NULLS_FIRST',
   PriceUsdDesc = 'priceUSD_DESC',
+  PriceUsdDescNullsLast = 'priceUSD_DESC_NULLS_LAST',
   TokenDecimalsAsc = 'token_decimals_ASC',
+  TokenDecimalsAscNullsFirst = 'token_decimals_ASC_NULLS_FIRST',
   TokenDecimalsDesc = 'token_decimals_DESC',
+  TokenDecimalsDescNullsLast = 'token_decimals_DESC_NULLS_LAST',
   TokenDerivedEthAsc = 'token_derivedETH_ASC',
+  TokenDerivedEthAscNullsFirst = 'token_derivedETH_ASC_NULLS_FIRST',
   TokenDerivedEthDesc = 'token_derivedETH_DESC',
+  TokenDerivedEthDescNullsLast = 'token_derivedETH_DESC_NULLS_LAST',
   TokenIdAsc = 'token_id_ASC',
+  TokenIdAscNullsFirst = 'token_id_ASC_NULLS_FIRST',
   TokenIdDesc = 'token_id_DESC',
+  TokenIdDescNullsLast = 'token_id_DESC_NULLS_LAST',
   TokenNameAsc = 'token_name_ASC',
+  TokenNameAscNullsFirst = 'token_name_ASC_NULLS_FIRST',
   TokenNameDesc = 'token_name_DESC',
+  TokenNameDescNullsLast = 'token_name_DESC_NULLS_LAST',
   TokenSymbolAsc = 'token_symbol_ASC',
+  TokenSymbolAscNullsFirst = 'token_symbol_ASC_NULLS_FIRST',
   TokenSymbolDesc = 'token_symbol_DESC',
+  TokenSymbolDescNullsLast = 'token_symbol_DESC_NULLS_LAST',
   TokenTotalLiquidityAsc = 'token_totalLiquidity_ASC',
+  TokenTotalLiquidityAscNullsFirst = 'token_totalLiquidity_ASC_NULLS_FIRST',
   TokenTotalLiquidityDesc = 'token_totalLiquidity_DESC',
+  TokenTotalLiquidityDescNullsLast = 'token_totalLiquidity_DESC_NULLS_LAST',
   TokenTotalSupplyAsc = 'token_totalSupply_ASC',
+  TokenTotalSupplyAscNullsFirst = 'token_totalSupply_ASC_NULLS_FIRST',
   TokenTotalSupplyDesc = 'token_totalSupply_DESC',
+  TokenTotalSupplyDescNullsLast = 'token_totalSupply_DESC_NULLS_LAST',
   TokenTradeVolumeUsdAsc = 'token_tradeVolumeUSD_ASC',
+  TokenTradeVolumeUsdAscNullsFirst = 'token_tradeVolumeUSD_ASC_NULLS_FIRST',
   TokenTradeVolumeUsdDesc = 'token_tradeVolumeUSD_DESC',
+  TokenTradeVolumeUsdDescNullsLast = 'token_tradeVolumeUSD_DESC_NULLS_LAST',
   TokenTradeVolumeAsc = 'token_tradeVolume_ASC',
+  TokenTradeVolumeAscNullsFirst = 'token_tradeVolume_ASC_NULLS_FIRST',
   TokenTradeVolumeDesc = 'token_tradeVolume_DESC',
+  TokenTradeVolumeDescNullsLast = 'token_tradeVolume_DESC_NULLS_LAST',
   TokenTxCountAsc = 'token_txCount_ASC',
+  TokenTxCountAscNullsFirst = 'token_txCount_ASC_NULLS_FIRST',
   TokenTxCountDesc = 'token_txCount_DESC',
+  TokenTxCountDescNullsLast = 'token_txCount_DESC_NULLS_LAST',
   TokenUntrackedVolumeUsdAsc = 'token_untrackedVolumeUSD_ASC',
+  TokenUntrackedVolumeUsdAscNullsFirst = 'token_untrackedVolumeUSD_ASC_NULLS_FIRST',
   TokenUntrackedVolumeUsdDesc = 'token_untrackedVolumeUSD_DESC',
+  TokenUntrackedVolumeUsdDescNullsLast = 'token_untrackedVolumeUSD_DESC_NULLS_LAST',
   TotalLiquidityEthAsc = 'totalLiquidityETH_ASC',
+  TotalLiquidityEthAscNullsFirst = 'totalLiquidityETH_ASC_NULLS_FIRST',
   TotalLiquidityEthDesc = 'totalLiquidityETH_DESC',
+  TotalLiquidityEthDescNullsLast = 'totalLiquidityETH_DESC_NULLS_LAST',
   TotalLiquidityTokenAsc = 'totalLiquidityToken_ASC',
+  TotalLiquidityTokenAscNullsFirst = 'totalLiquidityToken_ASC_NULLS_FIRST',
   TotalLiquidityTokenDesc = 'totalLiquidityToken_DESC',
+  TotalLiquidityTokenDescNullsLast = 'totalLiquidityToken_DESC_NULLS_LAST',
   TotalLiquidityUsdAsc = 'totalLiquidityUSD_ASC',
-  TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC'
+  TotalLiquidityUsdAscNullsFirst = 'totalLiquidityUSD_ASC_NULLS_FIRST',
+  TotalLiquidityUsdDesc = 'totalLiquidityUSD_DESC',
+  TotalLiquidityUsdDescNullsLast = 'totalLiquidityUSD_DESC_NULLS_LAST'
 }
 
 export type TokenDayDataWhereInput = {
@@ -7811,19 +10331,33 @@ export type TokenDepositEdge = {
 
 export enum TokenDepositOrderByInput {
   AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
   AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
   BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
   CurrencyIdAsc = 'currencyId_ASC',
+  CurrencyIdAscNullsFirst = 'currencyId_ASC_NULLS_FIRST',
   CurrencyIdDesc = 'currencyId_DESC',
+  CurrencyIdDescNullsLast = 'currencyId_DESC_NULLS_LAST',
   ExtrinsicHashAsc = 'extrinsicHash_ASC',
+  ExtrinsicHashAscNullsFirst = 'extrinsicHash_ASC_NULLS_FIRST',
   ExtrinsicHashDesc = 'extrinsicHash_DESC',
+  ExtrinsicHashDescNullsLast = 'extrinsicHash_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   WhoAsc = 'who_ASC',
-  WhoDesc = 'who_DESC'
+  WhoAscNullsFirst = 'who_ASC_NULLS_FIRST',
+  WhoDesc = 'who_DESC',
+  WhoDescNullsLast = 'who_DESC_NULLS_LAST'
 }
 
 export type TokenDepositWhereInput = {
@@ -7941,27 +10475,49 @@ export type TokenEdge = {
 
 export enum TokenOrderByInput {
   DecimalsAsc = 'decimals_ASC',
+  DecimalsAscNullsFirst = 'decimals_ASC_NULLS_FIRST',
   DecimalsDesc = 'decimals_DESC',
+  DecimalsDescNullsLast = 'decimals_DESC_NULLS_LAST',
   DerivedEthAsc = 'derivedETH_ASC',
+  DerivedEthAscNullsFirst = 'derivedETH_ASC_NULLS_FIRST',
   DerivedEthDesc = 'derivedETH_DESC',
+  DerivedEthDescNullsLast = 'derivedETH_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
   NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
   SymbolAsc = 'symbol_ASC',
+  SymbolAscNullsFirst = 'symbol_ASC_NULLS_FIRST',
   SymbolDesc = 'symbol_DESC',
+  SymbolDescNullsLast = 'symbol_DESC_NULLS_LAST',
   TotalLiquidityAsc = 'totalLiquidity_ASC',
+  TotalLiquidityAscNullsFirst = 'totalLiquidity_ASC_NULLS_FIRST',
   TotalLiquidityDesc = 'totalLiquidity_DESC',
+  TotalLiquidityDescNullsLast = 'totalLiquidity_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
+  TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
   TotalSupplyDesc = 'totalSupply_DESC',
+  TotalSupplyDescNullsLast = 'totalSupply_DESC_NULLS_LAST',
   TradeVolumeUsdAsc = 'tradeVolumeUSD_ASC',
+  TradeVolumeUsdAscNullsFirst = 'tradeVolumeUSD_ASC_NULLS_FIRST',
   TradeVolumeUsdDesc = 'tradeVolumeUSD_DESC',
+  TradeVolumeUsdDescNullsLast = 'tradeVolumeUSD_DESC_NULLS_LAST',
   TradeVolumeAsc = 'tradeVolume_ASC',
+  TradeVolumeAscNullsFirst = 'tradeVolume_ASC_NULLS_FIRST',
   TradeVolumeDesc = 'tradeVolume_DESC',
+  TradeVolumeDescNullsLast = 'tradeVolume_DESC_NULLS_LAST',
   TxCountAsc = 'txCount_ASC',
+  TxCountAscNullsFirst = 'txCount_ASC_NULLS_FIRST',
   TxCountDesc = 'txCount_DESC',
+  TxCountDescNullsLast = 'txCount_DESC_NULLS_LAST',
   UntrackedVolumeUsdAsc = 'untrackedVolumeUSD_ASC',
-  UntrackedVolumeUsdDesc = 'untrackedVolumeUSD_DESC'
+  UntrackedVolumeUsdAscNullsFirst = 'untrackedVolumeUSD_ASC_NULLS_FIRST',
+  UntrackedVolumeUsdDesc = 'untrackedVolumeUSD_DESC',
+  UntrackedVolumeUsdDescNullsLast = 'untrackedVolumeUSD_DESC_NULLS_LAST'
 }
 
 export type TokenTransfer = {
@@ -7972,6 +10528,7 @@ export type TokenTransfer = {
   extrinsicHash?: Maybe<Scalars['String']['output']>;
   from: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  remark?: Maybe<Scalars['String']['output']>;
   timestamp: Scalars['DateTime']['output'];
   to: Scalars['String']['output'];
 };
@@ -7984,21 +10541,41 @@ export type TokenTransferEdge = {
 
 export enum TokenTransferOrderByInput {
   AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
   AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
   BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
   CurrencyIdAsc = 'currencyId_ASC',
+  CurrencyIdAscNullsFirst = 'currencyId_ASC_NULLS_FIRST',
   CurrencyIdDesc = 'currencyId_DESC',
+  CurrencyIdDescNullsLast = 'currencyId_DESC_NULLS_LAST',
   ExtrinsicHashAsc = 'extrinsicHash_ASC',
+  ExtrinsicHashAscNullsFirst = 'extrinsicHash_ASC_NULLS_FIRST',
   ExtrinsicHashDesc = 'extrinsicHash_DESC',
+  ExtrinsicHashDescNullsLast = 'extrinsicHash_DESC_NULLS_LAST',
   FromAsc = 'from_ASC',
+  FromAscNullsFirst = 'from_ASC_NULLS_FIRST',
   FromDesc = 'from_DESC',
+  FromDescNullsLast = 'from_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  RemarkAsc = 'remark_ASC',
+  RemarkAscNullsFirst = 'remark_ASC_NULLS_FIRST',
+  RemarkDesc = 'remark_DESC',
+  RemarkDescNullsLast = 'remark_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   ToAsc = 'to_ASC',
-  ToDesc = 'to_DESC'
+  ToAscNullsFirst = 'to_ASC_NULLS_FIRST',
+  ToDesc = 'to_DESC',
+  ToDescNullsLast = 'to_DESC_NULLS_LAST'
 }
 
 export type TokenTransferWhereInput = {
@@ -8090,6 +10667,23 @@ export type TokenTransferWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_contains?: InputMaybe<Scalars['String']['input']>;
+  remark_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  remark_endsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_eq?: InputMaybe<Scalars['String']['input']>;
+  remark_gt?: InputMaybe<Scalars['String']['input']>;
+  remark_gte?: InputMaybe<Scalars['String']['input']>;
+  remark_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  remark_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  remark_lt?: InputMaybe<Scalars['String']['input']>;
+  remark_lte?: InputMaybe<Scalars['String']['input']>;
+  remark_not_contains?: InputMaybe<Scalars['String']['input']>;
+  remark_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  remark_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_not_eq?: InputMaybe<Scalars['String']['input']>;
+  remark_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  remark_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_startsWith?: InputMaybe<Scalars['String']['input']>;
   timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
   timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
   timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -8335,19 +10929,33 @@ export type TokenWithdrawnEdge = {
 
 export enum TokenWithdrawnOrderByInput {
   AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
   AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
   BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
   CurrencyIdAsc = 'currencyId_ASC',
+  CurrencyIdAscNullsFirst = 'currencyId_ASC_NULLS_FIRST',
   CurrencyIdDesc = 'currencyId_DESC',
+  CurrencyIdDescNullsLast = 'currencyId_DESC_NULLS_LAST',
   ExtrinsicHashAsc = 'extrinsicHash_ASC',
+  ExtrinsicHashAscNullsFirst = 'extrinsicHash_ASC_NULLS_FIRST',
   ExtrinsicHashDesc = 'extrinsicHash_DESC',
+  ExtrinsicHashDescNullsLast = 'extrinsicHash_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   WhoAsc = 'who_ASC',
-  WhoDesc = 'who_DESC'
+  WhoAscNullsFirst = 'who_ASC_NULLS_FIRST',
+  WhoDesc = 'who_DESC',
+  WhoDescNullsLast = 'who_DESC_NULLS_LAST'
 }
 
 export type TokenWithdrawnWhereInput = {
@@ -8482,11 +11090,17 @@ export type TransactionEdge = {
 
 export enum TransactionOrderByInput {
   BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST'
 }
 
 export type TransactionWhereInput = {
@@ -8556,6 +11170,7 @@ export type Transfer = {
   fee: Scalars['BigInt']['output'];
   from: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  remark?: Maybe<Scalars['String']['output']>;
   timestamp: Scalars['DateTime']['output'];
   to: Scalars['String']['output'];
 };
@@ -8568,21 +11183,41 @@ export type TransferEdge = {
 
 export enum TransferOrderByInput {
   AmountAsc = 'amount_ASC',
+  AmountAscNullsFirst = 'amount_ASC_NULLS_FIRST',
   AmountDesc = 'amount_DESC',
+  AmountDescNullsLast = 'amount_DESC_NULLS_LAST',
   BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberAscNullsFirst = 'blockNumber_ASC_NULLS_FIRST',
   BlockNumberDesc = 'blockNumber_DESC',
+  BlockNumberDescNullsLast = 'blockNumber_DESC_NULLS_LAST',
   ExtrinsicHashAsc = 'extrinsicHash_ASC',
+  ExtrinsicHashAscNullsFirst = 'extrinsicHash_ASC_NULLS_FIRST',
   ExtrinsicHashDesc = 'extrinsicHash_DESC',
+  ExtrinsicHashDescNullsLast = 'extrinsicHash_DESC_NULLS_LAST',
   FeeAsc = 'fee_ASC',
+  FeeAscNullsFirst = 'fee_ASC_NULLS_FIRST',
   FeeDesc = 'fee_DESC',
+  FeeDescNullsLast = 'fee_DESC_NULLS_LAST',
   FromAsc = 'from_ASC',
+  FromAscNullsFirst = 'from_ASC_NULLS_FIRST',
   FromDesc = 'from_DESC',
+  FromDescNullsLast = 'from_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  RemarkAsc = 'remark_ASC',
+  RemarkAscNullsFirst = 'remark_ASC_NULLS_FIRST',
+  RemarkDesc = 'remark_DESC',
+  RemarkDescNullsLast = 'remark_DESC_NULLS_LAST',
   TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
   TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST',
   ToAsc = 'to_ASC',
-  ToDesc = 'to_DESC'
+  ToAscNullsFirst = 'to_ASC_NULLS_FIRST',
+  ToDesc = 'to_DESC',
+  ToDescNullsLast = 'to_DESC_NULLS_LAST'
 }
 
 export type TransferWhereInput = {
@@ -8666,6 +11301,23 @@ export type TransferWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_contains?: InputMaybe<Scalars['String']['input']>;
+  remark_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  remark_endsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_eq?: InputMaybe<Scalars['String']['input']>;
+  remark_gt?: InputMaybe<Scalars['String']['input']>;
+  remark_gte?: InputMaybe<Scalars['String']['input']>;
+  remark_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  remark_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  remark_lt?: InputMaybe<Scalars['String']['input']>;
+  remark_lte?: InputMaybe<Scalars['String']['input']>;
+  remark_not_contains?: InputMaybe<Scalars['String']['input']>;
+  remark_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  remark_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_not_eq?: InputMaybe<Scalars['String']['input']>;
+  remark_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  remark_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  remark_startsWith?: InputMaybe<Scalars['String']['input']>;
   timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
   timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
   timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
@@ -8743,9 +11395,13 @@ export type UserEdge = {
 
 export enum UserOrderByInput {
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   UsdSwappedAsc = 'usdSwapped_ASC',
-  UsdSwappedDesc = 'usdSwapped_DESC'
+  UsdSwappedAscNullsFirst = 'usdSwapped_ASC_NULLS_FIRST',
+  UsdSwappedDesc = 'usdSwapped_DESC',
+  UsdSwappedDescNullsLast = 'usdSwapped_DESC_NULLS_LAST'
 }
 
 export type UserWhereInput = {
@@ -8822,11 +11478,17 @@ export type ZlkInfoEdge = {
 
 export enum ZlkInfoOrderByInput {
   BurnAsc = 'burn_ASC',
+  BurnAscNullsFirst = 'burn_ASC_NULLS_FIRST',
   BurnDesc = 'burn_DESC',
+  BurnDescNullsLast = 'burn_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   UpdatedDateAsc = 'updatedDate_ASC',
-  UpdatedDateDesc = 'updatedDate_DESC'
+  UpdatedDateAscNullsFirst = 'updatedDate_ASC_NULLS_FIRST',
+  UpdatedDateDesc = 'updatedDate_DESC',
+  UpdatedDateDescNullsLast = 'updatedDate_DESC_NULLS_LAST'
 }
 
 export type ZlkInfoWhereInput = {
@@ -8894,41 +11556,77 @@ export type ZenlinkDayInfoEdge = {
 
 export enum ZenlinkDayInfoOrderByInput {
   DailyVolumeUsdAsc = 'dailyVolumeUSD_ASC',
+  DailyVolumeUsdAscNullsFirst = 'dailyVolumeUSD_ASC_NULLS_FIRST',
   DailyVolumeUsdDesc = 'dailyVolumeUSD_DESC',
+  DailyVolumeUsdDescNullsLast = 'dailyVolumeUSD_DESC_NULLS_LAST',
   DateAsc = 'date_ASC',
+  DateAscNullsFirst = 'date_ASC_NULLS_FIRST',
   DateDesc = 'date_DESC',
+  DateDescNullsLast = 'date_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   StableInfoDailyVolumeUsdAsc = 'stableInfo_dailyVolumeUSD_ASC',
+  StableInfoDailyVolumeUsdAscNullsFirst = 'stableInfo_dailyVolumeUSD_ASC_NULLS_FIRST',
   StableInfoDailyVolumeUsdDesc = 'stableInfo_dailyVolumeUSD_DESC',
+  StableInfoDailyVolumeUsdDescNullsLast = 'stableInfo_dailyVolumeUSD_DESC_NULLS_LAST',
   StableInfoDateAsc = 'stableInfo_date_ASC',
+  StableInfoDateAscNullsFirst = 'stableInfo_date_ASC_NULLS_FIRST',
   StableInfoDateDesc = 'stableInfo_date_DESC',
+  StableInfoDateDescNullsLast = 'stableInfo_date_DESC_NULLS_LAST',
   StableInfoIdAsc = 'stableInfo_id_ASC',
+  StableInfoIdAscNullsFirst = 'stableInfo_id_ASC_NULLS_FIRST',
   StableInfoIdDesc = 'stableInfo_id_DESC',
+  StableInfoIdDescNullsLast = 'stableInfo_id_DESC_NULLS_LAST',
   StableInfoTvlUsdAsc = 'stableInfo_tvlUSD_ASC',
+  StableInfoTvlUsdAscNullsFirst = 'stableInfo_tvlUSD_ASC_NULLS_FIRST',
   StableInfoTvlUsdDesc = 'stableInfo_tvlUSD_DESC',
+  StableInfoTvlUsdDescNullsLast = 'stableInfo_tvlUSD_DESC_NULLS_LAST',
   StandardInfoDailyVolumeEthAsc = 'standardInfo_dailyVolumeETH_ASC',
+  StandardInfoDailyVolumeEthAscNullsFirst = 'standardInfo_dailyVolumeETH_ASC_NULLS_FIRST',
   StandardInfoDailyVolumeEthDesc = 'standardInfo_dailyVolumeETH_DESC',
+  StandardInfoDailyVolumeEthDescNullsLast = 'standardInfo_dailyVolumeETH_DESC_NULLS_LAST',
   StandardInfoDailyVolumeUsdAsc = 'standardInfo_dailyVolumeUSD_ASC',
+  StandardInfoDailyVolumeUsdAscNullsFirst = 'standardInfo_dailyVolumeUSD_ASC_NULLS_FIRST',
   StandardInfoDailyVolumeUsdDesc = 'standardInfo_dailyVolumeUSD_DESC',
+  StandardInfoDailyVolumeUsdDescNullsLast = 'standardInfo_dailyVolumeUSD_DESC_NULLS_LAST',
   StandardInfoDailyVolumeUntrackedAsc = 'standardInfo_dailyVolumeUntracked_ASC',
+  StandardInfoDailyVolumeUntrackedAscNullsFirst = 'standardInfo_dailyVolumeUntracked_ASC_NULLS_FIRST',
   StandardInfoDailyVolumeUntrackedDesc = 'standardInfo_dailyVolumeUntracked_DESC',
+  StandardInfoDailyVolumeUntrackedDescNullsLast = 'standardInfo_dailyVolumeUntracked_DESC_NULLS_LAST',
   StandardInfoDateAsc = 'standardInfo_date_ASC',
+  StandardInfoDateAscNullsFirst = 'standardInfo_date_ASC_NULLS_FIRST',
   StandardInfoDateDesc = 'standardInfo_date_DESC',
+  StandardInfoDateDescNullsLast = 'standardInfo_date_DESC_NULLS_LAST',
   StandardInfoIdAsc = 'standardInfo_id_ASC',
+  StandardInfoIdAscNullsFirst = 'standardInfo_id_ASC_NULLS_FIRST',
   StandardInfoIdDesc = 'standardInfo_id_DESC',
+  StandardInfoIdDescNullsLast = 'standardInfo_id_DESC_NULLS_LAST',
   StandardInfoTotalLiquidityEthAsc = 'standardInfo_totalLiquidityETH_ASC',
+  StandardInfoTotalLiquidityEthAscNullsFirst = 'standardInfo_totalLiquidityETH_ASC_NULLS_FIRST',
   StandardInfoTotalLiquidityEthDesc = 'standardInfo_totalLiquidityETH_DESC',
+  StandardInfoTotalLiquidityEthDescNullsLast = 'standardInfo_totalLiquidityETH_DESC_NULLS_LAST',
   StandardInfoTotalLiquidityUsdAsc = 'standardInfo_totalLiquidityUSD_ASC',
+  StandardInfoTotalLiquidityUsdAscNullsFirst = 'standardInfo_totalLiquidityUSD_ASC_NULLS_FIRST',
   StandardInfoTotalLiquidityUsdDesc = 'standardInfo_totalLiquidityUSD_DESC',
+  StandardInfoTotalLiquidityUsdDescNullsLast = 'standardInfo_totalLiquidityUSD_DESC_NULLS_LAST',
   StandardInfoTotalVolumeEthAsc = 'standardInfo_totalVolumeETH_ASC',
+  StandardInfoTotalVolumeEthAscNullsFirst = 'standardInfo_totalVolumeETH_ASC_NULLS_FIRST',
   StandardInfoTotalVolumeEthDesc = 'standardInfo_totalVolumeETH_DESC',
+  StandardInfoTotalVolumeEthDescNullsLast = 'standardInfo_totalVolumeETH_DESC_NULLS_LAST',
   StandardInfoTotalVolumeUsdAsc = 'standardInfo_totalVolumeUSD_ASC',
+  StandardInfoTotalVolumeUsdAscNullsFirst = 'standardInfo_totalVolumeUSD_ASC_NULLS_FIRST',
   StandardInfoTotalVolumeUsdDesc = 'standardInfo_totalVolumeUSD_DESC',
+  StandardInfoTotalVolumeUsdDescNullsLast = 'standardInfo_totalVolumeUSD_DESC_NULLS_LAST',
   StandardInfoTxCountAsc = 'standardInfo_txCount_ASC',
+  StandardInfoTxCountAscNullsFirst = 'standardInfo_txCount_ASC_NULLS_FIRST',
   StandardInfoTxCountDesc = 'standardInfo_txCount_DESC',
+  StandardInfoTxCountDescNullsLast = 'standardInfo_txCount_DESC_NULLS_LAST',
   TvlUsdAsc = 'tvlUSD_ASC',
-  TvlUsdDesc = 'tvlUSD_DESC'
+  TvlUsdAscNullsFirst = 'tvlUSD_ASC_NULLS_FIRST',
+  TvlUsdDesc = 'tvlUSD_DESC',
+  TvlUsdDescNullsLast = 'tvlUSD_DESC_NULLS_LAST'
 }
 
 export type ZenlinkDayInfoWhereInput = {
@@ -9028,41 +11726,77 @@ export type ZenlinkInfoEdge = {
 
 export enum ZenlinkInfoOrderByInput {
   FactoryIdAsc = 'factory_id_ASC',
+  FactoryIdAscNullsFirst = 'factory_id_ASC_NULLS_FIRST',
   FactoryIdDesc = 'factory_id_DESC',
+  FactoryIdDescNullsLast = 'factory_id_DESC_NULLS_LAST',
   FactoryPairCountAsc = 'factory_pairCount_ASC',
+  FactoryPairCountAscNullsFirst = 'factory_pairCount_ASC_NULLS_FIRST',
   FactoryPairCountDesc = 'factory_pairCount_DESC',
+  FactoryPairCountDescNullsLast = 'factory_pairCount_DESC_NULLS_LAST',
   FactoryTotalLiquidityEthAsc = 'factory_totalLiquidityETH_ASC',
+  FactoryTotalLiquidityEthAscNullsFirst = 'factory_totalLiquidityETH_ASC_NULLS_FIRST',
   FactoryTotalLiquidityEthDesc = 'factory_totalLiquidityETH_DESC',
+  FactoryTotalLiquidityEthDescNullsLast = 'factory_totalLiquidityETH_DESC_NULLS_LAST',
   FactoryTotalLiquidityUsdAsc = 'factory_totalLiquidityUSD_ASC',
+  FactoryTotalLiquidityUsdAscNullsFirst = 'factory_totalLiquidityUSD_ASC_NULLS_FIRST',
   FactoryTotalLiquidityUsdDesc = 'factory_totalLiquidityUSD_DESC',
+  FactoryTotalLiquidityUsdDescNullsLast = 'factory_totalLiquidityUSD_DESC_NULLS_LAST',
   FactoryTotalVolumeEthAsc = 'factory_totalVolumeETH_ASC',
+  FactoryTotalVolumeEthAscNullsFirst = 'factory_totalVolumeETH_ASC_NULLS_FIRST',
   FactoryTotalVolumeEthDesc = 'factory_totalVolumeETH_DESC',
+  FactoryTotalVolumeEthDescNullsLast = 'factory_totalVolumeETH_DESC_NULLS_LAST',
   FactoryTotalVolumeUsdAsc = 'factory_totalVolumeUSD_ASC',
+  FactoryTotalVolumeUsdAscNullsFirst = 'factory_totalVolumeUSD_ASC_NULLS_FIRST',
   FactoryTotalVolumeUsdDesc = 'factory_totalVolumeUSD_DESC',
+  FactoryTotalVolumeUsdDescNullsLast = 'factory_totalVolumeUSD_DESC_NULLS_LAST',
   FactoryTxCountAsc = 'factory_txCount_ASC',
+  FactoryTxCountAscNullsFirst = 'factory_txCount_ASC_NULLS_FIRST',
   FactoryTxCountDesc = 'factory_txCount_DESC',
+  FactoryTxCountDescNullsLast = 'factory_txCount_DESC_NULLS_LAST',
   FactoryUntrackedVolumeUsdAsc = 'factory_untrackedVolumeUSD_ASC',
+  FactoryUntrackedVolumeUsdAscNullsFirst = 'factory_untrackedVolumeUSD_ASC_NULLS_FIRST',
   FactoryUntrackedVolumeUsdDesc = 'factory_untrackedVolumeUSD_DESC',
+  FactoryUntrackedVolumeUsdDescNullsLast = 'factory_untrackedVolumeUSD_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
   StableSwapInfoIdAsc = 'stableSwapInfo_id_ASC',
+  StableSwapInfoIdAscNullsFirst = 'stableSwapInfo_id_ASC_NULLS_FIRST',
   StableSwapInfoIdDesc = 'stableSwapInfo_id_DESC',
+  StableSwapInfoIdDescNullsLast = 'stableSwapInfo_id_DESC_NULLS_LAST',
   StableSwapInfoPoolCountAsc = 'stableSwapInfo_poolCount_ASC',
+  StableSwapInfoPoolCountAscNullsFirst = 'stableSwapInfo_poolCount_ASC_NULLS_FIRST',
   StableSwapInfoPoolCountDesc = 'stableSwapInfo_poolCount_DESC',
+  StableSwapInfoPoolCountDescNullsLast = 'stableSwapInfo_poolCount_DESC_NULLS_LAST',
   StableSwapInfoTotalTvlUsdAsc = 'stableSwapInfo_totalTvlUSD_ASC',
+  StableSwapInfoTotalTvlUsdAscNullsFirst = 'stableSwapInfo_totalTvlUSD_ASC_NULLS_FIRST',
   StableSwapInfoTotalTvlUsdDesc = 'stableSwapInfo_totalTvlUSD_DESC',
+  StableSwapInfoTotalTvlUsdDescNullsLast = 'stableSwapInfo_totalTvlUSD_DESC_NULLS_LAST',
   StableSwapInfoTotalVolumeUsdAsc = 'stableSwapInfo_totalVolumeUSD_ASC',
+  StableSwapInfoTotalVolumeUsdAscNullsFirst = 'stableSwapInfo_totalVolumeUSD_ASC_NULLS_FIRST',
   StableSwapInfoTotalVolumeUsdDesc = 'stableSwapInfo_totalVolumeUSD_DESC',
+  StableSwapInfoTotalVolumeUsdDescNullsLast = 'stableSwapInfo_totalVolumeUSD_DESC_NULLS_LAST',
   StableSwapInfoTxCountAsc = 'stableSwapInfo_txCount_ASC',
+  StableSwapInfoTxCountAscNullsFirst = 'stableSwapInfo_txCount_ASC_NULLS_FIRST',
   StableSwapInfoTxCountDesc = 'stableSwapInfo_txCount_DESC',
+  StableSwapInfoTxCountDescNullsLast = 'stableSwapInfo_txCount_DESC_NULLS_LAST',
   TotalTvlUsdAsc = 'totalTvlUSD_ASC',
+  TotalTvlUsdAscNullsFirst = 'totalTvlUSD_ASC_NULLS_FIRST',
   TotalTvlUsdDesc = 'totalTvlUSD_DESC',
+  TotalTvlUsdDescNullsLast = 'totalTvlUSD_DESC_NULLS_LAST',
   TotalVolumeUsdAsc = 'totalVolumeUSD_ASC',
+  TotalVolumeUsdAscNullsFirst = 'totalVolumeUSD_ASC_NULLS_FIRST',
   TotalVolumeUsdDesc = 'totalVolumeUSD_DESC',
+  TotalVolumeUsdDescNullsLast = 'totalVolumeUSD_DESC_NULLS_LAST',
   TxCountAsc = 'txCount_ASC',
+  TxCountAscNullsFirst = 'txCount_ASC_NULLS_FIRST',
   TxCountDesc = 'txCount_DESC',
+  TxCountDescNullsLast = 'txCount_DESC_NULLS_LAST',
   UpdatedDateAsc = 'updatedDate_ASC',
-  UpdatedDateDesc = 'updatedDate_DESC'
+  UpdatedDateAscNullsFirst = 'updatedDate_ASC_NULLS_FIRST',
+  UpdatedDateDesc = 'updatedDate_DESC',
+  UpdatedDateDescNullsLast = 'updatedDate_DESC_NULLS_LAST'
 }
 
 export type ZenlinkInfoWhereInput = {
@@ -9157,23 +11891,29 @@ export type GetBackstopPoolQueryVariables = Exact<{
 
 export type GetBackstopPoolQuery = { __typename?: 'Query', backstopPoolById?: { __typename?: 'BackstopPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', decimals: number, id: string, name: string, symbol: string }, router: { __typename?: 'Router', id: string, swapPools: Array<{ __typename?: 'SwapPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', decimals: number, id: string, name: string, symbol: string } }> } } | null };
 
-export type GetBackstopPoolsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetBackstopPoolsQueryVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
 
 
 export type GetBackstopPoolsQuery = { __typename?: 'Query', backstopPools: Array<{ __typename?: 'BackstopPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string }, router: { __typename?: 'Router', id: string, swapPools: Array<{ __typename?: 'SwapPool', id: string }> } }> };
 
-export type GetSwapPoolsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetSwapPoolsQueryVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
 
 
 export type GetSwapPoolsQuery = { __typename?: 'Query', swapPools: Array<{ __typename?: 'SwapPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', id: string, name: string, symbol: string, decimals: number }, router: { __typename?: 'Router', id: string, paused: boolean }, backstop: { __typename?: 'BackstopPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any } }> };
 
-export type GetTokensQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetTokensQueryVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
 
 
 export type GetTokensQuery = { __typename?: 'Query', nablaTokens: Array<{ __typename?: 'NablaToken', id: string, name: string, symbol: string, decimals: number }> };
 
 
 export const GetBackstopPoolDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBackstopPool"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backstopPoolById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"router_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"paused_not_eq"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetBackstopPoolQuery, GetBackstopPoolQueryVariables>;
-export const GetBackstopPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBackstopPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backstopPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"paused_eq"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"router_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"paused_not_eq"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetBackstopPoolsQuery, GetBackstopPoolsQueryVariables>;
-export const GetSwapPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getSwapPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"paused_eq"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}}]}},{"kind":"Field","name":{"kind":"Name","value":"backstop"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}}]}}]}}]}}]} as unknown as DocumentNode<GetSwapPoolsQuery, GetSwapPoolsQueryVariables>;
-export const GetTokensDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nablaTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}}]}}]}}]} as unknown as DocumentNode<GetTokensQuery, GetTokensQueryVariables>;
+export const GetBackstopPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBackstopPools"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backstopPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"paused_eq"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"id_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"router_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"paused_not_eq"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetBackstopPoolsQuery, GetBackstopPoolsQueryVariables>;
+export const GetSwapPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getSwapPools"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"paused_eq"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"id_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}}]}},{"kind":"Field","name":{"kind":"Name","value":"backstop"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}}]}}]}}]}}]} as unknown as DocumentNode<GetSwapPoolsQuery, GetSwapPoolsQueryVariables>;
+export const GetTokensDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getTokens"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nablaTokens"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}}]}}]}}]} as unknown as DocumentNode<GetTokensQuery, GetTokensQueryVariables>;

@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import { config } from '../../../../../config';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative } from '../../../../../shared/parseNumbers';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
 
@@ -26,8 +27,8 @@ export const useBackstopWithdraw = ({ address, onSuccess }: UseBackstopWithdrawP
       if (!variables.amount) return;
       const vSlippage = getValidSlippage(variables.slippage || config.backstop.defaults.slippage);
       mutate([
-        decimalToNative(variables.amount, FixedU128Decimals).toString(),
-        decimalToNative(subtractPercentage(variables.amount, vSlippage), FixedU128Decimals).toString(),
+        decimalToNative(variables.amount, defaultDecimals).toString(),
+        decimalToNative(subtractPercentage(variables.amount, vSlippage), defaultDecimals).toString(),
       ]);
     },
     [mutate],

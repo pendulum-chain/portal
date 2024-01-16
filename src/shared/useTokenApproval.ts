@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'preact/compat';
-import { mockERC20 } from '../contracts/nabla/MockERC20';
-import { gasDefaults } from './helpers';
+import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
+import { getMessageCallValue } from './helpers';
 import { decimalToNative, nativeToDecimal } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContractWrite, UseContractWriteProps } from './useContractWrite';
@@ -23,7 +23,7 @@ interface UseTokenApprovalParams {
   enabled?: boolean;
   decimals?: number;
   onError?: (err: any) => void;
-  onSuccess?: UseContractWriteProps['onSuccess'];
+  onSuccess?: UseContractWriteProps<Dict>['onSuccess'];
 }
 
 export const useTokenApproval = ({
@@ -55,14 +55,10 @@ export const useTokenApproval = ({
   );
 
   const mutation = useContractWrite({
-    abi: mockERC20,
+    abi: erc20WrapperAbi,
     address: token,
     method: 'approve',
     args: [spender, approveMax ? maxInt : amountBI.toString()],
-    options: (api) => ({
-      gasLimit: api.createType('WeightV2', gasDefaults),
-      storageDepositLimit: null,
-    }),
     onError: (err) => {
       setPending(false);
       if (onError) onError(err);
@@ -73,13 +69,14 @@ export const useTokenApproval = ({
       setTimeout(() => {
         refetch();
         setPending(false);
-      }, 2000);
+      }, 2000); // delay refetch as sometimes the allowance takes some time to reflect
     },
   });
 
+  const allowanceValue = getMessageCallValue(allowanceData);
   const allowance = useMemo(
-    () => nativeToDecimal(parseFloat(allowanceData || '0'), decimals).toNumber(),
-    [allowanceData, decimals],
+    () => nativeToDecimal(parseFloat(allowanceValue || '0'), decimals).toNumber(),
+    [allowanceValue, decimals],
   );
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {

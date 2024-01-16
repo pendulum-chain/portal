@@ -1,10 +1,10 @@
-import { Abi } from '@polkadot/api-contract';
-import { mockERC20 } from '../contracts/nabla/MockERC20';
+import { activeOptions } from '../constants/cache';
+import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
 import { useContract } from './useContract';
 
-export type UseTokenAllowance<TAbi extends Abi> = {
+export type UseTokenAllowance<TAbi extends Record<string, unknown>> = {
   /** contract/token address */
   token?: string;
   /** spender address */
@@ -15,19 +15,16 @@ export type UseTokenAllowance<TAbi extends Abi> = {
   abi?: TAbi;
 };
 
-export const useTokenAllowance = <TAbi extends Abi>(
+export const useTokenAllowance = <TAbi extends Record<string, unknown>>(
   { token, owner, spender, abi }: UseTokenAllowance<TAbi>,
   options?: QueryOptions,
 ) => {
   const isEnabled = Boolean(token && owner && spender && options?.enabled);
   return useContract([cacheKeys.tokenAllowance, spender, token, owner], {
-    cacheTime: 180000,
-    staleTime: 180000,
+    ...activeOptions['3m'],
     retry: 2,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
     ...options,
-    abi: abi || mockERC20,
+    abi: abi || erc20WrapperAbi,
     address: token,
     owner,
     method: 'allowance',

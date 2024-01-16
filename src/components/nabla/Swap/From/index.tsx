@@ -3,8 +3,8 @@ import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
+import { defaultDecimals } from '../../../../config/apps/nabla';
 import { TokensData } from '../../../../hooks/nabla/useTokens';
-import { FixedU128Decimals } from '../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../shared/useContractBalance';
 import TokenPrice from '../../Price';
 import { SwapFormValues } from '../types';
@@ -22,7 +22,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
     name: 'from',
   });
   const token = tokensMap?.[from];
-  const { formatted, balance } = useContractBalance({ contractAddress: token?.id, decimals: FixedU128Decimals });
+  const { formatted, balance } = useContractBalance({ contractAddress: token?.id, decimals: defaultDecimals });
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -44,7 +44,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
             <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
-            <strong className="font-bold">{token?.symbol}</strong>
+            <strong className="font-bold">{token?.symbol || 'Select'}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
           </Button>
         </div>

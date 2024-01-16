@@ -1,9 +1,11 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import TokenApproval from '../../../../Asset/Approval';
+import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { SwapPoolColumn } from '../columns';
@@ -21,7 +23,11 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
     balanceQuery,
     depositQuery,
     amount,
-    form: { register, setValue },
+    form: {
+      register,
+      setValue,
+      formState: { errors },
+    },
   } = useAddLiquidity(data.id, data.token.id);
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
@@ -98,16 +104,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 {depositQuery.isLoading
                   ? numberLoader
                   : minMax(
-                      calcSharePercentage(
-                        nativeToDecimal(data.totalSupply || 0, FixedU128Decimals).toNumber(),
-                        deposit,
-                      ),
+                      calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
                     )}
                 %
               </div>
             </div>
           </div>
           <div>
+            <Validation className="text-center mb-2" errors={errors} />
             <TokenApproval
               className="mt-8 w-full"
               spender={data.id}

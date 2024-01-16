@@ -1,6 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokenPrice } from '../../../hooks/nabla/useTokenPrice';
+import { getMessageCallValue } from '../../../shared/helpers';
 import { nativeToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
 import { numberLoader } from '../../Loader';
 
@@ -24,10 +25,11 @@ const TokenPrice = ({
   const { address: owner } = useGlobalState().walletAccount || {};
   const { data, isLoading } = useTokenPrice(address, owner, options);
   if (isLoading) return loader ? <>{loader}</> : numberLoader;
-  if (!data) return <>{fallback}</>;
+  const price = getMessageCallValue(data);
+  if (!price) return <>{fallback}</>;
   return (
     <span>
-      {prefix}${prettyNumbers(amount * nativeToDecimal(data).toNumber())}
+      {prefix}${prettyNumbers(amount * nativeToDecimal(price).toNumber())}
     </span>
   );
 };

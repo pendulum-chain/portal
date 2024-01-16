@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
 import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
+import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { storageKeys } from '../../../../../constants/localStorage';
 import { debounce } from '../../../../../helpers/function';
@@ -11,7 +12,6 @@ import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenan
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
-import { FixedU128Decimals } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { defaultValues } from '../../../Swap/useSwapComponent';
 import schema from './schema';
@@ -29,8 +29,8 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
   const toggle = useModalToggle();
   const tokenModal = useBoolean();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
+  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
+  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
   const { refetch: balanceRefetch } = balanceQuery;
   const { refetch: depositRefetch } = depositQuery;
 

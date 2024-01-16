@@ -5,12 +5,14 @@ import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import { config } from '../../../../config';
+import { defaultDecimals } from '../../../../config/apps/nabla';
 import { subtractPercentage } from '../../../../helpers/calc';
+import { useTokenOutAmount } from '../../../../hooks/nabla/useTokenOutAmount';
 import { TokensData } from '../../../../hooks/nabla/useTokens';
 import useBoolean from '../../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
-import { useTokenOutAmount } from '../../../../hooks/useTokenOutAmount';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
+import { getMessageCallValue } from '../../../../shared/helpers';
+import { nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
 import Balance from '../../../Balance';
 import { numberLoader } from '../../../Loader';
 import { Skeleton } from '../../../Skeleton';
@@ -55,8 +57,9 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
     amount: debouncedFromAmount,
     from,
     to,
-    onSuccess: (val) => {
-      const toAmount = val ? nativeToDecimal(val, FixedU128Decimals).toNumber() : 0;
+    onSuccess: (response) => {
+      const val = getMessageCallValue(response);
+      const toAmount = val ? nativeToDecimal(val, defaultDecimals).toNumber() : 0;
       setValue('toAmount', toAmount, {
         shouldDirty: true,
         shouldTouch: true,
@@ -71,7 +74,8 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
   }, [isError, error, setError, clearErrors]);
 
   const loading = (isLoading && isLoading && fetchStatus !== 'idle') || fromAmount !== debouncedFromAmount;
-  const value = data?.data?.free ? prettyNumbers(nativeToDecimal(data.data.free, FixedU128Decimals).toNumber()) : 0;
+  const outValue = getMessageCallValue(data);
+  const value = outValue ? prettyNumbers(nativeToDecimal(outValue, defaultDecimals).toNumber()) : 0;
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -98,14 +102,14 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
             <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
               <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
             </span>
-            <strong className="font-bold">{toToken?.symbol}</strong>
+            <strong className="font-bold">{toToken?.symbol || 'Select'}</strong>
             <ChevronDownIcon className="w-4 h-4 inline ml-px" />
           </Button>
         </div>
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
           <div className="text-sm mt-px">{toToken ? <TokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
           <div className="flex gap-1 text-sm">
-            Balance: <Balance address={toToken?.id} decimals={FixedU128Decimals} />
+            Balance: <Balance address={toToken?.id} decimals={defaultDecimals} />
           </div>
         </div>
         <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />

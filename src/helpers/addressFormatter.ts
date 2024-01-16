@@ -6,8 +6,12 @@ export function getAddressForFormat(address: string, ss58Format: number | string
   }
 
   const keyring = new Keyring();
-  const encodedAddress = keyring.encodeAddress(address, ss58Format);
-  return encodedAddress;
+  return keyring.encodeAddress(address, ss58Format);
+}
+
+export function getAddressKeyring(address: string, ss58Format: number | string = 57) {
+  const keyring = new Keyring({ type: 'sr25519', ss58Format: Number(ss58Format) });
+  return keyring.addFromAddress(address);
 }
 
 export function trimAddress(address: string, trimLength = 6): string {

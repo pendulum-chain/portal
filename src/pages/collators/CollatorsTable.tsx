@@ -1,21 +1,21 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import Table, { SortingOrder } from '../../components/Table';
+import { useGlobalState } from '../../GlobalStateProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormat } from '../../shared/parseNumbers';
 import {
-  TCollator,
-  UserStaking,
   actionsColumn,
   apyColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
   stakedColumn,
+  TCollator,
+  UserStaking,
 } from './columns';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
