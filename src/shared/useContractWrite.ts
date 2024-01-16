@@ -46,7 +46,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     //setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
     const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
-    return messageCall({
+    const response = await messageCall({
       abi: contractAbi,
       api,
       callerAddress: walletAddress,
@@ -61,6 +61,8 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
       messageArguments: fnArgs,
       limits: { ...defaultWriteLimits, ...contractOptions },
     });
+    if (response?.result?.type !== 'success') throw response;
+    return response;
   };
   const mutation = useMutation(submit, rest);
   return { ...mutation, transaction, isReady };

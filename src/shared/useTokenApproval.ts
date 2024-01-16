@@ -69,7 +69,7 @@ export const useTokenApproval = ({
       setTimeout(() => {
         refetch();
         setPending(false);
-      }, 2000);
+      }, 2000); // delay refetch as sometimes the allowance takes some time to reflect
     },
   });
 
