@@ -1,9 +1,8 @@
 import preact from '@preact/preset-vite';
 import { defineConfig } from 'vite';
 
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
+import { polyfillNode } from 'esbuild-plugin-polyfill-node';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -51,13 +50,68 @@ export default defineConfig({
       define: {
         global: 'globalThis',
       },
-      // Enable esbuild polyfill plugins
       plugins: [
-        NodeGlobalsPolyfillPlugin({
-          process: true,
-          buffer: true,
+        // Enable esbuild polyfill plugins
+        polyfillNode({
+          globals: {
+            global: false,
+            __dirname: false,
+            __filename: false,
+            buffer: false,
+            process: false,
+            navigator: false,
+          },
+          polyfills: {
+            _stream_duplex: true,
+            _stream_passthrough: true,
+            _stream_readable: true,
+            _stream_transform: true,
+            _stream_writable: true,
+            assert: true,
+            'assert/strict': false,
+            async_hooks: false,
+            buffer: true,
+            child_process: 'empty',
+            cluster: 'empty',
+            console: false,
+            constants: true,
+            crypto: 'empty',
+            dgram: 'empty',
+            diagnostics_channel: false,
+            dns: 'empty',
+            domain: true,
+            events: true,
+            fs: 'empty',
+            'fs/promises': false,
+            http: true,
+            http2: false,
+            https: true,
+            module: 'empty',
+            net: 'empty',
+            os: true,
+            path: true,
+            perf_hooks: false,
+            process: true,
+            punycode: true,
+            querystring: true,
+            readline: 'empty',
+            repl: 'empty',
+            stream: true,
+            string_decoder: true,
+            sys: true,
+            timers: true,
+            'timers/promises': false,
+            tls: 'empty',
+            tty: true,
+            url: true,
+            util: true,
+            v8: false,
+            vm: true,
+            wasi: false,
+            worker_threads: false,
+            zlib: true,
+          },
         }),
-        NodeModulesPolyfillPlugin(),
       ],
     },
   },
