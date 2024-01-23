@@ -97,8 +97,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     const deadline = calcDeadline(vDeadline).toString();
     const fromAmount = decimalToNative(variables.fromAmount, defaultDecimals).toString();
     const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, vSlippage), defaultDecimals).toString();
-    const spender = address;
-    return swapMutation.mutate([spender, fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
+    return swapMutation.mutate([fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });
 
   const onFromChange = useCallback(

@@ -1,3 +1,4 @@
+import { activeOptions } from '../constants/cache';
 import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
@@ -20,11 +21,8 @@ export const useTokenAllowance = <TAbi extends Record<string, unknown>>(
 ) => {
   const isEnabled = Boolean(token && owner && spender && options?.enabled);
   return useContract([cacheKeys.tokenAllowance, spender, token, owner], {
-    cacheTime: 180000,
-    staleTime: 180000,
+    ...activeOptions['3m'],
     retry: 2,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
     ...options,
     abi: abi || erc20WrapperAbi,
     address: token,
