@@ -1,27 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { toast } from 'react-toastify';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
-import { useGlobalState } from '../../GlobalStateProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { getErrors } from '../../helpers/substrate';
 import { useStakingPallet } from '../../hooks/staking/staking';
-import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormat } from '../../shared/parseNumbers';
-import { UserStaking } from './columns';
+import { UserStaking } from './CollatorColumns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 
 function CollatorRewards() {
+  const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
+  const { walletAccount } = useGlobalState();
+  const { candidates, estimatedRewards, refreshRewards, createUpdateDelegatorRewardsExtrinsic } = useStakingPallet();
+
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogOpen, setClaimDialogOpen] = useState<boolean>(false);
   const [submissionPending, setSubmissionPending] = useState(false);
   const [unstaking, setUnstaking] = useState<string>('0.00');
-
-  const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState();
-  const { candidates, estimatedRewards, refreshRewards, createUpdateDelegatorRewardsExtrinsic } = useStakingPallet();
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
@@ -50,10 +50,10 @@ function CollatorRewards() {
     };
     const fetchUnstaking = async () => {
       if (!api || !walletAccount) {
-        return '0.00';
+        return;
       }
       const unstakingData = await api.query.parachainStaking.unstaking(walletAccount?.address);
-      unstakingData.forEach((n) => setUnstaking(nativeToFormat(parseInt(n.toString()), tokenSymbol)));
+      unstakingData.forEach((n) => setUnstaking(n.toString()));
     };
 
     fetchUnstaking();
@@ -104,25 +104,28 @@ function CollatorRewards() {
     <>
       <div className="flex mb-8 justify-between">
         <div className="card gap-0 rounded-lg bg-base-200 sm:w-1/2 collators-box">
-          <div className="card-body">
-            <h2 className="card-title">Staking</h2>
-            <div className="flex flex-row flex-wrap gap-4">
-              <div className="flex-initial">
-                <StakedIcon />
+          <div className="flex flex-row flex-auto card-body">
+            <div className="flex flex-col flex-auto">
+              <h2 className="card-title mb-4">Staking</h2>
+              <div className="flex flex-row flex-wrap gap-4">
+                <div className="flex-initial">
+                  <StakedIcon className="staked-icon mt-1" />
+                </div>
+                <div className="flex-auto">
+                  <h3 className="font-semibold">{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
+                  <p>My Staking</p>
+                </div>
+                <div className="flex-auto">
+                  <h3 className="font-semibold">{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
+                  <p>Free balance</p>
+                </div>
               </div>
-              <div className="flex-auto">
-                <h3>{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
-                <p>My Staking</p>
-              </div>
-              <div className="flex-auto">
-                <h3>{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
-                <p>Free balance</p>
-              </div>
-              <div className="flex flex-auto place-content-end">
-                <button className="btn btn-secondary w-full" disabled>
-                  {unstaking} unstaking
-                </button>
-              </div>
+            </div>
+            <div className="flex flex-none flex-col items-center">
+              <h3 className="font-semibold">{nativeToFormat(parseInt(unstaking), tokenSymbol)}</h3>
+              <button className="btn btn-primary btn-unlock w-full m-auto px-8" disabled>
+                Unlock
+              </button>
             </div>
           </div>
         </div>
@@ -131,24 +134,25 @@ function CollatorRewards() {
             <h2 className="card-title">Staking Rewards</h2>
             <div className="flex flex-row">
               <div className="flex-initial pt-1 pr-5 pb-0">
-                <RewardsIcon />
+                <RewardsIcon className="rewards-icon" />
               </div>
               <div className="flex-auto">
-                <h4>{nativeToFormat(estimatedRewards, tokenSymbol)}</h4>
+                <h3 className="font-semibold">{nativeToFormat(estimatedRewards, tokenSymbol)}</h3>
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto place-content-end">
                 <Button
                   loading={submissionPending}
                   onClick={() => submitUpdateExtrinsic()}
-                  className="btn btn-primary btn-outline w-1/3 mr-2"
+                  className="btn-primary w-1/3 mr-2 rounded-md px-2 py-0 leading-3"
                   disabled={!walletAccount}
                 >
                   Update
                 </Button>
                 <Button
                   onClick={() => setClaimDialogOpen(true)}
-                  className="btn btn-primary w-1/3"
+                  variant="outline"
+                  className="btn-primary w-1/3 rounded-md px-2 py-0 leading-3"
                   disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
                 >
                   Claim

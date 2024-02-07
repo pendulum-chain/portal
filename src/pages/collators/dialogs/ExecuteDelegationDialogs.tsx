@@ -98,10 +98,10 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
           setDelegationAmount(undefined);
           onClose();
         }}
-        onSubmit={(amount) => {
+        onSubmit={({ amount }) => {
           const userStakeAsString = nativeToDecimal(userStake || '0').toString();
-          setDelegationAmount(amount);
-          setUnstakingAll(parseFloat(amount) === parseFloat(userStakeAsString));
+          setDelegationAmount(amount?.toString());
+          setUnstakingAll(amount === parseFloat(userStakeAsString));
         }}
       />
       <ConfirmDelegateDialog

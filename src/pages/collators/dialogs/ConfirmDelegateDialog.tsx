@@ -1,7 +1,8 @@
 import Big from 'big.js';
+import { useCallback, useMemo, useState } from 'react';
 import { Button, Modal } from 'react-daisyui';
 import { CloseButton } from '../../../components/CloseButton';
-import { nativeToDecimal } from '../../../shared/parseNumbers';
+import { nativeToDecimal, nativeToFormat } from '../../../shared/parseNumbers';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface ConfirmDelegateDialogProps {
@@ -32,55 +33,74 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   } = props;
 
   const balanceDecimal = nativeToDecimal(availableBalance);
-  const transactionFeeDecimal = nativeToDecimal(transactionFee.toString());
+  const transactionFeeDecimal = nativeToDecimal(transactionFee.toFixed(2));
+  const [collapseVisibility, setCollapseVisibility] = useState('');
 
   const resultingBalance =
     mode === 'unstaking'
-      ? Big(balanceDecimal).plus(delegationAmountDecimal).minus(transactionFeeDecimal).toString()
-      : Big(balanceDecimal).minus(delegationAmountDecimal).minus(transactionFeeDecimal).toString();
+      ? Big(balanceDecimal).plus(delegationAmountDecimal).minus(transactionFeeDecimal).toFixed(2)
+      : Big(balanceDecimal).minus(delegationAmountDecimal).minus(transactionFeeDecimal).toFixed(2);
+
+  const toggle = useCallback(() => {
+    if (collapseVisibility === '') {
+      setCollapseVisibility('collapse-open');
+    } else {
+      setCollapseVisibility('');
+      const elem = document.activeElement;
+      if (elem && elem instanceof HTMLElement) {
+        elem.blur();
+      }
+    }
+  }, [collapseVisibility, setCollapseVisibility]);
+
+  const titleAction = useMemo(() => (mode === 'unstaking' ? 'Unstake' : 'Stake'), [mode]);
 
   return (
-    <Modal open={visible}>
+    <Modal open={visible} className="bg-base-200 rounded-md">
       <Modal.Header className="text-2xl">Settlement Confirmation</Modal.Header>
       <CloseButton onClick={onClose} />
       <Modal.Body>
         <div className="flex flex-col items-center justify-between">
-          <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Stake'}</div>
+          <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Delegate'}</div>
           <div className="text-xl mt-2">
             {delegationAmountDecimal} {tokenSymbol}
           </div>
         </div>
-
-        <div className="rounded-md px-4 py-4 mt-8 bg-slate-50 bg-opacity-5">
-          <div className="flex justify-between">
-            <span className="text-neutral-content">Available Balance</span>
-            <span>
-              {nativeToDecimal(availableBalance).toString()} {tokenSymbol}
-            </span>
-          </div>
-          <div className="flex justify-between mt-4">
-            <span className="text-neutral-content">Fees</span>
-            <span>
-              {nativeToDecimal(transactionFee).toString()} {tokenSymbol}
-            </span>
-          </div>
-        </div>
-        <div className="flex justify-between mt-4 px-4">
-          <span className="text-neutral-content">Resulting Balance</span>
+        <div className="flex justify-between px-4 mt-3">
+          <span className="text-neutral-content">Available balance</span>
           <span>
-            {resultingBalance} {tokenSymbol}
+            {nativeToDecimal(availableBalance).toFixed(2)} {tokenSymbol}
           </span>
         </div>
-        <p className="text-slate-400 mt-6 mb-4 mx-auto w-fit"> This transaction might take a while to complete. </p>
+        <div
+          tabIndex={0}
+          onClick={toggle}
+          className={`collapse cursor-pointer collapse-arrow bg-base-300 rounded-lg my-1 ${collapseVisibility}`}
+        >
+          <div className="collapse-title">
+            <div className="flex justify-between">
+              <span className="text-neutral-content">Resulting balance</span>
+              <span>
+                {resultingBalance} {tokenSymbol}
+              </span>
+            </div>
+          </div>
+          <div className="collapse-content">
+            <div className="flex justify-between mt-4">
+              <span className="text-neutral-content">Fees</span>
+              <span>{nativeToFormat(transactionFee, tokenSymbol)}</span>
+            </div>
+          </div>
+        </div>
       </Modal.Body>
-      <Modal.Actions className="justify-center">
-        <Button className="px-6" color="ghost" onClick={onCancel}>
+      <div className="flex-col align-center mt-4">
+        <Button className="px-6 w-full mb-2" color="primary" loading={submissionPending} onClick={onConfirm}>
+          {titleAction}
+        </Button>
+        <Button className="px-6 w-full mr-0 ml-0" color="primary" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button className="px-6" color="primary" loading={submissionPending} onClick={onConfirm}>
-          Confirm
-        </Button>
-      </Modal.Actions>
+      </div>
     </Modal>
   );
 }
