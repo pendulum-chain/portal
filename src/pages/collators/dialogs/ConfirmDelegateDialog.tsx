@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Modal } from 'react-daisyui';
 import { CloseButton } from '../../../components/CloseButton';
-import { nativeToDecimal } from '../../../shared/parseNumbers';
+import { nativeToDecimal, nativeToFormat } from '../../../shared/parseNumbers';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface ConfirmDelegateDialogProps {
@@ -66,8 +66,8 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
             {delegationAmountDecimal} {tokenSymbol}
           </div>
         </div>
-        <div className="flex justify-between px-2 mt-3">
-          <span className="text-neutral-content">Available Balance</span>
+        <div className="flex justify-between px-4 mt-3">
+          <span className="text-neutral-content">Available balance</span>
           <span>
             {nativeToDecimal(availableBalance).toFixed(2)} {tokenSymbol}
           </span>
@@ -79,7 +79,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         >
           <div className="collapse-title">
             <div className="flex justify-between">
-              <span className="text-neutral-content">Balance</span>
+              <span className="text-neutral-content">Resulting balance</span>
               <span>
                 {resultingBalance} {tokenSymbol}
               </span>
@@ -88,9 +88,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
           <div className="collapse-content">
             <div className="flex justify-between mt-4">
               <span className="text-neutral-content">Fees</span>
-              <span>
-                {nativeToDecimal(transactionFee).toFixed(2)} {tokenSymbol}
-              </span>
+              <span>{nativeToFormat(transactionFee, tokenSymbol)}</span>
             </div>
           </div>
         </div>

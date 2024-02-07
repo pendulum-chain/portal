@@ -7,6 +7,10 @@
     color: #00F197;
   }
 
+  .btn-outline.btn-primary:hover {
+    color: #32253E;
+  }
+ 
   .collators-box {
     border: 1px solid #434343;
   }
