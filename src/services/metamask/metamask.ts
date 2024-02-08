@@ -23,7 +23,6 @@ export function hasMetaMask(): boolean {
   }
   return window.ethereum.isMetaMask;
 }
-export const defaultSnapId = 'local:http://localhost:8081';
 
 export async function installPolkadotSnap(relayChain: SnapNetworks): Promise<boolean> {
   try {
