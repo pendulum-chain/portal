@@ -102,8 +102,8 @@ function CollatorRewards() {
 
   return (
     <>
-      <div className="flex flex-col mb-8 justify-between sm:flex-row ">
-        <div className="card rounded-lg bg-base-200  mb-3 sm:w-1/2 sm:mb-0 sm:mr-5 collators-box">
+      <div className="flex flex-col mb-8 justify-between md:flex-row ">
+        <div className="card rounded-lg bg-base-200  mb-3 md:w-1/2 md:mb-0 md:mr-5 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking</h2>
             <div className="flex flex-row flex-wrap gap-4">
@@ -126,7 +126,7 @@ function CollatorRewards() {
             </div>
           </div>
         </div>
-        <div className="card rounded-lg bg-base-200 sm:w-1/2 collators-box">
+        <div className="card rounded-lg bg-base-200 md:w-1/2 collators-box">
           <div className="card-body">
             <h2 className="card-title">Staking Rewards</h2>
             <div className="flex flex-row">
@@ -141,14 +141,14 @@ function CollatorRewards() {
                 <Button
                   loading={submissionPending}
                   onClick={() => submitUpdateExtrinsic()}
-                  className="btn btn-primary btn-outline w-1/3 mr-2"
+                  className="btn btn-primary lg:w-1/3 btn-outline mr-2"
                   disabled={!walletAccount}
                 >
-                  Update
+                  {submissionPending ? '' : 'Update'}
                 </Button>
                 <Button
                   onClick={() => setClaimDialogOpen(true)}
-                  className="btn btn-primary w-1/3"
+                  className="btn btn-primary lg:w-1/3"
                   disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
                 >
                   Claim
