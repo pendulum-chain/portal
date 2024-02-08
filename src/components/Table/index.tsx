@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import {
   ColumnDef,
+  Row,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -48,8 +49,12 @@ export type TableProps<T> = {
   evenRowsClassname?: string;
   /** Gives a className to odd rows (1,3,5,7,...), to help table rows readability. */
   oddRowsClassname?: string;
+  /** Adds a title to be included in the Table header, you can indicate a text or an Element. */
   title?: string | JSX.Element;
+  /** Sets the global font size for the Table. */
   fontSize?: string;
+  /** Sets the global font size for the Table. */
+  rowCallback?: (row: Row<T>, index: number) => void;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,6 +73,7 @@ const Table = <T,>({
   oddRowsClassname,
   fontSize,
   title,
+  rowCallback,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
@@ -152,7 +158,11 @@ const Table = <T,>({
           </thead>
           <tbody>
             {getRowModel().rows.map((row, index) => (
-              <tr key={row.id}>
+              <tr
+                key={row.id}
+                onClick={rowCallback ? () => rowCallback(row, index) : undefined}
+                className={rowCallback && 'cursor-pointer highlighted-row'}
+              >
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td

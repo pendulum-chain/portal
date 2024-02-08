@@ -15,6 +15,9 @@
     color: #252733; 
   }
 
+  .highlighted-row:hover td {
+    background: #f1f4ff;
+  }
 }
 
 [data-theme='amplitude'] {
@@ -32,5 +35,9 @@
 
   .table-container {
     color: #fff; 
+  }
+
+  .highlighted-row:hover td {
+    background-color:#333 ;
   }
 }

@@ -1,0 +1,57 @@
+[data-theme='amplitude'] {
+  .btn-primary {
+    color: #32253E;
+  }
+
+  .btn-outline.btn-primary {
+    color: #00F197;
+  }
+
+  .btn-outline.btn-primary:hover {
+    color: #32253E;
+  }
+ 
+  .collators-box {
+    border: 1px solid #434343;
+  }
+  
+  .staked-icon {
+   fill: #fff;
+  }
+  
+  .rewards-icon {
+    fill: #00F197;
+  }
+
+  .btn-unlock:disabled {
+    background: #00F197;
+    color: #32253E;
+  }
+}
+
+[data-theme='pendulum'] {
+  .btn-outline.btn-primary {
+    color: #252733;
+  }
+  
+  .btn-outline.btn-primary:hover {
+    color: #fff;
+  }
+  
+  .collators-box {
+    border: 1px solid #E5E5E5;
+  }
+
+  .rewards-icon {
+    fill: #907EA0;
+  }
+
+  .staked-icon {
+    fill: #32253E;
+  }
+
+  .btn-unlock:disabled {
+    background: #907EA0;
+    color: #fff;
+  }
+}

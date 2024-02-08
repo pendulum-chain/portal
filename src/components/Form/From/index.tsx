@@ -12,7 +12,7 @@ export interface FromProps {
   setValue: (n: number) => void;
   assets?: Asset[];
   selectedAsset?: Asset;
-  setSelectedAsset: (a: Asset) => void;
+  setSelectedAsset?: (a: Asset) => void;
   network?: string;
   assetSuffix?: string;
   error?: string;
@@ -40,7 +40,7 @@ const From = ({
         <div className="w-full flex justify-between">
           <div className="flex-grow text-4xl text-black font-2">
             <Input
-              className="input-ghost w-full text-4xl font-2 pl-0"
+              className="input-ghost w-full text-4xl font-2 pl-0 focus:outline-none"
               type="number"
               step="any"
               onKeyPress={(e: KeyboardEvent) => {
@@ -52,7 +52,7 @@ const From = ({
               {...register}
             />
           </div>
-          {assets && (
+          {assets && setSelectedAsset && (
             <AssetSelector
               selectedAsset={selectedAsset}
               assets={assets}
