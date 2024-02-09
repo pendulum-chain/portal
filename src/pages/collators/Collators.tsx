@@ -4,7 +4,7 @@ import './styles.css';
 
 function Collators() {
   return (
-    <div className="overflow-x-auto mx-20 collators-list-container">
+    <div className="overflow-x-hidden xl:mx-20 lg:mx-5 collators-list-container">
       <CollatorRewards />
       <CollatorsTable />
     </div>
