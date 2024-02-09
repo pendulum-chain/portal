@@ -103,8 +103,8 @@ function CollatorRewards() {
   return (
     <>
       <div className="flex flex-col mb-8 justify-between md:flex-row ">
-        <div className="card rounded-lg bg-base-200  mb-3 md:w-1/2 md:mb-0 md:mr-5 collators-box">
-          <div className="card-body">
+        <div className="card rounded-lg bg-base-200 mb-3 md:w-1/2 md:mb-0 md:mr-5 collators-box">
+          <div className="card-body px-4 xs:px-8">
             <h2 className="card-title">Staking</h2>
             <div className="flex flex-row flex-wrap gap-4">
               <div className="flex-initial">
@@ -133,7 +133,7 @@ function CollatorRewards() {
           </div>
         </div>
         <div className="card rounded-lg bg-base-200 md:w-1/2 collators-box">
-          <div className="card-body">
+          <div className="card-body px-4 xs:px-8">
             <h2 className="card-title">Staking Rewards</h2>
             <div className="flex flex-row">
               <div className="flex-initial pt-1 pr-5 pb-0">
