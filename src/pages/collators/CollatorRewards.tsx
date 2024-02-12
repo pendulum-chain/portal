@@ -102,23 +102,26 @@ function CollatorRewards() {
 
   return (
     <>
-      <div className="flex mb-8 justify-between">
-        <div className="card gap-0 rounded-lg bg-base-200 sm:w-1/2 collators-box">
-          <div className="flex flex-row flex-auto card-body">
-            <div className="flex flex-col flex-auto">
-              <h2 className="card-title mb-4">Staking</h2>
-              <div className="flex flex-row flex-wrap gap-4">
-                <div className="flex-initial">
-                  <StakedIcon className="staked-icon mt-1" />
-                </div>
-                <div className="flex-auto">
-                  <h3 className="font-semibold">{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
-                  <p>My Staking</p>
-                </div>
-                <div className="flex-auto">
-                  <h3 className="font-semibold">{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
-                  <p>Free balance</p>
-                </div>
+      <div className="flex flex-col mb-8 justify-between md:flex-row ">
+        <div className="card rounded-lg bg-base-200 mb-3 md:w-1/2 md:mb-0 md:mr-5 collators-box">
+          <div className="card-body px-4 xs:px-8">
+            <h2 className="card-title">Staking</h2>
+            <div className="flex flex-row flex-wrap gap-4">
+              <div className="flex-initial">
+                <StakedIcon className="staked-icon mt-1" />
+              </div>
+              <div className="flex-auto">
+                <h3>{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
+                <p>My Staking</p>
+              </div>
+              <div className="flex-auto">
+                <h3>{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
+                <p>Free balance</p>
+              </div>
+              <div className="flex flex-auto place-content-end">
+                <button className="btn btn-secondary w-full" disabled>
+                  {unstaking} unstaking
+                </button>
               </div>
             </div>
             <div className="flex flex-none flex-col items-center">
@@ -129,8 +132,8 @@ function CollatorRewards() {
             </div>
           </div>
         </div>
-        <div className="card rounded-lg bg-base-200 w-1/2 ml-4 collators-box">
-          <div className="card-body">
+        <div className="card rounded-lg bg-base-200 md:w-1/2 collators-box">
+          <div className="card-body px-4 xs:px-8">
             <h2 className="card-title">Staking Rewards</h2>
             <div className="flex flex-row">
               <div className="flex-initial pt-1 pr-5 pb-0">
@@ -144,15 +147,14 @@ function CollatorRewards() {
                 <Button
                   loading={submissionPending}
                   onClick={() => submitUpdateExtrinsic()}
-                  className="btn-primary w-1/3 mr-2 rounded-md px-2 py-0 leading-3"
+                  className="btn btn-primary lg:w-1/3 btn-outline mr-2 rounded-md px-2 py-0 leading-3"
                   disabled={!walletAccount}
                 >
-                  Update
+                  {submissionPending ? '' : 'Update'}
                 </Button>
                 <Button
                   onClick={() => setClaimDialogOpen(true)}
-                  variant="outline"
-                  className="btn-primary w-1/3 rounded-md px-2 py-0 leading-3"
+                  className="btn btn-primary rounded-md lg:w-1/3 leading-3"
                   disabled={!walletAccount || parseFloat(estimatedRewards) <= 0}
                 >
                   Claim
