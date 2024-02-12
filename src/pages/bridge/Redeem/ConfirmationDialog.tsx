@@ -1,8 +1,8 @@
-import { useMemo } from 'preact/compat';
 import { Button, Modal } from 'react-daisyui';
-import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
+import { useNavigate } from 'react-router-dom';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { PublicKey } from '../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { RichRedeemRequest } from '../../../hooks/spacewalk/redeem';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers';
 
@@ -14,15 +14,11 @@ interface ConfirmationDialogProps {
 
 export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { redeemRequest, visible, onClose } = props;
-
+  const navigateTo = useNavigate();
+  const { tenantName } = useGlobalState();
   const totalAmount = redeemRequest ? nativeStellarToDecimal(redeemRequest.request.amount.toString()).toString() : '';
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
-
-  const destination = useMemo(() => {
-    const rawDestinationAddress = redeemRequest?.request.stellarAddress;
-    return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
-  }, [redeemRequest?.request.stellarAddress]);
 
   return (
     <Modal open={visible}>
@@ -31,7 +27,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         ✕
       </Button>
       <Modal.Body>
-        <div className="text-center">
+        <div className="text-center text-primary-content">
           <div className="text-xl">
             You will receive {totalAmount} {asset?.getCode()}
           </div>
@@ -40,22 +36,23 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
               issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
             </>
           )}
-          <div className="text-sm text-secondary mt-4">Your request is being processed</div>
+          <div className="text-sm  text-primary-content mt-4">Your request is being processed</div>
         </div>
-        <div className="mt-6 text-secondary">
-          <div className="flex items-center justify-between">
-            <span>Stellar destination address</span>
-            <CopyableAddress variant="short" publicKey={destination} />
-          </div>
+        <div className="mt-6  text-primary-content">
           <div className="text-sm mt-2">
-            We will inform you when the PEN payment is executed. This typically takes only a few minutes but may
+            We will update the transaction when PEN payment is executed. This typically takes only a few minutes but may
             sometimes take up to 6 hours.
           </div>
         </div>
       </Modal.Body>
 
       <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose}>
+        <Button
+          color="primary"
+          onClick={() => {
+            navigateTo(`/${tenantName}/spacewalk/transfers`);
+          }}
+        >
           View Progress
         </Button>
       </Modal.Actions>

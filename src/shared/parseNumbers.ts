@@ -84,7 +84,7 @@ export const format = (n: number, tokenSymbol: string | undefined, oneCharOnly =
       );
     }
   }
-  return prettyNumbers(n);
+  return prettyNumbers(n) + ' ' + tokenSymbol;
 };
 
 export const nativeToFormat = (

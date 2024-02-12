@@ -86,6 +86,9 @@ body {
   font-size: 16px;
   line-height: 1.5;
   color: initial;
+
+  /* Important to make sure the WalletConnect dialog is shown on top of the others */
+  --wcm-z-index: 1000;
 }
 
 *,

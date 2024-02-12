@@ -75,7 +75,7 @@ export default function Layout(): JSX.Element | null {
             <OpenWallet dAppName={dAppName} />
             <ChainSelector />
             <div className="dropdown dropdown-end mr-2 hidden">
-              <button className="flex space-x-2 items-center px-4 py-2 btn no-animation">
+              <button className="flex space-x-2 items-center py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
                   {isPendulum ? 'Pendulum' : 'Amplitude'}
                 </span>
@@ -103,7 +103,7 @@ export default function Layout(): JSX.Element | null {
             </div>
           </div>
         </header>
-        <main className="w-full flex-wrap px-4 sm:px-8 py-4 flex-grow">
+        <main className="w-full flex-wrap px-4 py-4 flex-grow">
           <Outlet />
         </main>
       </section>

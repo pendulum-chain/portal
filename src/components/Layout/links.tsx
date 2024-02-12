@@ -1,9 +1,8 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
-import { GlobalState } from '../../GlobalStateProvider';
-import ExternalIcon from '../../assets/ExternalIcon';
 import DashboardIcon from '../../assets/dashboard';
+import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
@@ -12,6 +11,7 @@ import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
+import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import ComingSoonTag from './ComingSoonTag';
 
@@ -97,7 +97,9 @@ export const links: Links = ({ tenantName }) => [
   {
     link: '/nabla',
     title: 'Nabla',
-    hidden: nablaConfig.environment && !nablaConfig.environment.includes(config.env),
+    hidden:
+      (nablaConfig.environment && !nablaConfig.environment.includes(config.env)) ||
+      (tenantName && !nablaConfig.tenants.includes(tenantName)),
     prefix: <NablaIcon />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),

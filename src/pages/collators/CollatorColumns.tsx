@@ -118,12 +118,13 @@ export const actionsColumn = ({
         </Button>
         <Button
           size="sm"
-          color="primary"
           variant="outline"
+          color="primary"
           onClick={() => {
             setSelectedCandidate(row.original.candidate);
           }}
           disabled={!showStake}
+          className="px-8 rounded-md"
         >
           Stake
         </Button>
