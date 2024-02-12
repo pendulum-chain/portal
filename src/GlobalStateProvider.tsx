@@ -41,6 +41,17 @@ const initWalletConnect = async (chainId: string) => {
   return await walletConnectService.init(provider?.session, chainId);
 };
 
+const initSavedWallet = (tenantName: TenantName) => {
+  const stringifiedWallet = storageService.get(`${tenantName}-selected-wallet`);
+  if (stringifiedWallet) {
+    const wallet = JSON.parse(stringifiedWallet) as WalletAccount;
+    if (wallet) {
+      return wallet;
+    }
+  }
+  return;
+};
+
 const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
   const tenantRef = useRef<string>();
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
@@ -71,6 +82,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear();
     // remove talisman
     storageService.remove('@talisman-connect/selected-wallet-name');
+    storageService.remove(`${tenantName}-selected-wallet`);
     setWallet(undefined);
   }, [clear]);
 
@@ -78,6 +90,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     (wallet: WalletAccount | undefined) => {
       set(wallet?.address);
       setWallet(wallet);
+      storageService.set(`${tenantName}-selected-wallet`, wallet);
     },
     [set],
   );
@@ -94,7 +107,9 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       tenantRef.current = tenantName;
       const appName = dAppName || TenantName.Amplitude;
       const selectedWallet =
-        (await initTalisman(appName, storageAddress)) || (await initWalletConnect(chainIds[tenantName]));
+        (await initTalisman(appName, storageAddress)) ||
+        (await initWalletConnect(chainIds[tenantName])) ||
+        initSavedWallet(tenantName);
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();

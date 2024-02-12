@@ -1571,27 +1571,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esbuild-plugins/node-globals-polyfill@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@esbuild-plugins/node-globals-polyfill@npm:0.1.1"
-  peerDependencies:
-    esbuild: "*"
-  checksum: 49ec2162dc06eeb5bd1d5bf04cfae947ff2dbedad59e8ae7c02649573d66b1ca09526705b24597689689ec1a4430b13d40b5a94d9ee0531dcc83943ee7b1b7dd
-  languageName: node
-  linkType: hard
-
-"@esbuild-plugins/node-modules-polyfill@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "@esbuild-plugins/node-modules-polyfill@npm:0.1.4"
-  dependencies:
-    escape-string-regexp: "npm:^4.0.0"
-    rollup-plugin-node-polyfills: "npm:^0.2.1"
-  peerDependencies:
-    esbuild: "*"
-  checksum: 23671e35dd215ebbeb8050d0d6392d3fcb1a902514ea609c53549de805fe856686285a0085ad4af0fdb0911fa3ea70a3afbebe4cb12921457e6700b2ba449fc1
-  languageName: node
-  linkType: hard
-
 "@esbuild/android-arm@npm:0.15.18":
   version: 0.15.18
   resolution: "@esbuild/android-arm@npm:0.15.18"
@@ -2615,6 +2594,13 @@ __metadata:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
   checksum: 0ea0b2675cf513ec44dc25605616a3c9b808b9832e74b5b63c44260d66b58558bba65764f81928fc1033ead911f8718dca1134049c3e7a93937faf436671df31
+  languageName: node
+  linkType: hard
+
+"@jspm/core@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@jspm/core@npm:2.0.1"
+  checksum: a827ea73198f483750cbb42922be26f87d2eea57871c957e0e170d76c55d15aa07e891b8ce5a0b8cc7b0ca2dfdc8430efe21ed7498e85c0c8ab17462f582139c
   languageName: node
   linkType: hard
 
@@ -8805,6 +8791,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esbuild-plugin-polyfill-node@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "esbuild-plugin-polyfill-node@npm:0.3.0"
+  dependencies:
+    "@jspm/core": "npm:^2.0.1"
+    import-meta-resolve: "npm:^3.0.0"
+  peerDependencies:
+    esbuild: "*"
+  checksum: 8e7e7ee7034a11995f99eefbb75b56b162f5b43b849f7d199cbc7b1089867a8595f48a640a1487f496d2af27986b467ccf3a34bf81cbf9961928c8b8d8cbd3ac
+  languageName: node
+  linkType: hard
+
 "esbuild-sunos-64@npm:0.15.18":
   version: 0.15.18
   resolution: "esbuild-sunos-64@npm:0.15.18"
@@ -10519,6 +10517,13 @@ __metadata:
   bin:
     import-local-fixture: fixtures/cli.js
   checksum: c67ecea72f775fe8684ca3d057e54bdb2ae28c14bf261d2607c269c18ea0da7b730924c06262eca9aed4b8ab31e31d65bc60b50e7296c85908a56e2f7d41ecd2
+  languageName: node
+  linkType: hard
+
+"import-meta-resolve@npm:^3.0.0":
+  version: 3.1.1
+  resolution: "import-meta-resolve@npm:3.1.1"
+  checksum: 75545f3f0f4f789f15b91a541b2d3e9d5b25fc9e8c60e8423cbdef4fff226f45520bd040219c63eee001878f075e82b52e436ca0d7d05e6c4fdc0348b7f251dd
   languageName: node
   linkType: hard
 
@@ -12782,15 +12787,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.25.3":
-  version: 0.25.9
-  resolution: "magic-string@npm:0.25.9"
-  dependencies:
-    sourcemap-codec: "npm:^1.4.8"
-  checksum: 37f5e01a7e8b19a072091f0b45ff127cda676232d373ce2c551a162dd4053c575ec048b9cbb4587a1f03adb6c5d0fd0dd49e8ab070cd2c83a4992b2182d9cb56
-  languageName: node
-  linkType: hard
-
 "make-dir@npm:^4.0.0":
   version: 4.0.0
   resolution: "make-dir@npm:4.0.0"
@@ -14767,8 +14763,6 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.18.6"
     "@chainsafe/metamask-polkadot-adapter": "npm:^0.6.0"
     "@chainsafe/metamask-polkadot-types": "npm:^0.6.0"
-    "@esbuild-plugins/node-globals-polyfill": "npm:^0.1.1"
-    "@esbuild-plugins/node-modules-polyfill": "npm:^0.1.4"
     "@graphql-codegen/cli": "npm:~5.0.0"
     "@graphql-codegen/client-preset": "npm:~4.1.0"
     "@heroicons/react": "npm:^2.0.18"
@@ -14825,6 +14819,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     bs58: "npm:^5.0.0"
     daisyui: "npm:^2.52.0"
+    esbuild-plugin-polyfill-node: "npm:^0.3.0"
     eslint: "npm:^8.34.0"
     eslint-plugin-jest: "npm:^27.2.1"
     eslint-plugin-react: "npm:^7.32.2"
@@ -16473,26 +16468,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-inject@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "rollup-plugin-inject@npm:3.0.2"
-  dependencies:
-    estree-walker: "npm:^0.6.1"
-    magic-string: "npm:^0.25.3"
-    rollup-pluginutils: "npm:^2.8.1"
-  checksum: 35b9d955039b56b43750a9e458bb51b7956b048b6d3ca57b1f03462aa5a0cb176d1b677d95e909b64eee4e9adf73c02f569ad8c0ab5aafdec818ff51700c114c
-  languageName: node
-  linkType: hard
-
-"rollup-plugin-node-polyfills@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "rollup-plugin-node-polyfills@npm:0.2.1"
-  dependencies:
-    rollup-plugin-inject: "npm:^3.0.0"
-  checksum: 30f9e09cbbf979b1212e0c455d74c3a061994fc19ddf160da4634b11377222cea5903a5ba05db66be849f550cde9ffc80ecbfcfb48544045d08bfc408501417d
-  languageName: node
-  linkType: hard
-
 "rollup-plugin-postcss-modules@npm:^2.0.2":
   version: 2.1.1
   resolution: "rollup-plugin-postcss-modules@npm:2.1.1"
@@ -16558,7 +16533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-pluginutils@npm:^2.8.1, rollup-pluginutils@npm:^2.8.2":
+"rollup-pluginutils@npm:^2.8.2":
   version: 2.8.2
   resolution: "rollup-pluginutils@npm:2.8.2"
   dependencies:
@@ -17073,13 +17048,6 @@ __metadata:
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: ab55398007c5e5532957cb0beee2368529618ac0ab372d789806f5718123cc4367d57de3904b4e6a4170eb5a0b0f41373066d02ca0735a0c4d75c7d328d3e011
-  languageName: node
-  linkType: hard
-
-"sourcemap-codec@npm:^1.4.8":
-  version: 1.4.8
-  resolution: "sourcemap-codec@npm:1.4.8"
-  checksum: f099279fdaae070ff156df7414bbe39aad69cdd615454947ed3e19136bfdfcb4544952685ee73f56e17038f4578091e12b17b283ed8ac013882916594d95b9e6
   languageName: node
   linkType: hard
 
