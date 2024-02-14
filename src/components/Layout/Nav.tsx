@@ -9,11 +9,13 @@ const CollapseMenu = ({
   disabled,
   button,
   children,
+  ariaControls
 }: {
   link: string;
   disabled?: boolean;
   button: JSX.Element | null;
   children: JSX.Element | null;
+  ariaControls?: string;
 }) => {
   const { pathname } = useLocation();
   const isActive = useMemo(() => {
@@ -24,16 +26,19 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <div className={disabled ? 'disabled' : ''}>
+    <section className={`collapse  ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
       <button
         type="button"
-        className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
+        className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
         onClick={() => toggle()}
+        aria-controls={ariaControls}
+        aria-expanded={isOpen}
+        aria-disabled={disabled}
       >
         {button}
       </button>
-      <div className={`${isOpen ? '' : 'hidden'}`}>{children}</div>
-    </div>
+      <div className='collapse-content p-0'>{children}</div>
+    </section>
   );
 };
 
@@ -76,6 +81,7 @@ const Nav = memo(({ onClick }: NavProps) => {
             key={i}
             link={item.link}
             disabled={item.disabled}
+            ariaControls='submenu'
             button={
               <>
                 {item.prefix}
