@@ -14,7 +14,21 @@
   .collators-box {
     border: 1px solid #434343;
   }
+
+  .collators-box .card-title {
+    color: #fff;
+  }
+
+  .collators-box h3{
+    color: #fff;
+    font-weight: 500;
+  }
   
+  .collators-box p{
+    color: #fff;
+    font-weight: 300;
+  }
+
   .staked-icon {
    fill: #fff;
   }
@@ -29,17 +43,28 @@
   }
 }
 
-[data-theme='pendulum'] {
-  .btn-outline.btn-primary {
-    color: #252733;
-  }
-  
-  .btn-outline.btn-primary:hover {
-    color: #fff;
-  }
-  
+[data-theme='pendulum'] {  
   .collators-box {
     border: 1px solid #E5E5E5;
+  }
+
+  .collators-box .card-title {
+    color: #333333;
+  }
+
+  .collators-box h3{
+    color: #333333;
+    font-weight: 500;
+  }
+  
+  .collators-box h3.primary{
+    color: #907EA0;
+    font-weight: 600;
+  }  
+
+  .collators-box p{
+    color: #828282;
+    font-weight: 300;
   }
 
   .rewards-icon {
@@ -49,9 +74,13 @@
   .staked-icon {
     fill: #32253E;
   }
-
+  
   .btn-unlock:disabled {
     background: #907EA0;
     color: #fff;
+  }
+  
+  .claim-title {
+    color: #010E19;
   }
 }
