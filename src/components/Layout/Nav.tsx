@@ -53,7 +53,7 @@ const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) =>
       {suffix}
     </>
   );
-  const cls = `nav-item ${props?.className?.()}`;
+  const cls = `nav-item ${props?.className?.() || ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
