@@ -90,11 +90,11 @@ const Nav = memo(({ onClick }: NavProps) => {
               </>
             }
           >
-            <div className="submenu">
+            <ul className="submenu" id='submenu'>
               {item.submenu.map((subItem, j) => (
-                <NavItem key={`${i}-${j}`} item={subItem} onClick={onClick} />
+                <li key={`${i}-${j}`}><NavItem item={subItem} onClick={onClick} /></li>
               ))}
-            </div>
+            </ul>
           </CollapseMenu>
         ) : (
           <NavItem key={i} item={item} onClick={onClick} />
