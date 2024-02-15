@@ -34,7 +34,7 @@ export default function Layout(): JSX.Element | null {
   return (
     <div id="main-wrapper" className="flex">
       <div id="sidebar-wrapper" className="flex flex-wrap z-50">
-        <div
+        <aside
           style={{
             ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
           }}
@@ -62,7 +62,7 @@ export default function Layout(): JSX.Element | null {
             <NetworkId />
             <SocialAndTermLinks />
           </div>
-        </div>
+        </aside>
       </div>
       <section>
         <header>

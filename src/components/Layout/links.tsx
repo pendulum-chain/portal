@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
 import DashboardIcon from '../../assets/dashboard';
@@ -32,8 +31,6 @@ export type LinkItem = BaseLinkItem & {
 };
 export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
-const arrow = <ChevronRightIcon className="nav-arrow w-5 h-5" />;
-
 export const links: Links = ({ tenantName }) => [
   {
     link: './dashboard',
@@ -41,8 +38,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <DashboardIcon />,
-    suffix: arrow,
+    prefix: <DashboardIcon />
   },
   {
     link: 'https://app.zenlink.pro/',
@@ -81,8 +77,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <StakingIcon />,
-    suffix: arrow,
+    prefix: <StakingIcon />
   },
   {
     link: `https://${tenantName}.polkassembly.io/`,
