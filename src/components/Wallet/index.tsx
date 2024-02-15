@@ -76,7 +76,7 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
                     <Divider className="before:bg-transparent after:bg-transparent h-2" />
                   </>
                 )}
-                <WalletConnect setWalletAccount={setWalletAccount} />
+                <WalletConnect />
               </>
             }
           />
