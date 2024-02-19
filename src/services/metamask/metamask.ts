@@ -2,9 +2,15 @@ import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
 import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
 import type { SnapNetworks } from '@chainsafe/metamask-polkadot-types';
+import { Signer } from '@polkadot/api/types';
 import { web3EnablePromise } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import { WalletAccount } from '@talismn/connect-wallets';
+import logo from '../../assets/metamask-wallet.png';
 import { TenantName } from '../../models/Tenant';
+
+export const WALLET_SOURCE_METAMASK = 'metamask';
 
 export function tenantToSnapNetwork(tenantName: TenantName): SnapNetworks {
   switch (tenantName) {
@@ -15,13 +21,6 @@ export function tenantToSnapNetwork(tenantName: TenantName): SnapNetworks {
     default:
       return 'kusama';
   }
-}
-
-export function hasMetaMask(): boolean {
-  if (!window.ethereum) {
-    return false;
-  }
-  return window.ethereum.isMetaMask;
 }
 
 export async function installPolkadotSnap(relayChain: SnapNetworks): Promise<boolean> {
@@ -65,4 +64,77 @@ export async function initiatePolkadotSnap(relayChain: SnapNetworks): Promise<Sn
     console.error(e);
     return { isSnapInstalled: false };
   }
+}
+export interface ExtensionAccount {
+  address: string;
+  name: string;
+  source: string;
+  signer: Signer;
+}
+
+export async function buildWalletAccount(extAcc: ExtensionAccount) {
+  return {
+    address: extAcc.address,
+    source: extAcc.source,
+    name: extAcc.name,
+    signer: extAcc.signer as WalletAccount['signer'],
+    wallet: {
+      enable: () => undefined,
+      extensionName: 'polkadot-js',
+      title: 'Metamask Wallet',
+      installUrl: 'https://metamask.io/',
+      logo: {
+        src: logo,
+        alt: 'Metamask Wallet',
+      },
+      installed: true,
+      extension: undefined,
+      signer: extAcc.signer,
+      /**
+       * The following methods are tagged as 'Unused' since they are only required by the @talisman package,
+       * which we are not using to handle this wallet connection.
+       */
+      getAccounts: () => Promise.resolve([]), // Unused
+      subscribeAccounts: () => undefined, // Unused
+      transformError: (err: Error) => err, // Unused
+    },
+  };
+}
+
+export async function initiateMetamaskInjectedAccount(tenantName: TenantName) {
+  const provider = await initiatePolkadotSnap(tenantToSnapNetwork(tenantName));
+  if (!provider.isSnapInstalled) {
+    const installResult = await installPolkadotSnap(tenantToSnapNetwork(tenantName));
+    if (!installResult) {
+      console.error('Something went wrong, snap could not be installed.');
+      return;
+    }
+  }
+  if (provider.snap) {
+    const api = provider.snap.getMetamaskSnapApi();
+    const injectedMetamaskAccount: ExtensionAccount = {
+      address: await api.getAddress(),
+      name: 'Metamask Snap',
+      source: WALLET_SOURCE_METAMASK,
+      signer: {
+        signPayload: async (payload: SignerPayloadJSON) => {
+          const stringResult = await api.signPayloadJSON(payload);
+          // Metamask snap doesn't provide a request Id, but just the hex string, so
+          // adding id: 1 to be compliant with SignerResult
+          return { id: 1, signature: stringResult } as SignerResult;
+        },
+        signRaw: async (raw: SignerPayloadRaw) => {
+          const stringResult = await api.signPayloadRaw(raw);
+          // Metamask snap doesn't provide a request Id, but just the hex string, so
+          // adding id: 1 to be compliant with SignerResult
+          return { id: 1, signature: stringResult } as SignerResult;
+        },
+        update: (id, status) => {
+          console.log('Status update for Id %d: %s', id, status.toHuman());
+        },
+      },
+    };
+    return await buildWalletAccount(injectedMetamaskAccount);
+  }
+  return undefined;
 }
