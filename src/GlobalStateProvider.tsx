@@ -1,4 +1,5 @@
 import { getWalletBySource, WalletAccount } from '@talismn/connect-wallets';
+import { getSdkError } from '@walletconnect/utils';
 import { ComponentChildren, createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { useLocation } from 'react-router-dom';
@@ -10,6 +11,9 @@ import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
+
+const SECONDS_IN_A_DAY = 86400;
+const EXPIRATION_PERIOD = 2 * SECONDS_IN_A_DAY; // 2 days
 
 export interface GlobalState {
   dAppName: string;
@@ -64,15 +68,28 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear,
   } = useLocalStorage<string | undefined>({
     key: `${storageKeys.ACCOUNT}-${tenantName}`,
-    expire: 2 * 86400, // 2 days
+    expire: EXPIRATION_PERIOD,
   });
 
-  const removeWalletAccount = useCallback(() => {
+  const handleWalletConnectDisconnect = useCallback(async () => {
+    if (walletAccount?.wallet?.extensionName === 'WalletConnect') {
+      const topic = walletConnectService.session?.topic;
+      if (topic) {
+        await walletConnectService.provider?.client.disconnect({
+          topic,
+          reason: getSdkError('USER_DISCONNECTED'),
+        });
+      }
+    }
+  }, [walletAccount]);
+
+  const removeWalletAccount = useCallback(async () => {
+    await handleWalletConnectDisconnect();
     clear();
     // remove talisman
     storageService.remove('@talisman-connect/selected-wallet-name');
     setWallet(undefined);
-  }, [clear]);
+  }, [clear, handleWalletConnectDisconnect]);
 
   const setWalletAccount = useCallback(
     (wallet: WalletAccount | undefined) => {

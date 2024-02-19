@@ -7,6 +7,7 @@ import { config } from '../../config';
 
 export const walletConnectService = {
   provider: undefined as UniversalProvider | undefined,
+  session: undefined as { topic: string } | undefined,
   getProvider: async function getProvider(): Promise<UniversalProvider> {
     this.provider =
       this.provider ||
@@ -18,6 +19,11 @@ export const walletConnectService = {
   },
   init: async function init(session: SessionTypes.Struct, chainId: string): Promise<WalletAccount> {
     const provider = await this.getProvider();
+
+    this.session = {
+      topic: session.topic,
+    };
+
     const wcAccounts = Object.values(session.namespaces)
       .map((namespace) => namespace.accounts)
       .flat();
