@@ -12,7 +12,9 @@ export interface AmountProps {
   error?: string;
 }
 
-const Amount = ({ className, register, max, setValue, assetSuffix, error }: AmountProps): JSX.Element | null => {
+const BALANCE_LEFT_FOR_TX_APPROVAL = 0.5;
+
+const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX.Element | null => {
   return (
     <>
       <div
@@ -45,7 +47,7 @@ const Amount = ({ className, register, max, setValue, assetSuffix, error }: Amou
             </button>
             <button
               className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-              onClick={() => setValue(roundNumber(Number(max)))}
+              onClick={() => setValue(roundNumber(Number(max) - BALANCE_LEFT_FOR_TX_APPROVAL))}
               type="button"
             >
               MAX
