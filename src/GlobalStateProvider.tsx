@@ -8,6 +8,7 @@ import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
+import { initiateMetamaskInjectedAccount, WALLET_SOURCE_METAMASK } from './services/metamask/metamask';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
 
@@ -41,13 +42,10 @@ const initWalletConnect = async (chainId: string) => {
   return await walletConnectService.init(provider?.session, chainId);
 };
 
-const initSavedWallet = (tenantName: TenantName) => {
-  const stringifiedWallet = storageService.get(`${tenantName}-selected-wallet`);
-  if (stringifiedWallet) {
-    const wallet = JSON.parse(stringifiedWallet) as WalletAccount;
-    if (wallet) {
-      return wallet;
-    }
+const initMetamaskWallet = async (tenantName: TenantName) => {
+  const metamaskWalletAddress = storageService.get(`${tenantName}-metamask-wallet`);
+  if (metamaskWalletAddress) {
+    return await initiateMetamaskInjectedAccount(tenantName);
   }
   return;
 };
@@ -82,7 +80,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear();
     // remove talisman
     storageService.remove('@talisman-connect/selected-wallet-name');
-    storageService.remove(`${tenantName}-selected-wallet`);
+    storageService.remove(`${tenantName}-metamask-wallet`);
     setWallet(undefined);
   }, [clear]);
 
@@ -90,7 +88,9 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     (wallet: WalletAccount | undefined) => {
       set(wallet?.address);
       setWallet(wallet);
-      storageService.set(`${tenantName}-selected-wallet`, wallet);
+      if (wallet?.source === WALLET_SOURCE_METAMASK) {
+        storageService.set(`${tenantName}-metamask-wallet`, wallet.address);
+      }
     },
     [set],
   );
@@ -109,7 +109,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       const selectedWallet =
         (await initTalisman(appName, storageAddress)) ||
         (await initWalletConnect(chainIds[tenantName])) ||
-        initSavedWallet(tenantName);
+        (await initMetamaskWallet(tenantName));
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();
