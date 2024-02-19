@@ -2,10 +2,10 @@ import { useCallback, useState } from 'preact/compat';
 import BellIcon from '../../../assets/bell';
 
 type Props = {
-  text: string;
+  content: JSX.Element;
 };
 
-export default function Disclaimer({ text }: Props) {
+export default function Disclaimer({ content }: Props) {
   const [collapseVisibility, setCollapseVisibility] = useState('');
 
   const toggle = useCallback(() => {
@@ -30,7 +30,7 @@ export default function Disclaimer({ text }: Props) {
         <BellIcon />
         <strong className="ml-2">Disclaimer</strong>
       </div>
-      <p className="text-sm collapse-content whitespace-pre-line">{text}</p>
+      <p className="text-sm collapse-content whitespace-pre-line">{content}</p>
     </div>
   );
 }

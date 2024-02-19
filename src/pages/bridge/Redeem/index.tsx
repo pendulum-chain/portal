@@ -152,7 +152,7 @@ function Redeem(props: RedeemProps): JSX.Element {
           <label className="label flex align-center">
             <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
               selectedVault?.redeemableTokens?.toString() || 0,
-            ).toFixed(2)} 
+            ).toFixed(2)}
               ${selectedAsset?.code}`}</span>
           </label>
           <LabelledInputField
@@ -163,6 +163,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             type="text"
             style={{ marginTop: 8 }}
             className="border-base-400 bg-base-200"
+            autoComplete="off"
           />
           <FeeBox
             amountNative={amountNative}
