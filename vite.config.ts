@@ -6,13 +6,11 @@ import { polyfillNode } from 'esbuild-plugin-polyfill-node';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [preact()],
-  build: {
-    rollupOptions: { external: ['isomorphic-unfetch'] },
-  },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' },
   },
   optimizeDeps: {
+    exclude: [],
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
