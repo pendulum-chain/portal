@@ -9,11 +9,13 @@ const CollapseMenu = ({
   disabled,
   button,
   children,
+  ariaControls
 }: {
   link: string;
   disabled?: boolean;
   button: JSX.Element | null;
   children: JSX.Element | null;
+  ariaControls?: string;
 }) => {
   const { pathname } = useLocation();
   const isActive = useMemo(() => {
@@ -24,16 +26,19 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <div className={disabled ? 'disabled' : ''}>
+    <section className={`collapse  ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
       <button
         type="button"
-        className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
+        className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
         onClick={() => toggle()}
+        aria-controls={ariaControls}
+        aria-expanded={isOpen}
+        aria-disabled={disabled}
       >
         {button}
       </button>
-      <div className={`${isOpen ? '' : 'hidden'}`}>{children}</div>
-    </div>
+      <div className='collapse-content p-0'>{children}</div>
+    </section>
   );
 };
 
@@ -48,7 +53,7 @@ const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) =>
       {suffix}
     </>
   );
-  const cls = `nav-item ${props?.className?.()}`;
+  const cls = `nav-item ${props?.className?.() || ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
@@ -76,6 +81,7 @@ const Nav = memo(({ onClick }: NavProps) => {
             key={i}
             link={item.link}
             disabled={item.disabled}
+            ariaControls='submenu'
             button={
               <>
                 {item.prefix}
@@ -84,11 +90,11 @@ const Nav = memo(({ onClick }: NavProps) => {
               </>
             }
           >
-            <div className="submenu">
+            <ul className="submenu" id='submenu'>
               {item.submenu.map((subItem, j) => (
-                <NavItem key={`${i}-${j}`} item={subItem} onClick={onClick} />
+                <li key={`${i}-${j}`}><NavItem item={subItem} onClick={onClick} /></li>
               ))}
-            </div>
+            </ul>
           </CollapseMenu>
         ) : (
           <NavItem key={i} item={item} onClick={onClick} />
