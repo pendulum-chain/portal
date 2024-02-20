@@ -7,6 +7,7 @@ import {
   buildWalletAccount,
   initiateMetamaskInjectedAccount,
 } from '../../../services/metamask/metamask';
+import { CloseButton } from '../../CloseButton';
 import { PublicKey } from '../../PublicKey';
 
 export type MetamaskWalletProps = {
@@ -44,7 +45,8 @@ const MetamaskWallet = ({ setWalletAccount }: MetamaskWalletProps) => {
   return (
     <div className="-mt-8">
       <Modal open={openModal} responsive={true}>
-        <h1 className="text-lg">Metamask Snap Polkadot account: </h1>
+        <CloseButton onClick={() => setOpenModal(false)} />
+        <h1 className="text-lg mb-2">Metamask Snap Polkadot account: </h1>
         <div>
           {accounts.map((a, i) => (
             <button
