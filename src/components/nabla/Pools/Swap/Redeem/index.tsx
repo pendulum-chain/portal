@@ -3,9 +3,8 @@ import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { config } from '../../../../../config';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
@@ -25,7 +24,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
     onSubmit,
     balanceQuery,
     depositQuery,
-    amount,
+    lpTokensDecimalAmount,
     updateStorage,
     form: {
       register,
@@ -39,7 +38,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.token.symbol} amount={amount} />
+        <PoolProgress symbol={data.token.symbol} amount={lpTokensDecimalAmount} />
       </TransactionProgress>
       <div className={hideCss}>
         <div className="flex items-center gap-2 mt-2 mb-8">
@@ -97,7 +96,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
               min={0}
               max={100}
               size="sm"
-              value={amount ? (amount / deposit) * 100 : 0}
+              value={lpTokensDecimalAmount ? (lpTokensDecimalAmount / deposit) * 100 : 0}
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
                 setValue('amount', (Number(ev.currentTarget.value) / 100) * deposit, {
                   shouldDirty: true,
@@ -125,7 +124,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
               <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
+                  calcSharePercentage(rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(), deposit),
                 )}
                 %
               </div>

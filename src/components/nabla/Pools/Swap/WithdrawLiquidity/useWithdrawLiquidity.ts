@@ -2,25 +2,39 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToNative } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
+import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 
-export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
+export const useSwapPoolWithdrawLiquidity = (
+  poolAddress: string,
+  tokenAddress: string,
+  poolTokenDecimals: number,
+  lpTokenDecimals: number,
+) => {
   const queryClient = useQueryClient();
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
+  const balanceQuery = useContractBalance({
+    contractAddress: tokenAddress,
+    decimals: poolTokenDecimals,
+    abi: erc20WrapperAbi,
+  });
+
+  const depositQuery = useContractBalance({
+    contractAddress: poolAddress,
+    decimals: lpTokenDecimals,
+    abi: swapPoolAbi,
+  });
 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
@@ -50,11 +64,11 @@ export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) 
     (variables: WithdrawLiquidityValues) => {
       if (!variables.amount) return;
       return mutate([
-        decimalToNative(variables.amount, defaultDecimals).toString(),
-        decimalToNative(subtractPercentage(variables.amount, 0.5), defaultDecimals).toString(),
+        decimalToRaw(variables.amount, lpTokenDecimals).toString(),
+        decimalToRaw(subtractPercentage(variables.amount, 0.5), poolTokenDecimals).toString(),
       ]);
     },
-    [mutate],
+    [mutate, lpTokenDecimals, poolTokenDecimals],
   );
 
   const amount =

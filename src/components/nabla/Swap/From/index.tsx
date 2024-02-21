@@ -3,26 +3,32 @@ import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
-import { defaultDecimals } from '../../../../config/apps/nabla';
-import { TokensData } from '../../../../hooks/nabla/useTokens';
 import { useContractBalance } from '../../../../shared/useContractBalance';
 import TokenPrice from '../../Price';
 import { SwapFormValues } from '../types';
+import { NablaInstanceToken } from '../../../../hooks/nabla/useNablaInstance';
+import { erc20WrapperAbi } from '../../../../contracts/nabla/ERC20Wrapper';
 
 export interface FromProps {
-  tokensMap?: TokensData['tokensMap'];
+  tokensMap: Record<string, NablaInstanceToken>;
   onOpenSelector: () => void;
+  errorMessage?: string;
   className?: string;
 }
 
-const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element | null => {
+const From = ({ tokensMap, onOpenSelector, className, errorMessage }: FromProps): JSX.Element | null => {
   const { register, setValue, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',
   });
-  const token = tokensMap?.[from];
-  const { formatted, balance } = useContractBalance({ contractAddress: token?.id, decimals: defaultDecimals });
+  const token = tokensMap[from];
+  const { formatted, balance } = useContractBalance({
+    contractAddress: token?.id,
+    decimals: token?.decimals,
+    abi: erc20WrapperAbi,
+  });
+
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -71,6 +77,7 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
               </Fragment>
             )}
           </div>
+          {errorMessage !== undefined && <div className="text-red-500 text-sm">{errorMessage}</div>}
         </div>
       </div>
     </>

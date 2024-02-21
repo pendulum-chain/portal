@@ -2,9 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
-import { Token } from '../../../../gql/graphql';
 import { config } from '../../../config';
-import { defaultDecimals } from '../../../config/apps/nabla';
 import { cacheKeys } from '../../../constants/cache';
 import { storageKeys } from '../../../constants/localStorage';
 import { routerAbi } from '../../../contracts/nabla/Router';
@@ -12,14 +10,14 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { subtractPercentage } from '../../../helpers/calc';
 import { debounce } from '../../../helpers/function';
 import { getValidDeadline, getValidSlippage } from '../../../helpers/transaction';
-import { useTokens } from '../../../hooks/nabla/useTokens';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../../models/Swap';
 import { storageService } from '../../../services/storage/local';
-import { calcDeadline, decimalToNative } from '../../../shared/parseNumbers';
+import { calcDeadline, decimalToRaw } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';
+import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -39,7 +37,10 @@ const storageSet = debounce(storageService.set, 1000);
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { onChange } = props;
-  const tokensQuery = useTokens();
+  const { nabla, isLoading } = useNablaInstance();
+  const tokens = nabla?.swapPools.map((p) => p.token) ?? [];
+  const tokensMap = nabla?.tokens ?? {};
+
   const { address } = useGlobalState().walletAccount || {};
   const hadMountedRef = useRef(false);
   const queryClient = useQueryClient();
@@ -92,16 +93,20 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   });
 
   const onSubmit = form.handleSubmit((variables: SwapFormValues) => {
+    const fromToken = tokens.find((token) => token.id === variables.from)!;
+    const toToken = tokens.find((token) => token.id === variables.to)!;
+
     const vDeadline = getValidDeadline(variables.deadline || defaultValues.deadline);
     const vSlippage = getValidSlippage(variables.slippage || defaultValues.slippage);
     const deadline = calcDeadline(vDeadline).toString();
-    const fromAmount = decimalToNative(variables.fromAmount, defaultDecimals).toString();
-    const toMinAmount = decimalToNative(subtractPercentage(variables.toAmount, vSlippage), defaultDecimals).toString();
+    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals).toString();
+    const toMinAmount = decimalToRaw(subtractPercentage(variables.toAmount, vSlippage), toToken?.decimals).toString();
+
     return swapMutation.mutate([fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });
 
   const onFromChange = useCallback(
-    (a: string | Token, event = true) => {
+    (a: string | NablaInstanceToken, event = true) => {
       const f = typeof a === 'string' ? a : a.id;
       const prev = getValues();
       const updated = {
@@ -118,7 +123,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   );
 
   const onToChange = useCallback(
-    (a: string | Token, event = true) => {
+    (a: string | NablaInstanceToken, event = true) => {
       const t = typeof a === 'string' ? a : a.id;
       const prev = getValues();
       const updated = {
@@ -151,7 +156,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   return {
     form,
-    tokensQuery,
+    tokensQuery: { tokens, tokensMap },
     swapMutation,
     onSubmit,
     tokensModal,
@@ -160,6 +165,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     onReverse,
     updateStorage,
     from,
+    isLoading,
     progressClose: () => {
       swapMutation.reset();
     },

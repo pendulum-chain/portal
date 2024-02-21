@@ -5,35 +5,22 @@ import { Avatar, AvatarProps, Button, Input, Modal, ModalProps } from 'react-dai
 import { repeat } from '../../../../helpers/general';
 import ModalCloseButton from '../../../Button/ModalClose';
 import { Skeleton } from '../../../Skeleton';
+import { NablaInstanceToken } from '../../../../hooks/nabla/useNablaInstance';
 
-export type SelectorToken = {
-  decimals: number;
-  id: string;
-  name: string;
-  symbol: string;
-};
-export type SelectorValue = SelectorToken | Dict;
-
-export interface AssetListProps<T extends SelectorValue> {
-  assets?: T[];
-  map?: (value: T) => SelectorToken | undefined;
-  onSelect: (asset: T) => void;
+export interface AssetListProps {
+  assets?: NablaInstanceToken[];
+  onSelect: (asset: NablaInstanceToken) => void;
   selected?: string;
 }
 
-const AssetList = <T extends SelectorValue>({
-  assets,
-  onSelect,
-  selected,
-  map,
-}: AssetListProps<T>): JSX.Element | null => {
+function AssetList({ assets, onSelect, selected }: AssetListProps) {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
     () =>
       filter && assets
         ? matchSorter(assets, filter, {
-            keys: ['name', 'address', 'symbol', 'token.name', 'token.address', 'token.symbol'],
+            keys: ['name', 'address', 'symbol'],
           })
         : assets,
     [assets, filter],
@@ -48,16 +35,14 @@ const AssetList = <T extends SelectorValue>({
         placeholder="Find by name or address"
       />
       <div className="flex flex-col gap-1">
-        {filteredTokens?.map((value) => {
-          const token = (map ? map(value) : value) as SelectorToken | undefined;
-          if (!token || !('symbol' in token)) return null;
+        {filteredTokens?.map((token) => {
           return (
             <Button
               type="button"
               size="md"
               color="secondary"
               key={token.id}
-              onClick={() => onSelect(value)}
+              onClick={() => onSelect(token)}
               className="w-full items-center justify-start gap-4 px-3 py-2 h-auto border-0 bg-blackAlpha-200 text-left hover:opacity-80 dark:bg-whiteAlpha-200"
             >
               <span className="relative">
@@ -84,23 +69,22 @@ const AssetList = <T extends SelectorValue>({
       </div>
     </div>
   );
-};
+}
 
-export type AssetSelectorModalProps<T extends SelectorValue> = {
+export type AssetSelectorModalProps = {
   isLoading?: boolean;
   onClose: () => void;
-} & AssetListProps<T> &
+} & AssetListProps &
   Omit<ModalProps, 'onSelect' | 'selected'>;
 
-export const AssetSelectorModal = <T extends SelectorValue>({
+export function AssetSelectorModal({
   assets,
   selected,
   isLoading,
   onSelect,
   onClose,
-  map,
   ...rest
-}: AssetSelectorModalProps<T>) => {
+}: AssetSelectorModalProps) {
   return (
     <Modal className="bg-[--bg-modal]" {...rest}>
       <Modal.Header className="mb-0">
@@ -112,12 +96,12 @@ export const AssetSelectorModal = <T extends SelectorValue>({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} map={map} />
+            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} />
           )}
         </div>
       </Modal.Body>
     </Modal>
   );
-};
+}
 
 export default AssetList;

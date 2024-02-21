@@ -1,12 +1,10 @@
 import { u128, UInt } from '@polkadot/types-codec';
 import BigNumber from 'big.js';
 
-// These are the decimals used for the native currency on the Amplitude network
-export const ChainDecimals = 12;
-
 // These are the decimals used by the Stellar network
 // We actually up-scale the amounts on Stellar now to match the expected decimals of the other tokens.
-export const StellarDecimals = ChainDecimals;
+export const StellarDecimals = 12;
+export const NativeDecimals = 12;
 
 // These are the decimals used by the FixedU128 type
 export const FixedU128Decimals = 18;
@@ -17,7 +15,7 @@ BigNumber.PE = 100;
 BigNumber.NE = -20;
 
 // Converts a decimal number to the native representation (a large integer)
-export const decimalToNative = (value: BigNumber | number | string, decimals: number = ChainDecimals) => {
+export const decimalToNative = (value: BigNumber | number | string, decimals: number = NativeDecimals) => {
   let bigIntValue;
   try {
     bigIntValue = new BigNumber(value);
@@ -26,6 +24,10 @@ export const decimalToNative = (value: BigNumber | number | string, decimals: nu
   }
   const multiplier = new BigNumber(10).pow(decimals);
   return bigIntValue.times(multiplier).round(0);
+};
+
+export const decimalToRaw = (value: BigNumber | number | string, decimals: number) => {
+  return decimalToNative(value, decimals);
 };
 
 export const decimalToStellarNative = (value: BigNumber | number | string) => {
@@ -46,7 +48,10 @@ export const fixedPointToDecimal = (value: BigNumber | number | string) => {
   return bigIntValue.div(divisor);
 };
 
-export const nativeToDecimal = (value: BigNumber | number | string | u128 | UInt, decimals: number = ChainDecimals) => {
+export const nativeToDecimal = (
+  value: BigNumber | number | string | u128 | UInt,
+  decimals: number = NativeDecimals,
+) => {
   if (!value) return new BigNumber(0);
 
   if (typeof value === 'string' || value instanceof u128 || value instanceof UInt) {
@@ -57,6 +62,10 @@ export const nativeToDecimal = (value: BigNumber | number | string | u128 | UInt
   const divisor = new BigNumber(10).pow(decimals);
 
   return bigIntValue.div(divisor);
+};
+
+export const rawToDecimal = (value: BigNumber | number | string | u128 | UInt, decimals: number) => {
+  return nativeToDecimal(value, decimals);
 };
 
 export const nativeStellarToDecimal = (value: BigNumber | number | string) => {
@@ -91,7 +100,7 @@ export const nativeToFormat = (
   value: BigNumber | number | string,
   tokenSymbol: string | undefined,
   oneCharOnly = false,
-) => format(nativeToDecimal(value).toNumber(), tokenSymbol, oneCharOnly);
+) => format(rawToDecimal(value, StellarDecimals).toNumber(), tokenSymbol, oneCharOnly);
 
 export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberFormatOptions) =>
   number.toLocaleString(lang || navigator.language, {
@@ -105,4 +114,4 @@ export const roundNumber = (value: number | string = 0, round = 6) => {
 };
 
 /** Calculate deadline from minutes */
-export const calcDeadline = (min: number) => decimalToNative(`${Math.floor(Date.now() / 1000) + min * 60}`);
+export const calcDeadline = (min: number) => `${Math.floor(Date.now() / 1000) + min * 60}`;

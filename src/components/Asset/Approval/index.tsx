@@ -1,46 +1,51 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { defaultDecimals } from '../../../config/apps/nabla';
 import { ApprovalState, useTokenApproval } from '../../../shared/useTokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {
-  token: string | undefined;
-  amount: number;
+  token: string;
+  decimalAmount: number;
   /** contract address (eg. router address) */
-  spender?: string;
+  spender: string;
   enabled?: boolean;
   children: ReactNode;
+  decimals: number;
 };
 
 const TokenApproval = ({
-  amount,
+  decimalAmount,
   token,
   spender,
+  decimals,
   enabled = true,
   children,
   className = '',
   ...rest
 }: TokenApprovalProps): JSX.Element | null => {
   const approval = useTokenApproval({
-    amount,
+    decimalAmount,
     token,
     spender,
     enabled,
-    decimals: defaultDecimals,
+    decimals,
   });
+  console.log('Approval button', approval[0], ApprovalState);
 
   if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;
+
+  const noAccount = approval[0] === ApprovalState.NO_ACCOUNT;
   const isPending = approval[0] === ApprovalState.PENDING;
   const isLoading = approval[0] === ApprovalState.LOADING;
+
   return (
     <Button
       className={`w-full${isPending || isLoading ? ' loading' : ''} ${className}`}
       color="primary"
       {...rest}
       type="button"
-      disabled={isPending}
+      disabled={noAccount || isPending}
       onClick={isPending ? undefined : () => approval[1].mutate()}
     >
-      {isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}
+      {noAccount ? 'Please connect your wallet' : isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}
     </Button>
   );
 };

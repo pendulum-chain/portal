@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'preact/compat';
 import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { getMessageCallValue } from './helpers';
-import { decimalToNative, nativeToDecimal } from './parseNumbers';
+import { decimalToRaw, rawToDecimal } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContractWrite, UseContractWriteProps } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';
@@ -13,34 +13,33 @@ export enum ApprovalState {
   PENDING,
   NOT_APPROVED,
   APPROVED,
+  NO_ACCOUNT,
 }
 
 interface UseTokenApprovalParams {
-  spender?: string;
-  token?: string;
-  amount?: number;
-  approveMax?: boolean;
+  spender: string;
+  token: string;
+  decimalAmount: number;
   enabled?: boolean;
-  decimals?: number;
+  decimals: number;
   onError?: (err: any) => void;
   onSuccess?: UseContractWriteProps<Dict>['onSuccess'];
 }
 
 export const useTokenApproval = ({
   token,
-  amount = 0,
+  decimalAmount,
   spender,
   enabled = true,
-  approveMax,
   decimals,
   onError,
   onSuccess,
 }: UseTokenApprovalParams) => {
   const { address } = useSharedState();
   const [pending, setPending] = useState(false);
-  const amountBI = decimalToNative(amount, decimals);
-  const isEnabled = Boolean(token && spender && address && enabled);
-  const maxInt = useMemo(() => decimalToNative(Number.MAX_SAFE_INTEGER, decimals).toString(), [decimals]);
+  const nativeAmount = decimalToRaw(decimalAmount, decimals);
+  const isEnabled = Boolean(spender && address && enabled);
+
   const {
     data: allowanceData,
     isLoading: isAllowanceLoading,
@@ -58,7 +57,7 @@ export const useTokenApproval = ({
     abi: erc20WrapperAbi,
     address: token,
     method: 'approve',
-    args: [spender, approveMax ? maxInt : amountBI.toString()],
+    args: [spender, nativeAmount.toString()],
     onError: (err) => {
       setPending(false);
       if (onError) onError(err);
@@ -74,22 +73,32 @@ export const useTokenApproval = ({
   });
 
   const allowanceValue = getMessageCallValue(allowanceData);
-  const allowance = useMemo(
-    () => nativeToDecimal(parseFloat(allowanceValue || '0'), decimals).toNumber(),
+  const allowanceDecimalAmount = useMemo(
+    () => (allowanceValue !== undefined ? rawToDecimal(allowanceValue.toString(), decimals).toNumber() : undefined),
     [allowanceValue, decimals],
   );
 
   return useMemo<[ApprovalState, typeof mutation]>(() => {
     let state = ApprovalState.UNKNOWN;
-    // if (amount?.currency.isNative) state = ApprovalState.APPROVED;
-    if (isAllowanceLoading) state = ApprovalState.LOADING;
+
+    if (address === undefined) state = ApprovalState.NO_ACCOUNT;
+    else if (isAllowanceLoading) state = ApprovalState.LOADING;
     else if (!mutation.isReady) state = ApprovalState.UNKNOWN;
-    else if (allowance !== undefined && amount !== undefined && allowance >= amount) {
+    else if (
+      allowanceDecimalAmount !== undefined &&
+      decimalAmount !== undefined &&
+      allowanceDecimalAmount >= decimalAmount
+    ) {
       state = ApprovalState.APPROVED;
     } else if (pending || mutation.isLoading) state = ApprovalState.PENDING;
-    else if (allowance !== undefined && amount !== undefined && allowance < amount) {
+    else if (
+      allowanceDecimalAmount !== undefined &&
+      decimalAmount !== undefined &&
+      allowanceDecimalAmount < decimalAmount
+    ) {
       state = ApprovalState.NOT_APPROVED;
     }
+
     return [state, mutation];
-  }, [allowance, amount, mutation, isAllowanceLoading, pending]);
+  }, [allowanceDecimalAmount, decimalAmount, mutation, isAllowanceLoading, pending, address]);
 };

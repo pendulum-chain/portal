@@ -26,13 +26,34 @@ export type Scalars = {
 
 export type BackstopPool = {
   __typename?: 'BackstopPool';
+  apr: Scalars['BigInt']['output'];
+  coveredSwapPools: Array<SwapPool>;
+  feesHistory: Array<NablaSwapFee>;
   id: Scalars['String']['output'];
-  liabilities: Scalars['BigInt']['output'];
+  lpTokenDecimals: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
   paused: Scalars['Boolean']['output'];
   reserves: Scalars['BigInt']['output'];
   router: Router;
+  symbol: Scalars['String']['output'];
   token: NablaToken;
   totalSupply: Scalars['BigInt']['output'];
+};
+
+
+export type BackstopPoolCoveredSwapPoolsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SwapPoolOrderByInput>>;
+  where?: InputMaybe<SwapPoolWhereInput>;
+};
+
+
+export type BackstopPoolFeesHistoryArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NablaSwapFeeOrderByInput>>;
+  where?: InputMaybe<NablaSwapFeeWhereInput>;
 };
 
 export type BackstopPoolEdge = {
@@ -42,14 +63,22 @@ export type BackstopPoolEdge = {
 };
 
 export enum BackstopPoolOrderByInput {
+  AprAsc = 'apr_ASC',
+  AprAscNullsFirst = 'apr_ASC_NULLS_FIRST',
+  AprDesc = 'apr_DESC',
+  AprDescNullsLast = 'apr_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  LiabilitiesAsc = 'liabilities_ASC',
-  LiabilitiesAscNullsFirst = 'liabilities_ASC_NULLS_FIRST',
-  LiabilitiesDesc = 'liabilities_DESC',
-  LiabilitiesDescNullsLast = 'liabilities_DESC_NULLS_LAST',
+  LpTokenDecimalsAsc = 'lpTokenDecimals_ASC',
+  LpTokenDecimalsAscNullsFirst = 'lpTokenDecimals_ASC_NULLS_FIRST',
+  LpTokenDecimalsDesc = 'lpTokenDecimals_DESC',
+  LpTokenDecimalsDescNullsLast = 'lpTokenDecimals_DESC_NULLS_LAST',
+  NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
+  NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
   PausedAsc = 'paused_ASC',
   PausedAscNullsFirst = 'paused_ASC_NULLS_FIRST',
   PausedDesc = 'paused_DESC',
@@ -66,6 +95,10 @@ export enum BackstopPoolOrderByInput {
   RouterPausedAscNullsFirst = 'router_paused_ASC_NULLS_FIRST',
   RouterPausedDesc = 'router_paused_DESC',
   RouterPausedDescNullsLast = 'router_paused_DESC_NULLS_LAST',
+  SymbolAsc = 'symbol_ASC',
+  SymbolAscNullsFirst = 'symbol_ASC_NULLS_FIRST',
+  SymbolDesc = 'symbol_DESC',
+  SymbolDescNullsLast = 'symbol_DESC_NULLS_LAST',
   TokenDecimalsAsc = 'token_decimals_ASC',
   TokenDecimalsAscNullsFirst = 'token_decimals_ASC_NULLS_FIRST',
   TokenDecimalsDesc = 'token_decimals_DESC',
@@ -91,6 +124,21 @@ export enum BackstopPoolOrderByInput {
 export type BackstopPoolWhereInput = {
   AND?: InputMaybe<Array<BackstopPoolWhereInput>>;
   OR?: InputMaybe<Array<BackstopPoolWhereInput>>;
+  apr_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  apr_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  apr_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  coveredSwapPools_every?: InputMaybe<SwapPoolWhereInput>;
+  coveredSwapPools_none?: InputMaybe<SwapPoolWhereInput>;
+  coveredSwapPools_some?: InputMaybe<SwapPoolWhereInput>;
+  feesHistory_every?: InputMaybe<NablaSwapFeeWhereInput>;
+  feesHistory_none?: InputMaybe<NablaSwapFeeWhereInput>;
+  feesHistory_some?: InputMaybe<NablaSwapFeeWhereInput>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -108,15 +156,32 @@ export type BackstopPoolWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  liabilities_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liabilities_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  liabilities_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  lpTokenDecimals_eq?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_gt?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_gte?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  lpTokenDecimals_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  lpTokenDecimals_lt?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_lte?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
   paused_eq?: InputMaybe<Scalars['Boolean']['input']>;
   paused_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   paused_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
@@ -131,6 +196,23 @@ export type BackstopPoolWhereInput = {
   reserves_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   router?: InputMaybe<RouterWhereInput>;
   router_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  symbol_contains?: InputMaybe<Scalars['String']['input']>;
+  symbol_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  symbol_endsWith?: InputMaybe<Scalars['String']['input']>;
+  symbol_eq?: InputMaybe<Scalars['String']['input']>;
+  symbol_gt?: InputMaybe<Scalars['String']['input']>;
+  symbol_gte?: InputMaybe<Scalars['String']['input']>;
+  symbol_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  symbol_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  symbol_lt?: InputMaybe<Scalars['String']['input']>;
+  symbol_lte?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_contains?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_eq?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  symbol_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  symbol_startsWith?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<NablaTokenWhereInput>;
   token_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   totalSupply_eq?: InputMaybe<Scalars['BigInt']['input']>;
@@ -3442,12 +3524,202 @@ export type MintsConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
+export type NablaSwapFee = {
+  __typename?: 'NablaSwapFee';
+  backstopFees: Scalars['BigInt']['output'];
+  backstopPool?: Maybe<BackstopPool>;
+  id: Scalars['String']['output'];
+  lpFees: Scalars['BigInt']['output'];
+  protocolFees: Scalars['BigInt']['output'];
+  swapPool: SwapPool;
+  timestamp: Scalars['BigInt']['output'];
+};
+
+export type NablaSwapFeeEdge = {
+  __typename?: 'NablaSwapFeeEdge';
+  cursor: Scalars['String']['output'];
+  node: NablaSwapFee;
+};
+
+export enum NablaSwapFeeOrderByInput {
+  BackstopFeesAsc = 'backstopFees_ASC',
+  BackstopFeesAscNullsFirst = 'backstopFees_ASC_NULLS_FIRST',
+  BackstopFeesDesc = 'backstopFees_DESC',
+  BackstopFeesDescNullsLast = 'backstopFees_DESC_NULLS_LAST',
+  BackstopPoolAprAsc = 'backstopPool_apr_ASC',
+  BackstopPoolAprAscNullsFirst = 'backstopPool_apr_ASC_NULLS_FIRST',
+  BackstopPoolAprDesc = 'backstopPool_apr_DESC',
+  BackstopPoolAprDescNullsLast = 'backstopPool_apr_DESC_NULLS_LAST',
+  BackstopPoolIdAsc = 'backstopPool_id_ASC',
+  BackstopPoolIdAscNullsFirst = 'backstopPool_id_ASC_NULLS_FIRST',
+  BackstopPoolIdDesc = 'backstopPool_id_DESC',
+  BackstopPoolIdDescNullsLast = 'backstopPool_id_DESC_NULLS_LAST',
+  BackstopPoolLpTokenDecimalsAsc = 'backstopPool_lpTokenDecimals_ASC',
+  BackstopPoolLpTokenDecimalsAscNullsFirst = 'backstopPool_lpTokenDecimals_ASC_NULLS_FIRST',
+  BackstopPoolLpTokenDecimalsDesc = 'backstopPool_lpTokenDecimals_DESC',
+  BackstopPoolLpTokenDecimalsDescNullsLast = 'backstopPool_lpTokenDecimals_DESC_NULLS_LAST',
+  BackstopPoolNameAsc = 'backstopPool_name_ASC',
+  BackstopPoolNameAscNullsFirst = 'backstopPool_name_ASC_NULLS_FIRST',
+  BackstopPoolNameDesc = 'backstopPool_name_DESC',
+  BackstopPoolNameDescNullsLast = 'backstopPool_name_DESC_NULLS_LAST',
+  BackstopPoolPausedAsc = 'backstopPool_paused_ASC',
+  BackstopPoolPausedAscNullsFirst = 'backstopPool_paused_ASC_NULLS_FIRST',
+  BackstopPoolPausedDesc = 'backstopPool_paused_DESC',
+  BackstopPoolPausedDescNullsLast = 'backstopPool_paused_DESC_NULLS_LAST',
+  BackstopPoolReservesAsc = 'backstopPool_reserves_ASC',
+  BackstopPoolReservesAscNullsFirst = 'backstopPool_reserves_ASC_NULLS_FIRST',
+  BackstopPoolReservesDesc = 'backstopPool_reserves_DESC',
+  BackstopPoolReservesDescNullsLast = 'backstopPool_reserves_DESC_NULLS_LAST',
+  BackstopPoolSymbolAsc = 'backstopPool_symbol_ASC',
+  BackstopPoolSymbolAscNullsFirst = 'backstopPool_symbol_ASC_NULLS_FIRST',
+  BackstopPoolSymbolDesc = 'backstopPool_symbol_DESC',
+  BackstopPoolSymbolDescNullsLast = 'backstopPool_symbol_DESC_NULLS_LAST',
+  BackstopPoolTotalSupplyAsc = 'backstopPool_totalSupply_ASC',
+  BackstopPoolTotalSupplyAscNullsFirst = 'backstopPool_totalSupply_ASC_NULLS_FIRST',
+  BackstopPoolTotalSupplyDesc = 'backstopPool_totalSupply_DESC',
+  BackstopPoolTotalSupplyDescNullsLast = 'backstopPool_totalSupply_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  LpFeesAsc = 'lpFees_ASC',
+  LpFeesAscNullsFirst = 'lpFees_ASC_NULLS_FIRST',
+  LpFeesDesc = 'lpFees_DESC',
+  LpFeesDescNullsLast = 'lpFees_DESC_NULLS_LAST',
+  ProtocolFeesAsc = 'protocolFees_ASC',
+  ProtocolFeesAscNullsFirst = 'protocolFees_ASC_NULLS_FIRST',
+  ProtocolFeesDesc = 'protocolFees_DESC',
+  ProtocolFeesDescNullsLast = 'protocolFees_DESC_NULLS_LAST',
+  SwapPoolAprAsc = 'swapPool_apr_ASC',
+  SwapPoolAprAscNullsFirst = 'swapPool_apr_ASC_NULLS_FIRST',
+  SwapPoolAprDesc = 'swapPool_apr_DESC',
+  SwapPoolAprDescNullsLast = 'swapPool_apr_DESC_NULLS_LAST',
+  SwapPoolIdAsc = 'swapPool_id_ASC',
+  SwapPoolIdAscNullsFirst = 'swapPool_id_ASC_NULLS_FIRST',
+  SwapPoolIdDesc = 'swapPool_id_DESC',
+  SwapPoolIdDescNullsLast = 'swapPool_id_DESC_NULLS_LAST',
+  SwapPoolLpTokenDecimalsAsc = 'swapPool_lpTokenDecimals_ASC',
+  SwapPoolLpTokenDecimalsAscNullsFirst = 'swapPool_lpTokenDecimals_ASC_NULLS_FIRST',
+  SwapPoolLpTokenDecimalsDesc = 'swapPool_lpTokenDecimals_DESC',
+  SwapPoolLpTokenDecimalsDescNullsLast = 'swapPool_lpTokenDecimals_DESC_NULLS_LAST',
+  SwapPoolNameAsc = 'swapPool_name_ASC',
+  SwapPoolNameAscNullsFirst = 'swapPool_name_ASC_NULLS_FIRST',
+  SwapPoolNameDesc = 'swapPool_name_DESC',
+  SwapPoolNameDescNullsLast = 'swapPool_name_DESC_NULLS_LAST',
+  SwapPoolPausedAsc = 'swapPool_paused_ASC',
+  SwapPoolPausedAscNullsFirst = 'swapPool_paused_ASC_NULLS_FIRST',
+  SwapPoolPausedDesc = 'swapPool_paused_DESC',
+  SwapPoolPausedDescNullsLast = 'swapPool_paused_DESC_NULLS_LAST',
+  SwapPoolReserveWithSlippageAsc = 'swapPool_reserveWithSlippage_ASC',
+  SwapPoolReserveWithSlippageAscNullsFirst = 'swapPool_reserveWithSlippage_ASC_NULLS_FIRST',
+  SwapPoolReserveWithSlippageDesc = 'swapPool_reserveWithSlippage_DESC',
+  SwapPoolReserveWithSlippageDescNullsLast = 'swapPool_reserveWithSlippage_DESC_NULLS_LAST',
+  SwapPoolReserveAsc = 'swapPool_reserve_ASC',
+  SwapPoolReserveAscNullsFirst = 'swapPool_reserve_ASC_NULLS_FIRST',
+  SwapPoolReserveDesc = 'swapPool_reserve_DESC',
+  SwapPoolReserveDescNullsLast = 'swapPool_reserve_DESC_NULLS_LAST',
+  SwapPoolSymbolAsc = 'swapPool_symbol_ASC',
+  SwapPoolSymbolAscNullsFirst = 'swapPool_symbol_ASC_NULLS_FIRST',
+  SwapPoolSymbolDesc = 'swapPool_symbol_DESC',
+  SwapPoolSymbolDescNullsLast = 'swapPool_symbol_DESC_NULLS_LAST',
+  SwapPoolTotalLiabilitiesAsc = 'swapPool_totalLiabilities_ASC',
+  SwapPoolTotalLiabilitiesAscNullsFirst = 'swapPool_totalLiabilities_ASC_NULLS_FIRST',
+  SwapPoolTotalLiabilitiesDesc = 'swapPool_totalLiabilities_DESC',
+  SwapPoolTotalLiabilitiesDescNullsLast = 'swapPool_totalLiabilities_DESC_NULLS_LAST',
+  SwapPoolTotalSupplyAsc = 'swapPool_totalSupply_ASC',
+  SwapPoolTotalSupplyAscNullsFirst = 'swapPool_totalSupply_ASC_NULLS_FIRST',
+  SwapPoolTotalSupplyDesc = 'swapPool_totalSupply_DESC',
+  SwapPoolTotalSupplyDescNullsLast = 'swapPool_totalSupply_DESC_NULLS_LAST',
+  TimestampAsc = 'timestamp_ASC',
+  TimestampAscNullsFirst = 'timestamp_ASC_NULLS_FIRST',
+  TimestampDesc = 'timestamp_DESC',
+  TimestampDescNullsLast = 'timestamp_DESC_NULLS_LAST'
+}
+
+export type NablaSwapFeeWhereInput = {
+  AND?: InputMaybe<Array<NablaSwapFeeWhereInput>>;
+  OR?: InputMaybe<Array<NablaSwapFeeWhereInput>>;
+  backstopFees_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  backstopFees_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  backstopFees_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  backstopFees_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  backstopFees_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  backstopFees_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  backstopFees_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  backstopFees_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  backstopFees_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  backstopPool?: InputMaybe<BackstopPoolWhereInput>;
+  backstopPool_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  lpFees_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  lpFees_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  lpFees_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  lpFees_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  lpFees_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  lpFees_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  lpFees_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  lpFees_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  lpFees_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  protocolFees_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  protocolFees_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  protocolFees_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  protocolFees_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  protocolFees_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  protocolFees_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  protocolFees_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  protocolFees_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  protocolFees_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  swapPool?: InputMaybe<SwapPoolWhereInput>;
+  swapPool_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
+export type NablaSwapFeesConnection = {
+  __typename?: 'NablaSwapFeesConnection';
+  edges: Array<NablaSwapFeeEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type NablaToken = {
   __typename?: 'NablaToken';
   decimals: Scalars['Int']['output'];
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  swapPools: Array<SwapPool>;
   symbol: Scalars['String']['output'];
+};
+
+
+export type NablaTokenSwapPoolsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SwapPoolOrderByInput>>;
+  where?: InputMaybe<SwapPoolWhereInput>;
 };
 
 export type NablaTokenEdge = {
@@ -3521,6 +3793,9 @@ export type NablaTokenWhereInput = {
   name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   name_startsWith?: InputMaybe<Scalars['String']['input']>;
+  swapPools_every?: InputMaybe<SwapPoolWhereInput>;
+  swapPools_none?: InputMaybe<SwapPoolWhereInput>;
+  swapPools_some?: InputMaybe<SwapPoolWhereInput>;
   symbol_contains?: InputMaybe<Scalars['String']['input']>;
   symbol_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   symbol_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -5105,6 +5380,11 @@ export type Query = {
   mintByUniqueInput?: Maybe<Mint>;
   mints: Array<Mint>;
   mintsConnection: MintsConnection;
+  nablaSwapFeeById?: Maybe<NablaSwapFee>;
+  /** @deprecated Use nablaSwapFeeById */
+  nablaSwapFeeByUniqueInput?: Maybe<NablaSwapFee>;
+  nablaSwapFees: Array<NablaSwapFee>;
+  nablaSwapFeesConnection: NablaSwapFeesConnection;
   nablaTokenById?: Maybe<NablaToken>;
   /** @deprecated Use nablaTokenById */
   nablaTokenByUniqueInput?: Maybe<NablaToken>;
@@ -5651,6 +5931,32 @@ export type QueryMintsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<MintOrderByInput>;
   where?: InputMaybe<MintWhereInput>;
+};
+
+
+export type QueryNablaSwapFeeByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryNablaSwapFeeByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryNablaSwapFeesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NablaSwapFeeOrderByInput>>;
+  where?: InputMaybe<NablaSwapFeeWhereInput>;
+};
+
+
+export type QueryNablaSwapFeesConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<NablaSwapFeeOrderByInput>;
+  where?: InputMaybe<NablaSwapFeeWhereInput>;
 };
 
 
@@ -6461,14 +6767,14 @@ export type QueryZlkInfosConnectionArgs = {
 
 export type Router = {
   __typename?: 'Router';
-  backstopPools: Array<BackstopPool>;
+  backstopPool: Array<BackstopPool>;
   id: Scalars['String']['output'];
   paused: Scalars['Boolean']['output'];
   swapPools: Array<SwapPool>;
 };
 
 
-export type RouterBackstopPoolsArgs = {
+export type RouterBackstopPoolArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<BackstopPoolOrderByInput>>;
@@ -6503,9 +6809,9 @@ export enum RouterOrderByInput {
 export type RouterWhereInput = {
   AND?: InputMaybe<Array<RouterWhereInput>>;
   OR?: InputMaybe<Array<RouterWhereInput>>;
-  backstopPools_every?: InputMaybe<BackstopPoolWhereInput>;
-  backstopPools_none?: InputMaybe<BackstopPoolWhereInput>;
-  backstopPools_some?: InputMaybe<BackstopPoolWhereInput>;
+  backstopPool_every?: InputMaybe<BackstopPoolWhereInput>;
+  backstopPool_none?: InputMaybe<BackstopPoolWhereInput>;
+  backstopPool_some?: InputMaybe<BackstopPoolWhereInput>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -8822,6 +9128,8 @@ export type Subscription = {
   liquidityPositions: Array<LiquidityPosition>;
   mintById?: Maybe<Mint>;
   mints: Array<Mint>;
+  nablaSwapFeeById?: Maybe<NablaSwapFee>;
+  nablaSwapFees: Array<NablaSwapFee>;
   nablaTokenById?: Maybe<NablaToken>;
   nablaTokens: Array<NablaToken>;
   oraclePriceById?: Maybe<OraclePrice>;
@@ -9079,6 +9387,19 @@ export type SubscriptionMintsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<MintOrderByInput>>;
   where?: InputMaybe<MintWhereInput>;
+};
+
+
+export type SubscriptionNablaSwapFeeByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type SubscriptionNablaSwapFeesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NablaSwapFeeOrderByInput>>;
+  where?: InputMaybe<NablaSwapFeeWhereInput>;
 };
 
 
@@ -9636,14 +9957,28 @@ export enum SwapOrderByInput {
 
 export type SwapPool = {
   __typename?: 'SwapPool';
+  apr: Scalars['BigInt']['output'];
   backstop: BackstopPool;
+  feesHistory: Array<NablaSwapFee>;
   id: Scalars['String']['output'];
-  liabilities: Scalars['BigInt']['output'];
+  lpTokenDecimals: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
   paused: Scalars['Boolean']['output'];
-  reserves: Scalars['BigInt']['output'];
-  router: Router;
+  reserve: Scalars['BigInt']['output'];
+  reserveWithSlippage: Scalars['BigInt']['output'];
+  router?: Maybe<Router>;
+  symbol: Scalars['String']['output'];
   token: NablaToken;
+  totalLiabilities: Scalars['BigInt']['output'];
   totalSupply: Scalars['BigInt']['output'];
+};
+
+
+export type SwapPoolFeesHistoryArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NablaSwapFeeOrderByInput>>;
+  where?: InputMaybe<NablaSwapFeeWhereInput>;
 };
 
 export type SwapPoolEdge = {
@@ -9653,14 +9988,26 @@ export type SwapPoolEdge = {
 };
 
 export enum SwapPoolOrderByInput {
+  AprAsc = 'apr_ASC',
+  AprAscNullsFirst = 'apr_ASC_NULLS_FIRST',
+  AprDesc = 'apr_DESC',
+  AprDescNullsLast = 'apr_DESC_NULLS_LAST',
+  BackstopAprAsc = 'backstop_apr_ASC',
+  BackstopAprAscNullsFirst = 'backstop_apr_ASC_NULLS_FIRST',
+  BackstopAprDesc = 'backstop_apr_DESC',
+  BackstopAprDescNullsLast = 'backstop_apr_DESC_NULLS_LAST',
   BackstopIdAsc = 'backstop_id_ASC',
   BackstopIdAscNullsFirst = 'backstop_id_ASC_NULLS_FIRST',
   BackstopIdDesc = 'backstop_id_DESC',
   BackstopIdDescNullsLast = 'backstop_id_DESC_NULLS_LAST',
-  BackstopLiabilitiesAsc = 'backstop_liabilities_ASC',
-  BackstopLiabilitiesAscNullsFirst = 'backstop_liabilities_ASC_NULLS_FIRST',
-  BackstopLiabilitiesDesc = 'backstop_liabilities_DESC',
-  BackstopLiabilitiesDescNullsLast = 'backstop_liabilities_DESC_NULLS_LAST',
+  BackstopLpTokenDecimalsAsc = 'backstop_lpTokenDecimals_ASC',
+  BackstopLpTokenDecimalsAscNullsFirst = 'backstop_lpTokenDecimals_ASC_NULLS_FIRST',
+  BackstopLpTokenDecimalsDesc = 'backstop_lpTokenDecimals_DESC',
+  BackstopLpTokenDecimalsDescNullsLast = 'backstop_lpTokenDecimals_DESC_NULLS_LAST',
+  BackstopNameAsc = 'backstop_name_ASC',
+  BackstopNameAscNullsFirst = 'backstop_name_ASC_NULLS_FIRST',
+  BackstopNameDesc = 'backstop_name_DESC',
+  BackstopNameDescNullsLast = 'backstop_name_DESC_NULLS_LAST',
   BackstopPausedAsc = 'backstop_paused_ASC',
   BackstopPausedAscNullsFirst = 'backstop_paused_ASC_NULLS_FIRST',
   BackstopPausedDesc = 'backstop_paused_DESC',
@@ -9669,6 +10016,10 @@ export enum SwapPoolOrderByInput {
   BackstopReservesAscNullsFirst = 'backstop_reserves_ASC_NULLS_FIRST',
   BackstopReservesDesc = 'backstop_reserves_DESC',
   BackstopReservesDescNullsLast = 'backstop_reserves_DESC_NULLS_LAST',
+  BackstopSymbolAsc = 'backstop_symbol_ASC',
+  BackstopSymbolAscNullsFirst = 'backstop_symbol_ASC_NULLS_FIRST',
+  BackstopSymbolDesc = 'backstop_symbol_DESC',
+  BackstopSymbolDescNullsLast = 'backstop_symbol_DESC_NULLS_LAST',
   BackstopTotalSupplyAsc = 'backstop_totalSupply_ASC',
   BackstopTotalSupplyAscNullsFirst = 'backstop_totalSupply_ASC_NULLS_FIRST',
   BackstopTotalSupplyDesc = 'backstop_totalSupply_DESC',
@@ -9677,18 +10028,26 @@ export enum SwapPoolOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
-  LiabilitiesAsc = 'liabilities_ASC',
-  LiabilitiesAscNullsFirst = 'liabilities_ASC_NULLS_FIRST',
-  LiabilitiesDesc = 'liabilities_DESC',
-  LiabilitiesDescNullsLast = 'liabilities_DESC_NULLS_LAST',
+  LpTokenDecimalsAsc = 'lpTokenDecimals_ASC',
+  LpTokenDecimalsAscNullsFirst = 'lpTokenDecimals_ASC_NULLS_FIRST',
+  LpTokenDecimalsDesc = 'lpTokenDecimals_DESC',
+  LpTokenDecimalsDescNullsLast = 'lpTokenDecimals_DESC_NULLS_LAST',
+  NameAsc = 'name_ASC',
+  NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
+  NameDesc = 'name_DESC',
+  NameDescNullsLast = 'name_DESC_NULLS_LAST',
   PausedAsc = 'paused_ASC',
   PausedAscNullsFirst = 'paused_ASC_NULLS_FIRST',
   PausedDesc = 'paused_DESC',
   PausedDescNullsLast = 'paused_DESC_NULLS_LAST',
-  ReservesAsc = 'reserves_ASC',
-  ReservesAscNullsFirst = 'reserves_ASC_NULLS_FIRST',
-  ReservesDesc = 'reserves_DESC',
-  ReservesDescNullsLast = 'reserves_DESC_NULLS_LAST',
+  ReserveWithSlippageAsc = 'reserveWithSlippage_ASC',
+  ReserveWithSlippageAscNullsFirst = 'reserveWithSlippage_ASC_NULLS_FIRST',
+  ReserveWithSlippageDesc = 'reserveWithSlippage_DESC',
+  ReserveWithSlippageDescNullsLast = 'reserveWithSlippage_DESC_NULLS_LAST',
+  ReserveAsc = 'reserve_ASC',
+  ReserveAscNullsFirst = 'reserve_ASC_NULLS_FIRST',
+  ReserveDesc = 'reserve_DESC',
+  ReserveDescNullsLast = 'reserve_DESC_NULLS_LAST',
   RouterIdAsc = 'router_id_ASC',
   RouterIdAscNullsFirst = 'router_id_ASC_NULLS_FIRST',
   RouterIdDesc = 'router_id_DESC',
@@ -9697,6 +10056,10 @@ export enum SwapPoolOrderByInput {
   RouterPausedAscNullsFirst = 'router_paused_ASC_NULLS_FIRST',
   RouterPausedDesc = 'router_paused_DESC',
   RouterPausedDescNullsLast = 'router_paused_DESC_NULLS_LAST',
+  SymbolAsc = 'symbol_ASC',
+  SymbolAscNullsFirst = 'symbol_ASC_NULLS_FIRST',
+  SymbolDesc = 'symbol_DESC',
+  SymbolDescNullsLast = 'symbol_DESC_NULLS_LAST',
   TokenDecimalsAsc = 'token_decimals_ASC',
   TokenDecimalsAscNullsFirst = 'token_decimals_ASC_NULLS_FIRST',
   TokenDecimalsDesc = 'token_decimals_DESC',
@@ -9713,6 +10076,10 @@ export enum SwapPoolOrderByInput {
   TokenSymbolAscNullsFirst = 'token_symbol_ASC_NULLS_FIRST',
   TokenSymbolDesc = 'token_symbol_DESC',
   TokenSymbolDescNullsLast = 'token_symbol_DESC_NULLS_LAST',
+  TotalLiabilitiesAsc = 'totalLiabilities_ASC',
+  TotalLiabilitiesAscNullsFirst = 'totalLiabilities_ASC_NULLS_FIRST',
+  TotalLiabilitiesDesc = 'totalLiabilities_DESC',
+  TotalLiabilitiesDescNullsLast = 'totalLiabilities_DESC_NULLS_LAST',
   TotalSupplyAsc = 'totalSupply_ASC',
   TotalSupplyAscNullsFirst = 'totalSupply_ASC_NULLS_FIRST',
   TotalSupplyDesc = 'totalSupply_DESC',
@@ -9722,8 +10089,20 @@ export enum SwapPoolOrderByInput {
 export type SwapPoolWhereInput = {
   AND?: InputMaybe<Array<SwapPoolWhereInput>>;
   OR?: InputMaybe<Array<SwapPoolWhereInput>>;
+  apr_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  apr_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  apr_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  apr_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   backstop?: InputMaybe<BackstopPoolWhereInput>;
   backstop_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  feesHistory_every?: InputMaybe<NablaSwapFeeWhereInput>;
+  feesHistory_none?: InputMaybe<NablaSwapFeeWhereInput>;
+  feesHistory_some?: InputMaybe<NablaSwapFeeWhereInput>;
   id_contains?: InputMaybe<Scalars['String']['input']>;
   id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   id_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -9741,31 +10120,83 @@ export type SwapPoolWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  liabilities_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liabilities_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  liabilities_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  liabilities_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  lpTokenDecimals_eq?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_gt?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_gte?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  lpTokenDecimals_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  lpTokenDecimals_lt?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_lte?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  lpTokenDecimals_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
   paused_eq?: InputMaybe<Scalars['Boolean']['input']>;
   paused_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   paused_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  reserves_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  reserves_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  reserves_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  reserves_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  reserves_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  reserves_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  reserves_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  reserves_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  reserves_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  reserveWithSlippage_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  reserveWithSlippage_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  reserveWithSlippage_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  reserveWithSlippage_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  reserveWithSlippage_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  reserveWithSlippage_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  reserveWithSlippage_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  reserveWithSlippage_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  reserveWithSlippage_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  reserve_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  reserve_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  reserve_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  reserve_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  reserve_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  reserve_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  reserve_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  reserve_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  reserve_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   router?: InputMaybe<RouterWhereInput>;
   router_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  symbol_contains?: InputMaybe<Scalars['String']['input']>;
+  symbol_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  symbol_endsWith?: InputMaybe<Scalars['String']['input']>;
+  symbol_eq?: InputMaybe<Scalars['String']['input']>;
+  symbol_gt?: InputMaybe<Scalars['String']['input']>;
+  symbol_gte?: InputMaybe<Scalars['String']['input']>;
+  symbol_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  symbol_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  symbol_lt?: InputMaybe<Scalars['String']['input']>;
+  symbol_lte?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_contains?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_eq?: InputMaybe<Scalars['String']['input']>;
+  symbol_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  symbol_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  symbol_startsWith?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<NablaTokenWhereInput>;
   token_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  totalLiabilities_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLiabilities_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLiabilities_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLiabilities_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalLiabilities_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  totalLiabilities_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLiabilities_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLiabilities_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  totalLiabilities_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   totalSupply_eq?: InputMaybe<Scalars['BigInt']['input']>;
   totalSupply_gt?: InputMaybe<Scalars['BigInt']['input']>;
   totalSupply_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -11884,36 +12315,12 @@ export type ZenlinkInfosConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
-export type GetBackstopPoolQueryVariables = Exact<{
+export type GetRouterQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type GetBackstopPoolQuery = { __typename?: 'Query', backstopPoolById?: { __typename?: 'BackstopPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', decimals: number, id: string, name: string, symbol: string }, router: { __typename?: 'Router', id: string, swapPools: Array<{ __typename?: 'SwapPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', decimals: number, id: string, name: string, symbol: string } }> } } | null };
-
-export type GetBackstopPoolsQueryVariables = Exact<{
-  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-}>;
+export type GetRouterQuery = { __typename?: 'Query', routerById?: { __typename?: 'Router', id: string, paused: boolean, swapPools: Array<{ __typename?: 'SwapPool', id: string, paused: boolean, name: string, reserve: any, reserveWithSlippage: any, totalLiabilities: any, totalSupply: any, lpTokenDecimals: number, apr: any, symbol: string, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string } }>, backstopPool: Array<{ __typename?: 'BackstopPool', id: string, name: string, paused: boolean, symbol: string, totalSupply: any, apr: any, reserves: any, lpTokenDecimals: number, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string } }> } | null };
 
 
-export type GetBackstopPoolsQuery = { __typename?: 'Query', backstopPools: Array<{ __typename?: 'BackstopPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string }, router: { __typename?: 'Router', id: string, swapPools: Array<{ __typename?: 'SwapPool', id: string }> } }> };
-
-export type GetSwapPoolsQueryVariables = Exact<{
-  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-}>;
-
-
-export type GetSwapPoolsQuery = { __typename?: 'Query', swapPools: Array<{ __typename?: 'SwapPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any, token: { __typename?: 'NablaToken', id: string, name: string, symbol: string, decimals: number }, router: { __typename?: 'Router', id: string, paused: boolean }, backstop: { __typename?: 'BackstopPool', id: string, liabilities: any, paused: boolean, reserves: any, totalSupply: any } }> };
-
-export type GetTokensQueryVariables = Exact<{
-  ids?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
-}>;
-
-
-export type GetTokensQuery = { __typename?: 'Query', nablaTokens: Array<{ __typename?: 'NablaToken', id: string, name: string, symbol: string, decimals: number }> };
-
-
-export const GetBackstopPoolDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBackstopPool"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backstopPoolById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"router_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"paused_not_eq"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetBackstopPoolQuery, GetBackstopPoolQueryVariables>;
-export const GetBackstopPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBackstopPools"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backstopPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"paused_eq"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"id_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"router_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"paused_not_eq"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetBackstopPoolsQuery, GetBackstopPoolsQueryVariables>;
-export const GetSwapPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getSwapPools"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"paused_eq"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"id_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}}]}},{"kind":"Field","name":{"kind":"Name","value":"router"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}}]}},{"kind":"Field","name":{"kind":"Name","value":"backstop"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"liabilities"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}}]}}]}}]}}]} as unknown as DocumentNode<GetSwapPoolsQuery, GetSwapPoolsQueryVariables>;
-export const GetTokensDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getTokens"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nablaTokens"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}}]}}]}}]} as unknown as DocumentNode<GetTokensQuery, GetTokensQueryVariables>;
+export const GetRouterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRouter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routerById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"reserve"}},{"kind":"Field","name":{"kind":"Name","value":"reserveWithSlippage"}},{"kind":"Field","name":{"kind":"Name","value":"totalLiabilities"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"lpTokenDecimals"}},{"kind":"Field","name":{"kind":"Name","value":"apr"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"backstopPool"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"apr"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"lpTokenDecimals"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"paused"}}]}}]}}]} as unknown as DocumentNode<GetRouterQuery, GetRouterQueryVariables>;

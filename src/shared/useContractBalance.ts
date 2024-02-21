@@ -1,31 +1,33 @@
 import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from './constants';
 import { getMessageCallValue, QueryOptions } from './helpers';
-import { nativeToDecimal, prettyNumbers } from './parseNumbers';
+import { rawToDecimal, prettyNumbers } from './parseNumbers';
 import { useSharedState } from './Provider';
 import { useContract } from './useContract';
 
-export type UseBalanceProps<TAbi extends Record<string, unknown>> = {
+export type UseBalanceProps = {
   /** token or contract address */
-  contractAddress?: string;
+  contractAddress: string | undefined;
   /** account address */
   account?: string;
   /** contract abi */
-  abi?: TAbi;
+  abi: Dict;
   /** parse decimals */
-  decimals?: number;
+  decimals: number | undefined;
 };
-export type UseBalanceResponse = UseQueryResult<MessageCallResult | undefined, unknown> & {
+export type UseBalanceResponse = Pick<
+  UseQueryResult<MessageCallResult | undefined, unknown>,
+  'refetch' | 'isLoading'
+> & {
   balance?: number;
   formatted?: string;
   enabled: boolean;
 };
 
-export const useContractBalance = <TAbi extends Record<string, unknown>>(
-  { contractAddress, account, abi, decimals }: UseBalanceProps<TAbi>,
+export const useContractBalance = (
+  { contractAddress, account, abi, decimals }: UseBalanceProps,
   options?: QueryOptions,
 ): UseBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
@@ -40,23 +42,25 @@ export const useContractBalance = <TAbi extends Record<string, unknown>>(
     refetchOnWindowFocus: false,
     onError: console.error,
     ...options,
-    abi: abi || erc20WrapperAbi,
+    abi,
     address: contractAddress,
-    owner: address,
     method: 'balanceOf',
     args: [address],
     enabled,
   });
+
   const { data } = query;
   const val = useMemo(() => {
-    if (!data || !data.result) return undefined;
+    if (!data || data.result.type !== 'success') return undefined;
     const value = getMessageCallValue(data);
-    const balance = nativeToDecimal(parseFloat(value || '0'), decimals).toNumber();
+    const balance = rawToDecimal(value.toString(), decimals!).toNumber();
     return { balance, formatted: prettyNumbers(balance) };
   }, [data, decimals]);
 
   return {
-    ...query,
+    isLoading: query.isLoading,
+    refetch: query.refetch,
+    enabled,
     ...val,
   };
 };

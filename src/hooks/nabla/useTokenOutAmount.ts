@@ -1,34 +1,41 @@
 import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { activeOptions, cacheKeys } from '../../constants/cache';
 import { routerAbi } from '../../contracts/nabla/Router';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { decimalToNative } from '../../shared/parseNumbers';
+import { decimalToRaw } from '../../shared/parseNumbers';
 import { useContract } from '../../shared/useContract';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 
 export type UseTokenOutAmountProps = {
-  amount?: number;
+  fromDecimalAmount: number;
   from?: string;
   to?: string;
-  decimals?: number;
+  fromTokenDecimals: number;
   onSuccess?: (val: MessageCallResult) => void;
   onError?: (err: Error | MessageCallResult) => void;
 };
 
-export const useTokenOutAmount = ({ amount, from, to, decimals, onSuccess, onError }: UseTokenOutAmountProps) => {
-  const amountIn = decimalToNative(amount || 0, decimals).toString();
-  const { address } = useGlobalState().walletAccount || {};
+export const useTokenOutAmount = ({
+  fromDecimalAmount: decimalAmount,
+  from,
+  to,
+  fromTokenDecimals,
+  onSuccess,
+  onError,
+}: UseTokenOutAmountProps) => {
   const { router } = useGetAppDataByTenant('nabla').data || {};
 
-  const enabled = !!amount && !!from && !!to;
+  const enabled = fromTokenDecimals !== undefined && !!decimalAmount && !!from && !!to;
+  const amountIn =
+    fromTokenDecimals !== undefined ? decimalToRaw(decimalAmount, fromTokenDecimals).toString() : undefined;
+
   return useContract([cacheKeys.tokenOutAmount, from, to, amountIn], {
     ...activeOptions['30s'],
     abi: routerAbi,
     address: router,
-    owner: address,
     method: 'getAmountOut',
     args: [amountIn, [from, to]],
     enabled,
+    noWalletAddressRequired: true,
     onSuccess,
     onError: (err) => {
       if (onError) onError(err);

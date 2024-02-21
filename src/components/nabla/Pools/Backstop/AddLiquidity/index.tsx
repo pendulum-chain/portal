@@ -2,18 +2,17 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { BackstopPool } from '../../../../../../gql/graphql';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import TokenApproval from '../../../../Asset/Approval';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import { useAddLiquidity } from './useAddLiquidity';
+import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
 
 export type AddLiquidityProps = {
-  data: BackstopPool;
+  data: NablaInstanceBackstopPool;
 };
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
@@ -23,13 +22,13 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
     mutation,
     balanceQuery,
     depositQuery,
-    amount,
+    decimalAmount,
     form: {
       register,
       setValue,
       formState: { errors },
     },
-  } = useAddLiquidity(data.id, data.token.id);
+  } = useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
@@ -37,7 +36,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.token.symbol} amount={amount} />
+        <PoolProgress symbol={data.token.symbol} amount={decimalAmount} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
@@ -96,7 +95,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               min={0}
               max={100}
               size="sm"
-              value={amount ? (amount / balance) * 100 : 0}
+              value={decimalAmount ? (decimalAmount / balance) * 100 : 0}
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
                 setValue('amount', (Number(ev.currentTarget.value) / 100) * balance, {
                   shouldDirty: true,
@@ -120,7 +119,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 {depositQuery.isLoading
                   ? numberLoader
                   : minMax(
-                      calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
+                      calcSharePercentage(rawToDecimal(data.totalSupply || 0, data.token.decimals).toNumber(), deposit),
                     )}
                 %
               </div>
@@ -132,10 +131,11 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               className="w-full"
               spender={data.id}
               token={data.token.id}
-              amount={amount}
-              enabled={amount > 0}
+              decimals={data.token.decimals}
+              decimalAmount={decimalAmount}
+              enabled={decimalAmount > 0}
             >
-              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!amount}>
+              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!decimalAmount}>
                 Deposit
               </Button>
             </TokenApproval>

@@ -1,8 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
-import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokenPrice } from '../../../hooks/nabla/useTokenPrice';
 import { getMessageCallValue } from '../../../shared/helpers';
-import { nativeToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
 import { numberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
@@ -14,6 +13,8 @@ export type TokenPriceProps = {
   fallback?: ReactNode;
 };
 
+const TOKEN_PRICE_DECIMALS = 12;
+
 const TokenPrice = ({
   address,
   prefix = null,
@@ -22,14 +23,15 @@ const TokenPrice = ({
   amount = 1,
   options,
 }: TokenPriceProps): JSX.Element | null => {
-  const { address: owner } = useGlobalState().walletAccount || {};
-  const { data, isLoading } = useTokenPrice(address, owner, options);
+  const { data, isLoading } = useTokenPrice(address, options);
   if (isLoading) return loader ? <>{loader}</> : numberLoader;
+
   const price = getMessageCallValue(data);
-  if (!price) return <>{fallback}</>;
+  if (price === undefined) return <>{fallback}</>;
+
   return (
     <span>
-      {prefix}${prettyNumbers(amount * nativeToDecimal(price).toNumber())}
+      {prefix}${prettyNumbers(amount * rawToDecimal(price, TOKEN_PRICE_DECIMALS).toNumber())}
     </span>
   );
 };

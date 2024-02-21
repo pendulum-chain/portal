@@ -2,17 +2,16 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';
 import TokenAmount from '../../TokenAmount';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
-import { useWithdrawLiquidity } from './useWithdrawLiquidity';
+import { useSwapPoolWithdrawLiquidity } from './useWithdrawLiquidity';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
@@ -31,8 +30,8 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
       setValue,
       formState: { errors },
     },
-  } = useWithdrawLiquidity(data.id, data.token.id);
-  const deposit = depositQuery.balance || 0;
+  } = useSwapPoolWithdrawLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
+  const depositedLpTokensDecimalAmount = depositQuery.balance || 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
@@ -61,7 +60,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 autoFocus
                 className="input-ghost flex-grow w-full text-4xl font-2"
                 placeholder="0.0"
-                max={deposit}
+                max={depositedLpTokensDecimalAmount}
                 {...register('amount')}
               />
               <Button
@@ -69,7 +68,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 size="sm"
                 type="button"
                 onClick={() =>
-                  setValue('amount', deposit / 2, {
+                  setValue('amount', depositedLpTokensDecimalAmount / 2, {
                     shouldDirty: true,
                     shouldTouch: true,
                   })
@@ -82,7 +81,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 size="sm"
                 type="button"
                 onClick={() =>
-                  setValue('amount', deposit, {
+                  setValue('amount', depositedLpTokensDecimalAmount, {
                     shouldDirty: true,
                     shouldTouch: true,
                   })
@@ -96,9 +95,9 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               min={0}
               max={100}
               size="sm"
-              value={amount ? (amount / deposit) * 100 : 0}
+              value={amount ? (amount / depositedLpTokensDecimalAmount) * 100 : 0}
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue('amount', (Number(ev.currentTarget.value) / 100) * deposit, {
+                setValue('amount', (Number(ev.currentTarget.value) / 100) * depositedLpTokensDecimalAmount, {
                   shouldDirty: true,
                   shouldTouch: false,
                 })
@@ -112,21 +111,26 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 <TokenAmount
                   address={data.id}
                   abi={swapPoolAbi}
-                  amount={amount}
+                  lpTokenDecimalAmount={amount}
                   symbol={` ${data.token.symbol}`}
                   fallback={0}
+                  poolTokenDecimals={data.token.decimals}
+                  lpTokenDecimals={data.lpTokenDecimals}
                 />
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div>Deposit</div>
-              <div>{roundNumber(deposit)}</div>
+              <div>{roundNumber(depositedLpTokensDecimalAmount)}</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
+                  calcSharePercentage(
+                    rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
+                    depositedLpTokensDecimalAmount,
+                  ),
                 )}
                 %
               </div>

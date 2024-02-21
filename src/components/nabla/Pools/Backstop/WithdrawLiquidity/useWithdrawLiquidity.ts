@@ -2,8 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
-import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { storageKeys } from '../../../../../constants/localStorage';
 import { debounce } from '../../../../../helpers/function';
@@ -18,19 +16,34 @@ import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 import { useBackstopWithdraw } from './useBackstopWithdraw';
 import { useSwapPoolWithdraw } from './useSwapPoolWithdraw';
+import { NablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
+import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
+import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 
 const storageSet = debounce(storageService.set, 1000);
-export const useWithdrawLiquidity = (pool: BackstopPool) => {
-  const { id: poolAddress, token, router } = pool;
+export const useWithdrawLiquidity = (nabla: NablaInstance) => {
+  const poolAddress = nabla.backstopPool.id;
+  const token = nabla.backstopPool.token;
+
   const tokenAddress = token.id;
-  const swapPools = router?.swapPools;
+  const swapPools = nabla.swapPools;
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const queryClient = useQueryClient();
   const toggle = useModalToggle();
   const tokenModal = useBoolean();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
+  const balanceQuery = useContractBalance({
+    contractAddress: tokenAddress,
+    decimals: nabla.backstopPool.token.decimals,
+    abi: erc20WrapperAbi,
+  });
+
+  const depositQuery = useContractBalance({
+    contractAddress: poolAddress,
+    decimals: nabla.backstopPool.lpTokenDecimals,
+    abi: backstopPoolAbi,
+  });
+
   const { refetch: balanceRefetch } = balanceQuery;
   const { refetch: depositRefetch } = depositQuery;
 
@@ -39,7 +52,7 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     defaultValues: {},
   });
   const { reset, getValues, handleSubmit } = form;
-  const amount =
+  const backstopLpTokenDecimalAmountToRedeem =
     Number(
       useWatch({
         control: form.control,
@@ -53,20 +66,7 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
     name: 'address',
   });
 
-  const pools = useMemo(
-    () =>
-      [
-        {
-          id: '',
-          token: {
-            ...token,
-            id: '',
-          },
-        } as SwapPool,
-      ].concat(swapPools || []),
-    [swapPools, token],
-  );
-  const selectedPool = useMemo(() => pools.find((t) => t.id === address) || pools[0], [address, pools]);
+  const selectedPool = useMemo(() => swapPools.find((t) => t.id === address)!, [address, swapPools]);
 
   const onWithdrawSuccess = useCallback(() => {
     reset();
@@ -77,14 +77,16 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
 
   const backstopWithdraw = useBackstopWithdraw({
     address: poolAddress,
+    poolTokenDecimals: nabla.backstopPool.token.decimals,
+    lpTokenDecimals: nabla.backstopPool.lpTokenDecimals,
     onSuccess: onWithdrawSuccess,
   });
 
   const isSwapPoolWithdraw = !!address && address.length > 5;
   const swapPoolWithdraw = useSwapPoolWithdraw({
-    pool,
-    deposit: depositQuery.balance || 0,
-    selectedPool,
+    backstopPool: nabla.backstopPool,
+    depositedBackstopLpTokenDecimalAmount: depositQuery.balance || 0,
+    selectedSwapPool: selectedPool,
     enabled: isSwapPoolWithdraw,
     onSuccess: onWithdrawSuccess,
   });
@@ -103,19 +105,18 @@ export const useWithdrawLiquidity = (pool: BackstopPool) => {
   );
 
   return {
-    address,
-    amount,
+    backstopLpTokenDecimalAmountToRedeem,
     backstopWithdraw,
     balanceQuery,
     depositQuery,
     form,
     isSwapPoolWithdraw,
-    pools,
+    pools: swapPools,
     selectedPool,
     swapPoolWithdraw,
     tokenModal,
     toggle,
     updateStorage,
-    onSubmit: handleSubmit(address && address.length > 5 ? swapPoolWithdraw.onSubmit : backstopWithdraw.onSubmit),
+    onSubmit: handleSubmit(isSwapPoolWithdraw ? swapPoolWithdraw.onSubmit : backstopWithdraw.onSubmit),
   };
 };

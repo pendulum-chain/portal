@@ -1,18 +1,19 @@
-import { defaultDecimals } from '../../../../config/apps/nabla';
 import { useSharesTargetWorth } from '../../../../hooks/nabla/useSharesTargetWorth';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { getMessageCallValue } from '../../../../shared/helpers';
-import { nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
 import { numberLoader } from '../../../Loader';
 
 export interface TokenAmountProps {
   address: string;
-  abi?: Dict;
-  amount?: number;
+  abi: Dict;
+  lpTokenDecimalAmount: number;
+  symbol: ReactNode;
+  fallback: number;
+  poolTokenDecimals: number;
+  lpTokenDecimals: number;
   debounce?: number;
   loader?: boolean;
-  symbol?: ReactNode;
-  fallback?: string | number;
 }
 
 const TokenAmount = ({
@@ -20,25 +21,28 @@ const TokenAmount = ({
   abi,
   fallback,
   address,
-  amount = 0,
+  poolTokenDecimals,
+  lpTokenDecimals,
+  lpTokenDecimalAmount,
   loader = true,
   debounce = 800,
 }: TokenAmountProps): JSX.Element | null => {
-  const debouncedAmount = useDebouncedValue(amount, debounce);
-  const arg = debounce ? debouncedAmount : amount;
+  const debouncedAmount = useDebouncedValue(lpTokenDecimalAmount, debounce);
   const { isLoading, data } = useSharesTargetWorth({
     address,
     abi,
-    amount: arg,
+    lpTokenDecimalAmount: debounce ? debouncedAmount : lpTokenDecimalAmount,
+    lpTokenDecimals,
   });
 
-  if (amount && (isLoading || (!!debounce && amount !== debouncedAmount))) {
+  if (lpTokenDecimalAmount && (isLoading || (!!debounce && lpTokenDecimalAmount !== debouncedAmount))) {
     return loader ? numberLoader : null;
   }
+
   return (
     <span title={data?.toString()}>
       {data
-        ? prettyNumbers(nativeToDecimal(getMessageCallValue(data) || '0', defaultDecimals).toNumber())
+        ? prettyNumbers(rawToDecimal(getMessageCallValue(data) ?? '0', poolTokenDecimals).toNumber())
         : fallback ?? null}
       {symbol ? symbol : null}
     </span>

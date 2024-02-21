@@ -23,20 +23,22 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     updateStorage,
     progressClose,
     tokensQuery,
+    isLoading,
   } = useSwapComponent(props);
+
   const {
     setValue,
     register,
     getValues,
     formState: { errors },
   } = form;
-  const { tokens, tokensMap } = tokensQuery.data || {};
+  const { tokens, tokensMap } = tokensQuery;
 
   const progressUi = useMemo(() => {
     if (swapMutation?.isIdle) return null;
     const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
-    const fromAsset = tokensMap?.[fromV];
-    const toAsset = tokensMap?.[toV];
+    const fromAsset = tokensMap[fromV];
+    const toAsset = tokensMap[toV];
     return (
       <p className="text-center text-[--text]">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
     );
@@ -80,6 +82,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               tokensMap={tokensMap}
               onOpenSelector={() => setModalType('from')}
               className={`border ${errorClass(errors.fromAmount, 'border-red-600', 'border-transparent')}`}
+              errorMessage={errors.fromAmount?.message}
             />
             <To
               tokensMap={tokensMap}
@@ -88,7 +91,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             />
             <div className="mt-6">
               {/* <Validation errors={errors} className="mb-2" /> */}
-              <ApprovalSubmit token={from} />
+              <ApprovalSubmit token={tokensMap[from]} />
             </div>
           </form>
         </FormProvider>
@@ -99,6 +102,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}
         onClose={() => setModalType(undefined)}
+        isLoading={isLoading}
       />
       <SwapProgress open={!!progressUi} mutation={swapMutation} onClose={progressClose}>
         {progressUi}

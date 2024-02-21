@@ -1,66 +1,71 @@
 import Big from 'big.js';
-import { defaultDecimals } from '../../config/apps/nabla';
 import { decimalToNative } from '../../shared/parseNumbers';
 import * as helpers from '../calc';
+import { NablaInstanceSwapPool } from '../../hooks/nabla/useNablaInstance';
 
-const native1000 = decimalToNative(1000, defaultDecimals).toString();
+const DEFAULT_DECIMALS = 12;
+const native1000 = decimalToNative(1000).toString();
 
 describe('calc', () => {
   it('should return correct withdraw amount from calcAvailablePoolWithdraw', () => {
     expect(
       helpers.calcAvailablePoolWithdraw({
-        selectedPool: {
-          liabilities: undefined,
-          reserves: native1000,
-        },
-        shares: BigInt(native1000),
-        deposit: BigInt(native1000),
-        bpPrice: BigInt(decimalToNative(1, defaultDecimals).toString()),
-        spPrice: BigInt(decimalToNative(2, defaultDecimals).toString()),
-        decimals: defaultDecimals,
+        selectedSwapPool: {
+          totalLiabilities: undefined,
+          reserve: native1000,
+        } as unknown as NablaInstanceSwapPool,
+        sharesWorthNativeAmount: BigInt(native1000),
+        backstopLpDecimalAmount: 1000,
+        bpPrice: BigInt(decimalToNative(1).toString()),
+        spPrice: BigInt(decimalToNative(2).toString()),
+        backstopPoolTokenDecimals: DEFAULT_DECIMALS,
+        swapPoolTokenDecimals: DEFAULT_DECIMALS,
       }),
     ).toBe(undefined);
 
     expect(
       helpers.calcAvailablePoolWithdraw({
-        selectedPool: {
-          liabilities: native1000,
-          reserves: native1000,
-        },
-        shares: BigInt(native1000),
-        deposit: BigInt(native1000),
-        bpPrice: BigInt(decimalToNative(1, defaultDecimals).toString()),
-        spPrice: BigInt(decimalToNative(2, defaultDecimals).toString()),
-        decimals: defaultDecimals,
+        selectedSwapPool: {
+          totalLiabilities: native1000,
+          reserve: native1000,
+        } as unknown as NablaInstanceSwapPool,
+        sharesWorthNativeAmount: BigInt(native1000),
+        backstopLpDecimalAmount: 1000,
+        bpPrice: BigInt(decimalToNative(1).toString()),
+        spPrice: BigInt(decimalToNative(2).toString()),
+        backstopPoolTokenDecimals: DEFAULT_DECIMALS,
+        swapPoolTokenDecimals: DEFAULT_DECIMALS,
       }),
     ).toEqual(Big(0));
 
     expect(
       helpers.calcAvailablePoolWithdraw({
-        selectedPool: {
-          liabilities: native1000,
-          reserves: decimalToNative(1200, defaultDecimals).toString(),
-        },
-        shares: BigInt(native1000),
-        deposit: BigInt(native1000),
-        bpPrice: BigInt(decimalToNative(1.1, defaultDecimals).toString()),
-        spPrice: BigInt(decimalToNative(2.2, defaultDecimals).toString()),
-        decimals: defaultDecimals,
+        selectedSwapPool: {
+          totalLiabilities: native1000,
+          reserve: decimalToNative(1200).toString(),
+        } as unknown as NablaInstanceSwapPool,
+        sharesWorthNativeAmount: BigInt(native1000),
+        backstopLpDecimalAmount: 1000,
+        bpPrice: BigInt(decimalToNative(1.1).toString()),
+        spPrice: BigInt(decimalToNative(2.2).toString()),
+        backstopPoolTokenDecimals: DEFAULT_DECIMALS,
+        swapPoolTokenDecimals: DEFAULT_DECIMALS,
       }),
-    ).toEqual(decimalToNative(400, defaultDecimals));
+    ).toEqual(decimalToNative(400));
 
     expect(
       helpers.calcAvailablePoolWithdraw({
-        selectedPool: {
-          liabilities: native1000,
-          reserves: decimalToNative(5200, defaultDecimals).toString(),
-        },
-        shares: BigInt(native1000),
-        deposit: BigInt(native1000),
-        bpPrice: BigInt(decimalToNative(1.1, defaultDecimals).toString()),
-        spPrice: BigInt(decimalToNative(2.2, defaultDecimals).toString()),
-        decimals: defaultDecimals,
+        selectedSwapPool: {
+          totalLiabilities: native1000,
+          reserve: decimalToNative(5200).toString(),
+        } as unknown as NablaInstanceSwapPool,
+        sharesWorthNativeAmount: BigInt(native1000),
+        backstopLpDecimalAmount: 1000,
+        bpPrice: BigInt(decimalToNative(1.1).toString()),
+        spPrice: BigInt(decimalToNative(2.2).toString()),
+        backstopPoolTokenDecimals: DEFAULT_DECIMALS,
+        swapPoolTokenDecimals: DEFAULT_DECIMALS,
       }),
-    ).toEqual(decimalToNative(1000, defaultDecimals));
+    ).toEqual(decimalToNative(1000));
   });
 });

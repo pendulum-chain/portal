@@ -1,16 +1,14 @@
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
-import { Token } from '../../../../gql/graphql';
 import { config } from '../../../config';
-import { defaultDecimals } from '../../../config/apps/nabla';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { useTokens } from '../../../hooks/nabla/useTokens';
-import { decimalToNative } from '../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
+import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 
-const TokenItem = ({ token }: { token: Token }) => {
+const TokenItem = ({ token }: { token: NablaInstanceToken }) => {
   const { address } = useGlobalState().walletAccount || {};
   const { mutate, isLoading } = useContractWrite({
     abi: erc20WrapperAbi,
@@ -32,7 +30,7 @@ const TokenItem = ({ token }: { token: Token }) => {
             color="secondary"
             type="button"
             disabled={isLoading}
-            onClick={() => mutate([address, decimalToNative(1000, defaultDecimals).toString()])}
+            onClick={() => mutate([address, decimalToRaw(1000, token.decimals).toString()])}
           >
             {isLoading ? 'Loading' : 'Mint 1000'}
           </Button>
@@ -45,7 +43,7 @@ const TokenItem = ({ token }: { token: Token }) => {
                 <div
                   role="button"
                   className={`btn-sm`}
-                  onClick={() => mutate([address, decimalToNative(10000, defaultDecimals).toString()])}
+                  onClick={() => mutate([address, decimalToRaw(10000, 12).toString()])}
                 >
                   10000
                 </div>
@@ -54,7 +52,7 @@ const TokenItem = ({ token }: { token: Token }) => {
                 <div
                   role="button"
                   className={`btn-sm`}
-                  onClick={() => mutate([address, decimalToNative(100000, defaultDecimals).toString()])}
+                  onClick={() => mutate([address, decimalToRaw(100000, 12).toString()])}
                 >
                   100000
                 </div>
@@ -70,8 +68,8 @@ const TokenItem = ({ token }: { token: Token }) => {
 const DevPage = () => {
   const navigate = useNavigate();
   const wallet = useGlobalState().walletAccount;
-  const { data } = useTokens();
-  const { tokens } = data || {};
+  const { nabla } = useNablaInstance();
+  const tokens = nabla?.swapPools.map((pool) => pool.token) ?? [];
 
   if (config.isProd) navigate('/');
   if (!wallet?.address) {

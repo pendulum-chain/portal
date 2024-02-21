@@ -1,9 +1,8 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import TokenApproval from '../../../../Asset/Approval';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
@@ -22,13 +21,13 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
     onSubmit,
     balanceQuery,
     depositQuery,
-    amount,
+    decimalAmount,
     form: {
       register,
       setValue,
       formState: { errors },
     },
-  } = useAddLiquidity(data.id, data.token.id);
+  } = useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
 
@@ -36,7 +35,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.token.symbol} amount={amount} />
+        <PoolProgress symbol={data.token.symbol} amount={decimalAmount} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
@@ -104,7 +103,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 {depositQuery.isLoading
                   ? numberLoader
                   : minMax(
-                      calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
+                      calcSharePercentage(
+                        rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
+                        deposit,
+                      ),
                     )}
                 %
               </div>
@@ -116,10 +118,11 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               className="mt-8 w-full"
               spender={data.id}
               token={data.token.id}
-              amount={amount}
-              enabled={amount > 0}
+              decimals={data.token.decimals}
+              decimalAmount={decimalAmount}
+              enabled={decimalAmount > 0}
             >
-              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!amount}>
+              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!decimalAmount}>
                 Deposit
               </Button>
             </TokenApproval>

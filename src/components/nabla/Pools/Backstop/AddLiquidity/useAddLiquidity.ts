@@ -1,24 +1,38 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, useWatch } from 'react-hook-form';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToNative } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';
 import { AddLiquidityValues } from './types';
+import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 
-export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
+export const useAddLiquidity = (
+  poolAddress: string,
+  tokenAddress: string,
+  poolTokenDecimals: number,
+  lpTokenDecimals: number,
+) => {
   const queryClient = useQueryClient();
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
+  const balanceQuery = useContractBalance({
+    contractAddress: tokenAddress,
+    decimals: poolTokenDecimals,
+    abi: erc20WrapperAbi,
+  });
+
+  const depositQuery = useContractBalance({
+    contractAddress: poolAddress,
+    decimals: lpTokenDecimals,
+    abi: backstopPoolAbi,
+  });
 
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),
@@ -43,10 +57,10 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
   });
 
   const onSubmit = form.handleSubmit((variables) =>
-    mutation.mutate([decimalToNative(variables.amount, defaultDecimals).toString()]),
+    mutation.mutate([decimalToRaw(variables.amount, poolTokenDecimals).toString()]),
   );
 
-  const amount =
+  const decimalAmount =
     Number(
       useWatch({
         control: form.control,
@@ -55,5 +69,5 @@ export const useAddLiquidity = (poolAddress: string, tokenAddress: string) => {
       }),
     ) || 0;
 
-  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
+  return { form, decimalAmount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
 };

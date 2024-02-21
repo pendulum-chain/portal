@@ -5,13 +5,17 @@ import { config } from '../../../config';
 
 export interface TransactionSettingsProps {
   setSlippage: (slippage: number | undefined) => void;
-  slippageProps: React.HTMLAttributes<HTMLInputElement>;
+  slippageProps: InputProps;
   deadlineProps?: InputProps;
 }
 
 const inputCls = 'bg-neutral-100 dark:bg-neutral-900 text-right text-neutral-600 dark:text-neutral-200';
 
-const TransactionSettings = ({ setSlippage, deadlineProps }: TransactionSettingsProps): JSX.Element | null => {
+const TransactionSettings = ({
+  setSlippage,
+  slippageProps,
+  deadlineProps,
+}: TransactionSettingsProps): JSX.Element | null => {
   return (
     <div className="w-full">
       <h4 className="font-semibold">Settings</h4>
@@ -36,7 +40,7 @@ const TransactionSettings = ({ setSlippage, deadlineProps }: TransactionSettings
               min={config.transaction.settings.slippage.min}
               max={config.transaction.settings.slippage.max}
               placeholder="Auto"
-              {...deadlineProps}
+              {...slippageProps}
             />
             <div className="absolute right-0 top-0 w-5 h-full flex items-center">%</div>
           </div>
@@ -49,19 +53,21 @@ const TransactionSettings = ({ setSlippage, deadlineProps }: TransactionSettings
             <QuestionMarkCircleIcon className="w-5 h-5 text-neutral-500" />
           </div>
         </div>
-        <div className="flex items-center gap-2 mt-2">
-          <Input
-            size="sm"
-            bordered
-            className={`${inputCls} w-20 pr-2v `}
-            type="number"
-            placeholder="30"
-            min={config.transaction.settings.deadline.min}
-            max={config.transaction.settings.deadline.max}
-            {...deadlineProps}
-          />
-          <span className="dark:text-neutral-400 text-neutral-600">minutes</span>
-        </div>
+        {deadlineProps && (
+          <div className="flex items-center gap-2 mt-2">
+            <Input
+              size="sm"
+              bordered
+              className={`${inputCls} w-20 pr-2v `}
+              type="number"
+              placeholder="30"
+              min={config.transaction.settings.deadline.min}
+              max={config.transaction.settings.deadline.max}
+              {...deadlineProps}
+            />
+            <span className="dark:text-neutral-400 text-neutral-600">minutes</span>
+          </div>
+        )}
       </div>
     </div>
   );

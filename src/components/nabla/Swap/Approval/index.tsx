@@ -3,24 +3,28 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useGetAppDataByTenant } from '../../../../hooks/useGetAppDataByTenant';
 import TokenApproval from '../../../Asset/Approval';
 import { SwapFormValues } from '../types';
+import { NablaInstanceToken } from '../../../../hooks/nabla/useNablaInstance';
 
 export interface ApprovalProps {
-  token: string;
+  token: NablaInstanceToken | undefined;
 }
 
 const ApprovalSubmit = ({ token }: ApprovalProps): JSX.Element | null => {
   const { router } = useGetAppDataByTenant('nabla').data || {};
   const { control } = useFormContext<SwapFormValues>();
-  const amount = Number(
+  const decimalAmount = Number(
     useWatch({
       control,
       name: 'fromAmount',
       defaultValue: 0,
     }),
   );
+
+  if (!router || !token) return null;
+
   return (
-    <TokenApproval token={token} spender={router} amount={amount}>
-      <Button color="primary" className="w-full text-base" type="submit" disabled={!amount}>
+    <TokenApproval token={token.id} decimals={token.decimals} spender={router} decimalAmount={decimalAmount}>
+      <Button color="primary" className="w-full text-base" type="submit" disabled={!decimalAmount}>
         Swap
       </Button>
     </TokenApproval>

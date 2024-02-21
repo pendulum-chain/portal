@@ -13,6 +13,7 @@ export const cacheKeys = {
   tokenOutAmount: 'tokenOutAmount',
   sharesTargetWorth: 'sharesTargetWorth',
   tokenPrice: 'tokenPrice',
+  nablaInstance: 'nablaInstance',
 };
 
 export type QueryOptions = Partial<

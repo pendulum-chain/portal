@@ -1,4 +1,4 @@
-import { BackstopPool } from '../../../../../../gql/graphql';
+import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
 
 export const ModalTypes = {
   AddLiquidity: 2,
@@ -6,5 +6,5 @@ export const ModalTypes = {
 };
 
 export type LiquidityModalProps = {
-  data?: BackstopPool;
+  data?: NablaInstanceBackstopPool;
 };

@@ -5,22 +5,22 @@ import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import { config } from '../../../../config';
-import { defaultDecimals } from '../../../../config/apps/nabla';
 import { subtractPercentage } from '../../../../helpers/calc';
 import { useTokenOutAmount } from '../../../../hooks/nabla/useTokenOutAmount';
-import { TokensData } from '../../../../hooks/nabla/useTokens';
 import useBoolean from '../../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { getMessageCallValue } from '../../../../shared/helpers';
-import { nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
 import Balance from '../../../Balance';
 import { numberLoader } from '../../../Loader';
 import { Skeleton } from '../../../Skeleton';
 import TokenPrice from '../../Price';
 import { SwapFormValues } from '../types';
+import { NablaInstanceToken } from '../../../../hooks/nabla/useNablaInstance';
+import { erc20WrapperAbi } from '../../../../contracts/nabla/ERC20Wrapper';
 
 export interface ToProps {
-  tokensMap?: TokensData['tokensMap'];
+  tokensMap: Record<string, NablaInstanceToken>;
   onOpenSelector: () => void;
   className?: string;
 }
@@ -28,21 +28,25 @@ export interface ToProps {
 const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | null => {
   const [isOpen, { toggle }] = useBoolean(true);
   const { setValue, setError, clearErrors, control } = useFormContext<SwapFormValues>();
+
   const from = useWatch({
     control,
     name: 'from',
   });
+
   const to = useWatch({
     control,
     name: 'to',
   });
-  const fromAmount = Number(
+
+  const fromDecimalAmount = Number(
     useWatch({
       control,
       name: 'fromAmount',
       defaultValue: 0,
     }),
   );
+
   const slippage = Number(
     useWatch({
       control,
@@ -50,16 +54,20 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
       defaultValue: config.swap.defaults.slippage,
     }),
   );
-  const fromToken = tokensMap?.[from];
-  const toToken = tokensMap?.[to];
-  const debouncedFromAmount = useDebouncedValue(fromAmount, 800);
-  const { isLoading, fetchStatus, data, refetch, isError, error } = useTokenOutAmount({
-    amount: debouncedFromAmount,
+  const fromToken: NablaInstanceToken | undefined = tokensMap?.[from];
+  const toToken: NablaInstanceToken | undefined = tokensMap?.[to];
+
+  const debouncedFromDecimalAmount = useDebouncedValue(fromDecimalAmount, 800);
+  const { isLoading, fetchStatus, data, refetch } = useTokenOutAmount({
+    fromDecimalAmount: debouncedFromDecimalAmount,
     from,
     to,
+    fromTokenDecimals: fromToken?.decimals,
     onSuccess: (response) => {
+      if (toToken === undefined) return;
+
       const val = getMessageCallValue(response);
-      const toAmount = val ? nativeToDecimal(val, defaultDecimals).toNumber() : 0;
+      const toAmount = val ? rawToDecimal(val, toToken.decimals).toNumber() : 0;
       setValue('toAmount', toAmount, {
         shouldDirty: true,
         shouldTouch: true,
@@ -69,13 +77,34 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
   });
 
   useEffect(() => {
-    if (isError) setError('toAmount', { message: error ? String(error) : 'Something went wrong' });
-    else clearErrors('toAmount');
-  }, [isError, error, setError, clearErrors]);
+    if (data && data.result.type !== 'success') {
+      let errorMessage;
+      switch (data.result.type) {
+        case 'error':
+          errorMessage = 'Something went wrong';
+          break;
+        case 'panic':
+          errorMessage = data.result.errorCode === 0x11 ? 'The input amount is too large' : 'Something went wrong';
+          break;
+        case 'reverted':
+          errorMessage =
+            data.result.description === 'SwapPool: EXCEEDS_MAX_COVERAGE_RATIO'
+              ? 'The input amount is too large'
+              : 'Something went wrong';
+      }
 
-  const loading = (isLoading && isLoading && fetchStatus !== 'idle') || fromAmount !== debouncedFromAmount;
+      console.log('ToAmount Error', errorMessage);
+      setError('fromAmount', { type: 'manual', message: errorMessage });
+    } else {
+      clearErrors('fromAmount');
+    }
+  }, [data, setError, clearErrors]);
+
+  const loading =
+    (isLoading && isLoading && fetchStatus !== 'idle') || fromDecimalAmount !== debouncedFromDecimalAmount;
   const outValue = getMessageCallValue(data);
-  const value = outValue ? prettyNumbers(nativeToDecimal(outValue, defaultDecimals).toNumber()) : 0;
+  const value =
+    outValue && toToken !== undefined ? prettyNumbers(rawToDecimal(outValue, toToken.decimals).toNumber()) : 0;
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -85,7 +114,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
               numberLoader
             ) : value ? (
               `${value}`
-            ) : fromAmount > 0 ? (
+            ) : fromDecimalAmount > 0 ? (
               <button type="button" onClick={() => refetch()} className="hover:opacity-80" title="Refresh">
                 <ArrowPathRoundedSquareIcon className="w-7 h-7" />
               </button>
@@ -109,7 +138,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
           <div className="text-sm mt-px">{toToken ? <TokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
           <div className="flex gap-1 text-sm">
-            Balance: <Balance address={toToken?.id} decimals={defaultDecimals} />
+            Balance: <Balance address={toToken?.id} decimals={toToken?.decimals} abi={erc20WrapperAbi} />
           </div>
         </div>
         <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
@@ -120,12 +149,12 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
         >
           <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
             <div className="flex items-center">
-              {fromToken && toToken && value && fromAmount ? (
+              {fromToken && toToken && value && fromDecimalAmount ? (
                 <>
                   <div className="tooltip" data-tip="! TODO" title="! TODO">
                     <InformationCircleIcon className="w-5 h-5 mr-1" />
                   </div>
-                  {`1 ${fromToken.symbol} = ${roundNumber(Number(value) / fromAmount, 6)} ${toToken.symbol}`}
+                  {`1 ${fromToken.symbol} = ${roundNumber(Number(value) / fromDecimalAmount, 6)} ${toToken.symbol}`}
                 </>
               ) : (
                 `- ${toToken?.symbol || ''}`

@@ -1,33 +1,36 @@
 import { useCallback, useMemo } from 'react';
-import { BackstopPool, SwapPool } from '../../../../../../gql/graphql';
 import { config } from '../../../../../config';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { useGlobalState } from '../../../../../GlobalStateProvider';
 import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
 import { useTokenPrice } from '../../../../../hooks/nabla/useTokenPrice';
 import { getMessageCallValue } from '../../../../../shared/helpers';
-import { decimalToNative } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
+import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
 
 export type UseSwapPoolWithdrawProps = {
-  pool: BackstopPool;
-  selectedPool: SwapPool;
-  deposit: number | undefined;
+  backstopPool: NablaInstanceBackstopPool;
+  selectedSwapPool: NablaInstanceSwapPool;
+  depositedBackstopLpTokenDecimalAmount: number;
   onSuccess: () => void;
   enabled: boolean;
 };
 
-export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, enabled }: UseSwapPoolWithdrawProps) => {
-  const swapPoolAddress = selectedPool.id;
-  const { address: owner } = useGlobalState().walletAccount || {};
+export const useSwapPoolWithdraw = ({
+  backstopPool,
+  selectedSwapPool,
+  depositedBackstopLpTokenDecimalAmount,
+  onSuccess,
+  enabled,
+}: UseSwapPoolWithdrawProps) => {
+  const swapPoolAddress = selectedSwapPool?.id;
 
   const mutation = useContractWrite({
     abi: backstopPoolAbi,
-    address: pool.id,
+    address: backstopPool.id,
     method: 'withdrawExcessSwapLiquidity',
     onSuccess,
   });
@@ -37,48 +40,53 @@ export const useSwapPoolWithdraw = ({ pool, selectedPool, deposit, onSuccess, en
     async (variables: WithdrawLiquidityValues) => {
       if (!variables.amount || !swapPoolAddress) return;
       const vSlippage = getValidSlippage(variables.slippage || config.backstop.defaults.slippage);
+
       mutate([
         swapPoolAddress,
-        decimalToNative(variables.amount, defaultDecimals).toString(),
-        decimalToNative(subtractPercentage(variables.amount, vSlippage), defaultDecimals).toString(),
+        decimalToRaw(variables.amount, backstopPool.token.decimals).toString(),
+        // TODO (Torsten): this next line does not make sense, there is no proper way to convert
+        // backstop pool shares to swap pool tokens
+        decimalToRaw(subtractPercentage(variables.amount, vSlippage), selectedSwapPool?.token.decimals).toString(),
       ]);
     },
-    [mutate, swapPoolAddress],
+    [mutate, swapPoolAddress, backstopPool.token.decimals, selectedSwapPool?.token.decimals],
   );
 
   const sharesQuery = useSharesTargetWorth(
     {
       address: swapPoolAddress,
-      amount: deposit,
+      lpTokenDecimalAmount: depositedBackstopLpTokenDecimalAmount,
       abi: backstopPoolAbi,
+      lpTokenDecimals: backstopPool.lpTokenDecimals,
     },
     { enabled },
   );
-  const shares = getMessageCallValue(sharesQuery.data);
-  const bpPriceQuery = useTokenPrice(pool.token.id, owner, { enabled });
-  const spPriceQuery = useTokenPrice(selectedPool.token.id, owner, { enabled });
+  const sharesWorthNativeAmount = getMessageCallValue(sharesQuery.data);
+  const bpPriceQuery = useTokenPrice(backstopPool.token.id, { enabled });
+  const spPriceQuery = useTokenPrice(selectedSwapPool?.token.id, { enabled });
   const bpPrice = getMessageCallValue(bpPriceQuery.data);
   const spPrice = getMessageCallValue(spPriceQuery.data);
 
-  const withdrawLimit = useMemo(
+  const withdrawLimitDecimalAmount = useMemo(
     () =>
-      calcAvailablePoolWithdraw({
-        selectedPool,
-        deposit: BigInt(decimalToNative(deposit || 0).toString()),
-        shares,
-        bpPrice: bpPrice ? BigInt(bpPrice) : undefined,
-        spPrice: spPrice ? BigInt(spPrice) : undefined,
-        decimals: defaultDecimals,
-      }),
-    [selectedPool, deposit, shares, bpPrice, spPrice],
+      selectedSwapPool
+        ? calcAvailablePoolWithdraw({
+            selectedSwapPool,
+            backstopLpDecimalAmount: depositedBackstopLpTokenDecimalAmount,
+            sharesWorthNativeAmount,
+            bpPrice: bpPrice ? BigInt(bpPrice) : undefined,
+            spPrice: spPrice ? BigInt(spPrice) : undefined,
+            backstopPoolTokenDecimals: backstopPool.token.decimals,
+            swapPoolTokenDecimals: selectedSwapPool.token.decimals,
+          })
+        : 0,
+    [selectedSwapPool, backstopPool, depositedBackstopLpTokenDecimalAmount, sharesWorthNativeAmount, bpPrice, spPrice],
   );
 
   return {
     onSubmit,
     mutation,
     isLoading: bpPriceQuery.isLoading || spPriceQuery.isLoading || sharesQuery.isLoading,
-    bpPriceQuery,
-    spPriceQuery,
-    withdrawLimit,
+    withdrawLimitDecimalAmount,
   };
 };

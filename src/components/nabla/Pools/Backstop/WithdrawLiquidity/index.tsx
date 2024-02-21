@@ -3,12 +3,9 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { BackstopPool } from '../../../../../../gql/graphql';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
-import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
-import { nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { calcSharePercentage, getPoolSurplusNativeAmount, minMax } from '../../../../../helpers/calc';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
@@ -17,23 +14,13 @@ import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
+import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
 
-export type WithdrawLiquidityProps = {
-  data: BackstopPool;
+const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
+  return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
 };
 
-const filter = (pool: BackstopPool): BackstopPool => {
-  const filteredPools = pool.router.swapPools?.filter((pool) => !!getPoolSurplus(pool));
-  return {
-    ...pool,
-    router: {
-      ...pool.router,
-      swapPools: filteredPools,
-    },
-  };
-};
-
-const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
+const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element | null => {
   const {
     toggle,
     balanceQuery,
@@ -43,7 +30,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
       setValue,
       formState: { errors },
     },
-    amount,
+    backstopLpTokenDecimalAmountToRedeem,
     pools,
     selectedPool,
     tokenModal,
@@ -52,13 +39,21 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
     isSwapPoolWithdraw,
     updateStorage,
     onSubmit,
-  } = useWithdrawLiquidity(data);
+  } = useWithdrawLiquidity(nabla);
+
   const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
   const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
-  const deposit = depositQuery.balance || 0;
-  const withdrawLimit = nativeToDecimal(spw.withdrawLimit?.toString() || 0, defaultDecimals).toNumber();
+  const depositedBackstopLpTokenDecimalAmount = depositQuery.balance || 0;
+  const withdrawLimit = rawToDecimal(
+    spw.withdrawLimitDecimalAmount?.toString() || 0,
+    nabla.backstopPool.lpTokenDecimals,
+  ).toNumber();
+
+  const poolTokens = useMemo(() => pools.map((pool) => pool.token), [pools]);
 
   const hideCss = !isIdle ? 'hidden' : '';
+
+  const backstopPool = nabla.backstopPool;
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress
@@ -68,13 +63,13 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
           spw.mutation.reset();
         }}
       >
-        <PoolProgress symbol={data.token.symbol} amount={amount} />
+        <PoolProgress symbol={backstopPool.token.symbol} amount={backstopLpTokenDecimalAmountToRedeem} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
           <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
         </Button>
-        <h3 className="text-3xl font-normal">Withdraw {data.token.symbol}</h3>
+        <h3 className="text-3xl font-normal">Withdraw {backstopPool.token.symbol}</h3>
       </div>
       <div className={hideCss}>
         <form onSubmit={onSubmit}>
@@ -87,7 +82,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
                 <span
                   role="button"
                   onClick={() =>
-                    setValue('amount', deposit, {
+                    setValue('amount', depositedBackstopLpTokenDecimalAmount, {
                       shouldDirty: true,
                       shouldTouch: true,
                     })
@@ -96,7 +91,8 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
               )}
             </p>
             <p className="text-neutral-500 dark:text-neutral-400 text-right">
-              Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+              Balance:{' '}
+              {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${backstopPool.token.symbol}`}
             </p>
           </div>
           <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
@@ -114,7 +110,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
                   autoFocus
                   className="input-ghost w-full text-4xl font-2 py-3 px-0"
                   placeholder="Amount"
-                  max={deposit}
+                  max={depositedBackstopLpTokenDecimalAmount}
                   {...register('amount')}
                 />
                 <Button
@@ -146,9 +142,13 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
               min={0}
               max={100}
               size="sm"
-              value={amount ? (amount / deposit) * 100 : 0}
+              value={
+                backstopLpTokenDecimalAmountToRedeem
+                  ? (backstopLpTokenDecimalAmountToRedeem / depositedBackstopLpTokenDecimalAmount) * 100
+                  : 0
+              }
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue('amount', (Number(ev.currentTarget.value) / 100) * deposit, {
+                setValue('amount', (Number(ev.currentTarget.value) / 100) * depositedBackstopLpTokenDecimalAmount, {
                   shouldDirty: true,
                   shouldTouch: false,
                 })
@@ -160,23 +160,28 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
               <div>Amount</div>
               <div>
                 <TokenAmount
-                  address={data.id}
+                  address={backstopPool.id}
                   abi={backstopPoolAbi}
-                  amount={amount}
-                  symbol={` ${data.token.symbol}`}
+                  lpTokenDecimalAmount={backstopLpTokenDecimalAmountToRedeem}
+                  symbol={` ${backstopPool.token.symbol}`}
                   fallback={0}
+                  lpTokenDecimals={backstopPool.lpTokenDecimals}
+                  poolTokenDecimals={backstopPool.token.decimals}
                 />
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div>Deposit</div>
-              <div>{roundNumber(deposit || 0)} LP</div>
+              <div>{roundNumber(depositedBackstopLpTokenDecimalAmount || 0)} LP</div>
             </div>
             <div className="flex items-center justify-between">
               <div>Pool share</div>
               <div>
                 {minMax(
-                  calcSharePercentage(nativeToDecimal(data.totalSupply || 0, defaultDecimals).toNumber(), deposit),
+                  calcSharePercentage(
+                    rawToDecimal(backstopPool.totalSupply || 0, backstopPool.lpTokenDecimals).toNumber(),
+                    depositedBackstopLpTokenDecimalAmount,
+                  ),
                 )}
                 %
               </div>
@@ -194,13 +199,12 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
         </form>
       </div>
       <AssetSelectorModal
-        assets={pools}
+        assets={poolTokens}
         open={tokenModal[0]}
         onSelect={(value) => {
-          setValue('address', value.id && value.id.length > 5 ? value.id : null);
+          setValue('address', pools.find((pool) => pool.token.id === value.id)?.id);
           tokenModal[1].setFalse();
         }}
-        map={(pool) => pool.token}
         selected={selectedPool.token.id}
         onClose={tokenModal[1].setFalse}
       />
@@ -208,13 +212,25 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
   );
 };
 
-const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps) => {
-  const { data: pool, isLoading } = useBackstopPool(data.id);
-  const filtered = useMemo(() => (pool ? filter(pool) : pool), [pool]);
+const WithdrawLiquidity = () => {
+  const { nabla, isLoading } = useNablaInstance();
+
+  const filteredNabla = useMemo(
+    () =>
+      nabla
+        ? {
+            ...nabla,
+            swapPools: filter(nabla.swapPools),
+          }
+        : undefined,
+    [nabla],
+  );
 
   if (isLoading) return <FormLoader inputs={2} className="mt-8" />;
-  if (!filtered) return <>Nothing found</>;
-  return <WithdrawLiquidityBody data={filtered} />;
+
+  if (!filteredNabla) return <>Nothing found</>;
+
+  return <WithdrawLiquidityBody nabla={filteredNabla} />;
 };
 
 export default WithdrawLiquidity;

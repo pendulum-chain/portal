@@ -1,17 +1,17 @@
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
-import { swapPoolAbi } from '../../contracts/nabla/SwapPool';
 import { QueryOptions } from '../../shared/helpers';
-import { decimalToNative } from '../../shared/parseNumbers';
+import { decimalToRaw } from '../../shared/parseNumbers';
 import { useContract } from '../../shared/useContract';
 
 export type UseSharesTargetWorthProps = {
   address: string | undefined;
-  amount: number | undefined;
-  abi?: Dict;
+  lpTokenDecimalAmount: number;
+  lpTokenDecimals: number;
+  abi: Dict;
 };
 
 export const useSharesTargetWorth = (
-  { address, amount, abi = swapPoolAbi }: UseSharesTargetWorthProps,
+  { address, lpTokenDecimalAmount, abi, lpTokenDecimals }: UseSharesTargetWorthProps,
   options?: QueryOptions,
 ) => {
   return useContract([cacheKeys.sharesTargetWorth], {
@@ -20,7 +20,7 @@ export const useSharesTargetWorth = (
     address,
     abi,
     method: 'sharesTargetWorth',
-    args: [decimalToNative(amount || 0).toString()],
-    enabled: Boolean(address && amount && options?.enabled !== false),
+    args: [decimalToRaw(lpTokenDecimalAmount || 0, lpTokenDecimals).toString()],
+    enabled: Boolean(address && lpTokenDecimalAmount && options?.enabled !== false),
   });
 };

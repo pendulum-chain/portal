@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
 import { config } from '../../../../../config';
-import { defaultDecimals } from '../../../../../config/apps/nabla';
 import { cacheKeys } from '../../../../../constants/cache';
 import { storageKeys } from '../../../../../constants/localStorage';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
@@ -14,12 +13,14 @@ import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenan
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
-import { decimalToNative } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { SwapPoolColumn } from '../columns';
 import schema from './schema';
 import { RedeemLiquidityValues } from './types';
+import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
+import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 
 export const setValueProps = {
   shouldDirty: true,
@@ -44,9 +45,19 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
 
   const poolAddress = swapPoolData.id;
   const tokenAddress = swapPoolData.token.id;
-  const backstopPoolAddress = swapPoolData.backstop?.id;
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: defaultDecimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: defaultDecimals });
+  const backstopPoolAddress = swapPoolData.backstopPool.id;
+
+  const balanceQuery = useContractBalance({
+    contractAddress: tokenAddress,
+    decimals: swapPoolData.token.decimals,
+    abi: erc20WrapperAbi,
+  });
+
+  const depositQuery = useContractBalance({
+    contractAddress: poolAddress,
+    decimals: swapPoolData.lpTokenDecimals,
+    abi: swapPoolAbi,
+  });
 
   const form = useForm<RedeemLiquidityValues>({
     resolver: yupResolver(schema),
@@ -76,11 +87,16 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
         const vSlippage = getValidSlippage(variables.slippage || config.backstop.defaults.slippage);
         return mutate([
           poolAddress,
-          decimalToNative(variables.amount, defaultDecimals).toString(),
-          decimalToNative(subtractPercentage(variables.amount, vSlippage), defaultDecimals).toString(),
+          decimalToRaw(variables.amount, swapPoolData.lpTokenDecimals).toString(),
+          // TODO (Torsten): this next line does not make sense, there is no proper way to convert
+          // swap pool shares to backstop pool tokens
+          decimalToRaw(
+            subtractPercentage(variables.amount, vSlippage),
+            swapPoolData.backstopPool.token.decimals,
+          ).toString(),
         ]);
       }),
-    [handleSubmit, poolAddress, mutate],
+    [handleSubmit, poolAddress, mutate, swapPoolData.lpTokenDecimals, swapPoolData.backstopPool.token.decimals],
   );
 
   const updateStorage = useCallback(
@@ -96,7 +112,7 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     [getValues],
   );
 
-  const amount =
+  const lpTokensDecimalAmount =
     Number(
       useWatch({
         control: control,
@@ -113,6 +129,6 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     mutation,
     balanceQuery,
     depositQuery,
-    amount,
+    lpTokensDecimalAmount,
   };
 };

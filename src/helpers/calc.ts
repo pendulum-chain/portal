@@ -1,5 +1,6 @@
 import Big from 'big.js';
-import { decimalToNative, nativeToDecimal, roundNumber } from '../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../shared/parseNumbers';
+import { NablaInstanceSwapPool } from '../hooks/nabla/useNablaInstance';
 
 export type Percent = number;
 
@@ -30,39 +31,55 @@ export const calcAPR = (dailyFees: number, tvl: number, round = 2) =>
   roundNumber(((dailyFees * 365) / tvl) * 100, round);
 
 /** Calculate pool surplus from reserves and liabilities */
-export const calcPoolSurplus = (reserves = '0', liabilities = '0', min0 = true) => {
-  const surplus = BigInt(reserves) - BigInt(liabilities);
-  return !min0 || surplus > 0 ? surplus : BigInt(0);
-};
-
-/** Calculate pool surplus from reserves and liabilities */
-export const getPoolSurplus = (pool: { reserves?: string; liabilities?: string }, min0 = true) =>
-  pool.reserves && pool.liabilities ? calcPoolSurplus(pool.reserves, pool.liabilities, min0) : undefined;
+export function getPoolSurplusNativeAmount(pool: NablaInstanceSwapPool) {
+  const surplus = BigInt(pool.reserve) - BigInt(pool.totalLiabilities);
+  return surplus > 0n ? surplus : 0n;
+}
 
 /** Calculate max withdraw value based on deposit and pool surplus */
 type CAPWProps = {
-  selectedPool: { reserves?: string; liabilities?: string };
-  shares: bigint | undefined;
-  deposit: bigint | undefined;
+  selectedSwapPool: NablaInstanceSwapPool;
+  backstopLpDecimalAmount: number;
+  sharesWorthNativeAmount: bigint;
   bpPrice: bigint | undefined;
   spPrice: bigint | undefined;
-  decimals: number;
+  backstopPoolTokenDecimals: number;
+  swapPoolTokenDecimals: number;
 };
-export const calcAvailablePoolWithdraw = ({ selectedPool, shares, deposit, bpPrice, spPrice, decimals }: CAPWProps) => {
-  const surplus = getPoolSurplus(selectedPool);
-  if (surplus === undefined || !bpPrice || !spPrice || !shares || !deposit) {
+
+// TODO (Torsten) I don't understand whether this calculation really makes sense
+export const calcAvailablePoolWithdraw = ({
+  selectedSwapPool,
+  backstopLpDecimalAmount,
+  sharesWorthNativeAmount,
+  bpPrice,
+  spPrice,
+  backstopPoolTokenDecimals,
+  swapPoolTokenDecimals,
+}: CAPWProps) => {
+  const surplusNativeAmount = getPoolSurplusNativeAmount(selectedSwapPool);
+  if (!bpPrice || !spPrice || !sharesWorthNativeAmount || !backstopLpDecimalAmount) {
     return undefined;
   }
-  const surplusVal = Big(nativeToDecimal(surplus.toString(), decimals).toString());
-  if (surplusVal.lte(0)) return Big(0);
-  const depositVal = Big(nativeToDecimal(deposit.toString(), decimals));
-  const sharesVal = Big(nativeToDecimal(shares.toString(), decimals));
-  const spPriceVal = Big(nativeToDecimal(spPrice.toString(), decimals));
-  const bpPriceVal = Big(nativeToDecimal(bpPrice.toString(), decimals));
-  const spMax = surplusVal.mul(spPriceVal);
-  const bpMax = sharesVal.mul(bpPriceVal);
+  const surplusDecimalAmount = Big(rawToDecimal(surplusNativeAmount.toString(), swapPoolTokenDecimals).toString());
+  if (surplusDecimalAmount.lte(0)) return Big(0);
+
+  const sharesValueDecimalAmount = Big(rawToDecimal(sharesWorthNativeAmount.toString(), backstopPoolTokenDecimals));
+  const spPriceVal = new Big(spPrice.toString());
+  const bpPriceVal = new Big(bpPrice.toString());
+
+  const spMax = surplusDecimalAmount.mul(spPriceVal);
+  const bpMax = sharesValueDecimalAmount.mul(bpPriceVal);
+
   const maxValue = bpMax.gt(spMax) ? spMax : bpMax;
-  const maxLP = maxValue.div(bpPriceVal);
-  const final = maxLP.gt(depositVal) ? depositVal : maxLP;
-  return decimalToNative(final.toString(), decimals);
+  const maxBackstopPoolTokensDecimalAmount = maxValue.div(bpPriceVal);
+
+  const depositedBackstopLpTokenDecimalAmount = Big(backstopLpDecimalAmount);
+  const redeemableBackstopLpTokensDecimalAmount = maxBackstopPoolTokensDecimalAmount.gt(
+    depositedBackstopLpTokenDecimalAmount,
+  )
+    ? depositedBackstopLpTokenDecimalAmount
+    : maxBackstopPoolTokensDecimalAmount;
+
+  return redeemableBackstopLpTokensDecimalAmount;
 };

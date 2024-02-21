@@ -7,6 +7,8 @@ const SharedProvider = ({ children }: { children: ComponentChildren }) => {
   const { api } = useNodeInfoState().state;
   const { signer, address } = useGlobalState().walletAccount || {};
 
+  console.log('Provider', api, signer, address);
+
   return (
     <SharedStateProvider api={api} signer={signer} address={address}>
       {children}

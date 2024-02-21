@@ -1,16 +1,21 @@
-import { useSwapPools } from '../../../../hooks/nabla/useSwapPools';
+import { useNablaInstance } from '../../../../hooks/nabla/useNablaInstance';
 import ModalProvider from '../../../../services/modal';
 import Table from '../../../Table';
-import { columns } from './columns';
+import { columns, SwapPoolColumn } from './columns';
 import PoolsModals from './Modals';
 
 const SwapPools = (): JSX.Element | null => {
-  const { data, isLoading } = useSwapPools();
+  const { nabla, isLoading } = useNablaInstance();
+
+  const swapPools = nabla?.swapPools;
+
+  if (swapPools == undefined) return null;
+  const columnData = swapPools.map((pool) => ({ ...pool, backstopPool: nabla!.backstopPool }));
 
   return (
     <ModalProvider>
       <PoolsModals />
-      <Table data={data} isLoading={isLoading} columns={columns} fontSize="text-base" search />
+      <Table<SwapPoolColumn> data={columnData} isLoading={isLoading} columns={columns} fontSize="text-base" search />
     </ModalProvider>
   );
 };
