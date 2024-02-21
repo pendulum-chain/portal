@@ -50,8 +50,7 @@ export function convertCurrencyToStellarAsset(currency: SpacewalkPrimitivesCurre
     } else {
       return null;
     }
-  } catch (e) {
-    console.error('Error converting currency to stellar asset', e);
+  } catch {
     return null;
   }
 }
@@ -113,13 +112,21 @@ export function currencyToString(currency: SpacewalkPrimitivesCurrencyId, tenant
       if (stellarAsset.isStellarNative) {
         return 'XLM';
       } else if (stellarAsset.isAlphaNum4) {
-        const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum4.code);
-        const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
-        return `${code}:${issuer.publicKey()}`;
+        try {
+          const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum4.code);
+          const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum4.issuer.toHex());
+          return `${code}:${issuer.publicKey()}`;
+        } catch {
+          return 'Unknown';
+        }
       } else if (stellarAsset.isAlphaNum12) {
-        const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum12.code);
-        const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
-        return `${code}:${issuer.publicKey()}`;
+        try {
+          const code = tryConvertCodeToAscii(stellarAsset.asAlphaNum12.code);
+          const issuer = convertRawHexKeyToPublicKey(stellarAsset.asAlphaNum12.issuer.toHex());
+          return `${code}:${issuer.publicKey()}`;
+        } catch {
+          return 'Unknown';
+        }
       } else {
         return 'Unknown';
       }
