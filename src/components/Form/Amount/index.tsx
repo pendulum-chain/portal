@@ -13,7 +13,6 @@ export interface AmountProps {
 }
 
 const BALANCE_LEFT_FOR_TX_APPROVAL = 0.5;
-
 const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX.Element | null => {
   return (
     <>
