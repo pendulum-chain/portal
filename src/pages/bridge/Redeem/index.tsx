@@ -153,7 +153,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
               selectedVault?.redeemableTokens?.toString() || 0,
             ).toFixed(2)}
-              ${selectedAsset?.code}`}</span>
+              ${selectedAsset?.code || ''}`}</span>
           </label>
           <LabelledInputField
             register={register('to')}

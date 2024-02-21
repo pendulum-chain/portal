@@ -160,10 +160,11 @@ function Issue(props: IssueProps): JSX.Element {
             error={formState.errors.amount?.message?.toString()}
           />
           <label className="label flex align-center">
-            <span className="text-sm">{`Max issuable: ${nativeToDecimal(
-              selectedVault?.issuableTokens?.toString() || 0,
-            ).toFixed(2)} 
-              ${selectedAsset?.code}`}</span>
+            <span className="text-sm">
+              {`Max issuable: ${nativeToDecimal(selectedVault?.issuableTokens?.toString() || 0).toFixed(2)} ${
+                selectedAsset?.code || ''
+              }`}
+            </span>
           </label>
 
           <FeeBox
