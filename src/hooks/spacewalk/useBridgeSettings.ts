@@ -6,7 +6,8 @@ import { Asset } from 'stellar-sdk';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { BridgeContext } from '../../pages/bridge';
-import { ExtendedRegistryVault, useVaultRegistryPallet } from './vaultRegistry';
+import { ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
+import { toast } from 'react-toastify';
 
 export interface BridgeSettings {
   selectedVault?: ExtendedRegistryVault;
@@ -29,17 +30,21 @@ function useBridgeSettings(): BridgeSettings {
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
-    Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()]).then((data) => {
-      getVaults().forEach((vaultFromRegistry: any) => {
-        const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-        const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-        const extended: ExtendedRegistryVault = vaultFromRegistry;
-        extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
-        extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
-        combinedVaults.push(extended);
+    Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()])
+      .then((data) => {
+        getVaults().forEach((vaultFromRegistry: any) => {
+          const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+          const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+          const extended: ExtendedRegistryVault = vaultFromRegistry;
+          extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
+          extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
+          combinedVaults.push(extended);
+        });
+        setExtendedVaults(combinedVaults);
+      })
+      .catch(() => {
+        toast('Could not establish connection with the bridge...', { type: toast.TYPE.ERROR, toastId: 2138 });
       });
-      setExtendedVaults(combinedVaults);
-    });
   }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens]);
 
   const wrappedAssets = useMemo(() => {

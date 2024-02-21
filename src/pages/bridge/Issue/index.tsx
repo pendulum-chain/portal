@@ -67,6 +67,7 @@ function Issue(props: IssueProps): JSX.Element {
             target="_blank"
             className="text-accent ml-1"
             href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
+            rel="noreferrer"
           >
             here
           </a>

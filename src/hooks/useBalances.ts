@@ -7,7 +7,7 @@ import { addSuffix, currencyToString } from '../helpers/spacewalk';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { PortfolioAsset } from '../pages/dashboard/PortfolioColumns';
 import { nativeToDecimal } from '../shared/parseNumbers';
-import { useVaultRegistryPallet } from './spacewalk/vaultRegistry';
+import { useVaultRegistryPallet } from './spacewalk/useVaultRegistryPallet';
 import { usePriceFetcher } from './usePriceFetcher';
 
 function useBalances() {

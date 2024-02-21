@@ -20,7 +20,7 @@ import {
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../shared/parseNumbers';
 import { TTransfer, TransferType } from './TransfersColumns';
 
