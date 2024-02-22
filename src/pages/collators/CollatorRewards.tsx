@@ -50,10 +50,7 @@ function CollatorRewards() {
       if (!api || !walletAccount) {
         return '0';
       }
-      const data2 = await api.query.system.account(walletAccount?.address);
-      const { data: balance } = data2;
-
-      console.log('balance : ', balance.free.sub(balance.miscFrozen).toString());
+      const { data: balance } = await api.query.system.account(walletAccount?.address);
       setUserAvailableBalance(balance.free.sub(balance.miscFrozen).toString());
     };
     const fetchUnstaking = async () => {
