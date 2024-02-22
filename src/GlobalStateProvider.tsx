@@ -47,7 +47,7 @@ const initWalletConnect = async (chainId: string) => {
 };
 
 const initMetamaskWallet = async (tenantName: TenantName) => {
-  const metamaskWalletAddress = storageService.get(`${tenantName}-metamask-wallet`);
+  const metamaskWalletAddress = storageService.get(`metamask-snap-account`);
   if (metamaskWalletAddress) {
     return await initiateMetamaskInjectedAccount(tenantName);
   }
@@ -97,7 +97,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear();
     // remove talisman
     storageService.remove('@talisman-connect/selected-wallet-name');
-    storageService.remove(`${tenantName}-metamask-wallet`);
+    storageService.remove(`metamask-snap-account`);
     setWallet(undefined);
   }, [clear, handleWalletConnectDisconnect]);
 
@@ -106,7 +106,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       set(wallet?.address);
       setWallet(wallet);
       if (wallet?.source === WALLET_SOURCE_METAMASK) {
-        storageService.set(`${tenantName}-metamask-wallet`, wallet.address);
+        storageService.set(`metamask-snap-account`, wallet.address);
       }
     },
     [set],
