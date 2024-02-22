@@ -54,9 +54,10 @@ export const useAddLiquidity = (
     },
   });
 
-  const onSubmit = form.handleSubmit((variables) =>
-    mutation.mutate([decimalToRaw(variables.amount, poolTokenDecimals).toString()]),
-  );
+  const onSubmit = form.handleSubmit((variables) => {
+    console.log('submit add liquidity', variables.amount, decimalToRaw(variables.amount, poolTokenDecimals).toString());
+    return mutation.mutate([decimalToRaw(variables.amount, poolTokenDecimals).toString()]);
+  });
 
   const decimalAmount =
     Number(

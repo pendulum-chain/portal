@@ -1,6 +1,6 @@
 import { Button, Card } from 'react-daisyui';
 import ModalProvider, { useModalToggle } from '../../../../services/modal';
-import Balance from '../../../Balance';
+import Erc20Balance from '../../../Erc20Balance';
 import { Skeleton } from '../../../Skeleton';
 import Modals from './Modals';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
@@ -23,7 +23,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>
-                <Balance address={pool.id} decimals={pool.token.decimals} abi={backstopPoolAbi} />
+                <Erc20Balance address={pool.id} decimals={pool.token.decimals} abi={backstopPoolAbi} />
               </div>
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">

@@ -11,7 +11,7 @@ import useBoolean from '../../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { getMessageCallValue } from '../../../../shared/helpers';
 import { rawToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
-import Balance from '../../../Balance';
+import Erc20Balance from '../../../Erc20Balance';
 import { numberLoader } from '../../../Loader';
 import { Skeleton } from '../../../Skeleton';
 import TokenPrice from '../../Price';
@@ -105,6 +105,13 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
   const outValue = getMessageCallValue(data);
   const value =
     outValue && toToken !== undefined ? prettyNumbers(rawToDecimal(outValue, toToken.decimals).toNumber()) : 0;
+
+  console.log(
+    'roundNumber(Number(value) / fromDecimalAmount, 6)',
+    roundNumber(Number(value) / fromDecimalAmount, 6),
+    value,
+    fromDecimalAmount,
+  );
   return (
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
@@ -138,7 +145,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
         <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
           <div className="text-sm mt-px">{toToken ? <TokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
           <div className="flex gap-1 text-sm">
-            Balance: <Balance address={toToken?.id} decimals={toToken?.decimals} abi={erc20WrapperAbi} />
+            Balance: <Erc20Balance address={toToken?.id} decimals={toToken?.decimals} abi={erc20WrapperAbi} />
           </div>
         </div>
         <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />

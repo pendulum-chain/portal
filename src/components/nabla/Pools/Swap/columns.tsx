@@ -4,6 +4,8 @@ import { useModalToggle } from '../../../../services/modal';
 import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
+import Erc20Balance from '../../../Erc20Balance';
+import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
   myAmount?: number;
@@ -55,8 +57,10 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
 export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
   header: 'My Pool Amount',
   accessorKey: 'myAmount',
-  accessorFn: (row) => prettyNumbers(rawToDecimal(row.myAmount || 0, row.lpTokenDecimals).toNumber()),
-  enableSorting: true,
+  cell: ({ row: { original } }) => (
+    <Erc20Balance address={original.id} decimals={original.lpTokenDecimals} abi={swapPoolAbi} />
+  ),
+  enableSorting: false,
   meta: {
     className: 'text-right justify-end',
   },

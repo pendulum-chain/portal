@@ -14,13 +14,13 @@ export const useSharesTargetWorth = (
   { address, lpTokenDecimalAmount, abi, lpTokenDecimals }: UseSharesTargetWorthProps,
   options?: QueryOptions,
 ) => {
-  return useContract([cacheKeys.sharesTargetWorth], {
+  return useContract([cacheKeys.sharesTargetWorth, lpTokenDecimalAmount], {
     ...inactiveOptions['1m'],
     ...options,
     address,
     abi,
     method: 'sharesTargetWorth',
-    args: [decimalToRaw(lpTokenDecimalAmount || 0, lpTokenDecimals).toString()],
+    args: [decimalToRaw(lpTokenDecimalAmount, lpTokenDecimals).toString()],
     enabled: Boolean(address && lpTokenDecimalAmount && options?.enabled !== false),
   });
 };

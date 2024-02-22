@@ -103,7 +103,7 @@ export const nativeToFormat = (
 ) => format(rawToDecimal(value, StellarDecimals).toNumber(), tokenSymbol, oneCharOnly);
 
 export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberFormatOptions) =>
-  number.toLocaleString(lang || navigator.language, {
+  number.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     ...opts,

@@ -17,7 +17,7 @@ export const nablaConfig: NablaConfig = {
   environment: ['staging', 'development'],
   foucoco: {
     indexerUrl: 'https://squid.subsquid.io/foucoco-squid/graphql',
-    router: '6mS8roUTrZe7fFDYLa2NgWbMrG1YGK6roC6WtDo82dqd7TP6',
-    oracle: '6jrZjQgfbmW6yD3BkQhKfhT1xV4EoRpCve3RRvGiAdfff5T9',
+    router: '6h5xgcRE7wsRzr8ekpNud52A1n3rLXdoEcZvor6gpwobY4SM',
+    oracle: '6kuQBzpjpAbkb88Er45dpsm9L5Cxkm1nGGCYGWheJ4cD8yE4',
   },
 };

@@ -40,12 +40,17 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     [abi, api?.registry],
   );
 
+  console.log('useContractWrite', address, method, args);
+
   const isReady = !!contractAbi && !!address && !!api && !!walletAddress && !!signer;
   const submit = async (submitArgs?: any[] | void): Promise<any> => {
     if (!isReady) throw 'Missing data';
     //setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
     const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
+
+    console.log('call message write', address, method, args, submitArgs);
+
     const response = await messageCall({
       abi: contractAbi,
       api,
@@ -61,6 +66,9 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
       messageArguments: fnArgs,
       limits: { ...defaultWriteLimits, ...contractOptions },
     });
+
+    console.log('call message write response', address, method, fnArgs, response);
+
     if (response?.result?.type !== 'success') throw response;
     return response;
   };
