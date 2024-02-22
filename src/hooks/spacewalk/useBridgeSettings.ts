@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { useContext, useEffect, useMemo, useState } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
-import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { BridgeContext } from '../../pages/bridge';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from './vaultRegistry';
@@ -26,6 +27,7 @@ function useBridgeSettings(): BridgeSettings {
   const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
   const { selectedAsset, setSelectedAsset } = (useContext(BridgeContext) || {}) as any;
+  const { tenantName } = useGlobalState();
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
@@ -50,7 +52,7 @@ function useBridgeSettings(): BridgeSettings {
         return convertCurrencyToStellarAsset(currency);
       })
       .filter((asset): asset is Asset => {
-        return asset != null;
+        return asset != null && !shouldFilterOut(tenantName, asset);
       });
     // Deduplicate assets
     return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
