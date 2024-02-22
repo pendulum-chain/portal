@@ -13,7 +13,7 @@ import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrat
 import { useFeePallet } from '../../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';

@@ -3,7 +3,7 @@ import { config } from '../../../../../config';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers/metric';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
 

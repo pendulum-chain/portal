@@ -2,7 +2,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import TokenApproval from '../../../../Asset/Approval';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';

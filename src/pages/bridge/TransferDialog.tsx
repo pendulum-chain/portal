@@ -21,7 +21,7 @@ import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { nativeToDecimal } from '../../shared/parseNumbers';
+import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { TTransfer, TransferType } from './TransfersColumns';
 
 interface BaseTransferDialogProps {

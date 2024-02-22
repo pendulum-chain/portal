@@ -1,7 +1,7 @@
 import { activeOptions, cacheKeys } from '../constants/cache';
 import { routerAbi } from '../contracts/nabla/Router';
 import { useGlobalState } from '../GlobalStateProvider';
-import { decimalToNative } from '../shared/parseNumbers';
+import { decimalToNative } from '../shared/parseNumbers/metric';
 import { useContract } from '../shared/useContract';
 import { useGetAppDataByTenant } from './useGetAppDataByTenant';
 

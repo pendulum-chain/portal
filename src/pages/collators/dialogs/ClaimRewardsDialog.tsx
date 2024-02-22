@@ -10,7 +10,7 @@ import { CloseButton } from '../../../components/CloseButton';
 import Amount from '../../../components/Form/Amount';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
-import { nativeToDecimal } from '../../../shared/parseNumbers';
+import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { getClaimingValidationSchema } from './ValidationSchema';
 
 interface Props {

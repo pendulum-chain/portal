@@ -2,7 +2,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { ExtendedRegistryVault } from '../../hooks/spacewalk/vaultRegistry';
-import { nativeToDecimal } from '../../shared/parseNumbers';
+import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { PublicKey } from '../PublicKey';
 
 interface VaultSelectorProps {

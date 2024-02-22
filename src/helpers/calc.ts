@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { decimalToNative, nativeToDecimal, roundNumber } from '../shared/parseNumbers';
+import { decimalToNative, nativeToDecimal, roundNumber } from '../shared/parseNumbers/metric';
 
 export type Percent = number;
 

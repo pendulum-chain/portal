@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'preact/compat';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { gasDefaults } from './helpers';
-import { decimalToNative, nativeToDecimal } from './parseNumbers';
+import { decimalToNative, nativeToDecimal } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 import { useContractWrite, UseContractWriteProps } from './useContractWrite';
 import { useTokenAllowance } from './useTokenAllowance';

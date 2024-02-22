@@ -1,6 +1,6 @@
 import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { roundNumber } from '../../../shared/parseNumbers';
+import { roundNumber } from '../../../shared/parseNumbers/metric';
 
 export interface AmountProps {
   className?: string;

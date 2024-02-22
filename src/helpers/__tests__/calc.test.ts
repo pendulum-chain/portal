@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { decimalToNative, FixedU128Decimals } from '../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../shared/parseNumbers/metric';
 import * as helpers from '../calc';
 
 describe('calc', () => {
