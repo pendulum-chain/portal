@@ -5,24 +5,24 @@ import { ONE_TOKEN } from './mocks';
 describe('metric', () => {
   describe('nativeToFormatMetric', () => {
     it('should format numbers less than 1e-6', () => {
-      const result = nativeToFormatMetric(ONE_TOKEN * 1e-7, 'PEN');
-      expect(result).toEqual('100.00 nano PEN');
+      const result = nativeToFormatMetric(ONE_TOKEN * 1e-7, 'AMPE');
+      expect(result).toEqual('100.00 nano AMPE');
     });
 
     it('should format numbers to 1 micro', () => {
       console.log(Number(1e-3));
-      const result = nativeToFormatMetric(ONE_TOKEN * 1e-3, 'PEN');
-      expect(result).toEqual('1.00 milli PEN');
+      const result = nativeToFormatMetric(ONE_TOKEN * 1e-3, 'AMPE');
+      expect(result).toEqual('1.00 milli AMPE');
     });
 
     it('should format numbers to 1 milli', () => {
-      const result = nativeToFormatMetric(ONE_TOKEN * 1e-6, 'PEN');
-      expect(result).toEqual('1.00 micro PEN');
+      const result = nativeToFormatMetric(ONE_TOKEN * 1e-6, 'AMPE');
+      expect(result).toEqual('1.00 micro AMPE');
     });
 
     it('should format decimal digits correctly', () => {
-      const result = nativeToFormatMetric(new BigNumber(ONE_TOKEN + 123456789123), 'PEN');
-      expect(result).toEqual('1.12 PEN');
+      const result = nativeToFormatMetric(new BigNumber(ONE_TOKEN + 123456789123), 'AMPE');
+      expect(result).toEqual('1.12 AMPE');
     });
 
     it('should format numbers correctly', () => {

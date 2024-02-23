@@ -1,6 +1,7 @@
 import { nativeToDecimal, prettyNumbers } from './metric';
 import BigNumber from 'big.js';
 
+const MINIMUM_DECIMAL_PLACES = 2;
 const DECIMAL_PLACES = 6;
 const MICRO = 1e-6;
 
@@ -23,7 +24,7 @@ const formatNumber = (n: number, tokenSymbol: string | undefined) => {
 const removeUnnecessaryDecimalNumbers = (value: string) => {
   return prettyNumbers(Number(value), navigator.language, {
     maximumFractionDigits: DECIMAL_PLACES,
-    minimumFractionDigits: 2,
+    minimumFractionDigits: MINIMUM_DECIMAL_PLACES,
   });
 };
 
