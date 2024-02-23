@@ -13,6 +13,12 @@ export interface AmountProps {
 }
 
 const BALANCE_LEFT_FOR_TX_APPROVAL = 0.5;
+
+function calculateMaxAmount(max: number) {
+  const maxAmount = roundNumber(max - BALANCE_LEFT_FOR_TX_APPROVAL);
+  return Math.max(0, maxAmount);
+}
+
 const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX.Element | null => {
   return (
     <>
@@ -46,7 +52,7 @@ const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX
             </button>
             <button
               className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-              onClick={() => setValue(roundNumber(Number(max) - BALANCE_LEFT_FOR_TX_APPROVAL))}
+              onClick={() => setValue(calculateMaxAmount(Number(max)))}
               type="button"
             >
               MAX
