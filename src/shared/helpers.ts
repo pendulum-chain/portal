@@ -27,16 +27,16 @@ export const parseTransactionError = (result: SubmittableResultValue | undefined
 
 export const defaultReadLimits: Limits = {
   gas: {
-    refTime: '500000000000',
-    proofSize: '4000000',
+    refTime: '10000000000000000',
+    proofSize: '10000000000000000',
   },
   storageDeposit: undefined,
 };
 
 export const defaultWriteLimits: Limits = {
   gas: {
-    refTime: '30000000000',
-    proofSize: '2400000',
+    refTime: '10000000000000',
+    proofSize: '10000000000',
   },
   storageDeposit: undefined,
 };
