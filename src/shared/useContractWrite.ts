@@ -65,6 +65,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
       messageName: method,
       messageArguments: fnArgs,
       limits: { ...defaultWriteLimits, ...contractOptions },
+      gasLimitTolerancePercentage: 200, // Allow 3 fold gas tolerance
     });
 
     console.log('call message write response', address, method, fnArgs, response);

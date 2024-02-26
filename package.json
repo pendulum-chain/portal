@@ -22,7 +22,7 @@
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^2.9.11",
     "@pendulum-chain/api": "^0.3.1",
-    "@pendulum-chain/api-solang": "~0.1.1",
+    "@pendulum-chain/api-solang": "0.2.0",
     "@polkadot/api": "^9.9.1",
     "@polkadot/api-base": "^9.9.1",
     "@polkadot/api-contract": "^9.9.1",
