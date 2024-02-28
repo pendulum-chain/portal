@@ -187,3 +187,17 @@ export function estimateRequestCreationTime(
 export function assetDisplayName(asset?: Asset, assetPrefix?: string, assetSuffix?: string): string {
   return asset ? `${assetPrefix || ''}${asset.getCode()}${assetSuffix || ''}` : '';
 }
+
+interface FilteredAsset {
+  [key: string]: Asset[];
+}
+
+const assetsToFilterByTenant: FilteredAsset = {
+  [TenantName.Foucoco]: [new Asset('USDC', 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN')],
+};
+
+export function shouldFilterOut(tenantName: TenantName, asset: Asset) {
+  return !!assetsToFilterByTenant[tenantName].find(({ code, issuer }) => {
+    return asset.code === code && asset.issuer == issuer;
+  });
+}
