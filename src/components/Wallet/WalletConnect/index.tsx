@@ -1,45 +1,71 @@
 import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
+import { SessionTypes } from '@walletconnect/types';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { toast } from 'react-toastify';
 import logo from '../../../assets/wallet-connect.svg';
 import { config } from '../../../config';
 import { chainIds, walletConnectConfig } from '../../../config/walletConnect';
-import { GlobalState, useGlobalState } from '../../../GlobalStateProvider';
+import { useGlobalState } from '../../../GlobalStateProvider';
 import { walletConnectService } from '../../../services/walletConnect';
 
-export type WalletConnectProps = {
-  setWalletAccount: GlobalState['setWalletAccount'];
-};
-
-const WalletConnect = ({ setWalletAccount }: WalletConnectProps) => {
+const WalletConnect = () => {
   const [loading, setLoading] = useState(false);
   const [provider, setProvider] = useState<Promise<UniversalProvider> | undefined>();
   const [modal, setModal] = useState<WalletConnectModal | undefined>();
-  const { tenantName } = useGlobalState();
+  const { tenantName, setWalletAccount, removeWalletAccount } = useGlobalState();
+
+  const setupClientDisconnectListener = useCallback(
+    async (provider: Promise<UniversalProvider>) => {
+      (await provider).client.on('session_delete', () => {
+        removeWalletAccount();
+      });
+    },
+    [removeWalletAccount],
+  );
+
+  const handleModal = useCallback(
+    (uri?: string) => {
+      if (uri) {
+        modal?.openModal({ uri, onclose: () => setLoading(false) });
+      }
+    },
+    [modal],
+  );
+
+  const handleSession = useCallback(
+    async (approval: () => Promise<SessionTypes.Struct>, chainId: string) => {
+      const session = await approval();
+      setWalletAccount(await walletConnectService.init(session, chainId));
+      modal?.closeModal();
+    },
+    [setWalletAccount, modal],
+  );
+
+  const handleConnect = useCallback(async () => {
+    const chainId = chainIds[tenantName];
+    if (!provider || !chainId) return;
+
+    const wcProvider = await provider;
+    const { uri, approval } = await wcProvider.client.connect(walletConnectConfig);
+
+    handleModal(uri);
+    handleSession(approval, chainId);
+    await setupClientDisconnectListener(provider);
+  }, [provider, tenantName, setupClientDisconnectListener, handleModal, handleSession]);
 
   const walletConnectClick = useCallback(async () => {
     setLoading(true);
     try {
-      const chainId = chainIds[tenantName];
-      if (!provider || !chainId) return;
+      await handleConnect();
 
-      const wcProvider = await provider;
-      const { uri, approval } = await wcProvider.client.connect(walletConnectConfig);
-      // if there is a URI from the client connect step open the modal
-      if (uri) {
-        modal?.openModal({ uri, onclose: () => setLoading(false) });
-      }
-      const session = await approval();
-      setWalletAccount(await walletConnectService.init(session, chainId));
-      modal?.closeModal();
-      setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //@eslint-disable-next-line no-explicit-any
     } catch (error: any) {
       toast(error, { type: 'error' });
+    } finally {
       setLoading(false);
     }
-  }, [modal, provider, setWalletAccount, tenantName]);
+  }, [handleConnect]);
 
   useEffect(() => {
     if (provider) return;

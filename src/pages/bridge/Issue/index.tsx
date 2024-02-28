@@ -14,6 +14,7 @@ import { useFeePallet } from '../../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useAccountBalance } from '../../../shared/useAccountBalance';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
@@ -27,6 +28,7 @@ interface IssueProps {
 
 export type IssueFormValues = {
   amount: number;
+  securityDeposit: number;
   to: number;
 };
 
@@ -42,10 +44,12 @@ function Issue(props: IssueProps): JSX.Element {
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueFee, redeemFee, issueGriefingCollateral } = useFeePallet().getFees();
+  const { balance } = useAccountBalance();
+
   const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable)),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -56,13 +60,24 @@ function Issue(props: IssueProps): JSX.Element {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
 
-  const disclaimerText = useMemo(
-    () =>
-      `• Issue Fee: ${issueFee.mul(100)}% of the transaction amount.
-       • Redeem Fee: ${redeemFee.mul(100)}% of the transaction amount.
-       • Security deposit: ${issueGriefingCollateral.mul(100)}% of the transaction amount.
-       • Total issuable amount (in USD): 20,000 USD.
-       • Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`,
+  const disclaimerContent = useMemo(
+    () => (
+      <ul>
+        <li>• Bridge Fee: Currently free, transitioning to 0.1% per transaction soon.</li>
+        <li>• Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem </li>
+        <li>
+          • Total issuable amount (in USD): 20000 USD. Join our vault operator program, more
+          <a
+            target="_blank"
+            className="text-accent ml-1"
+            href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
+          >
+            here
+          </a>
+        </li>
+        <li>• Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`</li>
+      </ul>
+    ),
     [issueFee, redeemFee, issueGriefingCollateral],
   );
 
@@ -129,6 +144,10 @@ function Issue(props: IssueProps): JSX.Element {
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
 
+  useMemo(() => {
+    setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
+  }, [amount, issueGriefingCollateral]);
+
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
       <ConfirmationDialog
@@ -145,12 +164,15 @@ function Issue(props: IssueProps): JSX.Element {
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
             network="Stellar"
-            error={formState.errors.amount?.message?.toString()}
+            error={
+              formState.errors.amount?.message?.toString() || formState.errors.securityDeposit?.message?.toString()
+            }
           />
+          <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">
             <span className="text-sm">{`Max issuable: ${nativeToDecimal(
               selectedVault?.issuableTokens?.toString() || 0,
-            ).toFixed(2)} 
+            ).toFixed(2)}
               ${selectedAsset?.code}`}</span>
           </label>
 
@@ -175,7 +197,7 @@ function Issue(props: IssueProps): JSX.Element {
           ) : (
             <OpenWallet dAppName={dAppName} />
           )}
-          <Disclaimer text={disclaimerText} />
+          <Disclaimer content={disclaimerContent} />
         </form>
       </div>
     </div>
