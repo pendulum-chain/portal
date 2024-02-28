@@ -4,6 +4,7 @@ import { WalletAccount } from '@talismn/connect-wallets';
 import { StateUpdater } from 'preact/hooks';
 import { toast } from 'react-toastify';
 import { getErrors } from '../../../helpers/substrate';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 export const doSubmitExtrinsic = (
   api: ApiPromise,
@@ -36,7 +37,7 @@ export const doSubmitExtrinsic = (
     })
     .catch((error) => {
       console.error('Transaction submission failed', error);
-      toast('Transaction submission failed', { type: 'error' });
+      showToast(ToastMessage.TX_SUBMISSION_FAILED);
       setSubmissionPending(false);
     });
 };

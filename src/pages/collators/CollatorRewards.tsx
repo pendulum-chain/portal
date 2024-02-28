@@ -12,6 +12,7 @@ import { useStakingPallet } from '../../hooks/staking/staking';
 import { nativeToFormat } from '../../shared/parseNumbers';
 import { UserStaking } from './CollatorColumns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
+import { ToastMessage, showToast } from '../../shared/showToast';
 
 const WAIT_15_MINUTES = 15 * 60 * 1000;
 
@@ -92,7 +93,7 @@ function CollatorRewards() {
           setSubmissionPending(false);
           refreshRewards();
           if (errors.length === 0) {
-            toast('Delegator rewards updated', { type: 'success' });
+            showToast(ToastMessage.UPDATED_DELEGATOR_REWARDS);
             setUpdateEnabled(false);
             setTimeout(() => {
               setUpdateEnabled(true);

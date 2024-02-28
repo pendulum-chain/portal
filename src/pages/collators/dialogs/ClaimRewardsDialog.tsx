@@ -12,6 +12,7 @@ import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
 import { nativeToDecimal } from '../../../shared/parseNumbers';
 import { getClaimingValidationSchema } from './ValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 interface Props {
   userRewardsBalance?: string;
@@ -85,7 +86,7 @@ function ClaimRewardsDialog(props: Props) {
         })
         .catch((error) => {
           console.error('Transaction submission failed', error);
-          toast('Transaction submission failed', { type: 'error' });
+          showToast(ToastMessage.TX_SUBMISSION_FAILED);
           setLoading(false);
         });
     },

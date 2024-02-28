@@ -18,6 +18,7 @@ import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 interface IssueProps {
   network: string;
@@ -93,7 +94,7 @@ function Issue(props: IssueProps): JSX.Element {
       }
 
       if (!walletAccount) {
-        toast('No wallet account selected', { type: 'error' });
+        showToast(ToastMessage.NO_WALLET_SELECTED);
         return;
       }
 

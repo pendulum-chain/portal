@@ -3,7 +3,7 @@ import { rpc } from '@pendulum-chain/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { createContext } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
-import { toast } from 'react-toastify';
+import { ToastMessage, showToast } from './shared/showToast';
 
 async function createApiPromise(provider: WsProvider) {
   return ApiPromise.create(
@@ -81,7 +81,7 @@ const NodeInfoProvider = ({ children, tenantRPC }: { children: ReactNode; tenant
 
   async function handleConnectionError(error: Error) {
     console.error('Error while connecting to the node:', error);
-    toast('Error while connecting to the node. Refresh the page to re-connect.', { type: toast.TYPE.ERROR });
+    showToast(ToastMessage.NODE_CONNECTION_ERROR);
   }
 
   useEffect(() => {

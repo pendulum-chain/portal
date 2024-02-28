@@ -7,7 +7,7 @@ import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { BridgeContext } from '../../pages/bridge';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
-import { toast } from 'react-toastify';
+import { ToastMessage, showToast } from '../../shared/showToast';
 
 export interface BridgeSettings {
   selectedVault?: ExtendedRegistryVault;
@@ -43,7 +43,7 @@ function useBridgeSettings(): BridgeSettings {
         setExtendedVaults(combinedVaults);
       })
       .catch(() => {
-        toast('Could not establish connection with the bridge...', { type: toast.TYPE.ERROR, toastId: 2138 });
+        showToast(ToastMessage.BRIDGE_CONNECTION_ERROR);
       });
   }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens]);
 
