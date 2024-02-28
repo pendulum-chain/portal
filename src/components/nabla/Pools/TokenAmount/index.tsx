@@ -1,7 +1,7 @@
 import { Abi } from '@polkadot/api-contract';
 import { useSharesTargetWorth } from '../../../../hooks/nabla/useSharesTargetWorth';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers/metric';
 import { numberLoader } from '../../../Loader';
 
 export interface TokenAmountProps {

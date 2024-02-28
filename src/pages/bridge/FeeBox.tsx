@@ -3,7 +3,7 @@ import Big from 'big.js';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/fee';
-import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers';
+import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;

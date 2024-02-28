@@ -6,7 +6,7 @@ import { config } from '../../../config';
 import { mockERC20 } from '../../../contracts/nabla/MockERC20';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokens } from '../../../hooks/nabla/useTokens';
-import { decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers/metric';
 import { useContractWrite } from '../../../shared/useContractWrite';
 
 const TokenItem = ({ token }: { token: Token }) => {

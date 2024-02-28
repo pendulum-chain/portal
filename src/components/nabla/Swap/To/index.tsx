@@ -10,7 +10,7 @@ import { TokensData } from '../../../../hooks/nabla/useTokens';
 import useBoolean from '../../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useTokenOutAmount } from '../../../../hooks/useTokenOutAmount';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, prettyNumbers, roundNumber } from '../../../../shared/parseNumbers/metric';
 import Balance from '../../../Balance';
 import { numberLoader } from '../../../Loader';
 import { Skeleton } from '../../../Skeleton';

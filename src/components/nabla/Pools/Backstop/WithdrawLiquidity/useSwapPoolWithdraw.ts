@@ -7,7 +7,7 @@ import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../he
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
 import { useTokenPrice } from '../../../../../hooks/nabla/useTokenPrice';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers/metric';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
 

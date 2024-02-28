@@ -7,7 +7,7 @@ import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreati
 import { useIssuePallet } from '../../hooks/spacewalk/issue';
 import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
 import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { nativeToDecimal } from '../../shared/parseNumbers';
+import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import {
   CancelledTransferDialog,
   CompletedTransferDialog,

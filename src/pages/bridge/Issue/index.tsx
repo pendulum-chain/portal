@@ -13,7 +13,7 @@ import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrat
 import { useFeePallet } from '../../../hooks/spacewalk/fee';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../shared/useAccountBalance';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -172,7 +172,7 @@ function Issue(props: IssueProps): JSX.Element {
           <label className="label flex align-center">
             <span className="text-sm">{`Max issuable: ${nativeToDecimal(
               selectedVault?.issuableTokens?.toString() || 0,
-            ).toFixed(2)} 
+            ).toFixed(2)}
               ${selectedAsset?.code}`}</span>
           </label>
 

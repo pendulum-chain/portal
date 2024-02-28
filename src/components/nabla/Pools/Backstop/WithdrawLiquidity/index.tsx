@@ -7,7 +7,7 @@ import { BackstopPool } from '../../../../../../gql/graphql';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplus, minMax } from '../../../../../helpers/calc';
 import { useBackstopPool } from '../../../../../hooks/nabla/useBackstopPool';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
