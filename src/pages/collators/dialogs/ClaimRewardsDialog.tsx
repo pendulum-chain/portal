@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button, Modal } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
@@ -74,8 +73,7 @@ function ClaimRewardsDialog(props: Props) {
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
-              console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
+              showToast(ToastMessage.ERROR, errorMessage);
             }
           } else if (status.isFinalized) {
             setLoading(false);

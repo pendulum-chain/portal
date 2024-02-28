@@ -1,9 +1,9 @@
-import { toast } from 'react-toastify';
 import { config } from '../config';
+import { ToastMessage, showToast } from '../shared/showToast';
 
 export const transactionErrorToast = (err: unknown) => {
   const cancelled = String(err).startsWith('Error: Cancelled');
-  toast(cancelled ? 'Transaction cancelled' : 'Transaction failed', { type: 'error' });
+  showToast(ToastMessage.ERROR, cancelled ? 'Transaction cancelled' : 'Transaction failed');
 };
 
 const { slippage, deadline } = config.transaction.settings;

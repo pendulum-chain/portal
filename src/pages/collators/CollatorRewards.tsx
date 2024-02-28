@@ -1,7 +1,6 @@
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Button } from 'react-daisyui';
-import { toast } from 'react-toastify';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
@@ -87,7 +86,7 @@ function CollatorRewards() {
           if (errors.length > 0) {
             const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
             console.error(errorMessage);
-            toast(errorMessage, { type: 'error' });
+            showToast(ToastMessage.ERROR, errorMessage);
           }
         } else if (status.isFinalized) {
           setSubmissionPending(false);
@@ -102,9 +101,7 @@ function CollatorRewards() {
         }
       })
       .catch((error) => {
-        toast('Transaction submission failed: ' + error.toString(), {
-          type: 'error',
-        });
+        showToast(ToastMessage.ERROR, 'Transaction submission failed: ' + error.toString());
         setSubmissionPending(false);
       });
   }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount, setUpdateEnabled]);

@@ -2,12 +2,12 @@ import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { SessionTypes } from '@walletconnect/types';
 import { useCallback, useEffect, useState } from 'preact/compat';
-import { toast } from 'react-toastify';
 import logo from '../../../assets/wallet-connect.svg';
 import { config } from '../../../config';
 import { chainIds, walletConnectConfig } from '../../../config/walletConnect';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { walletConnectService } from '../../../services/walletConnect';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 const WalletConnect = () => {
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,7 @@ const WalletConnect = () => {
 
       //@eslint-disable-next-line no-explicit-any
     } catch (error: any) {
-      toast(error, { type: 'error' });
+      showToast(ToastMessage.ERROR, error);
     } finally {
       setLoading(false);
     }

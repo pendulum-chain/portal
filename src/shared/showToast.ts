@@ -6,6 +6,8 @@ export enum ToastMessage {
   TX_SUBMISSION_FAILED = 'TX_SUBMISSION_FAILED',
   UPDATED_DELEGATOR_REWARDS = 'UPDATED_DELEGATOR_REWARDS',
   NO_WALLET_SELECTED = 'NO_WALLET_SELECTED',
+  ERROR = 'ERROR',
+  INFO = 'INFO',
 }
 
 type ToastSettings = {
@@ -49,8 +51,20 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
       type: toast.TYPE.ERROR,
     },
   },
+  [ToastMessage.ERROR]: {
+    message: 'An error occurred',
+    options: {
+      type: toast.TYPE.ERROR,
+    },
+  },
+  [ToastMessage.INFO]: {
+    message: 'Info',
+    options: {
+      type: toast.TYPE.INFO,
+    },
+  },
 };
 
-export function showToast(message: ToastMessage) {
-  return toast(ToastProperties[message].message, ToastProperties[message].options);
+export function showToast(message: ToastMessage, customMessage?: string) {
+  return toast(customMessage, ToastProperties[message].options);
 }

@@ -4,7 +4,6 @@ import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
@@ -113,7 +112,7 @@ function Issue(props: IssueProps): JSX.Element {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
+              showToast(ToastMessage.ERROR, errorMessage);
             }
           } else if (status.isFinalized) {
             const requestIssueEvents = getEventBySectionAndMethod(events, 'issue', 'RequestIssue');
@@ -137,9 +136,7 @@ function Issue(props: IssueProps): JSX.Element {
         })
         .catch((error) => {
           console.error('Transaction submission failed', error);
-          toast('Transaction submission failed: ' + error.toString(), {
-            type: 'error',
-          });
+          showToast(ToastMessage.ERROR, 'Transaction submission failed: ' + error.toString());
           setSubmissionPending(false);
         });
     },
