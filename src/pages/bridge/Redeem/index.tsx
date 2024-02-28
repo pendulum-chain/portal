@@ -12,7 +12,7 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../helpers/spacewalk';
 import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
+import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/useRedeemPallet';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../hooks/useBalances';
 import { useNodeInfoState } from '../../../NodeInfoProvider';

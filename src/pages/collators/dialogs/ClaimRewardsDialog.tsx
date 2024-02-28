@@ -9,7 +9,7 @@ import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
 import Amount from '../../../components/Form/Amount';
 import { getErrors } from '../../../helpers/substrate';
-import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
+import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/useStakingPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers';
 import { getClaimingValidationSchema } from './ValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';

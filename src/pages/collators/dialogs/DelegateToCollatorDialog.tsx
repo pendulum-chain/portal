@@ -6,7 +6,10 @@ import ChainLogo from '../../../assets/ChainLogo';
 import { CloseButton } from '../../../components/CloseButton';
 import Amount from '../../../components/Form/Amount';
 import { PublicKey } from '../../../components/PublicKey';
-import { ParachainStakingCandidate, ParachainStakingInflationInflationInfo } from '../../../hooks/staking/staking';
+import {
+  ParachainStakingCandidate,
+  ParachainStakingInflationInflationInfo,
+} from '../../../hooks/staking/useStakingPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 import { FormValues, getStakingValidationSchema } from './ValidationSchema';

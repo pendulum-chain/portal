@@ -8,7 +8,7 @@ import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { getErrors } from '../../helpers/substrate';
-import { useStakingPallet } from '../../hooks/staking/staking';
+import { useStakingPallet } from '../../hooks/staking/useStakingPallet';
 import { nativeToFormat } from '../../shared/parseNumbers';
 import { UserStaking } from './CollatorColumns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';

@@ -3,7 +3,7 @@ import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRe
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 import { calculateDeadline } from '../../helpers/spacewalk';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
+import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
 
 interface TransferCountdownProps {
   request: SpacewalkPrimitivesIssueIssueRequest | SpacewalkPrimitivesRedeemRedeemRequest;
