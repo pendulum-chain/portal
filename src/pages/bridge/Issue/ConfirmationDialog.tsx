@@ -8,7 +8,7 @@ import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedReques
 import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
 import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
-import { nativeStellarToDecimal } from '../../../shared/parseNumbers';
+import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;

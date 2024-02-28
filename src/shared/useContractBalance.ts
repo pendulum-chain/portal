@@ -5,7 +5,7 @@ import { useMemo } from 'preact/compat';
 import { mockERC20 } from '../contracts/nabla/MockERC20';
 import { cacheKeys } from './constants';
 import { QueryOptions } from './helpers';
-import { nativeToDecimal, prettyNumbers } from './parseNumbers';
+import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 import { useContract } from './useContract';
 

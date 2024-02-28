@@ -15,7 +15,7 @@ import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/use
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../hooks/useBalances';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';

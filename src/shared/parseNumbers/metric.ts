@@ -80,14 +80,17 @@ export const format = (n: number, tokenSymbol: string | undefined, oneCharOnly =
   for (let i = 0; i < units.length; i++) {
     if (n >= units[i].divider) {
       return (
-        prettyNumbers(n / units[i].divider) + ' ' + (oneCharOnly ? units[i].char : units[i].prefix + ' ') + tokenSymbol
+        prettyNumbers(n / units[i].divider) +
+        ' ' +
+        (oneCharOnly ? units[i].char : units[i].prefix.length ? units[i].prefix + ' ' : '') +
+        tokenSymbol
       );
     }
   }
   return prettyNumbers(n) + ' ' + tokenSymbol;
 };
 
-export const nativeToFormat = (
+export const nativeToFormatMetric = (
   value: BigNumber | number | string,
   tokenSymbol: string | undefined,
   oneCharOnly = false,

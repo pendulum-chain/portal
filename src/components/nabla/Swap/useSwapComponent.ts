@@ -15,7 +15,7 @@ import { useTokens } from '../../../hooks/nabla/useTokens';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../../models/Swap';
 import { storageService } from '../../../services/storage/local';
-import { calcDeadline, decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers';
+import { calcDeadline, decimalToNative, FixedU128Decimals } from '../../../shared/parseNumbers/metric';
 import { useContractWrite } from '../../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './types';

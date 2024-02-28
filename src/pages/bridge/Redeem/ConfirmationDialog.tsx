@@ -4,7 +4,7 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { PublicKey } from '../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { RichRedeemRequest } from '../../../hooks/spacewalk/useRedeemPallet';
-import { nativeStellarToDecimal } from '../../../shared/parseNumbers';
+import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 
 interface ConfirmationDialogProps {
   redeemRequest: RichRedeemRequest | undefined;

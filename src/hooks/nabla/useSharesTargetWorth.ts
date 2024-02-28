@@ -2,7 +2,7 @@ import { Abi } from '@polkadot/api-contract';
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { swapPoolAbi } from '../../contracts/nabla/SwapPool';
 import { QueryOptions } from '../../shared/helpers';
-import { decimalToNative } from '../../shared/parseNumbers';
+import { decimalToNative } from '../../shared/parseNumbers/metric';
 import { useContract } from '../../shared/useContract';
 
 export type UseSharesTargetWorthProps = {

@@ -7,7 +7,7 @@ import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyableAddress } from '../../components/PublicKey';
 import { ParachainStakingCandidate } from '../../hooks/staking/useStakingPallet';
 import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
-import { nativeToFormat } from '../../shared/parseNumbers';
+import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
 
 const MAX_DELEGATORS_AMOUNT = 40;
 
@@ -95,7 +95,7 @@ export const myStakedColumn = ({
   accessorFn: ({ candidate }) => getAmountDelegated(candidate, userAccountAddress) || '0',
   cell: ({ row }) => {
     const amountDelegated = getAmountDelegated(row.original.candidate, userAccountAddress);
-    return <div>{amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}</div>;
+    return <div>{amountDelegated ? nativeToFormatMetric(amountDelegated, tokenSymbol) : ''}</div>;
   },
 });
 

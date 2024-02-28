@@ -6,7 +6,7 @@ import Table, { SortingOrder } from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/useStakingPallet';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
-import { nativeToFormat } from '../../shared/parseNumbers';
+import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
 import {
   TCollator,
   UserStaking,
@@ -80,7 +80,7 @@ function CollatorsTable() {
         candidate: candidate,
         collator: candidate.id,
         identityInfo: identities.get(candidate.id),
-        totalStaked: nativeToFormat(candidate.total, tokenSymbol),
+        totalStaked: nativeToFormatMetric(candidate.total, tokenSymbol),
         delegators: candidate.delegators.length,
         apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
       }));

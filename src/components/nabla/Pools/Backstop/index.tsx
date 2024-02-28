@@ -1,7 +1,7 @@
 import { Button, Card } from 'react-daisyui';
 import { useBackstopPools } from '../../../../hooks/nabla/useBackstopPools';
 import ModalProvider, { useModalToggle } from '../../../../services/modal';
-import { FixedU128Decimals } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals } from '../../../../shared/parseNumbers/metric';
 import Balance from '../../../Balance';
 import { Skeleton } from '../../../Skeleton';
 import Modals from './Modals';

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/useStakingPallet';
-import { decimalToNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
 import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';

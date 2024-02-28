@@ -10,7 +10,7 @@ import {
   ParachainStakingCandidate,
   ParachainStakingInflationInflationInfo,
 } from '../../../hooks/staking/useStakingPallet';
-import { nativeToDecimal } from '../../../shared/parseNumbers';
+import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 import { FormValues, getStakingValidationSchema } from './ValidationSchema';
 

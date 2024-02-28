@@ -2,7 +2,7 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Badge, Button } from 'react-daisyui';
 import { SwapPool } from '../../../../../gql/graphql';
 import { useModalToggle } from '../../../../services/modal';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers/metric';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 
 export type SwapPoolColumn = SwapPool & {

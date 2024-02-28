@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { FixedU128Decimals } from '../../../shared/parseNumbers';
+import { FixedU128Decimals } from '../../../shared/parseNumbers/metric';
 import { ApprovalState, useTokenApproval } from '../../../shared/useTokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {

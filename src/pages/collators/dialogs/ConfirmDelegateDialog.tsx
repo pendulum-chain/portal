@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Modal } from 'react-daisyui';
 import { CloseButton } from '../../../components/CloseButton';
-import { nativeToDecimal, nativeToFormat } from '../../../shared/parseNumbers';
+import { nativeToDecimal, nativeToFormatMetric } from '../../../shared/parseNumbers/metric';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 
 interface ConfirmDelegateDialogProps {
@@ -88,7 +88,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
           <div className="collapse-content">
             <div className="flex justify-between mt-4">
               <span className="text-neutral-content">Fees</span>
-              <span>{nativeToFormat(transactionFee, tokenSymbol)}</span>
+              <span>{nativeToFormatMetric(transactionFee, tokenSymbol)}</span>
             </div>
           </div>
         </div>

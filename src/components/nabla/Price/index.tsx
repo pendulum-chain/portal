@@ -1,7 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useTokenPrice } from '../../../hooks/nabla/useTokenPrice';
-import { nativeToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
+import { nativeToDecimal, prettyNumbers } from '../../../shared/parseNumbers/metric';
 import { numberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
