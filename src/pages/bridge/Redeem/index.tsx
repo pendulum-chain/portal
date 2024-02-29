@@ -4,7 +4,6 @@ import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import From from '../../../components/Form/From';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
@@ -12,7 +11,7 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../helpers/spacewalk';
 import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
+import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/useRedeemPallet';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../hooks/useBalances';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
@@ -20,6 +19,7 @@ import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNu
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 export type RedeemFormValues = {
   amount: number;
@@ -96,7 +96,7 @@ function Redeem(props: RedeemProps): JSX.Element {
           if (errors.length > 0) {
             const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
             console.error(errorMessage);
-            toast(errorMessage, { type: 'error' });
+            showToast(ToastMessage.ERROR, errorMessage);
           }
         } else if (status.isFinalized) {
           const requestRedeemEvents = getEventBySectionAndMethod(events, 'redeem', 'RequestRedeem');
@@ -122,9 +122,7 @@ function Redeem(props: RedeemProps): JSX.Element {
       })
       .catch((error: unknown) => {
         console.error('Transaction submission failed', error);
-        toast(`Transaction submission failed: ${String(error)}`, {
-          type: 'error',
-        });
+        showToast(ToastMessage.ERROR, `Transaction submission failed: ${String(error)}`);
         setSubmissionPending(false);
       });
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
@@ -153,7 +151,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
               selectedVault?.redeemableTokens?.toString() || 0,
             ).toFixed(2)}
-              ${selectedAsset?.code}`}</span>
+              ${selectedAsset?.code || ''}`}</span>
           </label>
           <LabelledInputField
             register={register('to')}

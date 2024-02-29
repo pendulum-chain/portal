@@ -38,7 +38,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <DashboardIcon />
+    prefix: <DashboardIcon />,
   },
   {
     link: 'https://app.zenlink.pro/',
@@ -58,8 +58,6 @@ export const links: Links = ({ tenantName }) => [
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
     prefix: <SpacewalkIcon />,
-    disabled: tenantName === TenantName.Pendulum,
-    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : null,
     submenu: [
       {
         link: './spacewalk/bridge',
@@ -77,7 +75,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <StakingIcon />
+    prefix: <StakingIcon />,
   },
   {
     link: `https://${tenantName}.polkassembly.io/`,

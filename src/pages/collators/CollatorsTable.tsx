@@ -4,7 +4,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Table, { SortingOrder } from '../../components/Table';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
+import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/useStakingPallet';
 import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
 import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
 import {

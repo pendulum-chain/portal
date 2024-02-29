@@ -3,6 +3,7 @@ import type { VaultRegistryVault } from '@polkadot/types/lookup';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
+import { isEmpty } from 'lodash';
 
 export interface ExtendedRegistryVault extends VaultRegistryVault {
   issuableTokens?: Balance;
@@ -57,6 +58,9 @@ export function useVaultRegistryPallet() {
       async getVaultsWithIssuableTokens() {
         if (!api) {
           return undefined;
+        }
+        if (isEmpty(api.rpc.vaultRegistry)) {
+          throw new Error('Vault Registry does not exist');
         }
         return await api.rpc.vaultRegistry.getVaultsWithIssuableTokens();
       },

@@ -2,8 +2,8 @@ import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { StateUpdater } from 'preact/hooks';
-import { toast } from 'react-toastify';
 import { getErrors } from '../../../helpers/substrate';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 export const doSubmitExtrinsic = (
   api: ApiPromise,
@@ -23,8 +23,7 @@ export const doSubmitExtrinsic = (
       if (status.isInBlock) {
         if (errors.length > 0) {
           const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
-          console.error(errorMessage);
-          toast(errorMessage, { type: 'error' });
+          showToast(ToastMessage.ERROR, errorMessage);
         }
       } else if (status.isFinalized) {
         setSubmissionPending(false);
@@ -36,7 +35,7 @@ export const doSubmitExtrinsic = (
     })
     .catch((error) => {
       console.error('Transaction submission failed', error);
-      toast('Transaction submission failed', { type: 'error' });
+      showToast(ToastMessage.TX_SUBMISSION_FAILED);
       setSubmissionPending(false);
     });
 };

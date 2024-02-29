@@ -5,7 +5,7 @@ import { StateUpdater } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyableAddress } from '../../components/PublicKey';
-import { ParachainStakingCandidate } from '../../hooks/staking/staking';
+import { ParachainStakingCandidate } from '../../hooks/staking/useStakingPallet';
 import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
 import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
 

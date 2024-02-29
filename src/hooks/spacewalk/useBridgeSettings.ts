@@ -7,7 +7,8 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { BridgeContext } from '../../pages/bridge';
-import { ExtendedRegistryVault, useVaultRegistryPallet } from './vaultRegistry';
+import { ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
+import { ToastMessage, showToast } from '../../shared/showToast';
 
 export interface BridgeSettings {
   selectedVault?: ExtendedRegistryVault;
@@ -31,17 +32,21 @@ function useBridgeSettings(): BridgeSettings {
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
-    Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()]).then((data) => {
-      getVaults().forEach((vaultFromRegistry: any) => {
-        const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-        const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-        const extended: ExtendedRegistryVault = vaultFromRegistry;
-        extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
-        extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
-        combinedVaults.push(extended);
+    Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()])
+      .then((data) => {
+        getVaults().forEach((vaultFromRegistry: any) => {
+          const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+          const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+          const extended: ExtendedRegistryVault = vaultFromRegistry;
+          extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
+          extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
+          combinedVaults.push(extended);
+        });
+        setExtendedVaults(combinedVaults);
+      })
+      .catch(() => {
+        showToast(ToastMessage.BRIDGE_CONNECTION_ERROR);
       });
-      setExtendedVaults(combinedVaults);
-    });
   }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens]);
 
   const wrappedAssets = useMemo(() => {
