@@ -9,6 +9,7 @@ import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
+import { initiateMetamaskInjectedAccount, WALLET_SOURCE_METAMASK } from './services/metamask/metamask';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
 
@@ -43,6 +44,14 @@ const initWalletConnect = async (chainId: string) => {
   //const pairings = provider.client.pairing.getAll({ active: true });
   if (!provider?.session) return;
   return await walletConnectService.init(provider?.session, chainId);
+};
+
+const initMetamaskWallet = async (tenantName: TenantName) => {
+  const metamaskWalletAddress = storageService.get(`metamask-snap-account`);
+  if (metamaskWalletAddress) {
+    return await initiateMetamaskInjectedAccount(tenantName);
+  }
+  return;
 };
 
 const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
@@ -88,6 +97,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear();
     // remove talisman
     storageService.remove('@talisman-connect/selected-wallet-name');
+    storageService.remove(`metamask-snap-account`);
     setWallet(undefined);
   }, [clear, handleWalletConnectDisconnect]);
 
@@ -95,6 +105,9 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     (wallet: WalletAccount | undefined) => {
       set(wallet?.address);
       setWallet(wallet);
+      if (wallet?.source === WALLET_SOURCE_METAMASK) {
+        storageService.set(`metamask-snap-account`, wallet.address);
+      }
     },
     [set],
   );
@@ -111,7 +124,9 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       tenantRef.current = tenantName;
       const appName = dAppName || TenantName.Amplitude;
       const selectedWallet =
-        (await initTalisman(appName, storageAddress)) || (await initWalletConnect(chainIds[tenantName]));
+        (await initTalisman(appName, storageAddress)) ||
+        (await initWalletConnect(chainIds[tenantName])) ||
+        (await initMetamaskWallet(tenantName));
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();

@@ -3,11 +3,12 @@ import { WalletSelect } from '@talismn/connect-components';
 import { Button, Divider, Dropdown } from 'react-daisyui';
 import { isMobile } from 'react-device-detect';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { useAccountBalance } from '../../shared/useAccountBalance';
 import { CopyableAddress } from '../PublicKey';
 import { Skeleton } from '../Skeleton';
+import MetamaskWallet from './MetamaskWallet';
 import NovaWallet from './NovaWallet';
 import WalletConnect from './WalletConnect';
 
@@ -76,6 +77,8 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
                     <Divider className="before:bg-transparent after:bg-transparent h-2" />
                   </>
                 )}
+                <MetamaskWallet setWalletAccount={setWalletAccount} />
+                <Divider className="before:bg-transparent after:bg-transparent h-2" />
                 <WalletConnect />
               </>
             }
