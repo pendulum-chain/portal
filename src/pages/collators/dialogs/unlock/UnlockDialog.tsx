@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'preact/hooks';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Modal } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import SuccessDialogIcon from '../../../../assets/dialog-status-success';
 import Amount from '../../../../components/Form/Amount';
