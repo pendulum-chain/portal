@@ -10,16 +10,18 @@ export interface AmountProps {
   setValue: (n: number) => void;
   assetSuffix?: string;
   error?: string;
+  fullMax?: boolean;
 }
 
 const BALANCE_LEFT_FOR_TX_APPROVAL = 0.5;
 
-function calculateMaxAmount(max: number) {
+function calculateMaxAmount(max: number, fullMax: boolean) {
+  if (fullMax) return max;
   const maxAmount = roundNumber(max - BALANCE_LEFT_FOR_TX_APPROVAL);
   return Math.max(0, maxAmount);
 }
 
-const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX.Element | null => {
+const Amount = ({ className, register, max, setValue, error, fullMax = false }: AmountProps): JSX.Element | null => {
   return (
     <>
       <div
@@ -52,7 +54,7 @@ const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX
             </button>
             <button
               className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-              onClick={() => setValue(calculateMaxAmount(Number(max)))}
+              onClick={() => setValue(calculateMaxAmount(Number(max), fullMax))}
               type="button"
             >
               MAX
@@ -66,7 +68,9 @@ const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX
           </div>
         </div>
       </div>
-      <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>
+      {error ? (
+        <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>
+      ) : null}
     </>
   );
 };

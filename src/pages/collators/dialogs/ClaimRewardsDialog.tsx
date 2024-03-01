@@ -32,7 +32,7 @@ export type ClaimFormValues = {
 };
 
 function ClaimRewardsDialog(props: Props) {
-  const { userRewardsBalance = '0', tokenSymbol, visible, onClose } = props;
+  const { userRewardsBalance = '0', visible, onClose } = props;
   const { createClaimRewardExtrinsic } = useStakingPallet();
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -47,7 +47,7 @@ function ClaimRewardsDialog(props: Props) {
     },
   });
 
-  const { handleSubmit, formState, register, setValue, getValues, control } = form;
+  const { formState, register, setValue, getValues } = form;
 
   useMemo(() => {
     if (!visible)
@@ -88,7 +88,7 @@ function ClaimRewardsDialog(props: Props) {
           setLoading(false);
         });
     },
-    [api, formState, createClaimRewardExtrinsic, walletAccount, setLoading, setStep, userRewardsBalance],
+    [api, formState, createClaimRewardExtrinsic, walletAccount, setLoading, setStep],
   );
 
   const content = useMemo(() => {
@@ -115,7 +115,7 @@ function ClaimRewardsDialog(props: Props) {
           </div>
         );
     }
-  }, [step, tokenSymbol, formState]);
+  }, [step, formState, register, setValue, userRewardsBalance]);
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {

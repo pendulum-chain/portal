@@ -11,8 +11,9 @@ import { useStakingPallet } from '../../hooks/staking/useStakingPallet';
 import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
 import { nativeToFormatDecimal } from '../../shared/parseNumbers/decimal';
 import { UserStaking } from './CollatorColumns';
-import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
 import { ToastMessage, showToast } from '../../shared/showToast';
+import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
+import { UnlockDialog } from './dialogs/unlock/UnlockDialog';
 
 const WAIT_15_MINUTES = 15 * 60 * 1000;
 
@@ -27,6 +28,7 @@ function CollatorRewards() {
   const [submissionPending, setSubmissionPending] = useState(false);
   const [unstaking, setUnstaking] = useState<string>('0.00');
   const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
+  const [unlockDialogVisible, setUnlockDialogVisible] = useState<boolean>(false);
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
@@ -107,6 +109,10 @@ function CollatorRewards() {
       });
   }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount, setUpdateEnabled]);
 
+  const handleUnlock = () => {
+    setUnlockDialogVisible(true);
+  };
+
   return (
     <>
       <div className="flex flex-col mb-8 justify-between md:flex-row ">
@@ -132,7 +138,12 @@ function CollatorRewards() {
                     <ExclamationCircleIcon className="w-5 h-5 ml-2 text-gray-400" />
                   </div>
                 </div>
-                <button className="btn btn-primary btn-unlock min-h-fit max-h-10 w-full m-auto px-8">Unlock</button>
+                <button
+                  className="btn btn-primary btn-unlock min-h-fit max-h-10 w-full m-auto px-8"
+                  onClick={handleUnlock}
+                >
+                  Unlock
+                </button>
               </div>
             </div>
           </div>
@@ -156,6 +167,11 @@ function CollatorRewards() {
           </div>
         </div>
       </div>
+      <UnlockDialog
+        visible={unlockDialogVisible}
+        onClose={() => setUnlockDialogVisible(false)}
+        userStakeBalance={userStaking?.amount}
+      />
       <ClaimRewardsDialog
         userRewardsBalance={estimatedRewards}
         tokenSymbol={tokenSymbol}
