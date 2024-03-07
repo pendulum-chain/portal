@@ -1,18 +1,23 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from 'react-daisyui';
+
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import SuccessDialogIcon from '../../../../assets/dialog-status-success';
 import Amount from '../../../../components/Form/Amount';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import gasolinePump from '../../../../assets/gasoline-pump.svg';
-import { getUnlockValidatiomSchema } from './UnlockValidationSchema';
+
 import { Dialog } from '../Dialog';
 
+import { getUnlockValidatiomSchema } from './UnlockValidationSchema';
+
 interface UnlockDialogProps {
+  onUnlock: () => void;
   onClose: () => void;
   visible: boolean;
+  unlockSuccess: boolean;
   userStakeBalance?: string;
 }
 
@@ -26,7 +31,7 @@ enum UnlockStep {
 }
 
 export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
-  const { userStakeBalance = '0', visible, onClose } = props;
+  const { userStakeBalance = '0', visible, onClose, onUnlock, unlockSuccess } = props;
 
   const [step, setStep] = useState<UnlockStep>(UnlockStep.Confirm);
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,6 +55,7 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
           <div className="rounded-lg flex flex-col items-center w-full">
             <div className="w-full flex justify-end items-center text-sm dark:text-neutral-400 text-neutral-500 mb-1">
               <img src={gasolinePump} alt="gasoline icon" className="h-full w-auto" width={42} height={42} />
+              {/* Todo: Implement Gas Prediction calculation */}
               <span className="ml-1">{'<'}$0.01</span>
             </div>
             <form className="flex flex-col">
@@ -77,14 +83,30 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
     }
   }, [step, formState, register, setValue, userStakeBalance]);
 
+  const onConfirm = () => {
+    setLoading(true);
+
+    onUnlock();
+  };
+
+  useEffect(() => {
+    if (unlockSuccess) {
+      setLoading(false);
+      setStep(UnlockStep.Success);
+    }
+  }, [unlockSuccess]);
+
   const getButtonAction = (step: UnlockStep) => {
     switch (step) {
       case UnlockStep.Confirm:
-        return () => {
-          setStep(UnlockStep.Success);
-        };
+        return onConfirm;
+
       case UnlockStep.Success:
-        return onClose;
+        return () => {
+          setStep(UnlockStep.Confirm);
+          setLoading(false);
+          onClose();
+        };
     }
   };
 

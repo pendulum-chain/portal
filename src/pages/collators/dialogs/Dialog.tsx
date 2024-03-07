@@ -4,7 +4,7 @@ import { CloseButton } from '../../../components/CloseButton';
 interface DialogProps {
   visible: boolean;
   onClose: () => void;
-  headerText: string;
+  headerText?: string;
   content: JSX.Element;
   actions: JSX.Element;
 }
@@ -14,7 +14,7 @@ export const Dialog: React.FC<DialogProps> = (props) => {
 
   return (
     <Modal className="bg-base-200" open={visible}>
-      <Modal.Header className="text-2xl claim-title flex justify-between mb-5">
+      <Modal.Header className={`text-2xl claim-title flex mb-5 ${headerText ? 'justify-between' : 'justify-end'}`}>
         {headerText} <CloseButton onClick={onClose} />
       </Modal.Header>
       <Modal.Body>{content}</Modal.Body>
