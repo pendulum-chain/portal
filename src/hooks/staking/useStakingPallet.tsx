@@ -123,6 +123,7 @@ export function useStakingPallet() {
 
   const memo = useMemo(() => {
     return {
+      unlockUnstaked: api?.tx.parachainStaking.unlockUnstaked,
       candidates,
       inflationInfo,
       minDelegatorStake,
