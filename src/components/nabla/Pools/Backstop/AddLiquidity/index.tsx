@@ -4,7 +4,7 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { BackstopPool } from '../../../../../../gql/graphql';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { FixedU128Decimals, nativeToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import TokenApproval from '../../../../Asset/Approval';
 import { numberLoader } from '../../../../Loader';
 import TransactionProgress from '../../../../Transaction/Progress';

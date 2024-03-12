@@ -1,17 +1,18 @@
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Button } from 'react-daisyui';
-import { toast } from 'react-toastify';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import RewardsIcon from '../../assets/collators-rewards-icon';
 import StakedIcon from '../../assets/collators-staked-icon';
 import { getAddressForFormat } from '../../helpers/addressFormatter';
 import { getErrors } from '../../helpers/substrate';
-import { useStakingPallet } from '../../hooks/staking/staking';
-import { nativeToFormat } from '../../shared/parseNumbers';
+import { useStakingPallet } from '../../hooks/staking/useStakingPallet';
+import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
+import { nativeToFormatDecimal } from '../../shared/parseNumbers/decimal';
 import { UserStaking } from './CollatorColumns';
 import ClaimRewardsDialog from './dialogs/ClaimRewardsDialog';
+import { ToastMessage, showToast } from '../../shared/showToast';
 
 const WAIT_15_MINUTES = 15 * 60 * 1000;
 
@@ -86,13 +87,13 @@ function CollatorRewards() {
           if (errors.length > 0) {
             const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
             console.error(errorMessage);
-            toast(errorMessage, { type: 'error' });
+            showToast(ToastMessage.ERROR, errorMessage);
           }
         } else if (status.isFinalized) {
           setSubmissionPending(false);
           refreshRewards();
           if (errors.length === 0) {
-            toast('Delegator rewards updated', { type: 'success' });
+            showToast(ToastMessage.UPDATED_DELEGATOR_REWARDS);
             setUpdateEnabled(false);
             setTimeout(() => {
               setUpdateEnabled(true);
@@ -101,9 +102,7 @@ function CollatorRewards() {
         }
       })
       .catch((error) => {
-        toast('Transaction submission failed: ' + error.toString(), {
-          type: 'error',
-        });
+        showToast(ToastMessage.ERROR, 'Transaction submission failed: ' + error.toString());
         setSubmissionPending(false);
       });
   }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount, setUpdateEnabled]);
@@ -119,16 +118,16 @@ function CollatorRewards() {
                 <StakedIcon className="staked-icon mt-1" />
               </div>
               <div className="flex-auto">
-                <h3>{nativeToFormat(userStaking?.amount || '0.00', tokenSymbol)}</h3>
+                <h3>{nativeToFormatMetric(userStaking?.amount || '0.00', tokenSymbol)}</h3>
                 <p>My Staking</p>
               </div>
               <div className="flex-auto">
-                <h3>{nativeToFormat(userAvailableBalance, tokenSymbol)}</h3>
+                <h3>{nativeToFormatMetric(userAvailableBalance, tokenSymbol)}</h3>
                 <p>Free balance</p>
               </div>
               <div className="flex flex-auto flex-col items-center">
                 <div className="flex flex-row items-center mb-1">
-                  <h3>{nativeToFormat(unstaking, tokenSymbol)}</h3>
+                  <h3>{nativeToFormatMetric(unstaking, tokenSymbol)}</h3>
                   <div className="tooltip tooltip-primary" data-tip="Locked for 7 days.">
                     <ExclamationCircleIcon className="w-5 h-5 ml-2 text-gray-400" />
                   </div>
@@ -146,7 +145,7 @@ function CollatorRewards() {
                 <RewardsIcon className="rewards-icon" />
               </div>
               <div className="flex-auto">
-                <h3 className="font-semibold primary">{nativeToFormat(estimatedRewards, tokenSymbol)}</h3>
+                <h3 className="font-semibold primary">{nativeToFormatDecimal(estimatedRewards, tokenSymbol)}</h3>
                 <p>Estimated reward</p>
               </div>
               <div className="flex flex-auto flex-col xs:flex-row place-content-end">

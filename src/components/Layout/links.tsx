@@ -38,7 +38,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <DashboardIcon />
+    prefix: <DashboardIcon />,
   },
   {
     link: 'https://app.zenlink.pro/',
@@ -77,7 +77,7 @@ export const links: Links = ({ tenantName }) => [
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
-    prefix: <StakingIcon />
+    prefix: <StakingIcon />,
   },
   {
     link: `https://${tenantName}.polkassembly.io/`,

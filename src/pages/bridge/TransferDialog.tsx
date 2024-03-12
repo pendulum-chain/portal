@@ -19,9 +19,9 @@ import {
 } from '../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { toTitle } from '../../helpers/string';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/vaultRegistry';
-import { nativeToDecimal } from '../../shared/parseNumbers';
+import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
+import { useVaultRegistryPallet } from '../../hooks/spacewalk/useVaultRegistryPallet';
+import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { TTransfer, TransferType } from './TransfersColumns';
 
 interface BaseTransferDialogProps {
@@ -199,7 +199,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
   const content = (
     <>
       <div className="text-md p-5 transfer-dialog-text align-middle text-center">
-        {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend} 
+        {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend}
           ${stellarAsset}.`}
       </div>
       <div className="transfer-dialog-colored-text text-md ">

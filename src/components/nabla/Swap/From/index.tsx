@@ -4,7 +4,7 @@ import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../../assets/pendulum-icon.svg';
 import { TokensData } from '../../../../hooks/nabla/useTokens';
-import { FixedU128Decimals } from '../../../../shared/parseNumbers';
+import { FixedU128Decimals } from '../../../../shared/parseNumbers/metric';
 import { useContractBalance } from '../../../../shared/useContractBalance';
 import TokenPrice from '../../Price';
 import { SwapFormValues } from '../types';

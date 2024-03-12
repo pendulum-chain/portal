@@ -2,16 +2,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button, Modal } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import { CloseButton } from '../../../components/CloseButton';
 import Amount from '../../../components/Form/Amount';
 import { getErrors } from '../../../helpers/substrate';
-import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/staking';
-import { nativeToDecimal } from '../../../shared/parseNumbers';
+import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/useStakingPallet';
+import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { getClaimingValidationSchema } from './ValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 interface Props {
   userRewardsBalance?: string;
@@ -73,8 +73,7 @@ function ClaimRewardsDialog(props: Props) {
           if (status.isInBlock) {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
-              console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
+              showToast(ToastMessage.ERROR, errorMessage);
             }
           } else if (status.isFinalized) {
             setLoading(false);
@@ -85,7 +84,7 @@ function ClaimRewardsDialog(props: Props) {
         })
         .catch((error) => {
           console.error('Transaction submission failed', error);
-          toast('Transaction submission failed', { type: 'error' });
+          showToast(ToastMessage.TX_SUBMISSION_FAILED);
           setLoading(false);
         });
     },

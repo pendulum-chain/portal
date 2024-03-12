@@ -6,9 +6,9 @@ import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
-import { RichIssueRequest } from '../../../hooks/spacewalk/issue';
-import { useSecurityPallet } from '../../../hooks/spacewalk/security';
-import { nativeStellarToDecimal } from '../../../shared/parseNumbers';
+import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
+import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
+import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;

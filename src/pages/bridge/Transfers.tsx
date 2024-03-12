@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from 'preact/compat';
 import { useGlobalState } from '../../GlobalStateProvider';
 import Table, { SortingOrder } from '../../components/Table';
 import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
-import { useIssuePallet } from '../../hooks/spacewalk/issue';
-import { useRedeemPallet } from '../../hooks/spacewalk/redeem';
-import { useSecurityPallet } from '../../hooks/spacewalk/security';
-import { nativeToDecimal } from '../../shared/parseNumbers';
+import { useIssuePallet } from '../../hooks/spacewalk/useIssuePallet';
+import { useRedeemPallet } from '../../hooks/spacewalk/useRedeemPallet';
+import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
+import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import {
   CancelledTransferDialog,
   CompletedTransferDialog,

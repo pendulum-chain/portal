@@ -7,7 +7,7 @@ import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers';
+import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers/metric';
 import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';

@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { toast } from 'react-toastify';
+import { ToastMessage, showToast } from '../shared/showToast';
 
 export function useClipboard() {
   return useMemo(
@@ -8,10 +8,10 @@ export function useClipboard() {
         try {
           await navigator.clipboard.writeText(value);
           const message = notificationMessage || `Copied ${value} to clipboard`;
-          toast(message, { type: 'info' });
+          showToast(ToastMessage.INFO, message);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-          toast(error, { type: 'error' });
+          showToast(ToastMessage.ERROR, error);
         }
       },
     }),

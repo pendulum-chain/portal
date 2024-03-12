@@ -3,7 +3,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { cacheKeys } from './constants';
 import { emptyCacheKey, emptyFn, QueryOptions } from './helpers';
-import { nativeToDecimal, prettyNumbers } from './parseNumbers';
+import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 
 export interface UseAccountBalanceResponse {

@@ -4,21 +4,21 @@ import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { useFeePallet } from '../../../hooks/spacewalk/fee';
-import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
+import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
+import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../shared/useAccountBalance';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 interface IssueProps {
   network: string;
@@ -71,6 +71,7 @@ function Issue(props: IssueProps): JSX.Element {
             target="_blank"
             className="text-accent ml-1"
             href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
+            rel="noreferrer"
           >
             here
           </a>
@@ -96,7 +97,7 @@ function Issue(props: IssueProps): JSX.Element {
       }
 
       if (!walletAccount) {
-        toast('No wallet account selected', { type: 'error' });
+        showToast(ToastMessage.NO_WALLET_SELECTED);
         return;
       }
 
@@ -111,7 +112,7 @@ function Issue(props: IssueProps): JSX.Element {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
+              showToast(ToastMessage.ERROR, errorMessage);
             }
           } else if (status.isFinalized) {
             const requestIssueEvents = getEventBySectionAndMethod(events, 'issue', 'RequestIssue');
@@ -135,9 +136,7 @@ function Issue(props: IssueProps): JSX.Element {
         })
         .catch((error) => {
           console.error('Transaction submission failed', error);
-          toast('Transaction submission failed: ' + error.toString(), {
-            type: 'error',
-          });
+          showToast(ToastMessage.ERROR, 'Transaction submission failed: ' + error.toString());
           setSubmissionPending(false);
         });
     },
@@ -170,10 +169,11 @@ function Issue(props: IssueProps): JSX.Element {
           />
           <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">
-            <span className="text-sm">{`Max issuable: ${nativeToDecimal(
-              selectedVault?.issuableTokens?.toString() || 0,
-            ).toFixed(2)} 
-              ${selectedAsset?.code}`}</span>
+            <span className="text-sm">
+              {`Max issuable: ${nativeToDecimal(selectedVault?.issuableTokens?.toString() || 0).toFixed(2)} ${
+                selectedAsset?.code || ''
+              }`}
+            </span>
           </label>
 
           <FeeBox
