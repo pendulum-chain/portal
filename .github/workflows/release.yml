@@ -9,6 +9,7 @@ on:
 jobs:
   semantic-release:
     name: Running semantic-release on PR
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
