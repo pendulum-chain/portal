@@ -10,6 +10,7 @@ import { getAddressForFormat } from '../../../helpers/addressFormatter';
 import { useStakingPallet } from '../../../hooks/staking/useStakingPallet';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 import { Skeleton } from '../../../components/Skeleton';
+import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
 
 import { UserStaking } from '../CollatorColumns';
 import ClaimRewardsDialog from '../dialogs/ClaimRewardsDialog';
@@ -24,6 +25,7 @@ import {
   UnstakingDataType,
   handleTransactionStatus,
 } from './helpers';
+import Big from 'big.js';
 
 function CollatorRewards() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -41,8 +43,19 @@ function CollatorRewards() {
   const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
   const [unlockDialogVisible, setUnlockDialogVisible] = useState<boolean>(false);
   const [tokensTipText, setTokensTipText] = useState<string>('Locked for 7 days.');
-
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
+  const [unlockGasFee, setUnlockGasFee] = useState<Big>(new Big(0));
+
+  const { getTransactionFee } = useFeePallet();
+
+  const getUnlockGasFee = useCallback(async () => {
+    if (unlockUnstaked && walletAccount?.address) {
+      const submittableExtrinsic = unlockUnstaked(walletAccount.address);
+      setUnlockGasFee(await getTransactionFee(submittableExtrinsic));
+    }
+
+    return 0;
+  }, [getTransactionFee, unlockUnstaked, walletAccount?.address]);
 
   const userAccountAddress = useMemo(() => {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
@@ -144,6 +157,8 @@ function CollatorRewards() {
   }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount, setUpdateEnabled]);
 
   const handleUnlock = () => {
+    getUnlockGasFee();
+
     if (unlockUnstaked && walletAccount?.address) {
       const submittableExtrinsic = unlockUnstaked(walletAccount.address);
 
@@ -218,6 +233,7 @@ function CollatorRewards() {
         </div>
       </div>
       <UnlockDialog
+        gasFee={unlockGasFee}
         unlockSuccess={unlockDialogSuccess}
         onUnlock={handleUnlock}
         userStakeBalance={balanceEnabledForUnlock}

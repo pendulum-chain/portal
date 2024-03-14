@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from 'react-daisyui';
+import Big from 'big.js';
 
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import SuccessDialogIcon from '../../../../assets/dialog-status-success';
@@ -19,6 +20,7 @@ interface UnlockDialogProps {
   visible: boolean;
   unlockSuccess: boolean;
   userStakeBalance?: string;
+  gasFee: Big;
 }
 
 export interface UnlockFormValues {
@@ -31,7 +33,7 @@ enum UnlockStep {
 }
 
 export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
-  const { userStakeBalance = '0', visible, onClose, onUnlock, unlockSuccess } = props;
+  const { userStakeBalance = '0', visible, onClose, onUnlock, unlockSuccess, gasFee } = props;
 
   const [step, setStep] = useState<UnlockStep>(UnlockStep.Confirm);
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,8 +57,7 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
           <div className="rounded-lg flex flex-col items-center w-full">
             <div className="w-full flex justify-end items-center text-sm dark:text-neutral-400 text-neutral-500 mb-1">
               <img src={gasolinePump} alt="gasoline icon" className="h-full w-auto" width={42} height={42} />
-              {/* Todo: Implement Gas Prediction calculation */}
-              <span className="ml-1">{'<'}$0.01</span>
+              <span className="ml-1">${gasFee}</span>
             </div>
             <form className="flex flex-col">
               <Amount

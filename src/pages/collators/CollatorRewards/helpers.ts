@@ -19,7 +19,7 @@ async function calculateDaysLeft(blockNumber: string, api: ApiPromise) {
 export type UnstakingDataType = { [key: string]: string };
 
 function areTokensReadyToUnlock(daysLeft: number): boolean {
-  return daysLeft <= 0;
+  return daysLeft - 7 <= 0;
 }
 
 export async function generateUnstakingTooltipText(
