@@ -1,15 +1,13 @@
-name: semantic release
+name: semantic-release
 on:
-  pull_request:
+  push:
     branches: [staging]
-    types: [closed]
 
   workflow_dispatch:
 
 jobs:
   semantic-release:
-    name: Running semantic-release on PR
-    if: ${{ github.event.pull_request.merged == true }}
+    name: Running semantic-release
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,9 +19,9 @@ jobs:
       - name: 🛒 Checkout code
         uses: actions/checkout@v3
         with:
+          persist-credentials: false
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: 💿 Setup Nodejs
         uses: actions/setup-node@v3
