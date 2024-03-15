@@ -3,6 +3,8 @@
 
 ### Bug Fixes
 
+* github action ([0b9f207](https://github.com/pendulum-chain/portal/commit/0b9f20798f4f33b7a97ae674f460b7b3dfcde8c0))
+* release ([5ebfd88](https://github.com/pendulum-chain/portal/commit/5ebfd88596580307633e3c3dc10d3360f43be8e5))
 * Update disclaimer text for Spacewalk ([#303](https://github.com/pendulum-chain/portal/issues/303)) ([70c2a94](https://github.com/pendulum-chain/portal/commit/70c2a940c94aca49b4ef269dce25527084160dfd))
 
 
