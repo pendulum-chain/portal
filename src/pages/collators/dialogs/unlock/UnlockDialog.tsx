@@ -44,10 +44,11 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const { walletAccount } = useGlobalState();
   const balance = nativeToDecimal(userStakeBalance).toNumber();
+
   const form = useForm<UnlockFormValues>({
     resolver: yupResolver(getUnlockValidatiomSchema(balance)),
     defaultValues: {
-      amount: parseFloat(balance.toFixed(2)),
+      amount: balance,
     },
   });
 
@@ -59,9 +60,6 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
     return fee.toString();
   }, [gasFee]);
 
-  const title = 'Succesfully unlocked!';
-  const description = 'You have successfully staked X PEN tokens to &quot;Collator Name&quot;';
-
   const content = useMemo(() => {
     switch (step) {
       case UnlockStep.Confirm:
@@ -69,15 +67,23 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
           <UnlockConfirmStep
             {...{
               register: register('amount'),
-              userStakeBalance: nativeToDecimal(userStakeBalance).toNumber(),
-              setValue: (n: number) => setValue('amount', n),
+              userStakeBalance: balance,
               gasFee: showGasFee,
               error: formState.errors.amount?.message?.toString(),
             }}
           />
         );
       case UnlockStep.Success:
-        return <SuccessStep {...{ title, description }} />;
+        return (
+          <SuccessStep
+            {...{
+              title: 'Succesfully unlocked!',
+              description: `You have successfully staked ${
+                nativeToDecimal(userStakeBalance).toNumber() || 0
+              } PEN tokens to &quot;Collator Name&quot;`,
+            }}
+          />
+        );
     }
   }, [step, formState, register, setValue, userStakeBalance, showGasFee]);
 

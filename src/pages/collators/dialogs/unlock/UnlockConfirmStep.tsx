@@ -6,18 +6,12 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 interface UnlockConfirmStepProps {
   register: UseFormRegisterReturn<'amount'>;
   userStakeBalance: number;
-  setValue: (n: number) => void;
   gasFee: string;
   error?: string;
 }
 
-export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({
-  register,
-  userStakeBalance,
-  setValue,
-  gasFee,
-  error,
-}) => {
+export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, userStakeBalance, gasFee, error }) => {
+  const noSetValue = () => null;
   return (
     <div className="rounded-lg flex flex-col items-center w-full">
       <div className="w-full flex justify-end items-center text-sm dark:text-neutral-400 text-neutral-500 mb-1">
@@ -25,7 +19,17 @@ export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({
         <span className="ml-1">${gasFee}</span>
       </div>
       <form className="flex flex-col">
-        <Amount register={register} max={userStakeBalance} setValue={setValue} error={error} fullMax={true} />
+        <Amount
+          register={register}
+          max={userStakeBalance}
+          setValue={noSetValue}
+          error={error}
+          fullMax={true}
+          hideHalfButton={true}
+          hideMaxButton={true}
+          readOnly={true}
+          defaultValue={userStakeBalance}
+        />
       </form>
     </div>
   );

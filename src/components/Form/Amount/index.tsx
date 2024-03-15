@@ -11,6 +11,10 @@ export interface AmountProps {
   assetSuffix?: string;
   error?: string;
   fullMax?: boolean;
+  hideHalfButton?: boolean;
+  hideMaxButton?: boolean;
+  readOnly?: boolean;
+  defaultValue?: string;
 }
 
 const BALANCE_LEFT_FOR_TX_APPROVAL = 0.5;
@@ -21,7 +25,18 @@ function calculateMaxAmount(max: number, fullMax: boolean) {
   return Math.max(0, maxAmount);
 }
 
-const Amount = ({ className, register, max, setValue, error, fullMax = false }: AmountProps): JSX.Element | null => {
+const Amount = ({
+  className,
+  register,
+  max,
+  setValue,
+  error,
+  fullMax = false,
+  hideHalfButton = false,
+  hideMaxButton = false,
+  readOnly = false,
+  defaultValue,
+}: AmountProps): JSX.Element | null => {
   return (
     <>
       <div
@@ -42,23 +57,37 @@ const Amount = ({ className, register, max, setValue, error, fullMax = false }: 
               }}
               placeholder="0.0"
               {...register}
+              value={defaultValue}
+              readOnly={readOnly}
             />
           </div>
           <div className="flex">
-            <button
-              className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-              onClick={() => setValue(roundNumber(Number(max) * 0.5))}
-              type="button"
-            >
-              50%
-            </button>
-            <button
-              className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-              onClick={() => setValue(calculateMaxAmount(Number(max), fullMax))}
-              type="button"
-            >
-              MAX
-            </button>
+            {hideHalfButton ? (
+              <></>
+            ) : (
+              <>
+                <button
+                  className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
+                  onClick={() => setValue(roundNumber(Number(max) * 0.5))}
+                  type="button"
+                >
+                  50%
+                </button>
+              </>
+            )}
+            {hideMaxButton ? (
+              <></>
+            ) : (
+              <>
+                <button
+                  className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
+                  onClick={() => setValue(calculateMaxAmount(Number(max), fullMax))}
+                  type="button"
+                >
+                  MAX
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="flex justify-between items-center dark:text-neutral-400 text-neutral-500">
