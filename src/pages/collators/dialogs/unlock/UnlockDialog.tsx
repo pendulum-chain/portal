@@ -50,6 +50,12 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
 
   const { formState, register, setValue } = form;
 
+  const showGasFee = useMemo(() => {
+    const fee = nativeToDecimal(gasFee.toString()).toNumber();
+    if (fee < 0.01) return '<0.01';
+    return fee;
+  }, [gasFee]);
+
   const content = useMemo(() => {
     switch (step) {
       case UnlockStep.Confirm:
@@ -57,7 +63,7 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
           <div className="rounded-lg flex flex-col items-center w-full">
             <div className="w-full flex justify-end items-center text-sm dark:text-neutral-400 text-neutral-500 mb-1">
               <img src={gasolinePump} alt="gasoline icon" className="h-full w-auto" width={42} height={42} />
-              <span className="ml-1">${gasFee}</span>
+              <span className="ml-1">${showGasFee}</span>
             </div>
             <form className="flex flex-col">
               <Amount
@@ -82,7 +88,7 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
           </div>
         );
     }
-  }, [step, formState, register, setValue, userStakeBalance]);
+  }, [step, formState, register, setValue, userStakeBalance, showGasFee]);
 
   const onConfirm = () => {
     setLoading(true);

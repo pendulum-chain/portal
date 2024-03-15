@@ -157,8 +157,6 @@ function CollatorRewards() {
   }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount, setUpdateEnabled]);
 
   const handleUnlock = () => {
-    getUnlockGasFee();
-
     if (unlockUnstaked && walletAccount?.address) {
       const submittableExtrinsic = unlockUnstaked(walletAccount.address);
 
@@ -175,6 +173,11 @@ function CollatorRewards() {
       setLoadingToken(true);
     }
   }, [tokenSymbol]);
+
+  const handleUnlockButtonClick = () => {
+    getUnlockGasFee();
+    setUnlockDialogVisible(true);
+  };
 
   const renderContentWithLoading = (content: JSX.Element) => {
     if (loadingToken) {
@@ -199,9 +202,7 @@ function CollatorRewards() {
             {renderContentWithLoading(
               <StakingContent
                 userStakingAmount={userStaking?.amount}
-                onButtonClick={() => {
-                  setUnlockDialogVisible(true);
-                }}
+                onButtonClick={handleUnlockButtonClick}
                 balanceEnabledForUnlock={balanceEnabledForUnlock}
                 tokenSymbol={tokenSymbol as string}
                 userAvailableBalance={userAvailableBalance}
