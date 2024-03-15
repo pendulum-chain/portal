@@ -1,14 +1,13 @@
-name: release
+name: semantic-release
 on:
   push:
-    branches: [staging, develop]
+    branches: [staging]
 
   workflow_dispatch:
 
 jobs:
   semantic-release:
-    name: Running push
-    if: "!contains(toJSON(github.event.commits.*.message), 'chore(release):')"
+    name: Running semantic-release
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,8 +19,9 @@ jobs:
       - name: 🛒 Checkout code
         uses: actions/checkout@v3
         with:
+          persist-credentials: false
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: 💿 Setup Nodejs
         uses: actions/setup-node@v3
@@ -52,6 +52,5 @@ jobs:
       - name: 📦 Release
         run: yarn release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+          NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

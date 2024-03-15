@@ -2,7 +2,7 @@ name: ci
 on:
   pull_request:
     branches: [main, staging, develop]
-    
+
   workflow_dispatch:
 
 jobs:
@@ -48,10 +48,10 @@ jobs:
         run: yarn install --immutable --inline-builds
 
       - name: 📋 Yarn Lock Changes
-        uses: Simek/yarn-lock-changes@main 
+        uses: Simek/yarn-lock-changes@main
         with:
           updateComment: 'true'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: ✏️ Lint
         run: yarn lint:ts
