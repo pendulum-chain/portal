@@ -5,14 +5,14 @@ import { Button } from 'react-daisyui';
 import Big from 'big.js';
 
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
-import SuccessDialogIcon from '../../../../assets/dialog-status-success';
-import Amount from '../../../../components/Form/Amount';
 import { useGlobalState } from '../../../../GlobalStateProvider';
-import gasolinePump from '../../../../assets/gasoline-pump.svg';
 
 import { Dialog } from '../Dialog';
 
 import { getUnlockValidatiomSchema } from './UnlockValidationSchema';
+import { SuccessStep } from '../steps/SuccessStep';
+import { FC } from 'preact/compat';
+import { UnlockConfirmStep } from './UnlockConfirmStep';
 
 interface UnlockDialogProps {
   onUnlock: () => void;
@@ -32,15 +32,18 @@ enum UnlockStep {
   Success = 1,
 }
 
-export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
-  const { userStakeBalance = '0', visible, onClose, onUnlock, unlockSuccess, gasFee } = props;
-
+export const UnlockDialog: FC<UnlockDialogProps> = ({
+  userStakeBalance = '0',
+  visible,
+  onClose,
+  onUnlock,
+  unlockSuccess,
+  gasFee,
+}): JSX.Element => {
   const [step, setStep] = useState<UnlockStep>(UnlockStep.Confirm);
   const [loading, setLoading] = useState<boolean>(false);
-
   const { walletAccount } = useGlobalState();
   const balance = nativeToDecimal(userStakeBalance).toNumber();
-
   const form = useForm<UnlockFormValues>({
     resolver: yupResolver(getUnlockValidatiomSchema(balance)),
     defaultValues: {
@@ -50,49 +53,36 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
 
   const { formState, register, setValue } = form;
 
-  const showGasFee = useMemo(() => {
+  const showGasFee = useMemo((): string => {
     const fee = nativeToDecimal(gasFee.toString()).toNumber();
     if (fee < 0.01) return '<0.01';
-    return fee;
+    return fee.toString();
   }, [gasFee]);
+
+  const title = 'Succesfully unlocked!';
+  const description = 'You have successfully staked X PEN tokens to &quot;Collator Name&quot;';
 
   const content = useMemo(() => {
     switch (step) {
       case UnlockStep.Confirm:
         return (
-          <div className="rounded-lg flex flex-col items-center w-full">
-            <div className="w-full flex justify-end items-center text-sm dark:text-neutral-400 text-neutral-500 mb-1">
-              <img src={gasolinePump} alt="gasoline icon" className="h-full w-auto" width={42} height={42} />
-              <span className="ml-1">${showGasFee}</span>
-            </div>
-            <form className="flex flex-col">
-              <Amount
-                register={register('amount')}
-                max={nativeToDecimal(userStakeBalance).toNumber()}
-                setValue={(n: number) => setValue('amount', n)}
-                error={formState.errors.amount?.message?.toString()}
-                fullMax={true}
-              />
-            </form>
-          </div>
+          <UnlockConfirmStep
+            {...{
+              register: register('amount'),
+              userStakeBalance: nativeToDecimal(userStakeBalance).toNumber(),
+              setValue: (n: number) => setValue('amount', n),
+              gasFee: showGasFee,
+              error: formState.errors.amount?.message?.toString(),
+            }}
+          />
         );
       case UnlockStep.Success:
-        return (
-          <div className="flex flex-col items-center justify-between">
-            <SuccessDialogIcon />
-            <div className="mt-4" />
-            <h2 className="text-xl">Succesfully unlocked!</h2>
-            <p className="text-sm dark:text-neutral-400 text-neutral-500 mt-2 mx-4 sm:mx-16 text-center">
-              You have successfully staked X PEN tokens to &quot;Collator Name&quot;
-            </p>
-          </div>
-        );
+        return <SuccessStep {...{ title, description }} />;
     }
   }, [step, formState, register, setValue, userStakeBalance, showGasFee]);
 
   const onConfirm = () => {
     setLoading(true);
-
     onUnlock();
   };
 
@@ -143,4 +133,4 @@ export function UnlockDialog(props: UnlockDialogProps): JSX.Element {
   return (
     <Dialog onClose={onClose} headerText={getModalHeader(step)} content={content} actions={actions} visible={visible} />
   );
-}
+};
