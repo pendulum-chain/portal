@@ -1,9 +1,9 @@
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Modal } from 'react-daisyui';
-import { CloseButton } from '../../../components/CloseButton';
+import { Button } from 'react-daisyui';
 import { nativeToDecimal, nativeToFormatMetric } from '../../../shared/parseNumbers/metric';
 import { DelegationMode } from './ExecuteDelegationDialogs';
+import { Dialog } from './Dialog';
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;
@@ -14,7 +14,7 @@ interface ConfirmDelegateDialogProps {
   visible: boolean;
   mode: DelegationMode;
   onCancel?: () => void;
-  onClose?: () => void;
+  onClose: () => void;
   onConfirm?: () => void;
 }
 
@@ -55,11 +55,9 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
 
   const titleAction = useMemo(() => (mode === 'unstaking' ? 'Unstake' : 'Stake'), [mode]);
 
-  return (
-    <Modal open={visible} className="bg-base-200 rounded-md">
-      <Modal.Header className="text-2xl">Settlement Confirmation</Modal.Header>
-      <CloseButton onClick={onClose} />
-      <Modal.Body>
+  const content = useMemo(
+    () => (
+      <>
         <div className="flex flex-col items-center justify-between">
           <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Delegate'}</div>
           <div className="text-xl mt-2">
@@ -92,8 +90,23 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
             </div>
           </div>
         </div>
-      </Modal.Body>
-      <div className="flex-col align-center mt-4">
+      </>
+    ),
+    [
+      availableBalance,
+      collapseVisibility,
+      delegationAmountDecimal,
+      mode,
+      resultingBalance,
+      toggle,
+      tokenSymbol,
+      transactionFee,
+    ],
+  );
+
+  const actions = useMemo(
+    () => (
+      <div className="flex-col align-center w-full">
         <Button className="px-6 w-full mb-2" color="primary" loading={submissionPending} onClick={onConfirm}>
           {titleAction}
         </Button>
@@ -101,7 +114,18 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
           Cancel
         </Button>
       </div>
-    </Modal>
+    ),
+    [onCancel, onConfirm, submissionPending, titleAction],
+  );
+
+  return (
+    <Dialog
+      visible={visible}
+      onClose={onClose}
+      headerText="Settlement Confirmation"
+      content={content}
+      actions={actions}
+    />
   );
 }
 

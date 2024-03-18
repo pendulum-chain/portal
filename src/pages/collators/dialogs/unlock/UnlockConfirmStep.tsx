@@ -18,7 +18,7 @@ export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, userSt
         <img src={gasolinePump} alt="gasoline icon" className="h-full w-auto" width={42} height={42} />
         <span className="ml-1">${gasFee}</span>
       </div>
-      <form className="flex flex-col">
+      <form className="flex flex-col w-full">
         <Amount
           register={register}
           max={userStakeBalance}
@@ -28,7 +28,7 @@ export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, userSt
           hideHalfButton={true}
           hideMaxButton={true}
           readOnly={true}
-          defaultValue={userStakeBalance}
+          defaultValue={String(userStakeBalance)}
         />
       </form>
     </div>
