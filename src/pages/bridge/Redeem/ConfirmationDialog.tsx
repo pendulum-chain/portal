@@ -1,4 +1,4 @@
-import { Button, Modal } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { PublicKey } from '../../../components/PublicKey';
