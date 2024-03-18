@@ -204,7 +204,7 @@ const assetsToFilterByTenant: FilteredAsset = {
 };
 
 export function shouldFilterOut(tenantName: TenantName, asset: Asset) {
-  return !!assetsToFilterByTenant[tenantName].find(({ code, issuer }) => {
+  return assetsToFilterByTenant[tenantName]?.find(({ code, issuer }) => {
     return asset.code === code && asset.issuer == issuer;
   });
 }
