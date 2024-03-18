@@ -12,7 +12,6 @@ import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
-import ComingSoonTag from './ComingSoonTag';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -58,8 +57,6 @@ export const links: Links = ({ tenantName }) => [
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
     prefix: <SpacewalkIcon />,
-    disabled: tenantName === TenantName.Pendulum,
-    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : null,
     submenu: [
       {
         link: './spacewalk/bridge',
