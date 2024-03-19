@@ -77,10 +77,10 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
         return (
           <SuccessStep
             {...{
-              title: 'Succesfully unlocked!',
-              description: `You have successfully staked ${
+              title: 'Successfully unlocked!',
+              description: `You have successfully unlocked ${
                 nativeToDecimal(userStakeBalance).toNumber() || 0
-              } PEN tokens to &quot;Collator Name&quot;`,
+              } PEN tokens.`,
             }}
           />
         );
