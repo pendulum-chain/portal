@@ -1,57 +1,61 @@
-import { Button, Checkbox, Modal } from 'react-daisyui';
-import { CloseButton } from '../../../components/CloseButton';
+import { Button, Checkbox } from 'react-daisyui';
 import VaultSelector from '../../../components/Selector/VaultSelector';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
+import { Dialog } from '../../collators/dialogs/Dialog';
+import { useMemo } from 'preact/hooks';
 
 interface Props {
-  onClose?: () => void;
-  visible?: boolean;
+  onClose: () => void;
+  visible: boolean;
 }
 
 export function SettingsDialog({ visible, onClose }: Props) {
   const { manualVaultSelection, vaultsForCurrency, setManualVaultSelection, selectedVault, setSelectedVault } =
     useBridgeSettings();
-  return (
-    <Modal open={visible} className="bg-base-100 overflow-y-visible">
-      <Modal.Header className="text-2xl">Select Vault</Modal.Header>
-      <CloseButton onClick={onClose} />
-      <Modal.Body>
-        <div className="text-center">
-          <div className="flex align-center mt-4">
-            <Checkbox
-              size="sm"
-              color="success"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                if (e.target instanceof HTMLInputElement) {
-                  setManualVaultSelection(e.target.checked);
-                }
-              }}
-              className="checkbox rounded"
-              checked={manualVaultSelection}
-            />
-            <span className="ml-2">Manually select vault</span>
-          </div>
-          {manualVaultSelection && vaultsForCurrency && (
-            <div className="flex flex-col justify-start items-start mt-4">
-              <div>Select Vault</div>
-              <VaultSelector
-                vaults={vaultsForCurrency}
-                onChange={setSelectedVault}
-                selectedVault={selectedVault}
-                showMaxTokensFor="issuableTokens"
-              />
-            </div>
-          )}
-        </div>
-      </Modal.Body>
 
-      <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose} className="w-full">
-          Select
-        </Button>
-      </Modal.Actions>
-    </Modal>
+  const content = useMemo(
+    () => (
+      <div className="text-center">
+        <div className="flex align-center mt-4">
+          <Checkbox
+            size="sm"
+            color="success"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (e.target instanceof HTMLInputElement) {
+                setManualVaultSelection(e.target.checked);
+              }
+            }}
+            className="checkbox rounded"
+            checked={manualVaultSelection}
+          />
+          <span className="ml-2">Manually select vault</span>
+        </div>
+        {manualVaultSelection && vaultsForCurrency && (
+          <div className="flex flex-col justify-start items-start mt-4">
+            <div>Select Vault</div>
+            <VaultSelector
+              vaults={vaultsForCurrency}
+              onChange={setSelectedVault}
+              selectedVault={selectedVault}
+              showMaxTokensFor="issuableTokens"
+            />
+          </div>
+        )}
+      </div>
+    ),
+    [manualVaultSelection, vaultsForCurrency, setSelectedVault, selectedVault, setManualVaultSelection],
   );
+
+  const actions = useMemo(
+    () => (
+      <Button color="primary" onClick={onClose} className="w-full">
+        Select
+      </Button>
+    ),
+    [onClose],
+  );
+
+  return <Dialog headerText="Select Vault" visible={visible} onClose={onClose} content={content} actions={actions} />;
 }
 
 export default SettingsDialog;

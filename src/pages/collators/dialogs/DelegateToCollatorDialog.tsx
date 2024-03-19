@@ -1,9 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState } from 'preact/hooks';
-import { Button, Modal } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import ChainLogo from '../../../assets/ChainLogo';
-import { CloseButton } from '../../../components/CloseButton';
 import Amount from '../../../components/Form/Amount';
 import { PublicKey } from '../../../components/PublicKey';
 import {
@@ -13,6 +12,7 @@ import {
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 import { FormValues, getStakingValidationSchema } from './ValidationSchema';
+import { Dialog } from './Dialog';
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;
@@ -72,34 +72,41 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   // We watch the amount because we need to re-render the FeeBox constantly
   watch('amount');
 
-  return (
-    <Modal open={visible} className="bg-base-200 rounded-md">
-      <form className="px-5 flex flex-col" onSubmit={handleSubmit(onSubmit, () => undefined)}>
-        <Modal.Header className="text-xl font-bold">{titleAction}</Modal.Header>
-        <CloseButton
-          onClick={() => {
-            setError('');
-            setValue('amount', undefined);
-            if (onClose) onClose();
-          }}
+  const onCloseDialog = () => {
+    setError('');
+    setValue('amount', undefined);
+    if (onClose) onClose();
+  };
+
+  const content = useMemo(
+    () => (
+      <>
+        {CollatorInfo}
+        <div className="mt-4" />
+        <Amount
+          register={register('amount')}
+          setValue={(n: number) => setValue('amount', n)}
+          error={formState.errors.amount?.message?.toString()}
+          max={max}
         />
-        <Modal.Body>
-          {CollatorInfo}
-          <div className="mt-4" />
-          <Amount
-            register={register('amount')}
-            setValue={(n: number) => setValue('amount', n)}
-            error={formState.errors.amount?.message?.toString()}
-            max={max}
-          />
-        </Modal.Body>
-        <Modal.Actions className="justify-center">
-          <Button className="px-6 w-full" type="submit" color="primary" disabled={!!error}>
-            {titleAction}
-          </Button>
-        </Modal.Actions>
-      </form>
-    </Modal>
+      </>
+    ),
+    [CollatorInfo, formState.errors.amount?.message, max, register, setValue],
+  );
+
+  const actions = useMemo(
+    () => (
+      <Button className="px-6 w-full" type="submit" color="primary" disabled={!!error}>
+        {titleAction}
+      </Button>
+    ),
+    [error, titleAction],
+  );
+
+  return (
+    <form className="px-5 flex flex-col" onSubmit={handleSubmit(onSubmit, () => undefined)}>
+      <Dialog headerText={titleAction} visible={visible} onClose={onCloseDialog} content={content} actions={actions} />
+    </form>
   );
 }
 
