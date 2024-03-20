@@ -7,6 +7,7 @@ import PendulumLogo from '../../assets/pendulum-logo.png';
 import { TenantName } from '../../models/Tenant';
 import ChainSelector from '../ChainSelector';
 import OpenWallet from '../Wallet';
+import { GetToken } from '../GetToken';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
@@ -74,6 +75,7 @@ export default function Layout(): JSX.Element | null {
             </div>
             <OpenWallet dAppName={dAppName} />
             <ChainSelector />
+            <GetToken />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
