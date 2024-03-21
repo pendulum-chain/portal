@@ -310,3 +310,8 @@ w3m-modal {
 .animate-bounce-x {
   animation: bounce-x 1s infinite;
 }
+
+.badge {
+  height: 25px;
+  white-space: nowrap;
+}
