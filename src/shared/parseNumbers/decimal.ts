@@ -5,7 +5,7 @@ const MINIMUM_DECIMAL_PLACES = 2;
 const DECIMAL_PLACES = 6;
 const MICRO = 1e-6;
 
-const formatDecimal = (n: number, tokenSymbol: string | undefined) => {
+const formatDecimal = (n: number, tokenSymbol?: string) => {
   if (n < MICRO) {
     return formatNumberLessThanMicro(tokenSymbol);
   }
@@ -13,12 +13,12 @@ const formatDecimal = (n: number, tokenSymbol: string | undefined) => {
   return formatNumber(n, tokenSymbol);
 };
 
-const formatNumberLessThanMicro = (tokenSymbol: string | undefined) => {
-  return `< 0.000001 ${tokenSymbol}`;
+const formatNumberLessThanMicro = (tokenSymbol?: string) => {
+  return `< 0.000001 ${tokenSymbol ? tokenSymbol : ''}`;
 };
 
-const formatNumber = (n: number, tokenSymbol: string | undefined) => {
-  return `${removeUnnecessaryDecimalNumbers(n.toFixed(DECIMAL_PLACES))} ${tokenSymbol}`;
+const formatNumber = (n: number, tokenSymbol?: string) => {
+  return `${removeUnnecessaryDecimalNumbers(n.toFixed(DECIMAL_PLACES))} ${tokenSymbol ? tokenSymbol : ''}`;
 };
 
 const removeUnnecessaryDecimalNumbers = (value: string) => {
@@ -28,5 +28,8 @@ const removeUnnecessaryDecimalNumbers = (value: string) => {
   });
 };
 
-export const nativeToFormatDecimal = (value: BigNumber | number | string, tokenSymbol: string | undefined) =>
+export const nativeToFormatDecimal = (value: BigNumber | number | string, tokenSymbol?: string) =>
   formatDecimal(nativeToDecimal(value).toNumber(), tokenSymbol);
+
+export const nativeToFormatDecimalPure = (value: BigNumber | number | string) =>
+  formatNumber(nativeToDecimal(value).toNumber());
