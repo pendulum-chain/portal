@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -43,7 +42,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { issueFee, redeemFee, issueGriefingCollateral } = useFeePallet().getFees();
+  const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
   const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
@@ -79,7 +78,7 @@ function Issue(props: IssueProps): JSX.Element {
         <li>• Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`</li>
       </ul>
     ),
-    [issueFee, redeemFee, issueGriefingCollateral],
+    [],
   );
 
   const requestIssueExtrinsic = useMemo(() => {
@@ -145,7 +144,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   useMemo(() => {
     setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
-  }, [amount, issueGriefingCollateral]);
+  }, [amount, issueGriefingCollateral, setValue]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
