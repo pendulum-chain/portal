@@ -36,11 +36,14 @@ export const useBuyout = (): BuyoutSettings => {
         const minAmountToBuyout = api.consts.treasuryBuyoutExtension.minAmountToBuyout;
         const maxAmountToBuyout = await api.query.treasuryBuyoutExtension.buyoutLimit();
 
-        const minn = minAmountToBuyout?.toString();
-        const maxx = maxAmountToBuyout?.unwrap().toString();
+        const minBuyoutAmount = minAmountToBuyout?.toString();
+        const maxBuyoutAmount = maxAmountToBuyout?.unwrap().toString();
 
-        const minSwap = nativeToFormatDecimalPure(minn);
-        const maxSwap = nativeToFormatDecimalPure(maxx);
+        const minSwap = nativeToFormatDecimalPure(minBuyoutAmount);
+        const maxSwap = nativeToFormatDecimalPure(maxBuyoutAmount);
+
+        console.log('minSwap', minSwap);
+        console.log('maxSwap', maxSwap);
 
         setMinimumSwap(Number(minSwap));
         setMaximumSwap(Number(maxSwap));

@@ -18,11 +18,11 @@ export interface FromProps {
   error?: string;
   customText?: string;
   minBadge?: {
-    value: string;
+    value: number;
     onClick?: () => void;
   };
   maxBadge?: {
-    value: string;
+    value: number;
     onClick?: () => void;
   };
   readOnly?: boolean;

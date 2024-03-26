@@ -59,7 +59,7 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
           <img src={getAssetIcon(selectedAsset)} alt="Pendulum" className="h-full w-auto " />
         </span>
         <strong className="font-bold">{selectedItem?.displayName}</strong>
-        <ChevronDownIcon className="w-4 h-4 inline ml-px" />
+        {items.length > 1 ? <ChevronDownIcon className="w-4 h-4 inline ml-px" /> : <div className="px-1" />}
       </Button>
     </DropdownSelector>
   );
