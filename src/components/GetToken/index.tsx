@@ -4,6 +4,9 @@ import { NavLink } from 'react-router-dom';
 import ampe from '../../assets/ampe.svg';
 import greenArrow from '../../assets/green-arrow.svg';
 import greenWarning from '../../assets/green-warning.svg';
+import { useAccountBalance } from '../../shared/useAccountBalance';
+import useSwitchChain from '../../hooks/useSwitchChain';
+import { useNodeInfoState } from '../../NodeInfoProvider';
 
 const InsufficientFundsTooltip = () => (
   <div className="bg-black rounded-lg h-8 px-3 flex items-center">
@@ -21,19 +24,31 @@ const JumpingArrow = () => (
 );
 
 export const GetToken = () => {
-  const link = '/foucoco/gas';
+  const { balance } = useAccountBalance();
+  const { currentTenant } = useSwitchChain();
+  const { tokenSymbol } = useNodeInfoState().state;
+
+  const link = `/${currentTenant}/gas`;
 
   return (
     <section className="flex items-center">
-      <InsufficientFundsTooltip />
-      <JumpingArrow />
+      {Number(balance) === 0 && (
+        <>
+          <InsufficientFundsTooltip />
+          <JumpingArrow />
+        </>
+      )}
 
-      <NavLink to={link}>
-        <Button size="sm" color="primary" className="text-sm px-2 sm:px-3" type="button">
-          <img src={ampe} className="mr-1.5" />
-          <p className="text-black">GET AMPE</p>
-        </Button>
-      </NavLink>
+      {tokenSymbol ? (
+        <NavLink to={link}>
+          <Button size="sm" color="primary" className="text-sm px-2 sm:px-3" type="button">
+            <img src={ampe} className="mr-1.5" />
+            <p className="text-black">GET {tokenSymbol}</p>
+          </Button>
+        </NavLink>
+      ) : (
+        <></>
+      )}
     </section>
   );
 };
