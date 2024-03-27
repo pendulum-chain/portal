@@ -20,6 +20,7 @@ import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
+import { prioritizeXLMAsset } from '../helpers';
 
 export type RedeemFormValues = {
   amount: number;
@@ -40,6 +41,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { selectedVault, selectedAsset, wrappedAssets, setSelectedAsset } = useBridgeSettings();
+
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { balances } = useBalances();
@@ -140,7 +142,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
             max={selectedAssetsBalance}
-            assets={wrappedAssets}
+            assets={prioritizeXLMAsset(wrappedAssets)}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
             network={network}
