@@ -76,7 +76,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   }, [deadline]);
 
   return (
-    <Modal open={true}>
+    <Modal open={visible}>
       <Modal.Header className="font-bold">Deposit</Modal.Header>
       <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
         ✕
@@ -108,8 +108,8 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           )}
         </div>
         <div className="text-sm mt-4">
-          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault, contact
-          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer">
+          Note: Estimated time for issuing: In a minute after submitting the Stellar payment to the vault, contact
+          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 underline">
             support
           </a>
           if your transaction is still pending after 10 minutes..
