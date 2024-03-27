@@ -13,7 +13,6 @@ import TermsAndConditions from './TermsAndConditions';
  * Components need to be default exports inside the file for suspense loading to work properly
  */
 const Dashboard = <SuspenseLoad importFn={() => import('./pages/dashboard/Dashboard')} fallback={defaultPageLoader} />;
-const Amm = <SuspenseLoad importFn={() => import('./pages/amm/Amm')} fallback={defaultPageLoader} />;
 const NablaPage = <SuspenseLoad importFn={() => import('./pages/nabla')} fallback={defaultPageLoader} />;
 const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
 const SwapPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap')} fallback={defaultPageLoader} />;
@@ -34,7 +33,6 @@ export function App() {
         <Route path="/:network/" element={<Layout />}>
           <Route path="" element={Dashboard} />
           <Route path="dashboard" element={Dashboard} />
-          <Route path="amm" element={Amm} />
           <Route path="stats" element={StatsPage} />
           <Route path="spacewalk">
             <Route path="bridge" element={Bridge} />
