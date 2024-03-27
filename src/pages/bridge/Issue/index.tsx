@@ -21,6 +21,7 @@ import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 import { prioritizeXLMAsset } from '../helpers';
+import { TenantName } from '../../../models/Tenant';
 
 interface IssueProps {
   network: string;
@@ -69,7 +70,8 @@ function Issue(props: IssueProps): JSX.Element {
         <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
         <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem. </li>
         <li>
-          Total issuable amount (in USD): 50000 USD. Join our vault operator program, more
+          Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
+          operator program, more
           <a
             target="_blank"
             className="text-accent ml-1"
