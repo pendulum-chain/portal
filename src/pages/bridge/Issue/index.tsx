@@ -65,11 +65,11 @@ function Issue(props: IssueProps): JSX.Element {
 
   const disclaimerContent = useMemo(
     () => (
-      <ul>
-        <li>• Bridge Fee: Currently free, transitioning to 0.1% per transaction soon.</li>
-        <li>• Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem </li>
+      <ul className="list-disc pl-4">
+        <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
+        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem. </li>
         <li>
-          • Total issuable amount (in USD): 20000 USD. Join our vault operator program, more
+          Total issuable amount (in USD): 20000 USD. Join our vault operator program, more
           <a
             target="_blank"
             className="text-accent ml-1"
@@ -79,7 +79,13 @@ function Issue(props: IssueProps): JSX.Element {
             here
           </a>
         </li>
-        <li>• Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`</li>
+        <li>
+          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault, contact
+          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-accent">
+            support
+          </a>
+          if your transaction is still pending after 10 minutes.
+        </li>
       </ul>
     ),
     [],
