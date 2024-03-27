@@ -319,11 +319,11 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       </label>
       <div className="mt-4" />
       <div className="text-sm px-5 ">
-        Note: Estimated time for issuing: In a minute after submitting the Stellar payment to the vault, contact
+        Note: Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
         <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 underline">
           support
         </a>
-        if your transaction is still pending after 10 minutes..
+        if your transaction is still pending after 10 minutes.
       </div>
       <div className="mt-4" />
     </>
