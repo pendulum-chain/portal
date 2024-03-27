@@ -12,6 +12,7 @@ import Issue from './Issue';
 import SettingsDialog from './Issue/SettingsDialog';
 import Redeem from './Redeem';
 import './styles.css';
+import { TenantName } from '../../models/Tenant';
 
 enum BridgeTabs {
   Issue = 0,
@@ -51,8 +52,10 @@ function Bridge(): JSX.Element | null {
           <div className="flex justify-between px-5 mt-5">
             <Tabs className="flex w-5/6 flex-grow justify-center" boxed value={tabValue} onChange={setTabValue}>
               <Tabs.Tab className="w-2/5 h-fit p-2" value={0}>
-                {chain === 'Pendulum' && <PendulumLogo className="w-6 h-6 mr-1" />}
-                {chain === 'Amplitude' && <AmplitudeLogo className="w-6 h-6 mr-1" />}
+                {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="w-6 h-6 mr-1" />}
+                {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
+                  <AmplitudeLogo className="w-6 h-6 mr-1" />
+                )}
                 To {chain}
               </Tabs.Tab>
               <Tabs.Tab className="w-2/5 h-fit p-2" value={1}>
