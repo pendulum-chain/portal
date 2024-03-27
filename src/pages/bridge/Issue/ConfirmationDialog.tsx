@@ -14,10 +14,11 @@ interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
   onClose: () => void;
   visible: boolean;
+  onConfirm: () => void;
 }
 
 export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { issueRequest, visible, onClose } = props;
+  const { issueRequest, visible, onClose, onConfirm } = props;
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
@@ -113,7 +114,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
       </Modal.Body>
 
       <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose}>
+        <Button color="primary" onClick={onConfirm}>
           I have made the payment
         </Button>
       </Modal.Actions>

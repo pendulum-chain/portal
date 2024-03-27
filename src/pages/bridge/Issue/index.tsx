@@ -4,6 +4,7 @@ import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
@@ -40,8 +41,9 @@ function Issue(props: IssueProps): JSX.Element {
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
 
+  const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { walletAccount, dAppName } = useGlobalState();
+  const { walletAccount, dAppName, tenantName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueGriefingCollateral } = useFeePallet().getFees();
@@ -154,6 +156,10 @@ function Issue(props: IssueProps): JSX.Element {
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
+        onConfirm={() => {
+          setConfirmationDialogVisible(false);
+          navigateTo(`/${tenantName}/spacewalk/transfers`);
+        }}
       />
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
