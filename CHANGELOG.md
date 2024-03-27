@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/pendulum-chain/portal/compare/v1.3.1...v1.3.2) (2024-03-27)
+
+
+### Bug Fixes
+
+* "Back to stellar" pop-up unreadable ([9e216bd](https://github.com/pendulum-chain/portal/commit/9e216bd9833b75d0b920c7191b4c16c9275e5e21))
+
 ## [1.3.1](https://github.com/pendulum-chain/portal/compare/v1.3.0...v1.3.1) (2024-03-19)
 
 # [1.3.0](https://github.com/pendulum-chain/portal/compare/v1.2.1...v1.3.0) (2024-03-19)

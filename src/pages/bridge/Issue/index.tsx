@@ -187,7 +187,7 @@ function Issue(props: IssueProps): JSX.Element {
           />
           {walletAccount ? (
             <Button
-              className="w-full text-primary-content"
+              className="w-full"
               color="primary"
               loading={submissionPending}
               type="submit"
