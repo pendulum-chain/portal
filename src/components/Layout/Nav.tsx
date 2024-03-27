@@ -9,7 +9,7 @@ const CollapseMenu = ({
   disabled,
   button,
   children,
-  ariaControls
+  ariaControls,
 }: {
   link: string;
   disabled?: boolean;
@@ -37,7 +37,7 @@ const CollapseMenu = ({
       >
         {button}
       </button>
-      <div className='collapse-content p-0'>{children}</div>
+      <div className="collapse-content p-0">{children}</div>
     </section>
   );
 };
@@ -81,7 +81,7 @@ const Nav = memo(({ onClick }: NavProps) => {
             key={i}
             link={item.link}
             disabled={item.disabled}
-            ariaControls='submenu'
+            ariaControls="submenu"
             button={
               <>
                 {item.prefix}
@@ -90,9 +90,11 @@ const Nav = memo(({ onClick }: NavProps) => {
               </>
             }
           >
-            <ul className="submenu" id='submenu'>
+            <ul className="submenu" id="submenu">
               {item.submenu.map((subItem, j) => (
-                <li key={`${i}-${j}`}><NavItem item={subItem} onClick={onClick} /></li>
+                <li key={`${i}-${j}`}>
+                  <NavItem item={subItem} onClick={onClick} />
+                </li>
               ))}
             </ul>
           </CollapseMenu>

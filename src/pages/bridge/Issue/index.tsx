@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';

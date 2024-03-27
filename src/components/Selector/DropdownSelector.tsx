@@ -30,7 +30,6 @@ function DropdownSelector<T extends { id: unknown; displayName: string }>(props:
           ))}
         </Dropdown.Menu>
       </div>
-      <div className="h-10" />
     </div>
   );
 }
