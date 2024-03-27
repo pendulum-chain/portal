@@ -19,6 +19,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
+import { prioritizeXLMAsset } from '../helpers';
 
 interface IssueProps {
   network: string;
@@ -43,7 +44,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { issueFee, redeemFee, issueGriefingCollateral } = useFeePallet().getFees();
+  const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
   const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
@@ -79,7 +80,7 @@ function Issue(props: IssueProps): JSX.Element {
         <li>• Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`</li>
       </ul>
     ),
-    [issueFee, redeemFee, issueGriefingCollateral],
+    [],
   );
 
   const requestIssueExtrinsic = useMemo(() => {
@@ -145,7 +146,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   useMemo(() => {
     setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
-  }, [amount, issueGriefingCollateral]);
+  }, [amount, issueGriefingCollateral, setValue]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
@@ -159,7 +160,7 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             register={register('amount')}
             setValue={(n: number) => setValue('amount', n)}
-            assets={wrappedAssets}
+            assets={prioritizeXLMAsset(wrappedAssets)}
             setSelectedAsset={setSelectedAsset}
             selectedAsset={selectedAsset}
             network="Stellar"
