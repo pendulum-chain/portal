@@ -19,6 +19,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
+import { useNavigate } from 'react-router';
 
 interface IssueProps {
   network: string;
@@ -39,8 +40,9 @@ function Issue(props: IssueProps): JSX.Element {
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
 
+  const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { walletAccount, dAppName } = useGlobalState();
+  const { walletAccount, dAppName, tenantName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueFee, redeemFee, issueGriefingCollateral } = useFeePallet().getFees();
@@ -153,6 +155,10 @@ function Issue(props: IssueProps): JSX.Element {
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
+        onConfirm={() => {
+          setConfirmationDialogVisible(false);
+          navigateTo(`/${tenantName}/spacewalk/transfers`);
+        }}
       />
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
