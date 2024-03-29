@@ -7,6 +7,7 @@ import greenWarning from '../../assets/green-warning.svg';
 import { useAccountBalance } from '../../shared/useAccountBalance';
 import useSwitchChain from '../../hooks/useSwitchChain';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { useGlobalState } from '../../GlobalStateProvider';
 
 const InsufficientFundsTooltip = () => (
   <div className="bg-black rounded-lg h-8 px-3 flex items-center">
@@ -27,8 +28,11 @@ export const GetToken = () => {
   const { balance } = useAccountBalance();
   const { currentTenant } = useSwitchChain();
   const { tokenSymbol } = useNodeInfoState().state;
+  const { walletAccount } = useGlobalState();
 
   const link = `/${currentTenant}/gas`;
+
+  if (!walletAccount) return <></>;
 
   return (
     <section className="flex items-center">
