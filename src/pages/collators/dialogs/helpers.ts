@@ -14,34 +14,36 @@ export const doSubmitExtrinsic = (
 ) => {
   setSubmissionPending(true);
 
-  extrinsic
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
-      console.log('result', result);
-      const { status, events } = result;
+  return (
+    extrinsic
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        console.log('result', result);
+        const { status, events } = result;
 
-      console.log('status', status);
-      console.log('events', events);
+        console.log('status', status);
+        console.log('events', events);
 
-      const errors = getErrors(events, api);
+        const errors = getErrors(events, api);
 
-      console.log('errors', errors);
-      if (status.isInBlock) {
-        if (errors.length > 0) {
-          const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
-          showToast(ToastMessage.ERROR, errorMessage);
+        console.log('errors', errors);
+        if (status.isInBlock) {
+          if (errors.length > 0) {
+            const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
+            showToast(ToastMessage.ERROR, errorMessage);
+          }
+        } else if (status.isFinalized) {
+          setSubmissionPending(false);
+
+          if (errors.length === 0) {
+            setConfirmationDialogVisible(true);
+          }
         }
-      } else if (status.isFinalized) {
+      })
+      .catch((error) => {
+        console.error('Transaction submission failed', error);
+        showToast(ToastMessage.TX_SUBMISSION_FAILED);
         setSubmissionPending(false);
-
-        if (errors.length === 0) {
-          setConfirmationDialogVisible(true);
-        }
-      }
-    })
-    .catch((error) => {
-      console.error('Transaction submission failed', error);
-      showToast(ToastMessage.TX_SUBMISSION_FAILED);
-      setSubmissionPending(false);
-    });
+      })
+  );
 };

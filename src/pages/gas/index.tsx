@@ -30,7 +30,7 @@ const Gas = () => {
       }
     };
 
-    fetchPricesCache();
+    fetchPricesCache().catch(console.error);
   }, [pricesCache, selectedFromToken]);
 
   const onSubmit = async (data: IssueFormValues) => {

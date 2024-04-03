@@ -36,7 +36,7 @@ export const useBuyout = (): BuyoutSettings => {
   useEffect(() => {
     async function fetchMinMax() {
       if (api) {
-        const minAmountToBuyout = await api.consts.treasuryBuyoutExtension.minAmountToBuyout;
+        const minAmountToBuyout = api.consts.treasuryBuyoutExtension.minAmountToBuyout;
         const maxAmountToBuyout = await api.query.treasuryBuyoutExtension.buyoutLimit();
 
         const minBuyoutAmount = minAmountToBuyout?.toString();
@@ -50,7 +50,7 @@ export const useBuyout = (): BuyoutSettings => {
       }
     }
 
-    fetchMinMax();
+    fetchMinMax().catch(console.error);
   }, [api]);
 
   async function handleBuyout(
@@ -70,7 +70,7 @@ export const useBuyout = (): BuyoutSettings => {
 
     const assetId = currency.assetId as { XCM: number };
 
-    const submitableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout(
+    const submittableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout(
       { XCM: assetId.XCM },
       { exchange: { buyout: scaledCurrency } },
     );
@@ -78,7 +78,7 @@ export const useBuyout = (): BuyoutSettings => {
     try {
       await doSubmitExtrinsic(
         api,
-        submitableExtrinsic,
+        submittableExtrinsic,
         walletAccount,
         setSubmissionPending,
         setConfirmationDialogVisible,
