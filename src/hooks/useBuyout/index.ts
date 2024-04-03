@@ -4,7 +4,7 @@ import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
 
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { convertNativeToDecimal } from '../../shared/parseNumbers/decimal';
+import { nativeToFormatDecimalPure } from '../../shared/parseNumbers/decimal';
 import { doSubmitExtrinsic } from '../../pages/collators/dialogs/helpers';
 import { useGlobalState } from '../../GlobalStateProvider';
 
@@ -42,8 +42,8 @@ export const useBuyout = (): BuyoutSettings => {
         const minBuyoutAmount = minAmountToBuyout?.toString();
         const maxBuyoutAmount = (maxAmountToBuyout as unknown as Option<Codec>)?.unwrap().toString();
 
-        const minSwap = convertNativeToDecimal(minBuyoutAmount);
-        const maxSwap = convertNativeToDecimal(maxBuyoutAmount);
+        const minSwap = nativeToFormatDecimalPure(minBuyoutAmount);
+        const maxSwap = nativeToFormatDecimalPure(maxBuyoutAmount);
 
         setMinimumSwap(Number(minSwap));
         setMaximumSwap(Number(maxSwap));

@@ -30,12 +30,8 @@ const removeUnnecessaryDecimalNumbers = (value: string) => {
   });
 };
 
-export const convertNativeToFormattedDecimal = (value: BigNumber | number | string, tokenSymbol?: string) => {
-  const decimalValue = nativeToDecimal(value).toNumber();
-  const formattedDecimal = formatDecimal(decimalValue, tokenSymbol);
-  return formattedDecimal;
-};
+export const nativeToFormatDecimal = (value: BigNumber | number | string, tokenSymbol?: string) =>
+  formatDecimal(nativeToDecimal(value).toNumber(), tokenSymbol);
 
-export const convertNativeToDecimal = (value: BigNumber | number | string) => {
-  return nativeToDecimal(value).toNumber();
-};
+// Without the tokenSymbol and prettyNumbers, formatNumberLessThanMicro functions
+export const nativeToFormatDecimalPure = (value: BigNumber | number | string) => nativeToDecimal(value).toNumber();
