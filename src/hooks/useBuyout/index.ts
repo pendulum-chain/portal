@@ -69,6 +69,7 @@ export const useBuyout = (): BuyoutSettings => {
     const scaledCurrency = scaleByCurrencyPrecision(currency, amount);
 
     const assetId = currency.assetId as { XCM: number };
+
     const submitableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout(
       { XCM: assetId.XCM },
       { exchange: { buyout: scaledCurrency } },

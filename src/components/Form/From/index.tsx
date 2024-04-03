@@ -188,7 +188,11 @@ const SwapFrom = ({
       </div>
     </div>
 
-    <InputField register={register} readOnly={readOnly} />
+    <InputField
+      register={register}
+      readOnly={readOnly}
+      additionalStyle={disabled ? 'text-gray-400 focus:text-gray-400' : ''}
+    />
 
     {error ? (
       <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>

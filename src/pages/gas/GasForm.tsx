@@ -47,7 +47,6 @@ export const GasForm: React.FC<GasFormProps> = ({
       setValue('fromAmount', Number(value));
       setValue('toAmount', calcTo(Number(value)));
     },
-    disabled: submissionPending,
   });
 
   const min = calcMin();
@@ -82,12 +81,12 @@ export const GasForm: React.FC<GasFormProps> = ({
     minBadge,
     maxBadge,
     disabled: submissionPending,
+    readOnly: submissionPending,
   };
 
   const ToProps: FromPropsWithVariant = {
     register: register('toAmount', {
       maxLength: (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
-      disabled: submissionPending,
     }),
     customText: 'Swap to',
     variant: FromVariants.SWAP,

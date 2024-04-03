@@ -4,13 +4,17 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 interface InputFieldProps {
   register: UseFormRegisterReturn;
   readOnly?: boolean;
+  additionalStyle?: string;
 }
 
-export const InputField = ({ register, readOnly = false }: InputFieldProps) => (
+export const InputField = ({ register, readOnly = false, additionalStyle }: InputFieldProps) => (
   <div className="w-full flex justify-between">
     <div className="flex-grow text-4xl text-black font-outfit">
       <Input
-        className="input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none focus:text-white text-white disabled:bg-base-100"
+        className={
+          'input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none focus:text-white text-white ' +
+          additionalStyle
+        }
         type="number"
         step="any"
         readOnly={readOnly}
@@ -19,7 +23,7 @@ export const InputField = ({ register, readOnly = false }: InputFieldProps) => (
             e.preventDefault();
           }
         }}
-        placeholder="0.0"
+        placeholder="0,0"
         {...register}
       />
     </div>
