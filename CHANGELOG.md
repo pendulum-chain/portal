@@ -1,3 +1,13 @@
+## [1.3.7](https://github.com/pendulum-chain/portal/compare/v1.3.6...v1.3.7) (2024-03-27)
+
+## [1.3.6](https://github.com/pendulum-chain/portal/compare/v1.3.5...v1.3.6) (2024-03-27)
+
+## [1.3.5](https://github.com/pendulum-chain/portal/compare/v1.3.4...v1.3.5) (2024-03-27)
+
+## [1.3.4](https://github.com/pendulum-chain/portal/compare/v1.3.3...v1.3.4) (2024-03-27)
+
+## [1.3.3](https://github.com/pendulum-chain/portal/compare/v1.3.2...v1.3.3) (2024-03-27)
+
 ## [1.3.2](https://github.com/pendulum-chain/portal/compare/v1.3.1...v1.3.2) (2024-03-27)
 
 
