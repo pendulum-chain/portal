@@ -54,7 +54,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
               <input
                 type="text"
                 autoFocus
-                className="input-ghost w-full text-4xl font-2"
+                className="input-ghost w-full text-4xl font-outfit"
                 placeholder="0.0"
                 max={deposit}
                 {...register('amount')}

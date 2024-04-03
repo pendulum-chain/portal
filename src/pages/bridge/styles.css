@@ -1,5 +1,4 @@
 .status-box {
-  font-family: 'Nunito Sans';
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -20,20 +19,26 @@
   background-color: #fff;
 }
 
-.status-box.completed, .status-box.reimbursed {
+.status-box.completed,
+.status-box.reimbursed {
   background: rgba(28, 203, 138, 0.07);
 }
 
-.status-dot.completed, .status-dot.reimbursed {
-  background-color: #1CCB8A;
+.status-dot.completed,
+.status-dot.reimbursed {
+  background-color: #1ccb8a;
 }
 
-.status-box.pending, .status-box.failed, .status-box.retried {
+.status-box.pending,
+.status-box.failed,
+.status-box.retried {
   background: rgba(238, 185, 49, 0.07);
 }
 
-.status-dot.pending, .status-dot.failed, .status-dot.retried{
-  background-color: #EEB931;
+.status-dot.pending,
+.status-dot.failed,
+.status-dot.retried {
+  background-color: #eeb931;
 }
 
 .status-box.cancelled {
@@ -41,16 +46,15 @@
 }
 
 .status-dot.cancelled {
-  background-color: #F14445;
+  background-color: #f14445;
 }
 
-
 .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) > svg {
-  fill: #32253E;
+  fill: #32253e;
 }
 
 .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
-  color: #32253E;
+  color: #32253e;
 }
 
 .bridge-card input[type='number'] {
@@ -58,7 +62,7 @@
 }
 
 [data-theme='pendulum'] {
-  .bridge-card .tabs-boxed :not(.tab-active) > svg{
+  .bridge-card .tabs-boxed :not(.tab-active) > svg {
     fill: var(--gray-3, #828282);
   }
 
@@ -70,26 +74,25 @@
     background-color: #f7f7f7;
   }
 
-  .bridge-card .disclaimer svg{
-    fill: #32253E
+  .bridge-card .disclaimer svg {
+    fill: #32253e;
   }
 
   .bridge-card .settings svg {
-    stroke: #58667E;
+    stroke: #58667e;
   }
 
   .status-box {
     color: #828282;
   }
 
-
   .transfer-dialog {
-    background-color: #FFF;
+    background-color: #fff;
     border: 1px solid rgba(67, 67, 67, 0.26);
   }
 
   .transfer-dialog-text {
-    color: #7C818D;
+    color: #7c818d;
   }
 
   .transfer-dialog-label {
@@ -98,17 +101,16 @@
   }
 
   .transfer-dialog-colored-text {
-    color: #907EA0;
+    color: #907ea0;
   }
 
   #details {
-    background-color: rgba(0, 0, 0, 0.03);   
+    background-color: rgba(0, 0, 0, 0.03);
   }
-
 }
 
 [data-theme='amplitude'] {
-  .bridge-card .tabs-boxed :not(.tab-active) > svg{
+  .bridge-card .tabs-boxed :not(.tab-active) > svg {
     fill: var(--primary);
   }
 
@@ -126,32 +128,31 @@
 
   .bridge-card input[type='number'] {
     color: #fff;
-  }  
+  }
 
   .bridge-card .settings svg {
     stroke: #fff;
   }
 
   .transfer-dialog-label {
-    background-color: #2A2A2A;
+    background-color: #2a2a2a;
   }
 
   .transfer-dialog {
-    background-color: #1C1C1C;
-    color: #FFF;
+    background-color: #1c1c1c;
+    color: #fff;
     border: 1px solid rgba(67, 67, 67, 0.26);
   }
 
   .transfer-dialog-colored-text {
-    color: #FFF;
+    color: #fff;
   }
 
   .transfer-dialog-text {
-    color: #FFF;
+    color: #fff;
   }
 
   #details {
-    background-color: #2A2A2A;   
+    background-color: #2a2a2a;
   }
 }
-

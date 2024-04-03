@@ -18,7 +18,63 @@ const formatNumberLessThanMicro = (tokenSymbol?: string) => {
 };
 
 const formatNumber = (n: number, tokenSymbol?: string) => {
-  return `${removeUnnecessaryDecimalNumbers(n.toFixed(DECIMAL_PLACES))} ${tokenSymbol ? tokenSymbol : ''}`;
+  const ccc = n.toFixed(DECIMAL_PLACES);
+  const ddd = removeUnnecessaryDecimalNumbers(ccc);
+  return `${ddd} ${tokenSymbol ? tokenSymbol : ''}`;
+};
+
+const formatToSignificantDecimals = (n: number, tokenSymbol?: string) => {
+  if (n < MICRO) {
+    return formatNumberLessThanMicro(tokenSymbol);
+  }
+
+  let str = n.toString();
+
+  if (str.indexOf('e') !== -1) {
+    str = n.toFixed(20);
+  }
+
+  let count = 0;
+  let decimalPlaces = 0;
+
+  for (let i = str.indexOf('.') + 1; i < str.length; i++) {
+    decimalPlaces++;
+
+    if (str[i] !== '0') {
+      count++;
+    }
+    if (count === 2) {
+      break;
+    }
+  }
+
+  const formattedNumber = n.toFixed(decimalPlaces);
+
+  return `${formattedNumber} ${tokenSymbol ? tokenSymbol : ''}`;
+};
+
+const formatNumberPure = (n: number, tokenSymbol?: string) => {
+  let count = 0;
+  let decimalPlaces = 0;
+  let str = n.toString();
+
+  if (str.indexOf('e') !== -1) {
+    // Convert the number to decimal notation
+    str = n.toFixed(20);
+  }
+
+  for (let i = str.indexOf('.') + 1; i < str.length; i++) {
+    decimalPlaces++;
+    if (count == 1) {
+      break;
+    }
+    if (str[i] !== '0') {
+      count++;
+    }
+  }
+
+  const ccc = n.toFixed(decimalPlaces);
+  return `${ccc} ${tokenSymbol ? tokenSymbol : ''}`;
 };
 
 const removeUnnecessaryDecimalNumbers = (value: string) => {
@@ -28,8 +84,16 @@ const removeUnnecessaryDecimalNumbers = (value: string) => {
   });
 };
 
-export const nativeToFormatDecimal = (value: BigNumber | number | string, tokenSymbol?: string) =>
-  formatDecimal(nativeToDecimal(value).toNumber(), tokenSymbol);
+export const nativeToFormatDecimal = (value: BigNumber | number | string, tokenSymbol?: string) => {
+  const ebda = nativeToDecimal(value).toNumber();
+  const fdgc = formatDecimal(ebda, tokenSymbol);
+  return fdgc;
+};
 
-export const nativeToFormatDecimalPure = (value: BigNumber | number | string) =>
-  formatNumber(nativeToDecimal(value).toNumber());
+export const abcedfg = (value: number) => formatToSignificantDecimals(value);
+
+export const nativeToFormatDecimalPure = (value: BigNumber | number | string) => {
+  const aaa = nativeToDecimal(value).toNumber();
+  const bbb = formatNumberPure(aaa);
+  return bbb;
+};

@@ -14,7 +14,7 @@ export function isStellarAsset(obj?: BlockchainAsset): obj is Asset {
 export function areStellarAssets(objs?: BlockchainAsset[]): objs is Asset[] {
   return objs !== undefined && objs.every((obj) => isStellarAsset(obj));
 }
-function isOrmlAsset(obj?: BlockchainAsset): obj is OrmlTraitsAssetRegistryAssetMetadata {
+export function isOrmlAsset(obj?: BlockchainAsset): obj is OrmlTraitsAssetRegistryAssetMetadata {
   return Boolean(obj && 'metadata' in obj && typeof obj.metadata === 'object' && 'symbol' in obj.metadata);
 }
 function areOrmlAssets(obj?: BlockchainAsset[]): obj is OrmlTraitsAssetRegistryAssetMetadata[] {

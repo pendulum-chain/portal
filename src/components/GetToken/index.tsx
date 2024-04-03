@@ -32,7 +32,7 @@ export const GetToken = () => {
 
   const link = `/${currentTenant}/gas`;
 
-  if (!walletAccount) return <></>;
+  // if (!walletAccount) return <></>;
 
   return (
     <section className="flex items-center">

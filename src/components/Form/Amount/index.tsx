@@ -28,9 +28,9 @@ const Amount = ({ className, register, max, setValue, error }: AmountProps): JSX
         }`}
       >
         <div className="w-full flex justify-between">
-          <div className="flex-grow text-4xl text-accent-content font-2">
+          <div className="flex-grow text-4xl text-accent-content font-outfit">
             <Input
-              className="input-ghost w-full text-4xl font-2 pl-0 focus:outline-none"
+              className="input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none"
               type="number"
               step="any"
               onKeyPress={(e: KeyboardEvent) => {

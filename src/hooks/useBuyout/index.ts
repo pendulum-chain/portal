@@ -1,13 +1,15 @@
 import { StateUpdater, useEffect, useState } from 'preact/hooks';
+import { isEmpty } from 'lodash';
+import { Option } from '@polkadot/types-codec';
+import { Codec } from '@polkadot/types-codec/types';
 
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormatDecimalPure } from '../../shared/parseNumbers/decimal';
-
-import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
-import { getMetadata } from './utils';
-import { isEmpty } from 'lodash';
 import { doSubmitExtrinsic } from '../../pages/collators/dialogs/helpers';
 import { useGlobalState } from '../../GlobalStateProvider';
+
+import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
+import { getMetadata, scaleByCurrencyPrecision } from './utils';
 
 export interface BuyoutSettings {
   swap: {
@@ -17,6 +19,7 @@ export interface BuyoutSettings {
   currencies: OrmlTraitsAssetRegistryAssetMetadata[];
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
   handleBuyout: (
+    currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
     setSubmissionPending: StateUpdater<boolean>,
     setConfirmationDialogVisible: StateUpdater<boolean>,
@@ -33,17 +36,14 @@ export const useBuyout = (): BuyoutSettings => {
   useEffect(() => {
     async function fetchMinMax() {
       if (api) {
-        const minAmountToBuyout = api.consts.treasuryBuyoutExtension.minAmountToBuyout;
+        const minAmountToBuyout = await api.consts.treasuryBuyoutExtension.minAmountToBuyout;
         const maxAmountToBuyout = await api.query.treasuryBuyoutExtension.buyoutLimit();
 
         const minBuyoutAmount = minAmountToBuyout?.toString();
-        const maxBuyoutAmount = maxAmountToBuyout?.unwrap().toString();
+        const maxBuyoutAmount = (maxAmountToBuyout as unknown as Option<Codec>)?.unwrap().toString();
 
         const minSwap = nativeToFormatDecimalPure(minBuyoutAmount);
         const maxSwap = nativeToFormatDecimalPure(maxBuyoutAmount);
-
-        console.log('minSwap', minSwap);
-        console.log('maxSwap', maxSwap);
 
         setMinimumSwap(Number(minSwap));
         setMaximumSwap(Number(maxSwap));
@@ -83,6 +83,7 @@ export const useBuyout = (): BuyoutSettings => {
   }, [api]);
 
   async function handleBuyout(
+    currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
     setSubmissionPending: StateUpdater<boolean>,
     setConfirmationDialogVisible: StateUpdater<boolean>,
@@ -94,7 +95,15 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    const submitableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout({ XCM: 1 }, { exchange: { amount } });
+    const scaledCurrency = scaleByCurrencyPrecision(currency, amount);
+
+    console.log('currency.assetId', currency.assetId.XCM);
+    console.log('scaledCurrency', scaledCurrency);
+
+    const submitableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout(
+      { XCM: currency.assetId.XCM },
+      { exchange: { buyout: scaledCurrency } },
+    );
 
     doSubmitExtrinsic(api, submitableExtrinsic, walletAccount, setSubmissionPending, setConfirmationDialogVisible);
   }

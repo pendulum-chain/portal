@@ -40,3 +40,10 @@ export const NATIVE_CURRENCY: Record<string, OrmlTraitsAssetRegistryAssetMetadat
 export function getMetadata() {
   return { currencies: AMPE_HARDCODED_METADATA, nativeCurrency: NATIVE_CURRENCY };
 }
+
+export function scaleByCurrencyPrecision(currency: OrmlTraitsAssetRegistryAssetMetadata, amount: number) {
+  const decimals = currency.metadata.decimals;
+
+  const scalingFactor = Math.pow(10, decimals);
+  return amount * scalingFactor;
+}

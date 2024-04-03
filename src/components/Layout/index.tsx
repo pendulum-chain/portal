@@ -20,7 +20,7 @@ export default function Layout(): JSX.Element | null {
   const isTestnet = tenantName === TenantName.Foucoco;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
-  const bgColor = isPendulum ? 'bg-white' : 'bg-black';
+  const bgColor = isPendulum ? 'bg-white' : 'bg-base-200';
 
   const FooterLink = memo(() => {
     return isPendulum ? (
@@ -36,9 +36,6 @@ export default function Layout(): JSX.Element | null {
     <div id="main-wrapper" className="flex">
       <div id="sidebar-wrapper" className="flex flex-wrap z-50">
         <aside
-          style={{
-            ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
-          }}
           id="sidebar"
           className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
             visible ? 'open left-0' : 'closed -left-full'
