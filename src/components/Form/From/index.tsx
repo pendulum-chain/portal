@@ -46,6 +46,42 @@ const FromDescription = ({ customText, network }: FromDescriptionProps) => {
   return text ? <div className="text-sm mt-px text-secondary-content">{text}</div> : <></>;
 };
 
+interface BadgesProps {
+  minBadge?: {
+    value: string;
+    onClick?: () => void;
+  };
+  maxBadge?: {
+    value: string;
+    onClick?: () => void;
+  };
+}
+
+const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge }) => (
+  <>
+    {minBadge && minBadge.value ? (
+      <div
+        className="badge badge-secondary-content text-xs mr-2.5 cursor-pointer text-black hover:badge-secondary"
+        onClick={minBadge.onClick}
+      >
+        Min {minBadge.value}
+      </div>
+    ) : (
+      <></>
+    )}
+    {maxBadge && maxBadge.value ? (
+      <div
+        className="badge badge-secondary-content text-black text-xs cursor-pointer hover:badge-accent hover:text-black  "
+        onClick={maxBadge.onClick}
+      >
+        Max {maxBadge.value}
+      </div>
+    ) : (
+      <></>
+    )}
+  </>
+);
+
 export enum FromVariants {
   CLASSIC = 'classic',
   SWAP = 'swap',
@@ -75,20 +111,7 @@ const ClassicFrom = ({
     >
       <InputField register={register} readOnly={readOnly} />
       <div className="flex items-end">
-        {minBadge && minBadge.value ? (
-          <div className="badge badge-primary text-xs mr-2.5 cursor-pointer" onClick={minBadge.onClick}>
-            Min {minBadge.value}
-          </div>
-        ) : (
-          <></>
-        )}
-        {maxBadge && maxBadge.value ? (
-          <div className="badge badge-ghost text-xs cursor-pointer" onClick={maxBadge.onClick}>
-            Max {maxBadge.value}
-          </div>
-        ) : (
-          <></>
-        )}
+        <Badges minBadge={minBadge} maxBadge={maxBadge} />
         {assets && setSelectedAsset && (
           <AssetSelector
             selectedAsset={selectedAsset}
@@ -142,20 +165,7 @@ const SwapFrom = ({
       </div>
 
       <div>
-        {minBadge && minBadge.value ? (
-          <div className="badge badge-primary text-xs mr-2.5 cursor-pointer" onClick={minBadge.onClick}>
-            Min {minBadge.value}
-          </div>
-        ) : (
-          <></>
-        )}
-        {maxBadge && maxBadge.value ? (
-          <div className="badge badge-ghost text-xs cursor-pointer" onClick={maxBadge.onClick}>
-            Max {maxBadge.value}
-          </div>
-        ) : (
-          <></>
-        )}
+        <Badges minBadge={minBadge} maxBadge={maxBadge} />
       </div>
     </div>
 

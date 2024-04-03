@@ -315,3 +315,9 @@ w3m-modal {
   height: 25px;
   white-space: nowrap;
 }
+
+@layer components {
+  .badge-secondary-content {
+    @apply bg-secondary-content;
+  }
+}
