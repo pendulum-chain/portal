@@ -49,21 +49,27 @@ export const GasForm: React.FC<GasFormProps> = ({
     },
   });
 
-  const minBadge = {
-    value: abcedfg(calcMin()),
-    onClick: () => {
-      setValue('fromAmount', calcMin());
-      setValue('toAmount', calcTo(calcMin()));
-    },
-  };
+  const min = calcMin();
+  const minBadge = min
+    ? {
+        value: abcedfg(min),
+        onClick: () => {
+          setValue('fromAmount', min);
+          setValue('toAmount', calcTo(min));
+        },
+      }
+    : undefined;
 
-  const maxBadge = {
-    value: String(formatToSignificantDecimals(calcMax())),
-    onClick: () => {
-      setValue('fromAmount', calcMax());
-      setValue('toAmount', calcTo(calcMax()));
-    },
-  };
+  const max = calcMax();
+  const maxBadge = max
+    ? {
+        value: String(formatToSignificantDecimals(max)),
+        onClick: () => {
+          setValue('fromAmount', max);
+          setValue('toAmount', calcTo(max));
+        },
+      }
+    : undefined;
 
   const FromProps: FromPropsWithVariant = {
     register: registerFromAmount,
