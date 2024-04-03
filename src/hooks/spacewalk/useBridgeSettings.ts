@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
+import { Balance } from '@polkadot/types/interfaces';
 import { useContext, useEffect, useMemo, useState } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
+
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
@@ -38,8 +40,8 @@ function useBridgeSettings(): BridgeSettings {
           const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const extended: ExtendedRegistryVault = vaultFromRegistry;
-          extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
-          extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
+          extended.issuableTokens = vaultWithIssuable ? (vaultWithIssuable[1] as unknown as Balance) : undefined;
+          extended.redeemableTokens = vaultWithRedeemable ? (vaultWithRedeemable[1] as unknown as Balance) : undefined;
           combinedVaults.push(extended);
         });
         setExtendedVaults(combinedVaults);
@@ -61,7 +63,7 @@ function useBridgeSettings(): BridgeSettings {
       });
     // Deduplicate assets
     return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
-  }, [vaults]);
+  }, [tenantName, vaults]);
 
   const vaultsForCurrency = useMemo(() => {
     if (!vaults) return;

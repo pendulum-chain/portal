@@ -1,11 +1,12 @@
 import { Asset } from 'stellar-sdk';
+import { StateUpdater } from 'preact/hooks';
 import { getIcon } from '../../../shared/AssetIcons';
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../../hooks/useBuyout/types';
 import { assetDisplayName } from '../../../helpers/spacewalk';
 
 /* Types */
 export type BlockchainAsset = Asset | OrmlTraitsAssetRegistryAssetMetadata;
-export type AssetSelectorOnChange = (a: BlockchainAsset) => void;
+export type AssetSelectorOnChange = StateUpdater<BlockchainAsset | undefined>;
 
 /* Type Guards */
 export function isStellarAsset(obj?: BlockchainAsset): obj is Asset {

@@ -1,9 +1,12 @@
 import { Fragment } from 'preact';
 import { UseFormRegisterReturn } from 'react-hook-form';
+import { StateUpdater } from 'preact/hooks';
+
 import { InputField } from './InputField';
 import { AvailableActions } from './AvailableActions';
-import { BlockchainAsset } from '../../Selector/AssetSelector/helpers';
+import { AssetSelectorOnChange, BlockchainAsset } from '../../Selector/AssetSelector/helpers';
 import { AssetSelector } from '../../Selector';
+import { Asset } from 'stellar-sdk';
 
 export interface FromProps {
   className?: string;
@@ -13,7 +16,7 @@ export interface FromProps {
   setValue?: (n: number) => void;
   assets?: BlockchainAsset[];
   selectedAsset?: BlockchainAsset;
-  setSelectedAsset?: (a: BlockchainAsset) => void;
+  setSelectedAsset?: StateUpdater<BlockchainAsset | undefined> | StateUpdater<Asset | undefined>;
   network?: string;
   assetSuffix?: string;
   error?: string;
@@ -130,7 +133,7 @@ const ClassicFrom = ({
           <AssetSelector
             selectedAsset={selectedAsset}
             assets={assets}
-            onChange={setSelectedAsset}
+            onChange={setSelectedAsset as AssetSelectorOnChange}
             style={{ flexGrow: 1 }}
             assetSuffix={assetSuffix}
           />
@@ -173,7 +176,7 @@ const SwapFrom = ({
             disabled={disabled}
             selectedAsset={selectedAsset}
             assets={assets}
-            onChange={setSelectedAsset}
+            onChange={setSelectedAsset as AssetSelectorOnChange}
             style={{ flexGrow: 1 }}
             assetSuffix={assetSuffix}
           />
@@ -193,7 +196,7 @@ const SwapFrom = ({
   </div>
 );
 
-export type FromPropsWithVariant = FromProps & { variant: FromVariants };
+export type FromPropsWithVariant = FromProps & { variant?: FromVariants };
 
 const From = (props: FromPropsWithVariant): JSX.Element | null => {
   const { variant } = props;
