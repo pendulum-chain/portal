@@ -27,6 +27,7 @@ export interface FromProps {
     onClick?: () => void;
   };
   readOnly?: boolean;
+  disabled?: boolean;
 }
 
 interface FromDescriptionProps {
@@ -55,14 +56,21 @@ interface BadgesProps {
     value: string;
     onClick?: () => void;
   };
+  disabled?: boolean;
 }
 
-const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge }) => (
+const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) => (
   <>
     {minBadge && minBadge.value ? (
       <div
-        className="badge badge-secondary-content text-xs mr-2.5 cursor-pointer text-black hover:badge-secondary"
-        onClick={minBadge.onClick}
+        className={`badge ${
+          disabled ? '' : 'badge-secondary-content hover:badge-secondary text-black cursor-pointer'
+        } text-xs mr-2.5`}
+        onClick={() => {
+          if (!disabled && minBadge.onClick) {
+            minBadge.onClick();
+          }
+        }}
       >
         Min {minBadge.value}
       </div>
@@ -71,8 +79,14 @@ const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge }) => (
     )}
     {maxBadge && maxBadge.value ? (
       <div
-        className="badge badge-secondary-content text-black text-xs cursor-pointer hover:badge-accent hover:text-black  "
-        onClick={maxBadge.onClick}
+        className={`badge ${
+          disabled ? '' : 'badge-secondary-content  hover:badge-accent text-black hover:text-black cursor-pointer '
+        }  text-xs`}
+        onClick={() => {
+          if (!disabled && maxBadge.onClick) {
+            maxBadge.onClick();
+          }
+        }}
       >
         Max {maxBadge.value}
       </div>
@@ -144,9 +158,10 @@ const SwapFrom = ({
   minBadge,
   maxBadge,
   readOnly = false,
+  disabled = false,
 }: FromProps) => (
   <div
-    className={`rounded-lg bg-base-300 px-4 py-3 mb-3 ${className || ''} ${
+    className={`rounded-lg ${disabled ? 'bg-base-100' : 'bg-base-300'} px-4 py-3 mb-3 ${className || ''} ${
       error ? 'border border-solid border-red-400' : ''
     }`}
   >
@@ -155,6 +170,7 @@ const SwapFrom = ({
         <FromDescription network={network} customText={customText} />
         {assets && setSelectedAsset && (
           <AssetSelector
+            disabled={disabled}
             selectedAsset={selectedAsset}
             assets={assets}
             onChange={setSelectedAsset}
@@ -165,7 +181,7 @@ const SwapFrom = ({
       </div>
 
       <div>
-        <Badges minBadge={minBadge} maxBadge={maxBadge} />
+        <Badges minBadge={minBadge} maxBadge={maxBadge} disabled={disabled} />
       </div>
     </div>
 

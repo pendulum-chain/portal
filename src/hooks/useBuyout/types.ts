@@ -7,7 +7,7 @@ export interface OrmlTraitsAssetRegistryAssetMetadata {
   };
   assetId:
     | {
-        [key: string]: number;
+        XCM: number;
       }
     | string;
 }

@@ -4,12 +4,13 @@ import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
 
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { nativeToFormatDecimalPure } from '../../shared/parseNumbers/decimal';
+import { convertNativeToDecimal } from '../../shared/parseNumbers/decimal';
 import { doSubmitExtrinsic } from '../../pages/collators/dialogs/helpers';
 import { useGlobalState } from '../../GlobalStateProvider';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
 import { getMetadata, scaleByCurrencyPrecision } from './utils';
+import { ToastMessage, showToast } from '../../shared/showToast';
 
 export interface BuyoutSettings {
   swap: {
@@ -29,7 +30,6 @@ export interface BuyoutSettings {
 export const useBuyout = (): BuyoutSettings => {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
-  const [, setCurrencies] = useState<OrmlTraitsAssetRegistryAssetMetadata[]>([]);
   const [minimumSwap, setMinimumSwap] = useState<number>(0);
   const [maximumSwap, setMaximumSwap] = useState<number>(0);
 
@@ -42,8 +42,8 @@ export const useBuyout = (): BuyoutSettings => {
         const minBuyoutAmount = minAmountToBuyout?.toString();
         const maxBuyoutAmount = (maxAmountToBuyout as unknown as Option<Codec>)?.unwrap().toString();
 
-        const minSwap = nativeToFormatDecimalPure(minBuyoutAmount);
-        const maxSwap = nativeToFormatDecimalPure(maxBuyoutAmount);
+        const minSwap = convertNativeToDecimal(minBuyoutAmount);
+        const maxSwap = convertNativeToDecimal(maxBuyoutAmount);
 
         setMinimumSwap(Number(minSwap));
         setMaximumSwap(Number(maxSwap));
@@ -51,35 +51,6 @@ export const useBuyout = (): BuyoutSettings => {
     }
 
     fetchMinMax();
-  }, [api]);
-
-  useEffect(() => {
-    async function fetchAllowedCurrencies() {
-      if (!api) return;
-      if (!api.query.treasuryBuyoutExtension) return;
-
-      const allowedCurrencies = await api.query.treasuryBuyoutExtension.allowedCurrencies.entries();
-
-      const values = allowedCurrencies.map(async ([s, value]) => {
-        const XCM = s.toString();
-
-        // console.log('XCM', XCM);
-        const metadata = await api.query.assetRegistry.metadata.entries();
-
-        // console.log('metadata', metadata);
-
-        metadata.map(async ([a, b]) => {
-          // console.log('a', a.toString());
-          // console.log('b', b.unwrap().toString());
-        });
-
-        return XCM;
-      });
-
-      // setCurrencies(values);
-    }
-
-    fetchAllowedCurrencies();
   }, [api]);
 
   async function handleBuyout(
@@ -105,7 +76,17 @@ export const useBuyout = (): BuyoutSettings => {
       { exchange: { buyout: scaledCurrency } },
     );
 
-    doSubmitExtrinsic(api, submitableExtrinsic, walletAccount, setSubmissionPending, setConfirmationDialogVisible);
+    try {
+      await doSubmitExtrinsic(
+        api,
+        submitableExtrinsic,
+        walletAccount,
+        setSubmissionPending,
+        setConfirmationDialogVisible,
+      );
+    } catch (error) {
+      showToast(ToastMessage.TX_SUBMISSION_FAILED);
+    }
   }
 
   return {

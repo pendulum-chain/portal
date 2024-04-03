@@ -1,12 +1,12 @@
+import { StateUpdater } from 'preact/hooks';
+import { useForm } from 'react-hook-form';
+
+import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
+import { BlockchainAsset } from '../../components/Selector/AssetSelector/helpers';
 import From, { FromPropsWithVariant, FromVariants } from '../../components/Form/From';
 import { FeeHint } from './FeeHint';
 import { SubmitButton } from './SubmitButton';
-import { abcedfg } from '../../shared/parseNumbers/decimal';
 import { formatToSignificantDecimals } from './helpers';
-import { StateUpdater } from 'preact/hooks';
-import { useForm } from 'react-hook-form';
-import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
-import { BlockchainAsset } from '../../components/Selector/AssetSelector/helpers';
 
 export type IssueFormValues = {
   fromAmount: number;
@@ -47,12 +47,13 @@ export const GasForm: React.FC<GasFormProps> = ({
       setValue('fromAmount', Number(value));
       setValue('toAmount', calcTo(Number(value)));
     },
+    disabled: submissionPending,
   });
 
   const min = calcMin();
   const minBadge = min
     ? {
-        value: abcedfg(min),
+        value: String(formatToSignificantDecimals(min)),
         onClick: () => {
           setValue('fromAmount', min);
           setValue('toAmount', calcTo(min));
@@ -80,11 +81,13 @@ export const GasForm: React.FC<GasFormProps> = ({
     setSelectedAsset: setSelectedFromToken,
     minBadge,
     maxBadge,
+    disabled: submissionPending,
   };
 
   const ToProps: FromPropsWithVariant = {
     register: register('toAmount', {
       maxLength: (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
+      disabled: submissionPending,
     }),
     customText: 'Swap to',
     variant: FromVariants.SWAP,
@@ -94,6 +97,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       return null;
     },
     readOnly: true,
+    disabled: submissionPending,
   };
 
   return (

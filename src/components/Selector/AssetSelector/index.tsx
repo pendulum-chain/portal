@@ -20,10 +20,11 @@ interface AssetSelectorProps {
   style?: CSSProperties;
   assetPrefix?: string;
   assetSuffix?: string;
+  disabled?: boolean;
 }
 
 function AssetSelector(props: AssetSelectorProps): JSX.Element {
-  const { assets, selectedAsset, assetPrefix, assetSuffix } = props;
+  const { assets, selectedAsset, assetPrefix, assetSuffix, disabled=false } = props;
 
   const [items, setItems] = useState<{ displayName: string; id: string }[]>([]);
   const [selectedItem, setSelectedItem] = useState<{ displayName: string; id: string } | undefined>(undefined);
@@ -49,8 +50,9 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
   }
 
   return (
-    <DropdownSelector items={items} value={selectedItem} onChange={handleOnChange}>
+    <DropdownSelector items={items} value={selectedItem} onChange={handleOnChange} >
       <Button
+        disabled={disabled}
         size="xs"
         className="btn rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
         type="button"
