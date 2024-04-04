@@ -25,7 +25,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   const content = useMemo(
     () => (
       <>
-        <div className="text-center text-primary-content">
+        <div className="text-center">
           <div className="text-xl">
             You will receive {totalAmount} {asset?.getCode()}
           </div>
@@ -34,9 +34,9 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
               issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
             </>
           )}
-          <div className="text-sm  text-primary-content mt-4">Your request is being processed</div>
+          <div className="text-sm mt-4">Your request is being processed</div>
         </div>
-        <div className="mt-6  text-primary-content">
+        <div className="mt-6">
           <div className="text-sm mt-2">
             We will update the transaction when PEN payment is executed. This typically takes only a few minutes but may
             sometimes take up to 6 hours.

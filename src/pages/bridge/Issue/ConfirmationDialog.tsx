@@ -15,10 +15,11 @@ interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
   onClose: () => void;
   visible: boolean;
+  onConfirm: () => void;
 }
 
 export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { issueRequest, visible, onClose } = props;
+  const { issueRequest, visible, onClose, onConfirm } = props;
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
@@ -105,7 +106,11 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           )}
         </div>
         <div className="text-sm mt-4">
-          Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
+          Note: Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
+          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-accent">
+            support
+          </a>
+          if your transaction is still pending after 10 minutes.
         </div>
       </>
     ),
@@ -114,11 +119,11 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
 
   const actions = useMemo(
     () => (
-      <Button color="primary" onClick={onClose}>
+      <Button color="primary" onClick={onConfirm}>
         I have made the payment
       </Button>
     ),
-    [onClose],
+    [onConfirm],
   );
 
   return <Dialog headerText="Deposit" visible={visible} onClose={onClose} content={content} actions={actions} />;

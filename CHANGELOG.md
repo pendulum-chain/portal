@@ -1,3 +1,54 @@
+## [1.3.7](https://github.com/pendulum-chain/portal/compare/v1.3.6...v1.3.7) (2024-03-27)
+
+## [1.3.6](https://github.com/pendulum-chain/portal/compare/v1.3.5...v1.3.6) (2024-03-27)
+
+## [1.3.5](https://github.com/pendulum-chain/portal/compare/v1.3.4...v1.3.5) (2024-03-27)
+
+## [1.3.4](https://github.com/pendulum-chain/portal/compare/v1.3.3...v1.3.4) (2024-03-27)
+
+## [1.3.3](https://github.com/pendulum-chain/portal/compare/v1.3.2...v1.3.3) (2024-03-27)
+
+## [1.3.2](https://github.com/pendulum-chain/portal/compare/v1.3.1...v1.3.2) (2024-03-27)
+
+
+### Bug Fixes
+
+* "Back to stellar" pop-up unreadable ([9e216bd](https://github.com/pendulum-chain/portal/commit/9e216bd9833b75d0b920c7191b4c16c9275e5e21))
+
+## [1.3.1](https://github.com/pendulum-chain/portal/compare/v1.3.0...v1.3.1) (2024-03-19)
+
+# [1.3.0](https://github.com/pendulum-chain/portal/compare/v1.2.1...v1.3.0) (2024-03-19)
+
+
+### Bug Fixes
+
+* add Buffer polyfill to window global object ([#346](https://github.com/pendulum-chain/portal/issues/346)) ([98e6594](https://github.com/pendulum-chain/portal/commit/98e65940ecc2961001831b7a423303d8d8438550))
+* handle walletconnect disconnect events ([#338](https://github.com/pendulum-chain/portal/issues/338)) ([738d049](https://github.com/pendulum-chain/portal/commit/738d049b2f19c3bb129891503e0cf09dae8980c5))
+* Implement collapsible buttons for sidebar ([#337](https://github.com/pendulum-chain/portal/issues/337)) ([d9c9240](https://github.com/pendulum-chain/portal/commit/d9c9240a15eb787c9019d0d39f1b39b5f35e36b6))
+* Make Staking Reward boxes responsive ([#324](https://github.com/pendulum-chain/portal/issues/324)) ([e765993](https://github.com/pendulum-chain/portal/commit/e7659936798e9e3dc3e6f0f977b97b94a9d39455))
+* Update disclaimer text for bridge ([692001e](https://github.com/pendulum-chain/portal/commit/692001ea6c8037d9c08a9b2bd5fc09265dcd2c3d))
+* Update disclaimer text for Spacewalk ([#303](https://github.com/pendulum-chain/portal/issues/303)) ([70c2a94](https://github.com/pendulum-chain/portal/commit/70c2a940c94aca49b4ef269dce25527084160dfd))
+
+
+### Features
+
+* 288 allow users to withdraw from backstop pool in other assets ([#292](https://github.com/pendulum-chain/portal/issues/292)) ([8322b11](https://github.com/pendulum-chain/portal/commit/8322b1136033d0d531660c4f1502ec6529f49d29))
+* Add AMPE price to the Dashboard ([#293](https://github.com/pendulum-chain/portal/issues/293)) ([cdf598e](https://github.com/pendulum-chain/portal/commit/cdf598ee91c55edcb0b8dcfe7d95b20cc8c5970d))
+* Add info to the Bedeem from Backstop pool UI ([#291](https://github.com/pendulum-chain/portal/issues/291)) ([208dacd](https://github.com/pendulum-chain/portal/commit/208dacd858deec372b128b282eb37360c3e01ebe))
+* Add support for NGN, EUR and AUD assets for Spacewalk ([#302](https://github.com/pendulum-chain/portal/issues/302)) ([c377019](https://github.com/pendulum-chain/portal/commit/c377019fdbf4f5e4b8ae2dd45b2047213489aa66))
+* added pool filtering by paused flag ([#289](https://github.com/pendulum-chain/portal/issues/289)) ([6e09bce](https://github.com/pendulum-chain/portal/commit/6e09bce49c45e5c999c260242a8f36a23e74525a))
+* Make rows clickable in Spacewalk Transfers table ([#323](https://github.com/pendulum-chain/portal/issues/323)) ([acb6b3d](https://github.com/pendulum-chain/portal/commit/acb6b3d0fb8de94e4558a517bddb29d12e3eab00))
+* nabla UI and functionality ([#279](https://github.com/pendulum-chain/portal/issues/279)) ([331aabe](https://github.com/pendulum-chain/portal/commit/331aabe696c9671337645fc04da77b40f3cb065b))
+* Update designs for Staking/Unstaking ([#325](https://github.com/pendulum-chain/portal/issues/325)) ([3d391b4](https://github.com/pendulum-chain/portal/commit/3d391b470c553437b78a88f60c312db4f9face1a))
+* Update designs for Updating and Claiming staking rewards ([#336](https://github.com/pendulum-chain/portal/issues/336)) ([2ebc5d0](https://github.com/pendulum-chain/portal/commit/2ebc5d07c9e2d9e50a385b7983dcbcbc95bbfa25))
+* Update Spacewalk dialogs for "Back to Stellar" transactions ([#305](https://github.com/pendulum-chain/portal/issues/305)) ([c80d7a5](https://github.com/pendulum-chain/portal/commit/c80d7a5fc85ae4f11efc5019e5ba990ee1946d96))
+* Update transfer dialogs design ([#295](https://github.com/pendulum-chain/portal/issues/295)) ([8fe2791](https://github.com/pendulum-chain/portal/commit/8fe27919c82a5237313cdd4d545054513d791f55))
+
+
+### Reverts
+
+* Put back GH_TOKEN into the release config ([#282](https://github.com/pendulum-chain/portal/issues/282)) ([e2b142a](https://github.com/pendulum-chain/portal/commit/e2b142a73052e5d2505b094acf833add01520b7c))
+
 # [1.3.0](https://github.com/pendulum-chain/portal/compare/v1.2.1...v1.3.0) (2024-03-15)
 
 
