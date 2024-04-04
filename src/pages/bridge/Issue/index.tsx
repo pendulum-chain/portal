@@ -83,7 +83,7 @@ function Issue(props: IssueProps): JSX.Element {
           .
         </li>
         <li>
-          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault, contact
+          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault. Contact
           <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-accent">
             support
           </a>
@@ -91,7 +91,7 @@ function Issue(props: IssueProps): JSX.Element {
         </li>
       </ul>
     ),
-    [],
+    [tenantName],
   );
 
   const requestIssueExtrinsic = useMemo(() => {
