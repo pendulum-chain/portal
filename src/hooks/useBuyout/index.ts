@@ -11,11 +11,12 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
 import { getMetadata, scaleByCurrencyPrecision } from './utils';
 import { ToastMessage, showToast } from '../../shared/showToast';
+import { PerMill } from '../../shared/parseNumbers/permill';
 
 export interface BuyoutSettings {
-  swap: {
-    minNative: number;
-    maxNative: number;
+  buyoutNativeToken: {
+    min: number;
+    max: number;
   };
   currencies: OrmlTraitsAssetRegistryAssetMetadata[];
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
@@ -30,27 +31,32 @@ export interface BuyoutSettings {
 export const useBuyout = (): BuyoutSettings => {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
-  const [minimumSwap, setMinimumSwap] = useState<number>(0);
-  const [maximumSwap, setMaximumSwap] = useState<number>(0);
+  const [minimumBuyout, setMinimumBuyout] = useState<number>(0);
+  const [maximumBuyout, setMaximumBuyout] = useState<number>(0);
 
   useEffect(() => {
-    async function fetchMinMax() {
+    async function fetchBuyoutLimits() {
       if (api) {
-        const minAmountToBuyout = api.consts.treasuryBuyoutExtension.minAmountToBuyout;
-        const maxAmountToBuyout = await api.query.treasuryBuyoutExtension.buyoutLimit();
+        const minBuyoutLimitFromAPI = api.consts.treasuryBuyoutExtension.minAmountToBuyout;
+        const maxBuyoutLimitFromAPI = await api.query.treasuryBuyoutExtension.buyoutLimit();
+        const sellFeeFromAPI = api.consts.treasuryBuyoutExtension.sellFee;
 
-        const minBuyoutAmount = minAmountToBuyout?.toString();
-        const maxBuyoutAmount = (maxAmountToBuyout as unknown as Option<Codec>)?.unwrap().toString();
+        const minBuyoutLimitAsString = minBuyoutLimitFromAPI?.toString();
+        const maxBuyoutLimitAsString = (maxBuyoutLimitFromAPI as unknown as Option<Codec>)?.unwrap().toString();
+        const sellFeeAsString = sellFeeFromAPI?.toString();
 
-        const minSwap = nativeToFormatDecimalPure(minBuyoutAmount);
-        const maxSwap = nativeToFormatDecimalPure(maxBuyoutAmount);
+        const minBuyoutLimitFormatted = nativeToFormatDecimalPure(minBuyoutLimitAsString);
+        const maxBuyoutLimitFormatted = nativeToFormatDecimalPure(maxBuyoutLimitAsString);
+        const sellFeePerMill = new PerMill(Number(sellFeeAsString));
 
-        setMinimumSwap(Number(minSwap));
-        setMaximumSwap(Number(maxSwap));
+        const MIN_FEE_MULTIPLIER = 1.01; // sellFee + min amount still needs 1% for the tx to be fired.
+
+        setMinimumBuyout(sellFeePerMill.applyAdjustmentToNumber(minBuyoutLimitFormatted) * MIN_FEE_MULTIPLIER);
+        setMaximumBuyout(sellFeePerMill.applyAdjustmentToNumber(maxBuyoutLimitFormatted));
       }
     }
 
-    fetchMinMax().catch(console.error);
+    fetchBuyoutLimits().catch(console.error);
   }, [api]);
 
   async function handleBuyout(
@@ -89,9 +95,9 @@ export const useBuyout = (): BuyoutSettings => {
   }
 
   return {
-    swap: {
-      minNative: minimumSwap,
-      maxNative: maximumSwap,
+    buyoutNativeToken: {
+      min: minimumBuyout,
+      max: maximumBuyout,
     },
     currencies: Object.values(getMetadata().currencies),
     nativeCurrency: getMetadata().nativeCurrency.ampe,

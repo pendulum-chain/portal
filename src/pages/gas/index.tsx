@@ -11,7 +11,7 @@ import { calculateForCurrentFromToken, calculatePriceNativeForCurrentFromToken }
 import { GasSuccessDialog } from './GasSuccessDialog';
 
 const Gas = () => {
-  const { currencies, swap, nativeCurrency, handleBuyout } = useBuyout();
+  const { currencies, buyoutNativeToken, nativeCurrency, handleBuyout } = useBuyout();
   const { pricesCache } = usePriceFetcher();
 
   const [selectedFromToken, setSelectedFromToken] = useState<BlockchainAsset | undefined>(currencies[0]);
@@ -60,7 +60,7 @@ const Gas = () => {
             onSubmit={onSubmit}
             calcMax={() =>
               calculateForCurrentFromToken(
-                swap.maxNative,
+                buyoutNativeToken.max,
                 nativeTokenPrice,
                 selectedFromTokenPriceUSD,
                 selectedTokenDecimals,
@@ -68,7 +68,7 @@ const Gas = () => {
             }
             calcMin={() =>
               calculateForCurrentFromToken(
-                swap.minNative,
+                buyoutNativeToken.min,
                 nativeTokenPrice,
                 selectedFromTokenPriceUSD,
                 selectedTokenDecimals,

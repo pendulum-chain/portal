@@ -44,8 +44,6 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
   function handleOnChange(newItem: { id: string }) {
     const onChange = props.onChange;
 
-    console.log('isStellarAsset(selectedAsset)');
-    console.log(isStellarAsset(selectedAsset));
     if (assets && onChange)
       isStellarAsset(selectedAsset)
         ? onStellarAssetOnChange(newItem, assets, onChange)
