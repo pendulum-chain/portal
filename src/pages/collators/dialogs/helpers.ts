@@ -11,6 +11,7 @@ export const doSubmitExtrinsic = (
   walletAccount: WalletAccount,
   setSubmissionPending: StateUpdater<boolean>,
   setConfirmationDialogVisible: StateUpdater<boolean>,
+  hideToast?: boolean,
 ) => {
   setSubmissionPending(true);
 
@@ -41,9 +42,9 @@ export const doSubmitExtrinsic = (
         }
       })
       .catch((error) => {
-        console.error('Transaction submission failed', error);
-        showToast(ToastMessage.TX_SUBMISSION_FAILED);
+        hideToast ? null : showToast(ToastMessage.TX_SUBMISSION_FAILED);
         setSubmissionPending(false);
+        return error.message;
       })
   );
 };

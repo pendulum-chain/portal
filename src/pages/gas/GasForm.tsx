@@ -36,10 +36,12 @@ export const GasForm: React.FC<GasFormProps> = ({
   calcTo,
   submissionPending,
 }) => {
-  const { handleSubmit, register, setValue, watch } = useForm<IssueFormValues>({});
+  const { handleSubmit, register, setValue, watch, formState, clearErrors } = useForm<IssueFormValues>({});
 
   const registerFromAmount = register('fromAmount', {
     max: { value: calcMax(), message: 'Max amount exceeded' },
+    min: { value: calcMin(), message: 'Amount is too low' },
+    required: 'This field is required',
     maxLength: (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
     onBlur: (n: InputEvent) => {
       const value = (n.target as HTMLInputElement)?.value;
@@ -54,6 +56,7 @@ export const GasForm: React.FC<GasFormProps> = ({
     ? {
         value: String(formatToSignificantDecimals(min)),
         onClick: () => {
+          clearErrors();
           setValue('fromAmount', min);
           setValue('toAmount', calcTo(min));
         },
@@ -71,6 +74,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       }
     : undefined;
 
+  const fromPropsError = formState.errors.fromAmount?.message;
   const FromProps: FromPropsWithVariant = {
     register: registerFromAmount,
     customText: 'Swap from',
@@ -82,8 +86,10 @@ export const GasForm: React.FC<GasFormProps> = ({
     maxBadge,
     disabled: submissionPending,
     readOnly: submissionPending,
+    error: fromPropsError,
   };
 
+  const toPropsError = formState.errors.toAmount?.message;
   const ToProps: FromPropsWithVariant = {
     register: register('toAmount', {
       maxLength: (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
@@ -97,6 +103,7 @@ export const GasForm: React.FC<GasFormProps> = ({
     },
     readOnly: true,
     disabled: submissionPending,
+    error: toPropsError,
   };
 
   return (
@@ -104,7 +111,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       <From {...FromProps} />
       <From {...ToProps} />
       <FeeHint amount={watch('toAmount')} />
-      <SubmitButton loading={submissionPending} />
+      <SubmitButton loading={submissionPending} disabled={Boolean(fromPropsError) || Boolean(toPropsError)} />
     </form>
   );
 };

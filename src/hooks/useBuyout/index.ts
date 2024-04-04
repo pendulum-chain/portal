@@ -28,6 +28,21 @@ export interface BuyoutSettings {
   ) => void;
 }
 
+function handleBuyoutError(error: string) {
+  if (error.includes('1010: Invalid Transaction: Custom error: 3')) {
+    showToast(ToastMessage.ERROR, 'The buyout amount is too low');
+    return;
+  }
+
+  if (error.includes('Cancelled')) {
+    showToast(ToastMessage.ERROR, 'The buyout was cancelled');
+    return;
+  }
+
+  showToast(ToastMessage.ERROR, 'The buyout failed');
+  return;
+}
+
 export const useBuyout = (): BuyoutSettings => {
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -81,17 +96,16 @@ export const useBuyout = (): BuyoutSettings => {
       { exchange: { buyout: scaledCurrency } },
     );
 
-    try {
-      await doSubmitExtrinsic(
-        api,
-        submittableExtrinsic,
-        walletAccount,
-        setSubmissionPending,
-        setConfirmationDialogVisible,
-      );
-    } catch (error) {
-      showToast(ToastMessage.TX_SUBMISSION_FAILED);
-    }
+    const response = await doSubmitExtrinsic(
+      api,
+      submittableExtrinsic,
+      walletAccount,
+      setSubmissionPending,
+      setConfirmationDialogVisible,
+      true,
+    );
+
+    if (response) handleBuyoutError(response);
   }
 
   return {

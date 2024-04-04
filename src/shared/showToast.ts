@@ -66,5 +66,9 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
 };
 
 export function showToast(message: ToastMessage, customMessage?: string) {
-  return toast(customMessage, ToastProperties[message].options);
+  if (customMessage) {
+    return toast(customMessage, ToastProperties[message].options);
+  }
+
+  return toast(ToastProperties[message].message, ToastProperties[message].options);
 }
