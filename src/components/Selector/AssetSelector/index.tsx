@@ -24,7 +24,7 @@ interface AssetSelectorProps {
 }
 
 function AssetSelector(props: AssetSelectorProps): JSX.Element {
-  const { assets, selectedAsset, assetPrefix, assetSuffix, disabled=false } = props;
+  const { assets, selectedAsset, assetPrefix, assetSuffix, disabled = false } = props;
 
   const [items, setItems] = useState<{ displayName: string; id: string }[]>([]);
   const [selectedItem, setSelectedItem] = useState<{ displayName: string; id: string } | undefined>(undefined);
@@ -43,6 +43,9 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
 
   function handleOnChange(newItem: { id: string }) {
     const onChange = props.onChange;
+
+    console.log('isStellarAsset(selectedAsset)');
+    console.log(isStellarAsset(selectedAsset));
     if (assets && onChange)
       isStellarAsset(selectedAsset)
         ? onStellarAssetOnChange(newItem, assets, onChange)
@@ -50,7 +53,7 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
   }
 
   return (
-    <DropdownSelector items={items} value={selectedItem} onChange={handleOnChange} >
+    <DropdownSelector items={items} value={selectedItem} onChange={handleOnChange}>
       <Button
         disabled={disabled}
         size="xs"

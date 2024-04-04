@@ -48,7 +48,9 @@ function Issue(props: IssueProps): JSX.Element {
   const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
-  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
+  console.log(selectedAsset, 'selectedAsset');
+
+  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber(); // HERE IS THE ERROR
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
@@ -175,11 +177,11 @@ function Issue(props: IssueProps): JSX.Element {
           />
           <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">
-            <span className="text-sm">
+            {/* <span className="text-sm">
               {`Max issuable: ${nativeToDecimal(selectedVault?.issuableTokens?.toString() || 0).toFixed(2)} ${
                 selectedAsset?.code || ''
               }`}
-            </span>
+            </span> */}
           </label>
 
           <FeeBox

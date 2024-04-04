@@ -32,11 +32,14 @@ const findAsset = (
   assets: BlockchainAsset[],
   onChange: AssetSelectorOnChange,
 ) => {
+  console.log('b');
   const newAsset = assets.find(compare);
+  console.log('c');
   newAsset && onChange(newAsset);
 };
 
 function compareAsset(newItem: { id: string }) {
+  console.log('d');
   return (asset: Asset) => asset.getCode() === newItem.id;
 }
 
@@ -49,6 +52,7 @@ export function onStellarAssetOnChange(
   assets: BlockchainAsset[],
   onChange: AssetSelectorOnChange,
 ) {
+  console.log('a');
   return findAsset(compareAsset(newItem) as (asset: BlockchainAsset) => boolean, assets, onChange);
 }
 
@@ -66,10 +70,14 @@ export function generateAssetSelectorItem(
   assetPrefix?: string,
   assetSuffix?: string,
 ) {
+  console.log('areStellarAssets(assets)');
+  console.log(areStellarAssets(assets));
   if (areStellarAssets(assets)) {
     const formatAsset = (asset: Asset) => assetDisplayName(asset, assetPrefix, assetSuffix);
+    console.log(1);
     const getCode = (asset: Asset) => asset.getCode();
 
+    console.log(2);
     return generateAssetItems(
       assets,
       formatAsset as (asset: BlockchainAsset) => string,
@@ -97,11 +105,13 @@ function generateAssetItems(
   getCode: (asset: BlockchainAsset) => string,
   selectedAsset?: BlockchainAsset,
 ) {
+  console.log(3);
   const formattedAssets = assets.map((asset) => ({
     displayName: formatAssets(asset),
     id: getCode(asset),
   }));
 
+  console.log(4);
   const selectedAssetItem = selectedAsset
     ? {
         displayName: formatAssets(selectedAsset),
@@ -109,5 +119,6 @@ function generateAssetItems(
       }
     : undefined;
 
+  console.log(5);
   return { formattedAssets, selectedAssetItem };
 }
