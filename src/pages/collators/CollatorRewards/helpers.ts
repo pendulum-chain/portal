@@ -4,8 +4,7 @@ import { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
 import { ShowToast, ToastMessage } from '../../../shared/showToast';
 import { nativeToFormatMetric } from '../../../shared/parseNumbers/metric';
-import { BLOCK_TIME_SEC, SECONDS_IN_A_DAY } from '../../../shared/constants';
-import { FIFTEEN_MINUTES_IN_MILLISECONDS } from '../../../shared/constants';
+import { BLOCK_TIME_SEC, MINUTE_IN_MILLISECONDS, SECONDS_IN_A_DAY } from '../../../shared/constants';
 import { getErrors } from '../../../helpers/substrate';
 
 async function calculateDaysLeft(blockNumber: string, api: ApiPromise) {
@@ -85,7 +84,7 @@ export const handleTransactionStatus = (
       setUpdateEnabled(false);
       setTimeout(() => {
         setUpdateEnabled(true);
-      }, FIFTEEN_MINUTES_IN_MILLISECONDS);
+      }, 15 * MINUTE_IN_MILLISECONDS);
     }
   }
 };

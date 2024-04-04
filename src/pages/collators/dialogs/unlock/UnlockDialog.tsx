@@ -9,7 +9,7 @@ import { useGlobalState } from '../../../../GlobalStateProvider';
 
 import { Dialog } from '../Dialog';
 
-import { getUnlockValidatiomSchema } from './UnlockValidationSchema';
+import { getUnlockValidationSchema } from './UnlockValidationSchema';
 import { SuccessStep } from '../steps/SuccessStep';
 import { FC } from 'preact/compat';
 import { UnlockConfirmStep } from './UnlockConfirmStep';
@@ -46,7 +46,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
   const balance = nativeToDecimal(userStakeBalance).toNumber();
 
   const form = useForm<UnlockFormValues>({
-    resolver: yupResolver(getUnlockValidatiomSchema(balance)),
+    resolver: yupResolver(getUnlockValidationSchema(balance)),
     defaultValues: {
       amount: balance,
     },
