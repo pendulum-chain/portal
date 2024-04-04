@@ -48,9 +48,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
-  console.log(selectedAsset, 'selectedAsset');
-
-  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber(); // HERE IS THE ERROR
+  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
