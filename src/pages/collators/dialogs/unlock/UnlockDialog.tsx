@@ -131,7 +131,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
         disabled={!walletAccount}
         fullWidth={true}
       >
-        Claim
+        {loading ? '' : 'Claim'}
       </Button>
     </>
   );

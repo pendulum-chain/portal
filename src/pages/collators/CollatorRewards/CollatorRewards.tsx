@@ -36,7 +36,8 @@ function CollatorRewards() {
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
   const [userStaking, setUserStaking] = useState<UserStaking>();
   const [claimDialogVisible, setClaimDialogVisible] = useState<boolean>(false);
-  const [submissionPending, setSubmissionPending] = useState(false);
+  const [submissionPendingRewards, setSubmissionPendingRewards] = useState(false);
+  const [, setSubmissionPendingUnlock] = useState(false);
   const [unlockDialogSuccess, setUnlockDialogSuccess] = useState(false);
   const [unstaking, setUnstaking] = useState<string>('0.00');
   const [balanceEnabledForUnlock, setBalanceEnabledForUnlock] = useState<string>('0.00');
@@ -137,7 +138,7 @@ function CollatorRewards() {
     if (!updateRewardsExtrinsic || !api || !walletAccount) {
       return;
     }
-    setSubmissionPending(true);
+    setSubmissionPendingRewards(true);
     updateRewardsExtrinsic
       .signAndSend(walletAccount.address, { signer: walletAccount.signer as Signer | undefined }, (result) => {
         handleTransactionStatus(
@@ -145,14 +146,14 @@ function CollatorRewards() {
           result.events,
           api,
           showToast,
-          setSubmissionPending,
+          setSubmissionPendingRewards,
           refreshRewards,
           setUpdateEnabled,
         );
       })
       .catch((error) => {
         showToast(ToastMessage.ERROR, 'Transaction submission failed: ' + error.toString());
-        setSubmissionPending(false);
+        setSubmissionPendingRewards(false);
       });
   }, [api, refreshRewards, updateRewardsExtrinsic, walletAccount, setUpdateEnabled]);
 
@@ -161,7 +162,7 @@ function CollatorRewards() {
       const submittableExtrinsic = unlockUnstaked(walletAccount.address);
 
       if (api && walletAccount) {
-        doSubmitExtrinsic(api, submittableExtrinsic, walletAccount, setSubmissionPending, setUnlockDialogSuccess);
+        doSubmitExtrinsic(api, submittableExtrinsic, walletAccount, setSubmissionPendingUnlock, setUnlockDialogSuccess);
       }
     }
   };
@@ -218,7 +219,7 @@ function CollatorRewards() {
             {renderContentWithLoading(
               <StakingRewardsContent
                 updateButton={{
-                  loading: submissionPending,
+                  loading: submissionPendingRewards,
                   disabled: !updateEnabled || !walletAccount,
                   onClick: () => submitUpdate(),
                 }}
