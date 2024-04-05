@@ -10,7 +10,6 @@ describe('decimal', () => {
     });
 
     it('should format numbers 1 micro as 0.001', () => {
-      console.log(Number(1e-3));
       const result = nativeToFormatDecimal(ONE_TOKEN * 1e-3, 'PEN');
       expect(result).toEqual('0.001 PEN');
     });
