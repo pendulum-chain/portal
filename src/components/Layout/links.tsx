@@ -5,13 +5,17 @@ import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
-import SpacewalkIcon from '../../assets/spacewalk';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
+
+import a from '../../assets/spacewalk/StellarBridgeToSpacewalk_Text.json';
+import b from '../../assets/spacewalk/AMPEStellarBridgeSpacewalk_Interpolation.json';
+
+import Lottie from 'react-lottie';
 
 export type LinkParameter = { isActive?: boolean };
 export type BaseLinkItem = {
@@ -29,6 +33,24 @@ export type LinkItem = BaseLinkItem & {
   submenu?: BaseLinkItem[];
 };
 export type Links = (state: Partial<GlobalState>) => LinkItem[];
+
+const defaultOptions = {
+  loop: false,
+  autoplay: false,
+  animationData: a,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
+
+const defaultOptionsB = {
+  loop: false,
+  autoplay: false,
+  animationData: b,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 export const links: Links = ({ tenantName }) => [
   {
@@ -52,11 +74,11 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './spacewalk',
-    title: 'Spacewalk',
+    title: <Lottie options={{ ...defaultOptions }} height={19} width={94} style={{ margin: 0 }} />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
-    prefix: <SpacewalkIcon />,
+    prefix: <Lottie options={defaultOptionsB} height={24} width={24} style={{ margin: 0 }} />,
     submenu: [
       {
         link: './spacewalk/bridge',
