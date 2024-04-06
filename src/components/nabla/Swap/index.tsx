@@ -3,13 +3,13 @@ import { useMemo } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
 import { errorClass } from '../../../helpers/form';
-import { AssetSelectorModal } from '../../Asset/Selector/Modal';
 import { TransactionSettingsDropdown } from '../../Transaction/Settings';
 import ApprovalSubmit from './Approval';
 import From from './From';
 import SwapProgress from './Progress';
 import To from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
+import { AssetSelectorModal } from '../common/AssetSelectorModal';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -101,6 +101,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         open={!!modalType}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}
+        excludedToken={modalType === 'from' ? getValues('to') : getValues('from')}
         onClose={() => setModalType(undefined)}
         isLoading={isLoading}
       />

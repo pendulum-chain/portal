@@ -8,6 +8,8 @@ import { useMemo, useState } from 'preact/compat';
 import { createWriteOptions } from '../services/api/helpers';
 import { defaultWriteLimits } from './helpers';
 import { useSharedState } from './Provider';
+// TODO Torsten
+import { blurp } from '../blurp';
 
 // TODO: fix/improve types - parse abi file
 export type TransactionsStatus = {
@@ -40,7 +42,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     [abi, api?.registry],
   );
 
-  console.log('useContractWrite', address, method, args);
+  blurp('write', 'useContractWrite', address, method, args);
 
   const isReady = !!contractAbi && !!address && !!api && !!walletAddress && !!signer;
   const submit = async (submitArgs?: any[] | void): Promise<any> => {
@@ -49,7 +51,8 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     const fnArgs = submitArgs || args || [];
     const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
 
-    console.log('call message write', address, method, args, submitArgs);
+    blurp('write', 'call message write', address, method, args, submitArgs);
+    blurp('write', 'limits', { ...defaultWriteLimits, ...contractOptions });
 
     const response = await messageCall({
       abi: contractAbi,
@@ -65,10 +68,10 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
       messageName: method,
       messageArguments: fnArgs,
       limits: { ...defaultWriteLimits, ...contractOptions },
-      gasLimitTolerancePercentage: 200, // Allow 3 fold gas tolerance
+      gasLimitTolerancePercentage: 10, // Allow 3 fold gas tolerance
     });
 
-    console.log('call message write response', address, method, fnArgs, response);
+    blurp('write', 'call message write response', address, method, fnArgs, response);
 
     if (response?.result?.type !== 'success') throw response;
     return response;

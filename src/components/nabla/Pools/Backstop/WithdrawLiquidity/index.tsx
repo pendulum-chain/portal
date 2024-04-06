@@ -6,7 +6,6 @@ import { PoolProgress } from '../..';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplusNativeAmount, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import { AssetSelectorModal } from '../../../../Asset/Selector/Modal';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
@@ -15,6 +14,7 @@ import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
+import { AssetSelectorModal } from '../../../common/AssetSelectorModal';
 
 const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
@@ -205,6 +205,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
           setValue('address', pools.find((pool) => pool.token.id === value.id)?.id);
           tokenModal[1].setFalse();
         }}
+        excludedToken={undefined}
         selected={selectedPool.token.id}
         onClose={tokenModal[1].setFalse}
       />

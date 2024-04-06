@@ -16,7 +16,7 @@ import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 import { useBackstopWithdraw } from './useBackstopWithdraw';
 import { useSwapPoolWithdraw } from './useSwapPoolWithdraw';
-import { NablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
+import { NablaInstance, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 
@@ -66,7 +66,10 @@ export const useWithdrawLiquidity = (nabla: NablaInstance) => {
     name: 'address',
   });
 
-  const selectedPool = useMemo(() => swapPools.find((t) => t.id === address)!, [address, swapPools]);
+  const selectedPool: NablaInstanceSwapPool | undefined = useMemo(
+    () => swapPools.find((t) => t.id === address)!,
+    [address, swapPools],
+  );
 
   const onWithdrawSuccess = useCallback(() => {
     reset();

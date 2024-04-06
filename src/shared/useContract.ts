@@ -6,6 +6,8 @@ import { QueryKey, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { defaultReadLimits, emptyCacheKey, emptyFn, QueryOptions } from './helpers';
 import { useSharedState } from './Provider';
+// TODO Torsten
+import { blurp } from '../blurp';
 
 type ContractOpts = Limits | ((api: ApiPromise) => Limits);
 export type UseContractProps = QueryOptions & {
@@ -45,7 +47,7 @@ export function useContract(
     enabled
       ? async () => {
           const limits = getLimits(options, api);
-          console.log('Call message', address, method, args);
+          blurp('read', 'Call message', address, method, args);
 
           const response = await messageCall({
             abi: contractAbi,
@@ -57,7 +59,7 @@ export function useContract(
             messageArguments: args || [],
             limits,
           });
-          console.log('messageCall result', method, response);
+          blurp('read', 'messageCall result', method, response);
 
           return response;
         }
@@ -68,8 +70,21 @@ export function useContract(
     },
   );
 
-  console.log(!!contractAbi, rest.enabled !== false, !!address, !!api, !!actualWalletAddress);
-  console.log('useContract result', method, enabled, key, address, method, args, query.status, query.data, query);
+  blurp('read', !!contractAbi, rest.enabled !== false, !!address, !!api, !!actualWalletAddress);
+  blurp(
+    'read',
+    'useContract result',
+    method,
+    enabled,
+    key,
+    address,
+    method,
+    args,
+    query.status,
+    query.data,
+    (query.data?.result as any)?.value,
+    (query.data?.result as any)?.value?.toString(),
+  );
 
   return {
     refetch: query.refetch,

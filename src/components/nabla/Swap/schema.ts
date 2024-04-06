@@ -1,6 +1,14 @@
 import * as Yup from 'yup';
 import { transformNumber } from '../../../helpers/yup';
-import { SwapFormValues } from './types';
+
+export type SwapFormValues = {
+  from: string;
+  fromAmount: number;
+  to: string;
+  toAmount: number;
+  slippage: number | undefined;
+  deadline: number;
+};
 
 const schema = Yup.object<SwapFormValues>().shape({
   from: Yup.string().min(5).required(),

@@ -2,28 +2,30 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, AvatarProps, Button, Input, Modal, ModalProps } from 'react-daisyui';
-import { repeat } from '../../../../helpers/general';
-import ModalCloseButton from '../../../Button/ModalClose';
-import { Skeleton } from '../../../Skeleton';
-import { NablaInstanceToken } from '../../../../hooks/nabla/useNablaInstance';
+import { repeat } from '../../../helpers/general';
+import ModalCloseButton from '../../Button/ModalClose';
+import { Skeleton } from '../../Skeleton';
+import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 
-export interface AssetListProps {
+interface AssetListProps {
   assets?: NablaInstanceToken[];
   onSelect: (asset: NablaInstanceToken) => void;
+  excludedToken: string | undefined;
   selected?: string;
 }
 
-function AssetList({ assets, onSelect, selected }: AssetListProps) {
+function AssetList({ assets, onSelect, selected, excludedToken }: AssetListProps) {
   const [filter, setFilter] = useState<string>();
 
   const filteredTokens = useMemo(
     () =>
-      filter && assets
+      (filter && assets
         ? matchSorter(assets, filter, {
             keys: ['name', 'address', 'symbol'],
           })
-        : assets,
-    [assets, filter],
+        : assets
+      )?.filter((token) => token.id !== excludedToken),
+    [assets, filter, excludedToken],
   );
 
   return (
@@ -71,7 +73,7 @@ function AssetList({ assets, onSelect, selected }: AssetListProps) {
   );
 }
 
-export type AssetSelectorModalProps = {
+type AssetSelectorModalProps = {
   isLoading?: boolean;
   onClose: () => void;
 } & AssetListProps &
@@ -80,6 +82,7 @@ export type AssetSelectorModalProps = {
 export function AssetSelectorModal({
   assets,
   selected,
+  excludedToken,
   isLoading,
   onSelect,
   onClose,
@@ -96,12 +99,10 @@ export function AssetSelectorModal({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} />
+            <AssetList assets={assets || []} onSelect={onSelect} selected={selected} excludedToken={excludedToken} />
           )}
         </div>
       </Modal.Body>
     </Modal>
   );
 }
-
-export default AssetList;

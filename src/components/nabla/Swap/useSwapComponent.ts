@@ -16,7 +16,7 @@ import { storageService } from '../../../services/storage/local';
 import { calcDeadline, decimalToRaw } from '../../../shared/parseNumbers';
 import { useContractWrite } from '../../../shared/useContractWrite';
 import schema from './schema';
-import { SwapFormValues } from './types';
+import { SwapFormValues } from './schema';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 
 export interface UseSwapComponentProps {

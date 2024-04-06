@@ -2,12 +2,12 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
-import pendulumIcon from '../../../../assets/pendulum-icon.svg';
-import { useContractBalance } from '../../../../shared/useContractBalance';
-import TokenPrice from '../../Price';
-import { SwapFormValues } from '../types';
-import { NablaInstanceToken } from '../../../../hooks/nabla/useNablaInstance';
-import { erc20WrapperAbi } from '../../../../contracts/nabla/ERC20Wrapper';
+import pendulumIcon from '../../../assets/pendulum-icon.svg';
+import { useContractBalance } from '../../../shared/useContractBalance';
+import TokenPrice from '../Price';
+import { SwapFormValues } from './schema';
+import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
+import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 
 export interface FromProps {
   tokensMap: Record<string, NablaInstanceToken>;
