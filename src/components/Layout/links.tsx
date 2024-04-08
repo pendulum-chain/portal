@@ -1,5 +1,7 @@
 import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
+import { Options } from 'react-lottie';
+
 import DashboardIcon from '../../assets/dashboard';
 import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
@@ -12,19 +14,29 @@ import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 
-import a from '../../assets/spacewalk/StellarBridgeToSpacewalk_Text.json';
-import b from '../../assets/spacewalk/AMPEStellarBridgeSpacewalk_Interpolation.json';
-
-import Lottie from 'react-lottie';
+import AmpeLottieText from '../../assets/spacewalk/PEN_StellarBridgeToSpacewalk_Text.json';
+import AmpeLottieInterpolation from '../../assets/spacewalk/PEN_StellarBridgeToSpacewalk_Interpolation.json';
 
 export type LinkParameter = { isActive?: boolean };
+
+export type LottieOptions = { lottieOptions: Options } & {
+  componentOptions: { height?: number; width?: number; style?: Record<string, string | number> };
+};
+
+export function isLottieOptions(obj: any): obj is LottieOptions {
+  return obj && typeof obj === 'object' && 'lottieOptions' in obj && 'animationData' in obj['lottieOptions'];
+}
+
+export type TitleOptions = LottieOptions | ComponentChildren;
+export type PrefixOptions = LottieOptions | ComponentChildren;
+
 export type BaseLinkItem = {
   link: string;
-  title: ComponentChildren;
+  title: TitleOptions;
   props?: Omit<NavLinkProps, 'className'> & {
     className?: (params?: LinkParameter) => string;
   };
-  prefix?: ComponentChildren;
+  prefix?: PrefixOptions;
   suffix?: ComponentChildren;
   hidden?: boolean;
   disabled?: boolean;
@@ -34,21 +46,35 @@ export type LinkItem = BaseLinkItem & {
 };
 export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
-const defaultOptions = {
-  loop: false,
-  autoplay: false,
-  animationData: a,
-  rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice',
+const defaultOptions: LottieOptions = {
+  lottieOptions: {
+    loop: false,
+    autoplay: false,
+    animationData: AmpeLottieText,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  },
+  componentOptions: {
+    height: 20,
+    width: 96,
+    style: { margin: 0 },
   },
 };
 
-const defaultOptionsB = {
-  loop: false,
-  autoplay: false,
-  animationData: b,
-  rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice',
+const defaultOptionsB: LottieOptions = {
+  lottieOptions: {
+    loop: false,
+    autoplay: false,
+    animationData: AmpeLottieInterpolation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  },
+  componentOptions: {
+    height: 32,
+    width: 32,
+    style: { margin: 0 },
   },
 };
 
@@ -74,11 +100,11 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './spacewalk',
-    title: <Lottie options={{ ...defaultOptions }} height={19} width={94} style={{ margin: 0 }} />,
+    title: defaultOptions,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
-    prefix: <Lottie options={defaultOptionsB} height={24} width={24} style={{ margin: 0 }} />,
+    prefix: defaultOptionsB,
     submenu: [
       {
         link: './spacewalk/bridge',

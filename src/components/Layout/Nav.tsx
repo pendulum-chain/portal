@@ -1,15 +1,17 @@
-import { memo, useMemo } from 'preact/compat';
+import { memo, useMemo, useState } from 'preact/compat';
+import Lottie from 'react-lottie';
 import { NavLink, useLocation } from 'react-router-dom';
+
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
-import { LinkItem, links } from './links';
+import { LinkItem, isLottieOptions, links } from './links';
 
 const CollapseMenu = ({
   link,
   disabled,
   button,
   children,
-  ariaControls
+  ariaControls,
 }: {
   link: string;
   disabled?: boolean;
@@ -37,7 +39,7 @@ const CollapseMenu = ({
       >
         {button}
       </button>
-      <div className='collapse-content p-0'>{children}</div>
+      <div className="collapse-content p-0">{children}</div>
     </section>
   );
 };
@@ -72,30 +74,62 @@ export type NavProps = {
 const Nav = memo(({ onClick }: NavProps) => {
   const state = useGlobalState();
 
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsPlaying(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPlaying(false);
+  };
+
   return (
     <nav>
       {links(state).map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
-          <CollapseMenu
-            key={i}
-            link={item.link}
-            disabled={item.disabled}
-            ariaControls='submenu'
-            button={
-              <>
-                {item.prefix}
-                <span>{item.title}</span>
-                {item.suffix}
-              </>
-            }
-          >
-            <ul className="submenu" id='submenu'>
-              {item.submenu.map((subItem, j) => (
-                <li key={`${i}-${j}`}><NavItem item={subItem} onClick={onClick} /></li>
-              ))}
-            </ul>
-          </CollapseMenu>
+          <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <CollapseMenu
+              key={i}
+              link={item.link}
+              disabled={item.disabled}
+              ariaControls="submenu"
+              button={
+                <>
+                  {isLottieOptions(item.prefix) ? (
+                    <Lottie
+                      options={item.prefix.lottieOptions}
+                      isStopped={!isPlaying}
+                      {...item.prefix.componentOptions}
+                    />
+                  ) : (
+                    item.prefix
+                  )}
+                  {isLottieOptions(item.title) ? (
+                    <span>
+                      <Lottie
+                        options={item.title.lottieOptions}
+                        isStopped={!isPlaying}
+                        {...item.title.componentOptions}
+                      />
+                    </span>
+                  ) : (
+                    <span>{item.title}</span>
+                  )}
+                  {item.suffix}
+                </>
+              }
+            >
+              <ul className="submenu" id="submenu">
+                {item.submenu.map((subItem, j) => (
+                  <li key={`${i}-${j}`}>
+                    <NavItem item={subItem} onClick={onClick} />
+                  </li>
+                ))}
+              </ul>
+            </CollapseMenu>
+          </div>
         ) : (
           <NavItem key={i} item={item} onClick={onClick} />
         );
