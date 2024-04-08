@@ -72,3 +72,5 @@ export function showToast(message: ToastMessage, customMessage?: string) {
 
   return toast(ToastProperties[message].message, ToastProperties[message].options);
 }
+
+export type ShowToast = typeof showToast;

@@ -1,4 +1,4 @@
-import CollatorRewards from './CollatorRewards';
+import CollatorRewards from './CollatorRewards/CollatorRewards';
 import CollatorsTable from './CollatorsTable';
 import './styles.css';
 
