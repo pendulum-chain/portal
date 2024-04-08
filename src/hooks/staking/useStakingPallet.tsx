@@ -123,6 +123,7 @@ export function useStakingPallet() {
 
   const memo = useMemo(() => {
     return {
+      unlockUnstaked: api?.tx.parachainStaking.unlockUnstaked,
       candidates,
       inflationInfo,
       minDelegatorStake,
@@ -131,6 +132,7 @@ export function useStakingPallet() {
       refreshRewards() {
         fetchEstimatedReward().then((reward) => setEstimatedRewards(reward));
       },
+      // Gas Price Prediction
       async getTransactionFee(extrinsic: SubmittableExtrinsic) {
         if (!api || !extrinsic.hasPaymentInfo) {
           return new Big(0);

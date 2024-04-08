@@ -1,17 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { Button, Modal } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
-import { CloseButton } from '../../../components/CloseButton';
 import Amount from '../../../components/Form/Amount';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/useStakingPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { getClaimingValidationSchema } from './ValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
+import { Dialog } from './Dialog';
 
 interface Props {
   userRewardsBalance?: string;
@@ -32,7 +32,7 @@ export type ClaimFormValues = {
 };
 
 function ClaimRewardsDialog(props: Props) {
-  const { userRewardsBalance = '0', tokenSymbol, visible, onClose } = props;
+  const { userRewardsBalance = '0', visible = false, onClose } = props;
   const { createClaimRewardExtrinsic } = useStakingPallet();
   const { api } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
@@ -47,7 +47,7 @@ function ClaimRewardsDialog(props: Props) {
     },
   });
 
-  const { handleSubmit, formState, register, setValue, getValues, control } = form;
+  const { formState, register, setValue, getValues } = form;
 
   useMemo(() => {
     if (!visible)
@@ -88,7 +88,7 @@ function ClaimRewardsDialog(props: Props) {
           setLoading(false);
         });
     },
-    [api, formState, createClaimRewardExtrinsic, walletAccount, setLoading, setStep, userRewardsBalance],
+    [api, formState, createClaimRewardExtrinsic, walletAccount, setLoading, setStep],
   );
 
   const content = useMemo(() => {
@@ -115,7 +115,7 @@ function ClaimRewardsDialog(props: Props) {
           </div>
         );
     }
-  }, [step, tokenSymbol, formState]);
+  }, [step, formState, register, setValue, userRewardsBalance]);
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {
@@ -137,17 +137,23 @@ function ClaimRewardsDialog(props: Props) {
     }
   };
 
+  const actions = (
+    <Button color="primary" loading={loading} onClick={getButtonAction(step)} disabled={!walletAccount}>
+      {getButtonText(step)}
+    </Button>
+  );
+
+  const getHeaderText = (step: ClaimStep) => {
+    switch (step) {
+      case ClaimStep.Confirm:
+        return 'Claim Rewards';
+      case ClaimStep.Success:
+        return '';
+    }
+  };
+
   return (
-    <Modal className="bg-base-200" open={visible}>
-      <Modal.Header className="text-2xl claim-title">Claim Rewards</Modal.Header>
-      <CloseButton onClick={onClose} />
-      <Modal.Body>{content}</Modal.Body>
-      <Modal.Actions className="justify-center">
-        <Button color="primary" loading={loading} onClick={getButtonAction(step)} disabled={!walletAccount}>
-          {getButtonText(step)}
-        </Button>
-      </Modal.Actions>
-    </Modal>
+    <Dialog actions={actions} visible={visible} headerText={getHeaderText(step)} onClose={onClose} content={content} />
   );
 }
 
