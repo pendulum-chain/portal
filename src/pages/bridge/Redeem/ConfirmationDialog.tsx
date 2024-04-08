@@ -1,10 +1,12 @@
-import { Button, Modal } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { PublicKey } from '../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { RichRedeemRequest } from '../../../hooks/spacewalk/useRedeemPallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
+import { Dialog } from '../../collators/dialogs/Dialog';
+import { useMemo } from 'preact/hooks';
 
 interface ConfirmationDialogProps {
   redeemRequest: RichRedeemRequest | undefined;
@@ -20,13 +22,9 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
 
-  return (
-    <Modal open={visible}>
-      <Modal.Header className="font-bold">Back to Stellar</Modal.Header>
-      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
-        ✕
-      </Button>
-      <Modal.Body>
+  const content = useMemo(
+    () => (
+      <>
         <div className="text-center">
           <div className="text-xl">
             You will receive {totalAmount} {asset?.getCode()}
@@ -44,18 +42,26 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
             sometimes take up to 6 hours.
           </div>
         </div>
-      </Modal.Body>
+      </>
+    ),
+    [asset, totalAmount],
+  );
 
-      <Modal.Actions className="justify-center">
-        <Button
-          color="primary"
-          onClick={() => {
-            navigateTo(`/${tenantName}/spacewalk/transfers`);
-          }}
-        >
-          View Progress
-        </Button>
-      </Modal.Actions>
-    </Modal>
+  const actions = useMemo(
+    () => (
+      <Button
+        color="primary"
+        onClick={() => {
+          navigateTo(`/${tenantName}/spacewalk/transfers`);
+        }}
+      >
+        View Progress
+      </Button>
+    ),
+    [navigateTo, tenantName],
+  );
+
+  return (
+    <Dialog headerText="Back to Stellar" visible={visible} onClose={onClose} content={content} actions={actions} />
   );
 }
