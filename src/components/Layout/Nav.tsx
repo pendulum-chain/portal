@@ -80,16 +80,12 @@ const Nav = memo(({ onClick }: NavProps) => {
     setIsPlaying(true);
   };
 
-  const handleMouseLeave = () => {
-    setIsPlaying(false);
-  };
-
   return (
     <nav>
       {links(state).map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
-          <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          <div onMouseEnter={handleMouseEnter}>
             <CollapseMenu
               key={i}
               link={item.link}
