@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/pendulum-chain/portal/compare/v1.3.8...v1.4.0) (2024-04-08)
+
+
+### Features
+
+* 267 unlock unstaked tokens ([5ef4882](https://github.com/pendulum-chain/portal/commit/5ef48823d733469a00ef9808a09a8bb9b8848289))
+
 ## [1.3.8](https://github.com/pendulum-chain/portal/compare/v1.3.7...v1.3.8) (2024-04-05)
 
 ## [1.3.7](https://github.com/pendulum-chain/portal/compare/v1.3.6...v1.3.7) (2024-03-27)
