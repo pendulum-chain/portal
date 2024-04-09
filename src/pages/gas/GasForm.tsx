@@ -1,5 +1,6 @@
 import { StateUpdater } from 'preact/hooks';
 import { useForm } from 'react-hook-form';
+import { useMemo } from 'preact/hooks';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
 import { BlockchainAsset } from '../../components/Selector/AssetSelector/helpers';
@@ -52,42 +53,58 @@ export const GasForm: React.FC<GasFormProps> = ({
   });
 
   const min = calcMin();
-  const minBadge = min
-    ? {
-        value: String(formatToSignificantDecimals(min)),
-        onClick: () => {
-          clearErrors();
-          setValue('fromAmount', min);
-          setValue('toAmount', calcTo(min));
-        },
-      }
-    : undefined;
+  const minBadge = useMemo(() => {
+    return min
+      ? {
+          value: String(formatToSignificantDecimals(min)),
+          onClick: () => {
+            clearErrors();
+            setValue('fromAmount', min);
+            setValue('toAmount', calcTo(min));
+          },
+        }
+      : undefined;
+  }, [calcTo, clearErrors, min, setValue]);
 
   const max = calcMax();
-  const maxBadge = max
-    ? {
-        value: String(formatToSignificantDecimals(max)),
-        onClick: () => {
-          setValue('fromAmount', max);
-          setValue('toAmount', calcTo(max));
-        },
-      }
-    : undefined;
+  const maxBadge = useMemo(() => {
+    return max
+      ? {
+          value: String(formatToSignificantDecimals(max)),
+          onClick: () => {
+            setValue('fromAmount', max);
+            setValue('toAmount', calcTo(max));
+          },
+        }
+      : undefined;
+  }, [calcTo, max, setValue]);
 
   const fromPropsError = formState.errors.fromAmount?.message;
-  const FromProps: FromPropsWithVariant = {
-    register: registerFromAmount,
-    customText: 'Swap from',
-    variant: FromVariants.SWAP,
-    assets: currencies,
-    selectedAsset: selectedFromToken,
-    setSelectedAsset: setSelectedFromToken,
-    minBadge,
-    maxBadge,
-    disabled: submissionPending,
-    readOnly: submissionPending,
-    error: fromPropsError,
-  };
+  const FromProps: FromPropsWithVariant = useMemo(
+    () => ({
+      register: registerFromAmount,
+      customText: 'Swap from',
+      variant: FromVariants.SWAP,
+      assets: currencies,
+      selectedAsset: selectedFromToken,
+      setSelectedAsset: setSelectedFromToken,
+      minBadge,
+      maxBadge,
+      disabled: submissionPending,
+      readOnly: submissionPending,
+      error: fromPropsError,
+    }),
+    [
+      currencies,
+      fromPropsError,
+      maxBadge,
+      minBadge,
+      registerFromAmount,
+      selectedFromToken,
+      setSelectedFromToken,
+      submissionPending,
+    ],
+  );
 
   const toPropsError = formState.errors.toAmount?.message;
   const ToProps: FromPropsWithVariant = {

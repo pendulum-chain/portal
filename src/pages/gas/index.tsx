@@ -45,6 +45,42 @@ const Gas = () => {
   const selectedTokenDecimals = (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals;
   const nativeDecimals = (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals;
 
+  function calcMax(maxBuyout: number) {
+    if (maxBuyout === 0) return 0;
+    console.log('----------');
+    const max = calculateForCurrentFromToken(
+      maxBuyout,
+      nativeTokenPrice,
+      selectedFromTokenPriceUSD,
+      selectedTokenDecimals,
+    );
+    if (max === 0) return 0;
+
+    // The price calculation may be not precise - there is a need to check if it has not exceeded the max buyout value
+
+    const nativePricce = calculatePriceNativeForCurrentFromToken(
+      max,
+      nativeTokenPrice,
+      selectedFromTokenPriceUSD,
+      nativeDecimals,
+    );
+
+    console.log(nativePricce, 'nativePricce');
+    const isHigher = nativePricce <= maxBuyout;
+    const isDifferenceLowerThan5Percent = nativePricce <= maxBuyout * 0.95;
+
+    if (isHigher) {
+      console.log('recalculating isHigher for', max);
+      return calcMax(max * 0.99);
+    }
+
+    if (isDifferenceLowerThan5Percent) {
+      console.log('recalculating isDifferenceLowerThan5Percent for', max);
+      return calcMax(max * 1.01);
+    }
+
+    return max;
+  }
   return (
     <div className="h-full flex items-center justify-center mt-4">
       <GasSuccessDialog visible={confirmationDialogVisible} onClose={() => setConfirmationDialogVisible(false)} />
@@ -58,14 +94,7 @@ const Gas = () => {
             setSelectedFromToken={setSelectedFromToken}
             nativeCurrency={nativeCurrency}
             onSubmit={onSubmit}
-            calcMax={() =>
-              calculateForCurrentFromToken(
-                buyoutNativeToken.max,
-                nativeTokenPrice,
-                selectedFromTokenPriceUSD,
-                selectedTokenDecimals,
-              )
-            }
+            calcMax={() => calcMax(buyoutNativeToken.max)}
             calcMin={() =>
               calculateForCurrentFromToken(
                 buyoutNativeToken.min,

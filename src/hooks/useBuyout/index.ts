@@ -67,7 +67,7 @@ export const useBuyout = (): BuyoutSettings => {
         const MIN_FEE_MULTIPLIER = 1.01; // sellFee + min amount still needs 1% for the tx to be fired.
 
         setMinimumBuyout(sellFeePerMill.applyAdjustmentToNumber(minBuyoutLimitFormatted) * MIN_FEE_MULTIPLIER);
-        setMaximumBuyout(sellFeePerMill.applyAdjustmentToNumber(maxBuyoutLimitFormatted));
+        setMaximumBuyout(maxBuyoutLimitFormatted);
       }
     }
 
