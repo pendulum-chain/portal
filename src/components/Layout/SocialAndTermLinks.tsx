@@ -25,7 +25,7 @@ const socialLinks = [
 const SocialAndTermLinks = (): JSX.Element | null => {
   return (
     <div className="pendulum-social-and-terms">
-      <div className="social m-10">
+      <div className="social">
         <ul>
           {socialLinks.map(({ href, Logo }, i) => (
             <li key={i}>
