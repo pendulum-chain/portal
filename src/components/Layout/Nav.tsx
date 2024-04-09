@@ -1,10 +1,10 @@
 import { memo, useMemo, useState } from 'preact/compat';
-import Lottie from 'react-lottie';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
-import { LinkItem, isLottieOptions, links } from './links';
+import { LinkItem, links } from './links';
+import { NavCollapseButtonContent } from './NavCollapseButtonContent';
 
 const CollapseMenu = ({
   link,
@@ -44,7 +44,7 @@ const CollapseMenu = ({
   );
 };
 
-const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
+export const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
   const { link, prefix, suffix, title, props, hidden } = item;
   if (hidden) return null;
   const isExternal = link.startsWith('http');
@@ -91,31 +91,7 @@ const Nav = memo(({ onClick }: NavProps) => {
               link={item.link}
               disabled={item.disabled}
               ariaControls="submenu"
-              button={
-                <>
-                  {isLottieOptions(item.prefix) ? (
-                    <Lottie
-                      options={item.prefix.lottieOptions}
-                      isStopped={!isPlaying}
-                      {...item.prefix.componentOptions}
-                    />
-                  ) : (
-                    item.prefix
-                  )}
-                  {isLottieOptions(item.title) ? (
-                    <span>
-                      <Lottie
-                        options={item.title.lottieOptions}
-                        isStopped={!isPlaying}
-                        {...item.title.componentOptions}
-                      />
-                    </span>
-                  ) : (
-                    <span>{item.title}</span>
-                  )}
-                  {item.suffix}
-                </>
-              }
+              button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
             >
               <ul className="submenu" id="submenu">
                 {item.submenu.map((subItem, j) => (

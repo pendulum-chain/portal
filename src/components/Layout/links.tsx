@@ -13,9 +13,7 @@ import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
-
-import AmpeLottieText from '../../assets/spacewalk/PEN_StellarBridgeToSpacewalk_Text.json';
-import AmpeLottieInterpolation from '../../assets/spacewalk/PEN_StellarBridgeToSpacewalk_Interpolation.json';
+import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
 
 export type LinkParameter = { isActive?: boolean };
 
@@ -46,38 +44,6 @@ export type LinkItem = BaseLinkItem & {
 };
 export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
-const defaultOptions: LottieOptions = {
-  lottieOptions: {
-    loop: false,
-    autoplay: false,
-    animationData: AmpeLottieText,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
-  },
-  componentOptions: {
-    height: 20,
-    width: 96,
-    style: { margin: 0 },
-  },
-};
-
-const defaultOptionsB: LottieOptions = {
-  lottieOptions: {
-    loop: false,
-    autoplay: false,
-    animationData: AmpeLottieInterpolation,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
-    },
-  },
-  componentOptions: {
-    height: 32,
-    width: 32,
-    style: { margin: 0 },
-  },
-};
-
 export const links: Links = ({ tenantName }) => [
   {
     link: './dashboard',
@@ -100,11 +66,11 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './spacewalk',
-    title: defaultOptions,
+    title: getSpacewalkText(tenantName),
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
-    prefix: defaultOptionsB,
+    prefix: getSpacewalkInterpolation(tenantName),
     submenu: [
       {
         link: './spacewalk/bridge',
