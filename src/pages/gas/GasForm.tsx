@@ -8,6 +8,7 @@ import From, { FromPropsWithVariant, FromVariants } from '../../components/Form/
 import { FeeHint } from './FeeHint';
 import { SubmitButton } from './SubmitButton';
 import { formatToSignificantDecimals } from './helpers';
+import useBalances from '../../hooks/useBalances';
 
 export type IssueFormValues = {
   isMax: boolean;
@@ -39,9 +40,12 @@ export const GasForm: React.FC<GasFormProps> = ({
   calcTo,
   submissionPending,
 }) => {
-  const { handleSubmit, register, setValue, watch, formState, clearErrors } = useForm<IssueFormValues>({
+  const { handleSubmit, register, setValue, watch, formState, clearErrors, trigger } = useForm<IssueFormValues>({
     defaultValues: { isMax: false, isMin: false },
+    mode: 'onChange',
   });
+
+  const { balances } = useBalances();
 
   const registerFromAmount = register('fromAmount', {
     max: { value: calcMax(), message: 'Max amount exceeded' },
@@ -56,6 +60,18 @@ export const GasForm: React.FC<GasFormProps> = ({
       setValue('fromAmount', Number(value));
       setValue('toAmount', calcTo(Number(value)));
     },
+
+    validate: (value) => {
+      if (balances && selectedFromToken) {
+        const selectedTokenBalance = balances.find(
+          (balance) => balance.token === (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.symbol,
+        )?.amount;
+        console.log(selectedTokenBalance, 'selectedTokenBalance');
+        if (Number(value) > Number(selectedTokenBalance || 0)) {
+          return 'Insufficient balance';
+        }
+      }
+    },
   });
 
   const min = calcMin();
@@ -69,10 +85,11 @@ export const GasForm: React.FC<GasFormProps> = ({
             setValue('isMin', true);
             setValue('fromAmount', min);
             setValue('toAmount', calcTo(min));
+            trigger('fromAmount');
           },
         }
       : undefined;
-  }, [calcTo, clearErrors, min, setValue]);
+  }, [calcTo, clearErrors, min, setValue, trigger]);
 
   const max = calcMax();
   const maxBadge = useMemo(() => {
@@ -80,14 +97,16 @@ export const GasForm: React.FC<GasFormProps> = ({
       ? {
           value: String(formatToSignificantDecimals(max)),
           onClick: () => {
+            clearErrors();
             setValue('isMax', true);
             setValue('isMin', false);
             setValue('fromAmount', max);
             setValue('toAmount', calcTo(max));
+            trigger('fromAmount');
           },
         }
       : undefined;
-  }, [calcTo, max, setValue]);
+  }, [calcTo, max, setValue, clearErrors, trigger]);
 
   const fromPropsError = formState.errors.fromAmount?.message;
   const FromProps: FromPropsWithVariant = useMemo(
