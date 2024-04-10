@@ -1,3 +1,5 @@
+## [1.4.1](https://github.com/pendulum-chain/portal/compare/v1.4.0...v1.4.1) (2024-04-10)
+
 # [1.4.0](https://github.com/pendulum-chain/portal/compare/v1.3.8...v1.4.0) (2024-04-08)
 
 
