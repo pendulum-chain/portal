@@ -12,10 +12,8 @@ export const GasSuccessDialog: React.FC<DialogProps> = (props) => {
   const content = (
     <div className="flex flex-col items-center justify-between">
       <SuccessDialogIcon />
-      <h2 className="text-xl mt-6">You have successfully purchased</h2>
-      <p className="text-sm dark:text-neutral-400 text-neutral-500 mt-2 mx-4 sm:mx-16 text-center">
-        Lorem ipsum dolor sit amet, consectetur adipscing elit, sed do eiusmod tempor incididunt
-      </p>
+      <h2 className="text-xl mt-6">You have successfully got AMPE!</h2>
+      <p className="text-sm dark:text-neutral-400 text-neutral-500 mt-2 mx-4 sm:mx-16 text-center"></p>
     </div>
   );
 
