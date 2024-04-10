@@ -9,9 +9,10 @@ import { doSubmitExtrinsic } from '../../pages/collators/dialogs/helpers';
 import { useGlobalState } from '../../GlobalStateProvider';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
-import { getMetadata, scaleByCurrencyPrecision } from './utils';
+import { getMetadata } from './utils';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
+import { decimalToNative } from '../../shared/parseNumbers/metric';
 
 export interface BuyoutSettings {
   buyoutNativeToken: {
@@ -97,7 +98,7 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    const scaledCurrency = scaleByCurrencyPrecision(currency, amount);
+    const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
 
     const assetId = currency.assetId as { XCM: number };
 

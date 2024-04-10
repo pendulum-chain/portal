@@ -56,10 +56,3 @@ export function getMetadata(network: TenantName) {
   const currencies = network === TenantName.Foucoco ? FOUCOCO_HARDCODED_METADATA : AMPE_HARDCODED_METADATA;
   return { currencies, nativeCurrency: NATIVE_CURRENCY };
 }
-
-export function scaleByCurrencyPrecision(currency: OrmlTraitsAssetRegistryAssetMetadata, amount: number) {
-  const decimals = currency.metadata.decimals;
-
-  const scalingFactor = Math.pow(10, decimals);
-  return amount * scalingFactor;
-}
