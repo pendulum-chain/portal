@@ -11,7 +11,7 @@ import {
   TCollator,
   UserStaking,
   actionsColumn,
-  apyColumn,
+  aprColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
@@ -82,7 +82,7 @@ function CollatorsTable() {
         identityInfo: identities.get(candidate.id),
         totalStaked: nativeToFormatMetric(candidate.total, tokenSymbol),
         delegators: candidate.delegators.length,
-        apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
+        apr: inflationInfo?.delegator.rewardRate.annual || '0.00%',
       }));
     };
 
@@ -103,7 +103,7 @@ function CollatorsTable() {
       nameColumn,
       stakedColumn,
       delegatorsColumn,
-      apyColumn,
+      aprColumn,
       stakedCol,
       actionsColumn({
         userAccountAddress,

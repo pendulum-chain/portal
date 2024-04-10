@@ -16,7 +16,7 @@ export interface TCollator {
   collator: string;
   totalStaked: string;
   delegators: number;
-  apy: string;
+  apr: string;
   identityInfo?: PalletIdentityInfo;
 }
 
@@ -77,9 +77,9 @@ export const delegatorsColumn: ColumnDef<TCollator> = {
   },
 };
 
-export const apyColumn: ColumnDef<TCollator> = {
-  header: 'APY',
-  accessorKey: 'apy',
+export const aprColumn: ColumnDef<TCollator> = {
+  header: 'APR',
+  accessorKey: 'apr',
 };
 
 export const myStakedColumn = ({
