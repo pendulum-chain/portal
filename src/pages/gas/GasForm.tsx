@@ -66,7 +66,6 @@ export const GasForm: React.FC<GasFormProps> = ({
         const selectedTokenBalance = balances.find(
           (balance) => balance.token === (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.symbol,
         )?.amount;
-        console.log(selectedTokenBalance, 'selectedTokenBalance');
         if (Number(value) > Number(selectedTokenBalance || 0)) {
           return 'Insufficient balance';
         }
