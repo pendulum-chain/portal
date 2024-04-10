@@ -84,6 +84,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         {CollatorInfo}
         <div className="mt-4" />
         <Amount
+          fullMax={false}
           register={register('amount')}
           setValue={(n: number) => setValue('amount', n)}
           error={formState.errors.amount?.message?.toString()}

@@ -24,7 +24,6 @@ export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, userSt
           max={userStakeBalance}
           setValue={noSetValue}
           error={error}
-          fullMax={true}
           hideHalfButton={true}
           hideMaxButton={true}
           readOnly={true}

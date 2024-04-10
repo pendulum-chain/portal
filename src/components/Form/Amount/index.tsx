@@ -31,7 +31,7 @@ const Amount = ({
   max,
   setValue,
   error,
-  fullMax = false,
+  fullMax = true,
   hideHalfButton = false,
   hideMaxButton = false,
   readOnly = false,
