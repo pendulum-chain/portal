@@ -55,7 +55,7 @@ export const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => voi
       {suffix}
     </>
   );
-  const cls = `nav-item ${props?.className?.() || ''}`;
+  const cls = `nav-item font-2 ${props?.className?.() || ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
