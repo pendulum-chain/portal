@@ -52,7 +52,7 @@ export const GasForm: React.FC<GasFormProps> = ({
     min: { value: calcMin(), message: 'Amount is too low' },
     required: 'This field is required',
     maxLength: (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
-    onBlur: (n: InputEvent) => {
+    onChange: (n: InputEvent) => {
       const value = (n.target as HTMLInputElement)?.value;
 
       setValue('isMax', false);
