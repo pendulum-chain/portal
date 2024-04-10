@@ -53,6 +53,7 @@ function handleBuyoutError(error: string) {
 
 export const useBuyout = (): BuyoutSettings => {
   const { api } = useNodeInfoState().state;
+  const { tenantName } = useGlobalState();
   const { walletAccount } = useGlobalState();
   const [minimumBuyout, setMinimumBuyout] = useState<number>(0);
   const [maximumBuyout, setMaximumBuyout] = useState<number>(0);
@@ -124,8 +125,8 @@ export const useBuyout = (): BuyoutSettings => {
       min: minimumBuyout,
       max: maximumBuyout,
     },
-    currencies: Object.values(getMetadata().currencies),
-    nativeCurrency: getMetadata().nativeCurrency.ampe,
+    currencies: Object.values(getMetadata(tenantName).currencies),
+    nativeCurrency: getMetadata(tenantName).nativeCurrency.ampe,
     handleBuyout,
   };
 };

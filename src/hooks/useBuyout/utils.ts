@@ -1,4 +1,19 @@
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
+import { TenantName } from '../../models/Tenant';
+
+const FOUCOCO_HARDCODED_METADATA: Record<string, OrmlTraitsAssetRegistryAssetMetadata> = {
+  ksm: {
+    metadata: {
+      decimals: 12,
+      name: 'Kusama',
+      symbol: 'KSM',
+      existentialDeposit: 1000,
+    },
+    assetId: {
+      XCM: 0,
+    },
+  },
+};
 
 const AMPE_HARDCODED_METADATA: Record<string, OrmlTraitsAssetRegistryAssetMetadata> = {
   usdt: {
@@ -37,8 +52,9 @@ export const NATIVE_CURRENCY: Record<string, OrmlTraitsAssetRegistryAssetMetadat
   },
 };
 
-export function getMetadata() {
-  return { currencies: AMPE_HARDCODED_METADATA, nativeCurrency: NATIVE_CURRENCY };
+export function getMetadata(network: TenantName) {
+  const currencies = network === TenantName.Foucoco ? FOUCOCO_HARDCODED_METADATA : AMPE_HARDCODED_METADATA;
+  return { currencies, nativeCurrency: NATIVE_CURRENCY };
 }
 
 export function scaleByCurrencyPrecision(currency: OrmlTraitsAssetRegistryAssetMetadata, amount: number) {
