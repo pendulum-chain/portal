@@ -11,6 +11,7 @@ import { formatToSignificantDecimals } from './helpers';
 
 export type IssueFormValues = {
   isMax: boolean;
+  isMin: boolean;
   fromAmount: number;
   toAmount: number;
 };
@@ -39,7 +40,7 @@ export const GasForm: React.FC<GasFormProps> = ({
   submissionPending,
 }) => {
   const { handleSubmit, register, setValue, watch, formState, clearErrors } = useForm<IssueFormValues>({
-    defaultValues: { isMax: false },
+    defaultValues: { isMax: false, isMin: false },
   });
 
   const registerFromAmount = register('fromAmount', {
@@ -51,6 +52,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       const value = (n.target as HTMLInputElement)?.value;
 
       setValue('isMax', false);
+      setValue('isMin', false);
       setValue('fromAmount', Number(value));
       setValue('toAmount', calcTo(Number(value)));
     },
@@ -64,6 +66,7 @@ export const GasForm: React.FC<GasFormProps> = ({
           onClick: () => {
             clearErrors();
             setValue('isMax', false);
+            setValue('isMin', true);
             setValue('fromAmount', min);
             setValue('toAmount', calcTo(min));
           },
@@ -78,6 +81,7 @@ export const GasForm: React.FC<GasFormProps> = ({
           value: String(formatToSignificantDecimals(max)),
           onClick: () => {
             setValue('isMax', true);
+            setValue('isMin', false);
             setValue('fromAmount', max);
             setValue('toAmount', calcTo(max));
           },

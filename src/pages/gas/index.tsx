@@ -34,13 +34,11 @@ const Gas = () => {
   }, [pricesCache, selectedFromToken]);
 
   const onSubmit = async (data: IssueFormValues) => {
-    handleBuyout(
-      data.isMax ? nativeCurrency : (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata),
-      data.isMax ? buyoutNativeToken.max : data.fromAmount,
-      setSubmissionPending,
-      setConfirmationDialogVisible,
-      data.isMax,
-    );
+    const isMinMax = data.isMin || data.isMax;
+    const token = isMinMax ? nativeCurrency : (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata);
+    const amount = data.isMin ? buyoutNativeToken.min : data.isMax ? buyoutNativeToken.max : data.fromAmount;
+
+    handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible, isMinMax);
   };
 
   const selectedTokenDecimals = (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals;
