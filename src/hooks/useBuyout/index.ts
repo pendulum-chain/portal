@@ -25,12 +25,20 @@ export interface BuyoutSettings {
     amount: number,
     setSubmissionPending: StateUpdater<boolean>,
     setConfirmationDialogVisible: StateUpdater<boolean>,
+    isExchangeAmount: boolean,
   ) => void;
 }
 
 function handleBuyoutError(error: string) {
+  if (!error) return;
+
   if (error.includes('1010: Invalid Transaction: Custom error: 3')) {
     showToast(ToastMessage.ERROR, 'The buyout amount is too low');
+    return;
+  }
+
+  if (error.includes('1010: Invalid Transaction: Custom error: 2')) {
+    showToast(ToastMessage.ERROR, 'Max buyout reached');
     return;
   }
 
@@ -66,7 +74,7 @@ export const useBuyout = (): BuyoutSettings => {
 
         const MIN_FEE_MULTIPLIER = 1.01; // sellFee + min amount still needs 1% for the tx to be fired.
 
-        setMinimumBuyout(sellFeePerMill.applyAdjustmentToNumber(minBuyoutLimitFormatted) * MIN_FEE_MULTIPLIER);
+        setMinimumBuyout(sellFeePerMill.addSelfToBase(minBuyoutLimitFormatted) * MIN_FEE_MULTIPLIER);
         setMaximumBuyout(maxBuyoutLimitFormatted);
       }
     }
@@ -79,6 +87,7 @@ export const useBuyout = (): BuyoutSettings => {
     amount: number,
     setSubmissionPending: StateUpdater<boolean>,
     setConfirmationDialogVisible: StateUpdater<boolean>,
+    isInNativeToken: boolean,
   ) {
     if (!api || !walletAccount) {
       return;
@@ -91,10 +100,12 @@ export const useBuyout = (): BuyoutSettings => {
 
     const assetId = currency.assetId as { XCM: number };
 
-    const submittableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout(
-      { XCM: assetId.XCM },
-      { exchange: { buyout: scaledCurrency } },
-    );
+    // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
+    const exchange = isInNativeToken
+      ? { buyout: { amount: scaledCurrency } }
+      : { exchange: { amount: scaledCurrency } };
+
+    const submittableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
 
     const response = await doSubmitExtrinsic(
       api,

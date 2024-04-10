@@ -23,7 +23,7 @@ export const InputField = ({ register, readOnly = false, additionalStyle }: Inpu
             e.preventDefault();
           }
         }}
-        placeholder="0,0"
+        placeholder="0.0"
         {...register}
       />
     </div>

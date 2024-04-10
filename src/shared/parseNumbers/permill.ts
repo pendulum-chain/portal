@@ -31,8 +31,8 @@ export class PerMill {
    * @param n The original number.
    * @returns The number after applying the markup or adjustment.
    */
-  public applyAdjustmentToNumber(n: number): number {
-    const adjustmentAsDecimal = this.toDecimal();
-    return n * (1 + adjustmentAsDecimal);
+  public addSelfToBase(n: number): number {
+    const selfAsDecimal = this.toDecimal();
+    return n * (1 + selfAsDecimal);
   }
 }

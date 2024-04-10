@@ -4,13 +4,7 @@ interface FromDescriptionProps {
 }
 
 export const FromDescription = ({ customText, network }: FromDescriptionProps) => {
-  let text = '';
+  if (!customText && !network) return <></>;
 
-  if (customText) {
-    text = customText;
-  } else if (network) {
-    text = `From ${network}`;
-  }
-
-  return text ? <div className="text-sm mt-px text-secondary-content">{text}</div> : <></>;
+  return <div className="text-sm mt-px text-secondary-content">{customText || network || ''}</div>;
 };

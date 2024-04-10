@@ -6,18 +6,10 @@ import { FromDescription } from '../Description';
 import { AvailableActions } from '../AvailableActions';
 
 export const StandardFrom = ({
-  setSelectedAsset,
   className,
-  register,
-  max,
-  setValue,
-  assets,
-  selectedAsset,
-  network,
-  assetSuffix,
-  error,
-  customText,
-  readOnly = false,
+  formControl: { max, register, readOnly, error, setValue },
+  asset: { assetSuffix, assets, selectedAsset, setSelectedAsset },
+  description: { customText, network },
 }: FromProps) => (
   <>
     <div

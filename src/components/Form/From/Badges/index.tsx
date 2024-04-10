@@ -1,12 +1,11 @@
+export interface BadgeProps {
+  value: string;
+  onClick?: () => void;
+}
+
 interface BadgesProps {
-  minBadge?: {
-    value: string;
-    onClick?: () => void;
-  };
-  maxBadge?: {
-    value: string;
-    onClick?: () => void;
-  };
+  minBadge?: BadgeProps;
+  maxBadge?: BadgeProps;
   disabled?: boolean;
 }
 

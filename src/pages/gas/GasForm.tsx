@@ -10,6 +10,7 @@ import { SubmitButton } from './SubmitButton';
 import { formatToSignificantDecimals } from './helpers';
 
 export type IssueFormValues = {
+  isMax: boolean;
   fromAmount: number;
   toAmount: number;
 };
@@ -37,7 +38,9 @@ export const GasForm: React.FC<GasFormProps> = ({
   calcTo,
   submissionPending,
 }) => {
-  const { handleSubmit, register, setValue, watch, formState, clearErrors } = useForm<IssueFormValues>({});
+  const { handleSubmit, register, setValue, watch, formState, clearErrors } = useForm<IssueFormValues>({
+    defaultValues: { isMax: false },
+  });
 
   const registerFromAmount = register('fromAmount', {
     max: { value: calcMax(), message: 'Max amount exceeded' },
@@ -47,6 +50,7 @@ export const GasForm: React.FC<GasFormProps> = ({
     onBlur: (n: InputEvent) => {
       const value = (n.target as HTMLInputElement)?.value;
 
+      setValue('isMax', false);
       setValue('fromAmount', Number(value));
       setValue('toAmount', calcTo(Number(value)));
     },
@@ -59,6 +63,7 @@ export const GasForm: React.FC<GasFormProps> = ({
           value: String(formatToSignificantDecimals(min)),
           onClick: () => {
             clearErrors();
+            setValue('isMax', false);
             setValue('fromAmount', min);
             setValue('toAmount', calcTo(min));
           },
@@ -72,6 +77,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       ? {
           value: String(formatToSignificantDecimals(max)),
           onClick: () => {
+            setValue('isMax', true);
             setValue('fromAmount', max);
             setValue('toAmount', calcTo(max));
           },
@@ -82,17 +88,25 @@ export const GasForm: React.FC<GasFormProps> = ({
   const fromPropsError = formState.errors.fromAmount?.message;
   const FromProps: FromPropsWithVariant = useMemo(
     () => ({
-      register: registerFromAmount,
-      customText: 'Swap from',
+      formControl: {
+        register: registerFromAmount,
+        disabled: submissionPending,
+        readOnly: submissionPending,
+        error: fromPropsError,
+      },
+      badges: {
+        minBadge,
+        maxBadge,
+      },
+      description: {
+        customText: 'Swap from',
+      },
+      asset: {
+        assets: currencies,
+        selectedAsset: selectedFromToken,
+        setSelectedAsset: setSelectedFromToken,
+      },
       variant: FromVariants.SWAP,
-      assets: currencies,
-      selectedAsset: selectedFromToken,
-      setSelectedAsset: setSelectedFromToken,
-      minBadge,
-      maxBadge,
-      disabled: submissionPending,
-      readOnly: submissionPending,
-      error: fromPropsError,
     }),
     [
       currencies,
@@ -108,19 +122,26 @@ export const GasForm: React.FC<GasFormProps> = ({
 
   const toPropsError = formState.errors.toAmount?.message;
   const ToProps: FromPropsWithVariant = {
-    register: register('toAmount', {
-      maxLength: (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
-    }),
-    customText: 'Swap to',
-    variant: FromVariants.SWAP,
-    assets: [nativeCurrency],
-    selectedAsset: nativeCurrency,
-    setSelectedAsset: () => {
-      return null;
+    formControl: {
+      register: register('toAmount', {
+        maxLength: (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
+      }),
+      readOnly: true,
+      disabled: submissionPending,
+      error: toPropsError,
     },
-    readOnly: true,
-    disabled: submissionPending,
-    error: toPropsError,
+    description: {
+      customText: 'Swap to',
+    },
+    asset: {
+      assets: [nativeCurrency],
+      selectedAsset: nativeCurrency,
+      setSelectedAsset: () => {
+        return null;
+      },
+    },
+    badges: {},
+    variant: FromVariants.SWAP,
   };
 
   return (

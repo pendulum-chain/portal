@@ -6,19 +6,11 @@ import { AssetSelector } from '../../../Selector';
 import { AssetSelectorOnChange } from '../../../Selector/AssetSelector/helpers';
 
 export const SwapFrom = ({
-  setSelectedAsset,
   className,
-  register,
-  assets,
-  selectedAsset,
-  network,
-  assetSuffix,
-  error,
-  customText,
-  minBadge,
-  maxBadge,
-  readOnly = false,
-  disabled = false,
+  formControl: { register, readOnly = false, error, disabled = false },
+  asset: { assetSuffix, assets, selectedAsset, setSelectedAsset },
+  description: { customText, network },
+  badges: { minBadge, maxBadge },
 }: FromProps) => (
   <div
     className={`rounded-lg ${disabled ? 'bg-base-100' : 'bg-base-300'} px-4 py-3 mb-3 ${className || ''} ${

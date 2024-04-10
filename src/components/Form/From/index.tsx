@@ -6,35 +6,38 @@ import { BlockchainAsset } from '../../Selector/AssetSelector/helpers';
 
 import { SwapFrom } from './variants/SwapFrom';
 import { StandardFrom } from './variants/StandardFrom';
+import { BadgeProps } from './Badges';
 
 export interface FromProps {
   className?: string;
-  max?: number;
-  min?: number;
-  register: UseFormRegisterReturn;
-  setValue?: (n: number) => void;
-  assets?: BlockchainAsset[];
-  selectedAsset?: BlockchainAsset;
-  setSelectedAsset?: StateUpdater<BlockchainAsset | undefined> | StateUpdater<Asset | undefined>;
-  network?: string;
-  assetSuffix?: string;
-  error?: string;
-  customText?: string;
-  minBadge?: {
-    value: string;
-    onClick?: () => void;
+  formControl: {
+    max?: number;
+    min?: number;
+    register: UseFormRegisterReturn;
+    error?: string;
+    readOnly?: boolean;
+    disabled?: boolean;
+    setValue?: (n: number) => void;
   };
-  maxBadge?: {
-    value: string;
-    onClick?: () => void;
+  asset: {
+    assets?: BlockchainAsset[];
+    selectedAsset?: BlockchainAsset;
+    setSelectedAsset?: StateUpdater<BlockchainAsset | undefined> | StateUpdater<Asset | undefined>;
+    assetSuffix?: string;
   };
-  readOnly?: boolean;
-  disabled?: boolean;
+  description: {
+    customText?: string;
+    network?: string;
+  };
+  badges: {
+    minBadge?: BadgeProps;
+    maxBadge?: BadgeProps;
+  };
 }
 
 export enum FromVariants {
   STANDARD = 'STANDARD',
-  SWAP = 'swap',
+  SWAP = 'SWAP',
 }
 
 export type FromPropsWithVariant = FromProps & { variant?: FromVariants };
