@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { useContext, useEffect, useMemo, useState } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
-
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
@@ -62,7 +61,7 @@ function useBridgeSettings(): BridgeSettings {
       });
     // Deduplicate assets
     return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
-  }, [tenantName, vaults]);
+  }, [vaults]);
 
   const vaultsForCurrency = useMemo(() => {
     if (!vaults) return;
