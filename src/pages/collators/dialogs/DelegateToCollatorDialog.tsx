@@ -84,7 +84,6 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         {CollatorInfo}
         <div className="mt-4" />
         <Amount
-          fullMax={false}
           register={register('amount')}
           setValue={(n: number) => setValue('amount', n)}
           error={formState.errors.amount?.message?.toString()}
@@ -93,7 +92,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         />
       </>
     ),
-    [CollatorInfo, formState.errors.amount?.message, max, register, setValue],
+    [CollatorInfo, formState.errors.amount?.message, max, mode, register, setValue],
   );
 
   const actions = useMemo(
