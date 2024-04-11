@@ -102,6 +102,7 @@ export const myStakedColumn = ({
 export const actionsColumn = ({
   userAccountAddress,
   walletAccount,
+  userStaking,
   setSelectedCandidate,
   setUnstaking,
 }: {
@@ -116,10 +117,12 @@ export const actionsColumn = ({
   accessorKey: 'actions',
   cell: ({ row }) => {
     const maxDelegatorsReached = row.original.delegators >= MAX_DELEGATORS_AMOUNT;
+
     const canUnstake = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
-    // If user can unstake, then the user is counted in the delegators count
-    const isUserCountedInDelegators = walletAccount && canUnstake;
-    const canStake = isUserCountedInDelegators || (walletAccount && !maxDelegatorsReached);
+
+    // Check if current user is in list of delegators
+    const isDelegator = row.original.candidate.delegators.find(({ owner }) => owner === userAccountAddress);
+    const canStake = isDelegator || (walletAccount && !maxDelegatorsReached && (!userStaking || canUnstake));
     return (
       <div className="flex flex-row justify-start">
         <Button
