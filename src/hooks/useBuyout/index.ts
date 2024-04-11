@@ -74,9 +74,7 @@ export const useBuyout = (): BuyoutSettings => {
         const maxBuyoutLimitFormatted = nativeToFormatDecimalPure(maxBuyoutLimitAsString);
         const sellFeePerMill = new PerMill(Number(sellFeeAsString));
 
-        const MIN_FEE_MULTIPLIER = 1.01; // sellFee + min amount still needs 1% for the tx to be fired.
-
-        setMinimumBuyout(sellFeePerMill.addSelfToBase(minBuyoutLimitFormatted) * MIN_FEE_MULTIPLIER);
+        setMinimumBuyout(sellFeePerMill.addSelfToBase(minBuyoutLimitFormatted));
         setMaximumBuyout(maxBuyoutLimitFormatted);
       }
     }
@@ -89,7 +87,7 @@ export const useBuyout = (): BuyoutSettings => {
     amount: number,
     setSubmissionPending: StateUpdater<boolean>,
     setConfirmationDialogVisible: StateUpdater<boolean>,
-    isInNativeToken: boolean,
+    isExchangeAmount: boolean,
   ) {
     if (!api || !walletAccount) {
       return;
@@ -103,11 +101,11 @@ export const useBuyout = (): BuyoutSettings => {
     const assetId = currency.assetId as { XCM: number };
 
     // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
-    const exchange = isInNativeToken
+    const exchange = isExchangeAmount
       ? { buyout: { amount: scaledCurrency } }
       : { exchange: { amount: scaledCurrency } };
 
-    const submittableExtrinsic = await api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
+    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
 
     const response = await doSubmitExtrinsic(
       api,
