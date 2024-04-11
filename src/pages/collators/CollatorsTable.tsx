@@ -55,7 +55,7 @@ function CollatorsTable() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      return balance.free.sub(balance.miscFrozen).toString();
+      return balance.free.sub(balance.frozen).toString();
     };
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));

@@ -107,7 +107,7 @@ function CollatorRewards() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      setUserAvailableBalance(balance.free.sub(balance.miscFrozen).toString());
+      setUserAvailableBalance(balance.free.sub(balance.frozen).toString());
     };
     const fetchUnstaking = async () => {
       if (!api || !walletAccount) {
@@ -123,7 +123,7 @@ function CollatorRewards() {
     };
 
     fetchUnstaking();
-    fetchAvailableBalance();
+    fetchAvailableBalance().catch(console.error);
   }, [api, tokenSymbol, walletAccount]);
 
   const updateRewardsExtrinsic = useMemo(() => {
@@ -193,6 +193,8 @@ function CollatorRewards() {
 
     return content;
   };
+
+  console.log('useravailablebalance', userAvailableBalance);
 
   return (
     <>
