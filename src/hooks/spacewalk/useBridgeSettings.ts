@@ -61,7 +61,7 @@ function useBridgeSettings(): BridgeSettings {
       });
     // Deduplicate assets
     return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
-  }, [vaults]);
+  }, [tenantName, vaults]);
 
   const vaultsForCurrency = useMemo(() => {
     if (!vaults) return;
