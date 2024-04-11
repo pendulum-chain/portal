@@ -98,6 +98,7 @@ function ClaimRewardsDialog(props: Props) {
           <div className="rounded-lg flex flex-col items-center w-full">
             <form className="flex flex-col">
               <Amount
+                fullMax={true}
                 register={register('amount')}
                 max={nativeToDecimal(userRewardsBalance).toNumber()}
                 setValue={(n: number) => setValue('amount', n)}
