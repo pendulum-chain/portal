@@ -194,7 +194,6 @@ function CollatorRewards() {
     return content;
   };
 
-  console.log('useravailablebalance', userAvailableBalance);
 
   return (
     <>
