@@ -16,17 +16,6 @@ const FOUCOCO_HARDCODED_METADATA: Record<string, OrmlTraitsAssetRegistryAssetMet
 };
 
 const AMPE_HARDCODED_METADATA: Record<string, OrmlTraitsAssetRegistryAssetMetadata> = {
-  usdt: {
-    metadata: {
-      decimals: 6,
-      name: 'Tether USD',
-      symbol: 'USDT',
-      existentialDeposit: 1000,
-    },
-    assetId: {
-      XCM: 1,
-    },
-  },
   ksm: {
     metadata: {
       decimals: 12,
