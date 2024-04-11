@@ -88,6 +88,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           setValue={(n: number) => setValue('amount', n)}
           error={formState.errors.amount?.message?.toString()}
           max={max}
+          fullMax={mode === 'unstaking'}
         />
       </>
     ),
