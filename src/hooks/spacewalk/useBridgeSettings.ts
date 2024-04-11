@@ -9,6 +9,7 @@ import { stringifyStellarAsset } from '../../helpers/stellar';
 import { BridgeContext } from '../../pages/bridge';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
 import { ToastMessage, showToast } from '../../shared/showToast';
+import { Balance } from '@polkadot/types/interfaces';
 
 export interface BridgeSettings {
   selectedVault?: ExtendedRegistryVault;
@@ -38,8 +39,8 @@ function useBridgeSettings(): BridgeSettings {
           const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const extended: ExtendedRegistryVault = vaultFromRegistry;
-          extended.issuableTokens = vaultWithIssuable ? vaultWithIssuable[1] : undefined;
-          extended.redeemableTokens = vaultWithRedeemable ? vaultWithRedeemable[1] : undefined;
+          extended.issuableTokens = vaultWithIssuable ? (vaultWithIssuable[1] as unknown as Balance) : undefined;
+          extended.redeemableTokens = vaultWithRedeemable ? (vaultWithRedeemable[1] as unknown as Balance) : undefined;
           combinedVaults.push(extended);
         });
         setExtendedVaults(combinedVaults);
