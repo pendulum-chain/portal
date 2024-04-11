@@ -11,7 +11,7 @@ interface BadgesProps {
 
 export const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) => (
   <>
-    {minBadge && minBadge.value ? (
+    {minBadge && Number(minBadge.value) ? (
       <div
         className={`badge ${
           disabled ? '' : 'badge-secondary-content hover:badge-secondary text-black cursor-pointer'
@@ -27,7 +27,7 @@ export const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) 
     ) : (
       <></>
     )}
-    {maxBadge && maxBadge.value ? (
+    {maxBadge && Number(maxBadge.value) ? (
       <div
         className={`badge ${
           disabled ? '' : 'badge-secondary-content  hover:badge-accent text-black hover:text-black cursor-pointer '
