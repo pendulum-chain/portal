@@ -13,7 +13,7 @@ import useBalances from '../../hooks/useBalances';
 export type IssueFormValues = {
   isMax: boolean;
   isMin: boolean;
-  fromAmount: number;
+  fromAmount: number | string;
   toAmount: number;
 };
 
@@ -23,8 +23,8 @@ interface GasFormProps {
   setSelectedFromToken: StateUpdater<BlockchainAsset | undefined>;
   selectedFromToken?: BlockchainAsset;
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
-  calcMin: () => number;
-  calcMax: () => number;
+  calcMin: () => { amount: number; native: number };
+  calcMax: () => { amount: number; native: number };
   calcTo: (n: number) => number;
   submissionPending: boolean;
 }
@@ -48,16 +48,15 @@ export const GasForm: React.FC<GasFormProps> = ({
   const { balances } = useBalances();
 
   const registerFromAmount = register('fromAmount', {
-    max: { value: calcMax(), message: 'Max amount exceeded' },
-    min: { value: calcMin(), message: 'Amount is too low' },
+    max: { value: calcMax().amount, message: 'Amount exceeds the maximum allowable buyout' },
+    min: { value: calcMin().amount, message: 'Amount is too low to meet the minimum buyout requirement' },
     required: 'This field is required',
-    maxLength: (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
     onChange: (n: InputEvent) => {
       const value = (n.target as HTMLInputElement)?.value;
 
       setValue('isMax', false);
       setValue('isMin', false);
-      setValue('fromAmount', Number(value));
+      setValue('fromAmount', value);
       setValue('toAmount', calcTo(Number(value)));
     },
 
@@ -77,35 +76,35 @@ export const GasForm: React.FC<GasFormProps> = ({
   const minBadge = useMemo(() => {
     return min
       ? {
-          value: String(formatToSignificantDecimals(min)),
+          value: String(formatToSignificantDecimals(min.amount)),
           onClick: () => {
             clearErrors();
             setValue('isMax', false);
             setValue('isMin', true);
-            setValue('fromAmount', min);
-            setValue('toAmount', calcTo(min));
+            setValue('fromAmount', min.amount);
+            setValue('toAmount', min.native);
             trigger('fromAmount');
           },
         }
       : undefined;
-  }, [calcTo, clearErrors, min, setValue, trigger]);
+  }, [clearErrors, min, setValue, trigger]);
 
   const max = calcMax();
   const maxBadge = useMemo(() => {
     return max
       ? {
-          value: String(formatToSignificantDecimals(max)),
+          value: String(formatToSignificantDecimals(max.amount)),
           onClick: () => {
             clearErrors();
             setValue('isMax', true);
             setValue('isMin', false);
-            setValue('fromAmount', max);
-            setValue('toAmount', calcTo(max));
+            setValue('fromAmount', max.amount);
+            setValue('toAmount', max.native);
             trigger('fromAmount');
           },
         }
       : undefined;
-  }, [calcTo, max, setValue, clearErrors, trigger]);
+  }, [max, setValue, clearErrors, trigger]);
 
   const fromPropsError = formState.errors.fromAmount?.message;
   const FromProps: FromPropsWithVariant = useMemo(

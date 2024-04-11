@@ -39,7 +39,7 @@ const Gas = () => {
     // the transaction does not fail due to imprecise calculations.
     const isExchangeAmount = data.isMin || data.isMax;
     const token = isExchangeAmount ? nativeCurrency : (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata);
-    const amount = data.isMin ? buyoutNativeToken.min : data.isMax ? buyoutNativeToken.max : data.fromAmount;
+    const amount = data.isMin ? buyoutNativeToken.min : data.isMax ? buyoutNativeToken.max : Number(data.fromAmount);
 
     handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible, isExchangeAmount);
   };
@@ -64,22 +64,24 @@ const Gas = () => {
             setSelectedFromToken={setSelectedFromToken}
             nativeCurrency={nativeCurrency}
             onSubmit={onSubmit}
-            calcMax={() =>
-              calculateForCurrentFromToken(
+            calcMax={() => ({
+              amount: calculateForCurrentFromToken(
                 buyoutNativeToken.max,
                 nativeTokenPrice,
                 selectedFromTokenPriceUSD,
                 selectedTokenDecimals,
-              )
-            }
-            calcMin={() =>
-              calculateForCurrentFromToken(
+              ),
+              native: buyoutNativeToken.max,
+            })}
+            calcMin={() => ({
+              amount: calculateForCurrentFromToken(
                 buyoutNativeToken.min,
                 nativeTokenPrice,
                 selectedFromTokenPriceUSD,
                 selectedTokenDecimals,
-              )
-            }
+              ),
+              native: buyoutNativeToken.min,
+            })}
             calcTo={(e: number) =>
               calculatePriceNativeForCurrentFromToken(e, nativeTokenPrice, selectedFromTokenPriceUSD, nativeDecimals)
             }
