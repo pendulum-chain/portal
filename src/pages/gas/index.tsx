@@ -49,7 +49,11 @@ const Gas = () => {
 
   return (
     <div className="h-full flex items-center justify-center mt-4">
-      <GasSuccessDialog visible={confirmationDialogVisible} onClose={() => setConfirmationDialogVisible(false)} />
+      <GasSuccessDialog
+        visible={confirmationDialogVisible}
+        onClose={() => setConfirmationDialogVisible(false)}
+        token={nativeCurrency.metadata.symbol}
+      />
       <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
         <div className="py-6 px-8">
           <h1 className="text-[28px] mb-8">Get AMPE</h1>
