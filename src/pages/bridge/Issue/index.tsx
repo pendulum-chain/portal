@@ -185,7 +185,6 @@ function Issue(props: IssueProps): JSX.Element {
                 setSelectedAsset,
               },
               description: {
-                customText: 'Issue',
                 network: 'Stellar',
               },
               badges: {},
