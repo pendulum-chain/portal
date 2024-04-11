@@ -1,3 +1,5 @@
+import Big from 'big.js';
+
 export function formatToSignificantDecimals(n: number): number {
   if (n === 0) return 0;
   const scale = Math.pow(10, 2 - Math.ceil(Math.log10(Math.abs(n))));
@@ -13,8 +15,8 @@ export function calculatePriceNativeForCurrentFromToken(
   decimals: number,
 ): number {
   if (nativeTokenPrice && selectedFromTokenPriceUSD && !isNaN(Number(nativeTokenPriceInSelectedToken))) {
-    const nativeTokenPriceUSD = selectedFromTokenPriceUSD * Number(nativeTokenPriceInSelectedToken);
-    const native = nativeTokenPriceUSD / nativeTokenPrice;
+    const nativeTokenPriceUSD = Big(selectedFromTokenPriceUSD).mul(nativeTokenPriceInSelectedToken);
+    const native = nativeTokenPriceUSD.div(nativeTokenPrice);
 
     return Number(native.toFixed(decimals));
   }
@@ -28,8 +30,8 @@ export function calculateForCurrentFromToken(
   decimals: number,
 ): number {
   if (nativeTokenPrice && selectedFromTokenPriceUSD && !isNaN(Number(native)) && native) {
-    const nativeTokenPriceUSD = nativeTokenPrice * Number(native);
-    const nativeTokenPriceInSelectedToken = nativeTokenPriceUSD / selectedFromTokenPriceUSD;
+    const nativeTokenPriceUSD = Big(nativeTokenPrice).mul(native);
+    const nativeTokenPriceInSelectedToken = nativeTokenPriceUSD.div(selectedFromTokenPriceUSD);
 
     return Number(nativeTokenPriceInSelectedToken.toFixed(decimals));
   }
