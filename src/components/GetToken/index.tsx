@@ -28,11 +28,10 @@ export const GetToken = () => {
   const { balance } = useAccountBalance();
   const { currentTenant } = useSwitchChain();
   const { tokenSymbol } = useNodeInfoState().state;
-  const { walletAccount } = useGlobalState();
 
   const link = `/${currentTenant}/gas`;
 
-  if (!walletAccount || tokenSymbol === 'PEN') return <></>;
+  if (tokenSymbol === 'PEN') return <></>;
 
   return (
     <section className="flex items-center">
