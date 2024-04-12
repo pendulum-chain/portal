@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/pendulum-chain/portal/compare/v1.5.0...v1.5.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* handle selectedVault of type number and { amount: number } ([68027d3](https://github.com/pendulum-chain/portal/commit/68027d3c2f7f55f01f896759f14f929c50922e40))
+
 # [1.5.0](https://github.com/pendulum-chain/portal/compare/v1.4.2...v1.5.0) (2024-04-12)
 
 
