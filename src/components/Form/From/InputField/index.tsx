@@ -14,7 +14,7 @@ export const InputField = ({ register, readOnly = false, additionalStyle }: Inpu
         autocomplete="off"
         autocorrect="off"
         className={
-          'input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none focus:text-white text-white ' +
+          'input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none focus:text-accent-content text-accent-content ' +
           additionalStyle
         }
         minlength="1"
@@ -30,6 +30,7 @@ export const InputField = ({ register, readOnly = false, additionalStyle }: Inpu
         placeholder="0.0"
         readOnly={readOnly}
         spellcheck="false"
+        step="any"
         type="text"
         {...register}
       />
