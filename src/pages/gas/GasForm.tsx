@@ -8,6 +8,7 @@ import { FeeHint } from './FeeHint';
 import { SubmitButton } from './SubmitButton';
 import { formatToFixedDecimals, formatToSignificantDecimals } from './helpers';
 import useBalances from '../../hooks/useBalances';
+import { ChangeEvent } from 'preact/compat';
 
 export type IssueFormValues = {
   isMax: boolean;
@@ -24,7 +25,7 @@ interface GasFormProps {
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
   calcMin: () => { amount: string; native: number };
   calcMax: () => { amount: string; native: number };
-  calcTo: (n: number) => string;
+  calcTo: (n: string) => string;
   submissionPending: boolean;
 }
 
@@ -50,9 +51,9 @@ export const GasForm: React.FC<GasFormProps> = ({
     max: { value: Number(calcMax().amount), message: 'Amount exceeds the maximum allowable buyout' },
     min: { value: Number(calcMin().amount), message: 'Amount is too low to meet the minimum buyout requirement' },
     required: 'This field is required',
-    onChange: (n) => {
-      const value = n.target.value;
-      const valueWithoutSpaces = value.replace(/\s+/g, '');
+    onChange: (n: ChangeEvent) => {
+      const value = (n.target as HTMLInputElement).value;
+      const valueWithoutSpaces = value.replace(/\s+/g, '').replace(/,/g, '.');
       setValue('isMax', false);
       setValue('isMin', false);
       setValue('fromAmount', valueWithoutSpaces);

@@ -19,7 +19,10 @@ export const InputField = ({ register, readOnly = false, additionalStyle }: Inpu
         }
         minlength="1"
         onKeyPress={(e: KeyboardEvent) => {
-          if (e.code === 'Minus' || e.code === 'KeyE') {
+          if (
+            !/^[0-9.,]*$/.test(e.key) ||
+            (e.key === '.' && e.target && (e.target as HTMLInputElement).value.includes('.'))
+          ) {
             e.preventDefault();
           }
         }}

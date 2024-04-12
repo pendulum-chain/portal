@@ -82,8 +82,13 @@ const Gas = () => {
               ),
               native: buyoutNativeToken.min,
             })}
-            calcTo={(e: number) =>
-              calculatePriceNativeForCurrentFromToken(e, nativeTokenPrice, selectedFromTokenPriceUSD, nativeDecimals)
+            calcTo={(e: string) =>
+              calculatePriceNativeForCurrentFromToken(
+                Number(e),
+                nativeTokenPrice,
+                selectedFromTokenPriceUSD,
+                nativeDecimals,
+              )
             }
           />
         </div>
