@@ -160,7 +160,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             }}
           />
           <label className="label flex align-center">
-            <span className="text-sm">{`Max redeemable: ${nativeToDecimal(redeemableTokens || 0).toFixed(2)}
+            <span className="text-sm">{`Max redeemable: ${maxRedeemable.toFixed(2)}
               ${selectedAsset?.code || ''}`}</span>
           </label>
           <LabelledInputField

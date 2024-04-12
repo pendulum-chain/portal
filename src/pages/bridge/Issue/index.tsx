@@ -194,9 +194,7 @@ function Issue(props: IssueProps): JSX.Element {
           />
           <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">
-            <span className="text-sm">
-              {`Max issuable: ${nativeToDecimal(issuableTokens || 0).toFixed(2)} ${selectedAsset?.code || ''}`}
-            </span>
+            <span className="text-sm">{`Max issuable: ${maxIssuable.toFixed(2)} ${selectedAsset?.code || ''}`}</span>
           </label>
 
           <FeeBox
