@@ -15,7 +15,7 @@ export const doSubmitExtrinsic = (
 ) => {
   setSubmissionPending(true);
 
-  return (
+  return new Promise<void>((resolve, reject) =>
     extrinsic
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ?.signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
@@ -27,19 +27,21 @@ export const doSubmitExtrinsic = (
           if (errors.length > 0) {
             const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
             showToast(ToastMessage.ERROR, errorMessage);
+            throw errorMessage;
           }
         } else if (status.isFinalized) {
           setSubmissionPending(false);
 
           if (errors.length === 0) {
             setConfirmationDialogVisible(true);
+            resolve();
           }
         }
       })
       .catch((error) => {
-        hideToast ? null : showToast(ToastMessage.TX_SUBMISSION_FAILED);
+        !hideToast && showToast(ToastMessage.TX_SUBMISSION_FAILED);
         setSubmissionPending(false);
-        return error.message;
-      })
+        reject(error.message);
+      }),
   );
 };

@@ -49,7 +49,7 @@ function handleBuyoutError(error: string) {
     return;
   }
 
-  showToast(ToastMessage.ERROR, 'The buyout failed');
+  showToast(ToastMessage.ERROR, 'The buyout failed:' + error);
   return;
 }
 
@@ -110,16 +110,18 @@ export const useBuyout = (): BuyoutSettings => {
 
     const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
 
-    const response = await doSubmitExtrinsic(
-      api,
-      submittableExtrinsic,
-      walletAccount,
-      setSubmissionPending,
-      setConfirmationDialogVisible,
-      true,
-    );
-
-    if (response) handleBuyoutError(response);
+    try {
+      await doSubmitExtrinsic(
+        api,
+        submittableExtrinsic,
+        walletAccount,
+        setSubmissionPending,
+        setConfirmationDialogVisible,
+        true,
+      );
+    } catch (error: unknown) {
+      handleBuyoutError(error as string);
+    }
   }
 
   return {
