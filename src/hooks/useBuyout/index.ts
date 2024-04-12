@@ -21,6 +21,7 @@ export interface BuyoutSettings {
   };
   currencies: OrmlTraitsAssetRegistryAssetMetadata[];
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
+  sellFee: PerMill;
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
@@ -58,6 +59,7 @@ export const useBuyout = (): BuyoutSettings => {
   const { walletAccount } = useGlobalState();
   const [minimumBuyout, setMinimumBuyout] = useState<number>(0);
   const [maximumBuyout, setMaximumBuyout] = useState<number>(0);
+  const [sellFee, setSellFee] = useState<PerMill>(new PerMill(0));
 
   useEffect(() => {
     async function fetchBuyoutLimits() {
@@ -74,8 +76,9 @@ export const useBuyout = (): BuyoutSettings => {
         const maxBuyoutLimitFormatted = nativeToFormatDecimalPure(maxBuyoutLimitAsString);
         const sellFeePerMill = new PerMill(Number(sellFeeAsString));
 
-        setMinimumBuyout(sellFeePerMill.addSelfToBase(minBuyoutLimitFormatted));
+        setMinimumBuyout(minBuyoutLimitFormatted);
         setMaximumBuyout(maxBuyoutLimitFormatted);
+        setSellFee(sellFeePerMill);
       }
     }
 
@@ -125,6 +128,7 @@ export const useBuyout = (): BuyoutSettings => {
       max: maximumBuyout,
     },
     currencies: Object.values(getMetadata(tenantName).currencies),
+    sellFee,
     nativeCurrency: getMetadata(tenantName).nativeCurrency.ampe,
     handleBuyout,
   };

@@ -11,7 +11,7 @@ import { calculateForCurrentFromToken, calculatePriceNativeForCurrentFromToken }
 import { GasSuccessDialog } from './GasSuccessDialog';
 
 const Gas = () => {
-  const { currencies, buyoutNativeToken, nativeCurrency, handleBuyout } = useBuyout();
+  const { currencies, buyoutNativeToken, sellFee, nativeCurrency, handleBuyout } = useBuyout();
   const { pricesCache } = usePriceFetcher();
 
   const [selectedFromToken, setSelectedFromToken] = useState<BlockchainAsset | undefined>(currencies[0]);
@@ -26,12 +26,15 @@ const Gas = () => {
 
       if (!isEmpty(tokensPrices) && isOrmlAsset(selectedFromToken)) {
         setSelectedFromTokenPriceUSD(tokensPrices[selectedFromToken.metadata.symbol]);
-        setNativeTokenPrice(tokensPrices['AMPE']);
+        const nativeTokenPrice = tokensPrices[nativeCurrency.metadata.symbol];
+        // We add the sellFee to the native price to already accommodate for it in the calculations
+        const nativeTokenPriceWithFee = sellFee.addSelfToBase(nativeTokenPrice);
+        setNativeTokenPrice(nativeTokenPriceWithFee);
       }
     };
 
     fetchPricesCache().catch(console.error);
-  }, [pricesCache, selectedFromToken]);
+  }, [nativeCurrency.metadata.symbol, pricesCache, selectedFromToken, sellFee]);
 
   const onSubmit = async (data: IssueFormValues) => {
     // If the user has selected the min or max amount by clicking the badge button, we call the buyout extrinsic in the
