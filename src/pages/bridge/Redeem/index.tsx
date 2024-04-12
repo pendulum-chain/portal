@@ -53,7 +53,8 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSelectedAssetsBalance(amount);
   }, [balances, selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
 
-  const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens || 0).toNumber();
+  const redeemableTokens = selectedVault?.redeemableTokens?.toJSON?.().amount ?? selectedVault?.redeemableTokens;
+  const maxRedeemable = nativeToDecimal(redeemableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {},
@@ -159,9 +160,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             }}
           />
           <label className="label flex align-center">
-            <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
-              selectedVault?.redeemableTokens?.toString() || 0,
-            ).toFixed(2)}
+            <span className="text-sm">{`Max redeemable: ${nativeToDecimal(redeemableTokens || 0).toFixed(2)}
               ${selectedAsset?.code || ''}`}</span>
           </label>
           <LabelledInputField

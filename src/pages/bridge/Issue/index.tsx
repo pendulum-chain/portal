@@ -49,7 +49,9 @@ function Issue(props: IssueProps): JSX.Element {
   const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
-  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
+  const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
+
+  const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
@@ -193,9 +195,7 @@ function Issue(props: IssueProps): JSX.Element {
           <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">
             <span className="text-sm">
-              {`Max issuable: ${nativeToDecimal(selectedVault?.issuableTokens?.toString() || 0).toFixed(2)} ${
-                selectedAsset?.code || ''
-              }`}
+              {`Max issuable: ${nativeToDecimal(issuableTokens || 0).toFixed(2)} ${selectedAsset?.code || ''}`}
             </span>
           </label>
 
