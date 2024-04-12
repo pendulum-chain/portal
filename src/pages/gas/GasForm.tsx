@@ -8,13 +8,12 @@ import { FeeHint } from './FeeHint';
 import { SubmitButton } from './SubmitButton';
 import { formatToFixedDecimals, formatToSignificantDecimals } from './helpers';
 import useBalances from '../../hooks/useBalances';
-import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 
 export type IssueFormValues = {
   isMax: boolean;
   isMin: boolean;
-  fromAmount: number | string;
-  toAmount: number | string;
+  fromAmount: string;
+  toAmount: string;
 };
 
 interface GasFormProps {
@@ -23,9 +22,9 @@ interface GasFormProps {
   setSelectedFromToken: StateUpdater<BlockchainAsset | undefined>;
   selectedFromToken?: BlockchainAsset;
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
-  calcMin: () => { amount: number; native: number };
-  calcMax: () => { amount: number; native: number };
-  calcTo: (n: number) => number;
+  calcMin: () => { amount: string; native: number };
+  calcMax: () => { amount: string; native: number };
+  calcTo: (n: number) => string;
   submissionPending: boolean;
 }
 
@@ -48,8 +47,8 @@ export const GasForm: React.FC<GasFormProps> = ({
   const { balances } = useBalances();
 
   const registerFromAmount = register('fromAmount', {
-    max: { value: calcMax().amount, message: 'Amount exceeds the maximum allowable buyout' },
-    min: { value: calcMin().amount, message: 'Amount is too low to meet the minimum buyout requirement' },
+    max: { value: Number(calcMax().amount), message: 'Amount exceeds the maximum allowable buyout' },
+    min: { value: Number(calcMin().amount), message: 'Amount is too low to meet the minimum buyout requirement' },
     required: 'This field is required',
     onChange: (n) => {
       const value = n.target.value;
@@ -57,27 +56,28 @@ export const GasForm: React.FC<GasFormProps> = ({
       setValue('isMax', false);
       setValue('isMin', false);
       setValue('fromAmount', valueWithoutSpaces);
-      setValue('toAmount', calcTo(Number(valueWithoutSpaces)));
+      setValue('toAmount', calcTo(valueWithoutSpaces));
     },
-
-    validate: (value) => {
-      if (balances && selectedFromToken) {
-        const selectedTokenBalance = balances.find(
-          (balance) => balance.token === (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.symbol,
-        )?.amount;
-        if (Number(value) > Number(selectedTokenBalance || 0)) {
-          return 'Insufficient balance';
+    validate: {
+      balance: (value) => {
+        if (balances && selectedFromToken) {
+          const selectedTokenBalance = balances.find(
+            (balance) => balance.token === (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.symbol,
+          )?.amount;
+          if (Number(value) > Number(selectedTokenBalance || 0)) {
+            return 'Insufficient balance';
+          }
         }
-      }
+      },
     },
   });
 
-  const useCreateBadge = (calcValue: () => { amount: number; native: number }, isMax: boolean) => {
+  const useCreateBadge = (calcValue: () => { amount: string; native: number }, isMax: boolean) => {
     const value = calcValue();
     return useMemo(() => {
       return value
         ? {
-            value: String(formatToSignificantDecimals(value.amount)),
+            value: formatToSignificantDecimals(value.amount),
             onClick: () => {
               clearErrors();
               setValue('isMax', isMax);
