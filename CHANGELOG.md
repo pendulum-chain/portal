@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/pendulum-chain/portal/compare/v1.4.2...v1.5.0) (2024-04-12)
+
+
+### Features
+
+* Get AMPE  ([13391fe](https://github.com/pendulum-chain/portal/commit/13391fef5d0193b656a95bb52c272aff2f314148))
+
 ## [1.4.2](https://github.com/pendulum-chain/portal/compare/v1.4.1...v1.4.2) (2024-04-11)
 
 
