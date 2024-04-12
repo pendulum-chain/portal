@@ -139,15 +139,24 @@ function Redeem(props: RedeemProps): JSX.Element {
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <From
-            register={register('amount')}
-            setValue={(n: number) => setValue('amount', n)}
-            max={selectedAssetsBalance}
-            assets={prioritizeXLMAsset(wrappedAssets)}
-            setSelectedAsset={setSelectedAsset}
-            selectedAsset={selectedAsset}
-            network={network}
-            assetSuffix={wrappedCurrencySuffix}
-            error={formState.errors.amount?.message}
+            {...{
+              formControl: {
+                max: selectedAssetsBalance,
+                register: register('amount'),
+                setValue: (n: number) => setValue('amount', n),
+                error: formState.errors.amount?.message,
+              },
+              asset: {
+                assets: prioritizeXLMAsset(wrappedAssets),
+                selectedAsset,
+                setSelectedAsset,
+                assetSuffix: wrappedCurrencySuffix,
+              },
+              description: {
+                network,
+              },
+              badges: {},
+            }}
           />
           <label className="label flex align-center">
             <span className="text-sm">{`Max redeemable: ${nativeToDecimal(

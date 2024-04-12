@@ -52,7 +52,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               <div className="flex items-center gap-1">
                 <input
                   autoFocus
-                  className="input-ghost w-full flex-grow text-4xl font-2 px-0 py-3"
+                  className="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
                   placeholder="Amount"
                   max={balance}
                   {...register('amount')}

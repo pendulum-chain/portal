@@ -92,7 +92,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         />
       </>
     ),
-    [CollatorInfo, formState.errors.amount?.message, max, register, setValue],
+    [CollatorInfo, formState.errors.amount?.message, max, mode, register, setValue],
   );
 
   const actions = useMemo(

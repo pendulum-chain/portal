@@ -27,10 +27,10 @@ const From = ({ tokensMap, onOpenSelector, className }: FromProps): JSX.Element 
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
-          <div className="flex-grow text-4xl text-[inherit] font-2">
+          <div className="flex-grow text-4xl text-[inherit] font-outfit">
             <input
               autoFocus
-              className="input-ghost w-full text-4xl font-2"
+              className="input-ghost w-full text-4xl font-outfit"
               placeholder="0.0"
               {...register('fromAmount', { onChange: () => undefined })}
             />

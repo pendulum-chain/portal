@@ -8,11 +8,14 @@ import { NotFound } from './components/NotFound';
 import { SuspenseLoad } from './components/Suspense';
 import { config } from './config';
 import TermsAndConditions from './TermsAndConditions';
+import { useGlobalState } from './GlobalStateProvider';
+import { TenantName } from './models/Tenant';
 
 /**
  * Components need to be default exports inside the file for suspense loading to work properly
  */
 const Dashboard = <SuspenseLoad importFn={() => import('./pages/dashboard/Dashboard')} fallback={defaultPageLoader} />;
+const Gas = <SuspenseLoad importFn={() => import('./pages/gas')} fallback={defaultPageLoader} />;
 const NablaPage = <SuspenseLoad importFn={() => import('./pages/nabla')} fallback={defaultPageLoader} />;
 const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
 const SwapPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap')} fallback={defaultPageLoader} />;
@@ -26,6 +29,8 @@ const Bridge = <SuspenseLoad importFn={() => import('./pages/bridge')} fallback=
 const Staking = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
 
 export function App() {
+  const { tenantName } = useGlobalState();
+
   return (
     <>
       <Routes>
@@ -33,6 +38,9 @@ export function App() {
         <Route path="/:network/" element={<Layout />}>
           <Route path="" element={Dashboard} />
           <Route path="dashboard" element={Dashboard} />
+          {(tenantName === TenantName.Foucoco || tenantName === TenantName.Amplitude) && (
+            <Route path="gas" element={Gas} />
+          )}
           <Route path="stats" element={StatsPage} />
           <Route path="spacewalk">
             <Route path="bridge" element={Bridge} />
