@@ -133,9 +133,7 @@ export const GasForm: React.FC<GasFormProps> = ({
   const toPropsError = formState.errors.toAmount?.message;
   const ToProps: FromPropsWithVariant = {
     formControl: {
-      register: register('toAmount', {
-        maxLength: (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals,
-      }),
+      register: register('toAmount'),
       readOnly: true,
       disabled: submissionPending,
       error: toPropsError,
