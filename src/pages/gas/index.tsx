@@ -14,7 +14,7 @@ const Gas = () => {
   const { currencies, buyoutNativeToken, sellFee, nativeCurrency, handleBuyout } = useBuyout();
   const { pricesCache } = usePriceFetcher();
 
-  const [selectedFromToken, setSelectedFromToken] = useState<BlockchainAsset | undefined>(currencies[0]);
+  const [selectedFromToken, setSelectedFromToken] = useState<BlockchainAsset | undefined>(undefined);
   const [selectedFromTokenPriceUSD, setSelectedFromTokenPriceUSD] = useState<number>(0);
   const [nativeTokenPrice, setNativeTokenPrice] = useState<number>(0);
   const [submissionPending, setSubmissionPending] = useState<boolean>(false);
@@ -36,6 +36,10 @@ const Gas = () => {
     fetchPricesCache().catch(console.error);
   }, [nativeCurrency.metadata.symbol, pricesCache, selectedFromToken, sellFee]);
 
+  useEffect(() => {
+    setSelectedFromToken(currencies[0] as OrmlTraitsAssetRegistryAssetMetadata);
+  }, [selectedFromToken, currencies]);
+
   const onSubmit = async (data: IssueFormValues) => {
     // If the user has selected the min or max amount by clicking the badge button, we call the buyout extrinsic in the
     // direction of the native token being the input token. This way we ensure that the amount is perfectly within the buyout limits and
@@ -47,8 +51,12 @@ const Gas = () => {
     handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible, isExchangeAmount);
   };
 
-  const selectedTokenDecimals = (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals;
+  const selectedTokenDecimals = selectedFromToken
+    ? (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals
+    : 0;
   const nativeDecimals = (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals;
+
+  if (!selectedFromToken) return <></>;
 
   return (
     <div className="h-full flex items-center justify-center mt-4">
@@ -62,7 +70,7 @@ const Gas = () => {
           <h1 className="text-[28px] mb-8">Get AMPE</h1>
           <GasForm
             submissionPending={submissionPending}
-            currencies={currencies}
+            currencies={currencies.length ? currencies : []}
             selectedFromToken={selectedFromToken}
             setSelectedFromToken={setSelectedFromToken}
             nativeCurrency={nativeCurrency}

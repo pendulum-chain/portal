@@ -3,7 +3,6 @@ export interface OrmlTraitsAssetRegistryAssetMetadata {
     decimals: number;
     name: string;
     symbol: string;
-    existentialDeposit: number;
   };
   assetId:
     | {
