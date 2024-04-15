@@ -1,3 +1,19 @@
+# [1.5.0](https://github.com/pendulum-chain/portal/compare/v1.4.2...v1.5.0) (2024-04-12)
+
+
+### Features
+
+* Get AMPE  ([13391fe](https://github.com/pendulum-chain/portal/commit/13391fef5d0193b656a95bb52c272aff2f314148))
+
+## [1.4.2](https://github.com/pendulum-chain/portal/compare/v1.4.1...v1.4.2) (2024-04-11)
+
+
+### Bug Fixes
+
+* Fix available balance calculation ([#404](https://github.com/pendulum-chain/portal/issues/404)) ([ca58c82](https://github.com/pendulum-chain/portal/commit/ca58c824dd591405e0adef463c40b98785a964f2))
+
+## [1.4.1](https://github.com/pendulum-chain/portal/compare/v1.4.0...v1.4.1) (2024-04-10)
+
 # [1.4.0](https://github.com/pendulum-chain/portal/compare/v1.3.8...v1.4.0) (2024-04-08)
 
 

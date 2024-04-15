@@ -106,7 +106,7 @@ const WithdrawLiquidityBody = ({ data }: WithdrawLiquidityProps): JSX.Element | 
               <div className="flex items-center gap-1">
                 <input
                   autoFocus
-                  className="input-ghost w-full text-4xl font-2 py-3 px-0"
+                  className="input-ghost w-full text-4xl font-outfit py-3 px-0"
                   placeholder="Amount"
                   max={deposit}
                   {...register('amount')}

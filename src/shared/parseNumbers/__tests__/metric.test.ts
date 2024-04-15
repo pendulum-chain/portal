@@ -10,7 +10,6 @@ describe('metric', () => {
     });
 
     it('should format numbers to 1 micro', () => {
-      console.log(Number(1e-3));
       const result = nativeToFormatMetric(ONE_TOKEN * 1e-3, 'AMPE');
       expect(result).toEqual('1.00 milli AMPE');
     });

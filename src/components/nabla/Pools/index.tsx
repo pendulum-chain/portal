@@ -12,7 +12,7 @@ export const PoolProgress = ({ symbol, amount, className = '' }: PoolProgressPro
       <div className="text-lg">
         <strong>{symbol}</strong>
       </div>
-      <div className="text-3xl font-2">{amount}</div>
+      <div className="text-3xl font-outfit">{amount}</div>
     </div>
   );
 };

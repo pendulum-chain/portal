@@ -76,7 +76,7 @@ const To = ({ tokensMap, onOpenSelector, className }: ToProps): JSX.Element | nu
     <>
       <div className={`rounded-lg bg-base-300 px-4 py-3 ${className}`}>
         <div className="w-full flex justify-between">
-          <div className="flex-grow text-4xl text-[inherit] font-2">
+          <div className="flex-grow text-4xl text-[inherit] font-outfit">
             {loading ? (
               numberLoader
             ) : value ? (

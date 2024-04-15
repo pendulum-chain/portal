@@ -7,6 +7,7 @@ import PendulumLogo from '../../assets/pendulum-logo.png';
 import { TenantName } from '../../models/Tenant';
 import ChainSelector from '../ChainSelector';
 import OpenWallet from '../Wallet';
+import { GetToken } from '../GetToken';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
@@ -19,7 +20,7 @@ export default function Layout(): JSX.Element | null {
   const isTestnet = tenantName === TenantName.Foucoco;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
   const chevronColor = isPendulum ? 'white' : 'grey ';
-  const bgColor = isPendulum ? 'bg-white' : 'bg-black';
+  const bgColor = isPendulum ? 'bg-white' : 'bg-base-200';
 
   const FooterLink = memo(() => {
     return isPendulum ? (
@@ -35,9 +36,6 @@ export default function Layout(): JSX.Element | null {
     <div id="main-wrapper" className="flex">
       <div id="sidebar-wrapper" className="flex flex-wrap z-50">
         <aside
-          style={{
-            ...(isPendulum ? null : { backgroundColor: '#1c1c1c' }),
-          }}
           id="sidebar"
           className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
             visible ? 'open left-0' : 'closed -left-full'
@@ -74,6 +72,7 @@ export default function Layout(): JSX.Element | null {
             </div>
             <OpenWallet dAppName={dAppName} />
             <ChainSelector />
+            <GetToken />
             <div className="dropdown dropdown-end mr-2 hidden">
               <button className="flex space-x-2 items-center py-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>

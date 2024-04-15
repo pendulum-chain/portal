@@ -11,7 +11,7 @@ import {
   TCollator,
   UserStaking,
   actionsColumn,
-  apyColumn,
+  aprColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
@@ -55,7 +55,7 @@ function CollatorsTable() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      return balance.free.sub(balance.miscFrozen).toString();
+      return balance.free.sub(balance.frozen).toString();
     };
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
@@ -82,7 +82,7 @@ function CollatorsTable() {
         identityInfo: identities.get(candidate.id),
         totalStaked: nativeToFormatMetric(candidate.total, tokenSymbol),
         delegators: candidate.delegators.length,
-        apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
+        apr: inflationInfo?.delegator.rewardRate.annual || '0.00%',
       }));
     };
 
@@ -103,7 +103,7 @@ function CollatorsTable() {
       nameColumn,
       stakedColumn,
       delegatorsColumn,
-      apyColumn,
+      aprColumn,
       stakedCol,
       actionsColumn({
         userAccountAddress,

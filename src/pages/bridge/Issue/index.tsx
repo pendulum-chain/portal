@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -173,15 +172,23 @@ function Issue(props: IssueProps): JSX.Element {
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
           <From
-            register={register('amount')}
-            setValue={(n: number) => setValue('amount', n)}
-            assets={prioritizeXLMAsset(wrappedAssets)}
-            setSelectedAsset={setSelectedAsset}
-            selectedAsset={selectedAsset}
-            network="Stellar"
-            error={
-              formState.errors.amount?.message?.toString() || formState.errors.securityDeposit?.message?.toString()
-            }
+            {...{
+              formControl: {
+                register: register('amount'),
+                setValue: (n: number) => setValue('amount', n),
+                error:
+                  formState.errors.amount?.message?.toString() || formState.errors.securityDeposit?.message?.toString(),
+              },
+              asset: {
+                assets: prioritizeXLMAsset(wrappedAssets),
+                selectedAsset,
+                setSelectedAsset,
+              },
+              description: {
+                network: 'Stellar',
+              },
+              badges: {},
+            }}
           />
           <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">

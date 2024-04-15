@@ -88,10 +88,11 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
           setValue={(n: number) => setValue('amount', n)}
           error={formState.errors.amount?.message?.toString()}
           max={max}
+          fullMax={mode === 'unstaking'}
         />
       </>
     ),
-    [CollatorInfo, formState.errors.amount?.message, max, register, setValue],
+    [CollatorInfo, formState.errors.amount?.message, max, mode, register, setValue],
   );
 
   const actions = useMemo(
