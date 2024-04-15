@@ -44,7 +44,15 @@ const CollapseMenu = ({
   );
 };
 
-export const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
+export const NavItem = ({
+  item,
+  onClick,
+  isSubNavItem = false,
+}: {
+  item: LinkItem;
+  onClick?: () => void;
+  isSubNavItem?: boolean;
+}) => {
   const { link, prefix, suffix, title, props, hidden } = item;
   if (hidden) return null;
   const isExternal = link.startsWith('http');
@@ -55,7 +63,7 @@ export const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => voi
       {suffix}
     </>
   );
-  const cls = `nav-item font-2 ${props?.className?.() || ''}`;
+  const cls = `nav-item font-2 ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
@@ -95,8 +103,8 @@ const Nav = memo(({ onClick }: NavProps) => {
             >
               <ul className="submenu" id="submenu">
                 {item.submenu.map((subItem, j) => (
-                  <li key={`${i}-${j}`}>
-                    <NavItem item={subItem} onClick={onClick} />
+                  <li key={`${i}-${j}`} className="ml-[3px]">
+                    <NavItem item={subItem} onClick={onClick} isSubNavItem={true} />
                   </li>
                 ))}
               </ul>
