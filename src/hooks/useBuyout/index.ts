@@ -31,7 +31,7 @@ export interface BuyoutSettings {
 }
 
 type CurrencyMetadataType = {
-  decimals: number;
+  decimals: string;
   name: string;
   symbol: string;
   // There are more coming, but are not used in this context
@@ -76,7 +76,7 @@ export const useBuyout = (): BuyoutSettings => {
         const { decimals, name, symbol } = nativeCurrencyMetadata.toHuman() as CurrencyMetadataType;
 
         setNativeCurrency({
-          metadata: { decimals, name, symbol },
+          metadata: { decimals: Number(decimals), name, symbol },
           assetId: 'Native',
         });
       }
@@ -95,7 +95,7 @@ export const useBuyout = (): BuyoutSettings => {
             setCurrencies((state) => [
               ...state,
               {
-                metadata: { decimals: decimals, name, symbol },
+                metadata: { decimals: Number(decimals), name, symbol },
                 assetId: currencyXCMId,
               },
             ]);
@@ -151,6 +151,7 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
+    console.log(currency, 'currency');
     const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
 
     const assetId = currency.assetId as { XCM: number };

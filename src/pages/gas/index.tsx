@@ -9,6 +9,7 @@ import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/type
 import { GasForm, IssueFormValues } from './GasForm';
 import { calculateForCurrentFromToken, calculatePriceNativeForCurrentFromToken } from './helpers';
 import { GasSuccessDialog } from './GasSuccessDialog';
+import { GasSkeleton } from './GasSkeleton';
 
 const Gas = () => {
   const { currencies, buyoutNativeToken, sellFee, nativeCurrency, handleBuyout } = useBuyout();
@@ -22,41 +23,45 @@ const Gas = () => {
 
   useEffect(() => {
     const fetchPricesCache = async () => {
-      const tokensPrices = await pricesCache;
+      if (nativeCurrency && isOrmlAsset(selectedFromToken)) {
+        const tokensPrices = await pricesCache;
 
-      if (!isEmpty(tokensPrices) && isOrmlAsset(selectedFromToken)) {
-        setSelectedFromTokenPriceUSD(tokensPrices[selectedFromToken.metadata.symbol]);
-        const nativeTokenPrice = tokensPrices[nativeCurrency.metadata.symbol];
-        // We add the sellFee to the native price to already accommodate for it in the calculations
-        const nativeTokenPriceWithFee = sellFee.addSelfToBase(nativeTokenPrice);
-        setNativeTokenPrice(nativeTokenPriceWithFee);
+        if (!isEmpty(tokensPrices)) {
+          setSelectedFromTokenPriceUSD(tokensPrices[selectedFromToken.metadata.symbol]);
+          const nativeTokenPrice = tokensPrices[nativeCurrency.metadata.symbol];
+          // We add the sellFee to the native price to already accommodate for it in the calculations
+          const nativeTokenPriceWithFee = sellFee.addSelfToBase(nativeTokenPrice);
+          setNativeTokenPrice(nativeTokenPriceWithFee);
+        }
       }
     };
 
     fetchPricesCache().catch(console.error);
-  }, [nativeCurrency.metadata.symbol, pricesCache, selectedFromToken, sellFee]);
+  }, [nativeCurrency, pricesCache, selectedFromToken, sellFee]);
 
   useEffect(() => {
-    setSelectedFromToken(currencies[0] as OrmlTraitsAssetRegistryAssetMetadata);
+    if (!selectedFromToken) {
+      setSelectedFromToken(currencies[0] as OrmlTraitsAssetRegistryAssetMetadata);
+    }
   }, [selectedFromToken, currencies]);
 
   const onSubmit = async (data: IssueFormValues) => {
-    // If the user has selected the min or max amount by clicking the badge button, we call the buyout extrinsic in the
-    // direction of the native token being the input token. This way we ensure that the amount is perfectly within the buyout limits and
-    // the transaction does not fail due to imprecise calculations.
-    const isExchangeAmount = data.isMin || data.isMax;
-    const token = isExchangeAmount ? nativeCurrency : (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata);
-    const amount = data.isMin ? buyoutNativeToken.min : data.isMax ? buyoutNativeToken.max : Number(data.fromAmount);
+    if (nativeCurrency && selectedFromToken) {
+      // If the user has selected the min or max amount by clicking the badge button, we call the buyout extrinsic in the
+      // direction of the native token being the input token. This way we ensure that the amount is perfectly within the buyout limits and
+      // the transaction does not fail due to imprecise calculations.
+      const isExchangeAmount = data.isMin || data.isMax;
+      const token = isExchangeAmount ? nativeCurrency : (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata);
+      const amount = data.isMin ? buyoutNativeToken.min : data.isMax ? buyoutNativeToken.max : Number(data.fromAmount);
 
-    handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible, isExchangeAmount);
+      handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible, isExchangeAmount);
+    }
   };
 
-  const selectedTokenDecimals = selectedFromToken
-    ? (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals
-    : 0;
-  const nativeDecimals = (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata).metadata.decimals;
+  const selectedTokenDecimals = (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata)?.metadata.decimals ?? 0;
+  const nativeDecimals = (nativeCurrency as OrmlTraitsAssetRegistryAssetMetadata)?.metadata.decimals ?? 0;
 
-  if (!selectedFromToken) return <></>;
+  if (!selectedFromToken || !nativeCurrency) return <GasSkeleton />;
 
   return (
     <div className="h-full flex items-center justify-center mt-4">
