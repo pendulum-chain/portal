@@ -38,8 +38,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         </div>
         <div className="mt-6">
           <div className="text-sm mt-2">
-            We will update the transaction when PEN payment is executed. This typically takes only a few minutes but may
-            sometimes take up to 6 hours.
+            We will update the transaction when PEN payment is executed. This typically takes only a few minutes.
           </div>
         </div>
       </>
