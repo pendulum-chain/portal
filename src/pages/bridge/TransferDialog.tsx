@@ -168,7 +168,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
     <>
       <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
       <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
-        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
       <div className="flex flex-row justify-between w-11/12">
@@ -206,7 +206,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
         Contact the team for debugging if you think this is an error.
       </div>
       <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
-        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-xs">Spacewalk transaction</div>
@@ -315,7 +315,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         </div>
       </>
       <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
-        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
       <div className="text-sm px-5 ">
@@ -363,7 +363,7 @@ export function FailedTransferDialog(props: TransferDialogProps) {
     <>
       <div className="text-xl">{`${amountToSend} ${stellarAsset}`}</div>
       <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
-        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `Back to Stellar`}
+        {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
     </>
   );
@@ -391,7 +391,7 @@ export function FailedTransferDialog(props: TransferDialogProps) {
     <BaseTransferDialog
       id="completed-transfer-modal"
       transfer={transfer}
-      title="Your Back to Stellar Request has Failed"
+      title="Your bridge request to Stellar has Failed"
       visible={visible}
       content={content}
       footer={footer}

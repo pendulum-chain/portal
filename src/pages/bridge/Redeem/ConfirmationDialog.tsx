@@ -61,7 +61,5 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     [navigateTo, tenantName],
   );
 
-  return (
-    <Dialog headerText="Back to Stellar" visible={visible} onClose={onClose} content={content} actions={actions} />
-  );
+  return <Dialog headerText="To Stellar" visible={visible} onClose={onClose} content={content} actions={actions} />;
 }
