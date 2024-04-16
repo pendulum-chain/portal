@@ -55,7 +55,7 @@ export const transactionIdColumn: ColumnDef<TTransfer> = {
 export const typeColumnCreator = (tenantName: TenantName | undefined): ColumnDef<TTransfer> => ({
   header: 'Type',
   accessorKey: 'type',
-  accessorFn: (row) => (row.type === TransferType.issue ? `To ${toTitle(tenantName || '')}` : 'Back to Stellar'),
+  accessorFn: (row) => (row.type === TransferType.issue ? `To ${toTitle(tenantName || '')}` : 'To Stellar'),
 });
 
 export const statusColumnCreator = (): ColumnDef<TTransfer> => ({
