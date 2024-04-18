@@ -12,6 +12,7 @@ import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
 import { decimalToNative } from '../../shared/parseNumbers/metric';
+import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
 
 export interface BuyoutSettings {
   buyoutNativeToken: {
@@ -29,13 +30,6 @@ export interface BuyoutSettings {
     isExchangeAmount: boolean,
   ) => void;
 }
-
-type CurrencyMetadataType = {
-  decimals: string;
-  name: string;
-  symbol: string;
-  // There are more coming, but are not used in this context
-};
 
 function handleBuyoutError(error: string) {
   if (!error) return;
@@ -65,53 +59,38 @@ export const useBuyout = (): BuyoutSettings => {
   const [minimumBuyout, setMinimumBuyout] = useState<number>(0);
   const [maximumBuyout, setMaximumBuyout] = useState<number>(0);
   const [sellFee, setSellFee] = useState<PerMill>(new PerMill(0));
+  const { getNativeAssetMetadata, getAssetMetadata } = useAssetRegistryMetadata();
 
-  const [currencies, setCurrencies] = useState<OrmlTraitsAssetRegistryAssetMetadata[]>([]);
   const [nativeCurrency, setNativeCurrency] = useState<OrmlTraitsAssetRegistryAssetMetadata | undefined>(undefined);
+  const [currencies, setCurrencies] = useState<OrmlTraitsAssetRegistryAssetMetadata[]>([]);
 
   useEffect(() => {
-    async function fetchNativeCurrency() {
-      if (api) {
-        const nativeCurrencyMetadata = await api.query.assetRegistry.metadata('Native');
-        const { decimals, name, symbol } = nativeCurrencyMetadata.toHuman() as CurrencyMetadataType;
-
-        setNativeCurrency({
-          metadata: { decimals: Number(decimals), name, symbol },
-          assetId: 'Native',
-        });
-      }
-    }
-
     async function fetchAllowedCurrencies() {
+      const allowedCurrencies = [];
       if (api) {
-        const currencies = await api.query.treasuryBuyoutExtension.allowedCurrencies.entries();
+        const allowedCurrenciesEntries = await api.query.treasuryBuyoutExtension.allowedCurrencies.entries();
 
-        for (const currency of currencies) {
+        for (const currency of allowedCurrenciesEntries) {
           if (currency.length && currency[0] && currency[0].toHuman()) {
             const currencyXCMId: { XCM: number } = (currency[0].toHuman() as { XCM: number }[])[0];
-            const currencyMetadata = await api.query.assetRegistry.metadata(currencyXCMId);
-            const { decimals, name, symbol } = currencyMetadata.toHuman() as CurrencyMetadataType;
+            const currencyMetadata = await getAssetMetadata(currencyXCMId);
 
-            setCurrencies((state) => [
-              ...state,
-              {
-                metadata: { decimals: Number(decimals), name, symbol },
-                assetId: currencyXCMId,
-              },
-            ]);
+            if (currencyMetadata) {
+              allowedCurrencies.push(currencyMetadata);
+            }
           }
         }
       }
+      return allowedCurrencies;
     }
 
-    async function fetchCurrencies() {
-      await fetchNativeCurrency().catch(console.error);
-
-      await fetchAllowedCurrencies().catch(console.error);
+    async function fetchAndSetCurrencies() {
+      setCurrencies(await fetchAllowedCurrencies());
+      setNativeCurrency(await getNativeAssetMetadata());
     }
 
-    fetchCurrencies().catch(console.error);
-  }, [api]);
+    fetchAndSetCurrencies().catch(console.error);
+  }, [api, getNativeAssetMetadata, getAssetMetadata]);
 
   useEffect(() => {
     async function fetchBuyoutLimits() {
@@ -151,7 +130,6 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    console.log(currency, 'currency');
     const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
 
     const assetId = currency.assetId as { XCM: number };
