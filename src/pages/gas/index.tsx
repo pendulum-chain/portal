@@ -72,7 +72,7 @@ const Gas = () => {
       />
       <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
         <div className="py-6 px-8">
-          <h1 className="text-[28px] mb-8">Get AMPE</h1>
+          <h1 className="text-[28px] mb-8">Get {nativeCurrency.metadata.symbol}</h1>
           <GasForm
             submissionPending={submissionPending}
             currencies={currencies.length ? currencies : []}
