@@ -20,7 +20,7 @@ function useBalances() {
   const [accountTotalBalance, setAccountTotalBalance] = useState<number>(0);
 
   const [balances, setBalances] = useState<PortfolioAsset[] | undefined>();
-  const { pricesCache } = usePriceFetcher();
+  const { getTokenPrice } = usePriceFetcher();
 
   const vaults = getVaults();
 
@@ -60,7 +60,7 @@ function useBalances() {
         // FIXME: Use asset-registry data to derive the correct decimal per asset
         const decimals = token === 'DOT' ? 10 : 12;
         const amount = nativeToDecimal(balance?.free || '0', decimals).toNumber();
-        const price: number = (await pricesCache)[token];
+        const price: number = await getTokenPrice(token);
         const usdValue = price * amount;
 
         return {
@@ -78,9 +78,10 @@ function useBalances() {
       }
       const balance = (await api?.query.system.account(walletAccount.address))?.data;
 
+      console.log(balance, 'balance222');
       if (!tokenSymbol || !balance) return;
 
-      const price: number = (await pricesCache)[tokenSymbol];
+      const price: number = await getTokenPrice(tokenSymbol);
       const usdValue = price * nativeToDecimal(balance.free).toNumber();
 
       return {
@@ -98,7 +99,7 @@ function useBalances() {
     Promise.all(allPortfolioAssets).then((data) => {
       setBalances(data.filter((e) => e !== undefined) as PortfolioAsset[]);
     });
-  }, [spacewalkCurrencies, walletAccount, api, ss58Format, tenantName, tenantRPC, tokenSymbol, pricesCache]);
+  }, [spacewalkCurrencies, walletAccount, api, ss58Format, tenantName, tenantRPC, tokenSymbol, getTokenPrice]);
 
   useEffect(() => {
     if (!balances) return;

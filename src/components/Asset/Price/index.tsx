@@ -14,15 +14,15 @@ export type TokenPriceProps = {
 };
 
 const TokenPrice = memo(({ symbol, prefix = null, loader, fallback = null }: TokenPriceProps): JSX.Element | null => {
-  const { pricesCache } = usePriceFetcher();
+  const { getTokenPrice } = usePriceFetcher();
   const [price, setPrice] = useState<number | undefined | null>(null);
   useEffect(() => {
     const run = async () => {
-      const p = (await pricesCache)[symbol];
+      const p = await getTokenPrice(symbol);
       setPrice(p);
     };
     run();
-  }, [pricesCache, symbol]);
+  }, [getTokenPrice, symbol]);
 
   const isLoading = price === null;
   if (isLoading) return <>{loader}</> || numberLoader;

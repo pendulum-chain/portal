@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Card } from 'react-daisyui';
-import { isEmpty } from 'lodash';
 
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 import { useBuyout } from '../../hooks/useBuyout';
@@ -13,7 +12,7 @@ import { GasSkeleton } from './GasSkeleton';
 
 const Gas = () => {
   const { currencies, buyoutNativeToken, sellFee, nativeCurrency, handleBuyout } = useBuyout();
-  const { pricesCache } = usePriceFetcher();
+  const { getTokenPrice } = usePriceFetcher();
 
   const [selectedFromToken, setSelectedFromToken] = useState<BlockchainAsset | undefined>(undefined);
   const [selectedFromTokenPriceUSD, setSelectedFromTokenPriceUSD] = useState<number>(0);
@@ -24,20 +23,24 @@ const Gas = () => {
   useEffect(() => {
     const fetchPricesCache = async () => {
       if (nativeCurrency && isOrmlAsset(selectedFromToken)) {
-        const tokensPrices = await pricesCache;
+        const tokenPrice = await getTokenPrice(selectedFromToken.metadata.symbol);
 
-        if (!isEmpty(tokensPrices)) {
-          setSelectedFromTokenPriceUSD(tokensPrices[selectedFromToken.metadata.symbol]);
-          const nativeTokenPrice = tokensPrices[nativeCurrency.metadata.symbol];
-          // We add the sellFee to the native price to already accommodate for it in the calculations
-          const nativeTokenPriceWithFee = sellFee.addSelfToBase(nativeTokenPrice);
-          setNativeTokenPrice(nativeTokenPriceWithFee);
+        if (!tokenPrice) {
+          const fetchedTokenPrice = await getTokenPrice(selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata);
+          setSelectedFromTokenPriceUSD(fetchedTokenPrice);
+        } else {
+          setSelectedFromTokenPriceUSD(tokenPrice);
         }
+
+        const nativeTokenPrice = await getTokenPrice(nativeCurrency.metadata.symbol);
+        // We add the sellFee to the native price to already accommodate for it in the calculations
+        const nativeTokenPriceWithFee = sellFee.addSelfToBase(nativeTokenPrice);
+        setNativeTokenPrice(nativeTokenPriceWithFee);
       }
     };
 
     fetchPricesCache().catch(console.error);
-  }, [nativeCurrency, pricesCache, selectedFromToken, sellFee]);
+  }, [nativeCurrency, selectedFromToken, sellFee, getTokenPrice]);
 
   useEffect(() => {
     if (!selectedFromToken) {

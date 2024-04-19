@@ -8,6 +8,13 @@ type CurrencyMetadataType = {
   decimals: string;
   name: string;
   symbol: string;
+  additional: {
+    diaKeys: {
+      blockchain: string;
+      symbol: string;
+    };
+    feePerSecond: string;
+  };
   // There are more coming, but are not used in this context
 };
 
@@ -17,11 +24,11 @@ interface UseAssetRegistryMetadata {
 }
 
 function convertToOrmlAssetRegistryAssetMetadata(metadata: [StorageKey, Codec]): OrmlTraitsAssetRegistryAssetMetadata {
-  const { decimals, name, symbol } = metadata[1].toHuman() as CurrencyMetadataType;
+  const { decimals, name, symbol, additional } = metadata[1].toHuman() as CurrencyMetadataType;
   const assetId = (metadata[0].toHuman() as string[])[0] as string;
 
   return {
-    metadata: { decimals: Number(decimals), name, symbol },
+    metadata: { decimals: Number(decimals), name, symbol, additional },
     assetId,
   };
 }

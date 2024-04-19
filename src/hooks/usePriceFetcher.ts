@@ -1,106 +1,13 @@
 import request from 'graphql-request';
-import { useMemo } from 'preact/compat';
-import { TenantName } from '../models/Tenant';
+import { useCallback, useEffect, useState } from 'preact/compat';
+import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
+import { PriceFetcherAsset, TOKENS } from '../constants/tokens';
 
 const AMPLITUDE_INDEXER_URL = 'https://squid.subsquid.io/amplitude-squid/graphql';
-
-interface PriceFetcherAsset {
-  assetName: string;
-  blockchain: string;
-  assetId: string | undefined;
-  exclude?: TenantName[];
-  provider: 'dia' | 'diaForeign' | 'subsquid';
-}
 
 type PricesCache = {
   [key: string]: number;
 };
-
-const assets: PriceFetcherAsset[] = [
-  {
-    assetName: 'USDC.s',
-    blockchain: 'Ethereum',
-    assetId: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    provider: 'dia',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'XLM.s',
-    blockchain: 'Stellar',
-    assetId: '0x0000000000000000000000000000000000000000/',
-    provider: 'dia',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'TZS.s',
-    blockchain: 'YahooFinance',
-    assetId: 'TZS-USD',
-    provider: 'diaForeign',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'BRL.s',
-    blockchain: 'YahooFinance',
-    assetId: 'BRL-USD',
-    provider: 'diaForeign',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'NGNC.s',
-    blockchain: 'YahooFinance',
-    assetId: 'NGN-USD',
-    provider: 'diaForeign',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'EURC.s',
-    blockchain: 'YahooFinance',
-    assetId: 'EUR-USD',
-    provider: 'diaForeign',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'AUDD.s',
-    blockchain: 'YahooFinance',
-    assetId: 'AUD-USD',
-    provider: 'diaForeign',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'KSM',
-    blockchain: 'Kusama',
-    assetId: '0x0000000000000000000000000000000000000000',
-    provider: 'dia',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'USDT',
-    blockchain: 'Ethereum',
-    assetId: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    provider: 'dia',
-  },
-  {
-    assetName: 'DOT',
-    blockchain: 'Polkadot',
-    assetId: '0x0000000000000000000000000000000000000000',
-    provider: 'dia',
-    exclude: [TenantName.Amplitude],
-  },
-  {
-    assetName: 'AMPE',
-    blockchain: 'Amplitude',
-    assetId: 'ampe',
-    provider: 'subsquid',
-    exclude: [TenantName.Pendulum],
-  },
-  {
-    assetName: 'PEN',
-    blockchain: 'Pendulum',
-    assetId: '0x0000000000000000000000000000000000000000',
-    provider: 'dia',
-    exclude: [TenantName.Amplitude],
-  },
-];
 
 const getDIAAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
   if (!asset.assetId) return 0;
@@ -162,14 +69,6 @@ const providers = {
   subsquid: getSubsquidAssetPrice,
 };
 
-const lookup = (assetCode: string) => {
-  const found = assets.find(({ assetName }) => assetName === assetCode);
-
-  if (!found) throw Error(`Asset ${assetCode} was not found`);
-
-  return found;
-};
-
 const getPrice = async (asset: PriceFetcherAsset) => {
   try {
     return await providers[asset.provider](asset);
@@ -179,21 +78,43 @@ const getPrice = async (asset: PriceFetcherAsset) => {
 };
 
 export const usePriceFetcher = () => {
-  const pricesCache: Promise<PricesCache> = useMemo(async () => {
-    let cache = {};
-    for (let i = 0; i < assets.length; i++) {
-      cache = { ...cache, [assets[i].assetName]: await getPrice(assets[i]) };
-    }
-    return cache;
+  const [pricesCache, setPricesCache] = useState<PricesCache>({});
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      let cache = {};
+      for (let i = 0; i < TOKENS.length; i++) {
+        cache = { ...cache, [TOKENS[i].assetName]: await getPrice(TOKENS[i]) };
+      }
+      setPricesCache(cache);
+    };
+
+    fetchPrices();
   }, []);
 
-  const fetch = async (assetCode: string) => {
-    try {
-      return await getPrice(lookup(assetCode));
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const getTokenPrice = useCallback(
+    async (asset: OrmlTraitsAssetRegistryAssetMetadata | string) => {
+      if (typeof asset === 'string') {
+        try {
+          const cachedAssetPrice = pricesCache[asset];
+          if (cachedAssetPrice) return cachedAssetPrice;
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        const assetDiaDetails = {
+          blockchain: asset.metadata.additional.diaKeys.blockchain,
+          assetId: asset.metadata.additional.diaKeys.symbol,
+        } as PriceFetcherAsset;
 
-  return { fetch, pricesCache };
+        const assetPrice = await getDIAAssetPrice(assetDiaDetails);
+
+        return assetPrice;
+      }
+      return 0;
+    },
+    [pricesCache],
+  );
+
+  return { getTokenPrice };
 };

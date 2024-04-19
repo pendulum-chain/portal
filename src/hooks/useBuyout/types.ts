@@ -12,6 +12,7 @@ export interface OrmlTraitsAssetRegistryAssetMetadata {
     decimals: number;
     name: string;
     symbol: string;
+    additional: { diaKeys: { blockchain: string; symbol: string } };
   };
   assetId: AssetId;
 }
