@@ -75,7 +75,7 @@ function Issue(props: IssueProps): JSX.Element {
           operator program, more
           <a
             target="_blank"
-            className="text-accent ml-1"
+            className="text-primary ml-1"
             href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
             rel="noreferrer"
           >
@@ -85,7 +85,7 @@ function Issue(props: IssueProps): JSX.Element {
         </li>
         <li>
           Estimated time for issuing: In a minute after submitting the Stellar payment to the vault. Contact
-          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-accent">
+          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
             support
           </a>
           if your transaction is still pending after 10 minutes.
