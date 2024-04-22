@@ -60,7 +60,7 @@ function Bridge(): JSX.Element | null {
               </Tabs.Tab>
               <Tabs.Tab className="w-2/5 h-fit p-2" value={1}>
                 <StellarLogo className="w-6 h-6 mr-1" />
-                Back To Stellar
+                To Stellar
               </Tabs.Tab>
             </Tabs>
             <Button

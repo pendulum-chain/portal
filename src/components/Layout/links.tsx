@@ -1,26 +1,40 @@
 import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
+import { Options } from 'react-lottie';
+
 import DashboardIcon from '../../assets/dashboard';
 import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
-import SpacewalkIcon from '../../assets/spacewalk';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
+import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
 
 export type LinkParameter = { isActive?: boolean };
+
+export type LottieOptions = { lottieOptions: Options } & {
+  componentOptions: { height?: number; width?: number; style?: Record<string, string | number> };
+};
+
+export function isLottieOptions(obj: any): obj is LottieOptions {
+  return obj && typeof obj === 'object' && 'lottieOptions' in obj && 'animationData' in obj['lottieOptions'];
+}
+
+export type TitleOptions = LottieOptions | ComponentChildren;
+export type PrefixOptions = LottieOptions | ComponentChildren;
+
 export type BaseLinkItem = {
   link: string;
-  title: ComponentChildren;
+  title: TitleOptions;
   props?: Omit<NavLinkProps, 'className'> & {
     className?: (params?: LinkParameter) => string;
   };
-  prefix?: ComponentChildren;
+  prefix?: PrefixOptions;
   suffix?: ComponentChildren;
   hidden?: boolean;
   disabled?: boolean;
@@ -52,11 +66,11 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './spacewalk',
-    title: 'Spacewalk',
+    title: getSpacewalkText(tenantName),
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
-    prefix: <SpacewalkIcon />,
+    prefix: getSpacewalkInterpolation(tenantName),
     submenu: [
       {
         link: './spacewalk/bridge',

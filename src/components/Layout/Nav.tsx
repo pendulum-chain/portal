@@ -1,8 +1,10 @@
-import { memo, useMemo } from 'preact/compat';
+import { memo, useMemo, useState } from 'preact/compat';
 import { NavLink, useLocation } from 'react-router-dom';
+
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
 import { LinkItem, links } from './links';
+import { NavCollapseButtonContent } from './NavCollapseButtonContent';
 
 const CollapseMenu = ({
   link,
@@ -42,7 +44,15 @@ const CollapseMenu = ({
   );
 };
 
-const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
+export const NavItem = ({
+  item,
+  onClick,
+  isSubNavItem = false,
+}: {
+  item: LinkItem;
+  onClick?: () => void;
+  isSubNavItem?: boolean;
+}) => {
   const { link, prefix, suffix, title, props, hidden } = item;
   if (hidden) return null;
   const isExternal = link.startsWith('http');
@@ -53,7 +63,7 @@ const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) =>
       {suffix}
     </>
   );
-  const cls = `nav-item ${props?.className?.() || ''}`;
+  const cls = `nav-item font-2 ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
@@ -72,32 +82,34 @@ export type NavProps = {
 const Nav = memo(({ onClick }: NavProps) => {
   const state = useGlobalState();
 
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsPlaying(true);
+  };
+
   return (
     <nav>
       {links(state).map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
-          <CollapseMenu
-            key={i}
-            link={item.link}
-            disabled={item.disabled}
-            ariaControls="submenu"
-            button={
-              <>
-                {item.prefix}
-                <span>{item.title}</span>
-                {item.suffix}
-              </>
-            }
-          >
-            <ul className="submenu" id="submenu">
-              {item.submenu.map((subItem, j) => (
-                <li key={`${i}-${j}`}>
-                  <NavItem item={subItem} onClick={onClick} />
-                </li>
-              ))}
-            </ul>
-          </CollapseMenu>
+          <div onMouseEnter={handleMouseEnter}>
+            <CollapseMenu
+              key={i}
+              link={item.link}
+              disabled={item.disabled}
+              ariaControls="submenu"
+              button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
+            >
+              <ul className="submenu" id="submenu">
+                {item.submenu.map((subItem, j) => (
+                  <li key={`${i}-${j}`} className="ml-[3px]">
+                    <NavItem item={subItem} onClick={onClick} isSubNavItem={true} />
+                  </li>
+                ))}
+              </ul>
+            </CollapseMenu>
+          </div>
         ) : (
           <NavItem key={i} item={item} onClick={onClick} />
         );

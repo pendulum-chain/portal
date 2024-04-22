@@ -37,9 +37,12 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="text-sm mt-4">Your request is being processed</div>
         </div>
         <div className="mt-6">
-          <div className="text-sm mt-2">
-            We will update the transaction when PEN payment is executed. This typically takes only a few minutes but may
-            sometimes take up to 6 hours.
+          <div className="text-sm mt-2 text-center">
+            This typically takes only a few minutes. Contact
+            <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+              support
+            </a>
+            if your transaction is still pending after 10 minutes.
           </div>
         </div>
       </>
@@ -61,7 +64,5 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     [navigateTo, tenantName],
   );
 
-  return (
-    <Dialog headerText="Back to Stellar" visible={visible} onClose={onClose} content={content} actions={actions} />
-  );
+  return <Dialog headerText="To Stellar" visible={visible} onClose={onClose} content={content} actions={actions} />;
 }
