@@ -116,7 +116,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
   const getModalHeader = (step: UnlockStep) => {
     switch (step) {
       case UnlockStep.Confirm:
-        return 'Unlock staked tokens';
+        return 'Unlock unstaked tokens';
       case UnlockStep.Success:
         return '';
     }
