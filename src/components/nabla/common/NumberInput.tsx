@@ -1,15 +1,20 @@
 import { HTMLAttributes, useCallback } from 'react';
+import { FieldPath, FieldValues, useFormContext } from 'react-hook-form';
 
-export interface NumberInputPropse {
-  attributes: HTMLAttributes<HTMLInputElement>;
+export interface NumberInputProps<SwapFormValues extends FieldValues> extends HTMLAttributes<HTMLInputElement> {
+  registerName: FieldPath<SwapFormValues>;
 }
 
-/*
 // Hack required for Preact compatibility with react-hook-form
-export default function NumberInput(attributes: HTMLAttributes<HTMLInputElement>) {
-  const { onChange } = attributes;
-  const attributesWithoutOnChange = { ...attributes };
-  //  delete attributesWithoutOnChange.onChange;
+export default function NumberInput<SwapFormValues extends FieldValues>(attributes: NumberInputProps<SwapFormValues>) {
+  const { register } = useFormContext<SwapFormValues>();
+
+  const { registerName } = attributes;
+
+  const registerAttributes: HTMLAttributes<HTMLInputElement> = register(registerName);
+  const { onChange } = registerAttributes;
+  const attributesWithoutOnChange = { ...registerAttributes };
+  delete attributesWithoutOnChange.onChange;
 
   const onInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,11 +25,10 @@ export default function NumberInput(attributes: HTMLAttributes<HTMLInputElement>
       }
 
       e.currentTarget.value = number;
-      e.target.value = number;
       onChange?.(e);
     },
     [onChange],
   );
 
-  return <input inputMode="numeric" type="text" {...attributesWithoutOnChange} onInput={onChange} />;
-} */
+  return <input inputMode="numeric" type="text" {...attributesWithoutOnChange} {...attributes} onInput={onInput} />;
+}

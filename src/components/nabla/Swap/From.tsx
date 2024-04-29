@@ -8,7 +8,7 @@ import TokenPrice from '../Price';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
-//import NumberInput from '../common/NumberInput';
+import NumberInput from '../common/NumberInput';
 
 export interface FromProps {
   tokensMap: Record<string, NablaInstanceToken>;
@@ -16,12 +16,8 @@ export interface FromProps {
   errorMessage?: string;
 }
 
-function NumberInput(props: any) {
-  return <input {...props} />;
-}
-
 const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Element | null => {
-  const { register, setValue, control } = useFormContext<SwapFormValues>();
+  const { setValue, control } = useFormContext<SwapFormValues>();
   const from = useWatch({
     control,
     name: 'from',
@@ -42,11 +38,11 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
     >
       <div className="w-full flex justify-between">
         <div className="flex-grow text-4xl text-[inherit] font-2">
-          <input
+          <NumberInput
             autoFocus
             className="input-ghost w-full text-4xl font-2"
             placeholder="0.0"
-            {...register('fromAmount')}
+            registerName="fromAmount"
           />
         </div>
         <Button
