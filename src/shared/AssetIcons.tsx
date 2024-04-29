@@ -10,6 +10,7 @@ import TZS from '../assets/coins/TZS.png';
 import USDC from '../assets/coins/USDC.png';
 import USDT from '../assets/coins/USDT.png';
 import XLM from '../assets/coins/XLM.png';
+import GLMR from '../assets/coins/GLMR.png';
 
 import DefaultIcon from '../assets/coins/placeholder.png';
 
@@ -37,6 +38,7 @@ const icons: IconMap = {
   USDC,
   USDT,
   XLM,
+  GLMR,
 };
 
 export function getIcon(token: string | undefined) {
