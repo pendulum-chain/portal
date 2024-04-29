@@ -3598,6 +3598,10 @@ export enum NablaSwapFeeOrderByInput {
   SwapPoolIdAscNullsFirst = 'swapPool_id_ASC_NULLS_FIRST',
   SwapPoolIdDesc = 'swapPool_id_DESC',
   SwapPoolIdDescNullsLast = 'swapPool_id_DESC_NULLS_LAST',
+  SwapPoolInsuranceFeeBpsAsc = 'swapPool_insuranceFeeBps_ASC',
+  SwapPoolInsuranceFeeBpsAscNullsFirst = 'swapPool_insuranceFeeBps_ASC_NULLS_FIRST',
+  SwapPoolInsuranceFeeBpsDesc = 'swapPool_insuranceFeeBps_DESC',
+  SwapPoolInsuranceFeeBpsDescNullsLast = 'swapPool_insuranceFeeBps_DESC_NULLS_LAST',
   SwapPoolLpTokenDecimalsAsc = 'swapPool_lpTokenDecimals_ASC',
   SwapPoolLpTokenDecimalsAscNullsFirst = 'swapPool_lpTokenDecimals_ASC_NULLS_FIRST',
   SwapPoolLpTokenDecimalsDesc = 'swapPool_lpTokenDecimals_DESC',
@@ -3610,6 +3614,10 @@ export enum NablaSwapFeeOrderByInput {
   SwapPoolPausedAscNullsFirst = 'swapPool_paused_ASC_NULLS_FIRST',
   SwapPoolPausedDesc = 'swapPool_paused_DESC',
   SwapPoolPausedDescNullsLast = 'swapPool_paused_DESC_NULLS_LAST',
+  SwapPoolProtocolTreasuryAddressAsc = 'swapPool_protocolTreasuryAddress_ASC',
+  SwapPoolProtocolTreasuryAddressAscNullsFirst = 'swapPool_protocolTreasuryAddress_ASC_NULLS_FIRST',
+  SwapPoolProtocolTreasuryAddressDesc = 'swapPool_protocolTreasuryAddress_DESC',
+  SwapPoolProtocolTreasuryAddressDescNullsLast = 'swapPool_protocolTreasuryAddress_DESC_NULLS_LAST',
   SwapPoolReserveWithSlippageAsc = 'swapPool_reserveWithSlippage_ASC',
   SwapPoolReserveWithSlippageAscNullsFirst = 'swapPool_reserveWithSlippage_ASC_NULLS_FIRST',
   SwapPoolReserveWithSlippageDesc = 'swapPool_reserveWithSlippage_DESC',
@@ -9961,9 +9969,11 @@ export type SwapPool = {
   backstop: BackstopPool;
   feesHistory: Array<NablaSwapFee>;
   id: Scalars['String']['output'];
+  insuranceFeeBps: Scalars['BigInt']['output'];
   lpTokenDecimals: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   paused: Scalars['Boolean']['output'];
+  protocolTreasuryAddress?: Maybe<Scalars['String']['output']>;
   reserve: Scalars['BigInt']['output'];
   reserveWithSlippage: Scalars['BigInt']['output'];
   router?: Maybe<Router>;
@@ -10028,6 +10038,10 @@ export enum SwapPoolOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  InsuranceFeeBpsAsc = 'insuranceFeeBps_ASC',
+  InsuranceFeeBpsAscNullsFirst = 'insuranceFeeBps_ASC_NULLS_FIRST',
+  InsuranceFeeBpsDesc = 'insuranceFeeBps_DESC',
+  InsuranceFeeBpsDescNullsLast = 'insuranceFeeBps_DESC_NULLS_LAST',
   LpTokenDecimalsAsc = 'lpTokenDecimals_ASC',
   LpTokenDecimalsAscNullsFirst = 'lpTokenDecimals_ASC_NULLS_FIRST',
   LpTokenDecimalsDesc = 'lpTokenDecimals_DESC',
@@ -10040,6 +10054,10 @@ export enum SwapPoolOrderByInput {
   PausedAscNullsFirst = 'paused_ASC_NULLS_FIRST',
   PausedDesc = 'paused_DESC',
   PausedDescNullsLast = 'paused_DESC_NULLS_LAST',
+  ProtocolTreasuryAddressAsc = 'protocolTreasuryAddress_ASC',
+  ProtocolTreasuryAddressAscNullsFirst = 'protocolTreasuryAddress_ASC_NULLS_FIRST',
+  ProtocolTreasuryAddressDesc = 'protocolTreasuryAddress_DESC',
+  ProtocolTreasuryAddressDescNullsLast = 'protocolTreasuryAddress_DESC_NULLS_LAST',
   ReserveWithSlippageAsc = 'reserveWithSlippage_ASC',
   ReserveWithSlippageAscNullsFirst = 'reserveWithSlippage_ASC_NULLS_FIRST',
   ReserveWithSlippageDesc = 'reserveWithSlippage_DESC',
@@ -10120,6 +10138,15 @@ export type SwapPoolWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  insuranceFeeBps_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  insuranceFeeBps_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  insuranceFeeBps_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  insuranceFeeBps_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  insuranceFeeBps_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  insuranceFeeBps_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  insuranceFeeBps_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  insuranceFeeBps_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  insuranceFeeBps_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   lpTokenDecimals_eq?: InputMaybe<Scalars['Int']['input']>;
   lpTokenDecimals_gt?: InputMaybe<Scalars['Int']['input']>;
   lpTokenDecimals_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -10149,6 +10176,23 @@ export type SwapPoolWhereInput = {
   paused_eq?: InputMaybe<Scalars['Boolean']['input']>;
   paused_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   paused_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  protocolTreasuryAddress_contains?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_endsWith?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_eq?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_gt?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_gte?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  protocolTreasuryAddress_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  protocolTreasuryAddress_lt?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_lte?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_not_contains?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_not_eq?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  protocolTreasuryAddress_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  protocolTreasuryAddress_startsWith?: InputMaybe<Scalars['String']['input']>;
   reserveWithSlippage_eq?: InputMaybe<Scalars['BigInt']['input']>;
   reserveWithSlippage_gt?: InputMaybe<Scalars['BigInt']['input']>;
   reserveWithSlippage_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -12320,7 +12364,7 @@ export type GetRouterQueryVariables = Exact<{
 }>;
 
 
-export type GetRouterQuery = { __typename?: 'Query', routerById?: { __typename?: 'Router', id: string, paused: boolean, swapPools: Array<{ __typename?: 'SwapPool', id: string, paused: boolean, name: string, reserve: any, reserveWithSlippage: any, totalLiabilities: any, totalSupply: any, lpTokenDecimals: number, apr: any, symbol: string, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string } }>, backstopPool: Array<{ __typename?: 'BackstopPool', id: string, name: string, paused: boolean, symbol: string, totalSupply: any, apr: any, reserves: any, lpTokenDecimals: number, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string } }> } | null };
+export type GetRouterQuery = { __typename?: 'Query', routerById?: { __typename?: 'Router', id: string, paused: boolean, swapPools: Array<{ __typename?: 'SwapPool', id: string, paused: boolean, name: string, reserve: any, reserveWithSlippage: any, totalLiabilities: any, totalSupply: any, lpTokenDecimals: number, apr: any, symbol: string, insuranceFeeBps: any, protocolTreasuryAddress?: string | null, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string } }>, backstopPool: Array<{ __typename?: 'BackstopPool', id: string, name: string, paused: boolean, symbol: string, totalSupply: any, apr: any, reserves: any, lpTokenDecimals: number, token: { __typename?: 'NablaToken', id: string, decimals: number, name: string, symbol: string } }> } | null };
 
 
-export const GetRouterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRouter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routerById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"reserve"}},{"kind":"Field","name":{"kind":"Name","value":"reserveWithSlippage"}},{"kind":"Field","name":{"kind":"Name","value":"totalLiabilities"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"lpTokenDecimals"}},{"kind":"Field","name":{"kind":"Name","value":"apr"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"backstopPool"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"apr"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"lpTokenDecimals"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"paused"}}]}}]}}]} as unknown as DocumentNode<GetRouterQuery, GetRouterQueryVariables>;
+export const GetRouterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRouter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"routerById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"swapPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"reserve"}},{"kind":"Field","name":{"kind":"Name","value":"reserveWithSlippage"}},{"kind":"Field","name":{"kind":"Name","value":"totalLiabilities"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"lpTokenDecimals"}},{"kind":"Field","name":{"kind":"Name","value":"apr"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}},{"kind":"Field","name":{"kind":"Name","value":"insuranceFeeBps"}},{"kind":"Field","name":{"kind":"Name","value":"protocolTreasuryAddress"}}]}},{"kind":"Field","name":{"kind":"Name","value":"backstopPool"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"paused"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"totalSupply"}},{"kind":"Field","name":{"kind":"Name","value":"apr"}},{"kind":"Field","name":{"kind":"Name","value":"reserves"}},{"kind":"Field","name":{"kind":"Name","value":"lpTokenDecimals"}},{"kind":"Field","name":{"kind":"Name","value":"token"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"decimals"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"paused"}}]}}]}}]} as unknown as DocumentNode<GetRouterQuery, GetRouterQueryVariables>;

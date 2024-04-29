@@ -1,8 +1,8 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
-import { getErrorMessage } from '../../../helpers/transaction';
 import { useGetTenantConfig } from '../../../hooks/useGetTenantConfig';
 import { UseContractWriteResponse } from '../../../shared/useContractWrite';
 
@@ -14,6 +14,20 @@ export interface TransactionProgressProps {
   children?: ComponentChildren;
   onClose: () => void;
 }
+
+const getErrorMessage = (data?: MessageCallResult['result']) => {
+  if (!data) return undefined;
+  switch (data.type) {
+    case 'error':
+      return data.error;
+    case 'panic':
+      return data.explanation;
+    case 'reverted':
+      return data.description;
+    default:
+      return undefined;
+  }
+};
 
 const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
   const { explorer } = useGetTenantConfig();

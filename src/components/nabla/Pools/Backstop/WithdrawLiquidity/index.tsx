@@ -9,12 +9,12 @@ import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
-import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
 import { AssetSelectorModal } from '../../../common/AssetSelectorModal';
+import TransactionProgress from '../../../common/TransactionProgress';
 
 const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
@@ -119,7 +119,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                   type="button"
                   onClick={tokenModal[1].setTrue}
                 >
-                  <strong className="font-bold">{selectedPool.token.symbol}</strong>
+                  <strong className="font-bold">{selectedPool?.token.symbol}</strong>
                   <ChevronDownIcon className="w-4 h-4 inline" />
                 </Button>
                 <TransactionSettingsDropdown
@@ -206,7 +206,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
           tokenModal[1].setFalse();
         }}
         excludedToken={undefined}
-        selected={selectedPool.token.id}
+        selected={selectedPool?.token.id}
         onClose={tokenModal[1].setFalse}
       />
     </div>

@@ -7,11 +7,11 @@ import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
-import TransactionProgress from '../../../../Transaction/Progress';
 import TokenAmount from '../../TokenAmount';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
 import { useSwapPoolWithdrawLiquidity } from './useWithdrawLiquidity';
+import TransactionProgress from '../../../common/TransactionProgress';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;

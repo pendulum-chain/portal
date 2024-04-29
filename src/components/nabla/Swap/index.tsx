@@ -2,7 +2,6 @@ import { Cog8ToothIcon } from '@heroicons/react/24/outline';
 import { useMemo } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
-import { errorClass } from '../../../helpers/form';
 import { TransactionSettingsDropdown } from '../../Transaction/Settings';
 import ApprovalSubmit from './Approval';
 import From from './From';
@@ -81,13 +80,12 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             <From
               tokensMap={tokensMap}
               onOpenSelector={() => setModalType('from')}
-              className={`border ${errorClass(errors.fromAmount, 'border-red-600', 'border-transparent')}`}
               errorMessage={errors.fromAmount?.message}
             />
             <To
               tokensMap={tokensMap}
               onOpenSelector={() => setModalType('to')}
-              className={`border ${errorClass(errors.to, 'border-red-600', 'border-transparent')}`}
+              inputHasError={errors.to !== undefined}
             />
             <div className="mt-6">
               {/* <Validation errors={errors} className="mb-2" /> */}

@@ -73,6 +73,8 @@ export const getNablaInstance = graphql(`
           name
           symbol
         }
+        insuranceFeeBps
+        protocolTreasuryAddress
       }
       backstopPool {
         id

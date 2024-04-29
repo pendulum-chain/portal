@@ -6,9 +6,9 @@ import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import TokenApproval from '../../../../Asset/Approval';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
-import TransactionProgress from '../../../../Transaction/Progress';
 import { SwapPoolColumn } from '../columns';
 import { useAddLiquidity } from './useAddLiquidity';
+import TransactionProgress from '../../../common/TransactionProgress';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;

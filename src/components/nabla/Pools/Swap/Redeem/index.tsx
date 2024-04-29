@@ -7,11 +7,11 @@ import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
-import TransactionProgress from '../../../../Transaction/Progress';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import TokenPrice from '../../../Price';
 import { SwapPoolColumn } from '../columns';
 import { useRedeem } from './useRedeem';
+import TransactionProgress from '../../../common/TransactionProgress';
 
 export interface RedeemProps {
   data: SwapPoolColumn;

@@ -1,7 +1,8 @@
 import { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  schema: 'https://squid.subsquid.io/foucoco-squid/graphql',
+  // TODO Torsten
+  schema: 'https://pendulum.squids.live/foucoco-squid/v/v21/graphql',
   documents: ['**/*.{ts,tsx}', '!gql/**/*'],
   generates: {
     './gql/': {

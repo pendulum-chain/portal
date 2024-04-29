@@ -20,12 +20,7 @@ const TransactionSettings = ({
     <div className="w-full">
       <h4 className="font-semibold">Settings</h4>
       <div className="mt-4 text-sm">
-        <div className="flex gap-2">
-          Slippage tolerance
-          <div className="tooltip" data-tip="! TODO">
-            <QuestionMarkCircleIcon className="w-5 h-5 text-neutral-500" />
-          </div>
-        </div>
+        <div className="flex gap-2">Slippage tolerance</div>
         <div className="flex gap-2 mt-2">
           <Button size="sm" color="primary" className="px-3" onClick={() => setSlippage(undefined)} type="button">
             Auto
@@ -35,7 +30,8 @@ const TransactionSettings = ({
               size="sm"
               bordered
               className={`${inputCls} pr-6 w-full`}
-              type="number"
+              type="text"
+              inputmode="numeric"
               step=".1"
               min={config.transaction.settings.slippage.min}
               max={config.transaction.settings.slippage.max}
@@ -47,19 +43,15 @@ const TransactionSettings = ({
         </div>
       </div>
       <div className="mt-4 text-sm">
-        <div className="flex gap-2">
-          Transaction Deadline
-          <div className="tooltip" data-tip="! TODO">
-            <QuestionMarkCircleIcon className="w-5 h-5 text-neutral-500" />
-          </div>
-        </div>
+        <div className="flex gap-2">Transaction Deadline</div>
         {deadlineProps && (
           <div className="flex items-center gap-2 mt-2">
             <Input
               size="sm"
               bordered
               className={`${inputCls} w-20 pr-2v `}
-              type="number"
+              type="text"
+              inputmode="numeric"
               placeholder="30"
               min={config.transaction.settings.deadline.min}
               max={config.transaction.settings.deadline.max}

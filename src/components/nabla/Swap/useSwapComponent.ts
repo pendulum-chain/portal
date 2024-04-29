@@ -48,6 +48,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
   const storageState = useRef(getInitialValues());
+
   const initFrom = props.from || storageState.current.from;
   const initTo = props.to || storageState.current.to;
   const defaultFormValues = {
@@ -139,12 +140,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     [getValues, onChange, setTokenModal, setValue, updateStorage],
   );
 
-  const onReverse = useCallback(() => {
-    const prev = getValues();
-    if (prev.from) onToChange(prev.from);
-    else if (prev.to) onFromChange(prev.to);
-  }, [getValues, onFromChange, onToChange]);
-
   // when props change (url updated)
   useEffect(() => {
     if (hadMountedRef) {
@@ -162,7 +157,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     tokensModal,
     onFromChange,
     onToChange,
-    onReverse,
     updateStorage,
     from,
     isLoading,

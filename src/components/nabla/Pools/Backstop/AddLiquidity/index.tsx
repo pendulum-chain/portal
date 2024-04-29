@@ -7,9 +7,9 @@ import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import TokenApproval from '../../../../Asset/Approval';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
-import TransactionProgress from '../../../../Transaction/Progress';
 import { useAddLiquidity } from './useAddLiquidity';
 import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
+import TransactionProgress from '../../../common/TransactionProgress';
 
 export type AddLiquidityProps = {
   data: NablaInstanceBackstopPool;
