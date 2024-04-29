@@ -1,105 +1,63 @@
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useCallback, useEffect, useState } from 'preact/compat';
 import { useGlobalState } from '../GlobalStateProvider';
 import { getAddressForFormat } from '../helpers/addressFormatter';
-import { addSuffix, currencyToString } from '../helpers/spacewalk';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { PortfolioAsset } from '../pages/dashboard/PortfolioColumns';
 import { nativeToDecimal } from '../shared/parseNumbers/metric';
-import { useVaultRegistryPallet } from './spacewalk/useVaultRegistryPallet';
 import { usePriceFetcher } from './usePriceFetcher';
+import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
+import { AssetId } from './useBuyout/types';
 
 function useBalances() {
-  const { walletAccount, tenantName, tenantRPC } = useGlobalState();
+  const { walletAccount } = useGlobalState();
   const {
-    state: { api, ss58Format, tokenSymbol },
+    state: { api, ss58Format },
   } = useNodeInfoState();
-  const { getVaults } = useVaultRegistryPallet();
 
   const [accountTotalBalance, setAccountTotalBalance] = useState<number>(0);
-
   const [balances, setBalances] = useState<PortfolioAsset[] | undefined>();
+
   const { getTokenPrice } = usePriceFetcher();
+  const { getAllAssetsMetadata } = useAssetRegistryMetadata();
 
-  const vaults = getVaults();
-
-  const spacewalkCurrencies = useMemo(() => {
-    const currencies: SpacewalkPrimitivesCurrencyId[] = [];
-    vaults.forEach((vault) => {
-      currencies.push(vault.id.currencies.wrapped);
-      currencies.push(vault.id.currencies.collateral);
-    });
-
-    // Deduplicate assets
-    return _.uniqBy(currencies, (currencyId: SpacewalkPrimitivesCurrencyId) => currencyId.toHex());
-  }, [vaults]);
-
-  useEffect(() => {
-    if (!walletAccount || !spacewalkCurrencies) return;
-
-    async function fetchBridgedTokens(address: string, asset: SpacewalkPrimitivesCurrencyId) {
+  const fetchTokenBalance = useCallback(
+    async (address: string, asset: AssetId) => {
       if (!api) return;
       return api.query.tokens.accounts(address, asset);
-    }
+    },
+    [api],
+  );
 
-    function getPortfolioAssetsFromSpacewalk(): Promise<PortfolioAsset | undefined>[] {
-      if (!walletAccount || !spacewalkCurrencies) return [];
+  useEffect(() => {
+    const getTokensBalances = async () => {
+      if (!walletAccount) return [];
 
-      return spacewalkCurrencies.map(async (currencyId) => {
-        let token = currencyToString(currencyId, tenantName)?.split(':')[0];
-        if (!token) return;
+      const assets = getAllAssetsMetadata();
+      const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
 
-        token = currencyId.isStellar ? addSuffix(token) : token;
+      const tokensBalances = await Promise.all(
+        assets.map(async (asset) => {
+          const tokenBalanceRaw = await fetchTokenBalance(walletAddress, asset.assetId);
+          const amount = nativeToDecimal(tokenBalanceRaw?.free || '0', asset.metadata.decimals).toNumber();
+          const token = asset.metadata.symbol;
+          const price = await getTokenPrice(token);
+          const usdValue = price * amount;
 
-        const walletAddress = ss58Format
-          ? getAddressForFormat(walletAccount.address, ss58Format)
-          : walletAccount.address;
+          return {
+            token,
+            price,
+            amount,
+            usdValue,
+          };
+        }),
+      );
 
-        const balance = await fetchBridgedTokens(walletAddress, currencyId);
-        // FIXME: Use asset-registry data to derive the correct decimal per asset
-        const decimals = token === 'DOT' ? 10 : 12;
-        const amount = nativeToDecimal(balance?.free || '0', decimals).toNumber();
-        const price: number = await getTokenPrice(token);
-        const usdValue = price * amount;
+      return setBalances(tokensBalances);
+    };
 
-        return {
-          token,
-          price,
-          amount,
-          usdValue,
-        };
-      });
-    }
-
-    async function getPortfolioAssetsNative() {
-      if (!walletAccount?.address || !tenantRPC) {
-        return;
-      }
-      const balance = (await api?.query.system.account(walletAccount.address))?.data;
-
-      console.log(balance, 'balance222');
-      if (!tokenSymbol || !balance) return;
-
-      const price: number = await getTokenPrice(tokenSymbol);
-      const usdValue = price * nativeToDecimal(balance.free).toNumber();
-
-      return {
-        token: tokenSymbol,
-        price,
-        amount: nativeToDecimal(balance.free).toNumber(),
-        usdValue,
-      };
-    }
-
-    const allPortfolioAssets: Promise<PortfolioAsset | undefined>[] = getPortfolioAssetsFromSpacewalk().concat([
-      getPortfolioAssetsNative(),
-    ]);
-
-    Promise.all(allPortfolioAssets).then((data) => {
-      setBalances(data.filter((e) => e !== undefined) as PortfolioAsset[]);
-    });
-  }, [spacewalkCurrencies, walletAccount, api, ss58Format, tenantName, tenantRPC, tokenSymbol, getTokenPrice]);
+    getTokensBalances();
+  }, [walletAccount, getAllAssetsMetadata, ss58Format, fetchTokenBalance, getTokenPrice]);
 
   useEffect(() => {
     if (!balances) return;

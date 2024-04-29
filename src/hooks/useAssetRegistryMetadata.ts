@@ -21,6 +21,7 @@ type CurrencyMetadataType = {
 interface UseAssetRegistryMetadata {
   getAssetMetadata: (assetId: AssetId) => Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined>;
   getNativeAssetMetadata: () => Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined>;
+  getAllAssetsMetadata: () => OrmlTraitsAssetRegistryAssetMetadata[];
 }
 
 function convertToOrmlAssetRegistryAssetMetadata(metadata: [StorageKey, Codec]): OrmlTraitsAssetRegistryAssetMetadata {
@@ -61,5 +62,9 @@ export const useAssetRegistryMetadata = (): UseAssetRegistryMetadata => {
     return getAssetMetadata('Native');
   }, [getAssetMetadata]);
 
-  return { getAssetMetadata, getNativeAssetMetadata };
+  const getAllAssetsMetadata = useCallback(() => {
+    return metadataCache;
+  }, [metadataCache]);
+
+  return { getAssetMetadata, getNativeAssetMetadata, getAllAssetsMetadata };
 };
