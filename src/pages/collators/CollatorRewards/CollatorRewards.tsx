@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import { JSX, useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Signer } from '@polkadot/types/types';
 import { ApiPromise } from '@polkadot/api';
@@ -25,27 +26,29 @@ import {
   UnstakingDataType,
   handleTransactionStatus,
 } from './helpers';
-import Big from 'big.js';
 
-function CollatorRewards() {
+export function CollatorRewards() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
   const { walletAccount } = useGlobalState();
   const { candidates, estimatedRewards, refreshRewards, createUpdateDelegatorRewardsExtrinsic, unlockUnstaked } =
     useStakingPallet();
 
   const [userAvailableBalance, setUserAvailableBalance] = useState<string>('0.00');
+  const [unstaking, setUnstaking] = useState<string>('0.00');
+  const [userAvailableBalanceForUnlock, setUserAvailableBalanceForUnlock] = useState<Big>(new Big(0));
+  const [unlockGasFee, setUnlockGasFee] = useState<Big>(new Big(0));
+
   const [userStaking, setUserStaking] = useState<UserStaking>();
+
   const [claimDialogVisible, setClaimDialogVisible] = useState<boolean>(false);
   const [submissionPendingRewards, setSubmissionPendingRewards] = useState(false);
   const [, setSubmissionPendingUnlock] = useState(false);
   const [unlockDialogSuccess, setUnlockDialogSuccess] = useState(false);
-  const [unstaking, setUnstaking] = useState<string>('0.00');
-  const [balanceEnabledForUnlock, setBalanceEnabledForUnlock] = useState<string>('0.00');
-  const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
   const [unlockDialogVisible, setUnlockDialogVisible] = useState<boolean>(false);
-  const [tokensTipText, setTokensTipText] = useState<string>('Locked for 7 days.');
+  const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
   const [loadingToken, setLoadingToken] = useState<boolean>(true);
-  const [unlockGasFee, setUnlockGasFee] = useState<Big>(new Big(0));
+
+  const [tokensTipText, setTokensTipText] = useState<string>('Locked for 7 days.');
 
   const { getTransactionFee } = useFeePallet();
 
@@ -85,13 +88,9 @@ function CollatorRewards() {
     setTokensTipText(tooltipText);
   }
 
-  async function setBalanceForUnlock(
-    unstakingDataJSON: UnstakingDataType,
-    api: ApiPromise,
-    setBalanceEnabledForUnlock: StateUpdater<string>,
-  ) {
+  async function setBalanceForUnlock(unstakingDataJSON: UnstakingDataType, api: ApiPromise) {
     const tokensReadyToUnlock = await calculateTokensReadyToUnlock(unstakingDataJSON, api);
-    setBalanceEnabledForUnlock(tokensReadyToUnlock.toString());
+    setUserAvailableBalanceForUnlock(tokensReadyToUnlock);
   }
 
   function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: StateUpdater<string>) {
@@ -106,7 +105,7 @@ function CollatorRewards() {
       if (!api || !walletAccount) {
         return '0';
       }
-      const { data: balance } = await api.query.system.account(walletAccount?.address);
+      const { data: balance } = await api.query.system.account(walletAccount.address);
       setUserAvailableBalance(balance.free.sub(balance.frozen).toString());
     };
     const fetchUnstaking = async () => {
@@ -114,11 +113,12 @@ function CollatorRewards() {
         return;
       }
 
-      const unstakingData = await api.query.parachainStaking.unstaking(walletAccount?.address);
+      const unstakingData = await api.query.parachainStaking.unstaking(walletAccount.address);
 
-      const unstakingDataJSON = unstakingData.toJSON() as UnstakingDataType;
-      setTooltipText(unstakingDataJSON, api, tokenSymbol || '', setTokensTipText);
-      setBalanceForUnlock(unstakingDataJSON, api, setBalanceEnabledForUnlock);
+      const unstakingDataFormatted = unstakingData.toHuman() as UnstakingDataType;
+
+      setTooltipText(unstakingDataFormatted, api, tokenSymbol || '', setTokensTipText);
+      setBalanceForUnlock(unstakingDataFormatted, api);
       setUnstakingTokens(unstakingData, setUnstaking);
     };
 
@@ -194,7 +194,6 @@ function CollatorRewards() {
     return content;
   };
 
-
   return (
     <>
       <div className="flex flex-col mb-8 justify-between md:flex-row ">
@@ -205,7 +204,7 @@ function CollatorRewards() {
               <StakingContent
                 userStakingAmount={userStaking?.amount}
                 onButtonClick={handleUnlockButtonClick}
-                balanceEnabledForUnlock={balanceEnabledForUnlock}
+                userAvailableBalanceForUnlock={userAvailableBalanceForUnlock}
                 tokenSymbol={tokenSymbol as string}
                 userAvailableBalance={userAvailableBalance}
                 unstaking={unstaking}
@@ -239,7 +238,7 @@ function CollatorRewards() {
         gasFee={unlockGasFee}
         unlockSuccess={unlockDialogSuccess}
         onUnlock={handleUnlock}
-        userStakeBalance={balanceEnabledForUnlock}
+        userAvailableBalanceForUnlock={userAvailableBalanceForUnlock}
         visible={unlockDialogVisible}
         onClose={() => setUnlockDialogVisible(false)}
       />
@@ -252,5 +251,3 @@ function CollatorRewards() {
     </>
   );
 }
-
-export default CollatorRewards;
