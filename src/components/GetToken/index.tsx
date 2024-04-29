@@ -17,7 +17,7 @@ const tenantColors = {
     text: 'text-black',
     arrowFill: '#1DE7DF',
     tokenIcon: pen,
-    button: 'base-content',
+    button: 'bg-base-content',
   },
   [TenantName.Amplitude]: {
     background: 'bg-black',
@@ -25,7 +25,7 @@ const tenantColors = {
     text: 'text-primary',
     arrowFill: '#4EE59A',
     tokenIcon: ampe,
-    button: 'primary',
+    button: 'bg-primary',
   },
 };
 
@@ -89,11 +89,7 @@ export const GetToken = () => {
 
       {tokenSymbol ? (
         <NavLink to={link}>
-          <Button
-            size="sm"
-            className={`text-sm px-2 sm:px-3 bg-${getTenantColors(currentTenant).button}`}
-            type="button"
-          >
+          <Button size="sm" className={`text-sm px-2 sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
             {getTokenIcon(currentTenant)}
             <p className="text-neutral">GET {tokenSymbol}</p>
           </Button>
