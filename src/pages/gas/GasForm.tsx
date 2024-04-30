@@ -20,7 +20,7 @@ export type IssueFormValues = {
 interface GasFormProps {
   onSubmit: (data: IssueFormValues) => void;
   currencies: OrmlTraitsAssetRegistryAssetMetadata[];
-  setSelectedFromToken: StateUpdater<BlockchainAsset | undefined>;
+  setSelectedFromToken: Dispatch<StateUpdater<BlockchainAsset | undefined>>;
   selectedFromToken?: BlockchainAsset;
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
   calcMin: () => { amount: string; native: number };

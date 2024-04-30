@@ -65,9 +65,9 @@ export const handleTransactionStatus = (
   events: EventRecord[],
   api: ApiPromise,
   showToast: ShowToast,
-  setSubmissionPending: StateUpdater<boolean>,
+  setSubmissionPending: Dispatch<StateUpdater<boolean>>,
   refreshRewards: () => void,
-  setUpdateEnabled: StateUpdater<boolean>,
+  setUpdateEnabled: Dispatch<StateUpdater<boolean>>,
 ) => {
   const errors = getErrors(events, api);
   if (status.isInBlock) {

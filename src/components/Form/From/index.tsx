@@ -22,7 +22,7 @@ export interface FromProps {
   asset: {
     assets?: BlockchainAsset[];
     selectedAsset?: BlockchainAsset;
-    setSelectedAsset?: StateUpdater<BlockchainAsset | undefined> | StateUpdater<Asset | undefined>;
+    setSelectedAsset?: Dispatch<StateUpdater<BlockchainAsset | undefined>> | Dispatch<StateUpdater<Asset | undefined>>;
     assetSuffix?: string;
   };
   description: {

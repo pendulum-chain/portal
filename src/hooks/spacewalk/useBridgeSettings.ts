@@ -18,7 +18,7 @@ export interface BridgeSettings {
   vaultsForCurrency?: ExtendedRegistryVault[];
   wrappedAssets?: Asset[];
   selectedAsset?: Asset;
-  setSelectedAsset: StateUpdater<Asset | undefined>;
+  setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
   setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
   setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
 }

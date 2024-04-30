@@ -109,8 +109,8 @@ export const actionsColumn = ({
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
-  setUnstaking: StateUpdater<boolean>;
+  setSelectedCandidate: Dispatch<StateUpdater<ParachainStakingCandidate | undefined>>;
+  setUnstaking: Dispatch<StateUpdater<boolean>>;
 }): ColumnDef<TCollator> => ({
   header: '',
   enableSorting: false,

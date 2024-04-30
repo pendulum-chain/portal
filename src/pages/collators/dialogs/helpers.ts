@@ -9,8 +9,8 @@ export const doSubmitExtrinsic = (
   api: ApiPromise,
   extrinsic: SubmittableExtrinsic | undefined,
   walletAccount: WalletAccount,
-  setSubmissionPending: StateUpdater<boolean>,
-  setConfirmationDialogVisible: StateUpdater<boolean>,
+  setSubmissionPending: Dispatch<StateUpdater<boolean>>,
+  setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
   hideToast?: boolean,
 ) => {
   setSubmissionPending(true);

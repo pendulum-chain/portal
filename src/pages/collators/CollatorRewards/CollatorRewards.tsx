@@ -82,7 +82,7 @@ export function CollatorRewards() {
     unstakingDataJSON: UnstakingDataType,
     api: ApiPromise,
     tokenSymbol: string,
-    setTokensTipText: StateUpdater<string>,
+    setTokensTipText: Dispatch<StateUpdater<string>>,
   ) {
     const tooltipText = await generateUnstakingTooltipText(unstakingDataJSON, api, tokenSymbol);
     setTokensTipText(tooltipText);
@@ -93,7 +93,7 @@ export function CollatorRewards() {
     setUserAvailableBalanceForUnlock(tokensReadyToUnlock);
   }
 
-  function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: StateUpdater<string>) {
+  function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: Dispatch<StateUpdater<string>>) {
     const unstakingParts: number[] = [];
     unstakingData.forEach((n) => unstakingParts.push(Number(n.toString())));
     const allUnstakingTokens = unstakingParts.reduce((a, b) => a + b, 0);

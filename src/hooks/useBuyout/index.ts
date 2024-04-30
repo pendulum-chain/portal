@@ -25,8 +25,8 @@ export interface BuyoutSettings {
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
-    setSubmissionPending: StateUpdater<boolean>,
-    setConfirmationDialogVisible: StateUpdater<boolean>,
+    setSubmissionPending: Dispatch<StateUpdater<boolean>>,
+    setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
     isExchangeAmount: boolean,
   ) => void;
 }
@@ -119,8 +119,8 @@ export const useBuyout = (): BuyoutSettings => {
   async function handleBuyout(
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
-    setSubmissionPending: StateUpdater<boolean>,
-    setConfirmationDialogVisible: StateUpdater<boolean>,
+    setSubmissionPending: Dispatch<StateUpdater<boolean>>,
+    setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
     isExchangeAmount: boolean,
   ) {
     if (!api || !walletAccount) {
