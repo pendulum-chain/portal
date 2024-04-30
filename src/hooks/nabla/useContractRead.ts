@@ -6,9 +6,9 @@ import { useMemo } from 'preact/compat';
 
 import { defaultReadLimits, emptyCacheKey, emptyFn, QueryOptions } from '../../shared/helpers';
 import { useSharedState } from '../../shared/Provider';
+import { config } from '../../config';
 
-// TODO Torsten
-import { blurp } from '../../blurp';
+const isDevelopment = config.isDev;
 
 export type UseContractProps = {
   abi: Dict;
@@ -44,7 +44,10 @@ export function useContractRead(
     enabled
       ? async () => {
           const limits = defaultReadLimits;
-          blurp('read', 'Call message', address, method, args);
+
+          if (isDevelopment) {
+            console.log('read', 'Call message', address, method, args);
+          }
 
           const response = await messageCall({
             abi: contractAbi,
@@ -56,7 +59,10 @@ export function useContractRead(
             messageArguments: args || [],
             limits,
           });
-          //blurp('read', 'messageCall result', method, response);
+
+          if (isDevelopment) {
+            console.log('read', 'messageCall result', method, response);
+          }
 
           return response;
         }

@@ -4,11 +4,13 @@ import { Abi } from '@polkadot/api-contract';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
+
 import { defaultWriteLimits } from '../../shared/helpers';
 import { useSharedState } from '../../shared/Provider';
-// TODO Torsten
-import { blurp } from '../../blurp';
 import { createWriteOptions } from '../../services/api/helpers';
+import { config } from '../../config';
+
+const isDevelopment = config.isDev;
 
 // TODO: fix/improve types - parse abi file
 export type TransactionsStatus = {
@@ -45,8 +47,10 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     const fnArgs = submitArgs || args || [];
     const contractOptions = createWriteOptions(api);
 
-    blurp('write', 'call message write', address, method, args, submitArgs);
-    blurp('write', 'limits', { ...defaultWriteLimits, ...contractOptions });
+    if (isDevelopment) {
+      console.log('write', 'call message write', address, method, args, submitArgs);
+      console.log('write', 'limits', { ...defaultWriteLimits, ...contractOptions });
+    }
 
     const response = await messageCall({
       abi: contractAbi,
@@ -65,7 +69,9 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
       gasLimitTolerancePercentage: 10, // Allow 3 fold gas tolerance
     });
 
-    blurp('write', 'call message write response', address, method, fnArgs, response);
+    if (isDevelopment) {
+      console.log('write', 'call message write response', address, method, fnArgs, response);
+    }
 
     if (response?.result?.type !== 'success') throw response;
     return response;
