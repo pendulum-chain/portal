@@ -84,12 +84,14 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     abi: routerAbi,
     address: router,
     method: 'swapExactTokensForTokens',
-    onSuccess: () => {
-      // update token balances
-      queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('from')], type: 'active' });
-      queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('to')], type: 'active' });
-      // reset form
-      reset();
+    mutateOptions: {
+      onSuccess: () => {
+        // update token balances
+        queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('from')], type: 'active' });
+        queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('to')], type: 'active' });
+        // reset form
+        reset();
+      },
     },
   });
 

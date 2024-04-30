@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Limits, messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
-import { ApiPromise } from '@polkadot/api';
+import { messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
 import { Abi } from '@polkadot/api-contract';
 import { QueryKey, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
@@ -11,14 +10,13 @@ import { useSharedState } from '../../shared/Provider';
 // TODO Torsten
 import { blurp } from '../../blurp';
 
-type ContractOpts = Limits | ((api: ApiPromise) => Limits);
-export type UseContractProps = QueryOptions & {
+export type UseContractProps = {
   abi: Dict;
   address: string | undefined;
   method: string;
   args?: any[];
-  options?: ContractOpts;
   noWalletAddressRequired?: boolean;
+  queryOptions: QueryOptions;
 };
 
 export type UseContractResult = Pick<
@@ -28,12 +26,9 @@ export type UseContractResult = Pick<
 
 const ALICE = '6mfqoTMHrMeVMyKwjqomUjVomPMJ4AjdCm1VReFtk7Be8wqr';
 
-const getLimits = (options: ContractOpts | undefined, api: ApiPromise) =>
-  typeof options === 'function' ? options(api) : options || defaultReadLimits;
-
 export function useContractRead(
   key: QueryKey,
-  { abi, address, method, options, args, noWalletAddressRequired, ...rest }: UseContractProps,
+  { abi, address, method, args, noWalletAddressRequired, queryOptions }: UseContractProps,
 ): UseContractResult {
   const { api, address: walletAddress } = useSharedState();
   const contractAbi = useMemo(
@@ -43,12 +38,12 @@ export function useContractRead(
 
   const actualWalletAddress = noWalletAddressRequired ? ALICE : walletAddress;
 
-  const enabled = !!contractAbi && rest.enabled !== false && !!address && !!api && !!actualWalletAddress;
+  const enabled = !!contractAbi && queryOptions.enabled !== false && !!address && !!api && !!actualWalletAddress;
   const query = useQuery<MessageCallResult | undefined>(
     enabled ? key : emptyCacheKey,
     enabled
       ? async () => {
-          const limits = getLimits(options, api);
+          const limits = defaultReadLimits;
           blurp('read', 'Call message', address, method, args);
 
           const response = await messageCall({
@@ -67,12 +62,12 @@ export function useContractRead(
         }
       : emptyFn,
     {
-      ...rest,
+      ...queryOptions,
       enabled,
     },
   );
 
-  blurp('read', !!contractAbi, rest.enabled !== false, !!address, !!api, !!actualWalletAddress);
+  blurp('read', !!contractAbi, queryOptions.enabled !== false, !!address, !!api, !!actualWalletAddress);
   blurp(
     'read',
     'useContract result',

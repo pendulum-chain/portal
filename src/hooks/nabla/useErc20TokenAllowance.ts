@@ -13,17 +13,19 @@ export type UseTokenAllowance = {
   owner: string | undefined;
 };
 
-export function useErc20TokenAllowance({ token, owner, spender }: UseTokenAllowance, options?: QueryOptions) {
-  const isEnabled = Boolean(owner && spender && options?.enabled);
+export function useErc20TokenAllowance({ token, owner, spender }: UseTokenAllowance, queryOptions?: QueryOptions) {
+  const isEnabled = Boolean(owner && spender && queryOptions?.enabled);
 
   return useContractRead([cacheKeys.tokenAllowance, spender, token, owner], {
-    ...activeOptions['3m'],
-    retry: 2,
-    ...options,
     abi: erc20WrapperAbi,
     address: token,
     method: 'allowance',
     args: [owner, spender],
-    enabled: isEnabled,
+    queryOptions: {
+      ...activeOptions['3m'],
+      ...queryOptions,
+      retry: 2,
+      enabled: isEnabled,
+    },
   });
 }

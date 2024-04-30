@@ -23,7 +23,7 @@ interface UseTokenApprovalParams {
   enabled?: boolean;
   decimals: number;
   onError?: (err: any) => void;
-  onSuccess?: UseContractWriteProps<Dict>['onSuccess'];
+  onSuccess?: UseContractWriteProps<Dict>['mutateOptions']['onSuccess'];
 }
 
 export function useErc20TokenApproval({
@@ -58,17 +58,19 @@ export function useErc20TokenApproval({
     address: token,
     method: 'approve',
     args: [spender, nativeAmount.toString()],
-    onError: (err) => {
-      setPending(false);
-      if (onError) onError(err);
-    },
-    onSuccess: (...args) => {
-      setPending(true);
-      if (onSuccess) onSuccess(...args);
-      setTimeout(() => {
-        refetch();
+    mutateOptions: {
+      onError: (err) => {
         setPending(false);
-      }, 2000); // delay refetch as sometimes the allowance takes some time to reflect
+        if (onError) onError(err);
+      },
+      onSuccess: (...args) => {
+        setPending(true);
+        if (onSuccess) onSuccess(...args);
+        setTimeout(() => {
+          refetch();
+          setPending(false);
+        }, 2000); // delay refetch as sometimes the allowance takes some time to reflect
+      },
     },
   });
 

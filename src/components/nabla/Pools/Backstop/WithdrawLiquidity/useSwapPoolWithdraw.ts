@@ -32,7 +32,9 @@ export const useSwapPoolWithdraw = ({
     abi: backstopPoolAbi,
     address: backstopPool.id,
     method: 'withdrawExcessSwapLiquidity',
-    onSuccess,
+    mutateOptions: {
+      onSuccess,
+    },
   });
   const { mutate } = mutation;
 

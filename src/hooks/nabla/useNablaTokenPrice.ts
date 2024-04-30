@@ -3,19 +3,21 @@ import { priceOracleAbi } from '../../contracts/nabla/PriceOracle';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 import { useContractRead } from './useContractRead';
 
-export function useNablaTokenPrice(address: string | undefined, options?: QueryOptions) {
+export function useNablaTokenPrice(address: string | undefined, queryOptions?: QueryOptions) {
   const { oracle } = useGetAppDataByTenant('nabla').data || {};
 
-  const enabled = !!address && !!oracle && options?.enabled !== false;
+  const enabled = !!address && !!oracle && queryOptions?.enabled !== false;
 
   return useContractRead([cacheKeys.tokenPrice, address], {
-    ...inactiveOptions['1m'],
-    ...options,
-    enabled,
-    address: oracle,
     abi: priceOracleAbi,
+    address: oracle,
     method: 'getAssetPrice',
-    noWalletAddressRequired: true,
     args: [address],
+    noWalletAddressRequired: true,
+    queryOptions: {
+      ...inactiveOptions['1m'],
+      ...queryOptions,
+      enabled,
+    },
   });
 }

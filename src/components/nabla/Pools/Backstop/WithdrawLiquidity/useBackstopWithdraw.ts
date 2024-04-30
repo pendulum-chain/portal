@@ -24,7 +24,9 @@ export const useBackstopWithdraw = ({
     abi: backstopPoolAbi,
     address,
     method: 'withdraw',
-    onSuccess,
+    mutateOptions: {
+      onSuccess,
+    },
   });
   const { mutate } = mutation;
 

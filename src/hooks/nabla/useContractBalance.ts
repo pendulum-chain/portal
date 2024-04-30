@@ -28,25 +28,27 @@ export type UseBalanceResponse = Pick<
 
 export const useContractBalance = (
   { contractAddress, account, abi, decimals }: UseBalanceProps,
-  options?: QueryOptions,
+  queryOptions?: QueryOptions,
 ): UseBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
   const address = account || defAddress;
 
-  const enabled = !!api && !!address && options?.enabled !== false;
+  const enabled = !!api && !!address && queryOptions?.enabled !== false;
   const query = useContractRead([cacheKeys.balance, contractAddress, address], {
-    cacheTime: 120000,
-    staleTime: 120000,
-    retry: 2,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    onError: console.error,
-    ...options,
     abi,
     address: contractAddress,
     method: 'balanceOf',
     args: [address],
-    enabled,
+    queryOptions: {
+      ...(queryOptions ?? {}),
+      cacheTime: 120000,
+      staleTime: 120000,
+      retry: 2,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      onError: console.error,
+      enabled,
+    },
   });
 
   const { data } = query;

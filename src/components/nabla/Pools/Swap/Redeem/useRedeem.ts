@@ -69,13 +69,15 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     abi: backstopPoolAbi,
     address: backstopPoolAddress,
     method: 'redeemSwapPoolShares',
-    onError: () => {
-      // ? log error - alert not needed as the transaction modal displays the error
-    },
-    onSuccess: () => {
-      balanceQuery.refetch();
-      depositQuery.refetch();
-      queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
+    mutateOptions: {
+      onError: () => {
+        // ? log error - alert not needed as the transaction modal displays the error
+      },
+      onSuccess: () => {
+        balanceQuery.refetch();
+        depositQuery.refetch();
+        queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
+      },
     },
   });
   const { mutate } = mutation;

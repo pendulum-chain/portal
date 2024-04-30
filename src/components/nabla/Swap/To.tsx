@@ -59,7 +59,6 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
 
   const debouncedFromDecimalAmount = useDebouncedValue(fromDecimalAmount, 800);
 
-  console.log('Before call useTokenOutAmount');
   const { isLoading, fetchStatus, data, refetch } = useTokenOutAmount({
     fromDecimalAmount: debouncedFromDecimalAmount,
     from,

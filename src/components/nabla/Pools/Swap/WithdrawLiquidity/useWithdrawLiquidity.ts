@@ -48,14 +48,16 @@ export const useSwapPoolWithdrawLiquidity = (
     abi: swapPoolAbi,
     address: poolAddress,
     method: 'withdraw',
-    onError: () => {
-      // ? log error - alert not needed as the transaction modal displays the error
-    },
-    onSuccess: () => {
-      reset();
-      balanceQuery.refetch();
-      depositQuery.refetch();
-      queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
+    mutateOptions: {
+      onError: () => {
+        // ? log error - alert not needed as the transaction modal displays the error
+      },
+      onSuccess: () => {
+        reset();
+        balanceQuery.refetch();
+        depositQuery.refetch();
+        queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
+      },
     },
   });
   const { mutate } = mutation;

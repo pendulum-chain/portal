@@ -12,15 +12,17 @@ export type UseSharesTargetWorthProps = {
 
 export function useSharesTargetWorth(
   { address, lpTokenDecimalAmount, abi, lpTokenDecimals }: UseSharesTargetWorthProps,
-  options?: QueryOptions,
+  queryOptions?: QueryOptions,
 ) {
   return useContractRead([cacheKeys.sharesTargetWorth, lpTokenDecimalAmount], {
-    ...inactiveOptions['1m'],
-    ...options,
-    address,
     abi,
+    address,
     method: 'sharesTargetWorth',
     args: [decimalToRaw(lpTokenDecimalAmount, lpTokenDecimals).toString()],
-    enabled: Boolean(address && lpTokenDecimalAmount && options?.enabled !== false),
+    queryOptions: {
+      ...inactiveOptions['1m'],
+      ...queryOptions,
+      enabled: Boolean(address && lpTokenDecimalAmount && queryOptions?.enabled !== false),
+    },
   });
 }

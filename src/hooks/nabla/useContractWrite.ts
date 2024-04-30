@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Limits, messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
-import { ApiPromise } from '@polkadot/api';
+import { messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
 import { Abi } from '@polkadot/api-contract';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
@@ -17,14 +16,12 @@ export type TransactionsStatus = {
   status?: ExtrinsicStatus['type'] | 'Pending';
 };
 
-export type UseContractWriteProps<TAbi extends Record<string, unknown>> = Partial<
-  MutationOptions<MessageCallResult | undefined, DispatchError, any[] | void>
-> & {
+export type UseContractWriteProps<TAbi extends Record<string, unknown>> = {
   abi: TAbi;
   address?: string;
   method: string;
   args?: any[];
-  options?: Limits | ((api: ApiPromise) => Limits);
+  mutateOptions: Partial<MutationOptions<MessageCallResult | undefined, DispatchError, any[] | void>>;
 };
 
 export const useContractWrite = <TAbi extends Record<string, unknown>>({
@@ -32,8 +29,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
   address,
   method,
   args,
-  options,
-  ...rest
+  mutateOptions,
 }: UseContractWriteProps<TAbi>) => {
   const { api, signer, address: walletAddress } = useSharedState();
   const [transaction /* setTransaction */] = useState<TransactionsStatus | undefined>();
@@ -49,7 +45,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     if (!isReady) throw 'Missing data';
     //setTransaction({ status: 'Pending' });
     const fnArgs = submitArgs || args || [];
-    const contractOptions = (typeof options === 'function' ? options(api) : options) || createWriteOptions(api);
+    const contractOptions = createWriteOptions(api);
 
     blurp('write', 'call message write', address, method, args, submitArgs);
     blurp('write', 'limits', { ...defaultWriteLimits, ...contractOptions });
@@ -76,7 +72,7 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     if (response?.result?.type !== 'success') throw response;
     return response;
   };
-  const mutation = useMutation(submit, rest);
+  const mutation = useMutation(submit, mutateOptions);
   return { ...mutation, transaction, isReady };
 };
 

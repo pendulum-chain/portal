@@ -14,7 +14,9 @@ const TokenItem = ({ token }: { token: NablaInstanceToken }) => {
     abi: erc20WrapperAbi,
     address: token.id,
     method: 'mint',
-    onError: console.error,
+    mutateOptions: {
+      onError: console.error,
+    },
   });
   return (
     <div className="flex items-center justify-between gap-3" key={token.id}>

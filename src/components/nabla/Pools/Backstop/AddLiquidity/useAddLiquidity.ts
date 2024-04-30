@@ -45,14 +45,16 @@ export const useAddLiquidity = (
     abi: backstopPoolAbi,
     address: poolAddress,
     method: 'deposit',
-    onError: () => {
-      // ? log error - alert not needed as the transaction modal displays the error
-    },
-    onSuccess: () => {
-      form.reset();
-      balanceQuery.refetch();
-      depositQuery.refetch();
-      queryClient.refetchQueries([cacheKeys.backstopPools, indexerUrl]);
+    mutateOptions: {
+      onError: () => {
+        // ? log error - alert not needed as the transaction modal displays the error
+      },
+      onSuccess: () => {
+        form.reset();
+        balanceQuery.refetch();
+        depositQuery.refetch();
+        queryClient.refetchQueries([cacheKeys.backstopPools, indexerUrl]);
+      },
     },
   });
 
