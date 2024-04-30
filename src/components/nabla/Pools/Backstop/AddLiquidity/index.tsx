@@ -4,12 +4,12 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import TokenApproval from '../../../../Asset/Approval';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import { useAddLiquidity } from './useAddLiquidity';
 import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
-import TransactionProgress from '../../../common/TransactionProgress';
+import { TransactionProgress } from '../../../common/TransactionProgress';
+import { TokenApproval } from '../../../common/TokenApproval';
 
 export type AddLiquidityProps = {
   data: NablaInstanceBackstopPool;

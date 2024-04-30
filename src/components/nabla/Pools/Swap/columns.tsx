@@ -4,8 +4,8 @@ import { useModalToggle } from '../../../../services/modal';
 import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
-import Erc20Balance from '../../../Erc20Balance';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { Erc20Balance } from '../../common/Erc20Balance';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
   myAmount?: number;

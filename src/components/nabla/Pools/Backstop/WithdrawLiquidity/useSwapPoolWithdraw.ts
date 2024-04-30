@@ -4,12 +4,12 @@ import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
-import { useTokenPrice } from '../../../../../hooks/nabla/useTokenPrice';
 import { getMessageCallValue } from '../../../../../shared/helpers';
 import { decimalToRaw } from '../../../../../shared/parseNumbers';
-import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
+import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
+import { useNablaTokenPrice } from '../../../../../hooks/nabla/useNablaTokenPrice';
 
 export type UseSwapPoolWithdrawProps = {
   backstopPool: NablaInstanceBackstopPool;
@@ -62,8 +62,8 @@ export const useSwapPoolWithdraw = ({
     { enabled },
   );
   const sharesWorthNativeAmount = getMessageCallValue(sharesQuery.data);
-  const bpPriceQuery = useTokenPrice(backstopPool.token.id, { enabled });
-  const spPriceQuery = useTokenPrice(selectedSwapPool?.token.id, { enabled });
+  const bpPriceQuery = useNablaTokenPrice(backstopPool.token.id, { enabled });
+  const spPriceQuery = useNablaTokenPrice(selectedSwapPool?.token.id, { enabled });
   const bpPrice = getMessageCallValue(bpPriceQuery.data);
   const spPrice = getMessageCallValue(spPriceQuery.data);
 

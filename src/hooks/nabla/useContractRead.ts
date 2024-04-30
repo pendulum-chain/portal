@@ -4,10 +4,12 @@ import { ApiPromise } from '@polkadot/api';
 import { Abi } from '@polkadot/api-contract';
 import { QueryKey, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { defaultReadLimits, emptyCacheKey, emptyFn, QueryOptions } from './helpers';
-import { useSharedState } from './Provider';
+
+import { defaultReadLimits, emptyCacheKey, emptyFn, QueryOptions } from '../../shared/helpers';
+import { useSharedState } from '../../shared/Provider';
+
 // TODO Torsten
-import { blurp } from '../blurp';
+import { blurp } from '../../blurp';
 
 type ContractOpts = Limits | ((api: ApiPromise) => Limits);
 export type UseContractProps = QueryOptions & {
@@ -29,7 +31,7 @@ const ALICE = '6mfqoTMHrMeVMyKwjqomUjVomPMJ4AjdCm1VReFtk7Be8wqr';
 const getLimits = (options: ContractOpts | undefined, api: ApiPromise) =>
   typeof options === 'function' ? options(api) : options || defaultReadLimits;
 
-export function useContract(
+export function useContractRead(
   key: QueryKey,
   { abi, address, method, options, args, noWalletAddressRequired, ...rest }: UseContractProps,
 ): UseContractResult {

@@ -14,10 +14,10 @@ import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../../models/Swap';
 import { storageService } from '../../../services/storage/local';
 import { calcDeadline, decimalToRaw } from '../../../shared/parseNumbers';
-import { useContractWrite } from '../../../shared/useContractWrite';
 import schema from './schema';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
+import { useContractWrite } from '../../../hooks/nabla/useContractWrite';
 
 export interface UseSwapComponentProps {
   from?: string;

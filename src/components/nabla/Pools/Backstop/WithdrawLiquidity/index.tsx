@@ -14,7 +14,7 @@ import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
 import { AssetSelectorModal } from '../../../common/AssetSelectorModal';
-import TransactionProgress from '../../../common/TransactionProgress';
+import { TransactionProgress } from '../../../common/TransactionProgress';
 
 const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);

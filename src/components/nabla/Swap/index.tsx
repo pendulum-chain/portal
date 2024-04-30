@@ -3,7 +3,7 @@ import { useMemo } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
 import { TransactionSettingsDropdown } from '../../Transaction/Settings';
-import ApprovalSubmit from './Approval';
+import ApprovalSubmit from './ApprovalSubmit';
 import From from './From';
 import SwapProgress from './Progress';
 import To from './To';

@@ -4,8 +4,8 @@ import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { decimalToRaw } from '../../../../../shared/parseNumbers';
-import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { WithdrawLiquidityValues } from './types';
+import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 
 export type UseBackstopWithdrawProps = {
   address: string;

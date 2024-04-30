@@ -4,7 +4,7 @@ import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
 import { useGetTenantConfig } from '../../../hooks/useGetTenantConfig';
-import { UseContractWriteResponse } from '../../../shared/useContractWrite';
+import { UseContractWriteResponse } from '../../../hooks/nabla/useContractWrite';
 
 export interface TransactionProgressProps {
   mutation: Pick<
@@ -29,7 +29,7 @@ const getErrorMessage = (data?: MessageCallResult['result']) => {
   }
 };
 
-const TransactionProgress = ({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null => {
+export function TransactionProgress({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null {
   const { explorer } = useGetTenantConfig();
   if (mutation.isIdle) return null;
   const status = mutation.data?.result?.type;
@@ -83,5 +83,4 @@ const TransactionProgress = ({ mutation, children, onClose }: TransactionProgres
       )}
     </>
   );
-};
-export default TransactionProgress;
+}

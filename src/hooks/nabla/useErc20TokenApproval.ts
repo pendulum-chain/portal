@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'preact/compat';
-import { erc20WrapperAbi } from '../contracts/nabla/ERC20Wrapper';
-import { getMessageCallValue } from './helpers';
-import { decimalToRaw, rawToDecimal } from './parseNumbers';
-import { useSharedState } from './Provider';
-import { useContractWrite, UseContractWriteProps } from './useContractWrite';
-import { useTokenAllowance } from './useTokenAllowance';
+import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';
+import { getMessageCallValue } from '../../shared/helpers';
+import { decimalToRaw, rawToDecimal } from '../../shared/parseNumbers';
+import { useSharedState } from '../../shared/Provider';
+import { useErc20TokenAllowance } from './useErc20TokenAllowance';
+import { UseContractWriteProps, useContractWrite } from './useContractWrite';
 
 export enum ApprovalState {
   UNKNOWN,
@@ -26,7 +26,7 @@ interface UseTokenApprovalParams {
   onSuccess?: UseContractWriteProps<Dict>['onSuccess'];
 }
 
-export const useTokenApproval = ({
+export function useErc20TokenApproval({
   token,
   decimalAmount,
   spender,
@@ -34,7 +34,7 @@ export const useTokenApproval = ({
   decimals,
   onError,
   onSuccess,
-}: UseTokenApprovalParams) => {
+}: UseTokenApprovalParams) {
   const { address } = useSharedState();
   const [pending, setPending] = useState(false);
   const nativeAmount = decimalToRaw(decimalAmount, decimals);
@@ -44,7 +44,7 @@ export const useTokenApproval = ({
     data: allowanceData,
     isLoading: isAllowanceLoading,
     refetch,
-  } = useTokenAllowance(
+  } = useErc20TokenAllowance(
     {
       token,
       owner: address,
@@ -101,4 +101,4 @@ export const useTokenApproval = ({
 
     return [state, mutation];
   }, [allowanceDecimalAmount, decimalAmount, mutation, isAllowanceLoading, pending, address]);
-};
+}

@@ -3,12 +3,12 @@ import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
-import TokenApproval from '../../../../Asset/Approval';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import { SwapPoolColumn } from '../columns';
 import { useAddLiquidity } from './useAddLiquidity';
-import TransactionProgress from '../../../common/TransactionProgress';
+import { TransactionProgress } from '../../../common/TransactionProgress';
+import { TokenApproval } from '../../../common/TokenApproval';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;

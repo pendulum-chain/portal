@@ -1,9 +1,9 @@
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
-import TokenApproval from '../../Asset/Approval';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
+import { TokenApproval } from '../common/TokenApproval';
 
 export interface ApprovalProps {
   token: NablaInstanceToken | undefined;

@@ -11,13 +11,13 @@ import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { getMessageCallValue } from '../../../shared/helpers';
 import { rawToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers';
-import Erc20Balance from '../../Erc20Balance';
 import { numberLoader } from '../../Loader';
 import { Skeleton } from '../../Skeleton';
-import TokenPrice from '../Price';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
+import { NablaTokenPrice } from '../common/NablaTokenPrice';
+import { Erc20Balance } from '../common/Erc20Balance';
 
 export interface ToProps {
   tokensMap: Record<string, NablaInstanceToken>;
@@ -25,7 +25,7 @@ export interface ToProps {
   inputHasError: boolean;
 }
 
-const To = ({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element | null => {
+export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element | null {
   const [isOpen, { toggle }] = useBoolean(true);
   const { setValue, setError, clearErrors, control } = useFormContext<SwapFormValues>();
 
@@ -47,8 +47,6 @@ const To = ({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element 
     }),
   );
 
-  console.log('fromDecimalAmount', fromDecimalAmount);
-
   const slippage = Number(
     useWatch({
       control,
@@ -60,6 +58,8 @@ const To = ({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element 
   const toToken: NablaInstanceToken | undefined = tokensMap?.[to];
 
   const debouncedFromDecimalAmount = useDebouncedValue(fromDecimalAmount, 800);
+
+  console.log('Before call useTokenOutAmount');
   const { isLoading, fetchStatus, data, refetch } = useTokenOutAmount({
     fromDecimalAmount: debouncedFromDecimalAmount,
     from,
@@ -146,7 +146,7 @@ const To = ({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element 
         </Button>
       </div>
       <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
-        <div className="text-sm mt-px">{toToken ? <TokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
+        <div className="text-sm mt-px">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
         <div className="flex gap-1 text-sm">
           Balance: <Erc20Balance address={toToken?.id} decimals={toToken?.decimals} abi={erc20WrapperAbi} />
         </div>
@@ -204,5 +204,4 @@ const To = ({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element 
       </div>
     </div>
   );
-};
-export default To;
+}

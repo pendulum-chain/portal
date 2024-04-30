@@ -6,7 +6,7 @@ export interface NumberInputProps<SwapFormValues extends FieldValues> extends HT
 }
 
 // Hack required for Preact compatibility with react-hook-form
-export default function NumberInput<SwapFormValues extends FieldValues>(attributes: NumberInputProps<SwapFormValues>) {
+export function NumberInput<SwapFormValues extends FieldValues>(attributes: NumberInputProps<SwapFormValues>) {
   const { register } = useFormContext<SwapFormValues>();
 
   const { registerName } = attributes;

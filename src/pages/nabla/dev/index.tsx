@@ -5,8 +5,8 @@ import { config } from '../../../config';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { decimalToRaw } from '../../../shared/parseNumbers';
-import { useContractWrite } from '../../../shared/useContractWrite';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
+import { useContractWrite } from '../../../hooks/nabla/useContractWrite';
 
 const TokenItem = ({ token }: { token: NablaInstanceToken }) => {
   const { address } = useGlobalState().walletAccount || {};

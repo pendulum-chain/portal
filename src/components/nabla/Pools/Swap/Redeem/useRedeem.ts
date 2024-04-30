@@ -14,13 +14,13 @@ import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
 import { decimalToRaw } from '../../../../../shared/parseNumbers';
-import { useContractBalance } from '../../../../../shared/useContractBalance';
-import { useContractWrite } from '../../../../../shared/useContractWrite';
 import { SwapPoolColumn } from '../columns';
 import schema from './schema';
 import { RedeemLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
+import { useContractBalance } from '../../../../../hooks/nabla/useContractBalance';
+import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 
 export const setValueProps = {
   shouldDirty: true,

@@ -1,4 +1,4 @@
-import { Cog8ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { Cog8ToothIcon } from '@heroicons/react/24/outline';
 import { Button, Dropdown, Input } from 'react-daisyui';
 import { InputProps } from 'react-daisyui/dist/Input/Input';
 import { config } from '../../../config';

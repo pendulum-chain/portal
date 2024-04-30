@@ -2,8 +2,8 @@ import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { activeOptions, cacheKeys } from '../../constants/cache';
 import { routerAbi } from '../../contracts/nabla/Router';
 import { decimalToRaw } from '../../shared/parseNumbers';
-import { useContract } from '../../shared/useContract';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
+import { useContractRead } from './useContractRead';
 
 export type UseTokenOutAmountProps = {
   fromDecimalAmount: number;
@@ -14,21 +14,23 @@ export type UseTokenOutAmountProps = {
   onError?: (err: Error | MessageCallResult) => void;
 };
 
-export const useTokenOutAmount = ({
+export function useTokenOutAmount({
   fromDecimalAmount: decimalAmount,
   from,
   to,
   fromTokenDecimals,
   onSuccess,
   onError,
-}: UseTokenOutAmountProps) => {
+}: UseTokenOutAmountProps) {
+  console.log('Call useTokenOutAmount');
+
   const { router } = useGetAppDataByTenant('nabla').data || {};
 
   const enabled = fromTokenDecimals !== undefined && !!decimalAmount && !!from && !!to;
   const amountIn =
     fromTokenDecimals !== undefined ? decimalToRaw(decimalAmount, fromTokenDecimals).toString() : undefined;
 
-  return useContract([cacheKeys.tokenOutAmount, from, to, amountIn], {
+  return useContractRead([cacheKeys.tokenOutAmount, from, to, amountIn], {
     ...activeOptions['30s'],
     abi: routerAbi,
     address: router,
@@ -42,4 +44,4 @@ export const useTokenOutAmount = ({
       console.error(err);
     },
   });
-};
+}

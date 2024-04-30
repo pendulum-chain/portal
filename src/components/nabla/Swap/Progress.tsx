@@ -1,7 +1,7 @@
 import { JSX } from 'preact';
 import { Modal } from 'react-daisyui';
 import ModalCloseButton from '../../Button/ModalClose';
-import TransactionProgress, { TransactionProgressProps } from '../common/TransactionProgress';
+import { TransactionProgress, TransactionProgressProps } from '../common/TransactionProgress';
 
 export type SwapProgressProps = {
   open: boolean;

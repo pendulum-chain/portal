@@ -1,8 +1,8 @@
 import { UseQueryOptions } from '@tanstack/react-query';
-import { useTokenPrice } from '../../../hooks/nabla/useTokenPrice';
 import { getMessageCallValue } from '../../../shared/helpers';
 import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
 import { numberLoader } from '../../Loader';
+import { useNablaTokenPrice } from '../../../hooks/nabla/useNablaTokenPrice';
 
 export type TokenPriceProps = {
   address: string;
@@ -15,15 +15,15 @@ export type TokenPriceProps = {
 
 const TOKEN_PRICE_DECIMALS = 12;
 
-const TokenPrice = ({
+export function NablaTokenPrice({
   address,
   prefix = null,
   loader,
   fallback = null,
   amount = 1,
   options,
-}: TokenPriceProps): JSX.Element | null => {
-  const { data, isLoading } = useTokenPrice(address, options);
+}: TokenPriceProps): JSX.Element | null {
+  const { data, isLoading } = useNablaTokenPrice(address, options);
   if (isLoading) return loader ? <>{loader}</> : numberLoader;
 
   const price = getMessageCallValue(data);
@@ -34,5 +34,4 @@ const TokenPrice = ({
       {prefix}${prettyNumbers(amount * rawToDecimal(price, TOKEN_PRICE_DECIMALS).toNumber())}
     </span>
   );
-};
-export default TokenPrice;
+}

@@ -8,10 +8,10 @@ import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
-import TokenPrice from '../../../Price';
 import { SwapPoolColumn } from '../columns';
 import { useRedeem } from './useRedeem';
-import TransactionProgress from '../../../common/TransactionProgress';
+import { TransactionProgress } from '../../../common/TransactionProgress';
+import { NablaTokenPrice } from '../../../common/NablaTokenPrice';
 
 export interface RedeemProps {
   data: SwapPoolColumn;
@@ -113,7 +113,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
             <div className="flex items-center justify-between">
               <div>Price</div>
               <div>
-                <TokenPrice address={data.token.id} prefix={`1 ${data.token.symbol} = `} fallback="-" />
+                <NablaTokenPrice address={data.token.id} prefix={`1 ${data.token.symbol} = `} fallback="-" />
               </div>
             </div>
             <div className="flex items-center justify-between">

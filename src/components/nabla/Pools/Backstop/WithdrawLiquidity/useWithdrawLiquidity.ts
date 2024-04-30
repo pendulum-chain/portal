@@ -10,7 +10,6 @@ import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenan
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
-import { useContractBalance } from '../../../../../shared/useContractBalance';
 import { defaultValues } from '../../../Swap/useSwapComponent';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
@@ -19,6 +18,7 @@ import { useSwapPoolWithdraw } from './useSwapPoolWithdraw';
 import { NablaInstance, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
+import { useContractBalance } from '../../../../../hooks/nabla/useContractBalance';
 
 const storageSet = debounce(storageService.set, 1000);
 export const useWithdrawLiquidity = (nabla: NablaInstance) => {

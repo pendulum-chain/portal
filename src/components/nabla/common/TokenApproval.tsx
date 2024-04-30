@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { ApprovalState, useTokenApproval } from '../../../shared/useTokenApproval';
+import { ApprovalState, useErc20TokenApproval } from '../../../hooks/nabla/useErc20TokenApproval';
 
 export type TokenApprovalProps = ButtonProps & {
   token: string;
@@ -11,7 +11,7 @@ export type TokenApprovalProps = ButtonProps & {
   decimals: number;
 };
 
-const TokenApproval = ({
+export function TokenApproval({
   decimalAmount,
   token,
   spender,
@@ -20,8 +20,8 @@ const TokenApproval = ({
   children,
   className = '',
   ...rest
-}: TokenApprovalProps): JSX.Element | null => {
-  const approval = useTokenApproval({
+}: TokenApprovalProps): JSX.Element | null {
+  const approval = useErc20TokenApproval({
     decimalAmount,
     token,
     spender,
@@ -48,5 +48,4 @@ const TokenApproval = ({
       {noAccount ? 'Please connect your wallet' : isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}
     </Button>
   );
-};
-export default TokenApproval;
+}

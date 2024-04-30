@@ -11,7 +11,7 @@ import TokenAmount from '../../TokenAmount';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
 import { useSwapPoolWithdrawLiquidity } from './useWithdrawLiquidity';
-import TransactionProgress from '../../../common/TransactionProgress';
+import { TransactionProgress } from '../../../common/TransactionProgress';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;

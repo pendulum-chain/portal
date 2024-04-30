@@ -6,11 +6,11 @@ import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
 import { decimalToRaw } from '../../../../../shared/parseNumbers';
-import { useContractBalance } from '../../../../../shared/useContractBalance';
-import { useContractWrite } from '../../../../../shared/useContractWrite';
 import schema from './schema';
 import { AddLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
+import { useContractBalance } from '../../../../../hooks/nabla/useContractBalance';
+import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 
 export const useAddLiquidity = (
   poolAddress: string,

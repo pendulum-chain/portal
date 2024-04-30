@@ -3,12 +3,12 @@ import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
-import { useContractBalance } from '../../../shared/useContractBalance';
-import TokenPrice from '../Price';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
-import NumberInput from '../common/NumberInput';
+import { NablaTokenPrice } from '../common/NablaTokenPrice';
+import { useContractBalance } from '../../../hooks/nabla/useContractBalance';
+import { NumberInput } from '../common/NumberInput';
 
 export interface FromProps {
   tokensMap: Record<string, NablaInstanceToken>;
@@ -59,7 +59,7 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
         </Button>
       </div>
       <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-        <div className="text-sm mt-px">{token ? <TokenPrice address={token.id} fallback="$ -" /> : '$ -'}</div>
+        <div className="text-sm mt-px">{token ? <NablaTokenPrice address={token.id} fallback="$ -" /> : '$ -'}</div>
         <div className="flex gap-1 text-sm">
           {balance !== undefined && (
             <Fragment>

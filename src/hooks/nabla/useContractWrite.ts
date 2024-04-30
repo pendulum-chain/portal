@@ -5,11 +5,11 @@ import { Abi } from '@polkadot/api-contract';
 import { DispatchError, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'preact/compat';
-import { createWriteOptions } from '../services/api/helpers';
-import { defaultWriteLimits } from './helpers';
-import { useSharedState } from './Provider';
+import { defaultWriteLimits } from '../../shared/helpers';
+import { useSharedState } from '../../shared/Provider';
 // TODO Torsten
-import { blurp } from '../blurp';
+import { blurp } from '../../blurp';
+import { createWriteOptions } from '../../services/api/helpers';
 
 // TODO: fix/improve types - parse abi file
 export type TransactionsStatus = {
