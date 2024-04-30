@@ -5,16 +5,16 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplusNativeAmount, minMax } from '../../../../../helpers/calc';
-import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { prettyNumbers, rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
-import TokenAmount from '../../TokenAmount';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
 import { AssetSelectorModal } from '../../../common/AssetSelectorModal';
 import { TransactionProgress } from '../../../common/TransactionProgress';
+import { TokenAmount } from '../../../common/TokenAmount';
 
 const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
@@ -44,6 +44,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
   const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
   const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
   const depositedBackstopLpTokenDecimalAmount = depositQuery.balance || 0;
+
   const withdrawLimit = rawToDecimal(
     spw.withdrawLimitDecimalAmount?.toString() || 0,
     nabla.backstopPool.lpTokenDecimals,
@@ -54,10 +55,11 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
   const hideCss = !isIdle ? 'hidden' : '';
 
   const backstopPool = nabla.backstopPool;
+
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress
-        mutation={bpw.mutation.isLoading ? bpw.mutation : spw.mutation}
+        mutation={bpw.mutation.isLoading || bpw.mutation.isSuccess ? bpw.mutation : spw.mutation}
         onClose={() => {
           bpw.mutation.reset();
           spw.mutation.reset();
@@ -100,7 +102,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
               <div className="flex items-center justify-between text-sm">
                 <div>
                   <span className="mr-1">Withdraw limit:</span>
-                  {spw.isLoading ? numberLoader : <>{withdrawLimit} LP</>}
+                  {spw.isLoading ? numberLoader : <>{prettyNumbers(withdrawLimit)} LP</>}
                 </div>
               </div>
             )}
@@ -148,10 +150,14 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                   : 0
               }
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue('amount', (Number(ev.currentTarget.value) / 100) * depositedBackstopLpTokenDecimalAmount, {
-                  shouldDirty: true,
-                  shouldTouch: false,
-                })
+                setValue(
+                  'amount',
+                  roundNumber((Number(ev.currentTarget.value) / 100) * depositedBackstopLpTokenDecimalAmount, 4),
+                  {
+                    shouldDirty: true,
+                    shouldTouch: false,
+                  },
+                )
               }
             />
           </div>

@@ -1,8 +1,8 @@
-import { useSharesTargetWorth } from '../../../../hooks/nabla/useSharesTargetWorth';
-import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
-import { getMessageCallValue } from '../../../../shared/helpers';
-import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
-import { numberLoader } from '../../../Loader';
+import { useSharesTargetWorth } from '../../../hooks/nabla/useSharesTargetWorth';
+import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
+import { getMessageCallValue } from '../../../shared/helpers';
+import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
+import { numberLoader } from '../../Loader';
 
 export interface TokenAmountProps {
   address: string;
@@ -16,7 +16,7 @@ export interface TokenAmountProps {
   loader?: boolean;
 }
 
-const TokenAmount = ({
+export function TokenAmount({
   symbol,
   abi,
   fallback,
@@ -26,7 +26,7 @@ const TokenAmount = ({
   lpTokenDecimalAmount,
   loader = true,
   debounce = 800,
-}: TokenAmountProps): JSX.Element | null => {
+}: TokenAmountProps): JSX.Element | null {
   const debouncedAmount = useDebouncedValue(lpTokenDecimalAmount, debounce);
   const { isLoading, data } = useSharesTargetWorth({
     address,
@@ -47,5 +47,4 @@ const TokenAmount = ({
       {symbol ? symbol : null}
     </span>
   );
-};
-export default TokenAmount;
+}

@@ -97,7 +97,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               size="sm"
               value={decimalAmount ? (decimalAmount / balance) * 100 : 0}
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue('amount', (Number(ev.currentTarget.value) / 100) * balance, {
+                setValue('amount', roundNumber((Number(ev.currentTarget.value) / 100) * balance, 4), {
                   shouldDirty: true,
                   shouldTouch: false,
                 })
@@ -105,10 +105,6 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             />
           </div>
           <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
-            <div className="flex items-center justify-between">
-              <div>Fee</div>
-              <div>! TODO</div>
-            </div>
             <div className="flex items-center justify-between">
               <div>Total deposit</div>
               <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} LP`}</div>

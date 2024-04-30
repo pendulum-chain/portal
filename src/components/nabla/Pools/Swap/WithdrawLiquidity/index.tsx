@@ -7,11 +7,11 @@ import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
-import TokenAmount from '../../TokenAmount';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
 import { useSwapPoolWithdrawLiquidity } from './useWithdrawLiquidity';
 import { TransactionProgress } from '../../../common/TransactionProgress';
+import { TokenAmount } from '../../../common/TokenAmount';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
@@ -97,10 +97,14 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               size="sm"
               value={amount ? (amount / depositedLpTokensDecimalAmount) * 100 : 0}
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue('amount', (Number(ev.currentTarget.value) / 100) * depositedLpTokensDecimalAmount, {
-                  shouldDirty: true,
-                  shouldTouch: false,
-                })
+                setValue(
+                  'amount',
+                  roundNumber((Number(ev.currentTarget.value) / 100) * depositedLpTokensDecimalAmount, 4),
+                  {
+                    shouldDirty: true,
+                    shouldTouch: false,
+                  },
+                )
               }
             />
           </div>

@@ -98,7 +98,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
               size="sm"
               value={lpTokensDecimalAmount ? (lpTokensDecimalAmount / deposit) * 100 : 0}
               onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue('amount', (Number(ev.currentTarget.value) / 100) * deposit, {
+                setValue('amount', roundNumber((Number(ev.currentTarget.value) / 100) * deposit, 4), {
                   shouldDirty: true,
                   shouldTouch: false,
                 })
