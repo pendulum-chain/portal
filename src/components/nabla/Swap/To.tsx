@@ -8,7 +8,7 @@ import { subtractPercentage } from '../../../helpers/calc';
 import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { rawToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers/metric';
 import { numberLoader } from '../../Loader';
 import { Skeleton } from '../../Skeleton';
 import { SwapFormValues } from './schema';
@@ -112,7 +112,7 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
       className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
     >
       <div className="w-full flex justify-between">
-        <div className="flex-grow text-4xl text-[inherit] font-2">
+        <div className="flex-grow text-4xl text-[inherit] font-outfit">
           {loading ? (
             numberLoader
           ) : value ? (

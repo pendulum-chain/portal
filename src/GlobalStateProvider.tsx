@@ -1,4 +1,5 @@
 import { getWalletBySource, WalletAccount } from '@talismn/connect-wallets';
+import { getSdkError } from '@walletconnect/utils';
 import { ComponentChildren, createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { useLocation } from 'react-router-dom';
@@ -8,8 +9,12 @@ import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
+import { initiateMetamaskInjectedAccount, WALLET_SOURCE_METAMASK } from './services/metamask/metamask';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
+
+const SECONDS_IN_A_DAY = 86400;
+const EXPIRATION_PERIOD = 2 * SECONDS_IN_A_DAY; // 2 days
 
 export interface GlobalState {
   dAppName: string;
@@ -41,6 +46,14 @@ const initWalletConnect = async (chainId: string) => {
   return await walletConnectService.init(provider?.session, chainId);
 };
 
+const initMetamaskWallet = async (tenantName: TenantName) => {
+  const metamaskWalletAddress = storageService.get(`metamask-snap-account`);
+  if (metamaskWalletAddress) {
+    return await initiateMetamaskInjectedAccount(tenantName);
+  }
+  return;
+};
+
 const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
   const tenantRef = useRef<string>();
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
@@ -64,20 +77,37 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear,
   } = useLocalStorage<string | undefined>({
     key: `${storageKeys.ACCOUNT}-${tenantName}`,
-    expire: 2 * 86400, // 2 days
+    expire: EXPIRATION_PERIOD,
   });
 
-  const removeWalletAccount = useCallback(() => {
+  const handleWalletConnectDisconnect = useCallback(async () => {
+    if (walletAccount?.wallet?.extensionName === 'WalletConnect') {
+      const topic = walletConnectService.session?.topic;
+      if (topic) {
+        await walletConnectService.provider?.client.disconnect({
+          topic,
+          reason: getSdkError('USER_DISCONNECTED'),
+        });
+      }
+    }
+  }, [walletAccount]);
+
+  const removeWalletAccount = useCallback(async () => {
+    await handleWalletConnectDisconnect();
     clear();
     // remove talisman
     storageService.remove('@talisman-connect/selected-wallet-name');
+    storageService.remove(`metamask-snap-account`);
     setWallet(undefined);
-  }, [clear]);
+  }, [clear, handleWalletConnectDisconnect]);
 
   const setWalletAccount = useCallback(
     (wallet: WalletAccount | undefined) => {
       set(wallet?.address);
       setWallet(wallet);
+      if (wallet?.source === WALLET_SOURCE_METAMASK) {
+        storageService.set(`metamask-snap-account`, wallet.address);
+      }
     },
     [set],
   );
@@ -94,7 +124,9 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       tenantRef.current = tenantName;
       const appName = dAppName || TenantName.Amplitude;
       const selectedWallet =
-        (await initTalisman(appName, storageAddress)) || (await initWalletConnect(chainIds[tenantName]));
+        (await initTalisman(appName, storageAddress)) ||
+        (await initWalletConnect(chainIds[tenantName])) ||
+        (await initMetamaskWallet(tenantName));
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();

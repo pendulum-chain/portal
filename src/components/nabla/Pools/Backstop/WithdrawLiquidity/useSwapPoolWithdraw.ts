@@ -5,7 +5,7 @@ import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../he
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
 import { getMessageCallValue } from '../../../../../shared/helpers';
-import { decimalToRaw } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import { WithdrawLiquidityValues } from './types';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';

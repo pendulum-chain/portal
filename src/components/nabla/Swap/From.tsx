@@ -37,10 +37,10 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
       className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
     >
       <div className="w-full flex justify-between">
-        <div className="flex-grow text-4xl text-[inherit] font-2">
+        <div className="flex-grow text-4xl text-[inherit] font-outfit">
           <NumberInput
             autoFocus
-            className="input-ghost w-full text-4xl font-2"
+            className="input-ghost w-full text-4xl font-outfit"
             placeholder="0.0"
             registerName="fromAmount"
           />

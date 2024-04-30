@@ -1,22 +1,22 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import Table, { SortingOrder } from '../../components/Table';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { getAddressForFormat } from '../../helpers/addressFormatter';
-import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/staking';
-import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
 import { useNodeInfoState } from '../../NodeInfoProvider';
-import { nativeToFormat } from '../../shared/parseNumbers';
+import Table, { SortingOrder } from '../../components/Table';
+import { getAddressForFormat } from '../../helpers/addressFormatter';
+import { ParachainStakingCandidate, useStakingPallet } from '../../hooks/staking/useStakingPallet';
+import { PalletIdentityInfo, useIdentityPallet } from '../../hooks/useIdentityPallet';
+import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
 import {
+  TCollator,
+  UserStaking,
   actionsColumn,
-  apyColumn,
+  aprColumn,
   delegatorsColumn,
   myStakedColumn,
   nameColumn,
   stakedColumn,
-  TCollator,
-  UserStaking,
-} from './columns';
+} from './CollatorColumns';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
 
 function CollatorsTable() {
@@ -55,7 +55,7 @@ function CollatorsTable() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      return balance.free.sub(balance.miscFrozen).toString();
+      return balance.free.sub(balance.frozen).toString();
     };
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
@@ -80,9 +80,9 @@ function CollatorsTable() {
         candidate: candidate,
         collator: candidate.id,
         identityInfo: identities.get(candidate.id),
-        totalStaked: nativeToFormat(candidate.total, tokenSymbol),
+        totalStaked: nativeToFormatMetric(candidate.total, tokenSymbol),
         delegators: candidate.delegators.length,
-        apy: inflationInfo?.delegator.rewardRate.annual || '0.00%',
+        apr: inflationInfo?.delegator.rewardRate.annual || '0.00%',
       }));
     };
 
@@ -103,7 +103,7 @@ function CollatorsTable() {
       nameColumn,
       stakedColumn,
       delegatorsColumn,
-      apyColumn,
+      aprColumn,
       stakedCol,
       actionsColumn({
         userAccountAddress,
@@ -138,7 +138,7 @@ function CollatorsTable() {
         search={false}
         pageSize={8}
         oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
-        evenRowsClassname="border-b-base-300 table-border"
+        evenRowsClassname="bg-base-200 border-b-base-300 table-border"
       />
     </>
   );

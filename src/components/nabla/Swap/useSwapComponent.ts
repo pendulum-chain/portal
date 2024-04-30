@@ -13,7 +13,7 @@ import { getValidDeadline, getValidSlippage } from '../../../helpers/transaction
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapSettings } from '../../../models/Swap';
 import { storageService } from '../../../services/storage/local';
-import { calcDeadline, decimalToRaw } from '../../../shared/parseNumbers';
+import { calcDeadline, decimalToRaw } from '../../../shared/parseNumbers/metric';
 import schema from './schema';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';

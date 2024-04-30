@@ -1,28 +1,40 @@
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
-import { GlobalState } from '../../GlobalStateProvider';
-import ExternalIcon from '../../assets/ExternalIcon';
+import { Options } from 'react-lottie';
+
 import DashboardIcon from '../../assets/dashboard';
+import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
-import SpacewalkIcon from '../../assets/spacewalk';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
+import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
-import ComingSoonTag from './ComingSoonTag';
+import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
 
 export type LinkParameter = { isActive?: boolean };
+
+export type LottieOptions = { lottieOptions: Options } & {
+  componentOptions: { height?: number; width?: number; style?: Record<string, string | number> };
+};
+
+export function isLottieOptions(obj: any): obj is LottieOptions {
+  return obj && typeof obj === 'object' && 'lottieOptions' in obj && 'animationData' in obj['lottieOptions'];
+}
+
+export type TitleOptions = LottieOptions | ComponentChildren;
+export type PrefixOptions = LottieOptions | ComponentChildren;
+
 export type BaseLinkItem = {
   link: string;
-  title: ComponentChildren;
+  title: TitleOptions;
   props?: Omit<NavLinkProps, 'className'> & {
     className?: (params?: LinkParameter) => string;
   };
-  prefix?: ComponentChildren;
+  prefix?: PrefixOptions;
   suffix?: ComponentChildren;
   hidden?: boolean;
   disabled?: boolean;
@@ -32,8 +44,6 @@ export type LinkItem = BaseLinkItem & {
 };
 export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
-const arrow = <ChevronRightIcon className="nav-arrow w-5 h-5" />;
-
 export const links: Links = ({ tenantName }) => [
   {
     link: './dashboard',
@@ -42,7 +52,6 @@ export const links: Links = ({ tenantName }) => [
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
     prefix: <DashboardIcon />,
-    suffix: arrow,
   },
   {
     link: 'https://app.zenlink.pro/',
@@ -57,13 +66,11 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: './spacewalk',
-    title: 'Spacewalk',
+    title: getSpacewalkText(tenantName),
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
     },
-    prefix: <SpacewalkIcon />,
-    disabled: tenantName === TenantName.Pendulum,
-    suffix: tenantName === TenantName.Pendulum ? <ComingSoonTag /> : null,
+    prefix: getSpacewalkInterpolation(tenantName),
     submenu: [
       {
         link: './spacewalk/bridge',
@@ -82,7 +89,6 @@ export const links: Links = ({ tenantName }) => [
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
     prefix: <StakingIcon />,
-    suffix: arrow,
   },
   {
     link: `https://${tenantName}.polkassembly.io/`,
@@ -97,7 +103,9 @@ export const links: Links = ({ tenantName }) => [
   {
     link: '/nabla',
     title: 'Nabla',
-    hidden: nablaConfig.environment && !nablaConfig.environment.includes(config.env),
+    hidden:
+      (nablaConfig.environment && !nablaConfig.environment.includes(config.env)) ||
+      (tenantName && !nablaConfig.tenants.includes(tenantName)),
     prefix: <NablaIcon />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),

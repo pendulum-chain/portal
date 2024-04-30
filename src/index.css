@@ -47,7 +47,7 @@
   --border: var(--border-light);
   --nice: var(--nice-dark);
   --footer-links: var(--footer-links-light);
-  --card-border: #DFE0EB;
+  --card-border: #dfe0eb;
   --table-text: #252733;
   --table-text-header: #9fa2b4;
   --table-background: #fff;
@@ -86,6 +86,9 @@ body {
   font-size: 16px;
   line-height: 1.5;
   color: initial;
+
+  /* Important to make sure the WalletConnect dialog is shown on top of the others */
+  --wcm-z-index: 1000;
 }
 
 *,
@@ -101,7 +104,7 @@ select {
   font-family: 'Nunito Sans', sans-serif;
 }
 
-.font-2 {
+.font-outfit {
   font-family: 'Outfit', sans-serif;
 }
 
@@ -290,4 +293,31 @@ table th:hover .sort {
 w3m-modal {
   position: relative;
   z-index: 1000;
+}
+
+@keyframes bounce-x {
+  0%,
+  100% {
+    transform: translateX(0%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateX(25%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce-x {
+  animation: bounce-x 1s infinite;
+}
+
+.badge {
+  height: 25px;
+  white-space: nowrap;
+}
+
+@layer components {
+  .badge-secondary-content {
+    @apply bg-secondary-content;
+  }
 }

@@ -1,5 +1,5 @@
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
-import { decimalToRaw } from '../../shared/parseNumbers';
+import { decimalToRaw } from '../../shared/parseNumbers/metric';
 import { useContractRead } from './useContractRead';
 
 export type UseSharesTargetWorthProps = {

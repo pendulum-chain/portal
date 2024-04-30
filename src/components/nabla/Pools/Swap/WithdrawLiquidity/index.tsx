@@ -4,7 +4,7 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import { SwapPoolColumn } from '../columns';
@@ -70,7 +70,7 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 <NumberInput
                   type="text"
                   autoFocus
-                  className="input-ghost flex-grow w-full text-4xl font-2"
+                  className="input-ghost flex-grow w-full text-4xl font-outfit"
                   placeholder="0.0"
                   registerName="amount"
                 />

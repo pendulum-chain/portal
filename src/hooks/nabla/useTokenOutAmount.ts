@@ -1,6 +1,6 @@
 import { activeOptions, cacheKeys } from '../../constants/cache';
 import { routerAbi } from '../../contracts/nabla/Router';
-import { decimalToRaw } from '../../shared/parseNumbers';
+import { decimalToRaw } from '../../shared/parseNumbers/metric';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 import { useContractRead } from './useContractRead';
 

@@ -5,7 +5,7 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplusNativeAmount, minMax } from '../../../../../helpers/calc';
-import { prettyNumbers, rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { prettyNumbers, rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
@@ -125,7 +125,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                 <div className="flex items-center gap-1">
                   <NumberInput
                     autoFocus
-                    className="input-ghost w-full text-4xl font-2 py-3 px-0"
+                    className="input-ghost w-full text-4xl font-outfit py-3 px-0"
                     placeholder="Amount"
                     registerName="amount"
                   />

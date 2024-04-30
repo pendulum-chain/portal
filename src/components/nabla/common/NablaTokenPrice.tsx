@@ -1,5 +1,5 @@
 import { getMessageCallValue } from '../../../shared/helpers';
-import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers/metric';
 import { numberLoader } from '../../Loader';
 import { useNablaTokenPrice } from '../../../hooks/nabla/useNablaTokenPrice';
 

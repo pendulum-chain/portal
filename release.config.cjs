@@ -1,5 +1,5 @@
 module.exports = {
-  branches: ['staging', 'develop'],
+  branches: ['main'],
   plugins: [
     [
       '@semantic-release/commit-analyzer',
@@ -27,5 +27,6 @@ module.exports = {
         assets: ['package.json', 'CHANGELOG.md'],
       },
     ],
+    '@semantic-release/github'
   ],
 };

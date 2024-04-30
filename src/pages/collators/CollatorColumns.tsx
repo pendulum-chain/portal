@@ -1,19 +1,22 @@
+import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { ColumnDef } from '@tanstack/table-core';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyableAddress } from '../../components/PublicKey';
-import { ParachainStakingCandidate } from '../../hooks/staking/staking';
+import { ParachainStakingCandidate } from '../../hooks/staking/useStakingPallet';
 import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
-import { nativeToFormat } from '../../shared/parseNumbers';
+import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
+
+const MAX_DELEGATORS_AMOUNT = 40;
 
 export interface TCollator {
   candidate: ParachainStakingCandidate;
   collator: string;
   totalStaked: string;
   delegators: number;
-  apy: string;
+  apr: string;
   identityInfo?: PalletIdentityInfo;
 }
 
@@ -55,13 +58,28 @@ export const delegatorsColumn: ColumnDef<TCollator> = {
   header: 'Delegators',
   accessorKey: 'delegators',
   enableMultiSort: true,
-
   accessorFn: ({ delegators }) => delegators?.toString(),
+  cell: ({ row }) => {
+    const maxDelegatorsReached = row.original.delegators >= MAX_DELEGATORS_AMOUNT;
+    return (
+      <div className="flex align-baseline">
+        <div>{row.original.delegators}</div>
+        {maxDelegatorsReached && (
+          <div
+            className="tooltip tooltip-error before:whitespace-pre-wrap before:content-[attr(data-tip)]"
+            data-tip="The collator candidate has reached maximum number of delegators"
+          >
+            <InformationCircleIcon className="w-4 h-4 ml-1" />
+          </div>
+        )}
+      </div>
+    );
+  },
 };
 
-export const apyColumn: ColumnDef<TCollator> = {
-  header: 'APY',
-  accessorKey: 'apy',
+export const aprColumn: ColumnDef<TCollator> = {
+  header: 'APR',
+  accessorKey: 'apr',
 };
 
 export const myStakedColumn = ({
@@ -77,7 +95,7 @@ export const myStakedColumn = ({
   accessorFn: ({ candidate }) => getAmountDelegated(candidate, userAccountAddress) || '0',
   cell: ({ row }) => {
     const amountDelegated = getAmountDelegated(row.original.candidate, userAccountAddress);
-    return <div>{amountDelegated ? nativeToFormat(amountDelegated, tokenSymbol) : ''}</div>;
+    return <div>{amountDelegated ? nativeToFormatMetric(amountDelegated, tokenSymbol) : ''}</div>;
   },
 });
 
@@ -91,15 +109,20 @@ export const actionsColumn = ({
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
-  setUnstaking: StateUpdater<boolean>;
+  setSelectedCandidate: Dispatch<StateUpdater<ParachainStakingCandidate | undefined>>;
+  setUnstaking: Dispatch<StateUpdater<boolean>>;
 }): ColumnDef<TCollator> => ({
   header: '',
   enableSorting: false,
   accessorKey: 'actions',
   cell: ({ row }) => {
-    const showUnstake = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
-    const showStake = walletAccount && (!userStaking || showUnstake);
+    const maxDelegatorsReached = row.original.delegators >= MAX_DELEGATORS_AMOUNT;
+
+    const canUnstake = Boolean(getAmountDelegated(row.original.candidate, userAccountAddress));
+
+    // Check if current user is in list of delegators
+    const isDelegator = row.original.candidate.delegators.find(({ owner }) => owner === userAccountAddress);
+    const canStake = isDelegator || (walletAccount && !maxDelegatorsReached && (!userStaking || canUnstake));
     return (
       <div className="flex flex-row justify-start">
         <Button
@@ -111,19 +134,20 @@ export const actionsColumn = ({
             setSelectedCandidate(row.original.candidate);
           }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
-          disabled={!showUnstake}
-          style={{ opacity: showUnstake ? '1' : '0' }}
+          disabled={!canUnstake}
+          style={{ opacity: canUnstake ? '1' : '0' }}
         >
           Unstake
         </Button>
         <Button
           size="sm"
-          color="primary"
           variant="outline"
+          color="primary"
           onClick={() => {
             setSelectedCandidate(row.original.candidate);
           }}
-          disabled={!showStake}
+          disabled={!canStake}
+          className="px-8 rounded-md"
         >
           Stake
         </Button>

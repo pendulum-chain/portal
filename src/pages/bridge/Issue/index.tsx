@@ -1,23 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { useFeePallet } from '../../../hooks/spacewalk/fee';
-import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/issue';
+import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
+import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useAccountBalance } from '../../../shared/useAccountBalance';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
+import { prioritizeXLMAsset } from '../helpers';
+import { TenantName } from '../../../models/Tenant';
 
 interface IssueProps {
   network: string;
@@ -27,6 +30,7 @@ interface IssueProps {
 
 export type IssueFormValues = {
   amount: number;
+  securityDeposit: number;
   to: number;
 };
 
@@ -37,15 +41,20 @@ function Issue(props: IssueProps): JSX.Element {
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submittedIssueRequest, setSubmittedIssueRequest] = useState<RichIssueRequest | undefined>(undefined);
 
+  const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { walletAccount, dAppName } = useGlobalState();
+  const { walletAccount, dAppName, tenantName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { issueFee, redeemFee, issueGriefingCollateral } = useFeePallet().getFees();
-  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
+  const { issueGriefingCollateral } = useFeePallet().getFees();
+  const { balance } = useAccountBalance();
+
+  const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
+
+  const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable)),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -56,14 +65,34 @@ function Issue(props: IssueProps): JSX.Element {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
 
-  const disclaimerText = useMemo(
-    () =>
-      `• Issue Fee: ${issueFee.mul(100)}% of the transaction amount.
-       • Redeem Fee: ${redeemFee.mul(100)}% of the transaction amount.
-       • Security deposit: ${issueGriefingCollateral.mul(100)}% of the transaction amount.
-       • Total issuable amount (in USD): 20,000 USD.
-       • Estimated time for issuing: 2 mins to 3 hrs (after submitting the Stellar payment to the vault).`,
-    [issueFee, redeemFee, issueGriefingCollateral],
+  const disclaimerContent = useMemo(
+    () => (
+      <ul className="list-disc pl-4">
+        <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
+        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem. </li>
+        <li>
+          Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
+          operator program, more
+          <a
+            target="_blank"
+            className="text-primary ml-1"
+            href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
+            rel="noreferrer"
+          >
+            here
+          </a>
+          .
+        </li>
+        <li>
+          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault. Contact
+          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+            support
+          </a>
+          if your transaction is still pending after 10 minutes.
+        </li>
+      </ul>
+    ),
+    [tenantName],
   );
 
   const requestIssueExtrinsic = useMemo(() => {
@@ -81,7 +110,7 @@ function Issue(props: IssueProps): JSX.Element {
       }
 
       if (!walletAccount) {
-        toast('No wallet account selected', { type: 'error' });
+        showToast(ToastMessage.NO_WALLET_SELECTED);
         return;
       }
 
@@ -96,7 +125,7 @@ function Issue(props: IssueProps): JSX.Element {
             if (errors.length > 0) {
               const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
               console.error(errorMessage);
-              toast(errorMessage, { type: 'error' });
+              showToast(ToastMessage.ERROR, errorMessage);
             }
           } else if (status.isFinalized) {
             const requestIssueEvents = getEventBySectionAndMethod(events, 'issue', 'RequestIssue');
@@ -120,14 +149,16 @@ function Issue(props: IssueProps): JSX.Element {
         })
         .catch((error) => {
           console.error('Transaction submission failed', error);
-          toast('Transaction submission failed: ' + error.toString(), {
-            type: 'error',
-          });
+          showToast(ToastMessage.ERROR, 'Transaction submission failed: ' + error.toString());
           setSubmissionPending(false);
         });
     },
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
+
+  useMemo(() => {
+    setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
+  }, [amount, issueGriefingCollateral, setValue]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
@@ -135,23 +166,35 @@ function Issue(props: IssueProps): JSX.Element {
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
+        onConfirm={() => {
+          setConfirmationDialogVisible(false);
+          navigateTo(`/${tenantName}/spacewalk/transfers`);
+        }}
       />
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
           <From
-            register={register('amount')}
-            setValue={(n: number) => setValue('amount', n)}
-            assets={wrappedAssets}
-            setSelectedAsset={setSelectedAsset}
-            selectedAsset={selectedAsset}
-            network="Stellar"
-            error={formState.errors.amount?.message?.toString()}
+            {...{
+              formControl: {
+                register: register('amount'),
+                setValue: (n: number) => setValue('amount', n),
+                error:
+                  formState.errors.amount?.message?.toString() || formState.errors.securityDeposit?.message?.toString(),
+              },
+              asset: {
+                assets: prioritizeXLMAsset(wrappedAssets),
+                selectedAsset,
+                setSelectedAsset,
+              },
+              description: {
+                network: 'Stellar',
+              },
+              badges: {},
+            }}
           />
+          <input type="hidden" {...register('securityDeposit')} />
           <label className="label flex align-center">
-            <span className="text-sm">{`Max issuable: ${nativeToDecimal(
-              selectedVault?.issuableTokens?.toString() || 0,
-            ).toFixed(2)} 
-              ${selectedAsset?.code}`}</span>
+            <span className="text-sm">{`Max issuable: ${maxIssuable.toFixed(2)} ${selectedAsset?.code || ''}`}</span>
           </label>
 
           <FeeBox
@@ -164,7 +207,7 @@ function Issue(props: IssueProps): JSX.Element {
           />
           {walletAccount ? (
             <Button
-              className="w-full text-primary-content"
+              className="w-full"
               color="primary"
               loading={submissionPending}
               type="submit"
@@ -175,7 +218,7 @@ function Issue(props: IssueProps): JSX.Element {
           ) : (
             <OpenWallet dAppName={dAppName} />
           )}
-          <Disclaimer text={disclaimerText} />
+          <Disclaimer content={disclaimerContent} />
         </form>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { config } from '../../../../../config';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers';
+import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { numberLoader } from '../../../../Loader';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
@@ -67,7 +67,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                 <NumberInput
                   type="text"
                   autoFocus
-                  className="input-ghost w-full text-4xl font-2"
+                  className="input-ghost w-full text-4xl font-outfit"
                   placeholder="0.0"
                   registerName="amount"
                 />

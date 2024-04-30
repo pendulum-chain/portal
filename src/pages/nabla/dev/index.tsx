@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { config } from '../../../config';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { decimalToRaw } from '../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../shared/parseNumbers/metric';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 import { useContractWrite } from '../../../hooks/nabla/useContractWrite';
 

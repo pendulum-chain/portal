@@ -3,7 +3,7 @@ import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { cacheKeys } from '../../shared/constants';
 import { getMessageCallValue } from '../../shared/helpers';
-import { rawToDecimal, prettyNumbers } from '../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers } from '../../shared/parseNumbers/metric';
 import { useSharedState } from '../../shared/Provider';
 import { useContractRead } from './useContractRead';
 

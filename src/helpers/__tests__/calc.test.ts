@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { decimalToNative } from '../../shared/parseNumbers';
+import { decimalToNative } from '../../shared/parseNumbers/metric';
 import * as helpers from '../calc';
 import { NablaInstanceSwapPool } from '../../hooks/nabla/useNablaInstance';
 

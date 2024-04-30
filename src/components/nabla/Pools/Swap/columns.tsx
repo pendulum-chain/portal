@@ -1,7 +1,7 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Badge, Button } from 'react-daisyui';
 import { useModalToggle } from '../../../../services/modal';
-import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers/metric';
 import { LiquidityModalProps, ModalTypes } from './Modals/types';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';

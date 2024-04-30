@@ -13,7 +13,7 @@ import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenan
 import { TransactionSettings } from '../../../../../models/Transaction';
 import { useModalToggle } from '../../../../../services/modal';
 import { storageService } from '../../../../../services/storage/local';
-import { decimalToRaw } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import { SwapPoolColumn } from '../columns';
 import schema from './schema';
 import { RedeemLiquidityValues } from './types';

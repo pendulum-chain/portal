@@ -7,7 +7,7 @@ import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { subtractPercentage } from '../../../../../helpers/calc';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToRaw } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import schema from './schema';
 import { WithdrawLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';

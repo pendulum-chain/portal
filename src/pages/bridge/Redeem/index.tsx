@@ -4,7 +4,6 @@ import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import From from '../../../components/Form/From';
 import LabelledInputField from '../../../components/LabelledInputField';
 import OpenWallet from '../../../components/Wallet';
@@ -12,14 +11,16 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../helpers/spacewalk';
 import { isPublicKey } from '../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/redeem';
+import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/useRedeemPallet';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../hooks/useBalances';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
+import { ToastMessage, showToast } from '../../../shared/showToast';
+import { prioritizeXLMAsset } from '../helpers';
 
 export type RedeemFormValues = {
   amount: number;
@@ -40,6 +41,7 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { selectedVault, selectedAsset, wrappedAssets, setSelectedAsset } = useBridgeSettings();
+
   const { walletAccount, dAppName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { balances } = useBalances();
@@ -51,7 +53,8 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSelectedAssetsBalance(amount);
   }, [balances, selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
 
-  const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens || 0).toNumber();
+  const redeemableTokens = selectedVault?.redeemableTokens?.toJSON?.().amount ?? selectedVault?.redeemableTokens;
+  const maxRedeemable = nativeToDecimal(redeemableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {},
@@ -96,7 +99,7 @@ function Redeem(props: RedeemProps): JSX.Element {
           if (errors.length > 0) {
             const errorMessage = `Transaction failed with errors: ${errors.join('\n')}`;
             console.error(errorMessage);
-            toast(errorMessage, { type: 'error' });
+            showToast(ToastMessage.ERROR, errorMessage);
           }
         } else if (status.isFinalized) {
           const requestRedeemEvents = getEventBySectionAndMethod(events, 'redeem', 'RequestRedeem');
@@ -122,9 +125,7 @@ function Redeem(props: RedeemProps): JSX.Element {
       })
       .catch((error: unknown) => {
         console.error('Transaction submission failed', error);
-        toast(`Transaction submission failed: ${String(error)}`, {
-          type: 'error',
-        });
+        showToast(ToastMessage.ERROR, `Transaction submission failed: ${String(error)}`);
         setSubmissionPending(false);
       });
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
@@ -139,21 +140,28 @@ function Redeem(props: RedeemProps): JSX.Element {
       <div className="w-full">
         <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <From
-            register={register('amount')}
-            setValue={(n: number) => setValue('amount', n)}
-            max={selectedAssetsBalance}
-            assets={wrappedAssets}
-            setSelectedAsset={setSelectedAsset}
-            selectedAsset={selectedAsset}
-            network={network}
-            assetSuffix={wrappedCurrencySuffix}
-            error={formState.errors.amount?.message}
+            {...{
+              formControl: {
+                max: selectedAssetsBalance,
+                register: register('amount'),
+                setValue: (n: number) => setValue('amount', n),
+                error: formState.errors.amount?.message,
+              },
+              asset: {
+                assets: prioritizeXLMAsset(wrappedAssets),
+                selectedAsset,
+                setSelectedAsset,
+                assetSuffix: wrappedCurrencySuffix,
+              },
+              description: {
+                network,
+              },
+              badges: {},
+            }}
           />
           <label className="label flex align-center">
-            <span className="text-sm">{`Max redeemable: ${nativeToDecimal(
-              selectedVault?.redeemableTokens?.toString() || 0,
-            ).toFixed(2)} 
-              ${selectedAsset?.code}`}</span>
+            <span className="text-sm">{`Max redeemable: ${maxRedeemable.toFixed(2)}
+              ${selectedAsset?.code || ''}`}</span>
           </label>
           <LabelledInputField
             register={register('to')}
@@ -163,6 +171,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             type="text"
             style={{ marginTop: 8 }}
             className="border-base-400 bg-base-200"
+            autoComplete="off"
           />
           <FeeBox
             amountNative={amountNative}

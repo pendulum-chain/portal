@@ -1,10 +1,12 @@
 import { u128, UInt } from '@polkadot/types-codec';
 import BigNumber from 'big.js';
 
+// These are the decimals used for the native currency on the Amplitude network
+export const ChainDecimals = 12;
+
 // These are the decimals used by the Stellar network
 // We actually up-scale the amounts on Stellar now to match the expected decimals of the other tokens.
 export const StellarDecimals = 12;
-export const NativeDecimals = 12;
 
 // These are the decimals used by the FixedU128 type
 export const FixedU128Decimals = 18;
@@ -15,7 +17,7 @@ BigNumber.PE = 100;
 BigNumber.NE = -20;
 
 // Converts a decimal number to the native representation (a large integer)
-export const decimalToNative = (value: BigNumber | number | string, decimals: number = NativeDecimals) => {
+export const decimalToNative = (value: BigNumber | number | string, decimals: number = ChainDecimals) => {
   let bigIntValue;
   try {
     bigIntValue = new BigNumber(value);
@@ -48,17 +50,18 @@ export const fixedPointToDecimal = (value: BigNumber | number | string) => {
   return bigIntValue.div(divisor);
 };
 
-export const nativeToDecimal = (
-  value: BigNumber | number | string | u128 | UInt,
-  decimals: number = NativeDecimals,
-) => {
+export const sanitizeNative = (value: BigNumber | number | string | u128 | UInt) => {
   if (!value) return new BigNumber(0);
 
   if (typeof value === 'string' || value instanceof u128 || value instanceof UInt) {
     // Replace the unnecessary ',' with '' to prevent BigNumber from throwing an error
-    value = new BigNumber(value.toString().replaceAll(',', ''));
+    return new BigNumber(value.toString().replaceAll(',', ''));
   }
-  const bigIntValue = new BigNumber(value);
+  return new BigNumber(value);
+};
+
+export const nativeToDecimal = (value: BigNumber | number | string | u128 | UInt, decimals: number = ChainDecimals) => {
+  const bigIntValue = sanitizeNative(value);
   const divisor = new BigNumber(10).pow(decimals);
 
   return bigIntValue.div(divisor);
@@ -89,14 +92,17 @@ export const format = (n: number, tokenSymbol: string | undefined, oneCharOnly =
   for (let i = 0; i < units.length; i++) {
     if (n >= units[i].divider) {
       return (
-        prettyNumbers(n / units[i].divider) + ' ' + (oneCharOnly ? units[i].char : units[i].prefix + ' ') + tokenSymbol
+        prettyNumbers(n / units[i].divider) +
+        ' ' +
+        (oneCharOnly ? units[i].char : units[i].prefix.length ? units[i].prefix + ' ' : '') +
+        tokenSymbol
       );
     }
   }
-  return prettyNumbers(n);
+  return prettyNumbers(n) + ' ' + tokenSymbol;
 };
 
-export const nativeToFormat = (
+export const nativeToFormatMetric = (
   value: BigNumber | number | string,
   tokenSymbol: string | undefined,
   oneCharOnly = false,

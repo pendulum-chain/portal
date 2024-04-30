@@ -1,7 +1,7 @@
 import { useSharesTargetWorth } from '../../../hooks/nabla/useSharesTargetWorth';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { getMessageCallValue } from '../../../shared/helpers';
-import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers';
+import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers/metric';
 import { numberLoader } from '../../Loader';
 
 export interface TokenAmountProps {

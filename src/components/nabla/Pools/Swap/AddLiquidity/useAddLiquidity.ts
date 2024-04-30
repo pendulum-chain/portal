@@ -5,7 +5,7 @@ import { cacheKeys } from '../../../../../constants/cache';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
-import { decimalToRaw } from '../../../../../shared/parseNumbers';
+import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import schema from './schema';
 import { AddLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';

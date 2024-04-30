@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/staking';
-import { decimalToNative, nativeToDecimal } from '../../../shared/parseNumbers';
+import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/useStakingPallet';
+import { decimalToNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import ConfirmDelegateDialog from './ConfirmDelegateDialog';
 import DelegateToCollatorDialog from './DelegateToCollatorDialog';
 import DelegationSuccessfulDialog from './DelegationSuccessfulDialog';
@@ -98,10 +98,10 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
           setDelegationAmount(undefined);
           onClose();
         }}
-        onSubmit={(amount) => {
+        onSubmit={({ amount }) => {
           const userStakeAsString = nativeToDecimal(userStake || '0').toString();
-          setDelegationAmount(amount);
-          setUnstakingAll(parseFloat(amount) === parseFloat(userStakeAsString));
+          setDelegationAmount(amount?.toString());
+          setUnstakingAll(amount === parseFloat(userStakeAsString));
         }}
       />
       <ConfirmDelegateDialog

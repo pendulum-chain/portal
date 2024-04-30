@@ -1,19 +1,23 @@
-import { memo, useMemo } from 'preact/compat';
+import { memo, useMemo, useState } from 'preact/compat';
 import { NavLink, useLocation } from 'react-router-dom';
+
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
 import { LinkItem, links } from './links';
+import { NavCollapseButtonContent } from './NavCollapseButtonContent';
 
 const CollapseMenu = ({
   link,
   disabled,
   button,
   children,
+  ariaControls,
 }: {
   link: string;
   disabled?: boolean;
   button: JSX.Element | null;
   children: JSX.Element | null;
+  ariaControls?: string;
 }) => {
   const { pathname } = useLocation();
   const isActive = useMemo(() => {
@@ -24,20 +28,31 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <div className={disabled ? 'disabled' : ''}>
+    <section className={`collapse  ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
       <button
         type="button"
-        className={`nav-item collapse-btn mb-0 ${isActive ? 'active' : ''}`}
+        className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
         onClick={() => toggle()}
+        aria-controls={ariaControls}
+        aria-expanded={isOpen}
+        aria-disabled={disabled}
       >
         {button}
       </button>
-      <div className={`${isOpen ? '' : 'hidden'}`}>{children}</div>
-    </div>
+      <div className="collapse-content p-0">{children}</div>
+    </section>
   );
 };
 
-const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) => {
+export const NavItem = ({
+  item,
+  onClick,
+  isSubNavItem = false,
+}: {
+  item: LinkItem;
+  onClick?: () => void;
+  isSubNavItem?: boolean;
+}) => {
   const { link, prefix, suffix, title, props, hidden } = item;
   if (hidden) return null;
   const isExternal = link.startsWith('http');
@@ -48,7 +63,7 @@ const NavItem = ({ item, onClick }: { item: LinkItem; onClick?: () => void }) =>
       {suffix}
     </>
   );
-  const cls = `nav-item ${props?.className?.()}`;
+  const cls = `nav-item font-2 ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
@@ -67,29 +82,34 @@ export type NavProps = {
 const Nav = memo(({ onClick }: NavProps) => {
   const state = useGlobalState();
 
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsPlaying(true);
+  };
+
   return (
     <nav>
       {links(state).map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
-          <CollapseMenu
-            key={i}
-            link={item.link}
-            disabled={item.disabled}
-            button={
-              <>
-                {item.prefix}
-                <span>{item.title}</span>
-                {item.suffix}
-              </>
-            }
-          >
-            <div className="submenu">
-              {item.submenu.map((subItem, j) => (
-                <NavItem key={`${i}-${j}`} item={subItem} onClick={onClick} />
-              ))}
-            </div>
-          </CollapseMenu>
+          <div onMouseEnter={handleMouseEnter}>
+            <CollapseMenu
+              key={i}
+              link={item.link}
+              disabled={item.disabled}
+              ariaControls="submenu"
+              button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
+            >
+              <ul className="submenu" id="submenu">
+                {item.submenu.map((subItem, j) => (
+                  <li key={`${i}-${j}`} className="ml-[3px]">
+                    <NavItem item={subItem} onClick={onClick} isSubNavItem={true} />
+                  </li>
+                ))}
+              </ul>
+            </CollapseMenu>
+          </div>
         ) : (
           <NavItem key={i} item={item} onClick={onClick} />
         );

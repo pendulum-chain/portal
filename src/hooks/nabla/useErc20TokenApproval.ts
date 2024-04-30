@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'preact/compat';
 import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';
 import { getMessageCallValue } from '../../shared/helpers';
-import { decimalToRaw, rawToDecimal } from '../../shared/parseNumbers';
+import { decimalToRaw, rawToDecimal } from '../../shared/parseNumbers/metric';
 import { useSharedState } from '../../shared/Provider';
 import { useErc20TokenAllowance } from './useErc20TokenAllowance';
 import { UseContractWriteProps, useContractWrite } from './useContractWrite';

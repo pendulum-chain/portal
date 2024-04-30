@@ -1,23 +1,25 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
-import { Button, Divider, Modal } from 'react-daisyui';
+import { Button, Divider } from 'react-daisyui';
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
-import { RichIssueRequest } from '../../../hooks/spacewalk/issue';
-import { useSecurityPallet } from '../../../hooks/spacewalk/security';
-import { nativeStellarToDecimal } from '../../../shared/parseNumbers';
+import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
+import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
+import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
+import { Dialog } from '../../collators/dialogs/Dialog';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
   onClose: () => void;
   visible: boolean;
+  onConfirm: () => void;
 }
 
 export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
-  const { issueRequest, visible, onClose } = props;
+  const { issueRequest, visible, onClose, onConfirm } = props;
 
   const { subscribeActiveBlockNumber } = useSecurityPallet();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
@@ -75,13 +77,9 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     return () => clearInterval(interval);
   }, [deadline]);
 
-  return (
-    <Modal open={visible}>
-      <Modal.Header className="font-bold">Deposit</Modal.Header>
-      <Button color="ghost" size="md" shape="circle" className="absolute right-4 top-4" onClick={onClose}>
-        ✕
-      </Button>
-      <Modal.Body>
+  const content = useMemo(
+    () => (
+      <>
         <div className="text-center">
           <div className="text-xl">
             Send {totalAmount} {asset?.getCode()}
@@ -107,16 +105,34 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
             </div>
           )}
         </div>
-        <div className="text-sm mt-4">
-          Note: If you have already made the payment, please wait for a few minutes for it to be confirmed.
-        </div>
-      </Modal.Body>
 
-      <Modal.Actions className="justify-center">
-        <Button color="primary" onClick={onClose}>
-          I have made the payment
-        </Button>
-      </Modal.Actions>
-    </Modal>
+        <div className="text-sm mt-4">Note:</div>
+        <ul className="text-sm list-disc list-inside">
+          <li className="mt-1">
+            Stellar transactions require memos for accurate processing. Failure to include the transaction memo may
+            result in the loss of your coins.
+          </li>
+          <li className="mt-1">
+            Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
+            <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+              support
+            </a>
+            if your transaction is still pending after 10 minutes.
+          </li>
+        </ul>
+      </>
+    ),
+    [asset, destination, expectedStellarMemo, issueRequest, totalAmount],
   );
+
+  const actions = useMemo(
+    () => (
+      <Button color="primary" onClick={onConfirm}>
+        I have made the payment
+      </Button>
+    ),
+    [onConfirm],
+  );
+
+  return <Dialog headerText="Deposit" visible={visible} onClose={onClose} content={content} actions={actions} />;
 }

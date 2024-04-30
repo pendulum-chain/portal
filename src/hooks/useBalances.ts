@@ -6,8 +6,8 @@ import { getAddressForFormat } from '../helpers/addressFormatter';
 import { addSuffix, currencyToString } from '../helpers/spacewalk';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { PortfolioAsset } from '../pages/dashboard/PortfolioColumns';
-import { nativeToDecimal } from '../shared/parseNumbers';
-import { useVaultRegistryPallet } from './spacewalk/vaultRegistry';
+import { nativeToDecimal } from '../shared/parseNumbers/metric';
+import { useVaultRegistryPallet } from './spacewalk/useVaultRegistryPallet';
 import { usePriceFetcher } from './usePriceFetcher';
 
 function useBalances() {
@@ -57,7 +57,9 @@ function useBalances() {
           : walletAccount.address;
 
         const balance = await fetchBridgedTokens(walletAddress, currencyId);
-        const amount = nativeToDecimal(balance?.free || '0').toNumber();
+        // FIXME: Use asset-registry data to derive the correct decimal per asset
+        const decimals = token === 'DOT' ? 10 : 12;
+        const amount = nativeToDecimal(balance?.free || '0', decimals).toNumber();
         const price: number = (await pricesCache)[token];
         const usdValue = price * amount;
 
