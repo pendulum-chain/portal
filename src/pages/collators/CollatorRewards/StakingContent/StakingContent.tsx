@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 import StakedIcon from '../../../../assets/collators-staked-icon';
@@ -5,20 +6,20 @@ import { nativeToFormatMetric } from '../../../../shared/parseNumbers/metric';
 
 interface StakingContentProps {
   onButtonClick: () => void;
-  balanceEnabledForUnlock: string;
-  tokenSymbol: string;
   userStakingAmount?: string;
   userAvailableBalance: string;
+  userAvailableBalanceForUnlock: Big;
+  tokenSymbol: string;
   unstaking: string;
   tokensTipText: string;
 }
 
 export const StakingContent: React.FC<StakingContentProps> = ({
   onButtonClick,
-  balanceEnabledForUnlock,
-  tokenSymbol,
   userStakingAmount = '0.00',
   userAvailableBalance,
+  userAvailableBalanceForUnlock,
+  tokenSymbol,
   unstaking,
   tokensTipText,
 }) => (
@@ -46,7 +47,7 @@ export const StakingContent: React.FC<StakingContentProps> = ({
         ) : null}
       </div>
       <button
-        disabled={!Number(balanceEnabledForUnlock)}
+        disabled={!userAvailableBalanceForUnlock.toNumber()}
         className="btn btn-primary btn-unlock min-h-fit max-h-10 w-full m-auto px-8"
         onClick={onButtonClick}
       >

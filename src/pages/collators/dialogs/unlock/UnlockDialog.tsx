@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import { FC } from 'preact/compat';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from 'react-daisyui';
@@ -8,10 +9,9 @@ import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 
 import { Dialog } from '../Dialog';
+import { SuccessStep } from '../steps/SuccessStep';
 
 import { getUnlockValidationSchema } from './UnlockValidationSchema';
-import { SuccessStep } from '../steps/SuccessStep';
-import { FC } from 'preact/compat';
 import { UnlockConfirmStep } from './UnlockConfirmStep';
 
 interface UnlockDialogProps {
@@ -19,7 +19,7 @@ interface UnlockDialogProps {
   onClose: () => void;
   visible: boolean;
   unlockSuccess: boolean;
-  userStakeBalance?: string;
+  userAvailableBalanceForUnlock: Big;
   gasFee: Big;
 }
 
@@ -33,7 +33,7 @@ enum UnlockStep {
 }
 
 export const UnlockDialog: FC<UnlockDialogProps> = ({
-  userStakeBalance = '0',
+  userAvailableBalanceForUnlock,
   visible,
   onClose,
   onUnlock,
@@ -43,7 +43,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
   const [step, setStep] = useState<UnlockStep>(UnlockStep.Confirm);
   const [loading, setLoading] = useState<boolean>(false);
   const { walletAccount } = useGlobalState();
-  const balance = nativeToDecimal(userStakeBalance).toNumber();
+  const balance = nativeToDecimal(userAvailableBalanceForUnlock).toNumber();
 
   const form = useForm<UnlockFormValues>({
     resolver: yupResolver(getUnlockValidationSchema(balance)),
@@ -67,7 +67,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
           <UnlockConfirmStep
             {...{
               register: register('amount'),
-              userStakeBalance: balance,
+              balance,
               gasFee: showGasFee,
               error: formState.errors.amount?.message?.toString(),
             }}
@@ -79,13 +79,13 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
             {...{
               title: 'Successfully unlocked!',
               description: `You have successfully unlocked ${
-                nativeToDecimal(userStakeBalance).toNumber() || 0
+                nativeToDecimal(userAvailableBalanceForUnlock).toNumber() || 0
               } PEN tokens.`,
             }}
           />
         );
     }
-  }, [step, formState, register, userStakeBalance, showGasFee, balance]);
+  }, [step, formState, register, userAvailableBalanceForUnlock, showGasFee, balance]);
 
   const onConfirm = () => {
     setLoading(true);
