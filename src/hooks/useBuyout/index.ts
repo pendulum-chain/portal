@@ -9,10 +9,10 @@ import { doSubmitExtrinsic } from '../../pages/collators/dialogs/helpers';
 import { useGlobalState } from '../../GlobalStateProvider';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
-import { getMetadata } from './utils';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
 import { decimalToNative } from '../../shared/parseNumbers/metric';
+import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
 
 export interface BuyoutSettings {
   buyoutNativeToken: {
@@ -20,7 +20,7 @@ export interface BuyoutSettings {
     max: number;
   };
   currencies: OrmlTraitsAssetRegistryAssetMetadata[];
-  nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
+  nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata | undefined;
   sellFee: PerMill;
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
@@ -55,11 +55,42 @@ function handleBuyoutError(error: string) {
 
 export const useBuyout = (): BuyoutSettings => {
   const { api } = useNodeInfoState().state;
-  const { tenantName } = useGlobalState();
   const { walletAccount } = useGlobalState();
   const [minimumBuyout, setMinimumBuyout] = useState<number>(0);
   const [maximumBuyout, setMaximumBuyout] = useState<number>(0);
   const [sellFee, setSellFee] = useState<PerMill>(new PerMill(0));
+  const { getNativeAssetMetadata, getAssetMetadata } = useAssetRegistryMetadata();
+
+  const [nativeCurrency, setNativeCurrency] = useState<OrmlTraitsAssetRegistryAssetMetadata | undefined>(undefined);
+  const [currencies, setCurrencies] = useState<OrmlTraitsAssetRegistryAssetMetadata[]>([]);
+
+  useEffect(() => {
+    async function fetchAllowedCurrencies() {
+      const allowedCurrencies = [];
+      if (api) {
+        const allowedCurrenciesEntries = await api.query.treasuryBuyoutExtension.allowedCurrencies.entries();
+
+        for (const currency of allowedCurrenciesEntries) {
+          if (currency.length && currency[0] && currency[0].toHuman()) {
+            const currencyXCMId: { XCM: number } = (currency[0].toHuman() as { XCM: number }[])[0];
+            const currencyMetadata = await getAssetMetadata(currencyXCMId);
+
+            if (currencyMetadata) {
+              allowedCurrencies.push(currencyMetadata);
+            }
+          }
+        }
+      }
+      return allowedCurrencies;
+    }
+
+    async function fetchAndSetCurrencies() {
+      setCurrencies(await fetchAllowedCurrencies());
+      setNativeCurrency(await getNativeAssetMetadata());
+    }
+
+    fetchAndSetCurrencies().catch(console.error);
+  }, [api, getNativeAssetMetadata, getAssetMetadata]);
 
   useEffect(() => {
     async function fetchBuyoutLimits() {
@@ -129,9 +160,9 @@ export const useBuyout = (): BuyoutSettings => {
       min: minimumBuyout,
       max: maximumBuyout,
     },
-    currencies: Object.values(getMetadata(tenantName).currencies),
+    currencies,
     sellFee,
-    nativeCurrency: getMetadata(tenantName).nativeCurrency.ampe,
+    nativeCurrency,
     handleBuyout,
   };
 };
