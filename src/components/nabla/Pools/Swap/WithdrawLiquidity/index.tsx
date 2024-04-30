@@ -30,7 +30,6 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   const {
     setError,
     clearErrors,
-    register,
     setValue,
     formState: { errors },
   } = form;
