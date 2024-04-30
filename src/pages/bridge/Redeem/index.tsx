@@ -170,7 +170,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             placeholder="Enter target Stellar address"
             type="text"
             style={{ marginTop: 8 }}
-            className="border-base-400 bg-base-200"
+            className="border-[--base-400] bg-base-200"
             autoComplete="off"
           />
           <FeeBox
