@@ -50,7 +50,7 @@ export function useErc20TokenApproval({
       owner: address,
       spender,
     },
-    { enabled: isEnabled },
+    isEnabled,
   );
 
   const mutation = useContractWrite({

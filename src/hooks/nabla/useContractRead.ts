@@ -56,7 +56,7 @@ export function useContractRead(
             messageArguments: args || [],
             limits,
           });
-          blurp('read', 'messageCall result', method, response);
+          //blurp('read', 'messageCall result', method, response);
 
           return response;
         }
@@ -65,22 +65,6 @@ export function useContractRead(
       ...queryOptions,
       enabled,
     },
-  );
-
-  blurp('read', !!contractAbi, queryOptions.enabled !== false, !!address, !!api, !!actualWalletAddress);
-  blurp(
-    'read',
-    'useContract result',
-    method,
-    enabled,
-    key,
-    address,
-    method,
-    args,
-    query.status,
-    query.data,
-    (query.data?.result as any)?.value,
-    (query.data?.result as any)?.value?.toString(),
   );
 
   return {

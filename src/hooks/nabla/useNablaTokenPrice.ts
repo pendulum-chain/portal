@@ -1,12 +1,12 @@
-import { cacheKeys, inactiveOptions, QueryOptions } from '../../constants/cache';
+import { cacheKeys, inactiveOptions } from '../../constants/cache';
 import { priceOracleAbi } from '../../contracts/nabla/PriceOracle';
 import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 import { useContractRead } from './useContractRead';
 
-export function useNablaTokenPrice(address: string | undefined, queryOptions?: QueryOptions) {
+export function useNablaTokenPrice(address: string | undefined, enabled?: boolean) {
   const { oracle } = useGetAppDataByTenant('nabla').data || {};
 
-  const enabled = !!address && !!oracle && queryOptions?.enabled !== false;
+  enabled = !!address && !!oracle && enabled !== false;
 
   return useContractRead([cacheKeys.tokenPrice, address], {
     abi: priceOracleAbi,
@@ -16,7 +16,6 @@ export function useNablaTokenPrice(address: string | undefined, queryOptions?: Q
     noWalletAddressRequired: true,
     queryOptions: {
       ...inactiveOptions['1m'],
-      ...queryOptions,
       enabled,
     },
   });

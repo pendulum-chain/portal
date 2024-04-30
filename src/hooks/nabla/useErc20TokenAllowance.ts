@@ -1,6 +1,5 @@
 import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';
 import { cacheKeys } from '../../shared/constants';
-import { QueryOptions } from '../../shared/helpers';
 import { activeOptions } from '../../constants/cache';
 import { useContractRead } from './useContractRead';
 
@@ -13,8 +12,8 @@ export type UseTokenAllowance = {
   owner: string | undefined;
 };
 
-export function useErc20TokenAllowance({ token, owner, spender }: UseTokenAllowance, queryOptions?: QueryOptions) {
-  const isEnabled = Boolean(owner && spender && queryOptions?.enabled);
+export function useErc20TokenAllowance({ token, owner, spender }: UseTokenAllowance, enabled: boolean) {
+  const isEnabled = Boolean(owner && spender && enabled);
 
   return useContractRead([cacheKeys.tokenAllowance, spender, token, owner], {
     abi: erc20WrapperAbi,
@@ -23,7 +22,6 @@ export function useErc20TokenAllowance({ token, owner, spender }: UseTokenAllowa
     args: [owner, spender],
     queryOptions: {
       ...activeOptions['3m'],
-      ...queryOptions,
       retry: 2,
       enabled: isEnabled,
     },

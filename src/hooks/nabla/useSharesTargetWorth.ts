@@ -1,5 +1,4 @@
 import { cacheKeys, inactiveOptions } from '../../constants/cache';
-import { QueryOptions } from '../../shared/helpers';
 import { decimalToRaw } from '../../shared/parseNumbers';
 import { useContractRead } from './useContractRead';
 
@@ -12,7 +11,7 @@ export type UseSharesTargetWorthProps = {
 
 export function useSharesTargetWorth(
   { address, lpTokenDecimalAmount, abi, lpTokenDecimals }: UseSharesTargetWorthProps,
-  queryOptions?: QueryOptions,
+  enabled?: boolean,
 ) {
   return useContractRead([cacheKeys.sharesTargetWorth, lpTokenDecimalAmount], {
     abi,
@@ -21,8 +20,7 @@ export function useSharesTargetWorth(
     args: [decimalToRaw(lpTokenDecimalAmount, lpTokenDecimals).toString()],
     queryOptions: {
       ...inactiveOptions['1m'],
-      ...queryOptions,
-      enabled: Boolean(address && lpTokenDecimalAmount && queryOptions?.enabled !== false),
+      enabled: Boolean(address && lpTokenDecimalAmount && enabled !== false),
     },
   });
 }

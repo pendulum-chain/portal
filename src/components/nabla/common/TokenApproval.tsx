@@ -9,6 +9,7 @@ export type TokenApprovalProps = ButtonProps & {
   enabled?: boolean;
   children: ReactNode;
   decimals: number;
+  disabled?: boolean;
 };
 
 export function TokenApproval({
@@ -19,6 +20,7 @@ export function TokenApproval({
   enabled = true,
   children,
   className = '',
+  disabled,
   ...rest
 }: TokenApprovalProps): JSX.Element | null {
   const approval = useErc20TokenApproval({
@@ -28,7 +30,6 @@ export function TokenApproval({
     enabled,
     decimals,
   });
-  console.log('Approval button', approval[0], ApprovalState);
 
   if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;
 
@@ -42,7 +43,7 @@ export function TokenApproval({
       color="primary"
       {...rest}
       type="button"
-      disabled={noAccount || isPending}
+      disabled={noAccount || isPending || disabled}
       onClick={isPending ? undefined : () => approval[1].mutate()}
     >
       {noAccount ? 'Please connect your wallet' : isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}

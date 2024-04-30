@@ -1,6 +1,5 @@
 import { ArrowPathRoundedSquareIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { useEffect } from 'preact/compat';
+import { useEffect, useMemo } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
@@ -9,7 +8,6 @@ import { subtractPercentage } from '../../../helpers/calc';
 import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { getMessageCallValue } from '../../../shared/helpers';
 import { rawToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers';
 import { numberLoader } from '../../Loader';
 import { Skeleton } from '../../Skeleton';
@@ -64,17 +62,6 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
     from,
     to,
     fromTokenDecimals: fromToken?.decimals,
-    onSuccess: (response) => {
-      if (toToken === undefined) return;
-
-      const val = getMessageCallValue(response);
-      const toAmount = val ? rawToDecimal(val, toToken.decimals).toNumber() : 0;
-      setValue('toAmount', toAmount, {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
-    },
   });
 
   useEffect(() => {
@@ -94,25 +81,32 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
               : 'Something went wrong';
       }
 
-      console.log('ToAmount Error', errorMessage);
       setError('fromAmount', { type: 'manual', message: errorMessage });
     } else {
       clearErrors('fromAmount');
     }
   }, [data, setError, clearErrors]);
 
-  const loading =
-    (isLoading && isLoading && fetchStatus !== 'idle') || fromDecimalAmount !== debouncedFromDecimalAmount;
-  const outValue = getMessageCallValue(data);
-  const value =
-    outValue && toToken !== undefined ? prettyNumbers(rawToDecimal(outValue, toToken.decimals).toNumber()) : 0;
+  const loading = (isLoading && fetchStatus !== 'idle') || fromDecimalAmount !== debouncedFromDecimalAmount;
 
-  console.log(
-    'roundNumber(Number(value) / fromDecimalAmount, 6)',
-    roundNumber(Number(value) / fromDecimalAmount, 6),
-    value,
-    fromDecimalAmount,
-  );
+  const [value, toAmount, swapFee] = useMemo(() => {
+    const outValue = data?.result.type === 'success' ? data.result.value : undefined;
+
+    if (outValue === undefined) return ['0', undefined, undefined];
+
+    const toAmount = rawToDecimal(outValue[0], toToken.decimals).toNumber();
+
+    return [prettyNumbers(toAmount), toAmount, rawToDecimal(outValue[1], toToken.decimals).toNumber()];
+  }, [data?.result, toToken]);
+
+  useEffect(() => {
+    setValue('toAmount', toAmount ?? 0, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  }, [toAmount, setValue]);
+
   return (
     <div
       className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
@@ -158,13 +152,8 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
       >
         <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
           <div className="flex items-center">
-            {fromToken && toToken && value && fromDecimalAmount ? (
-              <>
-                <div className="tooltip" data-tip="! TODO" title="! TODO">
-                  <InformationCircleIcon className="w-5 h-5 mr-1" />
-                </div>
-                {`1 ${fromToken.symbol} = ${roundNumber(Number(value) / fromDecimalAmount, 6)} ${toToken.symbol}`}
-              </>
+            {fromToken && toToken && value && fromDecimalAmount && !loading ? (
+              <>{`1 ${fromToken.symbol} = ${roundNumber(Number(value) / fromDecimalAmount, 6)} ${toToken.symbol}`}</>
             ) : (
               `- ${toToken?.symbol || ''}`
             )}
@@ -197,7 +186,9 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
           </div>
           <div className="flex justify-between">
             <div>Swap fee:</div>
-            <div>-</div>
+            <div>
+              {swapFee !== undefined ? prettyNumbers(swapFee) : ''} {toToken?.symbol || ''}
+            </div>
           </div>
         </div>
       </div>

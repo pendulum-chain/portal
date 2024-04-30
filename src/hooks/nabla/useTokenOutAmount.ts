@@ -1,4 +1,3 @@
-import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { activeOptions, cacheKeys } from '../../constants/cache';
 import { routerAbi } from '../../contracts/nabla/Router';
 import { decimalToRaw } from '../../shared/parseNumbers';
@@ -10,8 +9,6 @@ export type UseTokenOutAmountProps = {
   from?: string;
   to?: string;
   fromTokenDecimals: number;
-  onSuccess?: (val: MessageCallResult) => void;
-  onError?: (err: Error | MessageCallResult) => void;
 };
 
 export function useTokenOutAmount({
@@ -19,8 +16,6 @@ export function useTokenOutAmount({
   from,
   to,
   fromTokenDecimals,
-  onSuccess,
-  onError,
 }: UseTokenOutAmountProps) {
   const { router } = useGetAppDataByTenant('nabla').data || {};
 
@@ -37,9 +32,7 @@ export function useTokenOutAmount({
     queryOptions: {
       ...activeOptions['30s'],
       enabled,
-      onSuccess,
       onError: (err) => {
-        if (onError) onError(err);
         console.error(err);
       },
     },

@@ -2,7 +2,7 @@ import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { cacheKeys } from '../../shared/constants';
-import { getMessageCallValue, QueryOptions } from '../../shared/helpers';
+import { getMessageCallValue } from '../../shared/helpers';
 import { rawToDecimal, prettyNumbers } from '../../shared/parseNumbers';
 import { useSharedState } from '../../shared/Provider';
 import { useContractRead } from './useContractRead';
@@ -26,21 +26,22 @@ export type UseBalanceResponse = Pick<
   enabled: boolean;
 };
 
-export const useContractBalance = (
-  { contractAddress, account, abi, decimals }: UseBalanceProps,
-  queryOptions?: QueryOptions,
-): UseBalanceResponse => {
+export const useContractBalance = ({
+  contractAddress,
+  account,
+  abi,
+  decimals,
+}: UseBalanceProps): UseBalanceResponse => {
   const { api, address: defAddress } = useSharedState();
   const address = account || defAddress;
 
-  const enabled = !!api && !!address && queryOptions?.enabled !== false;
+  const enabled = !!api && !!address;
   const query = useContractRead([cacheKeys.balance, contractAddress, address], {
     abi,
     address: contractAddress,
     method: 'balanceOf',
     args: [address],
     queryOptions: {
-      ...(queryOptions ?? {}),
       cacheTime: 120000,
       staleTime: 120000,
       retry: 2,

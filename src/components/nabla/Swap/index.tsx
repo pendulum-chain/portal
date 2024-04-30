@@ -89,7 +89,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             />
             <div className="mt-6">
               {/* <Validation errors={errors} className="mb-2" /> */}
-              <ApprovalSubmit token={tokensMap[from]} />
+              <ApprovalSubmit
+                token={tokensMap[from]}
+                disabled={errors.fromAmount !== undefined || errors.to !== undefined}
+              />
             </div>
           </form>
         </FormProvider>

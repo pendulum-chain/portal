@@ -38,8 +38,6 @@ export const useContractWrite = <TAbi extends Record<string, unknown>>({
     [abi, api?.registry],
   );
 
-  blurp('write', 'useContractWrite', address, method, args);
-
   const isReady = !!contractAbi && !!address && !!api && !!walletAddress && !!signer;
   const submit = async (submitArgs?: any[] | void): Promise<any> => {
     if (!isReady) throw 'Missing data';

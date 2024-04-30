@@ -61,11 +61,11 @@ export const useSwapPoolWithdraw = ({
       abi: backstopPoolAbi,
       lpTokenDecimals: backstopPool.lpTokenDecimals,
     },
-    { enabled },
+    enabled,
   );
   const sharesWorthNativeAmount = getMessageCallValue(sharesQuery.data);
-  const bpPriceQuery = useNablaTokenPrice(backstopPool.token.id, { enabled });
-  const spPriceQuery = useNablaTokenPrice(selectedSwapPool?.token.id, { enabled });
+  const bpPriceQuery = useNablaTokenPrice(backstopPool.token.id, enabled);
+  const spPriceQuery = useNablaTokenPrice(selectedSwapPool?.token.id, enabled);
   const bpPrice = getMessageCallValue(bpPriceQuery.data);
   const spPrice = getMessageCallValue(spPriceQuery.data);
 

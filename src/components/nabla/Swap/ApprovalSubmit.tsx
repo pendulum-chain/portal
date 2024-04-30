@@ -7,9 +7,10 @@ import { TokenApproval } from '../common/TokenApproval';
 
 export interface ApprovalProps {
   token: NablaInstanceToken | undefined;
+  disabled: boolean;
 }
 
-const ApprovalSubmit = ({ token }: ApprovalProps): JSX.Element | null => {
+const ApprovalSubmit = ({ token, disabled }: ApprovalProps): JSX.Element | null => {
   const { router } = useGetAppDataByTenant('nabla').data || {};
   const { control } = useFormContext<SwapFormValues>();
   const decimalAmount = Number(
@@ -23,8 +24,14 @@ const ApprovalSubmit = ({ token }: ApprovalProps): JSX.Element | null => {
   if (!router || !token) return null;
 
   return (
-    <TokenApproval token={token.id} decimals={token.decimals} spender={router} decimalAmount={decimalAmount}>
-      <Button color="primary" className="w-full text-base" type="submit" disabled={!decimalAmount}>
+    <TokenApproval
+      token={token.id}
+      decimals={token.decimals}
+      spender={router}
+      decimalAmount={decimalAmount}
+      disabled={disabled}
+    >
+      <Button color="primary" className="w-full text-base" type="submit" disabled={!decimalAmount || disabled}>
         Swap
       </Button>
     </TokenApproval>
