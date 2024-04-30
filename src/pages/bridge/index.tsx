@@ -21,7 +21,7 @@ enum BridgeTabs {
 
 interface BridgeContextValue {
   selectedAsset?: Asset;
-  setSelectedAsset: StateUpdater<Asset | undefined>;
+  setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
 }
 
 export const BridgeContext = React.createContext<BridgeContextValue>({ setSelectedAsset: () => undefined });

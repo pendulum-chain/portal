@@ -39,7 +39,8 @@ function useBalances() {
       const tokensBalances = await Promise.all(
         assets.map(async (asset) => {
           const tokenBalanceRaw = await fetchTokenBalance(walletAddress, asset.assetId);
-          const amount = nativeToDecimal(tokenBalanceRaw?.free || '0', asset.metadata.decimals).toNumber();
+          const free = (tokenBalanceRaw as unknown as { free: number }).free;
+          const amount = nativeToDecimal(free || '0', asset.metadata.decimals).toNumber();
           const token = asset.metadata.symbol;
           const price = await getTokenPrice(token);
           const usdValue = price * amount;

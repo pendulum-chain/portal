@@ -47,8 +47,6 @@ export const GasForm: React.FC<GasFormProps> = ({
 
   const { balances } = useBalances();
 
-  console.log('balances', balances);
-
   const registerFromAmount = register('fromAmount', {
     max: { value: Number(calcMax().amount), message: 'Amount exceeds the maximum allowable buyout' },
     min: { value: Number(calcMin().amount), message: 'Amount is too low to meet the minimum buyout requirement' },
@@ -147,7 +145,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       assets: [nativeCurrency],
       selectedAsset: nativeCurrency,
       setSelectedAsset: () => {
-        return null;
+        return undefined;
       },
     },
     badges: {},

@@ -33,7 +33,9 @@ const findAsset = (
   onChange: AssetSelectorOnChange,
 ) => {
   const newAsset = assets.find(compare);
-  newAsset && onChange(newAsset);
+  if (typeof onChange === 'function') {
+    newAsset && onChange(newAsset);
+  }
 };
 
 function compareAsset(newItem: { id: string }) {

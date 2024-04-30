@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
 import { useContext, useEffect, useMemo, useState } from 'preact/compat';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
@@ -19,8 +19,8 @@ export interface BridgeSettings {
   wrappedAssets?: Asset[];
   selectedAsset?: Asset;
   setSelectedAsset: StateUpdater<Asset | undefined>;
-  setSelectedVault: StateUpdater<ExtendedRegistryVault | undefined>;
-  setManualVaultSelection: StateUpdater<boolean>;
+  setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
+  setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
 }
 
 function useBridgeSettings(): BridgeSettings {
