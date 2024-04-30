@@ -1,5 +1,5 @@
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
 
 import { BlockchainAsset } from '../../Selector/AssetSelector/helpers';
@@ -22,7 +22,7 @@ export interface FromProps {
   asset: {
     assets?: BlockchainAsset[];
     selectedAsset?: BlockchainAsset;
-    setSelectedAsset?: StateUpdater<BlockchainAsset | undefined> | StateUpdater<Asset | undefined>;
+    setSelectedAsset?: Dispatch<StateUpdater<BlockchainAsset | undefined>> | Dispatch<StateUpdater<Asset | undefined>>;
     assetSuffix?: string;
   };
   description: {
