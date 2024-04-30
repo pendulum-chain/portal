@@ -9,27 +9,40 @@ import { SwapPoolColumn } from '../columns';
 import { useAddLiquidity } from './useAddLiquidity';
 import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenApproval } from '../../../common/TokenApproval';
+import { useEffect } from 'preact/hooks';
+import { NumberInput } from '../../../common/NumberInput';
+import { FormProvider } from 'react-hook-form';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;
 }
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
-  const {
-    toggle,
-    mutation,
-    onSubmit,
-    balanceQuery,
-    depositQuery,
-    decimalAmount,
-    form: {
-      register,
-      setValue,
-      formState: { errors },
-    },
-  } = useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
+  const { toggle, mutation, onSubmit, balanceQuery, depositQuery, decimalAmount, form } = useAddLiquidity(
+    data.id,
+    data.token.id,
+    data.token.decimals,
+    data.lpTokenDecimals,
+  );
   const balance = balanceQuery.balance || 0;
   const deposit = depositQuery.balance || 0;
+
+  const {
+    setError,
+    clearErrors,
+    setValue,
+    formState: { errors },
+  } = form;
+
+  useEffect(() => {
+    if (balanceQuery.balance !== undefined && decimalAmount > balanceQuery.balance) {
+      setError('amount', { type: 'custom', message: 'Amount exceeds balance' });
+    } else {
+      clearErrors('amount');
+    }
+  }, [decimalAmount, balanceQuery.balance, setError, clearErrors]);
+
+  console.log(errors, Object.keys(errors));
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
@@ -44,95 +57,102 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         <h3 className="text-3xl font-normal">Confirm deposit</h3>
       </div>
       <div className={hideCss}>
-        <form onSubmit={onSubmit}>
-          <div>
-            <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
-              <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
-              </p>
-            </div>
-            <div className="relative flex gap-1 items-center rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-              <input
-                autoFocus
-                className="input-ghost flex-grow w-full text-4xl font-2 py-3 px-0"
-                placeholder="Amount"
-                max={balance}
-                {...register('amount')}
-              />
-              <Button
-                className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-                size="sm"
-                type="button"
-                onClick={() =>
-                  setValue('amount', balance / 2, {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  })
-                }
-              >
-                50%
-              </Button>
-              <Button
-                className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-                size="sm"
-                type="button"
-                onClick={() =>
-                  setValue('amount', balance, {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  })
-                }
-              >
-                MAX
-              </Button>
-            </div>
-          </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300  p-4 mt-4">
-            <div className="flex items-center justify-between">
-              <div>Total deposit</div>
-              <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Pool Share</div>
-              <div>
-                {depositQuery.isLoading
-                  ? numberLoader
-                  : minMax(
-                      calcSharePercentage(
-                        rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
-                        deposit,
-                      ),
-                    )}
-                %
+        <FormProvider {...form}>
+          <form onSubmit={onSubmit}>
+            <div>
+              <div className="flex justify-between align-end text-sm text-initial my-3">
+                <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
+                <p className="text-neutral-500 dark:text-neutral-400 text-right">
+                  Balance:{' '}
+                  {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+                </p>
+              </div>
+              <div className="relative flex gap-1 items-center rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
+                <NumberInput
+                  autoFocus
+                  className="input-ghost flex-grow w-full text-4xl font-2 py-3 px-0"
+                  placeholder="Amount"
+                  registerName="amount"
+                />
+                <Button
+                  className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
+                  size="sm"
+                  type="button"
+                  onClick={() =>
+                    setValue('amount', balance / 2, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    })
+                  }
+                >
+                  50%
+                </Button>
+                <Button
+                  className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
+                  size="sm"
+                  type="button"
+                  onClick={() =>
+                    setValue('amount', balance, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    })
+                  }
+                >
+                  MAX
+                </Button>
               </div>
             </div>
-          </div>
-          <div>
-            <Validation className="text-center mb-2" errors={errors} />
-            <TokenApproval
-              className="mt-8 w-full"
-              spender={data.id}
-              token={data.token.id}
-              decimals={data.token.decimals}
-              decimalAmount={decimalAmount}
-              enabled={decimalAmount > 0}
-            >
-              <Button color="primary" className="mt-8 w-full" type="submit" disabled={!decimalAmount}>
-                Deposit
+            <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300  p-4 mt-4">
+              <div className="flex items-center justify-between">
+                <div>Total deposit</div>
+                <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>Pool Share</div>
+                <div>
+                  {depositQuery.isLoading
+                    ? numberLoader
+                    : minMax(
+                        calcSharePercentage(
+                          rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
+                          deposit,
+                        ),
+                      )}
+                  %
+                </div>
+              </div>
+            </div>
+            <div>
+              <Validation className="text-center mb-2" errors={errors} />
+              <TokenApproval
+                className="mt-8 w-full"
+                spender={data.id}
+                token={data.token.id}
+                decimals={data.token.decimals}
+                decimalAmount={decimalAmount}
+                enabled={decimalAmount > 0 && Object.keys(errors).length === 0}
+              >
+                <Button
+                  color="primary"
+                  className="mt-8 w-full"
+                  type="submit"
+                  disabled={decimalAmount === 0 || Object.keys(errors).length > 0}
+                >
+                  Deposit
+                </Button>
+              </TokenApproval>
+              <Button
+                color="secondary"
+                className="mt-2 w-full"
+                type="button"
+                disable={mutation.isLoading}
+                onClick={() => toggle()}
+              >
+                Cancel
               </Button>
-            </TokenApproval>
-            <Button
-              color="secondary"
-              className="mt-2 w-full"
-              type="button"
-              disable={mutation.isLoading}
-              onClick={() => toggle()}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
+            </div>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );
