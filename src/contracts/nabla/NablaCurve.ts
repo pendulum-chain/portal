@@ -529,4 +529,4 @@ export const nablaCurveAbi = {
     }
   ],
   "version": "4"
-} as const;
+}
