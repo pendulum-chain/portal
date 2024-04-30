@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { ChangeEvent, useMemo } from 'preact/compat';
+import { ChangeEvent, useEffect, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
@@ -15,6 +15,8 @@ import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../..
 import { AssetSelectorModal } from '../../../common/AssetSelectorModal';
 import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenAmount } from '../../../common/TokenAmount';
+import { FormProvider } from 'react-hook-form';
+import { NumberInput } from '../../../common/NumberInput';
 
 const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
@@ -25,11 +27,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
     toggle,
     balanceQuery,
     depositQuery,
-    form: {
-      register,
-      setValue,
-      formState: { errors },
-    },
+    form,
     backstopLpTokenDecimalAmountToRedeem,
     pools,
     selectedPool,
@@ -40,6 +38,22 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
     updateStorage,
     onSubmit,
   } = useWithdrawLiquidity(nabla);
+
+  const {
+    setError,
+    clearErrors,
+    register,
+    setValue,
+    formState: { errors },
+  } = form;
+
+  useEffect(() => {
+    if (depositQuery.balance !== undefined && backstopLpTokenDecimalAmountToRedeem > depositQuery.balance) {
+      setError('amount', { type: 'custom', message: 'Amount exceeds owned LP tokens' });
+    } else {
+      clearErrors('amount');
+    }
+  }, [backstopLpTokenDecimalAmountToRedeem, depositQuery.balance, setError, clearErrors]);
 
   const isIdle = bpw.mutation.isIdle && spw.mutation.isIdle;
   const isLoading = bpw.mutation.isLoading || spw.mutation.isLoading;
@@ -74,135 +88,141 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
         <h3 className="text-3xl font-normal">Withdraw {backstopPool.token.symbol}</h3>
       </div>
       <div className={hideCss}>
-        <form onSubmit={onSubmit}>
-          <div className="flex justify-between align-end text-sm text-initial my-3">
-            <p>
-              Deposited:{' '}
-              {depositQuery.isLoading ? (
-                numberLoader
-              ) : (
-                <span
-                  role="button"
-                  onClick={() =>
-                    setValue('amount', depositedBackstopLpTokenDecimalAmount, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    })
-                  }
-                >{`${depositQuery.formatted || 0} LP`}</span>
+        <FormProvider {...form}>
+          <form onSubmit={onSubmit}>
+            <div className="flex justify-between align-end text-sm text-initial my-3">
+              <p>
+                Deposited:{' '}
+                {depositQuery.isLoading ? (
+                  numberLoader
+                ) : (
+                  <span
+                    role="button"
+                    onClick={() =>
+                      setValue('amount', depositedBackstopLpTokenDecimalAmount, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      })
+                    }
+                  >{`${depositQuery.formatted || 0} LP`}</span>
+                )}
+              </p>
+              <p className="text-neutral-500 dark:text-neutral-400 text-right">
+                Balance:{' '}
+                {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${backstopPool.token.symbol}`}
+              </p>
+            </div>
+            <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
+              {isSwapPoolWithdraw && (
+                <div className="flex items-center justify-between text-sm">
+                  <div>
+                    <span className="mr-1">Withdraw limit:</span>
+                    {spw.isLoading ? numberLoader : <>{prettyNumbers(withdrawLimit)} LP</>}
+                  </div>
+                </div>
               )}
-            </p>
-            <p className="text-neutral-500 dark:text-neutral-400 text-right">
-              Balance:{' '}
-              {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${backstopPool.token.symbol}`}
-            </p>
-          </div>
-          <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-            {isSwapPoolWithdraw && (
-              <div className="flex items-center justify-between text-sm">
-                <div>
-                  <span className="mr-1">Withdraw limit:</span>
-                  {spw.isLoading ? numberLoader : <>{prettyNumbers(withdrawLimit)} LP</>}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-1">
+                  <NumberInput
+                    autoFocus
+                    className="input-ghost w-full text-4xl font-2 py-3 px-0"
+                    placeholder="Amount"
+                    registerName="amount"
+                  />
+                  <Button
+                    className="bg-neutral-200 dark:bg-neutral-800 px-2 rounded-2xl"
+                    size="sm"
+                    type="button"
+                    onClick={tokenModal[1].setTrue}
+                  >
+                    <strong className="font-bold">{selectedPool?.token.symbol}</strong>
+                    <ChevronDownIcon className="w-4 h-4 inline" />
+                  </Button>
+                  <TransactionSettingsDropdown
+                    setSlippage={(slippage) => {
+                      setValue('slippage', slippage);
+                      updateStorage({ slippage });
+                    }}
+                    slippageProps={register('slippage', {
+                      valueAsNumber: true,
+                      onChange: (ev) =>
+                        updateStorage({
+                          slippage: Number(ev.currentTarget.value),
+                        }),
+                    })}
+                  />
                 </div>
               </div>
-            )}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-1">
-                <input
-                  autoFocus
-                  className="input-ghost w-full text-4xl font-2 py-3 px-0"
-                  placeholder="Amount"
-                  max={depositedBackstopLpTokenDecimalAmount}
-                  {...register('amount')}
-                />
-                <Button
-                  className="bg-neutral-200 dark:bg-neutral-800 px-2 rounded-2xl"
-                  size="sm"
-                  type="button"
-                  onClick={tokenModal[1].setTrue}
-                >
-                  <strong className="font-bold">{selectedPool?.token.symbol}</strong>
-                  <ChevronDownIcon className="w-4 h-4 inline" />
-                </Button>
-                <TransactionSettingsDropdown
-                  setSlippage={(slippage) => {
-                    setValue('slippage', slippage);
-                    updateStorage({ slippage });
-                  }}
-                  slippageProps={register('slippage', {
-                    valueAsNumber: true,
-                    onChange: (ev) =>
-                      updateStorage({
-                        slippage: Number(ev.currentTarget.value),
-                      }),
-                  })}
-                />
+              <Range
+                color="primary"
+                min={0}
+                max={100}
+                size="sm"
+                value={
+                  backstopLpTokenDecimalAmountToRedeem
+                    ? (backstopLpTokenDecimalAmountToRedeem / depositedBackstopLpTokenDecimalAmount) * 100
+                    : 0
+                }
+                onChange={(ev: ChangeEvent<HTMLInputElement>) =>
+                  setValue(
+                    'amount',
+                    roundNumber((Number(ev.currentTarget.value) / 100) * depositedBackstopLpTokenDecimalAmount, 4),
+                    {
+                      shouldDirty: true,
+                      shouldTouch: false,
+                    },
+                  )
+                }
+              />
+            </div>
+            <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
+              <div className="flex items-center justify-between">
+                <div>Amount</div>
+                <div>
+                  <TokenAmount
+                    address={backstopPool.id}
+                    abi={backstopPoolAbi}
+                    lpTokenDecimalAmount={backstopLpTokenDecimalAmountToRedeem}
+                    symbol={` ${backstopPool.token.symbol}`}
+                    fallback={0}
+                    lpTokenDecimals={backstopPool.lpTokenDecimals}
+                    poolTokenDecimals={backstopPool.token.decimals}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>Deposit</div>
+                <div>{roundNumber(depositedBackstopLpTokenDecimalAmount || 0)} LP</div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>Pool share</div>
+                <div>
+                  {minMax(
+                    calcSharePercentage(
+                      rawToDecimal(backstopPool.totalSupply || 0, backstopPool.lpTokenDecimals).toNumber(),
+                      depositedBackstopLpTokenDecimalAmount,
+                    ),
+                  )}
+                  %
+                </div>
               </div>
             </div>
-            <Range
-              color="primary"
-              min={0}
-              max={100}
-              size="sm"
-              value={
-                backstopLpTokenDecimalAmountToRedeem
-                  ? (backstopLpTokenDecimalAmountToRedeem / depositedBackstopLpTokenDecimalAmount) * 100
-                  : 0
-              }
-              onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                setValue(
-                  'amount',
-                  roundNumber((Number(ev.currentTarget.value) / 100) * depositedBackstopLpTokenDecimalAmount, 4),
-                  {
-                    shouldDirty: true,
-                    shouldTouch: false,
-                  },
-                )
-              }
-            />
-          </div>
-          <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
-            <div className="flex items-center justify-between">
-              <div>Amount</div>
-              <div>
-                <TokenAmount
-                  address={backstopPool.id}
-                  abi={backstopPoolAbi}
-                  lpTokenDecimalAmount={backstopLpTokenDecimalAmountToRedeem}
-                  symbol={` ${backstopPool.token.symbol}`}
-                  fallback={0}
-                  lpTokenDecimals={backstopPool.lpTokenDecimals}
-                  poolTokenDecimals={backstopPool.token.decimals}
-                />
-              </div>
+            <div className="mt-8">
+              <Validation className="text-center mb-2" errors={errors} />
+              <Button
+                color="primary"
+                className="w-full"
+                type="submit"
+                disabled={isLoading || Object.keys(errors).length > 0}
+              >
+                Withdraw
+              </Button>
+              <Button color="secondary" className="mt-2 w-full" type="button" onClick={() => toggle()}>
+                Cancel
+              </Button>
             </div>
-            <div className="flex items-center justify-between">
-              <div>Deposit</div>
-              <div>{roundNumber(depositedBackstopLpTokenDecimalAmount || 0)} LP</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Pool share</div>
-              <div>
-                {minMax(
-                  calcSharePercentage(
-                    rawToDecimal(backstopPool.totalSupply || 0, backstopPool.lpTokenDecimals).toNumber(),
-                    depositedBackstopLpTokenDecimalAmount,
-                  ),
-                )}
-                %
-              </div>
-            </div>
-          </div>
-          <div className="mt-8">
-            <Validation className="text-center mb-2" errors={errors} />
-            <Button color="primary" className="w-full" type="submit" disable={isLoading}>
-              Withdraw
-            </Button>
-            <Button color="secondary" className="mt-2 w-full" type="button" onClick={() => toggle()}>
-              Cancel
-            </Button>
-          </div>
-        </form>
+          </form>
+        </FormProvider>
       </div>
       <AssetSelectorModal
         assets={poolTokens}
