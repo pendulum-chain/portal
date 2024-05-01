@@ -5,6 +5,7 @@ import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
 import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';
+import { calculateGriefingCollateral } from './helpers';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -44,47 +45,15 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const [griefingCollateral, setGriefingCollateral] = useState(Big(0));
 
   useEffect(() => {
-    const checkInvalid = (value: unknown) => {
-      if (!value) {
-        setGriefingCollateral(Big(0));
-        return false;
-      }
-      return true;
-    };
-
-    const fetchGriefingCollateral = async () => {
-      if (!checkInvalid(amount)) return;
-
-      const assetCode = bridgedAsset?.code;
-      if (!checkInvalid(assetCode)) return;
-
-      const assetUSDPrice = await getTokenPrice(`${assetCode}${wrappedCurrencySuffix}`);
-      if (!checkInvalid(assetUSDPrice)) return;
-
-      const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
-
-      const griefingCollateralCurrency = fees.griefingCollateralCurrency?.toHuman();
-      if (!griefingCollateralCurrency || typeof griefingCollateralCurrency !== 'string') {
-        setGriefingCollateral(Big(0));
-        return;
-      }
-
-      const griefingCollateralCurrencyUSD = await getTokenPrice(griefingCollateralCurrency);
-      if (!checkInvalid(griefingCollateralCurrencyUSD)) return;
-
-      const griefingCollateralValue = amountUSD.mul(0.05).div(griefingCollateralCurrencyUSD);
-      setGriefingCollateral(griefingCollateralValue);
-    };
-
-    fetchGriefingCollateral();
-  }, [
-    amount,
-    bridgedAsset?.code,
-    fees.griefingCollateralCurrency,
-    fees.issueGriefingCollateral,
-    getTokenPrice,
-    wrappedCurrencySuffix,
-  ]);
+    calculateGriefingCollateral(
+      amount,
+      bridgedAsset?.code,
+      wrappedCurrencySuffix || '',
+      getTokenPrice,
+      fees.griefingCollateralCurrency?.toHuman() as string,
+      setGriefingCollateral,
+    );
+  }, [amount, bridgedAsset?.code, wrappedCurrencySuffix, getTokenPrice, fees.griefingCollateralCurrency]);
 
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {
