@@ -44,13 +44,23 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const [griefingCollateral, setGriefingCollateral] = useState(Big(0));
 
   useEffect(() => {
-    const fetchGriefingCollateral = async () => {
-      const assetCode = bridgedAsset?.code;
-      if (!assetCode) {
+    const checkInvalid = (value: unknown) => {
+      if (!value) {
         setGriefingCollateral(Big(0));
-        return;
+        return false;
       }
-      const assetUSDPrice = await getTokenPrice(assetCode + wrappedCurrencySuffix);
+      return true;
+    };
+
+    const fetchGriefingCollateral = async () => {
+      if (!checkInvalid(amount)) return;
+
+      const assetCode = bridgedAsset?.code;
+      if (!checkInvalid(assetCode)) return;
+
+      const assetUSDPrice = await getTokenPrice(`${assetCode}${wrappedCurrencySuffix}`);
+      if (!checkInvalid(assetUSDPrice)) return;
+
       const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
 
       const griefingCollateralCurrency = fees.griefingCollateralCurrency?.toHuman();
@@ -60,6 +70,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
       }
 
       const griefingCollateralCurrencyUSD = await getTokenPrice(griefingCollateralCurrency);
+      if (!checkInvalid(griefingCollateralCurrencyUSD)) return;
 
       const griefingCollateralValue = amountUSD.mul(0.05).div(griefingCollateralCurrencyUSD);
       setGriefingCollateral(griefingCollateralValue);
