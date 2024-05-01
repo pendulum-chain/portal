@@ -2,6 +2,8 @@ import request from 'graphql-request';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
 import { PriceFetcherAsset, TOKENS } from '../constants/tokens';
+import { TenantName } from '../models/Tenant';
+import useSwitchChain from './useSwitchChain';
 
 const AMPLITUDE_INDEXER_URL = 'https://squid.subsquid.io/amplitude-squid/graphql';
 
@@ -79,6 +81,7 @@ const getPrice = async (asset: PriceFetcherAsset) => {
 
 export const usePriceFetcher = () => {
   const [pricesCache, setPricesCache] = useState<PricesCache>({});
+  const { currentTenant } = useSwitchChain();
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -92,12 +95,20 @@ export const usePriceFetcher = () => {
     fetchPrices();
   }, []);
 
+  const handleNativeTokenPrice = useCallback(() => {
+    if (currentTenant === TenantName.Pendulum) return pricesCache['PEN'];
+    return pricesCache['AMPE'];
+  }, [currentTenant, pricesCache]);
+
   const getTokenPrice = useCallback(
     async (asset: OrmlTraitsAssetRegistryAssetMetadata | string) => {
       if (typeof asset === 'string') {
         try {
-          const cachedAssetPrice = pricesCache[asset];
-          if (cachedAssetPrice) return cachedAssetPrice;
+          if (asset.toUpperCase() === 'NATIVE') return handleNativeTokenPrice();
+          else {
+            const cachedAssetPrice = pricesCache[asset];
+            if (cachedAssetPrice) return cachedAssetPrice;
+          }
         } catch (e) {
           console.error(e);
         }
@@ -113,7 +124,7 @@ export const usePriceFetcher = () => {
       }
       return 0;
     },
-    [pricesCache],
+    [handleNativeTokenPrice, pricesCache],
   );
 
   return { getTokenPrice };
