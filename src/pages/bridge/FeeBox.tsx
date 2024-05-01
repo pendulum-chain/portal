@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
 import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
+import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 
 interface FeeBoxProps {
   bridgedAsset?: Asset;
@@ -20,6 +21,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const amount = props.amountNative;
   const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
   const { getFees, getTransactionFee } = useFeePallet();
+  const { getTokenPrice } = usePriceFetcher();
   const fees = getFees();
 
   const [collapseVisibility, setCollapseVisibility] = useState('');
@@ -39,9 +41,39 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     return nativeStellarToDecimal(amount.mul(fees.issueFee));
   }, [amount, fees]);
 
-  const griefingCollateral = useMemo(() => {
-    return nativeStellarToDecimal(amount.mul(fees.issueGriefingCollateral));
-  }, [amount, fees]);
+  const [griefingCollateral, setGriefingCollateral] = useState(Big(0));
+
+  useEffect(() => {
+    const fetchGriefingCollateral = async () => {
+      const assetCode = bridgedAsset?.code;
+      if (!assetCode) {
+        setGriefingCollateral(Big(0));
+        return;
+      }
+      const assetUSDPrice = await getTokenPrice(assetCode + wrappedCurrencySuffix);
+      const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
+
+      const griefingCollateralCurrency = fees.griefingCollateralCurrency?.toHuman();
+      if (!griefingCollateralCurrency || typeof griefingCollateralCurrency !== 'string') {
+        setGriefingCollateral(Big(0));
+        return;
+      }
+
+      const griefingCollateralCurrencyUSD = await getTokenPrice(griefingCollateralCurrency);
+
+      const griefingCollateralValue = amountUSD.mul(0.05).div(griefingCollateralCurrencyUSD);
+      setGriefingCollateral(griefingCollateralValue);
+    };
+
+    fetchGriefingCollateral();
+  }, [
+    amount,
+    bridgedAsset?.code,
+    fees.griefingCollateralCurrency,
+    fees.issueGriefingCollateral,
+    getTokenPrice,
+    wrappedCurrencySuffix,
+  ]);
 
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {
@@ -62,6 +94,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
 
     return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
+
   return (
     <div
       tabIndex={0}
