@@ -13,6 +13,7 @@ import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
 import { decimalToNative } from '../../shared/parseNumbers/metric';
 import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 export interface BuyoutSettings {
   buyoutNativeToken: {
@@ -70,14 +71,13 @@ export const useBuyout = (): BuyoutSettings => {
       if (api) {
         const allowedCurrenciesEntries = await api.query.treasuryBuyoutExtension.allowedCurrencies.entries();
 
-        for (const currency of allowedCurrenciesEntries) {
-          if (currency.length && currency[0] && currency[0].toHuman()) {
-            const currencyXCMId: { XCM: number } = (currency[0].toHuman() as { XCM: number }[])[0];
-            const currencyMetadata = await getAssetMetadata(currencyXCMId);
+        for (const [currency, _] of allowedCurrenciesEntries) {
+          const currencyKeyHuman = currency.toHuman() as unknown as SpacewalkPrimitivesCurrencyId[];
+          const currencyId = currencyKeyHuman[0];
+          const currencyMetadata = await getAssetMetadata(currencyId);
 
-            if (currencyMetadata) {
-              allowedCurrencies.push(currencyMetadata);
-            }
+          if (currencyMetadata) {
+            allowedCurrencies.push(currencyMetadata);
           }
         }
       }
