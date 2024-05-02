@@ -12,7 +12,7 @@ import { GasSkeleton } from './GasSkeleton';
 
 const Gas = () => {
   const { currencies, buyoutNativeToken, sellFee, nativeCurrency, handleBuyout } = useBuyout();
-  const { getTokenPrice } = usePriceFetcher();
+  const { getTokenPriceForCurrency } = usePriceFetcher();
 
   const [selectedFromToken, setSelectedFromToken] = useState<BlockchainAsset | undefined>(undefined);
   const [selectedFromTokenPriceUSD, setSelectedFromTokenPriceUSD] = useState<number>(0);
@@ -23,16 +23,16 @@ const Gas = () => {
   useEffect(() => {
     const fetchPricesCache = async () => {
       if (nativeCurrency && isOrmlAsset(selectedFromToken)) {
-        const tokenPrice = await getTokenPrice(selectedFromToken.metadata.symbol);
+        const tokenPrice = await getTokenPriceForCurrency(selectedFromToken.currencyId);
 
         if (!tokenPrice) {
-          const fetchedTokenPrice = await getTokenPrice(selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata);
+          const fetchedTokenPrice = await getTokenPriceForCurrency(selectedFromToken.currencyId);
           setSelectedFromTokenPriceUSD(fetchedTokenPrice);
         } else {
           setSelectedFromTokenPriceUSD(tokenPrice);
         }
 
-        const nativeTokenPrice = await getTokenPrice(nativeCurrency.metadata.symbol);
+        const nativeTokenPrice = await getTokenPriceForCurrency(nativeCurrency.currencyId);
         // We add the sellFee to the native price to already accommodate for it in the calculations
         const nativeTokenPriceWithFee = sellFee.addSelfToBase(nativeTokenPrice);
         setNativeTokenPrice(nativeTokenPriceWithFee);
@@ -40,7 +40,7 @@ const Gas = () => {
     };
 
     fetchPricesCache().catch(console.error);
-  }, [nativeCurrency, selectedFromToken, sellFee, getTokenPrice]);
+  }, [nativeCurrency, selectedFromToken, sellFee, getTokenPriceForCurrency]);
 
   useEffect(() => {
     if (!selectedFromToken) {

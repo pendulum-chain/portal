@@ -132,14 +132,14 @@ export const useBuyout = (): BuyoutSettings => {
 
     const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
 
-    const assetId = currency.assetId as { XCM: number };
+    const assetId = currency.currencyId.asXcm;
 
     // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
     const exchange = isExchangeAmount
       ? { buyout: { amount: scaledCurrency } }
       : { exchange: { amount: scaledCurrency } };
 
-    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
+    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, exchange);
 
     try {
       await doSubmitExtrinsic(
