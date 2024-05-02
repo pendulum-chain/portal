@@ -1,6 +1,6 @@
 export type PoolProgressProps = {
   symbol: string;
-  amount: number;
+  amount: string;
   className?: string;
 };
 

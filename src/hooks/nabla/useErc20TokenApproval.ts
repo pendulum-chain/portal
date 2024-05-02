@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'preact/compat';
+import { Big } from 'big.js';
+
 import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';
 import { getMessageCallValue } from '../../shared/helpers';
-import { decimalToRaw, rawToDecimal } from '../../shared/parseNumbers/metric';
+import { rawToDecimal } from '../../shared/parseNumbers/metric';
 import { useSharedState } from '../../shared/Provider';
 import { useErc20TokenAllowance } from './useErc20TokenAllowance';
-import { UseContractWriteProps, useContractWrite } from './useContractWrite';
+import { UseContractWriteProps, UseContractWriteResult, useContractWrite } from './useContractWrite';
 
 export enum ApprovalState {
   UNKNOWN,
@@ -16,14 +18,19 @@ export enum ApprovalState {
   NO_ACCOUNT,
 }
 
-interface UseTokenApprovalParams {
+interface UseErc20TokenApprovalParams {
   spender: string;
   token: string;
-  decimalAmount: number;
+  decimalAmount: Big | undefined;
   enabled?: boolean;
   decimals: number;
   onError?: (err: any) => void;
   onSuccess?: UseContractWriteProps<Dict>['mutateOptions']['onSuccess'];
+}
+
+interface UseErc20TokenApprovalResult {
+  state: ApprovalState;
+  mutate: UseContractWriteResult['mutate'];
 }
 
 export function useErc20TokenApproval({
@@ -34,10 +41,10 @@ export function useErc20TokenApproval({
   decimals,
   onError,
   onSuccess,
-}: UseTokenApprovalParams) {
+}: UseErc20TokenApprovalParams): UseErc20TokenApprovalResult {
   const { address } = useSharedState();
   const [pending, setPending] = useState(false);
-  const nativeAmount = decimalToRaw(decimalAmount, decimals);
+
   const isEnabled = Boolean(spender && address && enabled);
 
   const {
@@ -57,7 +64,6 @@ export function useErc20TokenApproval({
     abi: erc20WrapperAbi,
     address: token,
     method: 'approve',
-    args: [spender, nativeAmount.toString()],
     mutateOptions: {
       onError: (err) => {
         setPending(false);
@@ -76,11 +82,11 @@ export function useErc20TokenApproval({
 
   const allowanceValue = getMessageCallValue(allowanceData);
   const allowanceDecimalAmount = useMemo(
-    () => (allowanceValue !== undefined ? rawToDecimal(allowanceValue.toString(), decimals).toNumber() : undefined),
+    () => (allowanceValue !== undefined ? rawToDecimal(allowanceValue.toString(), decimals) : undefined),
     [allowanceValue, decimals],
   );
 
-  return useMemo<[ApprovalState, typeof mutation]>(() => {
+  return useMemo(() => {
     let state = ApprovalState.UNKNOWN;
 
     if (address === undefined) state = ApprovalState.NO_ACCOUNT;
@@ -89,18 +95,18 @@ export function useErc20TokenApproval({
     else if (
       allowanceDecimalAmount !== undefined &&
       decimalAmount !== undefined &&
-      allowanceDecimalAmount >= decimalAmount
+      allowanceDecimalAmount.gte(decimalAmount)
     ) {
       state = ApprovalState.APPROVED;
     } else if (pending || mutation.isLoading) state = ApprovalState.PENDING;
     else if (
       allowanceDecimalAmount !== undefined &&
       decimalAmount !== undefined &&
-      allowanceDecimalAmount < decimalAmount
+      allowanceDecimalAmount.lt(decimalAmount)
     ) {
       state = ApprovalState.NOT_APPROVED;
     }
 
-    return [state, mutation];
+    return { state, mutate: mutation.mutate };
   }, [allowanceDecimalAmount, decimalAmount, mutation, isAllowanceLoading, pending, address]);
 }

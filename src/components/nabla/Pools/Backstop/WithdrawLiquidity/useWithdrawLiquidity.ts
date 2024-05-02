@@ -18,7 +18,7 @@ import { useSwapPoolWithdraw } from './useSwapPoolWithdraw';
 import { NablaInstance, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { useContractBalance } from '../../../../../hooks/nabla/useContractBalance';
+import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 
 const storageSet = debounce(storageService.set, 1000);
 export const useWithdrawLiquidity = (nabla: NablaInstance) => {
@@ -32,16 +32,14 @@ export const useWithdrawLiquidity = (nabla: NablaInstance) => {
   const toggle = useModalToggle();
   const tokenModal = useBoolean();
 
-  const balanceQuery = useContractBalance({
+  const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
     contractAddress: tokenAddress,
     decimals: nabla.backstopPool.token.decimals,
-    abi: erc20WrapperAbi,
   });
 
-  const depositQuery = useContractBalance({
+  const depositQuery = useErc20ContractBalance(backstopPoolAbi, {
     contractAddress: poolAddress,
     decimals: nabla.backstopPool.lpTokenDecimals,
-    abi: backstopPoolAbi,
   });
 
   const { refetch: balanceRefetch } = balanceQuery;
@@ -88,7 +86,7 @@ export const useWithdrawLiquidity = (nabla: NablaInstance) => {
   const isSwapPoolWithdraw = !!address && address.length > 5;
   const swapPoolWithdraw = useSwapPoolWithdraw({
     backstopPool: nabla.backstopPool,
-    depositedBackstopLpTokenDecimalAmount: depositQuery.balance || 0,
+    depositedBackstopLpTokenDecimalAmount: depositQuery.balance?.approximateNumber ?? 0,
     selectedSwapPool: selectedPool,
     enabled: isSwapPoolWithdraw,
     onSuccess: onWithdrawSuccess,

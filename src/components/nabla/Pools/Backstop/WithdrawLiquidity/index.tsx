@@ -7,7 +7,7 @@ import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcSharePercentage, getPoolSurplusNativeAmount, minMax } from '../../../../../helpers/calc';
 import { prettyNumbers, rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
-import { numberLoader } from '../../../../Loader';
+import { NumberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -17,10 +17,6 @@ import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenAmount } from '../../../common/TokenAmount';
 import { FormProvider } from 'react-hook-form';
 import { NumberInput } from '../../../common/NumberInput';
-
-const filter = (swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] => {
-  return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
-};
 
 const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element | null => {
   const {
@@ -94,7 +90,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
               <p>
                 Deposited:{' '}
                 {depositQuery.isLoading ? (
-                  numberLoader
+                  <NumberLoader />
                 ) : (
                   <span
                     role="button"
@@ -109,7 +105,11 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
               </p>
               <p className="text-neutral-500 dark:text-neutral-400 text-right">
                 Balance:{' '}
-                {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${backstopPool.token.symbol}`}
+                {balanceQuery.isLoading ? (
+                  <NumberLoader />
+                ) : (
+                  `${balanceQuery.formatted || 0} ${backstopPool.token.symbol}`
+                )}
               </p>
             </div>
             <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
@@ -117,7 +117,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                 <div className="flex items-center justify-between text-sm">
                   <div>
                     <span className="mr-1">Withdraw limit:</span>
-                    {spw.isLoading ? numberLoader : <>{prettyNumbers(withdrawLimit)} LP</>}
+                    {spw.isLoading ? <NumberLoader /> : <>{prettyNumbers(withdrawLimit)} LP</>}
                   </div>
                 </div>
               )}
@@ -239,7 +239,11 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
   );
 };
 
-const WithdrawLiquidity = () => {
+function filter(swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] {
+  return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
+}
+
+function WithdrawLiquidity() {
   const { nabla, isLoading } = useNablaInstance();
 
   const filteredNabla = useMemo(
@@ -258,6 +262,6 @@ const WithdrawLiquidity = () => {
   if (!filteredNabla) return <>Nothing found</>;
 
   return <WithdrawLiquidityBody nabla={filteredNabla} />;
-};
+}
 
 export default WithdrawLiquidity;

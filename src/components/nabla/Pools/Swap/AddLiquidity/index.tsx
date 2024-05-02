@@ -4,7 +4,7 @@ import { PoolProgress } from '../..';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
-import { numberLoader } from '../../../../Loader';
+import { NumberLoader } from '../../../../Loader';
 import { SwapPoolColumn } from '../columns';
 import { useAddLiquidity } from './useAddLiquidity';
 import { TransactionProgress } from '../../../common/TransactionProgress';
@@ -61,10 +61,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
           <form onSubmit={onSubmit}>
             <div>
               <div className="flex justify-between align-end text-sm text-initial my-3">
-                <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
+                <p>Deposited: {depositQuery.isLoading ? <NumberLoader /> : `${depositQuery.formatted || 0} LP`}</p>
                 <p className="text-neutral-500 dark:text-neutral-400 text-right">
                   Balance:{' '}
-                  {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+                  {balanceQuery.isLoading ? <NumberLoader /> : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
                 </p>
               </div>
               <div className="relative flex gap-1 items-center rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
@@ -105,19 +105,21 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300  p-4 mt-4">
               <div className="flex items-center justify-between">
                 <div>Total deposit</div>
-                <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
+                <div>{depositQuery.isLoading ? <NumberLoader /> : `${roundNumber(deposit)} ${data.token.symbol}`}</div>
               </div>
               <div className="flex items-center justify-between">
                 <div>Pool Share</div>
                 <div>
-                  {depositQuery.isLoading
-                    ? numberLoader
-                    : minMax(
-                        calcSharePercentage(
-                          rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
-                          deposit,
-                        ),
-                      )}
+                  {depositQuery.isLoading ? (
+                    <NumberLoader />
+                  ) : (
+                    minMax(
+                      calcSharePercentage(
+                        rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
+                        deposit,
+                      ),
+                    )
+                  )}
                   %
                 </div>
               </div>

@@ -7,7 +7,7 @@ import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
-import { useContractBalance } from '../../../hooks/nabla/useContractBalance';
+import { useErc20ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
 import { NumberInput } from '../common/NumberInput';
 
 export interface FromProps {
@@ -23,12 +23,16 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
     name: 'from',
   });
 
-  const token = tokensMap[from];
-  const { formatted, balance } = useContractBalance({
-    contractAddress: token?.id,
-    decimals: token?.decimals,
-    abi: erc20WrapperAbi,
-  });
+  const token: NablaInstanceToken = tokensMap[from];
+  const { balance } = useErc20ContractBalance(
+    erc20WrapperAbi,
+    token
+      ? {
+          contractAddress: token.id,
+          decimals: token.decimals,
+        }
+      : undefined,
+  );
 
   const inputHasError = errorMessage !== undefined;
 
@@ -63,17 +67,20 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
         <div className="flex gap-1 text-sm">
           {balance !== undefined && (
             <Fragment>
-              <span className="mr-1">Balance: {formatted}</span>
+              <span className="mr-1" title={balance.preciseString}>
+                Your Balance:{' '}
+                {`${balance.approximateStrings.atLeast2Decimals}${token?.symbol ? ` ${token?.symbol}` : ''}`}
+              </span>
               <button
                 className="text-primary hover:underline"
-                onClick={() => setValue('fromAmount', Number(balance) * 0.5)}
+                onClick={() => setValue('fromAmount', balance.approximateNumber * 0.5)}
                 type="button"
               >
                 50%
               </button>
               <button
                 className="text-primary hover:underline"
-                onClick={() => setValue('fromAmount', Number(balance))}
+                onClick={() => setValue('fromAmount', balance.approximateNumber)}
                 type="button"
               >
                 MAX
@@ -81,7 +88,6 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
             </Fragment>
           )}
         </div>
-        {errorMessage !== undefined && <div className="text-red-500 text-sm">{errorMessage}</div>}
       </div>
     </div>
   );

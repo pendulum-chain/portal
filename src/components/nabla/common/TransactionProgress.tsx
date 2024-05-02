@@ -3,14 +3,10 @@ import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import Spinner from '../../../assets/spinner';
-import { useGetTenantConfig } from '../../../hooks/useGetTenantConfig';
 import { UseContractWriteResponse } from '../../../hooks/nabla/useContractWrite';
 
 export interface TransactionProgressProps {
-  mutation: Pick<
-    UseContractWriteResponse,
-    'isIdle' | 'isLoading' | 'isSuccess' | 'isError' | 'data' | 'status' | 'transaction'
-  >;
+  mutation: UseContractWriteResponse;
   children?: ComponentChildren;
   onClose: () => void;
 }
@@ -30,7 +26,6 @@ const getErrorMessage = (data?: MessageCallResult['result']) => {
 };
 
 export function TransactionProgress({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null {
-  const { explorer } = useGetTenantConfig();
   if (mutation.isIdle) return null;
   const status = mutation.data?.result?.type;
   const isSuccess = status === 'success';
@@ -69,17 +64,6 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
         <Button color="primary" className="w-full mt-6" onClick={onClose}>
           Close
         </Button>
-      )}
-      {!!mutation.transaction?.hex && (
-        <a
-          className="btn btn-secondary w-full mt-2"
-          href={`${explorer}/${mutation.transaction.hex}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={onClose}
-        >
-          Transaction details
-        </a>
       )}
     </>
   );

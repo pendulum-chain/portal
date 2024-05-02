@@ -23,7 +23,12 @@ const BackstopPoolsBody = (): JSX.Element | null => {
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>
-                <Erc20Balance address={pool.id} decimals={pool.token.decimals} abi={backstopPoolAbi} />
+                <Erc20Balance
+                  address={pool.id}
+                  decimals={pool.token.decimals}
+                  abi={backstopPoolAbi}
+                  symbol={pool.symbol}
+                />
               </div>
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
@@ -45,7 +50,6 @@ const BackstopPoolsBody = (): JSX.Element | null => {
                 onClick={() =>
                   toggle({
                     type: ModalTypes.WithdrawLiquidity,
-                    props: { data: pool },
                   })
                 }
               >

@@ -119,5 +119,24 @@ export const roundNumber = (value: number | string = 0, round = 6) => {
   return +Number(value).toFixed(round);
 };
 
+// Round a number to a specified number of decimals
+// If the number is small, ensure that the required number of significant
+// decimals is retained
+// e.g., if decimals = 2, then
+// - 12345 -> 12345
+// - 12.345 -> 12.34
+// - 1.2345 -> 1.23
+// - 0.012345 -> 0.012
+// - 0.00012345 -> 0.00012
+export function roundToSignificantDecimals(big: BigNumber, decimals: number) {
+  return big.prec(Math.max(0, big.e + 1) + decimals, 0);
+}
+
+export function multiplyByPowerOfTen(bigDecimal: BigNumber, power: number) {
+  const newBigDecimal = new BigNumber(bigDecimal);
+  newBigDecimal.e += power;
+  return newBigDecimal;
+}
+
 /** Calculate deadline from minutes */
 export const calcDeadline = (min: number) => `${Math.floor(Date.now() / 1000) + min * 60}`;

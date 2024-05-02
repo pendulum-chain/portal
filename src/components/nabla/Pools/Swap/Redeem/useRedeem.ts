@@ -19,7 +19,7 @@ import schema from './schema';
 import { RedeemLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
-import { useContractBalance } from '../../../../../hooks/nabla/useContractBalance';
+import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 
 export const setValueProps = {
@@ -47,16 +47,14 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
   const tokenAddress = swapPoolData.token.id;
   const backstopPoolAddress = swapPoolData.backstopPool.id;
 
-  const balanceQuery = useContractBalance({
+  const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
     contractAddress: tokenAddress,
     decimals: swapPoolData.token.decimals,
-    abi: erc20WrapperAbi,
   });
 
-  const depositQuery = useContractBalance({
+  const depositQuery = useErc20ContractBalance(swapPoolAbi, {
     contractAddress: poolAddress,
     decimals: swapPoolData.lpTokenDecimals,
-    abi: swapPoolAbi,
   });
 
   const form = useForm<RedeemLiquidityValues>({

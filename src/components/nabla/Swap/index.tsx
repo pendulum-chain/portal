@@ -9,6 +9,7 @@ import SwapProgress from './Progress';
 import To from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 import { AssetSelectorModal } from '../common/AssetSelectorModal';
+import Validation from '../../Form/Validation';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -87,6 +88,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               onOpenSelector={() => setModalType('to')}
               inputHasError={errors.to !== undefined}
             />
+            <Validation className="text-center mb-2" errors={errors} />
             <div className="mt-6">
               {/* <Validation errors={errors} className="mb-2" /> */}
               <ApprovalSubmit

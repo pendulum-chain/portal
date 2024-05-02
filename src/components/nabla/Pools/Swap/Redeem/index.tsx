@@ -6,7 +6,7 @@ import { config } from '../../../../../config';
 import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
-import { numberLoader } from '../../../../Loader';
+import { NumberLoader } from '../../../../Loader';
 import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import { SwapPoolColumn } from '../columns';
 import { useRedeem } from './useRedeem';
@@ -57,9 +57,10 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
+              <p>Deposited: {depositQuery.isLoading ? <NumberLoader /> : `${depositQuery.formatted || 0} LP`}</p>
               <p className="text-neutral-500 text-right">
-                Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+                Balance:{' '}
+                {balanceQuery.isLoading ? <NumberLoader /> : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
               </p>
             </div>
             <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">

@@ -61,7 +61,7 @@ export function useContractRead(
           });
 
           if (isDevelopment) {
-            console.log('read', 'messageCall result', method, response);
+            console.log('read', 'Call message result', address, method, args, response);
           }
 
           return response;

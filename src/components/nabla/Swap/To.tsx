@@ -9,7 +9,7 @@ import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { rawToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers/metric';
-import { numberLoader } from '../../Loader';
+import { NumberLoader } from '../../Loader';
 import { Skeleton } from '../../Skeleton';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
@@ -114,7 +114,7 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
       <div className="w-full flex justify-between">
         <div className="flex-grow text-4xl text-[inherit] font-outfit">
           {loading ? (
-            numberLoader
+            <NumberLoader />
           ) : value ? (
             `${value}`
           ) : fromDecimalAmount > 0 ? (
@@ -141,7 +141,13 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
       <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
         <div className="text-sm mt-px">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
         <div className="flex gap-1 text-sm">
-          Balance: <Erc20Balance address={toToken?.id} decimals={toToken?.decimals} abi={erc20WrapperAbi} />
+          Your balance:{' '}
+          <Erc20Balance
+            address={toToken?.id}
+            decimals={toToken?.decimals}
+            abi={erc20WrapperAbi}
+            symbol={toToken?.symbol}
+          />
         </div>
       </div>
       <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />

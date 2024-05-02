@@ -1,18 +1,20 @@
-import { useContractBalance } from '../../../hooks/nabla/useContractBalance';
-import { numberLoader } from '../../Loader';
+import { useErc20ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
+import { NumberLoader } from '../../Loader';
 
 export type Erc20BalanceProps = {
-  address: string | undefined;
-  decimals: number | undefined;
   abi: Dict;
+  erc20ContractDefinition: { contractAddress: string; decimals: number; symbol?: string } | undefined;
 };
 
-export function Erc20Balance({ address, decimals, abi }: Erc20BalanceProps): JSX.Element | null {
-  const { isLoading, formatted, enabled } = useContractBalance({ contractAddress: address, decimals, abi });
+export function Erc20Balance({ erc20ContractDefinition, abi }: Erc20BalanceProps): JSX.Element | null {
+  const { isLoading, balance } = useErc20ContractBalance(abi, erc20ContractDefinition);
+  if (balance === undefined || erc20ContractDefinition === undefined || isLoading) return <NumberLoader />;
 
-  if (address === undefined || decimals === undefined || !enabled) return numberLoader;
+  const { symbol } = erc20ContractDefinition;
+  const {
+    preciseString,
+    approximateStrings: { atLeast2Decimals },
+  } = balance;
 
-  if (isLoading) return numberLoader;
-
-  return <span title={formatted}>{formatted ?? 0}</span>;
+  return <span title={preciseString}>{`${atLeast2Decimals}${symbol ? ` ${symbol}` : ''}`}</span>;
 }

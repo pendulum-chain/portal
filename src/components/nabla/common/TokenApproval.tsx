@@ -1,9 +1,13 @@
 import { Button, ButtonProps } from 'react-daisyui';
+import { Big } from 'big.js';
+
 import { ApprovalState, useErc20TokenApproval } from '../../../hooks/nabla/useErc20TokenApproval';
+import { useCallback } from 'preact/hooks';
+import { multiplyByPowerOfTen } from '../../../shared/parseNumbers/metric';
 
 export type TokenApprovalProps = ButtonProps & {
   token: string;
-  decimalAmount: number;
+  decimalAmount: Big | undefined;
   /** contract address (eg. router address) */
   spender: string;
   enabled?: boolean;
@@ -23,7 +27,7 @@ export function TokenApproval({
   disabled,
   ...rest
 }: TokenApprovalProps): JSX.Element | null {
-  const approval = useErc20TokenApproval({
+  const { state, mutate } = useErc20TokenApproval({
     decimalAmount,
     token,
     spender,
@@ -31,11 +35,18 @@ export function TokenApproval({
     decimals,
   });
 
-  if (approval[0] === ApprovalState.APPROVED || !enabled) return <>{children}</>;
+  const onClick = useCallback(() => {
+    if (state === ApprovalState.PENDING || decimalAmount === undefined) return;
 
-  const noAccount = approval[0] === ApprovalState.NO_ACCOUNT;
-  const isPending = approval[0] === ApprovalState.PENDING;
-  const isLoading = approval[0] === ApprovalState.LOADING;
+    const nativeAmount = multiplyByPowerOfTen(decimalAmount, decimals);
+    mutate([spender, nativeAmount.toFixed()]);
+  }, [state, mutate, decimalAmount, decimals, spender]);
+
+  if (state === ApprovalState.APPROVED || !enabled) return <>{children}</>;
+
+  const noAccount = state === ApprovalState.NO_ACCOUNT;
+  const isPending = state === ApprovalState.PENDING;
+  const isLoading = state === ApprovalState.LOADING;
 
   return (
     <Button
@@ -43,8 +54,8 @@ export function TokenApproval({
       color="primary"
       {...rest}
       type="button"
-      disabled={noAccount || isPending || disabled}
-      onClick={isPending ? undefined : () => approval[1].mutate()}
+      disabled={noAccount || isPending || disabled || decimalAmount === undefined}
+      onClick={onClick}
     >
       {noAccount ? 'Please connect your wallet' : isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}
     </Button>

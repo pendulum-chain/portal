@@ -118,7 +118,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
       };
       updateStorage(updated);
       setValue('from', updated.from);
-      if (updated.to && prev?.to === f) setValue('to', updated.to);
+      //if (updated.to && prev?.to === f) setValue('to', updated.to);
       if (onChange && event) onChange(updated.from, updated.to);
       setTokenModal(undefined);
     },

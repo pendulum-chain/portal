@@ -1,11 +1,13 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { ChangeEvent, useEffect } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
+import { Big } from 'big.js';
+
 import { PoolProgress } from '../..';
-import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
+import { minMax } from '../../../../../helpers/calc';
+import { rawToDecimal } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
-import { numberLoader } from '../../../../Loader';
+import { NumberLoader } from '../../../../Loader';
 import { useAddLiquidity } from './useAddLiquidity';
 import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
 import { TransactionProgress } from '../../../common/TransactionProgress';
@@ -13,17 +15,17 @@ import { TokenApproval } from '../../../common/TokenApproval';
 import { FormProvider } from 'react-hook-form';
 import { NumberInput } from '../../../common/NumberInput';
 
-export type AddLiquidityProps = {
+interface AddLiquidityProps {
   data: NablaInstanceBackstopPool;
-};
+}
+
+function calcSharePercentage(total: Big, share: Big) {
+  return share.div(total).mul(new Big(100)).toNumber();
+}
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
-  const { toggle, onSubmit, mutation, balanceQuery, depositQuery, decimalAmount, form } = useAddLiquidity(
-    data.id,
-    data.token.id,
-    data.token.decimals,
-    data.lpTokenDecimals,
-  );
+  const { toggle, onSubmit, mutation, poolTokenBalance, lpTokenBalance, amountString, amountBigDecimal, form } =
+    useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
 
   const {
     setError,
@@ -33,21 +35,27 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   } = form;
 
   useEffect(() => {
-    if (balanceQuery.balance !== undefined && decimalAmount > balanceQuery.balance) {
+    console.log('amountString', amountString);
+    console.log('amountBigDecimal', amountBigDecimal);
+    if (amountString.length > 0 && amountBigDecimal === undefined) {
+      setError('amount', { type: 'custom', message: 'Enter a proper number' });
+    }
+    if (
+      poolTokenBalance !== undefined &&
+      amountBigDecimal !== undefined &&
+      amountBigDecimal.gt(poolTokenBalance.preciseBigDecimal)
+    ) {
       setError('amount', { type: 'custom', message: 'Amount exceeds balance' });
     } else {
       clearErrors('amount');
     }
-  }, [decimalAmount, balanceQuery.balance, setError, clearErrors]);
-
-  const balance = balanceQuery.balance || 0;
-  const deposit = depositQuery.balance || 0;
+  }, [amountString, amountBigDecimal, poolTokenBalance, setError, clearErrors]);
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.token.symbol} amount={decimalAmount} />
+        <PoolProgress symbol={data.token.symbol} amount={amountString} />
       </TransactionProgress>
       <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
@@ -59,9 +67,25 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>Deposited: {depositQuery.isLoading ? numberLoader : `${depositQuery.formatted || 0} LP`}</p>
+              <p>
+                Deposited:{' '}
+                <span title={lpTokenBalance?.preciseString}>
+                  {lpTokenBalance === undefined ? (
+                    <NumberLoader />
+                  ) : (
+                    `${lpTokenBalance.approximateStrings.atLeast2Decimals} ${data.symbol}`
+                  )}
+                </span>
+              </p>
               <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance: {balanceQuery.isLoading ? numberLoader : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+                Balance:{' '}
+                <span title={poolTokenBalance?.preciseString}>
+                  {poolTokenBalance === undefined ? (
+                    <NumberLoader />
+                  ) : (
+                    `${poolTokenBalance.approximateStrings.atLeast2Decimals} ${data.token.symbol}`
+                  )}
+                </span>
               </p>
             </div>
             <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
@@ -77,12 +101,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                     className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
                     size="sm"
                     type="button"
-                    onClick={() =>
-                      setValue('amount', balance / 2, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      })
-                    }
+                    onClick={() => {
+                      if (poolTokenBalance !== undefined) {
+                        setValue('amount', poolTokenBalance.preciseBigDecimal.div(new Big('2')).toFixed(2), {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        });
+                      }
+                    }}
                   >
                     50%
                   </Button>
@@ -90,12 +116,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                     className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
                     size="sm"
                     type="button"
-                    onClick={() =>
-                      setValue('amount', balance, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      })
-                    }
+                    onClick={() => {
+                      if (poolTokenBalance !== undefined) {
+                        setValue('amount', poolTokenBalance.approximateStrings.atLeast2Decimals, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        });
+                      }
+                    }}
                   >
                     MAX
                   </Button>
@@ -106,31 +134,51 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 min={0}
                 max={100}
                 size="sm"
-                value={decimalAmount ? (decimalAmount / balance) * 100 : 0}
-                onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                  setValue('amount', roundNumber((Number(ev.currentTarget.value) / 100) * balance, 4), {
-                    shouldDirty: true,
-                    shouldTouch: false,
-                  })
+                value={
+                  amountBigDecimal && poolTokenBalance
+                    ? amountBigDecimal.div(poolTokenBalance.preciseBigDecimal).toNumber() * 100
+                    : 0
                 }
+                onChange={(ev: ChangeEvent<HTMLInputElement>) => {
+                  if (poolTokenBalance === undefined) return;
+                  setValue(
+                    'amount',
+                    new Big(ev.currentTarget.value)
+                      .div(new Big('100'))
+                      .mul(poolTokenBalance.preciseBigDecimal)
+                      .toFixed(2, 0),
+                    {
+                      shouldDirty: true,
+                      shouldTouch: false,
+                    },
+                  );
+                }}
               />
             </div>
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
               <div className="flex items-center justify-between">
                 <div>Total deposit</div>
-                <div>{depositQuery.isLoading ? numberLoader : `${roundNumber(deposit)} LP`}</div>
+                <div>
+                  {lpTokenBalance === undefined ? (
+                    <NumberLoader />
+                  ) : (
+                    `${lpTokenBalance.approximateStrings.atLeast2Decimals} LP`
+                  )}
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <div>Pool Share</div>
                 <div>
-                  {depositQuery.isLoading
-                    ? numberLoader
-                    : minMax(
-                        calcSharePercentage(
-                          rawToDecimal(data.totalSupply || 0, data.token.decimals).toNumber(),
-                          deposit,
-                        ),
-                      )}
+                  {lpTokenBalance === undefined ? (
+                    <NumberLoader />
+                  ) : (
+                    minMax(
+                      calcSharePercentage(
+                        rawToDecimal(data.totalSupply, data.token.decimals),
+                        lpTokenBalance.preciseBigDecimal,
+                      ),
+                    )
+                  )}
                   %
                 </div>
               </div>
@@ -142,14 +190,14 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 spender={data.id}
                 token={data.token.id}
                 decimals={data.token.decimals}
-                decimalAmount={decimalAmount}
-                enabled={decimalAmount > 0 && Object.keys(errors).length === 0}
+                decimalAmount={amountBigDecimal}
+                enabled={amountBigDecimal?.gt(new Big(0)) && Object.keys(errors).length === 0}
               >
                 <Button
                   color="primary"
                   className="mt-8 w-full"
                   type="submit"
-                  disabled={decimalAmount === 0 || Object.keys(errors).length > 0}
+                  disabled={!amountBigDecimal?.gt(new Big(0)) || Object.keys(errors).length > 0}
                 >
                   Deposit
                 </Button>

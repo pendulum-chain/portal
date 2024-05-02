@@ -54,6 +54,7 @@ export const useSwapPoolWithdraw = ({
     [mutate, swapPoolAddress, backstopPool.token.decimals, selectedSwapPool?.token.decimals],
   );
 
+  // TODO Torsten: check whether this calculation makes any sense
   const sharesQuery = useSharesTargetWorth(
     {
       address: swapPoolAddress,

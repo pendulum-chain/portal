@@ -9,7 +9,7 @@ import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import schema from './schema';
 import { AddLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
-import { useContractBalance } from '../../../../../hooks/nabla/useContractBalance';
+import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 
 export const useAddLiquidity = (
@@ -22,16 +22,14 @@ export const useAddLiquidity = (
   const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
-  const balanceQuery = useContractBalance({
+  const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
     contractAddress: tokenAddress,
     decimals: poolTokenDecimals,
-    abi: erc20WrapperAbi,
   });
 
-  const depositQuery = useContractBalance({
+  const depositQuery = useErc20ContractBalance(swapPoolAbi, {
     contractAddress: poolAddress,
     decimals: lpTokenDecimals,
-    abi: swapPoolAbi,
   });
 
   const form = useForm<AddLiquidityValues>({

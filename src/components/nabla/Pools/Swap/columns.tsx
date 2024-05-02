@@ -58,7 +58,12 @@ export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
   header: 'My Pool Amount',
   accessorKey: 'myAmount',
   cell: ({ row: { original } }) => (
-    <Erc20Balance address={original.id} decimals={original.lpTokenDecimals} abi={swapPoolAbi} />
+    <Erc20Balance
+      address={original.id}
+      decimals={original.lpTokenDecimals}
+      abi={swapPoolAbi}
+      symbol={original.symbol}
+    />
   ),
   enableSorting: false,
   meta: {
