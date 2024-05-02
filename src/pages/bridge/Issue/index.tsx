@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -46,7 +47,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, dAppName, tenantName } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { issueGriefingCollateral } = useFeePallet().getFees();
+  const { issueGriefingCollateralFee } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
   const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
@@ -157,8 +158,8 @@ function Issue(props: IssueProps): JSX.Element {
   );
 
   useMemo(() => {
-    setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
-  }, [amount, issueGriefingCollateral, setValue]);
+    setValue('securityDeposit', amount * issueGriefingCollateralFee.toNumber());
+  }, [amount, issueGriefingCollateralFee, setValue]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">

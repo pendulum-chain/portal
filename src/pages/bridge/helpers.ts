@@ -16,32 +16,30 @@ export const calculateGriefingCollateral = async (
   wrappedCurrencySuffix: string,
   getTokenPrice: (currency: string) => Promise<number>,
   griefingCollateralCurrency: string | undefined,
-  setGriefingCollateral: (value: Big) => void,
+  issueGriefingCollateralFee: Big,
 ) => {
-  const checkInvalid = (value: unknown) => {
+  const isInvalid = (value: unknown) => {
     if (!value) {
-      setGriefingCollateral(Big(0));
-      return false;
+      return true;
     }
-    return true;
+    return false;
   };
 
-  if (!checkInvalid(amount)) return;
+  if (isInvalid(amount)) return new Big(0);
 
-  if (!checkInvalid(assetCode)) return;
+  if (isInvalid(assetCode)) return new Big(0);
 
   const assetUSDPrice = await getTokenPrice(`${assetCode}${wrappedCurrencySuffix}`);
-  if (!checkInvalid(assetUSDPrice)) return;
+  if (isInvalid(assetUSDPrice)) return new Big(0);
 
   const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
   if (!griefingCollateralCurrency || typeof griefingCollateralCurrency !== 'string') {
-    setGriefingCollateral(Big(0));
-    return;
+    return new Big(0);
   }
 
   const griefingCollateralCurrencyUSD = await getTokenPrice(griefingCollateralCurrency);
-  if (!checkInvalid(griefingCollateralCurrencyUSD)) return;
+  if (isInvalid(griefingCollateralCurrencyUSD)) return new Big(0);
 
-  const griefingCollateralValue = amountUSD.mul(0.05).div(griefingCollateralCurrencyUSD);
-  setGriefingCollateral(griefingCollateralValue);
+  const griefingCollateralValue = amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD);
+  return griefingCollateralValue;
 };

@@ -45,15 +45,26 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const [griefingCollateral, setGriefingCollateral] = useState(Big(0));
 
   useEffect(() => {
-    calculateGriefingCollateral(
-      amount,
-      bridgedAsset?.code,
-      wrappedCurrencySuffix || '',
-      getTokenPrice,
-      fees.griefingCollateralCurrency?.toHuman() as string,
-      setGriefingCollateral,
-    );
-  }, [amount, bridgedAsset?.code, wrappedCurrencySuffix, getTokenPrice, fees.griefingCollateralCurrency]);
+    const fetchGriefingCollateral = async () => {
+      const calculatedGriefingCollateral = await calculateGriefingCollateral(
+        amount,
+        bridgedAsset?.code,
+        wrappedCurrencySuffix || '',
+        getTokenPrice,
+        fees.griefingCollateralCurrency?.toHuman() as string,
+        fees.issueGriefingCollateralFee,
+      );
+      calculatedGriefingCollateral && setGriefingCollateral(calculatedGriefingCollateral);
+    };
+    fetchGriefingCollateral();
+  }, [
+    amount,
+    bridgedAsset?.code,
+    wrappedCurrencySuffix,
+    getTokenPrice,
+    fees.griefingCollateralCurrency,
+    fees.issueGriefingCollateralFee,
+  ]);
 
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {

@@ -10,8 +10,8 @@ export function useFeePallet() {
   const [redeemFee, setRedeemFee] = useState<Big>(new Big(0));
   const [punishmentFee, setPunishmentFee] = useState<Big>(new Big(0));
   const [premiumRedeemFee, setPremiumRedeemFee] = useState<Big>(new Big(0));
-  const [issueGriefingCollateral, setIssueGriefingCollateral] = useState<Big>(new Big(0));
-  const [replaceGriefingCollateral, setReplaceGriefingCollateral] = useState<Big>(new Big(0));
+  const [issueGriefingCollateralFee, setIssueGriefingCollateralFee] = useState<Big>(new Big(0));
+  const [replaceGriefingCollateralFee, setReplaceGriefingCollateralFee] = useState<Big>(new Big(0));
 
   const [griefingCollateralCurrency, setGriefingCollateralCurrency] = useState<
     SpacewalkPrimitivesCurrencyId | undefined
@@ -50,17 +50,17 @@ export function useFeePallet() {
         const decimal = Big(fixedPointToDecimal(fee.toString()));
         setPremiumRedeemFee(decimal);
       }),
-      api.query.fee.issueGriefingCollateral((fee) => {
+      api.query.fee.issueGriefingCollateral((fee: Big) => {
         const decimal = Big(fixedPointToDecimal(fee.toString()));
-        setIssueGriefingCollateral(decimal);
+        setIssueGriefingCollateralFee(decimal);
       }),
-      api.query.fee.replaceGriefingCollateral((fee) => {
+      api.query.fee.replaceGriefingCollateral((fee: Big) => {
         const decimal = Big(fixedPointToDecimal(fee.toString()));
-        setReplaceGriefingCollateral(decimal);
+        setReplaceGriefingCollateralFee(decimal);
       }),
     ]).then((unsubscribeFunctions) => {
       unsubscribe = () => {
-        unsubscribeFunctions.forEach((u) => u());
+        unsubscribeFunctions.forEach((u) => (u as () => void)());
       };
     });
 
@@ -75,8 +75,8 @@ export function useFeePallet() {
           redeemFee,
           punishmentFee,
           premiumRedeemFee,
-          issueGriefingCollateral,
-          replaceGriefingCollateral,
+          issueGriefingCollateralFee,
+          replaceGriefingCollateralFee,
           griefingCollateralCurrency,
         };
       },
@@ -99,8 +99,8 @@ export function useFeePallet() {
     redeemFee,
     punishmentFee,
     premiumRedeemFee,
-    issueGriefingCollateral,
-    replaceGriefingCollateral,
+    issueGriefingCollateralFee,
+    replaceGriefingCollateralFee,
     griefingCollateralCurrency,
   ]);
 
