@@ -17,7 +17,7 @@ function Portfolio() {
       <div className="p-4 flex flex-row justify-between">
         <div className="font-bold text-xl">Wallet</div>
         <div className="text-xl" title={accountTotalBalance.toString()}>
-          $ {accountTotalBalance.toFixed(2)}
+          $ {accountTotalBalance.toPrecision(2)}
         </div>
       </div>
       {walletAccount && (

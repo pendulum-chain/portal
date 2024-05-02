@@ -8,6 +8,7 @@ import { nativeToDecimal } from '../shared/parseNumbers/metric';
 import { usePriceFetcher } from './usePriceFetcher';
 import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
 
 function useBalances() {
   const { walletAccount } = useGlobalState();
@@ -24,6 +25,9 @@ function useBalances() {
   const fetchTokenBalance = useCallback(
     async (address: string, currencyId: SpacewalkPrimitivesCurrencyId) => {
       if (!api) return;
+      if (typeof currencyId.type === 'string' && currencyId.type.toLowerCase() === 'native') {
+        return api.query.system.account(address);
+      }
       return api.query.tokens.accounts(address, currencyId);
     },
     [api],
@@ -36,13 +40,23 @@ function useBalances() {
       const assets = getAllAssetsMetadata();
       const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
 
+      const getFree = (tokenBalanceRaw: unknown, asset: OrmlTraitsAssetRegistryAssetMetadata) => {
+        const isNativeToken =
+          typeof asset.currencyId.type === 'string' && asset.currencyId.type.toLowerCase() === 'native';
+        if (isNativeToken) {
+          return (tokenBalanceRaw as { data: { free: Big } }).data.free;
+        }
+        return (tokenBalanceRaw as { free: Big }).free;
+      };
+
       const tokensBalances = await Promise.all(
-        assets.map(async (asset) => {
+        assets.map(async (asset: OrmlTraitsAssetRegistryAssetMetadata) => {
           const tokenBalanceRaw = await fetchTokenBalance(walletAddress, asset.currencyId);
-          const free = (tokenBalanceRaw as unknown as { free: number }).free;
-          const amount = nativeToDecimal(free || '0', asset.metadata.decimals).toNumber();
           const token = asset.metadata.symbol;
           const price = await getTokenPriceForKeys(asset.metadata.additional.diaKeys);
+          const free = getFree(tokenBalanceRaw, asset);
+
+          const amount = nativeToDecimal(free || '0', asset.metadata.decimals).toNumber();
           const usdValue = price * amount;
 
           return {
