@@ -124,10 +124,10 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 </div>
               </div>
             </div>
+            <Validation className="text-center mt-2" errors={errors} />
             <div>
-              <Validation className="text-center mb-2" errors={errors} />
               <TokenApproval
-                className="mt-8 w-full"
+                className="w-full"
                 spender={data.id}
                 token={data.token.id}
                 decimals={data.token.decimals}
@@ -136,7 +136,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               >
                 <Button
                   color="primary"
-                  className="mt-8 w-full"
+                  className="w-full"
                   type="submit"
                   disabled={decimalAmount === 0 || Object.keys(errors).length > 0}
                 >

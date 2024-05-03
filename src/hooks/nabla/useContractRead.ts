@@ -4,7 +4,7 @@ import { Abi } from '@polkadot/api-contract';
 import { QueryKey, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 
-import { defaultReadLimits, emptyCacheKey, emptyFn, QueryOptions } from '../../shared/helpers';
+import { defaultReadLimits, emptyCacheKey, QueryOptions } from '../../shared/helpers';
 import { useSharedState } from '../../shared/Provider';
 import { config } from '../../config';
 
@@ -41,32 +41,32 @@ export function useContractRead(
   const enabled = !!contractAbi && queryOptions.enabled !== false && !!address && !!api && !!actualWalletAddress;
   const query = useQuery<MessageCallResult | undefined>(
     enabled ? key : emptyCacheKey,
-    enabled
-      ? async () => {
-          const limits = defaultReadLimits;
+    async () => {
+      if (!enabled) return;
 
-          if (isDevelopment) {
-            console.log('read', 'Call message', address, method, args);
-          }
+      const limits = defaultReadLimits;
 
-          const response = await messageCall({
-            abi: contractAbi,
-            api,
-            callerAddress: actualWalletAddress,
-            contractDeploymentAddress: address,
-            getSigner: () => Promise.resolve({} as any), // TODO: cleanup in api-solang lib
-            messageName: method,
-            messageArguments: args || [],
-            limits,
-          });
+      if (isDevelopment) {
+        console.log('read', 'Call message', address, method, args);
+      }
 
-          if (isDevelopment) {
-            console.log('read', 'Call message result', address, method, args, response);
-          }
+      const response = await messageCall({
+        abi: contractAbi,
+        api,
+        callerAddress: actualWalletAddress,
+        contractDeploymentAddress: address,
+        getSigner: () => Promise.resolve({} as any), // TODO: cleanup in api-solang lib
+        messageName: method,
+        messageArguments: args || [],
+        limits,
+      });
 
-          return response;
-        }
-      : emptyFn,
+      if (isDevelopment) {
+        console.log('read', 'Call message result', address, method, args, response);
+      }
+
+      return response;
+    },
     {
       ...queryOptions,
       enabled,

@@ -31,7 +31,6 @@ export function TokenApproval({
     decimalAmount,
     token,
     spender,
-    enabled,
     decimals,
   });
 

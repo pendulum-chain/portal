@@ -22,7 +22,6 @@ interface UseErc20TokenApprovalParams {
   spender: string;
   token: string;
   decimalAmount: Big | undefined;
-  enabled?: boolean;
   decimals: number;
   onError?: (err: any) => void;
   onSuccess?: UseContractWriteProps<Dict>['mutateOptions']['onSuccess'];
@@ -37,7 +36,6 @@ export function useErc20TokenApproval({
   token,
   decimalAmount,
   spender,
-  enabled = true,
   decimals,
   onError,
   onSuccess,
@@ -45,7 +43,7 @@ export function useErc20TokenApproval({
   const { address } = useSharedState();
   const [pending, setPending] = useState(false);
 
-  const isEnabled = Boolean(spender && address && enabled);
+  const isEnabled = Boolean(spender && address);
 
   const {
     data: allowanceData,

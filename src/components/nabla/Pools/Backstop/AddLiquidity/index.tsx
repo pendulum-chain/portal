@@ -1,6 +1,5 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { ChangeEvent, useEffect } from 'preact/compat';
-import { Button, Range } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { Big } from 'big.js';
 
 import { PoolProgress } from '../..';
@@ -13,7 +12,7 @@ import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaIn
 import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenApproval } from '../../../common/TokenApproval';
 import { FormProvider } from 'react-hook-form';
-import { NumberInput } from '../../../common/NumberInput';
+import { AmountSelector } from '../../../common/AmountSelector';
 
 interface AddLiquidityProps {
   data: NablaInstanceBackstopPool;
@@ -28,28 +27,8 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
     useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
 
   const {
-    setError,
-    clearErrors,
-    setValue,
     formState: { errors },
   } = form;
-
-  useEffect(() => {
-    console.log('amountString', amountString);
-    console.log('amountBigDecimal', amountBigDecimal);
-    if (amountString.length > 0 && amountBigDecimal === undefined) {
-      setError('amount', { type: 'custom', message: 'Enter a proper number' });
-    }
-    if (
-      poolTokenBalance !== undefined &&
-      amountBigDecimal !== undefined &&
-      amountBigDecimal.gt(poolTokenBalance.preciseBigDecimal)
-    ) {
-      setError('amount', { type: 'custom', message: 'Amount exceeds balance' });
-    } else {
-      clearErrors('amount');
-    }
-  }, [amountString, amountBigDecimal, poolTokenBalance, setError, clearErrors]);
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
@@ -88,7 +67,8 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 </span>
               </p>
             </div>
-            <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
+            <AmountSelector maxBalance={poolTokenBalance} formFieldName="amount" form={form} />
+            {/*<div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1">
                   <NumberInput
@@ -154,7 +134,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   );
                 }}
               />
-            </div>
+              </div>*/}
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
               <div className="flex items-center justify-between">
                 <div>Total deposit</div>
@@ -183,8 +163,8 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 </div>
               </div>
             </div>
+            <Validation className="text-center mt-2" errors={errors} />
             <div className="mt-8">
-              <Validation className="text-center mb-2" errors={errors} />
               <TokenApproval
                 className="w-full"
                 spender={data.id}
@@ -195,7 +175,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               >
                 <Button
                   color="primary"
-                  className="mt-8 w-full"
+                  className="w-full"
                   type="submit"
                   disabled={!amountBigDecimal?.gt(new Big(0)) || Object.keys(errors).length > 0}
                 >

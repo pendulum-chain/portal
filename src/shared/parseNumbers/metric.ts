@@ -128,12 +128,14 @@ export const roundNumber = (value: number | string = 0, round = 6) => {
 // - 1.2345 -> 1.23
 // - 0.012345 -> 0.012
 // - 0.00012345 -> 0.00012
-export function roundToSignificantDecimals(big: BigNumber, decimals: number) {
+export function roundDownToSignificantDecimals(big: BigNumber, decimals: number) {
   return big.prec(Math.max(0, big.e + 1) + decimals, 0);
 }
 
 export function multiplyByPowerOfTen(bigDecimal: BigNumber, power: number) {
   const newBigDecimal = new BigNumber(bigDecimal);
+  if (newBigDecimal.c[0] === 0) return newBigDecimal;
+
   newBigDecimal.e += power;
   return newBigDecimal;
 }

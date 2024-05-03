@@ -2,7 +2,7 @@ import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
 import { cacheKeys } from './constants';
-import { emptyCacheKey, emptyFn, QueryOptions } from './helpers';
+import { emptyCacheKey, QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 
@@ -24,14 +24,13 @@ export const useAccountBalance = (
   const enabled = !!api && !!accountAddress && options?.enabled !== false;
   const query = useQuery<FrameSystemAccountInfo | undefined, unknown>(
     enabled ? [cacheKeys.accountBalance, accountAddress] : emptyCacheKey,
-    enabled
-      ? async () => {
-          const response = await api.query.system.account(accountAddress);
-          const val = response?.data?.free;
-          if (!isValid(val)) throw new Error('Error!');
-          return response;
-        }
-      : emptyFn,
+    async () => {
+      if (!enabled) return undefined;
+      const response = await api.query.system.account(accountAddress);
+      const val = response?.data?.free;
+      if (!isValid(val)) throw new Error('Error!');
+      return response;
+    },
     {
       cacheTime: 0,
       staleTime: 0,

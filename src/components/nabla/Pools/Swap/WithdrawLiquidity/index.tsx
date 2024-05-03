@@ -152,8 +152,8 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                 </div>
               </div>
             </div>
+            <Validation className="text-center mt-2" errors={errors} />
             <div className="mt-8">
-              <Validation className="text-center mb-2" errors={errors} />
               <div className="text-center">
                 <button
                   type="button"

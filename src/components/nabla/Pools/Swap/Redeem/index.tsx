@@ -138,8 +138,8 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                 </div>
               </div>
             </div>
+            <Validation className="text-center mt-2" errors={errors} />
             <div className="mt-8">
-              <Validation className="text-center mb-2" errors={errors} />
               <Button color="primary" className="w-full" type="submit" disabled={Object.keys(errors).length > 0}>
                 Redeem
               </Button>

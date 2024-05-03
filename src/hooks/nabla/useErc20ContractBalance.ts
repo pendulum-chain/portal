@@ -3,7 +3,7 @@ import { useMemo } from 'preact/compat';
 
 import { cacheKeys } from '../../shared/constants';
 import { getMessageCallValue } from '../../shared/helpers';
-import { roundToSignificantDecimals } from '../../shared/parseNumbers/metric';
+import { multiplyByPowerOfTen, roundDownToSignificantDecimals } from '../../shared/parseNumbers/metric';
 import { useSharedState } from '../../shared/Provider';
 import { UseContractResult, useContractRead } from './useContractRead';
 
@@ -49,19 +49,20 @@ export const useErc20ContractBalance = (
     },
   });
 
+  const decimals = erc20ContractDefinition?.decimals;
+
   const { data } = query;
+  const balanceResponse = getMessageCallValue(data);
+  const rawBalanceBigInt = balanceResponse?.toBigInt();
+
   const balance: ContractBalance | undefined = useMemo(() => {
-    if (!data || data.result.type !== 'success' || erc20ContractDefinition === undefined) return undefined;
-    const decimals = erc20ContractDefinition.decimals;
+    if (rawBalanceBigInt === undefined || decimals === undefined) return undefined;
 
-    const balanceResponse = getMessageCallValue(data);
-    const rawBalanceBigInt = balanceResponse.toBigInt();
-    const rawBalanceString = balanceResponse.toString();
-    const preciseBigDecimal = new Big(rawBalanceString);
-    preciseBigDecimal.e -= decimals;
+    const rawBalanceString = rawBalanceBigInt.toString();
+    const preciseBigDecimal = multiplyByPowerOfTen(new Big(rawBalanceString), -decimals);
 
-    const roundedTo2SignificantDecimals = roundToSignificantDecimals(preciseBigDecimal, 2);
-    const roundedTo4SignificantDecimals = roundToSignificantDecimals(preciseBigDecimal, 4);
+    const roundedTo2SignificantDecimals = roundDownToSignificantDecimals(preciseBigDecimal, 2);
+    const roundedTo4SignificantDecimals = roundDownToSignificantDecimals(preciseBigDecimal, 4);
 
     return {
       rawBalance: rawBalanceBigInt,
@@ -74,7 +75,7 @@ export const useErc20ContractBalance = (
       },
       approximateNumber: preciseBigDecimal.toNumber(),
     };
-  }, [data, erc20ContractDefinition]);
+  }, [rawBalanceBigInt, decimals]);
 
   return {
     isLoading: query.isLoading,

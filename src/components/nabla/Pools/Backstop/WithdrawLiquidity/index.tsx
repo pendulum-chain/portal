@@ -207,8 +207,8 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                 </div>
               </div>
             </div>
+            <Validation className="text-center mt-2" errors={errors} />
             <div className="mt-8">
-              <Validation className="text-center mb-2" errors={errors} />
               <Button
                 color="primary"
                 className="w-full"
