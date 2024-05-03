@@ -3,6 +3,7 @@ import { useNodeInfoState } from '../NodeInfoProvider';
 import { nativeToDecimal } from '../shared/parseNumbers/metric';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
+import { isEqual } from 'lodash';
 
 export interface DiaKeys {
   blockchain: string;
@@ -65,7 +66,7 @@ export const usePriceFetcher = () => {
 
   const getTokenPriceForCurrency = useCallback(
     async (currency: SpacewalkPrimitivesCurrencyId) => {
-      const asset = getAllAssetsMetadata().find((asset) => asset.currencyId === currency);
+      const asset = getAllAssetsMetadata().find((asset) => isEqual(asset.currencyId, currency));
       if (!asset) {
         return 0;
       }
