@@ -25,7 +25,8 @@ function useBalances() {
   const fetchTokenBalance = useCallback(
     async (address: string, currencyId: SpacewalkPrimitivesCurrencyId) => {
       if (!api) return;
-      if (typeof currencyId.type === 'string' && currencyId.type.toLowerCase() === 'native') {
+      const isNativeToken = typeof currencyId === 'string' && currencyId === 'Native';
+      if (isNativeToken) {
         return api.query.system.account(address);
       }
       return api.query.tokens.accounts(address, currencyId);
@@ -41,8 +42,7 @@ function useBalances() {
       const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
 
       const getFree = (tokenBalanceRaw: unknown, asset: OrmlTraitsAssetRegistryAssetMetadata) => {
-        const isNativeToken =
-          typeof asset.currencyId.type === 'string' && asset.currencyId.type.toLowerCase() === 'native';
+        const isNativeToken = typeof asset.currencyId === 'string' && asset.currencyId === 'Native';
         if (isNativeToken) {
           return (tokenBalanceRaw as { data: { free: Big } }).data.free;
         }
