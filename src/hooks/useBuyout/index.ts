@@ -32,26 +32,27 @@ export interface BuyoutSettings {
   ) => void;
 }
 
+const BuyoutErrors: Record<string, string> = {
+  '1010: Invalid Transaction: Custom error: 4': 'Wrong asset to buyout',
+  '1010: Invalid Transaction: Custom error: 3': 'The buyout amount is too low',
+  '1010: Invalid Transaction: Custom error: 2': 'Max buyout reached',
+  '1010: Invalid Transaction: Custom error: 1': 'Calculation error',
+  '1010: Invalid Transaction: Custom error: 0': 'Not enough funds',
+  Cancelled: 'The buyout was cancelled',
+};
+
 function handleBuyoutError(error: string) {
   if (!error) return;
 
-  if (error.includes('1010: Invalid Transaction: Custom error: 3')) {
-    showToast(ToastMessage.ERROR, 'The buyout amount is too low');
-    return;
-  }
+  Object.entries(BuyoutErrors).forEach(([key, value]) => {
+    if (error.includes(key)) {
+      showToast(ToastMessage.ERROR, value);
+      return;
+    }
 
-  if (error.includes('1010: Invalid Transaction: Custom error: 2')) {
-    showToast(ToastMessage.ERROR, 'Max buyout reached');
+    showToast(ToastMessage.ERROR, 'The buyout failed:' + error);
     return;
-  }
-
-  if (error.includes('Cancelled')) {
-    showToast(ToastMessage.ERROR, 'The buyout was cancelled');
-    return;
-  }
-
-  showToast(ToastMessage.ERROR, 'The buyout failed:' + error);
-  return;
+  });
 }
 
 export const useBuyout = (): BuyoutSettings => {
