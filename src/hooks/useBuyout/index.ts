@@ -1,5 +1,5 @@
 import { StateUpdater, useEffect, useState } from 'preact/hooks';
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
 
@@ -44,15 +44,15 @@ const BuyoutErrors: Record<string, string> = {
 function handleBuyoutError(error: string) {
   if (!error) return;
 
-  Object.entries(BuyoutErrors).forEach(([key, value]) => {
-    if (error.includes(key)) {
-      showToast(ToastMessage.ERROR, value);
-      return;
-    }
+  const errorKey = find(Object.keys(BuyoutErrors), (key) => error.trim().includes(key));
 
-    showToast(ToastMessage.ERROR, 'The buyout failed:' + error);
+  if (errorKey) {
+    showToast(ToastMessage.BUYOUT_ERROR, BuyoutErrors[errorKey]);
     return;
-  });
+  }
+
+  showToast(ToastMessage.BUYOUT_ERROR, 'The buyout failed:' + error);
+  return;
 }
 
 export const useBuyout = (): BuyoutSettings => {
