@@ -14,7 +14,7 @@ import {
   FailedTransferDialog,
   PendingTransferDialog,
   ReimbursedTransferDialog,
-} from './TransferDialog/TransferDialog';
+} from './TransferDialog';
 import {
   TTransfer,
   TransferType,
@@ -154,7 +154,7 @@ function Transfers(): JSX.Element {
         isLoading={false}
         search={false}
         pageSize={8}
-        rowCallback={(row, index) => setCurrentTransfer(row.original)}
+        rowCallback={(row) => setCurrentTransfer(row.original)}
         title="Transfers"
         sortBy={{ updated: SortingOrder.DESC }}
         oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"

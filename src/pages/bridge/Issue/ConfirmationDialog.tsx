@@ -1,15 +1,12 @@
-import { VoidFn } from '@polkadot/api-base/types';
-import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useMemo } from 'preact/compat';
 import { Button, Divider } from 'react-daisyui';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
+import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
-import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
 
@@ -39,10 +36,6 @@ interface ConfirmationDialogProps {
 export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { issueRequest, visible, onClose, onConfirm } = props;
 
-  const { subscribeActiveBlockNumber } = useSecurityPallet();
-  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [_, setRemainingDurationString] = useState<string>('');
-
   const totalAmount = useMemo(
     () =>
       issueRequest
@@ -54,12 +47,12 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   const asset = useMemo(() => {
     const currency = issueRequest?.request.asset;
     return currency && convertCurrencyToStellarAsset(currency);
-  }, [issueRequest?.request.asset]);
+  }, [issueRequest]);
 
   const destination = useMemo(() => {
     const rawDestinationAddress = issueRequest?.request.stellarAddress;
     return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
-  }, [issueRequest?.request.stellarAddress]);
+  }, [issueRequest]);
 
   const expectedStellarMemo = useMemo(() => {
     if (!issueRequest) {
@@ -69,44 +62,16 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     return deriveShortenedRequestId(issueRequest.id);
   }, [issueRequest]);
 
-  useEffect(() => {
-    let unsub: VoidFn = () => undefined;
-    subscribeActiveBlockNumber((blockNumber) => {
-      setActiveBlockNumber(blockNumber);
-    }).then((u) => (unsub = u));
-
-    return unsub;
-  }, [subscribeActiveBlockNumber]);
-
-  const deadline = useMemo(() => {
-    const openTime = issueRequest?.request.opentime.toNumber() || 0;
-    const period = issueRequest?.request.period.toNumber() || 0;
-    const end = calculateDeadline(activeBlockNumber, openTime, period, 12);
-
-    return end;
-  }, [activeBlockNumber, issueRequest]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newDeadlineString = deadline.diff(DateTime.now()).toFormat('hh:mm:ss');
-      setRemainingDurationString(newDeadlineString);
-    });
-
-    return () => clearInterval(interval);
-  }, [deadline]);
-
   const qrCodeAddress = useMemo(
     () =>
       generateQRCodeAddress({
         vault_stellar_account: destination,
-        issue_amount: issueRequest!.request.amount.toString(),
+        issue_amount: issueRequest?.request.amount.toString() || '0',
         issue_request_memo: expectedStellarMemo,
         my_custom_message: 'Pendulum Bridge',
       }),
     [destination, expectedStellarMemo, issueRequest],
   );
-
-  console.log('qrCodeAddress:   ', qrCodeAddress);
 
   const content = useMemo(
     () => (
