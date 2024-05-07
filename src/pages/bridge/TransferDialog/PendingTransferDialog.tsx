@@ -1,7 +1,6 @@
 import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
-import { QRCodeSVG } from 'qrcode.react';
 
 import { useGlobalState } from '../../../GlobalStateProvider';
 import PendingDialogIcon from '../../../assets/dialog-status-pending';
@@ -14,24 +13,6 @@ import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { TransferType } from '../TransfersColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
-
-interface GenerateQRCodeAddress {
-  vault_stellar_account: string;
-  issue_amount: string;
-  issue_request_memo: string;
-  MEMO_TEXT: string;
-  my_custom_message: string;
-}
-
-function generateQRCodeAddress({
-  vault_stellar_account,
-  issue_amount,
-  issue_request_memo,
-  MEMO_TEXT,
-  my_custom_message,
-}: GenerateQRCodeAddress) {
-  return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&memo=${issue_request_memo}&memo_type=${MEMO_TEXT}&msg=${my_custom_message}`;
-}
 
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
@@ -54,33 +35,6 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     // For issue requests we use a shorter identifier for the memo
     return deriveShortenedRequestId(hexToU8a(transfer.transactionId));
   }, [transfer]);
-
-  console.log(
-    `{
-    vault_stellar_account: destinationStellarAddress,
-    issue_amount: transfer.original.amount.toString(),
-    issue_request_memo: expectedStellarMemo,
-    MEMO_TEXT: expectedStellarMemo,
-    my_custom_message: 'Pendulum Bridge',
-  }`,
-    {
-      vault_stellar_account: destinationStellarAddress,
-      issue_amount: transfer.original.amount.toString(),
-      issue_request_memo: expectedStellarMemo,
-      MEMO_TEXT: expectedStellarMemo,
-      my_custom_message: 'Pendulum Bridge',
-    },
-  );
-
-  const qrCodeAddress = generateQRCodeAddress({
-    vault_stellar_account: destinationStellarAddress,
-    issue_amount: transfer.original.amount.toString(),
-    issue_request_memo: expectedStellarMemo,
-    MEMO_TEXT: expectedStellarMemo,
-    my_custom_message: 'Pendulum Bridge',
-  });
-
-  console.log('qrCodeAddress:   ', qrCodeAddress);
 
   const issueContent = (
     <>
@@ -113,7 +67,6 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         </div>
       </>
 
-      {qrCodeAddress ? <QRCodeSVG value={qrCodeAddress} /> : null}
       <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
