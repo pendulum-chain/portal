@@ -14,7 +14,7 @@ import {
   FailedTransferDialog,
   PendingTransferDialog,
   ReimbursedTransferDialog,
-} from './TransferDialog';
+} from './TransferDialog/TransferDialog';
 import {
   TTransfer,
   TransferType,

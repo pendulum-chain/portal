@@ -2,6 +2,8 @@ import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 import { Button, Divider } from 'react-daisyui';
+import { QRCodeSVG } from 'qrcode.react';
+
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
 import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
@@ -10,6 +12,22 @@ import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
 import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
+
+interface GenerateQRCodeAddress {
+  vault_stellar_account: string;
+  issue_amount: string;
+  issue_request_memo: string;
+  my_custom_message: string;
+}
+
+function generateQRCodeAddress({
+  vault_stellar_account,
+  issue_amount,
+  issue_request_memo,
+  my_custom_message,
+}: GenerateQRCodeAddress) {
+  return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&memo=${issue_request_memo}&memo_type=MEMO_TEXT&msg=${my_custom_message}`;
+}
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
@@ -77,6 +95,19 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     return () => clearInterval(interval);
   }, [deadline]);
 
+  const qrCodeAddress = useMemo(
+    () =>
+      generateQRCodeAddress({
+        vault_stellar_account: destination,
+        issue_amount: issueRequest!.request.amount.toString(),
+        issue_request_memo: expectedStellarMemo,
+        my_custom_message: 'Pendulum Bridge',
+      }),
+    [destination, expectedStellarMemo, issueRequest],
+  );
+
+  console.log('qrCodeAddress:   ', qrCodeAddress);
+
   const content = useMemo(
     () => (
       <>
@@ -95,8 +126,17 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
+
+          <p className="text-center mt-4">OR</p>
+          {qrCodeAddress ? (
+            <div className="mt-4 flex justify-center">
+              <QRCodeSVG value={qrCodeAddress} />
+            </div>
+          ) : null}
+
           <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
         </div>
+
         <Divider />
         <div>
           {asset?.getAssetType() !== 'native' && (
@@ -122,7 +162,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         </ul>
       </>
     ),
-    [asset, destination, expectedStellarMemo, issueRequest, totalAmount],
+    [asset, destination, expectedStellarMemo, issueRequest, qrCodeAddress, totalAmount],
   );
 
   const actions = useMemo(
