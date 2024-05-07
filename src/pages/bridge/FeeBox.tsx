@@ -22,7 +22,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const amount = props.amountNative;
   const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
   const { getFees, getTransactionFee } = useFeePallet();
-  const { getTokenPrice } = usePriceFetcher();
+  const { getTokenPriceForCurrency } = usePriceFetcher();
   const fees = getFees();
 
   const [collapseVisibility, setCollapseVisibility] = useState('');
@@ -50,7 +50,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
         amount,
         bridgedAsset?.code,
         wrappedCurrencySuffix || '',
-        getTokenPrice,
+        getTokenPriceForCurrency,
         fees.griefingCollateralCurrency?.toHuman() as string,
         fees.issueGriefingCollateralFee,
       );
@@ -61,7 +61,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     amount,
     bridgedAsset?.code,
     wrappedCurrencySuffix,
-    getTokenPrice,
+    getTokenPriceForCurrency,
     fees.griefingCollateralCurrency,
     fees.issueGriefingCollateralFee,
   ]);

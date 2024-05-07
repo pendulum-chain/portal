@@ -1,6 +1,7 @@
 import { Asset } from 'stellar-base';
 import Big from 'big.js';
 import { nativeStellarToDecimal } from '../../shared/parseNumbers/metric';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 export function prioritizeXLMAsset(assets?: Asset[]): Asset[] {
   if (!assets) {
@@ -14,7 +15,7 @@ export const calculateGriefingCollateral = async (
   amount: Big,
   assetCode: string | undefined,
   wrappedCurrencySuffix: string,
-  getTokenPrice: (currency: string) => Promise<number>,
+  getTokenPriceForCurrency: (currency: SpacewalkPrimitivesCurrencyId) => Promise<number>,
   griefingCollateralCurrency: string | undefined,
   issueGriefingCollateralFee: Big,
 ) => {
@@ -29,7 +30,9 @@ export const calculateGriefingCollateral = async (
 
   if (isInvalid(assetCode)) return new Big(0);
 
-  const assetUSDPrice = await getTokenPrice(`${assetCode}${wrappedCurrencySuffix}`);
+  const assetUSDPrice = await getTokenPriceForCurrency(
+    `${assetCode}${wrappedCurrencySuffix}` as unknown as SpacewalkPrimitivesCurrencyId,
+  );
   if (isInvalid(assetUSDPrice)) return new Big(0);
 
   const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
@@ -37,7 +40,9 @@ export const calculateGriefingCollateral = async (
     return new Big(0);
   }
 
-  const griefingCollateralCurrencyUSD = await getTokenPrice(griefingCollateralCurrency);
+  const griefingCollateralCurrencyUSD = await getTokenPriceForCurrency(
+    griefingCollateralCurrency as unknown as SpacewalkPrimitivesCurrencyId,
+  );
   if (isInvalid(griefingCollateralCurrencyUSD)) return new Big(0);
 
   const griefingCollateralValue = amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD);
