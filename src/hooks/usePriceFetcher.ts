@@ -1,131 +1,88 @@
-import request from 'graphql-request';
 import { useCallback, useEffect, useState } from 'preact/compat';
-import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
-import { PriceFetcherAsset, TOKENS } from '../constants/tokens';
 import { TenantName } from '../models/Tenant';
 import useSwitchChain from './useSwitchChain';
+import { useNodeInfoState } from '../NodeInfoProvider';
+import { nativeToDecimal } from '../shared/parseNumbers/metric';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
+import { isEqual } from 'lodash';
 
-const AMPLITUDE_INDEXER_URL = 'https://squid.subsquid.io/amplitude-squid/graphql';
-
-type PricesCache = {
-  [key: string]: number;
-};
-
-const getDIAAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
-  if (!asset.assetId) return 0;
-
-  try {
-    const data = await fetch(`https://api.diadata.org/v1/assetQuotation/${asset.blockchain}/${asset.assetId}`);
-    if (data.ok) {
-      return (await data.json())['Price'];
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
-  return 0;
-};
-
-const getDIAAssetForeignPrice = async (asset: PriceFetcherAsset): Promise<number> => {
-  if (!asset.assetId) return 0;
-  try {
-    const data = await fetch(`https://api.diadata.org/v1/foreignQuotation/${asset.blockchain}/${asset.assetId}`);
-    if (data.ok) {
-      return (await data.json())['Price'];
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
-  return 0;
-};
-
-interface SubsquidResponse {
-  bundleById: {
-    ethPrice: string;
-  };
+export interface DiaKeys {
+  blockchain: string;
+  symbol: string;
 }
 
-const getSubsquidAssetPrice = async (asset: PriceFetcherAsset): Promise<number> => {
-  if (!asset.assetId) return 0;
-  const query = `
-    query MyQuery {
-      bundleById(id: "1") {
-        ethPrice
-      }
-    }
-  `;
-  try {
-    const response = (await request(AMPLITUDE_INDEXER_URL, query)) as SubsquidResponse;
-    return parseFloat(response.bundleById.ethPrice);
-  } catch (e) {
-    console.error(e);
-  }
+// Helper function to convert DiaKeys to a string
+function diaKeysToString(diaKeys: DiaKeys) {
+  return `${diaKeys.blockchain}:${diaKeys.symbol}`;
+}
 
-  return 0;
-};
-
-const providers = {
-  dia: getDIAAssetPrice,
-  diaForeign: getDIAAssetForeignPrice,
-  subsquid: getSubsquidAssetPrice,
-};
-
-const getPrice = async (asset: PriceFetcherAsset) => {
-  try {
-    return await providers[asset.provider](asset);
-  } catch (e) {
-    console.error('Not able to fetch price for asset: ', e);
-  }
-};
+type PricesCache = { [diaKeys: string]: number };
 
 export const usePriceFetcher = () => {
   const [pricesCache, setPricesCache] = useState<PricesCache>({});
   const { currentTenant } = useSwitchChain();
+  const { api } = useNodeInfoState().state;
+  const { getAllAssetsMetadata } = useAssetRegistryMetadata();
 
   useEffect(() => {
+    if (!api) return;
+
     const fetchPrices = async () => {
-      let cache = {};
-      for (let i = 0; i < TOKENS.length; i++) {
-        cache = { ...cache, [TOKENS[i].assetName]: await getPrice(TOKENS[i]) };
-      }
-      setPricesCache(cache);
+      const allPrices = await api.query.diaOracleModule.coinInfosMap.entries();
+
+      const prices = allPrices.map(([key, value]) => {
+        const keyJson = key.toHuman() as unknown as DiaKeys[];
+        const assetKeys = keyJson[0];
+        const priceRaw = value.price;
+        const price = nativeToDecimal(priceRaw.toString()).toNumber();
+
+        return { assetKeys, price };
+      });
+
+      setPricesCache((prev) => {
+        const newPricesCache = { ...prev };
+        prices.forEach(({ assetKeys, price }) => {
+          newPricesCache[diaKeysToString(assetKeys)] = price;
+        });
+
+        return newPricesCache;
+      });
     };
 
-    fetchPrices();
-  }, []);
+    fetchPrices().catch(console.error);
+  }, [api]);
 
   const handleNativeTokenPrice = useCallback(() => {
     if (currentTenant === TenantName.Pendulum) return pricesCache['PEN'];
     return pricesCache['AMPE'];
   }, [currentTenant, pricesCache]);
 
-  const getTokenPrice = useCallback(
-    async (asset: OrmlTraitsAssetRegistryAssetMetadata | string) => {
-      if (typeof asset === 'string') {
-        try {
-          if (asset.toUpperCase() === 'NATIVE') return handleNativeTokenPrice();
-          else {
-            const cachedAssetPrice = pricesCache[asset];
-            if (cachedAssetPrice) return cachedAssetPrice;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      } else {
-        const assetDiaDetails = {
-          blockchain: asset.metadata.additional.diaKeys.blockchain,
-          assetId: asset.metadata.additional.diaKeys.symbol,
-        } as PriceFetcherAsset;
-
-        const assetPrice = await getDIAAssetPrice(assetDiaDetails);
-
-        return assetPrice;
+  const getTokenPriceForKeys = useCallback(
+    async (asset: DiaKeys) => {
+      try {
+        const diaKeys = diaKeysToString(asset);
+        const cachedAssetPrice = pricesCache[diaKeys];
+        if (cachedAssetPrice) return cachedAssetPrice;
+      } catch (e) {
+        console.error(e);
       }
       return 0;
     },
-    [handleNativeTokenPrice, pricesCache],
+    [pricesCache],
   );
 
-  return { getTokenPrice };
+  const getTokenPriceForCurrency = useCallback(
+    async (currency: SpacewalkPrimitivesCurrencyId) => {
+      if (typeof currency === 'string' && currency.toUpperCase() === 'NATIVE') return handleNativeTokenPrice();
+      const asset = getAllAssetsMetadata().find((asset) => isEqual(asset.currencyId, currency));
+      if (!asset) {
+        return 0;
+      }
+      return getTokenPriceForKeys(asset.metadata.additional.diaKeys);
+    },
+    [getAllAssetsMetadata, getTokenPriceForKeys, handleNativeTokenPrice],
+  );
+
+  return { getTokenPriceForKeys, getTokenPriceForCurrency };
 };

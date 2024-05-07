@@ -1,30 +1,33 @@
 import { UseQueryOptions } from '@tanstack/react-query';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { memo, useEffect, useState } from 'preact/compat';
 import { usePriceFetcher } from '../../../hooks/usePriceFetcher';
 import { numberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
   address?: string;
-  symbol: string;
-  //amount?: number;
+  currency: SpacewalkPrimitivesCurrencyId;
   prefix?: ReactNode;
   options?: UseQueryOptions;
   loader?: ReactNode;
   fallback?: ReactNode;
 };
 
-const TokenPrice = memo(({ symbol, prefix = null, loader, fallback = null }: TokenPriceProps): JSX.Element | null => {
-  const { getTokenPrice } = usePriceFetcher();
+const TokenPrice = memo(({ currency, prefix = null, loader, fallback = null }: TokenPriceProps): JSX.Element | null => {
+  const { getTokenPriceForCurrency } = usePriceFetcher();
   const [price, setPrice] = useState<number | undefined | null>(null);
+
   useEffect(() => {
     const run = async () => {
-      const p = await getTokenPrice(symbol);
+      const p = await getTokenPriceForCurrency(currency);
       setPrice(p);
     };
-    run();
-  }, [getTokenPrice, symbol]);
+
+    run().catch(console.error);
+  }, [getTokenPriceForCurrency, currency]);
 
   const isLoading = price === null;
+
   if (isLoading) return <>{loader}</> || numberLoader;
   if (!price) return <>{fallback}</>;
   return (
@@ -33,4 +36,5 @@ const TokenPrice = memo(({ symbol, prefix = null, loader, fallback = null }: Tok
     </span>
   );
 });
+
 export default TokenPrice;

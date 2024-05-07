@@ -1,11 +1,4 @@
-import { SpacewalkPrimitivesAsset } from '@pendulum-chain/types/interfaces';
-
-export type AssetId =
-  | {
-      XCM: number;
-    }
-  | string
-  | SpacewalkPrimitivesAsset;
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 export interface OrmlTraitsAssetRegistryAssetMetadata {
   metadata: {
@@ -14,5 +7,5 @@ export interface OrmlTraitsAssetRegistryAssetMetadata {
     symbol: string;
     additional: { diaKeys: { blockchain: string; symbol: string } };
   };
-  assetId: AssetId;
+  currencyId: SpacewalkPrimitivesCurrencyId;
 }
