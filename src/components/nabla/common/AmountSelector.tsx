@@ -3,30 +3,23 @@ import { FieldPath, FieldValues, PathValue, UseFormReturn, useWatch } from 'reac
 import { useEffect, useMemo } from 'preact/hooks';
 import Big from 'big.js';
 
-import { ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
 import { NumberInput } from './NumberInput';
 import { ChangeEvent } from 'preact/compat';
-import { roundDownToSignificantDecimals } from '../../../shared/parseNumbers/metric';
+import { fractionOfValue } from '../../../shared/parseNumbers/metric';
+import { ContractBalance } from '../../../helpers/contracts';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   maxBalance: ContractBalance | undefined;
   formFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
-}
-
-const BIG_100 = new Big('100');
-
-function fractionOfValue(maxValue: Big, percentage: number): string {
-  const preciseResult = new Big(percentage).div(BIG_100).mul(maxValue);
-
-  const roundedNumber = roundDownToSignificantDecimals(preciseResult, 2);
-  return roundedNumber.toFixed();
+  children?: JSX.Element | null;
 }
 
 export function AmountSelector<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
   formFieldName,
   maxBalance,
   form,
+  children,
 }: AmountSelectorProps<FormFieldValues, TFieldName>) {
   type K = PathValue<FormFieldValues, TFieldName>;
 
@@ -51,11 +44,11 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
       if (amountString.length === 0) return;
       if (amountBigDecimal === undefined) return 'Enter a proper number';
       if (maxBalance === undefined) return;
-      if (amountBigDecimal.gt(maxBalance.preciseBigDecimal)) return 'Amount exceeds balance';
+      if (amountBigDecimal.gt(maxBalance.preciseBigDecimal)) return 'Amount exceeds maximum';
 
       if (amountBigDecimal.c[0] !== 0) {
         if (amountBigDecimal.e + 1 + maxBalance.decimals < amountBigDecimal.c.length)
-          return `Entered number must have at most ${maxBalance.decimals} decimal places`;
+          return `The number you entered must have at most ${maxBalance.decimals} decimal places`;
       }
     };
 
@@ -124,6 +117,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
           });
         }}
       />
+      {children}
     </div>
   );
 }

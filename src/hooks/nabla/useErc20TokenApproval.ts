@@ -3,11 +3,9 @@ import { useMemo, useState } from 'preact/compat';
 import { Big } from 'big.js';
 
 import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';
-import { getMessageCallValue } from '../../shared/helpers';
-import { rawToDecimal } from '../../shared/parseNumbers/metric';
 import { useSharedState } from '../../shared/Provider';
 import { useErc20TokenAllowance } from './useErc20TokenAllowance';
-import { UseContractWriteProps, UseContractWriteResult, useContractWrite } from './useContractWrite';
+import { UseContractWriteProps, UseContractWriteResponse, useContractWrite } from './useContractWrite';
 
 export enum ApprovalState {
   UNKNOWN,
@@ -29,7 +27,7 @@ interface UseErc20TokenApprovalParams {
 
 interface UseErc20TokenApprovalResult {
   state: ApprovalState;
-  mutate: UseContractWriteResult['mutate'];
+  mutate: UseContractWriteResponse['mutate'];
 }
 
 export function useErc20TokenApproval({
@@ -49,14 +47,7 @@ export function useErc20TokenApproval({
     data: allowanceData,
     isLoading: isAllowanceLoading,
     refetch,
-  } = useErc20TokenAllowance(
-    {
-      token,
-      owner: address,
-      spender,
-    },
-    isEnabled,
-  );
+  } = useErc20TokenAllowance({ token, owner: address, spender, decimals }, isEnabled);
 
   const mutation = useContractWrite({
     abi: erc20WrapperAbi,
@@ -78,11 +69,7 @@ export function useErc20TokenApproval({
     },
   });
 
-  const allowanceValue = getMessageCallValue(allowanceData);
-  const allowanceDecimalAmount = useMemo(
-    () => (allowanceValue !== undefined ? rawToDecimal(allowanceValue.toString(), decimals) : undefined),
-    [allowanceValue, decimals],
-  );
+  const allowanceDecimalAmount = allowanceData?.preciseBigDecimal;
 
   return useMemo(() => {
     let state = ApprovalState.UNKNOWN;

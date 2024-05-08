@@ -1,9 +1,10 @@
-import { Limits, MessageCallResult } from '@pendulum-chain/api-solang';
+import { Limits } from '@pendulum-chain/api-solang';
 import type { QueryKey, UseQueryOptions } from '@tanstack/react-query';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type QueryOptions<TFnData = any, TError = any, TData = any> = Partial<
-  Omit<UseQueryOptions<TFnData, TError, TData, QueryKey>, 'queryKey' | 'queryFn'>
+export type QueryOptions<TFnData = any, TError = any, TData = TFnData> = Omit<
+  UseQueryOptions<TFnData, TError, TData, QueryKey>,
+  'queryKey' | 'queryFn'
 >;
 export const emptyCacheKey = [''];
 
@@ -21,8 +22,4 @@ export const defaultWriteLimits: Limits = {
     proofSize: '10000000000',
   },
   storageDeposit: undefined,
-};
-
-export const getMessageCallValue = (response: MessageCallResult | undefined) => {
-  return response?.result.type === 'success' ? response.result.value : undefined;
 };

@@ -1,54 +1,44 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { ChangeEvent, useEffect } from 'preact/compat';
-import { Button, Range } from 'react-daisyui';
+import { Button } from 'react-daisyui';
+
 import { PoolProgress } from '../..';
-import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
-import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
-import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
+import { calcSharePercentage } from '../../../../../helpers/calc';
+import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import { SwapPoolColumn } from '../columns';
 import { ModalTypes } from '../Modals/types';
 import { useSwapPoolWithdrawLiquidity } from './useWithdrawLiquidity';
 import { TransactionProgress } from '../../../common/TransactionProgress';
-import { TokenAmount } from '../../../common/TokenAmount';
 import { FormProvider } from 'react-hook-form';
-import { NumberInput } from '../../../common/NumberInput';
+import { AmountSelector } from '../../../common/AmountSelector';
+import { TokenBalance } from '../../../common/TokenBalance';
+import Spinner from '../../../../../assets/spinner';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
 }
 
 const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
-  const { toggle, mutation, onSubmit, balanceQuery, depositQuery, amount, form } = useSwapPoolWithdrawLiquidity(
-    data.id,
-    data.token.id,
-    data.token.decimals,
-    data.lpTokenDecimals,
-  );
+  const { toggle, mutation, onSubmit, balanceQuery, depositQuery, amountString, form, withdrawalQuote } =
+    useSwapPoolWithdrawLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
 
   const {
-    setError,
-    clearErrors,
-    setValue,
     formState: { errors },
   } = form;
 
-  useEffect(() => {
-    if (depositQuery.balance !== undefined && amount > depositQuery.balance) {
-      setError('amount', { type: 'custom', message: 'Amount exceeds owned LP tokens' });
-    } else {
-      clearErrors('amount');
-    }
-  }, [amount, depositQuery.balance, setError, clearErrors]);
+  const totalSupplyOfLpTokens = rawToDecimal(data.totalSupply, data.token.decimals);
 
-  const depositedLpTokensDecimalAmount = depositQuery.balance || 0;
+  const submitEnabled = !withdrawalQuote.isLoading && withdrawalQuote.enabled && Object.keys(errors).length === 0;
 
+  const lpTokenBalance = depositQuery.data;
+
+  // TODO Torsten: show spinner on withdraw button when loading the share value??
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
-        <PoolProgress symbol={data.token.symbol} amount={amount} />
+        <PoolProgress symbol={data.symbol} amount={amountString} />
       </TransactionProgress>
       <div className={hideCss}>
         <div className="flex items-center gap-2 mt-2 mb-8">
@@ -60,93 +50,33 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>Deposited: {depositQuery.isLoading ? <NumberLoader /> : `${depositQuery.formatted || 0} LP`}</p>
+              <p>
+                Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
+              </p>
               <p className="text-neutral-500 text-right">
-                Balance:{' '}
-                {balanceQuery.isLoading ? <NumberLoader /> : `${balanceQuery.formatted || 0} ${data.token.symbol}`}
+                Balance: <TokenBalance query={balanceQuery} symbol={data.token.symbol}></TokenBalance>
               </p>
             </div>
-            <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-              <div className="flex items-center gap-1 justify-between mb-4">
-                <NumberInput
-                  type="text"
-                  autoFocus
-                  className="input-ghost flex-grow w-full text-4xl font-outfit"
-                  placeholder="0.0"
-                  registerName="amount"
-                />
-                <Button
-                  className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-                  size="sm"
-                  type="button"
-                  onClick={() =>
-                    setValue('amount', depositedLpTokensDecimalAmount / 2, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    })
-                  }
-                >
-                  50%
-                </Button>
-                <Button
-                  className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-                  size="sm"
-                  type="button"
-                  onClick={() =>
-                    setValue('amount', depositedLpTokensDecimalAmount, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    })
-                  }
-                >
-                  MAX
-                </Button>
+            <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
+              <div className="flex items-center justify-between pt-2">
+                <div>Share Value</div>
+                <TokenBalance query={withdrawalQuote} symbol={data.token.symbol}></TokenBalance>
               </div>
-              <Range
-                color="primary"
-                min={0}
-                max={100}
-                size="sm"
-                value={amount ? (amount / depositedLpTokensDecimalAmount) * 100 : 0}
-                onChange={(ev: ChangeEvent<HTMLInputElement>) =>
-                  setValue(
-                    'amount',
-                    roundNumber((Number(ev.currentTarget.value) / 100) * depositedLpTokensDecimalAmount, 4),
-                    {
-                      shouldDirty: true,
-                      shouldTouch: false,
-                    },
-                  )
-                }
-              />
-            </div>
+            </AmountSelector>
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
               <div className="flex items-center justify-between">
-                <div>Amount</div>
+                <div>Total deposit</div>
                 <div>
-                  <TokenAmount
-                    address={data.id}
-                    abi={swapPoolAbi}
-                    lpTokenDecimalAmount={amount}
-                    symbol={` ${data.token.symbol}`}
-                    fallback={0}
-                    poolTokenDecimals={data.token.decimals}
-                    lpTokenDecimals={data.lpTokenDecimals}
-                  />
+                  {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div>Deposit</div>
-                <div>{roundNumber(depositedLpTokensDecimalAmount)}</div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>Pool share</div>
+                <div>Your pool share</div>
                 <div>
-                  {minMax(
-                    calcSharePercentage(
-                      rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
-                      depositedLpTokensDecimalAmount,
-                    ),
+                  {lpTokenBalance === undefined ? (
+                    <NumberLoader />
+                  ) : (
+                    calcSharePercentage(totalSupplyOfLpTokens, lpTokenBalance.preciseBigDecimal)
                   )}
                   %
                 </div>
@@ -168,8 +98,15 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                   Redeem from backstop pool
                 </button>
               </div>
-              <Button color="primary" className="w-full" type="submit" disabled={Object.keys(errors).length > 0}>
-                Withdraw
+              <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
+                Withdraw{' '}
+                {withdrawalQuote.isLoading && (
+                  <span className="inline-flex w-0 justify-start items-center">
+                    <span className="inline-flex pl-2 justify-center items-center w-12">
+                      <Spinner></Spinner>
+                    </span>
+                  </span>
+                )}
               </Button>
               <Button
                 color="secondary"

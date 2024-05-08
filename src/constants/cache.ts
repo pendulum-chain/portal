@@ -11,6 +11,7 @@ export const cacheKeys = {
   walletBalance: 'walletBalance',
   walletBalances: 'walletBalances',
   tokenOutAmount: 'tokenOutAmount',
+  quoteSwapPoolWithdraw: 'quoteSwapPoolWithdraw',
   sharesTargetWorth: 'sharesTargetWorth',
   tokenPrice: 'tokenPrice',
   nablaInstance: 'nablaInstance',

@@ -1,5 +1,3 @@
-import { getMessageCallValue } from '../../../shared/helpers';
-import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers/metric';
 import { NumberLoader } from '../../Loader';
 import { useNablaTokenPrice } from '../../../hooks/nabla/useNablaTokenPrice';
 
@@ -9,18 +7,15 @@ export type TokenPriceProps = {
   fallback?: ReactNode;
 };
 
-const TOKEN_PRICE_DECIMALS = 12;
-
 export function NablaTokenPrice({ address, prefix = null, fallback = null }: TokenPriceProps): JSX.Element | null {
   const { data, isLoading } = useNablaTokenPrice(address);
   if (isLoading) return <NumberLoader />;
 
-  const price = getMessageCallValue(data);
-  if (price === undefined) return <>{fallback}</>;
+  if (data === undefined) return <>{fallback}</>;
 
   return (
     <span>
-      {prefix}${prettyNumbers(rawToDecimal(price, TOKEN_PRICE_DECIMALS).toNumber())}
+      {prefix}${data.approximateStrings.atLeast2Decimals}
     </span>
   );
 }

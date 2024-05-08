@@ -7,7 +7,7 @@ import { cacheKeys } from '../../../constants/cache';
 import { storageKeys } from '../../../constants/localStorage';
 import { routerAbi } from '../../../contracts/nabla/Router';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { subtractPercentage } from '../../../helpers/calc';
+import { subtractBigDecimalPercentage } from '../../../helpers/calc';
 import { debounce } from '../../../helpers/function';
 import { getValidDeadline, getValidSlippage } from '../../../helpers/transaction';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
@@ -18,6 +18,7 @@ import schema from './schema';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 import { useContractWrite } from '../../../hooks/nabla/useContractWrite';
+import Big from 'big.js';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -102,8 +103,13 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     const vDeadline = getValidDeadline(variables.deadline || defaultValues.deadline);
     const vSlippage = getValidSlippage(variables.slippage || defaultValues.slippage);
     const deadline = calcDeadline(vDeadline).toString();
-    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals).toString();
-    const toMinAmount = decimalToRaw(subtractPercentage(variables.toAmount, vSlippage), toToken?.decimals).toString();
+    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals)
+      .round(0, 0)
+      .toString();
+    const toMinAmount = decimalToRaw(
+      subtractBigDecimalPercentage(new Big(variables.toAmount), vSlippage ?? 100),
+      toToken?.decimals,
+    ).toString();
 
     return swapMutation.mutate([fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });

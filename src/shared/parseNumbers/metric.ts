@@ -11,6 +11,8 @@ export const StellarDecimals = 12;
 // These are the decimals used by the FixedU128 type
 export const FixedU128Decimals = 18;
 
+const BIG_100 = new BigNumber('100');
+
 // Change the positive exponent to a high value to prevent toString() returning exponential notation
 BigNumber.PE = 100;
 // Change the negative exponent to a low value to show more decimals with toString()
@@ -108,6 +110,7 @@ export const nativeToFormatMetric = (
   oneCharOnly = false,
 ) => format(rawToDecimal(value, StellarDecimals).toNumber(), tokenSymbol, oneCharOnly);
 
+// TODO Torsten: abolish for Nabla
 export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberFormatOptions) =>
   number.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -132,12 +135,25 @@ export function roundDownToSignificantDecimals(big: BigNumber, decimals: number)
   return big.prec(Math.max(0, big.e + 1) + decimals, 0);
 }
 
+export function stringifyBigWithSignificantDecimals(big: BigNumber, decimals: number) {
+  const rounded = roundDownToSignificantDecimals(big, decimals);
+  return rounded.toFixed();
+}
+
+// TODO Torsten: check whether this can used everywhere to construct cleaner zeros
 export function multiplyByPowerOfTen(bigDecimal: BigNumber, power: number) {
   const newBigDecimal = new BigNumber(bigDecimal);
   if (newBigDecimal.c[0] === 0) return newBigDecimal;
 
   newBigDecimal.e += power;
   return newBigDecimal;
+}
+
+export function fractionOfValue(maxValue: BigNumber, percentage: number): string {
+  const preciseResult = new BigNumber(percentage).div(BIG_100).mul(maxValue);
+
+  const roundedNumber = roundDownToSignificantDecimals(preciseResult, 2);
+  return roundedNumber.toFixed();
 }
 
 /** Calculate deadline from minutes */

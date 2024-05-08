@@ -1,7 +1,5 @@
 import { useSharesTargetWorth } from '../../../hooks/nabla/useSharesTargetWorth';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { getMessageCallValue } from '../../../shared/helpers';
-import { rawToDecimal, prettyNumbers } from '../../../shared/parseNumbers/metric';
 import { NumberLoader } from '../../Loader';
 
 export interface TokenAmountProps {
@@ -13,18 +11,17 @@ export interface TokenAmountProps {
   poolTokenDecimals: number;
   lpTokenDecimals: number;
   debounce?: number;
-  loader?: boolean;
 }
 
+// TODO Torsten: remove this component
 export function TokenAmount({
-  symbol,
-  abi,
-  fallback,
   address,
+  abi,
+  lpTokenDecimalAmount,
+  symbol,
+  fallback,
   poolTokenDecimals,
   lpTokenDecimals,
-  lpTokenDecimalAmount,
-  loader = true,
   debounce = 800,
 }: TokenAmountProps): JSX.Element | null {
   const debouncedAmount = useDebouncedValue(lpTokenDecimalAmount, debounce);
@@ -33,17 +30,17 @@ export function TokenAmount({
     abi,
     lpTokenDecimalAmount: debounce ? debouncedAmount : lpTokenDecimalAmount,
     lpTokenDecimals,
+    poolTokenDecimals,
   });
 
   if (lpTokenDecimalAmount && (isLoading || (!!debounce && lpTokenDecimalAmount !== debouncedAmount))) {
-    return loader ? <NumberLoader /> : null;
+    return <NumberLoader />;
   }
 
+  // TODO Torsten: show explicit error if an error is returned
   return (
-    <span title={data?.toString()}>
-      {data
-        ? prettyNumbers(rawToDecimal(getMessageCallValue(data) ?? '0', poolTokenDecimals).toNumber())
-        : fallback ?? null}
+    <span title={data?.preciseString}>
+      {data ? data.approximateStrings.atLeast2Decimals : fallback ?? null}
       {symbol ? symbol : null}
     </span>
   );

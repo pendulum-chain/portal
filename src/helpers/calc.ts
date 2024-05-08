@@ -15,16 +15,22 @@ export function calcFiatValuePriceImpact(
   return Math.floor(ratio * PRECISION);
 }
 
+// TODO Torsten: abolish
 /** Calculate percentage */
 export const subtractPercentage = (value = 0, percent = 0, round = 2) =>
   roundNumber(value * (1 - percent / 100), round);
 
 /** Calculate share percentage */
-export const calcSharePercentage = (total = 0, share = 0, round = 2) => roundNumber((share / total) * 100, round) || 0;
+export function calcSharePercentage(total: Big, share: Big) {
+  const percentage = share.div(total).mul(new Big(100)).toNumber();
+  const clampedPercentage = Math.max(Math.min(percentage, 100), 0);
+  return clampedPercentage.toFixed(2);
+}
 
-export const min = (val: number, minNumber = 0) => Math.max(val, minNumber);
-export const max = (val: number, maxNumber = 100) => Math.min(val, maxNumber);
-export const minMax = (val: number, minNumber = 0, maxNumber = 100) => max(min(val, minNumber), maxNumber);
+/** Calculate share percentage */
+export function subtractBigDecimalPercentage(total: Big, percent: number) {
+  return total.mul(new Big(1 - percent / 100));
+}
 
 /** Calculate pool APR (daily fee * 365 / TVL)  */
 export const calcAPR = (dailyFees: number, tvl: number, round = 2) =>
@@ -40,10 +46,9 @@ export function getPoolSurplusNativeAmount(pool: NablaInstanceSwapPool) {
 type CAPWProps = {
   selectedSwapPool: NablaInstanceSwapPool;
   backstopLpDecimalAmount: number;
-  sharesWorthNativeAmount: bigint;
+  sharesValueDecimalAmount: Big | undefined;
   bpPrice: bigint | undefined;
   spPrice: bigint | undefined;
-  backstopPoolTokenDecimals: number;
   swapPoolTokenDecimals: number;
 };
 
@@ -52,20 +57,18 @@ type CAPWProps = {
 export const calcAvailablePoolWithdraw = ({
   selectedSwapPool,
   backstopLpDecimalAmount,
-  sharesWorthNativeAmount,
+  sharesValueDecimalAmount,
   bpPrice,
   spPrice,
-  backstopPoolTokenDecimals,
   swapPoolTokenDecimals,
 }: CAPWProps) => {
   const surplusNativeAmount = getPoolSurplusNativeAmount(selectedSwapPool);
-  if (!bpPrice || !spPrice || !sharesWorthNativeAmount || !backstopLpDecimalAmount) {
+  if (!bpPrice || !spPrice || !sharesValueDecimalAmount || !backstopLpDecimalAmount) {
     return undefined;
   }
   const surplusDecimalAmount = Big(rawToDecimal(surplusNativeAmount.toString(), swapPoolTokenDecimals).toString());
   if (surplusDecimalAmount.lte(0)) return Big(0);
 
-  const sharesValueDecimalAmount = Big(rawToDecimal(sharesWorthNativeAmount.toString(), backstopPoolTokenDecimals));
   const spPriceVal = new Big(spPrice.toString());
   const bpPriceVal = new Big(bpPrice.toString());
 

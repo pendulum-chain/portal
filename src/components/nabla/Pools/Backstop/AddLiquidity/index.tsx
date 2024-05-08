@@ -3,8 +3,7 @@ import { Button } from 'react-daisyui';
 import { Big } from 'big.js';
 
 import { PoolProgress } from '../..';
-import { minMax } from '../../../../../helpers/calc';
-import { rawToDecimal } from '../../../../../shared/parseNumbers/metric';
+import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import { useAddLiquidity } from './useAddLiquidity';
@@ -13,13 +12,10 @@ import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenApproval } from '../../../common/TokenApproval';
 import { FormProvider } from 'react-hook-form';
 import { AmountSelector } from '../../../common/AmountSelector';
+import { calcSharePercentage } from '../../../../../helpers/calc';
 
 interface AddLiquidityProps {
   data: NablaInstanceBackstopPool;
-}
-
-function calcSharePercentage(total: Big, share: Big) {
-  return share.div(total).mul(new Big(100)).toNumber();
 }
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
@@ -29,6 +25,8 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const {
     formState: { errors },
   } = form;
+
+  const totalSupplyOfLpTokens = rawToDecimal(data.totalSupply, data.token.decimals);
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
@@ -139,11 +137,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
               <div className="flex items-center justify-between">
                 <div>Total deposit</div>
                 <div>
-                  {lpTokenBalance === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    `${lpTokenBalance.approximateStrings.atLeast2Decimals} LP`
-                  )}
+                  {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
               </div>
               <div className="flex items-center justify-between">
@@ -152,12 +146,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   {lpTokenBalance === undefined ? (
                     <NumberLoader />
                   ) : (
-                    minMax(
-                      calcSharePercentage(
-                        rawToDecimal(data.totalSupply, data.token.decimals),
-                        lpTokenBalance.preciseBigDecimal,
-                      ),
-                    )
+                    calcSharePercentage(totalSupplyOfLpTokens, lpTokenBalance.preciseBigDecimal)
                   )}
                   %
                 </div>

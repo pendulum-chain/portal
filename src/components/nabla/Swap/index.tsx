@@ -36,7 +36,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   const progressUi = useMemo(() => {
     if (swapMutation?.isIdle) return null;
-    const { from: fromV, to: toV, fromAmount = 0, toAmount = 0 } = getValues();
+    const { from: fromV, to: toV, fromAmount = '0', toAmount = '0' } = getValues();
     const fromAsset = tokensMap[fromV];
     const toAsset = tokensMap[toV];
     return (

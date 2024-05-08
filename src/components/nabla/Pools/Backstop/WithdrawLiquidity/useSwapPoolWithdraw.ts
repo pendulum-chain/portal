@@ -4,7 +4,6 @@ import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { calcAvailablePoolWithdraw, subtractPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { useSharesTargetWorth } from '../../../../../hooks/nabla/useSharesTargetWorth';
-import { getMessageCallValue } from '../../../../../shared/helpers';
 import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import { WithdrawLiquidityValues } from './types';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../../hooks/nabla/useNablaInstance';
@@ -59,31 +58,35 @@ export const useSwapPoolWithdraw = ({
     {
       address: swapPoolAddress,
       lpTokenDecimalAmount: depositedBackstopLpTokenDecimalAmount,
-      abi: backstopPoolAbi,
       lpTokenDecimals: backstopPool.lpTokenDecimals,
+      poolTokenDecimals: backstopPool.token.decimals,
+      abi: backstopPoolAbi,
     },
     enabled,
   );
-  const sharesWorthNativeAmount = getMessageCallValue(sharesQuery.data);
   const bpPriceQuery = useNablaTokenPrice(backstopPool.token.id, enabled);
   const spPriceQuery = useNablaTokenPrice(selectedSwapPool?.token.id, enabled);
-  const bpPrice = getMessageCallValue(bpPriceQuery.data);
-  const spPrice = getMessageCallValue(spPriceQuery.data);
 
+  // TODO Torsen: also check this
   const withdrawLimitDecimalAmount = useMemo(
     () =>
       selectedSwapPool
         ? calcAvailablePoolWithdraw({
             selectedSwapPool,
             backstopLpDecimalAmount: depositedBackstopLpTokenDecimalAmount,
-            sharesWorthNativeAmount,
-            bpPrice: bpPrice ? BigInt(bpPrice) : undefined,
-            spPrice: spPrice ? BigInt(spPrice) : undefined,
-            backstopPoolTokenDecimals: backstopPool.token.decimals,
+            sharesValueDecimalAmount: sharesQuery.data?.preciseBigDecimal,
+            bpPrice: bpPriceQuery.data?.rawBalance,
+            spPrice: spPriceQuery.data?.rawBalance,
             swapPoolTokenDecimals: selectedSwapPool.token.decimals,
           })
         : 0,
-    [selectedSwapPool, backstopPool, depositedBackstopLpTokenDecimalAmount, sharesWorthNativeAmount, bpPrice, spPrice],
+    [
+      selectedSwapPool,
+      sharesQuery.data?.preciseBigDecimal,
+      depositedBackstopLpTokenDecimalAmount,
+      bpPriceQuery.data?.rawBalance,
+      spPriceQuery.data?.rawBalance,
+    ],
   );
 
   return {

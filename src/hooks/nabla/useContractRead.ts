@@ -9,27 +9,36 @@ import { useSharedState } from '../../shared/Provider';
 import { config } from '../../config';
 
 const isDevelopment = config.isDev;
+const ALICE = '6mfqoTMHrMeVMyKwjqomUjVomPMJ4AjdCm1VReFtk7Be8wqr';
 
-export type UseContractProps = {
+export type MessageCallErrorResult = MessageCallResult & { result: { type: 'error' | 'panic' | 'reverted' } };
+
+export type UseContractReadProps<ReturnType> = {
   abi: Dict;
   address: string | undefined;
   method: string;
   args?: any[];
   noWalletAddressRequired?: boolean;
-  queryOptions: QueryOptions;
+  parseSuccessOutput: (successResult: any) => ReturnType;
+  parseError: string | ((errorResult: MessageCallErrorResult) => string);
+  queryOptions: QueryOptions<ReturnType | undefined, string>;
 };
 
-export type UseContractResult = Pick<
-  UseQueryResult<MessageCallResult | undefined>,
-  'refetch' | 'isLoading' | 'data' | 'fetchStatus'
->;
+export type UseContractReadResult<ReturnType> = UseQueryResult<ReturnType | undefined, string>;
 
-const ALICE = '6mfqoTMHrMeVMyKwjqomUjVomPMJ4AjdCm1VReFtk7Be8wqr';
-
-export function useContractRead(
+export function useContractRead<ReturnType>(
   key: QueryKey,
-  { abi, address, method, args, noWalletAddressRequired, queryOptions }: UseContractProps,
-): UseContractResult {
+  {
+    abi,
+    address,
+    method,
+    args,
+    noWalletAddressRequired,
+    queryOptions,
+    parseSuccessOutput,
+    parseError,
+  }: UseContractReadProps<ReturnType>,
+): UseContractReadResult<ReturnType> {
   const { api, address: walletAddress } = useSharedState();
   const contractAbi = useMemo(
     () => (abi && api?.registry ? new Abi(abi, api.registry.getChainProperties()) : undefined),
@@ -39,7 +48,7 @@ export function useContractRead(
   const actualWalletAddress = noWalletAddressRequired ? ALICE : walletAddress;
 
   const enabled = !!contractAbi && queryOptions.enabled !== false && !!address && !!api && !!actualWalletAddress;
-  const query = useQuery<MessageCallResult | undefined>(
+  const query = useQuery<ReturnType | undefined, string>(
     enabled ? key : emptyCacheKey,
     async () => {
       if (!enabled) return;
@@ -65,18 +74,24 @@ export function useContractRead(
         console.log('read', 'Call message result', address, method, args, response);
       }
 
-      return response;
+      if (response.result.type !== 'success') {
+        let message;
+        if (typeof parseError === 'string') {
+          message = parseError;
+        } else {
+          message = parseError(response as MessageCallErrorResult);
+        }
+        return Promise.reject(message);
+      }
+
+      return parseSuccessOutput(response.result.value);
     },
     {
       ...queryOptions,
+      retry: false,
       enabled,
     },
   );
 
-  return {
-    refetch: query.refetch,
-    isLoading: query.isLoading,
-    data: query.data,
-    fetchStatus: query.fetchStatus,
-  };
+  return query;
 }

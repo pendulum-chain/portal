@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { config } from '../../../../../config';
-import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
+import { calcSharePercentage } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
@@ -131,10 +131,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
               <div className="flex items-center justify-between">
                 <div>Pool share</div>
                 <div>
-                  {minMax(
-                    calcSharePercentage(rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(), deposit),
-                  )}
-                  %
+                  {calcSharePercentage(rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(), deposit)}%
                 </div>
               </div>
             </div>

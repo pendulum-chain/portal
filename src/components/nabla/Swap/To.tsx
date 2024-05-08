@@ -4,11 +4,11 @@ import { Button } from 'react-daisyui';
 import { useFormContext, useWatch } from 'react-hook-form';
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { config } from '../../../config';
-import { subtractPercentage } from '../../../helpers/calc';
+import { subtractBigDecimalPercentage } from '../../../helpers/calc';
 import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
 import useBoolean from '../../../hooks/useBoolean';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { rawToDecimal, prettyNumbers, roundNumber } from '../../../shared/parseNumbers/metric';
+import { stringifyBigWithSignificantDecimals } from '../../../shared/parseNumbers/metric';
 import { NumberLoader } from '../../Loader';
 import { Skeleton } from '../../Skeleton';
 import { SwapFormValues } from './schema';
@@ -16,6 +16,7 @@ import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
+import Big from 'big.js';
 
 export interface ToProps {
   tokensMap: Record<string, NablaInstanceToken>;
@@ -37,13 +38,19 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
     name: 'to',
   });
 
-  const fromDecimalAmount = Number(
-    useWatch({
-      control,
-      name: 'fromAmount',
-      defaultValue: 0,
-    }),
-  );
+  const fromDecimalAmountString = useWatch({
+    control,
+    name: 'fromAmount',
+    defaultValue: '0',
+  });
+
+  const fromDecimalAmount = useMemo(() => {
+    try {
+      return new Big(fromDecimalAmountString);
+    } catch {
+      return undefined;
+    }
+  }, [fromDecimalAmountString]);
 
   const slippage = Number(
     useWatch({
@@ -57,55 +64,37 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
 
   const debouncedFromDecimalAmount = useDebouncedValue(fromDecimalAmount, 800);
 
-  const { isLoading, fetchStatus, data, refetch } = useTokenOutAmount({
+  const {
+    isLoading,
+    fetchStatus,
+    data: tokenOutAmount,
+    error,
+    refetch,
+  } = useTokenOutAmount({
     fromDecimalAmount: debouncedFromDecimalAmount,
     from,
     to,
     fromTokenDecimals: fromToken?.decimals,
+    toTokenDecimals: toToken?.decimals,
   });
 
   useEffect(() => {
-    if (data && data.result.type !== 'success') {
-      let errorMessage;
-      switch (data.result.type) {
-        case 'error':
-          errorMessage = 'Something went wrong';
-          break;
-        case 'panic':
-          errorMessage = data.result.errorCode === 0x11 ? 'The input amount is too large' : 'Something went wrong';
-          break;
-        case 'reverted':
-          errorMessage =
-            data.result.description === 'SwapPool: EXCEEDS_MAX_COVERAGE_RATIO'
-              ? 'The input amount is too large'
-              : 'Something went wrong';
-      }
-
-      setError('fromAmount', { type: 'manual', message: errorMessage });
+    if (error !== null) {
+      setError('fromAmount', { type: 'manual', message: error });
     } else {
       clearErrors('fromAmount');
     }
-  }, [data, setError, clearErrors]);
+  }, [error, setError, clearErrors]);
 
   const loading = (isLoading && fetchStatus !== 'idle') || fromDecimalAmount !== debouncedFromDecimalAmount;
 
-  const [value, toAmount, swapFee] = useMemo(() => {
-    const outValue = data?.result.type === 'success' ? data.result.value : undefined;
-
-    if (outValue === undefined) return ['0', undefined, undefined];
-
-    const toAmount = rawToDecimal(outValue[0], toToken.decimals).toNumber();
-
-    return [prettyNumbers(toAmount), toAmount, rawToDecimal(outValue[1], toToken.decimals).toNumber()];
-  }, [data?.result, toToken]);
-
   useEffect(() => {
-    setValue('toAmount', toAmount ?? 0, {
+    setValue('toAmount', tokenOutAmount?.amountOut.preciseString ?? '0', {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
     });
-  }, [toAmount, setValue]);
+  }, [tokenOutAmount?.amountOut.preciseString, setValue]);
 
   return (
     <div
@@ -115,9 +104,9 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
         <div className="flex-grow text-4xl text-[inherit] font-outfit">
           {loading ? (
             <NumberLoader />
-          ) : value ? (
-            `${value}`
-          ) : fromDecimalAmount > 0 ? (
+          ) : tokenOutAmount ? (
+            `${tokenOutAmount.amountOut.approximateStrings.atLeast4Decimals}`
+          ) : fromDecimalAmount !== undefined && fromDecimalAmount.gt(new Big(0)) ? (
             <button type="button" onClick={() => refetch()} className="hover:opacity-80" title="Refresh">
               <ArrowPathRoundedSquareIcon className="w-7 h-7" />
             </button>
@@ -143,10 +132,10 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
         <div className="flex gap-1 text-sm">
           Your balance:{' '}
           <Erc20Balance
-            address={toToken?.id}
-            decimals={toToken?.decimals}
             abi={erc20WrapperAbi}
-            symbol={toToken?.symbol}
+            erc20ContractDefinition={
+              toToken ? { contractAddress: toToken.id, decimals: toToken.decimals, symbol: toToken.symbol } : undefined
+            }
           />
         </div>
       </div>
@@ -158,8 +147,11 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
       >
         <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
           <div className="flex items-center">
-            {fromToken && toToken && value && fromDecimalAmount && !loading ? (
-              <>{`1 ${fromToken.symbol} = ${roundNumber(Number(value) / fromDecimalAmount, 6)} ${toToken.symbol}`}</>
+            {fromToken && toToken && tokenOutAmount && debouncedFromDecimalAmount && !loading ? (
+              <>{`1 ${fromToken.symbol} = ${stringifyBigWithSignificantDecimals(
+                tokenOutAmount.amountOut.preciseBigDecimal.div(debouncedFromDecimalAmount),
+                6,
+              )} ${toToken.symbol}`}</>
             ) : (
               `- ${toToken?.symbol || ''}`
             )}
@@ -177,23 +169,27 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
           <div className="flex justify-between pt-6">
             <div>Expected Output:</div>
             <div>
-              <Skeleton isLoading={loading}>
-                {value} {toToken?.symbol || ''}
+              <Skeleton isLoading={loading || tokenOutAmount === undefined}>
+                {tokenOutAmount?.amountOut.approximateStrings.atLeast2Decimals} {toToken?.symbol || ''}
               </Skeleton>
             </div>
           </div>
           <div className="flex justify-between">
             <div>Minimum received after slippage ({slippage}%)</div>
             <div>
-              <Skeleton isLoading={loading}>
-                {subtractPercentage(Number(value), slippage)} {toToken?.symbol || ''}
+              <Skeleton isLoading={loading || tokenOutAmount === undefined}>
+                {tokenOutAmount !== undefined
+                  ? subtractBigDecimalPercentage(tokenOutAmount.amountOut.preciseBigDecimal, slippage)
+                  : ''}{' '}
+                {toToken?.symbol || ''}
               </Skeleton>
             </div>
           </div>
           <div className="flex justify-between">
             <div>Swap fee:</div>
             <div>
-              {swapFee !== undefined ? prettyNumbers(swapFee) : ''} {toToken?.symbol || ''}
+              {tokenOutAmount !== undefined ? tokenOutAmount.swapFee.approximateStrings.atLeast2Decimals : ''}{' '}
+              {toToken?.symbol || ''}
             </div>
           </div>
         </div>

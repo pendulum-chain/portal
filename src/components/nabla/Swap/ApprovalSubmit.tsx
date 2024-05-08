@@ -4,6 +4,7 @@ import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { TokenApproval } from '../common/TokenApproval';
+import Big from 'big.js';
 
 export interface ApprovalProps {
   token: NablaInstanceToken | undefined;
@@ -13,7 +14,7 @@ export interface ApprovalProps {
 const ApprovalSubmit = ({ token, disabled }: ApprovalProps): JSX.Element | null => {
   const { router } = useGetAppDataByTenant('nabla').data || {};
   const { control } = useFormContext<SwapFormValues>();
-  const decimalAmount = Number(
+  const decimalAmount = new Big(
     useWatch({
       control,
       name: 'fromAmount',

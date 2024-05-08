@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
-import { calcSharePercentage, minMax } from '../../../../../helpers/calc';
+import { calcSharePercentage } from '../../../../../helpers/calc';
 import { rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
@@ -113,12 +113,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   {depositQuery.isLoading ? (
                     <NumberLoader />
                   ) : (
-                    minMax(
-                      calcSharePercentage(
-                        rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(),
-                        deposit,
-                      ),
-                    )
+                    calcSharePercentage(rawToDecimal(data.totalSupply || 0, data.lpTokenDecimals).toNumber(), deposit)
                   )}
                   %
                 </div>

@@ -9,6 +9,7 @@ import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { useErc20ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
 import { NumberInput } from '../common/NumberInput';
+import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 
 export interface FromProps {
   tokensMap: Record<string, NablaInstanceToken>;
@@ -24,7 +25,7 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
   });
 
   const token: NablaInstanceToken = tokensMap[from];
-  const { balance } = useErc20ContractBalance(
+  const { data: balance } = useErc20ContractBalance(
     erc20WrapperAbi,
     token
       ? {
@@ -36,6 +37,7 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
 
   const inputHasError = errorMessage !== undefined;
 
+  // TODO Torsten: remove the setValue clickers
   return (
     <div
       className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
@@ -73,14 +75,14 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
               </span>
               <button
                 className="text-primary hover:underline"
-                onClick={() => setValue('fromAmount', balance.approximateNumber * 0.5)}
+                onClick={() => setValue('fromAmount', fractionOfValue(balance.preciseBigDecimal, 50))}
                 type="button"
               >
                 50%
               </button>
               <button
                 className="text-primary hover:underline"
-                onClick={() => setValue('fromAmount', balance.approximateNumber)}
+                onClick={() => setValue('fromAmount', fractionOfValue(balance.preciseBigDecimal, 100))}
                 type="button"
               >
                 MAX

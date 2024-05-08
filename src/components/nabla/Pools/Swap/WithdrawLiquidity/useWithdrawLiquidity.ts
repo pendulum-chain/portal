@@ -1,21 +1,31 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'preact/compat';
+import { useCallback, useMemo } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
+import { Big } from 'big.js';
+
 import { cacheKeys } from '../../../../../constants/cache';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
-import { subtractPercentage } from '../../../../../helpers/calc';
+import { subtractBigDecimalPercentage } from '../../../../../helpers/calc';
 import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
 import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
-import schema from './schema';
-import { WithdrawLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
+import { useQuoteSwapPoolWithdraw } from '../../../../../hooks/nabla/useQuoteSwapPoolWithdraw';
+
+export type WithdrawLiquidityValues = {
+  amount: string;
+};
+
+const schema = Yup.object<WithdrawLiquidityValues>().shape({
+  amount: Yup.string().required(),
+});
 
 export const useSwapPoolWithdrawLiquidity = (
-  poolAddress: string,
+  swapPoolAddress: string,
   tokenAddress: string,
   poolTokenDecimals: number,
   lpTokenDecimals: number,
@@ -30,7 +40,7 @@ export const useSwapPoolWithdrawLiquidity = (
   });
 
   const depositQuery = useErc20ContractBalance(swapPoolAbi, {
-    contractAddress: poolAddress,
+    contractAddress: swapPoolAddress,
     decimals: lpTokenDecimals,
   });
 
@@ -44,7 +54,7 @@ export const useSwapPoolWithdrawLiquidity = (
 
   const mutation = useContractWrite({
     abi: swapPoolAbi,
-    address: poolAddress,
+    address: swapPoolAddress,
     method: 'withdraw',
     mutateOptions: {
       onError: () => {
@@ -60,25 +70,43 @@ export const useSwapPoolWithdrawLiquidity = (
   });
   const { mutate } = mutation;
 
+  const amountString = useWatch({
+    control: form.control,
+    name: 'amount',
+    defaultValue: '0',
+  });
+
+  const withdrawalQuote = useQuoteSwapPoolWithdraw({
+    lpTokenAmountString: amountString,
+    lpTokenDecimals,
+    poolTokenDecimals,
+    swapPoolAddress,
+    maximumLpTokenAmount: depositQuery.data?.preciseBigDecimal,
+    form,
+  });
+
+  // TODO Torsten: check how values are determined in the other mutation functions
   const onSubmit = useCallback(
     (variables: WithdrawLiquidityValues) => {
-      if (!variables.amount) return;
+      if (!variables.amount || withdrawalQuote.data === undefined) return;
       return mutate([
-        decimalToRaw(variables.amount, lpTokenDecimals).toString(),
-        decimalToRaw(subtractPercentage(variables.amount, 0.5), poolTokenDecimals).toString(),
+        decimalToRaw(variables.amount, lpTokenDecimals).round(0, 0).toString(),
+        decimalToRaw(subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, 0.5), poolTokenDecimals)
+          .round(0, 0)
+          .toString(),
       ]);
     },
-    [mutate, lpTokenDecimals, poolTokenDecimals],
+    [withdrawalQuote, mutate, lpTokenDecimals, poolTokenDecimals],
   );
 
-  const amount =
-    Number(
-      useWatch({
-        control: form.control,
-        name: 'amount',
-        defaultValue: 0,
-      }),
-    ) || 0;
-
-  return { form, amount, mutation, onSubmit: handleSubmit(onSubmit), toggle, balanceQuery, depositQuery };
+  return {
+    form,
+    amountString,
+    mutation,
+    onSubmit: handleSubmit(onSubmit),
+    toggle,
+    balanceQuery,
+    depositQuery,
+    withdrawalQuote,
+  };
 };

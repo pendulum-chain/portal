@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useMemo } from 'preact/compat';
 import { Button, Range } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { calcSharePercentage, getPoolSurplusNativeAmount, minMax } from '../../../../../helpers/calc';
+import { calcSharePercentage, getPoolSurplusNativeAmount } from '../../../../../helpers/calc';
 import { prettyNumbers, rawToDecimal, roundNumber } from '../../../../../shared/parseNumbers/metric';
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
@@ -197,11 +197,9 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
               <div className="flex items-center justify-between">
                 <div>Pool share</div>
                 <div>
-                  {minMax(
-                    calcSharePercentage(
-                      rawToDecimal(backstopPool.totalSupply || 0, backstopPool.lpTokenDecimals).toNumber(),
-                      depositedBackstopLpTokenDecimalAmount,
-                    ),
+                  {calcSharePercentage(
+                    rawToDecimal(backstopPool.totalSupply || 0, backstopPool.lpTokenDecimals).toNumber(),
+                    depositedBackstopLpTokenDecimalAmount,
                   )}
                   %
                 </div>

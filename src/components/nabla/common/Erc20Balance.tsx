@@ -7,7 +7,7 @@ export type Erc20BalanceProps = {
 };
 
 export function Erc20Balance({ erc20ContractDefinition, abi }: Erc20BalanceProps): JSX.Element | null {
-  const { isLoading, balance } = useErc20ContractBalance(abi, erc20ContractDefinition);
+  const { isLoading, data: balance } = useErc20ContractBalance(abi, erc20ContractDefinition);
   if (balance === undefined || erc20ContractDefinition === undefined || isLoading) return <NumberLoader />;
 
   const { symbol } = erc20ContractDefinition;
