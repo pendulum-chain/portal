@@ -1,10 +1,10 @@
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
-import { cacheKeys } from './constants';
 import { emptyCacheKey, QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
+import { cacheKeys } from '../constants/cache';
 
 export interface UseAccountBalanceResponse {
   query: UseQueryResult<FrameSystemAccountInfo | undefined, unknown>;

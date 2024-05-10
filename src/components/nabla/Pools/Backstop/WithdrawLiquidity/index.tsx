@@ -9,7 +9,6 @@ import { prettyNumbers, rawToDecimal, roundNumber } from '../../../../../shared/
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
-import { TransactionSettingsDropdown } from '../../../../Transaction/Settings';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
 import { NablaInstance, NablaInstanceSwapPool, useNablaInstance } from '../../../../../hooks/nabla/useNablaInstance';
 import { AssetSelectorModal } from '../../../common/AssetSelectorModal';
@@ -17,6 +16,7 @@ import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenAmount } from '../../../common/TokenAmount';
 import { FormProvider } from 'react-hook-form';
 import { NumberInput } from '../../../common/NumberInput';
+import { TransactionSettingsDropdown } from '../../../common/TransactionSettingsDropdown';
 
 const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element | null => {
   const {

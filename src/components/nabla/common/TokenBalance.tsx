@@ -5,9 +5,14 @@ import { ContractBalance } from '../../../helpers/contracts';
 export interface TokenBalancProps {
   query: Pick<UseQueryResult<ContractBalance | undefined, string>, 'error' | 'data' | 'isLoading'>;
   symbol: string | undefined;
+  significantDecimals?: 2 | 4;
 }
 
-export function TokenBalance({ query: { data, error, isLoading }, symbol }: TokenBalancProps): JSX.Element | null {
+export function TokenBalance({
+  query: { data, error, isLoading },
+  symbol,
+  significantDecimals,
+}: TokenBalancProps): JSX.Element | null {
   if (isLoading) {
     return <NumberLoader />;
   }
@@ -16,9 +21,11 @@ export function TokenBalance({ query: { data, error, isLoading }, symbol }: Toke
     return <span>N/A</span>;
   }
 
+  const approximateString =
+    significantDecimals === 4 ? data.approximateStrings.atLeast4Decimals : data.approximateStrings.atLeast2Decimals;
   return (
     <span title={data.preciseString}>
-      {data.approximateStrings.atLeast2Decimals} {symbol ? symbol : null}
+      {approximateString} {symbol ? symbol : null}
     </span>
   );
 }

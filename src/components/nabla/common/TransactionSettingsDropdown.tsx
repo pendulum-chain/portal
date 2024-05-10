@@ -42,9 +42,10 @@ const TransactionSettings = ({
           </div>
         </div>
       </div>
-      <div className="mt-4 text-sm">
-        <div className="flex gap-2">Transaction Deadline</div>
-        {deadlineProps && (
+      {deadlineProps && (
+        <div className="mt-4 text-sm">
+          <div className="flex gap-2">Transaction Deadline</div>
+
           <div className="flex items-center gap-2 mt-2">
             <Input
               size="sm"
@@ -59,27 +60,27 @@ const TransactionSettings = ({
             />
             <span className="dark:text-neutral-400 text-neutral-600">minutes</span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export const TransactionSettingsDropdown = (props: TransactionSettingsProps & { button?: ReactNode }) => (
-  <Dropdown vertical="bottom" end>
-    {props.button || (
-      <button
-        className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400"
-        type="button"
-        title="Open settings"
-      >
-        <Cog8ToothIcon className="h-6 w-6" />
-      </button>
-    )}
-    <Dropdown.Menu tabIndex={0} className="p-4 shadow-lg bg-base-200 border dark:border-neutral-800 rounded-lg w-64">
-      <TransactionSettings {...props} />
-    </Dropdown.Menu>
-  </Dropdown>
-);
-
-export default TransactionSettings;
+export function TransactionSettingsDropdown(props: TransactionSettingsProps & { button?: ReactNode }) {
+  return (
+    <Dropdown vertical="bottom" end>
+      {props.button || (
+        <button
+          className="flex btn btn-sm btn-circle btn-ghost text-gray-600 dark:text-gray-400"
+          type="button"
+          title="Open settings"
+        >
+          <Cog8ToothIcon className="h-6 w-6" />
+        </button>
+      )}
+      <Dropdown.Menu tabIndex={0} className="p-4 shadow-lg bg-base-200 border dark:border-neutral-800 rounded-lg w-64">
+        <TransactionSettings {...props} />
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+}

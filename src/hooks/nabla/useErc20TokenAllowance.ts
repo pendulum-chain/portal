@@ -1,6 +1,5 @@
 import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';
-import { cacheKeys } from '../../shared/constants';
-import { activeOptions } from '../../constants/cache';
+import { activeOptions, cacheKeys } from '../../constants/cache';
 import { useContractRead } from './useContractRead';
 import { ContractBalance, parseContractBalanceResponse } from '../../helpers/contracts';
 

@@ -73,8 +73,7 @@ export const useWithdrawLiquidity = (nabla: NablaInstance) => {
     reset();
     balanceRefetch();
     depositRefetch();
-    queryClient.refetchQueries([cacheKeys.backstopPools, indexerUrl]);
-  }, [balanceRefetch, depositRefetch, indexerUrl, queryClient, reset]);
+  }, [balanceRefetch, depositRefetch, reset]);
 
   const backstopWithdraw = useBackstopWithdraw({
     address: poolAddress,

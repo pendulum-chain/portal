@@ -4,6 +4,11 @@ import { NablaInstanceSwapPool } from '../hooks/nabla/useNablaInstance';
 
 export type Percent = number;
 
+// TODO Torsten
+// check src/helpers/calc.ts
+// - what is needed
+// - what is correct
+
 const PRECISION = 10000;
 /** Calculate fiat value price impact */
 export function calcFiatValuePriceImpact(

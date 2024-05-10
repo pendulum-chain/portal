@@ -13,13 +13,14 @@ import { TokenApproval } from '../../../common/TokenApproval';
 import { FormProvider } from 'react-hook-form';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { calcSharePercentage } from '../../../../../helpers/calc';
+import { TokenBalance } from '../../../common/TokenBalance';
 
 interface AddLiquidityProps {
   data: NablaInstanceBackstopPool;
 }
 
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
-  const { toggle, onSubmit, mutation, poolTokenBalance, lpTokenBalance, amountString, amountBigDecimal, form } =
+  const { toggle, onSubmit, mutation, depositQuery, balanceQuery, amountString, amountBigDecimal, form } =
     useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
 
   const {
@@ -34,125 +35,44 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
       <TransactionProgress mutation={mutation} onClose={mutation.reset}>
         <PoolProgress symbol={data.token.symbol} amount={amountString} />
       </TransactionProgress>
-      <div className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
-        <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
-          <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
-        </Button>
-        <h3 className="text-3xl font-normal">Deposit {data.token.symbol}</h3>
-      </div>
       <div className={hideCss}>
+        <div className="flex items-center gap-2 mb-8 mt-2">
+          <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
+            <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
+          </Button>
+          <h3 className="text-3xl font-normal">Deposit {data.token.symbol}</h3>
+        </div>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             <div className="flex justify-between align-end text-sm text-initial my-3">
               <p>
-                Deposited:{' '}
-                <span title={lpTokenBalance?.preciseString}>
-                  {lpTokenBalance === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    `${lpTokenBalance.approximateStrings.atLeast2Decimals} ${data.symbol}`
-                  )}
-                </span>
+                Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
               </p>
               <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance:{' '}
-                <span title={poolTokenBalance?.preciseString}>
-                  {poolTokenBalance === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    `${poolTokenBalance.approximateStrings.atLeast2Decimals} ${data.token.symbol}`
-                  )}
-                </span>
+                Balance: <TokenBalance query={balanceQuery} symbol={data.token.symbol}></TokenBalance>
               </p>
             </div>
-            <AmountSelector maxBalance={poolTokenBalance} formFieldName="amount" form={form} />
-            {/*<div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-1">
-                  <NumberInput
-                    autoFocus
-                    className="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
-                    placeholder="Amount"
-                    registerName="amount"
-                  />
-                  <Button
-                    className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-                    size="sm"
-                    type="button"
-                    onClick={() => {
-                      if (poolTokenBalance !== undefined) {
-                        setValue('amount', poolTokenBalance.preciseBigDecimal.div(new Big('2')).toFixed(2), {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                        });
-                      }
-                    }}
-                  >
-                    50%
-                  </Button>
-                  <Button
-                    className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-                    size="sm"
-                    type="button"
-                    onClick={() => {
-                      if (poolTokenBalance !== undefined) {
-                        setValue('amount', poolTokenBalance.approximateStrings.atLeast2Decimals, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                        });
-                      }
-                    }}
-                  >
-                    MAX
-                  </Button>
-                </div>
-              </div>
-              <Range
-                color="primary"
-                min={0}
-                max={100}
-                size="sm"
-                value={
-                  amountBigDecimal && poolTokenBalance
-                    ? amountBigDecimal.div(poolTokenBalance.preciseBigDecimal).toNumber() * 100
-                    : 0
-                }
-                onChange={(ev: ChangeEvent<HTMLInputElement>) => {
-                  if (poolTokenBalance === undefined) return;
-                  setValue(
-                    'amount',
-                    new Big(ev.currentTarget.value)
-                      .div(new Big('100'))
-                      .mul(poolTokenBalance.preciseBigDecimal)
-                      .toFixed(2, 0),
-                    {
-                      shouldDirty: true,
-                      shouldTouch: false,
-                    },
-                  );
-                }}
-              />
-              </div>*/}
+            <AmountSelector maxBalance={balanceQuery.data} formFieldName="amount" form={form} />
+            <Validation className="text-center mt-2" errors={errors} />
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
               <div className="flex items-center justify-between">
-                <div>Total deposit</div>
+                <div>Total LP tokens</div>
                 <div>
                   {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div>Pool Share</div>
+                <div>Your pool Share</div>
                 <div>
-                  {lpTokenBalance === undefined ? (
+                  {depositQuery.data === undefined ? (
                     <NumberLoader />
                   ) : (
-                    calcSharePercentage(totalSupplyOfLpTokens, lpTokenBalance.preciseBigDecimal)
+                    calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
                   )}
                   %
                 </div>
               </div>
             </div>
-            <Validation className="text-center mt-2" errors={errors} />
             <div className="mt-8">
               <TokenApproval
                 className="w-full"

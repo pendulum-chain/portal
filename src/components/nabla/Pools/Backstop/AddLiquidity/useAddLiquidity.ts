@@ -6,13 +6,12 @@ import { Big } from 'big.js';
 
 import { cacheKeys } from '../../../../../constants/cache';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
 import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 
 interface AddLiquidityValues {
   amount: string;
@@ -23,13 +22,12 @@ const schema = Yup.object<AddLiquidityValues>().shape({
 });
 
 export const useAddLiquidity = (
-  poolAddress: string,
+  backstopPoolAddress: string,
   tokenAddress: string,
   poolTokenDecimals: number,
   lpTokenDecimals: number,
 ) => {
   const queryClient = useQueryClient();
-  const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
   const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
@@ -38,7 +36,7 @@ export const useAddLiquidity = (
   });
 
   const depositQuery = useErc20ContractBalance(backstopPoolAbi, {
-    contractAddress: poolAddress,
+    contractAddress: backstopPoolAddress,
     decimals: lpTokenDecimals,
   });
 
@@ -51,7 +49,7 @@ export const useAddLiquidity = (
 
   const mutation = useContractWrite({
     abi: backstopPoolAbi,
-    address: poolAddress,
+    address: backstopPoolAddress,
     method: 'deposit',
     mutateOptions: {
       onError: () => {
@@ -61,20 +59,25 @@ export const useAddLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
-        queryClient.refetchQueries([cacheKeys.backstopPools, indexerUrl]);
+        queryClient.refetchQueries([cacheKeys.nablaInstance]);
       },
     },
   });
-
-  const onSubmit = form.handleSubmit((variables) =>
-    mutation.mutate([decimalToRaw(variables.amount, poolTokenDecimals).toString()]),
-  );
 
   const amountString = useWatch({
     control: form.control,
     name: 'amount',
     defaultValue: '0',
   });
+
+  const { mutate } = mutation;
+  const onSubmit = useCallback(
+    (variables: AddLiquidityValues) => {
+      if (!variables.amount) return;
+      return mutate([decimalToRaw(variables.amount, poolTokenDecimals).round(0, 0).toString()]);
+    },
+    [mutate, poolTokenDecimals],
+  );
 
   const amountBigDecimal = useMemo(() => {
     try {
@@ -89,9 +92,9 @@ export const useAddLiquidity = (
     amountString,
     amountBigDecimal,
     mutation,
-    poolTokenBalance: balanceQuery.balance,
-    lpTokenBalance: depositQuery.balance,
-    onSubmit,
+    balanceQuery,
+    depositQuery,
+    onSubmit: form.handleSubmit(onSubmit),
     toggle,
   };
 };

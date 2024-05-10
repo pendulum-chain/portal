@@ -1,16 +1,19 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Badge, Button } from 'react-daisyui';
 import { useModalToggle } from '../../../../services/modal';
-import { rawToDecimal, prettyNumbers } from '../../../../shared/parseNumbers/metric';
-import { LiquidityModalProps, ModalTypes } from './Modals/types';
+import { rawToDecimal } from '../../../../shared/parseNumbers/metric';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
 import { Erc20Balance } from '../../common/Erc20Balance';
+import { LiquidityModalProps, ModalTypes } from './SwapPoolModals';
+import Big from 'big.js';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
   myAmount?: number;
   backstopPool: NablaInstanceBackstopPool;
 };
+
+const BIG_100 = new Big(100);
 
 export const nameColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Name',
@@ -22,7 +25,7 @@ export const nameColumn: ColumnDef<SwapPoolColumn> = {
 export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Pool liabilities',
   accessorKey: 'liabilities',
-  accessorFn: (row) => prettyNumbers(rawToDecimal(row.totalLiabilities || 0, row.lpTokenDecimals).toNumber()),
+  accessorFn: (row) => rawToDecimal(row.totalLiabilities, row.lpTokenDecimals).toFixed(2, 0),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',
@@ -32,7 +35,7 @@ export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
 export const reservesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Reserves',
   accessorKey: 'reserves',
-  accessorFn: (row) => prettyNumbers(rawToDecimal(row.reserve || 0, row.token.decimals).toNumber()),
+  accessorFn: (row) => rawToDecimal(row.reserve, row.token.decimals).toFixed(2, 0),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',
@@ -42,7 +45,7 @@ export const reservesColumn: ColumnDef<SwapPoolColumn> = {
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
   header: 'APR',
   accessorKey: 'apr',
-  accessorFn: (_row) => 0,
+  accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props): JSX.Element | null => (
     <Badge className="py-1 px-2 h-auto rounded-lg text-blackAlpha-700 dark:text-white bg-success/35">
       {props.renderValue()}%
@@ -112,4 +115,12 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   cell: (props): JSX.Element | null => <ActionsColumn {...props} />,
 } as const;
 
-export const columns = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, myAmountColumn, actionsColumn];
+export const columnsWithMyAmount = [
+  nameColumn,
+  liabilitiesColumn,
+  reservesColumn,
+  aprColumn,
+  myAmountColumn,
+  actionsColumn,
+];
+export const columnsWithoutMyAmount = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, actionsColumn];

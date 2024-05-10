@@ -1,7 +1,8 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { MessageCallResult } from '@pendulum-chain/api-solang';
 import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
+import { ExecuteMessageResult } from '@pendulum-chain/api-solang';
+
 import Spinner from '../../../assets/spinner';
 import { UseContractWriteResponse } from '../../../hooks/nabla/useContractWrite';
 
@@ -11,7 +12,7 @@ export interface TransactionProgressProps {
   onClose: () => void;
 }
 
-const getErrorMessage = (data?: MessageCallResult['result']) => {
+const getErrorMessage = (data?: ExecuteMessageResult['result']) => {
   if (!data) return undefined;
   switch (data.type) {
     case 'error':

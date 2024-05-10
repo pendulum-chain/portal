@@ -2,7 +2,6 @@ import { Cog8ToothIcon } from '@heroicons/react/24/outline';
 import { useMemo } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
-import { TransactionSettingsDropdown } from '../../Transaction/Settings';
 import ApprovalSubmit from './ApprovalSubmit';
 import From from './From';
 import SwapProgress from './Progress';
@@ -10,6 +9,7 @@ import To from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 import { AssetSelectorModal } from '../common/AssetSelectorModal';
 import Validation from '../../Form/Validation';
+import { TransactionSettingsDropdown } from '../common/TransactionSettingsDropdown';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {

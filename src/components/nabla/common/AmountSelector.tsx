@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'preact/hooks';
 import Big from 'big.js';
 
 import { NumberInput } from './NumberInput';
-import { ChangeEvent } from 'preact/compat';
+import { ChangeEvent, ReactNode } from 'preact/compat';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { ContractBalance } from '../../../helpers/contracts';
 
@@ -12,7 +12,7 @@ interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName ex
   maxBalance: ContractBalance | undefined;
   formFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
-  children?: JSX.Element | null;
+  children?: ReactNode;
 }
 
 export function AmountSelector<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({

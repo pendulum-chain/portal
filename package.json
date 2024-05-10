@@ -24,7 +24,7 @@
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^2.9.11",
     "@pendulum-chain/api": "^0.3.8",
-    "@pendulum-chain/api-solang": "^0.2.0",
+    "@pendulum-chain/api-solang": "0.3.0",
     "@polkadot/api": "^10.9.1",
     "@polkadot/api-base": "^10.9.1",
     "@polkadot/api-contract": "^10.9.1",
@@ -35,7 +35,7 @@
     "@polkadot/rpc-core": "^10.9.1",
     "@polkadot/rpc-provider": "^10.9.1",
     "@polkadot/types": "^10.9.1",
-    "@polkadot/util": "^10.1.9",
+    "@polkadot/util": "^12.6.2",
     "@talismn/connect-components": "^1.1.7",
     "@talismn/connect-ui": "^1.1.2",
     "@talismn/connect-wallets": "^1.2.3",
@@ -123,5 +123,9 @@
   "engines": {
     "npm": "please-use-yarn",
     "yarn": ">=1.22.19"
+  },
+  "resolutions": {
+    "@polkadot/api": "^10.9.1",
+    "@polkadot/extension-inject": "^0.46.9"
   }
 }

@@ -57,7 +57,7 @@ export const config = {
     defaults: {
       slippage: 0.1,
     },
-    securityFee: 0.01, // 1%
+    securityFee: 0.01, // 1% // TODO Torsten: check whether still required
   },
   transaction: {
     settings: {

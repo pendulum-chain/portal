@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
+
 import { Abi } from '@polkadot/api-contract';
 import { QueryKey, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'preact/compat';
@@ -7,17 +7,18 @@ import { useMemo } from 'preact/compat';
 import { defaultReadLimits, emptyCacheKey, QueryOptions } from '../../shared/helpers';
 import { useSharedState } from '../../shared/Provider';
 import { config } from '../../config';
+import { readMessage, ReadMessageResult } from '@pendulum-chain/api-solang';
 
 const isDevelopment = config.isDev;
 const ALICE = '6mfqoTMHrMeVMyKwjqomUjVomPMJ4AjdCm1VReFtk7Be8wqr';
 
-export type MessageCallErrorResult = MessageCallResult & { result: { type: 'error' | 'panic' | 'reverted' } };
+export type MessageCallErrorResult = ReadMessageResult & { type: 'error' | 'panic' | 'reverted' };
 
 export type UseContractReadProps<ReturnType> = {
   abi: Dict;
   address: string | undefined;
   method: string;
-  args?: any[];
+  args: any[];
   noWalletAddressRequired?: boolean;
   parseSuccessOutput: (successResult: any) => ReturnType;
   parseError: string | ((errorResult: MessageCallErrorResult) => string);
@@ -48,9 +49,23 @@ export function useContractRead<ReturnType>(
   const actualWalletAddress = noWalletAddressRequired ? ALICE : walletAddress;
 
   const enabled = !!contractAbi && queryOptions.enabled !== false && !!address && !!api && !!actualWalletAddress;
+  console.log(
+    'Execute contract read',
+    address,
+    method,
+    enabled,
+    !!contractAbi,
+    queryOptions.enabled !== false,
+    !!address,
+    !!api,
+    !!actualWalletAddress,
+  );
   const query = useQuery<ReturnType | undefined, string>(
     enabled ? key : emptyCacheKey,
     async () => {
+      if (isDevelopment) {
+        console.log('read', 'Call message enabled', enabled);
+      }
       if (!enabled) return;
 
       const limits = defaultReadLimits;
@@ -59,12 +74,11 @@ export function useContractRead<ReturnType>(
         console.log('read', 'Call message', address, method, args);
       }
 
-      const response = await messageCall({
+      const response = await readMessage({
         abi: contractAbi,
         api,
-        callerAddress: actualWalletAddress,
         contractDeploymentAddress: address,
-        getSigner: () => Promise.resolve({} as any), // TODO: cleanup in api-solang lib
+        callerAddress: actualWalletAddress,
         messageName: method,
         messageArguments: args || [],
         limits,
@@ -74,7 +88,7 @@ export function useContractRead<ReturnType>(
         console.log('read', 'Call message result', address, method, args, response);
       }
 
-      if (response.result.type !== 'success') {
+      if (response.type !== 'success') {
         let message;
         if (typeof parseError === 'string') {
           message = parseError;
@@ -84,7 +98,7 @@ export function useContractRead<ReturnType>(
         return Promise.reject(message);
       }
 
-      return parseSuccessOutput(response.result.value);
+      return parseSuccessOutput(response.value);
     },
     {
       ...queryOptions,

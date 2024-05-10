@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { messageCall, MessageCallResult } from '@pendulum-chain/api-solang';
+import { executeMessage, ExecuteMessageResult } from '@pendulum-chain/api-solang';
 import { Abi } from '@polkadot/api-contract';
-import { ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { MutationOptions, useMutation, UseMutationResult } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'preact/compat';
 
@@ -12,21 +11,15 @@ import { config } from '../../config';
 
 const isDevelopment = config.isDev;
 
-// TODO: fix/improve types - parse abi file
-export type TransactionsStatus = {
-  hex?: string;
-  status?: ExtrinsicStatus['type'] | 'Pending';
-};
-
 export type UseContractWriteProps<TAbi extends Record<string, unknown>> = {
   abi: TAbi;
   address?: string;
   method: string;
   args?: any[];
-  mutateOptions: Partial<MutationOptions<MessageCallResult, MessageCallResult, any[]>>;
+  mutateOptions: Partial<MutationOptions<ExecuteMessageResult, ExecuteMessageResult, any[]>>;
 };
 
-export type UseContractWriteResponse = UseMutationResult<MessageCallResult, MessageCallResult, any[], unknown> & {
+export type UseContractWriteResponse = UseMutationResult<ExecuteMessageResult, ExecuteMessageResult, any[], unknown> & {
   isReady: boolean;
 };
 
@@ -46,7 +39,7 @@ export function useContractWrite<TAbi extends Record<string, unknown>>({
 
   const isReady = !!contractAbi && !!address && !!api && !!walletAddress && !!signer;
   const submit = useCallback(
-    async (submitArgs?: any[]): Promise<MessageCallResult> => {
+    async (submitArgs?: any[]): Promise<ExecuteMessageResult> => {
       if (!isReady) throw 'Missing data';
       //setTransaction({ status: 'Pending' });
       const fnArgs = submitArgs || args || [];
@@ -57,7 +50,7 @@ export function useContractWrite<TAbi extends Record<string, unknown>>({
         console.log('write', 'limits', { ...defaultWriteLimits, ...contractOptions });
       }
 
-      const response = await messageCall({
+      const response = await executeMessage({
         abi: contractAbi,
         api,
         callerAddress: walletAddress,
@@ -87,5 +80,3 @@ export function useContractWrite<TAbi extends Record<string, unknown>>({
   const mutation = useMutation(submit, mutateOptions);
   return { ...mutation, isReady };
 }
-
-// export type UseContractWriteResponse = ReturnType<typeof useContractWrite>;

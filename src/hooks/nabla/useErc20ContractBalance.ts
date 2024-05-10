@@ -1,5 +1,5 @@
+import { cacheKeys } from '../../constants/cache';
 import { ContractBalance, parseContractBalanceResponse } from '../../helpers/contracts';
-import { cacheKeys } from '../../shared/constants';
 import { useSharedState } from '../../shared/Provider';
 import { UseContractReadResult, useContractRead } from './useContractRead';
 

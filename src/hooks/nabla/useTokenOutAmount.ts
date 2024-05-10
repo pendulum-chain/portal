@@ -52,13 +52,13 @@ export function useTokenOutAmount({
               swapFee: parseContractBalanceResponse(toTokenDecimals, data[1]),
             },
       parseError: (error) => {
-        switch (error.result.type) {
+        switch (error.type) {
           case 'error':
             return 'Something went wrong';
           case 'panic':
-            return error.result.errorCode === 0x11 ? 'The input amount is too large' : 'Something went wrong';
+            return error.errorCode === 0x11 ? 'The input amount is too large' : 'Something went wrong';
           case 'reverted':
-            return error.result.description === 'SwapPool: EXCEEDS_MAX_COVERAGE_RATIO'
+            return error.description === 'SwapPool: EXCEEDS_MAX_COVERAGE_RATIO'
               ? 'The input amount is too large'
               : 'Something went wrong';
         }

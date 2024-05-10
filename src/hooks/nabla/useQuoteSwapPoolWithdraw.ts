@@ -40,8 +40,8 @@ export function useQuoteSwapPoolWithdraw<FormFieldValues extends FieldValues>({
   }
   const enabled =
     debouncedAmountBigDecimal !== undefined &&
-    (maximumLpTokenAmount === undefined ||
-      (debouncedAmountBigDecimal.lte(maximumLpTokenAmount) && debouncedAmountBigDecimal?.gt(new Big(0))));
+    debouncedAmountBigDecimal?.gt(new Big(0)) &&
+    (maximumLpTokenAmount === undefined || debouncedAmountBigDecimal.lte(maximumLpTokenAmount));
 
   // TODO Torsten: check whether the other calls also round like this
   const amountIn =
@@ -58,17 +58,17 @@ export function useQuoteSwapPoolWithdraw<FormFieldValues extends FieldValues>({
       args: [amountIn],
       noWalletAddressRequired: true,
       queryOptions: {
-        ...activeOptions['30s'],
+        ...activeOptions['15s'],
         enabled,
       },
       parseSuccessOutput: parseContractBalanceResponse.bind(null, poolTokenDecimals),
       parseError: (error) => {
-        switch (error.result.type) {
+        switch (error.type) {
           case 'error':
             return 'Cannot determine value of shares';
           case 'panic':
-            return error.result.errorCode === 0x11
-              ? 'The input amount is too large'
+            return error.errorCode === 0x11
+              ? 'The input amount is too large. You cannot directly redeem all LP tokens right now. Try to redeem from the backstop pool instead.'
               : 'Cannot determine value of shares';
           case 'reverted':
             return 'Cannot determine value of shares';

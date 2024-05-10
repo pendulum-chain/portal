@@ -137,7 +137,7 @@ export function roundDownToSignificantDecimals(big: BigNumber, decimals: number)
 
 export function stringifyBigWithSignificantDecimals(big: BigNumber, decimals: number) {
   const rounded = roundDownToSignificantDecimals(big, decimals);
-  return rounded.toFixed();
+  return rounded.toFixed(decimals + Math.max(0, -(big.e + 1)));
 }
 
 // TODO Torsten: check whether this can used everywhere to construct cleaner zeros

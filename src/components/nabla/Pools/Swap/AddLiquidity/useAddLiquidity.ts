@@ -1,9 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useQueryClient } from '@tanstack/react-query';
 import { useForm, useWatch } from 'react-hook-form';
-import { cacheKeys } from '../../../../../constants/cache';
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
-import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
 import { useModalToggle } from '../../../../../services/modal';
 import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import schema from './schema';
@@ -18,8 +15,6 @@ export const useAddLiquidity = (
   poolTokenDecimals: number,
   lpTokenDecimals: number,
 ) => {
-  const queryClient = useQueryClient();
-  const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
   const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
@@ -49,7 +44,6 @@ export const useAddLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
-        queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
       },
     },
   });

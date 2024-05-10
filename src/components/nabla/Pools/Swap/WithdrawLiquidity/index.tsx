@@ -7,13 +7,13 @@ import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../.
 import Validation from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import { SwapPoolColumn } from '../columns';
-import { ModalTypes } from '../Modals/types';
 import { useSwapPoolWithdrawLiquidity } from './useWithdrawLiquidity';
 import { TransactionProgress } from '../../../common/TransactionProgress';
 import { FormProvider } from 'react-hook-form';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { TokenBalance } from '../../../common/TokenBalance';
 import Spinner from '../../../../../assets/spinner';
+import { ModalTypes } from '../SwapPoolModals';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
@@ -28,12 +28,10 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   } = form;
 
   const totalSupplyOfLpTokens = rawToDecimal(data.totalSupply, data.token.decimals);
+  const backstopBurnIsPossible = BigInt(data.reserve) < BigInt(data.totalLiabilities);
 
   const submitEnabled = !withdrawalQuote.isLoading && withdrawalQuote.enabled && Object.keys(errors).length === 0;
 
-  const lpTokenBalance = depositQuery.data;
-
-  // TODO Torsten: show spinner on withdraw button when loading the share value??
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
@@ -59,13 +57,14 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
             </div>
             <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
               <div className="flex items-center justify-between pt-2">
-                <div>Share Value</div>
-                <TokenBalance query={withdrawalQuote} symbol={data.token.symbol}></TokenBalance>
+                <div>You will withdraw</div>
+                <TokenBalance query={withdrawalQuote} symbol={data.token.symbol} significantDecimals={4}></TokenBalance>
               </div>
             </AmountSelector>
+            <Validation className="text-center mt-2" errors={errors} />
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
               <div className="flex items-center justify-between">
-                <div>Total deposit</div>
+                <div>Total LP tokens</div>
                 <div>
                   {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
@@ -73,37 +72,38 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
               <div className="flex items-center justify-between">
                 <div>Your pool share</div>
                 <div>
-                  {lpTokenBalance === undefined ? (
+                  {depositQuery.data === undefined ? (
                     <NumberLoader />
                   ) : (
-                    calcSharePercentage(totalSupplyOfLpTokens, lpTokenBalance.preciseBigDecimal)
+                    calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
                   )}
                   %
                 </div>
               </div>
             </div>
-            <Validation className="text-center mt-2" errors={errors} />
-            <div className="mt-8">
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() =>
-                    toggle({
-                      type: ModalTypes.Redeem,
-                      props: { data },
-                    })
-                  }
-                  className="btn btn-link mb-2 text-center"
-                >
-                  Redeem from backstop pool
-                </button>
-              </div>
+            <div className={backstopBurnIsPossible ? 'mt-2' : 'mt-8'}>
+              {backstopBurnIsPossible && (
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      toggle({
+                        type: ModalTypes.Redeem,
+                        props: { data },
+                      })
+                    }
+                    className="btn btn-link mb-2 text-center"
+                  >
+                    Redeem from backstop pool
+                  </button>
+                </div>
+              )}
               <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
                 Withdraw{' '}
                 {withdrawalQuote.isLoading && (
                   <span className="inline-flex w-0 justify-start items-center">
                     <span className="inline-flex pl-2 justify-center items-center w-12">
-                      <Spinner></Spinner>
+                      <Spinner />
                     </span>
                   </span>
                 )}
