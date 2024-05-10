@@ -9,24 +9,7 @@ import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
-
-interface GenerateQRCodeAddress {
-  vault_stellar_account: string;
-  issue_amount: string;
-  asset_code: string;
-  asset_issuer: string;
-  issue_request_memo: string;
-}
-
-function generateQRCodeAddress({
-  vault_stellar_account,
-  issue_amount,
-  asset_code,
-  asset_issuer,
-  issue_request_memo,
-}: GenerateQRCodeAddress) {
-  return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&asset_code=${asset_code}&asset_issuer=${asset_issuer}&memo=${issue_request_memo}&memo_type=MEMO_TEXT`;
-}
+import { generateSEP0007URIScheme } from '../../../helpers/stellar/sep0007';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
@@ -64,9 +47,9 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     return deriveShortenedRequestId(issueRequest.id);
   }, [issueRequest]);
 
-  const qrCodeAddress = useMemo(
+  const transactionURIScheme = useMemo(
     () =>
-      generateQRCodeAddress({
+      generateSEP0007URIScheme({
         vault_stellar_account: destination,
         issue_amount: totalAmount,
         asset_code: asset?.getCode().toString() || '',
@@ -95,18 +78,18 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
 
-          {qrCodeAddress ? (
+          {transactionURIScheme ? (
             <>
               <p className="text-center mt-4">OR</p>
               <div className="mt-4 flex justify-center">
-                <QRCodeSVG value={qrCodeAddress} />
+                <QRCodeSVG value={transactionURIScheme} />
               </div>
             </>
           ) : null}
-          {qrCodeAddress ? (
+          {transactionURIScheme ? (
             <>
               <p className="text-center mt-4">OR</p>{' '}
-              <a href={qrCodeAddress} className="btn btn-primary">
+              <a href={transactionURIScheme} className="btn btn-primary">
                 Sign tx
               </a>
             </>
@@ -140,7 +123,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         </ul>
       </>
     ),
-    [asset, destination, expectedStellarMemo, issueRequest, qrCodeAddress, totalAmount],
+    [asset, destination, expectedStellarMemo, issueRequest, totalAmount, transactionURIScheme],
   );
 
   const actions = useMemo(
