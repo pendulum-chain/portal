@@ -14,7 +14,7 @@ export function generateSEP0007URIScheme({
   issue_request_memo,
 }: GenerateSEP0007URIScheme) {
   if (!vault_stellar_account || !issue_amount || !asset_code || !asset_issuer || !issue_request_memo) {
-    throw new Error('Invalid parameters provided for SEP0007 URI scheme generation');
+    return null;
   }
   return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&asset_code=${asset_code}&asset_issuer=${asset_issuer}&memo=${issue_request_memo}&memo_type=MEMO_TEXT`;
 }

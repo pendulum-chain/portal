@@ -25,8 +25,6 @@ describe('generateSEP0007URIScheme', () => {
       issue_request_memo: '',
     };
 
-    expect(() => generateSEP0007URIScheme(params)).toThrow(
-      'Invalid parameters provided for SEP0007 URI scheme generation',
-    );
+    expect(generateSEP0007URIScheme(params)).toBe(null);
   });
 });

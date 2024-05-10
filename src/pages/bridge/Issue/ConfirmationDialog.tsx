@@ -1,6 +1,5 @@
 import { useMemo } from 'preact/compat';
 import { Button, Divider } from 'react-daisyui';
-import { QRCodeSVG } from 'qrcode.react';
 
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
@@ -10,6 +9,7 @@ import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
 import { generateSEP0007URIScheme } from '../../../helpers/stellar/sep0007';
+import { StellarUriScheme } from '../StellarURIScheme';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
@@ -78,22 +78,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
 
-          {transactionURIScheme ? (
-            <>
-              <p className="text-center mt-4">OR</p>
-              <div className="mt-4 flex justify-center">
-                <QRCodeSVG value={transactionURIScheme} />
-              </div>
-            </>
-          ) : null}
-          {transactionURIScheme ? (
-            <>
-              <p className="text-center mt-4">OR</p>{' '}
-              <a href={transactionURIScheme} className="btn btn-primary">
-                Sign tx
-              </a>
-            </>
-          ) : null}
+          <StellarUriScheme transactionURIScheme={transactionURIScheme} />
 
           <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
         </div>
