@@ -13,17 +13,19 @@ import { Dialog } from '../../collators/dialogs/Dialog';
 interface GenerateQRCodeAddress {
   vault_stellar_account: string;
   issue_amount: string;
+  asset_code: string;
+  asset_issuer: string;
   issue_request_memo: string;
-  my_custom_message: string;
 }
 
 function generateQRCodeAddress({
   vault_stellar_account,
   issue_amount,
+  asset_code,
+  asset_issuer,
   issue_request_memo,
-  my_custom_message,
 }: GenerateQRCodeAddress) {
-  return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&memo=${issue_request_memo}&memo_type=MEMO_TEXT&msg=${my_custom_message}`;
+  return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&asset_code=${asset_code}&asset_issuer=${asset_issuer}&memo=${issue_request_memo}&memo_type=MEMO_TEXT`;
 }
 
 interface ConfirmationDialogProps {
@@ -66,11 +68,12 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     () =>
       generateQRCodeAddress({
         vault_stellar_account: destination,
-        issue_amount: issueRequest?.request.amount.toString() || '0',
+        issue_amount: totalAmount,
+        asset_code: asset?.getCode().toString() || '',
+        asset_issuer: asset?.getIssuer() || '',
         issue_request_memo: expectedStellarMemo,
-        my_custom_message: 'Pendulum Bridge',
       }),
-    [destination, expectedStellarMemo, issueRequest],
+    [asset, destination, expectedStellarMemo, totalAmount],
   );
 
   const content = useMemo(
@@ -92,11 +95,21 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
 
-          <p className="text-center mt-4">OR</p>
           {qrCodeAddress ? (
-            <div className="mt-4 flex justify-center">
-              <QRCodeSVG value={qrCodeAddress} />
-            </div>
+            <>
+              <p className="text-center mt-4">OR</p>
+              <div className="mt-4 flex justify-center">
+                <QRCodeSVG value={qrCodeAddress} />
+              </div>
+            </>
+          ) : null}
+          {qrCodeAddress ? (
+            <>
+              <p className="text-center mt-4">OR</p>{' '}
+              <a href={qrCodeAddress} className="btn btn-primary">
+                Sign tx
+              </a>
+            </>
           ) : null}
 
           <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
