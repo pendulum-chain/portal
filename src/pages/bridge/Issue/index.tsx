@@ -44,7 +44,7 @@ function Issue(props: IssueProps): JSX.Element {
   const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { walletAccount, dAppName, tenantName } = useGlobalState();
-  const { api } = useNodeInfoState().state;
+  const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
@@ -54,7 +54,7 @@ function Issue(props: IssueProps): JSX.Element {
   const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'), tokenSymbol)),
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
