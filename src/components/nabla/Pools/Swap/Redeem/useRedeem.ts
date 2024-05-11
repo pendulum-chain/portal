@@ -21,7 +21,8 @@ import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 import { transformNumber } from '../../../../../helpers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { cacheKeys } from '../../../../../constants/cache';
-import { useQuoteSwapPoolRedeem } from '../../../../../hooks/nabla/useQuoteSwapPoolRedeem';
+import { useQuote } from '../../../../../hooks/nabla/useQuote';
+import { MessageCallErrorResult } from '../../../../../hooks/nabla/useContractRead';
 
 interface RedeemLiquidityValues {
   amount: string;
@@ -33,7 +34,7 @@ const schema = Yup.object<RedeemLiquidityValues>().shape({
   slippage: Yup.number().transform(transformNumber).nullable(),
 });
 
-const defaultValues = config.swap.defaults;
+const defaultValues = config.pools.defaults;
 const getInitialValues = (): Partial<RedeemLiquidityValues> => {
   const storageValues = storageService.getParsed<TransactionSettings>(storageKeys.POOL_SETTINGS);
   return {
@@ -43,6 +44,29 @@ const getInitialValues = (): Partial<RedeemLiquidityValues> => {
   };
 };
 const storageSet = debounce(storageService.set, 1000);
+
+function parseQuoteError(error: MessageCallErrorResult): string {
+  switch (error.type) {
+    case 'error':
+      return 'Cannot determine value of shares';
+    case 'panic':
+      return error.errorCode === 0x11
+        ? 'The input amount is too large. You cannot redeem all LP tokens right now.'
+        : 'Cannot determine value of shares';
+    case 'reverted':
+      switch (error.description) {
+        case 'redeemSwapPoolShares():MIN_AMOUNT':
+          return 'The returned amount of tokens is below your desired minimum amount.';
+        case 'SwapPool#backstopBurn: BALANCE_TOO_LOW':
+          return "You don't have enough LP tokens to redeem.";
+        case 'SwapPool#backstopBurn: TIMELOCK':
+          return 'You cannot redeem tokens from the backstop pool yet.';
+        case 'SwapPool#backstopBurn():INSUFFICIENT_COVERAGE':
+          return 'The input amount is too large.';
+      }
+      return 'Cannot determine value of shares';
+  }
+}
 
 export const useRedeem = (swapPoolData: SwapPoolColumn) => {
   const queryClient = useQueryClient();
@@ -66,7 +90,6 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     resolver: yupResolver(schema),
     defaultValues: getInitialValues(),
   });
-  const { getValues } = form;
 
   const mutation = useContractWrite({
     abi: backstopPoolAbi,
@@ -80,7 +103,9 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
         form.reset();
         backstopBalanceQuery.refetch();
         swapPoolDepositQuery.refetch();
-        queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        setTimeout(() => {
+          queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        }, 2000);
       },
     },
   });
@@ -91,32 +116,34 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     defaultValue: '0',
   });
 
-  const withdrawalQuote = useQuoteSwapPoolRedeem({
-    swapPoolLpTokenAmountString: amountString,
-    swapPoolLpTokenDecimals: swapPoolData.lpTokenDecimals,
-    maximumSwapPoolLpTokenAmount: swapPoolDepositQuery.data?.preciseBigDecimal,
-    backstopPoolTokenDecimals: swapPoolData.backstopPool.token.decimals,
-    backstopPoolAddress,
-    swapPoolAddress,
+  const withdrawalQuote = useQuote({
+    lpTokenAmountString: amountString,
+    lpTokenDecimals: swapPoolData.lpTokenDecimals,
+    maximumLpTokenAmount: swapPoolDepositQuery.data?.preciseBigDecimal,
+    poolTokenDecimals: swapPoolData.backstopPool.token.decimals,
+    contractAddress: backstopPoolAddress,
+    contractAbi: backstopPoolAbi,
+    messageName: 'redeemSwapPoolShares',
+    primaryCacheKey: cacheKeys.quoteSwapPoolRedeem,
+    constructArgs: useCallback(
+      (amountIn: string | undefined) => (amountIn !== undefined ? [swapPoolAddress, amountIn, '0'] : []),
+      [swapPoolAddress],
+    ),
+    parseError: parseQuoteError,
     form,
   });
 
   const { mutate } = mutation;
   const onSubmit = useCallback(
     (variables: RedeemLiquidityValues) => {
-      console.log('Submit');
       if (!variables.amount || withdrawalQuote.data === undefined) return;
-      const vSlippage = getValidSlippage(variables.slippage ?? config.backstop.defaults.slippage);
+      const vSlippage = getValidSlippage(variables.slippage ?? config.pools.defaults.slippage);
+      const minimumAmount = subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, vSlippage);
 
-      return mutate([
+      mutate([
         swapPoolAddress,
         decimalToRaw(variables.amount, swapPoolData.lpTokenDecimals).round(0, 0).toString(),
-        decimalToRaw(
-          subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, vSlippage ?? 100),
-          swapPoolData.backstopPool.token.decimals,
-        )
-          .round(0, 0)
-          .toString(),
+        decimalToRaw(minimumAmount, swapPoolData.backstopPool.token.decimals).round(0, 0).toString(),
       ]);
     },
     [
@@ -128,6 +155,7 @@ export const useRedeem = (swapPoolData: SwapPoolColumn) => {
     ],
   );
 
+  const { getValues } = form;
   const updateStorage = useCallback(
     (newValues: Partial<TransactionSettings>) => {
       const prev = getValues();

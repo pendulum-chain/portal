@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'preact/hooks';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,7 +12,6 @@ import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
-import { useCallback, useMemo } from 'preact/hooks';
 
 interface AddLiquidityValues {
   amount: string;
@@ -59,7 +59,9 @@ export const useAddLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
-        queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        setTimeout(() => {
+          queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        }, 2000);
       },
     },
   });

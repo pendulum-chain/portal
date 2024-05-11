@@ -1,10 +1,20 @@
 import { FunctionalComponent } from 'preact';
 import { Modal } from 'react-daisyui';
-import { useModal } from '../../../../../services/modal';
-import ModalCloseButton from '../../../../Button/ModalClose';
-import AddLiquidity from '../AddLiquidity';
-import WithdrawLiquidity from '../WithdrawLiquidity';
-import { LiquidityModalProps } from './types';
+
+import { NablaInstanceBackstopPool } from '../../../../hooks/nabla/useNablaInstance';
+import { useModal } from '../../../../services/modal';
+import ModalCloseButton from '../../../Button/ModalClose';
+import AddLiquidity from './AddLiquidity';
+import WithdrawLiquidity from './WithdrawLiquidity';
+
+export const ModalTypes = {
+  AddLiquidity: 2,
+  WithdrawLiquidity: 3,
+};
+
+export type LiquidityModalProps = {
+  data?: NablaInstanceBackstopPool;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const modalsUi: Record<number, FunctionalComponent<any>> = {
@@ -12,7 +22,7 @@ const modalsUi: Record<number, FunctionalComponent<any>> = {
   3: WithdrawLiquidity,
 };
 
-const Modals = () => {
+export function BackstopPoolModals() {
   const [{ type, props }, setModal] = useModal<LiquidityModalProps>();
 
   const Component = type ? modalsUi[type] : undefined;
@@ -26,5 +36,4 @@ const Modals = () => {
       </Modal>
     </>
   );
-};
-export default Modals;
+}

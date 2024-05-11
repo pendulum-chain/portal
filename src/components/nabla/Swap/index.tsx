@@ -7,7 +7,7 @@ import From from './From';
 import SwapProgress from './Progress';
 import To from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
-import { AssetSelectorModal } from '../common/AssetSelectorModal';
+import { PoolSelectorModal } from '../common/PoolSelectorModal';
 import Validation from '../../Form/Validation';
 import { TransactionSettingsDropdown } from '../common/TransactionSettingsDropdown';
 
@@ -22,7 +22,8 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     from,
     updateStorage,
     progressClose,
-    tokensQuery,
+    tokensMap,
+    swapPools,
     isLoading,
   } = useSwapComponent(props);
 
@@ -32,7 +33,6 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     getValues,
     formState: { errors },
   } = form;
-  const { tokens, tokensMap } = tokensQuery;
 
   const progressUi = useMemo(() => {
     if (swapMutation?.isIdle) return null;
@@ -99,11 +99,14 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </form>
         </FormProvider>
       </Card>
-      <AssetSelectorModal
-        assets={tokens}
+      <PoolSelectorModal
+        swapPools={swapPools}
         open={!!modalType}
         onSelect={modalType === 'from' ? onFromChange : onToChange}
-        selected={modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined}
+        selected={{
+          type: 'token',
+          tokenAddress: modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined,
+        }}
         excludedToken={modalType === 'from' ? getValues('to') : getValues('from')}
         onClose={() => setModalType(undefined)}
         isLoading={isLoading}

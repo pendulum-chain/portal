@@ -13,6 +13,8 @@ import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 import { useQuoteSwapPoolWithdraw } from '../../../../../hooks/nabla/useQuoteSwapPoolWithdraw';
 import { useQueryClient } from '@tanstack/react-query';
 import { cacheKeys } from '../../../../../constants/cache';
+import { useQuote } from '../../../../../hooks/nabla/useQuote';
+import { MessageCallErrorResult } from '../../../../../hooks/nabla/useContractRead';
 
 interface WithdrawLiquidityValues {
   amount: string;
@@ -21,6 +23,19 @@ interface WithdrawLiquidityValues {
 const schema = Yup.object<WithdrawLiquidityValues>().shape({
   amount: Yup.string().required(),
 });
+
+function parseQuoteError(error: MessageCallErrorResult): string {
+  switch (error.type) {
+    case 'error':
+      return 'Cannot determine value of shares';
+    case 'panic':
+      return error.errorCode === 0x11
+        ? 'The input amount is too large. You cannot directly redeem all LP tokens right now. Try to redeem from the backstop pool instead.'
+        : 'Cannot determine value of shares';
+    case 'reverted':
+      return 'Cannot determine value of shares';
+  }
+}
 
 export const useSwapPoolWithdrawLiquidity = (
   swapPoolAddress: string,
@@ -60,7 +75,9 @@ export const useSwapPoolWithdrawLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
-        queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        setTimeout(() => {
+          queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        }, 2000);
       },
     },
   });
@@ -71,25 +88,31 @@ export const useSwapPoolWithdrawLiquidity = (
     defaultValue: '0',
   });
 
-  const withdrawalQuote = useQuoteSwapPoolWithdraw({
+  const withdrawalQuote = useQuote({
     lpTokenAmountString: amountString,
     lpTokenDecimals,
-    poolTokenDecimals,
-    swapPoolAddress,
     maximumLpTokenAmount: depositQuery.data?.preciseBigDecimal,
+    poolTokenDecimals,
+    contractAddress: swapPoolAddress,
+    contractAbi: swapPoolAbi,
+    messageName: 'quoteWithdraw',
+    primaryCacheKey: cacheKeys.quoteSwapPoolWithdraw,
+    constructArgs: useCallback((amountIn: string | undefined) => (amountIn !== undefined ? [amountIn] : []), []),
+    parseError: parseQuoteError,
     form,
   });
 
   // TODO Torsten: check how values are determined in the other mutation functions
+  // TODO Torsten: also make slippage here configurable
   const { mutate } = mutation;
   const onSubmit = useCallback(
     (variables: WithdrawLiquidityValues) => {
       if (!variables.amount || withdrawalQuote.data === undefined) return;
-      return mutate([
+      const minimumAmount = subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, 0.5);
+
+      mutate([
         decimalToRaw(variables.amount, lpTokenDecimals).round(0, 0).toString(),
-        decimalToRaw(subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, 0.5), poolTokenDecimals)
-          .round(0, 0)
-          .toString(),
+        decimalToRaw(minimumAmount, poolTokenDecimals).round(0, 0).toString(),
       ]);
     },
     [withdrawalQuote.data, mutate, lpTokenDecimals, poolTokenDecimals],

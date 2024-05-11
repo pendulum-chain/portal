@@ -1,13 +1,25 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import { useForm, useWatch } from 'react-hook-form';
+import { useCallback, useMemo } from 'preact/hooks';
+import Big from 'big.js';
+import { useQueryClient } from '@tanstack/react-query';
+
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
 import { useModalToggle } from '../../../../../services/modal';
 import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
-import schema from './schema';
-import { AddLiquidityValues } from './types';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
+import { cacheKeys } from '../../../../../constants/cache';
+
+export type AddLiquidityValues = {
+  amount: string;
+};
+
+const schema = Yup.object<AddLiquidityValues>().shape({
+  amount: Yup.number().positive().required(),
+});
 
 export const useAddLiquidity = (
   poolAddress: string,
@@ -15,6 +27,7 @@ export const useAddLiquidity = (
   poolTokenDecimals: number,
   lpTokenDecimals: number,
 ) => {
+  const queryClient = useQueryClient();
   const toggle = useModalToggle();
 
   const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
@@ -29,7 +42,9 @@ export const useAddLiquidity = (
 
   const form = useForm<AddLiquidityValues>({
     resolver: yupResolver(schema),
-    defaultValues: {},
+    defaultValues: {
+      amount: undefined,
+    },
   });
 
   const mutation = useContractWrite({
@@ -44,22 +59,44 @@ export const useAddLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
+        setTimeout(() => {
+          queryClient.refetchQueries([cacheKeys.nablaInstance]);
+        }, 2000);
       },
     },
   });
 
-  const onSubmit = form.handleSubmit((variables) => {
-    return mutation.mutate([decimalToRaw(variables.amount, poolTokenDecimals).toString()]);
+  const amountString = useWatch({
+    control: form.control,
+    name: 'amount',
+    defaultValue: '0',
   });
 
-  const decimalAmount =
-    Number(
-      useWatch({
-        control: form.control,
-        name: 'amount',
-        defaultValue: 0,
-      }),
-    ) || 0;
+  const { mutate } = mutation;
+  const onSubmit = useCallback(
+    (variables: AddLiquidityValues) => {
+      if (!variables.amount) return;
+      return mutate([decimalToRaw(variables.amount, poolTokenDecimals).round(0, 0).toString()]);
+    },
+    [mutate, poolTokenDecimals],
+  );
 
-  return { form, decimalAmount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
+  const amountBigDecimal = useMemo(() => {
+    try {
+      return new Big(amountString);
+    } catch {
+      return undefined;
+    }
+  }, [amountString]);
+
+  return {
+    form,
+    amountString,
+    amountBigDecimal,
+    mutation,
+    balanceQuery,
+    depositQuery,
+    onSubmit: form.handleSubmit(onSubmit),
+    toggle,
+  };
 };

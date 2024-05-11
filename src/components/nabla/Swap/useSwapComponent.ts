@@ -2,6 +2,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
+import Big from 'big.js';
+
 import { config } from '../../../config';
 import { cacheKeys } from '../../../constants/cache';
 import { storageKeys } from '../../../constants/localStorage';
@@ -18,7 +20,7 @@ import schema from './schema';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 import { useContractWrite } from '../../../hooks/nabla/useContractWrite';
-import Big from 'big.js';
+import { PoolEntry } from '../common/PoolSelectorModal';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -100,14 +102,12 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     const fromToken = tokens.find((token) => token.id === variables.from)!;
     const toToken = tokens.find((token) => token.id === variables.to)!;
 
-    const vDeadline = getValidDeadline(variables.deadline || defaultValues.deadline);
-    const vSlippage = getValidSlippage(variables.slippage || defaultValues.slippage);
+    const vDeadline = getValidDeadline(variables.deadline ?? defaultValues.deadline);
+    const vSlippage = getValidSlippage(variables.slippage ?? defaultValues.slippage);
     const deadline = calcDeadline(vDeadline).toString();
-    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals)
-      .round(0, 0)
-      .toString();
+    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals).round(0, 0).toString();
     const toMinAmount = decimalToRaw(
-      subtractBigDecimalPercentage(new Big(variables.toAmount), vSlippage ?? 100),
+      subtractBigDecimalPercentage(new Big(variables.toAmount), vSlippage),
       toToken?.decimals,
     ).toString();
 
@@ -115,8 +115,8 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   });
 
   const onFromChange = useCallback(
-    (a: string | NablaInstanceToken, event = true) => {
-      const f = typeof a === 'string' ? a : a.id;
+    (a: string | PoolEntry, event = true) => {
+      const f = typeof a === 'string' ? a : a.pool.token.id;
       const prev = getValues();
       const updated = {
         from: f,
@@ -132,8 +132,8 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   );
 
   const onToChange = useCallback(
-    (a: string | NablaInstanceToken, event = true) => {
-      const t = typeof a === 'string' ? a : a.id;
+    (a: string | PoolEntry, event = true) => {
+      const t = typeof a === 'string' ? a : a.pool.token.id;
       const prev = getValues();
       const updated = {
         to: t,
@@ -151,15 +151,16 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
   // when props change (url updated)
   useEffect(() => {
     if (hadMountedRef) {
-      onFromChange(initFrom || '', false);
-      onToChange(initTo || '', false);
+      onFromChange(initFrom ?? '', false);
+      onToChange(initTo ?? '', false);
     }
     hadMountedRef.current = true;
   }, [initFrom, initTo, onFromChange, onToChange]);
 
   return {
     form,
-    tokensQuery: { tokens, tokensMap },
+    tokensMap,
+    swapPools: nabla?.swapPools ?? [],
     swapMutation,
     onSubmit,
     tokensModal,

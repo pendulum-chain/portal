@@ -9,7 +9,6 @@ import { LiquidityModalProps, ModalTypes } from './SwapPoolModals';
 import Big from 'big.js';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
-  myAmount?: number;
   backstopPool: NablaInstanceBackstopPool;
 };
 

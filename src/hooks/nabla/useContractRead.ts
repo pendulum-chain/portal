@@ -46,7 +46,7 @@ export function useContractRead<ReturnType>(
     [abi, api?.registry],
   );
 
-  const actualWalletAddress = noWalletAddressRequired ? ALICE : walletAddress;
+  const actualWalletAddress = noWalletAddressRequired === true ? ALICE : walletAddress;
 
   const enabled = !!contractAbi && queryOptions.enabled !== false && !!address && !!api && !!actualWalletAddress;
   console.log(

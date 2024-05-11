@@ -12,7 +12,6 @@ import { TransactionProgress } from '../../../common/TransactionProgress';
 import { FormProvider } from 'react-hook-form';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { TokenBalance } from '../../../common/TokenBalance';
-import Spinner from '../../../../../assets/spinner';
 import { ModalTypes } from '../SwapPoolModals';
 
 export interface WithdrawLiquidityProps {
@@ -98,15 +97,13 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                   </button>
                 </div>
               )}
-              <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
-                Withdraw{' '}
-                {withdrawalQuote.isLoading && (
-                  <span className="inline-flex w-0 justify-start items-center">
-                    <span className="inline-flex pl-2 justify-center items-center w-12">
-                      <Spinner />
-                    </span>
-                  </span>
-                )}
+              <Button
+                color="primary"
+                className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                type="submit"
+                disabled={!submitEnabled}
+              >
+                Withdraw
               </Button>
               <Button
                 color="secondary"

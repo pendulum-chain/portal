@@ -2,7 +2,13 @@ import { config } from '../config';
 
 const { slippage, deadline } = config.transaction.settings;
 
-export const getValidSlippage = (val?: number): number | undefined =>
-  val !== undefined ? Math.min(Math.max(val, slippage.min), slippage.max) : val;
+export function getValidSlippage(val: number): number;
+export function getValidSlippage(val: number | undefined): number | undefined;
 
-export const getValidDeadline = (val: number): number => Math.min(Math.max(val, deadline.min), deadline.max);
+export function getValidSlippage(val: number | undefined): number | undefined {
+  return val !== undefined ? Math.min(Math.max(val, slippage.min), slippage.max) : val;
+}
+
+export function getValidDeadline(val: number): number {
+  return Math.min(Math.max(val, deadline.min), deadline.max);
+}

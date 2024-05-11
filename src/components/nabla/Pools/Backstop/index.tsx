@@ -1,11 +1,10 @@
 import { Button, Card } from 'react-daisyui';
 import ModalProvider, { useModalToggle } from '../../../../services/modal';
 import { Skeleton } from '../../../Skeleton';
-import Modals from './Modals';
-import { LiquidityModalProps, ModalTypes } from './Modals/types';
 import { useNablaInstance } from '../../../../hooks/nabla/useNablaInstance';
 import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
 import { Erc20Balance } from '../../common/Erc20Balance';
+import { BackstopPoolModals, LiquidityModalProps, ModalTypes } from './BackstopPoolModals';
 
 const BackstopPoolsBody = (): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
@@ -62,7 +61,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
           </div>
         </Card>
       </div>
-      <Modals />
+      <BackstopPoolModals />
     </>
   );
 };

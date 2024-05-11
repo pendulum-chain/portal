@@ -9,6 +9,8 @@ export const cacheKeys = {
   tokenOutAmount: 'tokenOutAmount',
   quoteSwapPoolRedeem: 'quoteSwapPoolRedeem',
   quoteSwapPoolWithdraw: 'quoteSwapPoolWithdraw',
+  quoteBackstopPoolWithdraw: 'quoteBackstopPoolWithdraw',
+  quoteBackstopPoolDrain: 'quoteBackstopPoolDrain',
   sharesTargetWorth: 'sharesTargetWorth',
   tokenPrice: 'tokenPrice',
   nablaInstance: 'nablaInstance',

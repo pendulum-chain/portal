@@ -28,6 +28,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   } = form;
 
   const totalSupplyOfLpTokens = rawToDecimal(data.totalSupply, data.token.decimals);
+  const submitEnabled = amountBigDecimal?.gt(new Big(0)) && Object.keys(errors).length === 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
@@ -80,14 +81,9 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 token={data.token.id}
                 decimals={data.token.decimals}
                 decimalAmount={amountBigDecimal}
-                enabled={amountBigDecimal?.gt(new Big(0)) && Object.keys(errors).length === 0}
+                enabled={submitEnabled}
               >
-                <Button
-                  color="primary"
-                  className="w-full"
-                  type="submit"
-                  disabled={!amountBigDecimal?.gt(new Big(0)) || Object.keys(errors).length > 0}
-                >
+                <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
                   Deposit
                 </Button>
               </TokenApproval>

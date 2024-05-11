@@ -1,28 +1,25 @@
 import { useCallback } from 'react';
+
 import { config } from '../../../../../config';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
-import { subtractPercentage } from '../../../../../helpers/calc';
+import { subtractBigDecimalPercentage } from '../../../../../helpers/calc';
 import { getValidSlippage } from '../../../../../helpers/transaction';
 import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
-import { WithdrawLiquidityValues } from './types';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
+import { WithdrawLiquidityValues } from './useWithdrawLiquidity';
+import { UseQuoteResult } from '../../../../../hooks/nabla/useQuote';
+import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
 
-export type UseBackstopWithdrawProps = {
-  address: string;
-  poolTokenDecimals: number;
-  lpTokenDecimals: number;
+interface UseBackstopWithdrawProps {
+  backstopPool: NablaInstanceBackstopPool;
   onSuccess: () => void;
-};
+  withdrawalQuote: UseQuoteResult;
+}
 
-export const useBackstopWithdraw = ({
-  address,
-  poolTokenDecimals,
-  lpTokenDecimals,
-  onSuccess,
-}: UseBackstopWithdrawProps) => {
+export function useBackstopWithdraw({ backstopPool, onSuccess, withdrawalQuote }: UseBackstopWithdrawProps) {
   const mutation = useContractWrite({
     abi: backstopPoolAbi,
-    address,
+    address: backstopPool.id,
     method: 'withdraw',
     mutateOptions: {
       onSuccess,
@@ -30,20 +27,25 @@ export const useBackstopWithdraw = ({
   });
   const { mutate } = mutation;
 
+  const lpTokenDecimals = backstopPool.lpTokenDecimals;
+  const poolTokenDecimals = backstopPool.token.decimals;
+
   const onSubmit = useCallback(
     async (variables: WithdrawLiquidityValues) => {
-      if (!variables.amount) return;
-      const vSlippage = getValidSlippage(variables.slippage || config.backstop.defaults.slippage);
+      if (!variables.amount || withdrawalQuote.data === undefined) return;
+      const vSlippage = getValidSlippage(variables.slippage ?? config.pools.defaults.slippage);
+      const minimumAmount = subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, vSlippage);
+
       mutate([
-        decimalToRaw(variables.amount, lpTokenDecimals).toString(),
-        decimalToRaw(subtractPercentage(variables.amount, vSlippage), poolTokenDecimals).toString(),
+        decimalToRaw(variables.amount, lpTokenDecimals).round(0, 0).toString(),
+        decimalToRaw(minimumAmount, poolTokenDecimals).round(0, 0).toString(),
       ]);
     },
-    [mutate, poolTokenDecimals, lpTokenDecimals],
+    [withdrawalQuote.data, mutate, lpTokenDecimals, poolTokenDecimals],
   );
 
   return {
     onSubmit,
     mutation,
   };
-};
+}

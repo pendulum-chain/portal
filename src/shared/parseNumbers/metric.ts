@@ -152,8 +152,7 @@ export function multiplyByPowerOfTen(bigDecimal: BigNumber, power: number) {
 export function fractionOfValue(maxValue: BigNumber, percentage: number): string {
   const preciseResult = new BigNumber(percentage).div(BIG_100).mul(maxValue);
 
-  const roundedNumber = roundDownToSignificantDecimals(preciseResult, 2);
-  return roundedNumber.toFixed();
+  return stringifyBigWithSignificantDecimals(preciseResult, 2);
 }
 
 /** Calculate deadline from minutes */

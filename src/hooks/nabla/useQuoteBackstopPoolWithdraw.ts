@@ -9,30 +9,28 @@ import { useEffect } from 'preact/hooks';
 import { ContractBalance, parseContractBalanceResponse } from '../../helpers/contracts';
 import { backstopPoolAbi } from '../../contracts/nabla/BackstopPool';
 
-export type UseQuoteSwapPoolRedeemProps<FormFieldValues extends FieldValues> = {
-  swapPoolLpTokenAmountString: string | undefined;
-  swapPoolLpTokenDecimals: number;
-  maximumSwapPoolLpTokenAmount: Big | undefined;
-  backstopPoolTokenDecimals: number;
+export type UseQuoteBackstopPoolWithdrawProps<FormFieldValues extends FieldValues> = {
+  lpTokenAmountString: string | undefined;
+  lpTokenDecimals: number;
+  maximumLpTokenAmount: Big | undefined;
+  poolTokenDecimals: number;
   backstopPoolAddress: string;
-  swapPoolAddress: string;
   form: UseFormReturn<FormFieldValues>;
 };
 
 // TODO Torsten: check whether the swap quote works the same
 
-export function useQuoteSwapPoolRedeem<FormFieldValues extends FieldValues>({
-  swapPoolLpTokenAmountString,
-  swapPoolLpTokenDecimals,
-  maximumSwapPoolLpTokenAmount,
-  backstopPoolTokenDecimals,
+export function useQuoteBackstopPoolWithdraw<FormFieldValues extends FieldValues>({
+  lpTokenAmountString,
+  lpTokenDecimals,
+  maximumLpTokenAmount,
+  poolTokenDecimals,
   backstopPoolAddress,
-  swapPoolAddress,
   form,
-}: UseQuoteSwapPoolRedeemProps<FormFieldValues>) {
+}: UseQuoteBackstopPoolWithdrawProps<FormFieldValues>) {
   const { setError, clearErrors } = form;
 
-  const debouncedAmountString = useDebouncedValue(swapPoolLpTokenAmountString, 800);
+  const debouncedAmountString = useDebouncedValue(lpTokenAmountString, 800);
 
   let debouncedAmountBigDecimal;
   try {
@@ -40,29 +38,30 @@ export function useQuoteSwapPoolRedeem<FormFieldValues extends FieldValues>({
   } catch {
     debouncedAmountBigDecimal = undefined;
   }
+
   const enabled =
     debouncedAmountBigDecimal !== undefined &&
     debouncedAmountBigDecimal.gt(new Big(0)) &&
-    (maximumSwapPoolLpTokenAmount === undefined || debouncedAmountBigDecimal.lte(maximumSwapPoolLpTokenAmount));
+    (maximumLpTokenAmount === undefined || debouncedAmountBigDecimal.lte(maximumLpTokenAmount));
 
   // TODO Torsten: check whether the other calls also round like this
   const amountIn =
     debouncedAmountBigDecimal !== undefined
-      ? multiplyByPowerOfTen(debouncedAmountBigDecimal, swapPoolLpTokenDecimals).round(0, 0).toString()
+      ? multiplyByPowerOfTen(debouncedAmountBigDecimal, lpTokenDecimals).round(0, 0).toString()
       : undefined;
 
   const { isLoading, fetchStatus, data, error } = useContractRead<ContractBalance | undefined>(
-    [cacheKeys.quoteSwapPoolRedeem, backstopPoolAddress, swapPoolAddress, amountIn],
+    [cacheKeys.quoteBackstopPoolWithdraw, backstopPoolAddress, amountIn],
     {
       abi: backstopPoolAbi,
       address: backstopPoolAddress,
-      method: 'redeemSwapPoolShares',
-      args: [swapPoolAddress, amountIn, '0'],
+      method: 'withdraw',
+      args: [amountIn, '0'],
       queryOptions: {
         ...activeOptions['15s'],
         enabled,
       },
-      parseSuccessOutput: parseContractBalanceResponse.bind(null, backstopPoolTokenDecimals),
+      parseSuccessOutput: parseContractBalanceResponse.bind(null, poolTokenDecimals),
       parseError: (error) => {
         switch (error.type) {
           case 'error':
@@ -88,7 +87,7 @@ export function useQuoteSwapPoolRedeem<FormFieldValues extends FieldValues>({
     },
   );
 
-  const pending = (isLoading && fetchStatus !== 'idle') || debouncedAmountString !== swapPoolLpTokenAmountString;
+  const pending = (isLoading && fetchStatus !== 'idle') || debouncedAmountString !== lpTokenAmountString;
   useEffect(() => {
     if (pending) return;
     if (error === null) {

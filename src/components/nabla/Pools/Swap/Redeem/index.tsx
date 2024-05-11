@@ -13,7 +13,6 @@ import { FormProvider } from 'react-hook-form';
 import { TransactionSettingsDropdown } from '../../../common/TransactionSettingsDropdown';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
-import Spinner from '../../../../../assets/spinner';
 import { ModalTypes } from '../SwapPoolModals';
 
 export type RedeemLiquidityValues = {
@@ -135,15 +134,13 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                   Withdraw from swap pool
                 </button>
               </div>
-              <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
-                Redeem{' '}
-                {withdrawalQuote.isLoading && (
-                  <span className="inline-flex w-0 justify-start items-center">
-                    <span className="inline-flex pl-2 justify-center items-center w-12">
-                      <Spinner />
-                    </span>
-                  </span>
-                )}
+              <Button
+                color="primary"
+                className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                type="submit"
+                disabled={!submitEnabled}
+              >
+                Redeem
               </Button>
               <Button
                 color="secondary"
