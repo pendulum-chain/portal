@@ -48,7 +48,7 @@ export function useContractRead<ReturnType>(
 
   const actualWalletAddress = noWalletAddressRequired === true ? ALICE : walletAddress;
 
-  const enabled = !!contractAbi && queryOptions.enabled !== false && !!address && !!api && !!actualWalletAddress;
+  const enabled = !!contractAbi && queryOptions.enabled === true && !!address && !!api && !!actualWalletAddress;
   console.log(
     'Execute contract read',
     address,

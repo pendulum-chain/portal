@@ -10,7 +10,6 @@ import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
 import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
-import { useQuoteSwapPoolWithdraw } from '../../../../../hooks/nabla/useQuoteSwapPoolWithdraw';
 import { useQueryClient } from '@tanstack/react-query';
 import { cacheKeys } from '../../../../../constants/cache';
 import { useQuote } from '../../../../../hooks/nabla/useQuote';

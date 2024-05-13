@@ -29,6 +29,7 @@ export function useTokenOutAmount({
       ? decimalToRaw(decimalAmount, fromTokenDecimals).round(0, 0).toString()
       : undefined;
 
+  console.log('useTokenOutAmount', enabled, fromTokenDecimals, decimalAmount, from, to);
   return useContractRead<{ amountOut: ContractBalance; swapFee: ContractBalance } | undefined>(
     [cacheKeys.tokenOutAmount, from, to, amountIn],
     {

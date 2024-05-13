@@ -17,6 +17,7 @@ import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
 import Big from 'big.js';
+import { getValidSlippage } from '../../../helpers/transaction';
 
 export interface ToProps {
   tokensMap: Record<string, NablaInstanceToken>;
@@ -52,13 +53,16 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
     }
   }, [fromDecimalAmountString]);
 
-  const slippage = Number(
-    useWatch({
-      control,
-      name: 'slippage',
-      defaultValue: config.swap.defaults.slippage,
-    }),
+  const slippage = getValidSlippage(
+    Number(
+      useWatch({
+        control,
+        name: 'slippage',
+        defaultValue: config.swap.defaults.slippage,
+      }),
+    ),
   );
+
   const fromToken: NablaInstanceToken | undefined = tokensMap?.[from];
   const toToken: NablaInstanceToken | undefined = tokensMap?.[to];
 
@@ -170,7 +174,7 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
             <div>Expected Output:</div>
             <div>
               <Skeleton isLoading={loading || tokenOutAmount === undefined}>
-                {tokenOutAmount?.amountOut.approximateStrings.atLeast2Decimals} {toToken?.symbol || ''}
+                {tokenOutAmount?.amountOut.approximateStrings.atLeast4Decimals} {toToken?.symbol || ''}
               </Skeleton>
             </div>
           </div>
@@ -179,7 +183,10 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
             <div>
               <Skeleton isLoading={loading || tokenOutAmount === undefined}>
                 {tokenOutAmount !== undefined
-                  ? subtractBigDecimalPercentage(tokenOutAmount.amountOut.preciseBigDecimal, slippage)
+                  ? stringifyBigWithSignificantDecimals(
+                      subtractBigDecimalPercentage(tokenOutAmount.amountOut.preciseBigDecimal, slippage),
+                      2,
+                    )
                   : ''}{' '}
                 {toToken?.symbol || ''}
               </Skeleton>

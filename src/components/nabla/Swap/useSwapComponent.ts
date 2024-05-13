@@ -150,6 +150,7 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   // when props change (url updated)
   useEffect(() => {
+    console.log('useEffect');
     if (hadMountedRef) {
       onFromChange(initFrom ?? '', false);
       onToChange(initTo ?? '', false);

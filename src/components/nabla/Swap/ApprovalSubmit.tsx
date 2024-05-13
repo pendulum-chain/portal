@@ -14,25 +14,33 @@ export interface ApprovalProps {
 const ApprovalSubmit = ({ token, disabled }: ApprovalProps): JSX.Element | null => {
   const { router } = useGetAppDataByTenant('nabla').data || {};
   const { control } = useFormContext<SwapFormValues>();
-  const decimalAmount = new Big(
-    useWatch({
-      control,
-      name: 'fromAmount',
-      defaultValue: 0,
-    }),
-  );
+
+  const amountString = useWatch({
+    control: control,
+    name: 'fromAmount',
+    defaultValue: '0',
+  });
+
+  let amountBigDecimal;
+  try {
+    amountBigDecimal = amountString !== undefined ? new Big(amountString) : undefined;
+  } catch {
+    amountBigDecimal = undefined;
+  }
 
   if (!router || !token) return null;
+
+  const amountPositive = amountBigDecimal?.gt(new Big(0));
 
   return (
     <TokenApproval
       token={token.id}
       decimals={token.decimals}
       spender={router}
-      decimalAmount={decimalAmount}
+      decimalAmount={amountBigDecimal}
       disabled={disabled}
     >
-      <Button color="primary" className="w-full text-base" type="submit" disabled={!decimalAmount || disabled}>
+      <Button color="primary" className="w-full text-base" type="submit" disabled={!amountPositive || disabled}>
         Swap
       </Button>
     </TokenApproval>
