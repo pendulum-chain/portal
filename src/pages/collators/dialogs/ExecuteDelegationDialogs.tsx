@@ -40,6 +40,12 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<boolean>(false);
   const [unstakingAll, setUnstakingAll] = useState<boolean>(false);
 
+  const resetState = () => {
+    setDelegationAmount(undefined);
+    setSubmissionPending(false);
+    setUnstakingAll(false);
+  };
+
   const totalFee = useMemo(() => {
     switch (mode) {
       case 'unstaking':
@@ -117,7 +123,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
           setDelegationAmount(undefined);
           onClose();
         }}
-        visible={Boolean(selectedCandidate && delegationAmount)}
+        visible={!confirmationDialogVisible && Boolean(selectedCandidate && delegationAmount)}
       />
       <DelegationSuccessfulDialog
         visible={confirmationDialogVisible}
@@ -125,10 +131,12 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         onClose={() => {
           setConfirmationDialogVisible(false);
           onClose();
+          resetState();
         }}
         onConfirm={() => {
           setConfirmationDialogVisible(false);
           onClose();
+          resetState();
         }}
       />
     </>
