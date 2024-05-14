@@ -39,7 +39,6 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   const submitEnabled = !toAmountQuote.isLoading && toAmountQuote.enabled && Object.keys(errors).length === 0;
   const inputHasErrors = errors.fromAmount?.message !== undefined || errors.root?.message !== undefined;
-  console.log('submitEnabled', toAmountQuote, errors);
 
   return (
     <>

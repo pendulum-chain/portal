@@ -47,7 +47,6 @@ export function useContractWrite<TAbi extends Record<string, unknown>>({
 
       if (isDevelopment) {
         console.log('write', 'call message write', address, method, args, submitArgs);
-        console.log('write', 'limits', { ...defaultWriteLimits, ...contractOptions });
       }
 
       const response = await executeMessage({

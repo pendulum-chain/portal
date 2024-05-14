@@ -21,7 +21,7 @@ export const useErc20ContractBalance = (
     queryOptions: {
       cacheTime: 10000,
       staleTime: 10000,
-      //refetchInterval: 10000,
+      refetchInterval: 10000,
       onError: console.error,
       enabled,
     },

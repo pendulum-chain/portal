@@ -49,23 +49,9 @@ export function useContractRead<ReturnType>(
   const actualWalletAddress = noWalletAddressRequired === true ? ALICE : walletAddress;
 
   const enabled = !!contractAbi && queryOptions.enabled === true && !!address && !!api && !!actualWalletAddress;
-  console.log(
-    'Execute contract read',
-    address,
-    method,
-    enabled,
-    !!contractAbi,
-    queryOptions.enabled !== false,
-    !!address,
-    !!api,
-    !!actualWalletAddress,
-  );
   const query = useQuery<ReturnType | undefined, string>(
     enabled ? key : emptyCacheKey,
     async () => {
-      if (isDevelopment) {
-        console.log('read', 'Call message enabled', enabled);
-      }
       if (!enabled) return;
 
       const limits = defaultReadLimits;

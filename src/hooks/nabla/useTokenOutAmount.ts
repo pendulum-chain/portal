@@ -65,8 +65,6 @@ export function useTokenOutAmount<FormFieldValues extends FieldValues>({
     debouncedAmountBigDecimal?.gt(new Big(0)) &&
     (maximumFromAmount === undefined || debouncedAmountBigDecimal.lte(maximumFromAmount));
 
-  console.log('useTokenOutAmount', enabled);
-
   const fromTokenDecimals = fromToken?.decimals;
   const amountIn =
     fromTokenDecimals !== undefined && debouncedAmountBigDecimal !== undefined
