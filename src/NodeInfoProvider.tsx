@@ -85,6 +85,7 @@ const NodeInfoProvider = ({ children, tenantRPC }: { children: ReactNode; tenant
   }
 
   useEffect(() => {
+    console.log('Connection use effect', currentTenantRPC, tenantRPC, pendingInitiationPromise);
     let disconnect: () => void = () => undefined;
 
     // If the tenantRPC is the same as the currentTenantRPC, we don't need to do anything.
@@ -96,11 +97,14 @@ const NodeInfoProvider = ({ children, tenantRPC }: { children: ReactNode; tenant
       const provider = new WsProvider(tenantRPC, false);
       await provider.connect();
 
+      console.log('Start connecting');
       const api = await createApiPromise(provider);
+      console.log('Have API, update now');
       await updateStateWithChainProperties(api);
       await updateStateWithSystemInfo(api);
 
       disconnect = () => {
+        console.log('Disconnect');
         api.disconnect();
       };
     };

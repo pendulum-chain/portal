@@ -31,8 +31,6 @@ export interface UseQuoteResult {
   error: string | null;
 }
 
-// TODO Torsten: check whether the swap quote works the same
-
 export function useQuote<FormFieldValues extends FieldValues>({
   lpTokenAmountString,
   lpTokenDecimals,
@@ -63,7 +61,6 @@ export function useQuote<FormFieldValues extends FieldValues>({
     debouncedAmountBigDecimal?.gt(new Big(0)) &&
     (maximumLpTokenAmount === undefined || debouncedAmountBigDecimal.lte(maximumLpTokenAmount));
 
-  // TODO Torsten: check whether the other calls also round like this
   const amountIn =
     debouncedAmountBigDecimal !== undefined
       ? multiplyByPowerOfTen(debouncedAmountBigDecimal, lpTokenDecimals).round(0, 0).toString()

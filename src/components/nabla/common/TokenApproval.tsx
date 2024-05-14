@@ -38,7 +38,7 @@ export function TokenApproval({
     if (state === ApprovalState.PENDING || decimalAmount === undefined) return;
 
     const nativeAmount = multiplyByPowerOfTen(decimalAmount, decimals);
-    mutate([spender, nativeAmount.toFixed()]);
+    mutate([spender, nativeAmount.round(0, 0).toFixed()]);
   }, [state, mutate, decimalAmount, decimals, spender]);
 
   if (state === ApprovalState.APPROVED || !enabled) return <>{children}</>;

@@ -13,6 +13,7 @@ interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName ex
   formFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
   children?: ReactNode;
+  onlyShowNumberInput?: boolean;
 }
 
 export function AmountSelector<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
@@ -20,6 +21,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
   maxBalance,
   form,
   children,
+  onlyShowNumberInput,
 }: AmountSelectorProps<FormFieldValues, TFieldName>) {
   type K = PathValue<FormFieldValues, TFieldName>;
 
@@ -59,6 +61,17 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
       clearErrors(formFieldName);
     }
   }, [amountString, amountBigDecimal, formFieldName, maxBalance, setError, clearErrors]);
+
+  if (onlyShowNumberInput === true) {
+    return (
+      <NumberInput
+        autoFocus
+        className="input-ghost w-full text-4xl font-outfit"
+        placeholder="Amount"
+        registerName={formFieldName}
+      />
+    );
+  }
 
   return (
     <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">

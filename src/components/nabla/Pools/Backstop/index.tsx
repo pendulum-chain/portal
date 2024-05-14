@@ -14,7 +14,6 @@ const BackstopPoolsBody = (): JSX.Element | null => {
   const pool = nabla?.backstopPool;
   if (!pool) return <h3 className="text-center">No backstop pools</h3>;
 
-  // TODO Torsten: also show the complete share and the percentage here
   return (
     <>
       <div className="text-[initial] dark:text-neutral-200 center gap-4 w-full">

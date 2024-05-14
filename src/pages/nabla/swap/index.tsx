@@ -14,6 +14,8 @@ const SwapPage = (): JSX.Element | null => {
     [navigate],
   );
 
+  console.log('Swap Master', params.get('from'));
+
   return (
     <div id="swap" className="center mt-6">
       <Swap from={params.get('from') || undefined} to={params.get('to') || undefined} onChange={onChange} />

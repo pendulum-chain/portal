@@ -49,6 +49,8 @@ export function useErc20TokenApproval({
     refetch,
   } = useErc20TokenAllowance({ token, owner: address, spender, decimals }, isEnabled);
 
+  console.log('Allowance', allowanceData?.preciseString);
+
   const mutation = useContractWrite({
     abi: erc20WrapperAbi,
     address: token,
@@ -59,9 +61,15 @@ export function useErc20TokenApproval({
         if (onError) onError(err);
       },
       onSuccess: (...args) => {
+        console.log('Has success');
         setPending(true);
         if (onSuccess) onSuccess(...args);
+
+        console.log('Refetch now');
+        refetch();
+
         setTimeout(() => {
+          console.log('Refetch after 2 seconds');
           refetch();
           setPending(false);
         }, 2000); // delay refetch as sometimes the allowance takes some time to reflect

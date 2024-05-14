@@ -1,15 +1,14 @@
 import { Cog8ToothIcon } from '@heroicons/react/24/outline';
-import { useMemo } from 'preact/compat';
 import { Button, Card } from 'react-daisyui';
 import { FormProvider } from 'react-hook-form';
 import ApprovalSubmit from './ApprovalSubmit';
-import From from './From';
-import SwapProgress from './Progress';
-import To from './To';
+import { From } from './From';
+import { To } from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 import { PoolSelectorModal } from '../common/PoolSelectorModal';
 import Validation from '../../Form/Validation';
 import { TransactionSettingsDropdown } from '../common/TransactionSettingsDropdown';
+import { SwapProgress } from '../common/SwapProgress';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -19,30 +18,28 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
     swapMutation,
     onSubmit,
     form,
-    from,
     updateStorage,
     progressClose,
-    tokensMap,
     swapPools,
-    isLoading,
+    nablaInstanceIsLoading,
+    fromTokenBalance,
+    fromAmountString,
+    fromAmount,
+    toAmountQuote,
+    fromToken,
+    toToken,
+    slippage,
   } = useSwapComponent(props);
 
   const {
     setValue,
     register,
-    getValues,
     formState: { errors },
   } = form;
 
-  const progressUi = useMemo(() => {
-    if (swapMutation?.isIdle) return null;
-    const { from: fromV, to: toV, fromAmount = '0', toAmount = '0' } = getValues();
-    const fromAsset = tokensMap[fromV];
-    const toAsset = tokensMap[toV];
-    return (
-      <p className="text-center text-[--text]">{`Swapping ${fromAmount} ${fromAsset?.symbol} for ${toAmount} ${toAsset?.symbol}`}</p>
-    );
-  }, [getValues, swapMutation?.isIdle, tokensMap]);
+  const submitEnabled = !toAmountQuote.isLoading && toAmountQuote.enabled && Object.keys(errors).length === 0;
+  const inputHasErrors = errors.fromAmount?.message !== undefined || errors.root?.message !== undefined;
+  console.log('submitEnabled', toAmountQuote, errors);
 
   return (
     <>
@@ -79,22 +76,27 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               />
             </div>
             <From
-              tokensMap={tokensMap}
+              fromToken={fromToken}
               onOpenSelector={() => setModalType('from')}
-              errorMessage={errors.fromAmount?.message}
+              inputHasError={inputHasErrors}
+              form={form}
+              fromFormFieldName="fromAmount"
+              fromTokenBalance={fromTokenBalance}
             />
             <To
-              tokensMap={tokensMap}
+              toToken={toToken}
+              fromToken={fromToken}
+              toAmountQuote={
+                inputHasErrors ? { enabled: false, data: undefined, error: null, isLoading: false } : toAmountQuote
+              }
               onOpenSelector={() => setModalType('to')}
-              inputHasError={errors.to !== undefined}
+              fromAmount={fromAmount}
+              slippage={slippage}
             />
             <Validation className="text-center mb-2" errors={errors} />
             <div className="mt-6">
               {/* <Validation errors={errors} className="mb-2" /> */}
-              <ApprovalSubmit
-                token={tokensMap[from]}
-                disabled={errors.fromAmount !== undefined || errors.to !== undefined}
-              />
+              <ApprovalSubmit token={fromToken} disabled={!submitEnabled} fromAmount={fromAmount} />
             </div>
           </form>
         </FormProvider>
@@ -105,14 +107,17 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
         onSelect={modalType === 'from' ? onFromChange : onToChange}
         selected={{
           type: 'token',
-          tokenAddress: modalType ? (modalType === 'from' ? getValues('from') : getValues('to')) : undefined,
+          tokenAddress: modalType ? (modalType === 'from' ? fromToken?.id : toToken?.id) : undefined,
         }}
-        excludedToken={modalType === 'from' ? getValues('to') : getValues('from')}
         onClose={() => setModalType(undefined)}
-        isLoading={isLoading}
+        isLoading={nablaInstanceIsLoading}
       />
-      <SwapProgress open={!!progressUi} mutation={swapMutation} onClose={progressClose}>
-        {progressUi}
+      <SwapProgress
+        open={swapMutation.isIdle !== true && fromToken !== undefined && toToken !== undefined}
+        mutation={swapMutation}
+        onClose={progressClose}
+      >
+        <p className="text-center text-[--text]">{`Swapping ${fromAmountString} ${fromToken?.symbol} for ${toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals} ${toToken?.symbol}`}</p>
       </SwapProgress>
     </>
   );

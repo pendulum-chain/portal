@@ -15,20 +15,17 @@ interface PoolListProps {
   swapPools: NablaInstanceSwapPool[];
   backstopPool?: NablaInstanceBackstopPool;
   onSelect: (pool: PoolEntry) => void;
-  excludedToken: string | undefined;
   selected:
     | { type: 'token'; tokenAddress: string | undefined }
     | { type: 'backstopPool' }
     | { type: 'swapPool'; poolAddress: string };
 }
 
-function PoolList({ swapPools, backstopPool, onSelect, selected, excludedToken }: PoolListProps) {
+function PoolList({ swapPools, backstopPool, onSelect, selected }: PoolListProps) {
   const [filter, setFilter] = useState<string>();
 
   const poolList = useMemo(() => {
-    const poolList: PoolEntry[] = swapPools
-      .filter((pool) => pool.token.id !== excludedToken)
-      .map((pool) => ({ type: 'swapPool', pool }));
+    const poolList: PoolEntry[] = swapPools.map((pool) => ({ type: 'swapPool', pool }));
     poolList.sort((a, b) => (a.pool.token.symbol < b.pool.token.symbol ? -1 : 1));
 
     if (backstopPool !== undefined) {
@@ -42,7 +39,7 @@ function PoolList({ swapPools, backstopPool, onSelect, selected, excludedToken }
     }
 
     return poolList;
-  }, [swapPools, backstopPool, filter, excludedToken]);
+  }, [swapPools, backstopPool, filter]);
 
   const showPoolType = backstopPool !== undefined;
 
@@ -118,7 +115,6 @@ export function PoolSelectorModal({
   swapPools,
   backstopPool,
   selected,
-  excludedToken,
   isLoading,
   onSelect,
   onClose,
@@ -135,13 +131,7 @@ export function PoolSelectorModal({
           {isLoading ? (
             repeat(<Skeleton className="w-full h-10 mb-2" />)
           ) : (
-            <PoolList
-              swapPools={swapPools}
-              backstopPool={backstopPool}
-              onSelect={onSelect}
-              selected={selected}
-              excludedToken={excludedToken}
-            />
+            <PoolList swapPools={swapPools} backstopPool={backstopPool} onSelect={onSelect} selected={selected} />
           )}
         </div>
       </Modal.Body>

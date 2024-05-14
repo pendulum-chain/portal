@@ -10,7 +10,7 @@ export type SwapProgressProps = {
   mutation?: TransactionProgressProps['mutation'];
 };
 
-const SwapProgress = ({ mutation, children, ...rest }: SwapProgressProps): JSX.Element | null => {
+export function SwapProgress({ mutation, children, ...rest }: SwapProgressProps) {
   return (
     <Modal className="modal-top bg-[--bg-modal]" {...rest}>
       <Modal.Header className="mb-0">
@@ -25,5 +25,4 @@ const SwapProgress = ({ mutation, children, ...rest }: SwapProgressProps): JSX.E
       </Modal.Body>
     </Modal>
   );
-};
-export default SwapProgress;
+}

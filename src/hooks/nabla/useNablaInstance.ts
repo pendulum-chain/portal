@@ -15,7 +15,7 @@ export interface NablaInstance {
   router: NablaInstanceRouter;
   backstopPool: NablaInstanceBackstopPool;
   swapPools: NablaInstanceSwapPool[];
-  tokens: Record<string, NablaInstanceToken>;
+  tokens: Partial<Record<string, NablaInstanceToken>>;
 }
 
 export function useNablaInstance(): { nabla: NablaInstance | undefined; isLoading: boolean } {

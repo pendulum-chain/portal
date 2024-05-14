@@ -1,15 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useRef, useState } from 'preact/compat';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import Big from 'big.js';
 
 import { config } from '../../../config';
-import { cacheKeys } from '../../../constants/cache';
 import { storageKeys } from '../../../constants/localStorage';
 import { routerAbi } from '../../../contracts/nabla/Router';
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { subtractBigDecimalPercentage } from '../../../helpers/calc';
 import { debounce } from '../../../helpers/function';
 import { getValidDeadline, getValidSlippage } from '../../../helpers/transaction';
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
@@ -18,9 +15,12 @@ import { storageService } from '../../../services/storage/local';
 import { calcDeadline, decimalToRaw } from '../../../shared/parseNumbers/metric';
 import schema from './schema';
 import { SwapFormValues } from './schema';
-import { NablaInstanceToken, useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
+import { useNablaInstance } from '../../../hooks/nabla/useNablaInstance';
 import { useContractWrite } from '../../../hooks/nabla/useContractWrite';
 import { PoolEntry } from '../common/PoolSelectorModal';
+import { useErc20ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
+import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
+import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -28,45 +28,110 @@ export interface UseSwapComponentProps {
   onChange?: (from: string, to: string) => void;
 }
 
-export const defaultValues = config.swap.defaults;
-const storageValues = storageService.getParsed<SwapSettings>(storageKeys.SWAP_SETTINGS);
-const getInitialValues = () => ({
-  ...defaultValues,
-  ...storageValues,
-  slippage: getValidSlippage(storageValues?.slippage),
-  deadline: getValidDeadline(storageValues?.deadline || defaultValues.deadline),
-});
+const defaultValues = config.swap.defaults;
 const storageSet = debounce(storageService.set, 1000);
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
   const { onChange } = props;
-  const { nabla, isLoading } = useNablaInstance();
+  const { nabla, isLoading: nablaInstanceIsLoading } = useNablaInstance();
   const tokens = nabla?.swapPools.map((p) => p.token) ?? [];
   const tokensMap = nabla?.tokens ?? {};
 
   const { address } = useGlobalState().walletAccount || {};
   const hadMountedRef = useRef(false);
-  const queryClient = useQueryClient();
   const { router } = useGetAppDataByTenant('nabla').data || {};
   const tokensModal = useState<undefined | 'from' | 'to'>();
   const setTokenModal = tokensModal[1];
-  const storageState = useRef(getInitialValues());
 
-  const initFrom = props.from || storageState.current.from;
-  const initTo = props.to || storageState.current.to;
-  const defaultFormValues = {
-    ...storageState.current,
-    from: initFrom || '',
-    to: initTo || '',
-  };
+  const initialState = useMemo(() => {
+    const storageValues = storageService.getParsed<SwapSettings>(storageKeys.SWAP_SETTINGS);
+    return {
+      from: props.from ?? storageValues?.from ?? '',
+      to: props.to ?? storageValues?.to ?? '',
+      slippage: getValidSlippage(storageValues?.slippage),
+      deadline: getValidDeadline(storageValues?.deadline ?? defaultValues.deadline),
+    };
+  }, [props.from, props.to]);
+
   const form = useForm<SwapFormValues>({
     resolver: yupResolver(schema) as Resolver<SwapFormValues>,
-    defaultValues: defaultFormValues,
+    defaultValues: initialState,
   });
-  const { setValue, reset, getValues, control } = form;
-  const from = useWatch({
+
+  const { setValue, getValues, control } = form;
+  const from = useWatch({ control, name: 'from' });
+  const to = useWatch({ control, name: 'to' });
+
+  const fromToken = tokensMap[from];
+  const toToken = tokensMap[to];
+
+  const fromTokenBalance = useErc20ContractBalance(
+    erc20WrapperAbi,
+    fromToken !== undefined ? { contractAddress: fromToken.id, decimals: fromToken.decimals } : undefined,
+  );
+  const toTokenBalance = useErc20ContractBalance(
+    erc20WrapperAbi,
+    toToken !== undefined ? { contractAddress: toToken.id, decimals: toToken.decimals } : undefined,
+  );
+
+  const fromAmountString = useWatch({
     control,
-    name: 'from',
+    name: 'fromAmount',
+    defaultValue: '0',
+  });
+
+  let fromAmount: Big | undefined;
+  try {
+    fromAmount = new Big(fromAmountString);
+  } catch {
+    fromAmount = undefined;
+  }
+
+  const slippage = getValidSlippage(
+    Number(
+      useWatch({
+        control,
+        name: 'slippage',
+        defaultValue: config.swap.defaults.slippage,
+      }),
+    ),
+  );
+
+  const toAmountQuote = useTokenOutAmount({
+    fromAmountString,
+    fromToken,
+    toToken,
+    maximumFromAmount: fromTokenBalance.data?.preciseBigDecimal,
+    form,
+    slippage,
+  });
+
+  const swapMutation = useContractWrite({
+    abi: routerAbi,
+    address: router,
+    method: 'swapExactTokensForTokens',
+    mutateOptions: {
+      onSuccess: () => {
+        // update token balances
+        fromTokenBalance.refetch();
+        toTokenBalance.refetch();
+        setValue('fromAmount', '0');
+        setValue('toAmount', '0');
+      },
+    },
+  });
+
+  const onSubmit = form.handleSubmit((variables: SwapFormValues) => {
+    if (toAmountQuote.data === undefined) return;
+    const fromToken = tokens.find((token) => token.id === variables.from)!;
+    const toToken = tokens.find((token) => token.id === variables.to)!;
+
+    const vDeadline = getValidDeadline(variables.deadline ?? defaultValues.deadline);
+    const deadline = calcDeadline(vDeadline).toString();
+    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals).round(0, 0).toString();
+    const toMinAmount = decimalToRaw(toAmountQuote.data.minAmountOut, toToken.decimals).round(0, 0).toString();
+
+    return swapMutation.mutate([fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
   });
 
   const updateStorage = useCallback(
@@ -82,37 +147,6 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     },
     [getValues],
   );
-
-  const swapMutation = useContractWrite({
-    abi: routerAbi,
-    address: router,
-    method: 'swapExactTokensForTokens',
-    mutateOptions: {
-      onSuccess: () => {
-        // update token balances
-        queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('from')], type: 'active' });
-        queryClient.refetchQueries({ queryKey: [cacheKeys.walletBalance, getValues('to')], type: 'active' });
-        // reset form
-        reset();
-      },
-    },
-  });
-
-  const onSubmit = form.handleSubmit((variables: SwapFormValues) => {
-    const fromToken = tokens.find((token) => token.id === variables.from)!;
-    const toToken = tokens.find((token) => token.id === variables.to)!;
-
-    const vDeadline = getValidDeadline(variables.deadline ?? defaultValues.deadline);
-    const vSlippage = getValidSlippage(variables.slippage ?? defaultValues.slippage);
-    const deadline = calcDeadline(vDeadline).toString();
-    const fromAmount = decimalToRaw(variables.fromAmount, fromToken?.decimals).round(0, 0).toString();
-    const toMinAmount = decimalToRaw(
-      subtractBigDecimalPercentage(new Big(variables.toAmount), vSlippage),
-      toToken?.decimals,
-    ).toString();
-
-    return swapMutation.mutate([fromAmount, toMinAmount, [variables.from, variables.to], address, deadline]);
-  });
 
   const onFromChange = useCallback(
     (a: string | PoolEntry, event = true) => {
@@ -150,17 +184,15 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
 
   // when props change (url updated)
   useEffect(() => {
-    console.log('useEffect');
-    if (hadMountedRef) {
-      onFromChange(initFrom ?? '', false);
-      onToChange(initTo ?? '', false);
+    if (hadMountedRef.current) {
+      if (props.from !== undefined) onFromChange(props.from, false);
+      if (props.to !== undefined) onToChange(props.to, false);
     }
     hadMountedRef.current = true;
-  }, [initFrom, initTo, onFromChange, onToChange]);
+  }, [props.from, props.to, onFromChange, onToChange]);
 
   return {
     form,
-    tokensMap,
     swapPools: nabla?.swapPools ?? [],
     swapMutation,
     onSubmit,
@@ -168,10 +200,16 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
     onFromChange,
     onToChange,
     updateStorage,
-    from,
-    isLoading,
+    nablaInstanceIsLoading,
     progressClose: () => {
       swapMutation.reset();
     },
+    fromTokenBalance,
+    fromAmountString,
+    fromAmount,
+    toAmountQuote,
+    fromToken,
+    toToken,
+    slippage,
   };
 };

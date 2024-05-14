@@ -159,7 +159,6 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
           setValue('address', type === 'backstopPool' ? undefined : pool.id);
           setShowTokenModal(false);
         }}
-        excludedToken={undefined}
         selected={selectedPool ? { type: 'swapPool', poolAddress: selectedPool.id } : { type: 'backstopPool' }}
         onClose={() => setShowTokenModal(false)}
       />

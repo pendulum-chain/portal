@@ -101,8 +101,7 @@ export const useSwapPoolWithdrawLiquidity = (
     form,
   });
 
-  // TODO Torsten: check how values are determined in the other mutation functions
-  // TODO Torsten: also make slippage here configurable
+  // TODO also make slippage here configurable
   const { mutate } = mutation;
   const onSubmit = useCallback(
     (variables: WithdrawLiquidityValues) => {

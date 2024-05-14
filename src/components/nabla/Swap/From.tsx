@@ -1,54 +1,48 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
+
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
-import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
-import { useErc20ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
-import { NumberInput } from '../common/NumberInput';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
+import { AmountSelector } from '../common/AmountSelector';
+import { UseContractReadResult } from '../../../hooks/nabla/useContractRead';
+import { ContractBalance } from '../../../helpers/contracts';
+import { TokenBalance } from '../common/TokenBalance';
 
-export interface FromProps {
-  tokensMap: Record<string, NablaInstanceToken>;
+interface FromProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
+  fromToken: NablaInstanceToken | undefined;
   onOpenSelector: () => void;
-  errorMessage?: string;
+  inputHasError: boolean;
+  fromFormFieldName: TFieldName;
+  form: UseFormReturn<FormFieldValues>;
+  fromTokenBalance: UseContractReadResult<ContractBalance | undefined>;
 }
 
-const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Element | null => {
-  const { setValue, control } = useFormContext<SwapFormValues>();
-  const from = useWatch({
-    control,
-    name: 'from',
-  });
+export function From<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
+  fromToken,
+  onOpenSelector,
+  inputHasError,
+  fromFormFieldName,
+  form,
+  fromTokenBalance,
+}: FromProps<FormFieldValues, TFieldName>) {
+  const { setValue } = useFormContext<SwapFormValues>();
 
-  const token: NablaInstanceToken = tokensMap[from];
-  const { data: balance } = useErc20ContractBalance(
-    erc20WrapperAbi,
-    token
-      ? {
-          contractAddress: token.id,
-          decimals: token.decimals,
-        }
-      : undefined,
-  );
-
-  const inputHasError = errorMessage !== undefined;
-
-  // TODO Torsten: remove the setValue clickers
   return (
     <div
       className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
     >
       <div className="w-full flex justify-between">
         <div className="flex-grow text-4xl text-[inherit] font-outfit">
-          <NumberInput
-            autoFocus
-            className="input-ghost w-full text-4xl font-outfit"
-            placeholder="0.0"
-            registerName="fromAmount"
+          <AmountSelector
+            maxBalance={fromTokenBalance.data}
+            formFieldName={fromFormFieldName}
+            form={form}
+            onlyShowNumberInput={true}
           />
         </div>
         <Button
@@ -60,29 +54,38 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
           <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
             <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
           </span>
-          <strong className="font-bold">{token?.symbol || 'Select'}</strong>
+          <strong className="font-bold">{fromToken?.symbol || 'Select'}</strong>
           <ChevronDownIcon className="w-4 h-4 inline ml-px" />
         </Button>
       </div>
       <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-        <div className="text-sm mt-px">{token ? <NablaTokenPrice address={token.id} fallback="$ -" /> : '$ -'}</div>
+        <div className="text-sm mt-px">
+          {fromToken ? <NablaTokenPrice address={fromToken.id} fallback="$ -" /> : '$ -'}
+        </div>
         <div className="flex gap-1 text-sm">
-          {balance !== undefined && (
+          {fromTokenBalance !== undefined && (
             <Fragment>
-              <span className="mr-1" title={balance.preciseString}>
-                Your Balance:{' '}
-                {`${balance.approximateStrings.atLeast2Decimals}${token?.symbol ? ` ${token?.symbol}` : ''}`}
+              <span className="mr-1">
+                Your Balance: <TokenBalance query={fromTokenBalance} symbol={fromToken?.symbol}></TokenBalance>
               </span>
               <button
                 className="text-primary hover:underline"
-                onClick={() => setValue('fromAmount', fractionOfValue(balance.preciseBigDecimal, 50))}
+                onClick={() => {
+                  if (fromTokenBalance.data !== undefined) {
+                    setValue('fromAmount', fractionOfValue(fromTokenBalance.data.preciseBigDecimal, 50));
+                  }
+                }}
                 type="button"
               >
                 50%
               </button>
               <button
                 className="text-primary hover:underline"
-                onClick={() => setValue('fromAmount', fractionOfValue(balance.preciseBigDecimal, 100))}
+                onClick={() => {
+                  if (fromTokenBalance.data !== undefined) {
+                    setValue('fromAmount', fractionOfValue(fromTokenBalance.data.preciseBigDecimal, 100));
+                  }
+                }}
                 type="button"
               >
                 MAX
@@ -93,5 +96,4 @@ const From = ({ tokensMap, onOpenSelector, errorMessage }: FromProps): JSX.Eleme
       </div>
     </div>
   );
-};
-export default From;
+}

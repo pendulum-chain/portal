@@ -12,6 +12,7 @@ export const StellarDecimals = 12;
 export const FixedU128Decimals = 18;
 
 const BIG_100 = new BigNumber('100');
+const BIG_0 = new BigNumber('0');
 
 // Change the positive exponent to a high value to prevent toString() returning exponential notation
 BigNumber.PE = 100;
@@ -110,7 +111,6 @@ export const nativeToFormatMetric = (
   oneCharOnly = false,
 ) => format(rawToDecimal(value, StellarDecimals).toNumber(), tokenSymbol, oneCharOnly);
 
-// TODO Torsten: abolish for Nabla
 export const prettyNumbers = (number: number, lang?: string, opts?: Intl.NumberFormatOptions) =>
   number.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -135,12 +135,35 @@ export function roundDownToSignificantDecimals(big: BigNumber, decimals: number)
   return big.prec(Math.max(0, big.e + 1) + decimals, 0);
 }
 
+// toString method where the resulting string will have at least the number of
+// decimals or more if the number is very small
+// e.g., if decimals = 4, then
+// - 12345678 -> 12345678.0000
+// - 1234.5678 -> 1234.5678
+// - 123.45678 -> 123.4567
+// - 1.2345678 -> 1.2345
+// - 0.12345678 -> 0.1234
+// - 0.012345678 -> 0.01234
+// - 0.00012345678 -> 0.0001234
+// - 12 -> 12.0000
+// - 0.12 -> 0.1200
+// - 0.012 -> 0.0120
+// - 0.0012 -> 0.0012
+// - 0.00012 -> 0.00012
+// - 0.000012 -> 0.000012
 export function stringifyBigWithSignificantDecimals(big: BigNumber, decimals: number) {
   const rounded = roundDownToSignificantDecimals(big, decimals);
-  return rounded.toFixed(decimals + Math.max(0, -(big.e + 1)));
+
+  let significantDecimals;
+  if (rounded.eq(BIG_0)) {
+    significantDecimals = decimals;
+  } else {
+    significantDecimals = Math.max(decimals, Math.min(decimals, rounded.c.length) - 1 - rounded.e);
+  }
+
+  return rounded.toFixed(significantDecimals, 0);
 }
 
-// TODO Torsten: check whether this can used everywhere to construct cleaner zeros
 export function multiplyByPowerOfTen(bigDecimal: BigNumber, power: number) {
   const newBigDecimal = new BigNumber(bigDecimal);
   if (newBigDecimal.c[0] === 0) return newBigDecimal;

@@ -1,43 +1,29 @@
 import { Button } from 'react-daisyui';
-import { useFormContext, useWatch } from 'react-hook-form';
+import Big from 'big.js';
+
 import { useGetAppDataByTenant } from '../../../hooks/useGetAppDataByTenant';
-import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { TokenApproval } from '../common/TokenApproval';
-import Big from 'big.js';
 
 export interface ApprovalProps {
   token: NablaInstanceToken | undefined;
   disabled: boolean;
+  fromAmount: Big | undefined;
 }
 
-const ApprovalSubmit = ({ token, disabled }: ApprovalProps): JSX.Element | null => {
+const ApprovalSubmit = ({ token, disabled, fromAmount }: ApprovalProps): JSX.Element | null => {
   const { router } = useGetAppDataByTenant('nabla').data || {};
-  const { control } = useFormContext<SwapFormValues>();
-
-  const amountString = useWatch({
-    control: control,
-    name: 'fromAmount',
-    defaultValue: '0',
-  });
-
-  let amountBigDecimal;
-  try {
-    amountBigDecimal = amountString !== undefined ? new Big(amountString) : undefined;
-  } catch {
-    amountBigDecimal = undefined;
-  }
 
   if (!router || !token) return null;
 
-  const amountPositive = amountBigDecimal?.gt(new Big(0));
+  const amountPositive = fromAmount?.gt(new Big(0));
 
   return (
     <TokenApproval
       token={token.id}
       decimals={token.decimals}
       spender={router}
-      decimalAmount={amountBigDecimal}
+      decimalAmount={fromAmount}
       disabled={disabled}
     >
       <Button color="primary" className="w-full text-base" type="submit" disabled={!amountPositive || disabled}>

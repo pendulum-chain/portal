@@ -1,14 +1,12 @@
 import { ArrowPathRoundedSquareIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import { useEffect, useMemo } from 'preact/compat';
+import { useEffect } from 'preact/compat';
 import { Button } from 'react-daisyui';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+import Big from 'big.js';
+
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
-import { config } from '../../../config';
-import { subtractBigDecimalPercentage } from '../../../helpers/calc';
-import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
+import { UseTokenOutAmountResult } from '../../../hooks/nabla/useTokenOutAmount';
 import useBoolean from '../../../hooks/useBoolean';
-import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
-import { stringifyBigWithSignificantDecimals } from '../../../shared/parseNumbers/metric';
 import { NumberLoader } from '../../Loader';
 import { Skeleton } from '../../Skeleton';
 import { SwapFormValues } from './schema';
@@ -16,102 +14,50 @@ import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
-import Big from 'big.js';
-import { getValidSlippage } from '../../../helpers/transaction';
 
 export interface ToProps {
-  tokensMap: Record<string, NablaInstanceToken>;
   onOpenSelector: () => void;
-  inputHasError: boolean;
+  fromToken: NablaInstanceToken | undefined;
+  toToken: NablaInstanceToken | undefined;
+  toAmountQuote: UseTokenOutAmountResult;
+  fromAmount: Big | undefined;
+  slippage: number;
 }
 
-export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps): JSX.Element | null {
+export function To({
+  fromToken,
+  toToken,
+  onOpenSelector,
+  toAmountQuote,
+  fromAmount,
+  slippage,
+}: ToProps): JSX.Element | null {
   const [isOpen, { toggle }] = useBoolean(true);
-  const { setValue, setError, clearErrors, control } = useFormContext<SwapFormValues>();
-
-  const from = useWatch({
-    control,
-    name: 'from',
-  });
-
-  const to = useWatch({
-    control,
-    name: 'to',
-  });
-
-  const fromDecimalAmountString = useWatch({
-    control,
-    name: 'fromAmount',
-    defaultValue: '0',
-  });
-
-  const fromDecimalAmount = useMemo(() => {
-    try {
-      return new Big(fromDecimalAmountString);
-    } catch {
-      return undefined;
-    }
-  }, [fromDecimalAmountString]);
-
-  const slippage = getValidSlippage(
-    Number(
-      useWatch({
-        control,
-        name: 'slippage',
-        defaultValue: config.swap.defaults.slippage,
-      }),
-    ),
-  );
-
-  const fromToken: NablaInstanceToken | undefined = tokensMap?.[from];
-  const toToken: NablaInstanceToken | undefined = tokensMap?.[to];
-
-  const debouncedFromDecimalAmount = useDebouncedValue(fromDecimalAmount, 800);
-
-  const {
-    isLoading,
-    fetchStatus,
-    data: tokenOutAmount,
-    error,
-    refetch,
-  } = useTokenOutAmount({
-    fromDecimalAmount: debouncedFromDecimalAmount,
-    from,
-    to,
-    fromTokenDecimals: fromToken?.decimals,
-    toTokenDecimals: toToken?.decimals,
-  });
+  const { setValue } = useFormContext<SwapFormValues>();
 
   useEffect(() => {
-    if (error !== null) {
-      setError('fromAmount', { type: 'manual', message: error });
-    } else {
-      clearErrors('fromAmount');
-    }
-  }, [error, setError, clearErrors]);
-
-  const loading = (isLoading && fetchStatus !== 'idle') || fromDecimalAmount !== debouncedFromDecimalAmount;
-
-  useEffect(() => {
-    setValue('toAmount', tokenOutAmount?.amountOut.preciseString ?? '0', {
+    setValue('toAmount', toAmountQuote.data?.amountOut.preciseString ?? '0', {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
     });
-  }, [tokenOutAmount?.amountOut.preciseString, setValue]);
+  }, [toAmountQuote.data?.amountOut.preciseString, setValue]);
 
   return (
-    <div
-      className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
-    >
+    <div className="rounded-lg bg-base-300 px-4 py-3 border border-transparent">
       <div className="w-full flex justify-between">
-        <div className="flex-grow text-4xl text-[inherit] font-outfit">
-          {loading ? (
+        <div className="flex-grow text-4xl text-[inherit] font-outfit overflow-x-auto overflow-y-hidden mr-2">
+          {toAmountQuote.isLoading ? (
             <NumberLoader />
-          ) : tokenOutAmount ? (
-            `${tokenOutAmount.amountOut.approximateStrings.atLeast4Decimals}`
-          ) : fromDecimalAmount !== undefined && fromDecimalAmount.gt(new Big(0)) ? (
-            <button type="button" onClick={() => refetch()} className="hover:opacity-80" title="Refresh">
+          ) : toAmountQuote.data !== undefined ? (
+            `${toAmountQuote.data.amountOut.approximateStrings.atLeast4Decimals}`
+          ) : fromAmount !== undefined && fromAmount.gt(new Big(0)) ? (
+            <button
+              type="button"
+              onClick={() => toAmountQuote.refetch?.()}
+              className="hover:opacity-80"
+              title="Refresh"
+            >
               <ArrowPathRoundedSquareIcon className="w-7 h-7" />
             </button>
           ) : (
@@ -151,13 +97,13 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
       >
         <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
           <div className="flex items-center">
-            {fromToken && toToken && tokenOutAmount && debouncedFromDecimalAmount && !loading ? (
-              <>{`1 ${fromToken.symbol} = ${stringifyBigWithSignificantDecimals(
-                tokenOutAmount.amountOut.preciseBigDecimal.div(debouncedFromDecimalAmount),
-                6,
-              )} ${toToken.symbol}`}</>
+            {fromToken !== undefined &&
+            toToken !== undefined &&
+            !toAmountQuote.isLoading &&
+            toAmountQuote.data !== undefined ? (
+              <>{`1 ${fromToken.symbol} = ${toAmountQuote.data.effectiveExchangeRate} ${toToken.symbol}`}</>
             ) : (
-              `- ${toToken?.symbol || ''}`
+              `-`
             )}
           </div>
           <div>
@@ -172,30 +118,32 @@ export default function To({ tokensMap, onOpenSelector, inputHasError }: ToProps
         <div className="collapse-content flex flex-col gap-5">
           <div className="flex justify-between pt-6">
             <div>Expected Output:</div>
-            <div>
-              <Skeleton isLoading={loading || tokenOutAmount === undefined}>
-                {tokenOutAmount?.amountOut.approximateStrings.atLeast4Decimals} {toToken?.symbol || ''}
-              </Skeleton>
-            </div>
+            {toAmountQuote.data !== undefined ? (
+              <div>
+                <Skeleton isLoading={toAmountQuote.isLoading}>
+                  {toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals} {toToken?.symbol || ''}
+                </Skeleton>
+              </div>
+            ) : (
+              <div>N/A</div>
+            )}
           </div>
           <div className="flex justify-between">
             <div>Minimum received after slippage ({slippage}%)</div>
-            <div>
-              <Skeleton isLoading={loading || tokenOutAmount === undefined}>
-                {tokenOutAmount !== undefined
-                  ? stringifyBigWithSignificantDecimals(
-                      subtractBigDecimalPercentage(tokenOutAmount.amountOut.preciseBigDecimal, slippage),
-                      2,
-                    )
-                  : ''}{' '}
-                {toToken?.symbol || ''}
-              </Skeleton>
-            </div>
+            {toAmountQuote.data !== undefined ? (
+              <div>
+                <Skeleton isLoading={toAmountQuote.isLoading || toAmountQuote.data === undefined}>
+                  {toAmountQuote.data !== undefined ? toAmountQuote.data.minAmountOut : ''} {toToken?.symbol || ''}
+                </Skeleton>
+              </div>
+            ) : (
+              <div>N/A</div>
+            )}
           </div>
           <div className="flex justify-between">
             <div>Swap fee:</div>
             <div>
-              {tokenOutAmount !== undefined ? tokenOutAmount.swapFee.approximateStrings.atLeast2Decimals : ''}{' '}
+              {toAmountQuote.data !== undefined ? toAmountQuote.data.swapFee.approximateStrings.atLeast2Decimals : ''}{' '}
               {toToken?.symbol || ''}
             </div>
           </div>

@@ -58,21 +58,8 @@ export const useBackstopDrain = ({
     [poolTokenDecimals, withdrawalQuote.data, mutate, swapPoolAddress, lpTokenDecimals],
   );
 
-  // TODO Torsten: check whether this calculation makes any sense
-  /*const sharesQuery = useSharesTargetWorth(
-    {
-      address: swapPoolAddress,
-      lpTokenDecimalAmount: depositedBackstopLpTokenDecimalAmount,
-      lpTokenDecimals: backstopPool.lpTokenDecimals,
-      poolTokenDecimals: backstopPool.token.decimals,
-      abi: backstopPoolAbi,
-    },
-    enabled,
-  );*/
-
   return {
     onSubmit,
     mutation,
-    //isLoading: sharesQuery.isLoading,
   };
 };
