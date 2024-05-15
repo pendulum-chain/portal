@@ -49,22 +49,28 @@ export function useContractWrite<TAbi extends Record<string, unknown>>({
         console.log('write', 'call message write', address, method, args, submitArgs);
       }
 
-      const response = await executeMessage({
-        abi: contractAbi,
-        api,
-        callerAddress: walletAddress,
-        contractDeploymentAddress: address,
-        getSigner: () =>
-          Promise.resolve({
-            type: 'signer',
-            address: walletAddress,
-            signer,
-          }),
-        messageName: method,
-        messageArguments: fnArgs,
-        limits: { ...defaultWriteLimits, ...contractOptions },
-        gasLimitTolerancePercentage: 10, // Allow 3 fold gas tolerance
-      });
+      let response;
+      try {
+        response = await executeMessage({
+          abi: contractAbi,
+          api,
+          callerAddress: walletAddress,
+          contractDeploymentAddress: address,
+          getSigner: () =>
+            Promise.resolve({
+              type: 'signer',
+              address: walletAddress,
+              signer,
+            }),
+          messageName: method,
+          messageArguments: fnArgs,
+          limits: { ...defaultWriteLimits, ...contractOptions },
+          gasLimitTolerancePercentage: 10, // Allow 3 fold gas tolerance
+        });
+      } catch (error) {
+        console.error('An error occurred', error);
+        throw error;
+      }
 
       if (isDevelopment) {
         console.log('write', 'call message write response', address, method, fnArgs, response);
