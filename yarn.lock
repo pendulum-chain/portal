@@ -3394,9 +3394,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pendulum-chain/api-solang@npm:0.3.0":
-  version: 0.3.0
-  resolution: "@pendulum-chain/api-solang@npm:0.3.0"
+"@pendulum-chain/api-solang@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@pendulum-chain/api-solang@npm:0.4.0"
   peerDependencies:
     "@polkadot/api": ^10.0
     "@polkadot/api-contract": ^10.12.1
@@ -3405,7 +3405,7 @@ __metadata:
     "@polkadot/types-codec": ^10.0
     "@polkadot/util": "*"
     "@polkadot/util-crypto": "*"
-  checksum: 4b5912664a270f830a3627a98480853e38df2cfab39d0fc240d2a77c0bcaa509dbd81918089cf7ee5ce70c149829de340585ae802789315b195146b3fb518741
+  checksum: 37f0b225b1529dd46b38e050a4fac89acb706bc62b10855db83f4e8658423aeb921f8ad16fadcd21e9aef68aa5ac66274dbdd829247005a3e207a94411ab1cd0
   languageName: node
   linkType: hard
 
@@ -13510,7 +13510,7 @@ __metadata:
     "@heroicons/react": "npm:^2.1.1"
     "@hookform/resolvers": "npm:^2.9.11"
     "@pendulum-chain/api": "npm:^0.3.8"
-    "@pendulum-chain/api-solang": "npm:0.3.0"
+    "@pendulum-chain/api-solang": "npm:^0.4.0"
     "@pendulum-chain/types": "npm:^0.3.8"
     "@polkadot/api": "npm:^10.9.1"
     "@polkadot/api-base": "npm:^10.9.1"
