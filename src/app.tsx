@@ -61,6 +61,9 @@ export function App() {
       </Routes>
       <TermsAndConditions />
       <ToastContainer />
+      <div id="modals">
+        {/* This is where the dialogs/modals are rendered. It is placed here because it is the highest point in the app where the tailwind data-theme is available */}
+      </div>
     </>
   );
 }

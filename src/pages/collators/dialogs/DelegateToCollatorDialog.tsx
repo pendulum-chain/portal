@@ -104,10 +104,20 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
     [error, titleAction],
   );
 
+  const dialogForm = {
+    onSubmit: handleSubmit(onSubmit),
+    className: 'px-5 flex flex-col',
+  };
+
   return (
-    <form className="px-5 flex flex-col" onSubmit={handleSubmit(onSubmit, () => undefined)}>
-      <Dialog headerText={titleAction} visible={visible} onClose={onCloseDialog} content={content} actions={actions} />
-    </form>
+    <Dialog
+      headerText={titleAction}
+      visible={visible}
+      onClose={onCloseDialog}
+      content={content}
+      actions={actions}
+      form={dialogForm}
+    />
   );
 }
 

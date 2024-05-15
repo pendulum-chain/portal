@@ -84,6 +84,19 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     createJoinDelegatorsExtrinsic,
   ]);
 
+  console.log('----rerender----');
+  console.log('DelegateToCollatorDialog: ', Boolean(selectedCandidate && !delegationAmount));
+  console.log('selectedCandidate: ', selectedCandidate);
+  console.log('delegationAmount: ', delegationAmount);
+  console.log('ConfirmDelegateDialog: ', Boolean(selectedCandidate && delegationAmount));
+  console.log('DelegationSuccessfulDialog: ', confirmationDialogVisible);
+  console.log('----------------');
+
+  const resetForm = () => {
+    setDelegationAmount(undefined);
+    onClose();
+  };
+
   return (
     <>
       <DelegateToCollatorDialog
@@ -94,10 +107,7 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         tokenSymbol={tokenSymbol || ''}
         mode={mode}
         visible={Boolean(selectedCandidate && !delegationAmount)}
-        onClose={() => {
-          setDelegationAmount(undefined);
-          onClose();
-        }}
+        onClose={resetForm}
         onSubmit={({ amount }) => {
           const userStakeAsString = nativeToDecimal(userStake || '0').toString();
           setDelegationAmount(amount?.toString());
@@ -113,22 +123,19 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
         onConfirm={submitExtrinsic}
         tokenSymbol={tokenSymbol}
         onCancel={() => setDelegationAmount(undefined)}
-        onClose={() => {
-          setDelegationAmount(undefined);
-          onClose();
-        }}
-        visible={Boolean(selectedCandidate && delegationAmount)}
+        onClose={resetForm}
+        visible={!confirmationDialogVisible && Boolean(selectedCandidate && delegationAmount)}
       />
       <DelegationSuccessfulDialog
         visible={confirmationDialogVisible}
         message={mode === 'unstaking' ? 'Successfully unstaked.' : 'Successfully staked.'}
         onClose={() => {
           setConfirmationDialogVisible(false);
-          onClose();
+          resetForm();
         }}
         onConfirm={() => {
           setConfirmationDialogVisible(false);
-          onClose();
+          resetForm();
         }}
       />
     </>
