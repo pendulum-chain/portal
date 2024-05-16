@@ -12,6 +12,7 @@ import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
 import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
 import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
 import { cacheKeys } from '../../../../../constants/cache';
+import { refetchDelayed } from '../../../../../helpers/query';
 
 export type AddLiquidityValues = {
   amount: string;
@@ -59,9 +60,7 @@ export const useAddLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
-        setTimeout(() => {
-          queryClient.refetchQueries([cacheKeys.nablaInstance]);
-        }, 2000);
+        refetchDelayed(queryClient, [cacheKeys.nablaInstance]);
       },
     },
   });

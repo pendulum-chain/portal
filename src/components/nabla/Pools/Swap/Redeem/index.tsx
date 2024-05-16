@@ -13,7 +13,6 @@ import { FormProvider } from 'react-hook-form';
 import { TransactionSettingsDropdown } from '../../../common/TransactionSettingsDropdown';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
-import { ModalTypes } from '../SwapPoolModals';
 
 export type RedeemLiquidityValues = {
   amount: number;
@@ -45,7 +44,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
       </TransactionProgress>
       <div className={hideCss}>
         <div className="flex items-center gap-2 mt-2 mb-8">
-          <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
+          <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
             <ArrowLeftIcon className="w-4 h-4" />
           </Button>
           <h3 className="text-3xl font-normal">Redeem from Backstop Pool</h3>
@@ -125,7 +124,7 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                   type="button"
                   onClick={() =>
                     toggle({
-                      type: ModalTypes.WithdrawLiquidity,
+                      type: 'WithdrawLiquidity',
                       props: { data },
                     })
                   }

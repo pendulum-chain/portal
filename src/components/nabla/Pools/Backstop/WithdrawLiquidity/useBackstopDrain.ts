@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import { useCallback } from 'preact/hooks';
+
 import { config } from '../../../../../config';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';
 import { subtractBigDecimalPercentage } from '../../../../../helpers/calc';

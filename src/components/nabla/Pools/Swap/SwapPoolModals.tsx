@@ -1,6 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { Modal } from 'react-daisyui';
-import { useModal } from '../../../../services/modal';
+import { ModalTypes, useModal } from '../../../../services/modal';
 import ModalCloseButton from '../../../Button/ModalClose';
 import AddLiquidity from './AddLiquidity';
 import Redeem from './Redeem';
@@ -8,21 +8,15 @@ import WithdrawLiquidity from './WithdrawLiquidity';
 
 import { SwapPoolColumn } from './columns';
 
-export const ModalTypes = {
-  AddLiquidity: 2,
-  WithdrawLiquidity: 3,
-  Redeem: 4,
-};
-
 export type LiquidityModalProps = {
   data?: SwapPoolColumn;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const modalsUi: Record<number, FunctionalComponent<any>> = {
-  2: AddLiquidity,
-  3: WithdrawLiquidity,
-  4: Redeem,
+const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<any>>> = {
+  AddLiquidity: AddLiquidity,
+  WithdrawLiquidity: WithdrawLiquidity,
+  Redeem: Redeem,
 };
 
 export function SwapPoolModals() {

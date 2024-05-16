@@ -4,7 +4,7 @@ import { Skeleton } from '../../../Skeleton';
 import { useNablaInstance } from '../../../../hooks/nabla/useNablaInstance';
 import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
 import { Erc20Balance } from '../../common/Erc20Balance';
-import { BackstopPoolModals, LiquidityModalProps, ModalTypes } from './BackstopPoolModals';
+import { BackstopPoolModals, LiquidityModalProps } from './BackstopPoolModals';
 
 const BackstopPoolsBody = (): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
@@ -38,7 +38,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
                 color="primary"
                 onClick={() =>
                   toggle({
-                    type: ModalTypes.AddLiquidity,
+                    type: 'AddLiquidity',
                     props: { data: pool },
                   })
                 }
@@ -50,7 +50,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
                 color="secondary"
                 onClick={() =>
                   toggle({
-                    type: ModalTypes.WithdrawLiquidity,
+                    type: 'WithdrawLiquidity',
                   })
                 }
               >

@@ -62,7 +62,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
         <PoolProgress symbol={backstopPool.symbol} amount={amountString} />
       </TransactionProgress>
       <h3 className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
-        <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
+        <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
           <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
         </Button>
         <span className="text-3xl font-normal ">Withdraw from</span>

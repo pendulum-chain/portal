@@ -11,7 +11,7 @@ export function NablaTokenPrice({ address, prefix = null, fallback = null }: Tok
   const { data, isLoading } = useNablaTokenPrice(address);
   if (isLoading) return <NumberLoader />;
 
-  if (data === undefined) return <>{fallback}</>;
+  if (data === undefined) return fallback;
 
   return (
     <span>

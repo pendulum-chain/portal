@@ -14,6 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { cacheKeys } from '../../../../../constants/cache';
 import { useQuote } from '../../../../../hooks/nabla/useQuote';
 import { MessageCallErrorResult } from '../../../../../hooks/nabla/useContractRead';
+import { refetchDelayed } from '../../../../../helpers/query';
 
 interface WithdrawLiquidityValues {
   amount: string;
@@ -74,9 +75,7 @@ export const useSwapPoolWithdrawLiquidity = (
         form.reset();
         balanceQuery.refetch();
         depositQuery.refetch();
-        setTimeout(() => {
-          queryClient.refetchQueries([cacheKeys.nablaInstance]);
-        }, 2000);
+        refetchDelayed(queryClient, [cacheKeys.nablaInstance]);
       },
     },
   });

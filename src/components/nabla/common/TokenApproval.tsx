@@ -41,7 +41,7 @@ export function TokenApproval({
     mutate([spender, nativeAmount.round(0, 0).toFixed()]);
   }, [state, mutate, decimalAmount, decimals, spender]);
 
-  if (state === ApprovalState.APPROVED || !enabled) return <>{children}</>;
+  if (state === ApprovalState.APPROVED || !enabled) return children;
 
   const noAccount = state === ApprovalState.NO_ACCOUNT;
   const isPending = state === ApprovalState.PENDING;

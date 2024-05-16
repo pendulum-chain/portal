@@ -1,4 +1,4 @@
-import { HTMLAttributes, useCallback } from 'react';
+import { HTMLAttributes, useCallback } from 'preact/compat';
 import { FieldPath, FieldValues, useFormContext } from 'react-hook-form';
 
 export interface NumberInputProps<SwapFormValues extends FieldValues> extends HTMLAttributes<HTMLInputElement> {

@@ -5,7 +5,7 @@ import { rawToDecimal } from '../../../../shared/parseNumbers/metric';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
 import { Erc20Balance } from '../../common/Erc20Balance';
-import { LiquidityModalProps, ModalTypes } from './SwapPoolModals';
+import { LiquidityModalProps } from './SwapPoolModals';
 import Big from 'big.js';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
@@ -80,7 +80,7 @@ const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknow
   return (
     <div className="flex items-center justify-end gap-2 text-right">
       <Button
-        onClick={() => toggle({ type: ModalTypes.AddLiquidity, props: { data: original } })}
+        onClick={() => toggle({ type: 'AddLiquidity', props: { data: original } })}
         size="sm"
         variant="outline"
         className="px-3"
@@ -90,7 +90,7 @@ const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknow
       <Button
         onClick={() =>
           toggle({
-            type: ModalTypes.WithdrawLiquidity,
+            type: 'WithdrawLiquidity',
             props: { data: original },
           })
         }

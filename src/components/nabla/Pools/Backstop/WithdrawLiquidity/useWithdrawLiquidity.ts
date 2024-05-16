@@ -89,7 +89,7 @@ export const useWithdrawLiquidity = (nabla: NablaInstance) => {
   });
 
   const selectedPool = useMemo<NablaInstanceSwapPool | undefined>(
-    () => swapPools.find((t) => t.id === address)!,
+    () => swapPools.find((t) => t.id === address),
     [address, swapPools],
   );
 

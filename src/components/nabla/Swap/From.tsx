@@ -1,5 +1,4 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Fragment } from 'preact';
 import { Button } from 'react-daisyui';
 import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
 
@@ -64,7 +63,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
         </div>
         <div className="flex gap-1 text-sm">
           {fromTokenBalance !== undefined && (
-            <Fragment>
+            <>
               <span className="mr-1">
                 Your Balance: <TokenBalance query={fromTokenBalance} symbol={fromToken?.symbol}></TokenBalance>
               </span>
@@ -90,7 +89,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
               >
                 MAX
               </button>
-            </Fragment>
+            </>
           )}
         </div>
       </div>
