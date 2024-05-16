@@ -14,6 +14,7 @@ import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
+import { getIcon } from '../../../shared/AssetIcons';
 
 export interface ToProps {
   onOpenSelector: () => void;
@@ -71,7 +72,7 @@ export function To({
           type="button"
         >
           <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
-            <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
+            <img src={getIcon(toToken?.symbol, pendulumIcon)} alt="Pendulum" className="h-full w-auto" />
           </span>
           <strong className="font-bold">{toToken?.symbol || 'Select'}</strong>
           <ChevronDownIcon className="w-4 h-4 inline ml-px" />

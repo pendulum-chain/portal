@@ -11,6 +11,7 @@ import { AmountSelector } from '../common/AmountSelector';
 import { UseContractReadResult } from '../../../hooks/nabla/useContractRead';
 import { ContractBalance } from '../../../helpers/contracts';
 import { TokenBalance } from '../common/TokenBalance';
+import { getIcon } from '../../../shared/AssetIcons';
 
 interface FromProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   fromToken: NablaInstanceToken | undefined;
@@ -51,7 +52,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
           type="button"
         >
           <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
-            <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" />
+            <img src={getIcon(fromToken?.symbol, pendulumIcon)} alt="Pendulum" className="h-full w-auto" />
           </span>
           <strong className="font-bold">{fromToken?.symbol || 'Select'}</strong>
           <ChevronDownIcon className="w-4 h-4 inline ml-px" />
