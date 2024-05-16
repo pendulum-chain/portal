@@ -1,9 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { isEmpty } from 'lodash';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
@@ -14,14 +16,15 @@ import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIs
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../shared/useAccountBalance';
+import { TenantName } from '../../../models/Tenant';
+import { ToastMessage, showToast } from '../../../shared/showToast';
+
 import { FeeBox } from '../FeeBox';
+import { prioritizeXLMAsset } from '../helpers';
+
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-import { ToastMessage, showToast } from '../../../shared/showToast';
-import { prioritizeXLMAsset } from '../helpers';
-import { TenantName } from '../../../models/Tenant';
-import { isEmpty } from 'lodash';
 
 interface IssueProps {
   network: string;
@@ -175,7 +178,6 @@ function Issue(props: IssueProps): JSX.Element {
     trigger('securityDeposit');
   }, [amount, issueGriefingCollateral, setValue, trigger]);
 
-  console.log('formState.errors', formState.errors);
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
       <ConfirmationDialog
