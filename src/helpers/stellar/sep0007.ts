@@ -1,20 +1,20 @@
-interface GenerateSEP0007URIScheme {
-  vault_stellar_account: string;
-  issue_amount: string;
-  asset_code: string;
-  asset_issuer: string;
-  issue_request_memo: string;
+interface GenerateSep0007UriScheme {
+  vaultStellarAccount: string;
+  issueAmount: string;
+  assetCode: string;
+  assetIssuer: string;
+  issueRequestMemo: string;
 }
 
 export function generateSEP0007URIScheme({
-  vault_stellar_account,
-  issue_amount,
-  asset_code,
-  asset_issuer,
-  issue_request_memo,
-}: GenerateSEP0007URIScheme) {
-  if (!vault_stellar_account || !issue_amount || !asset_code || !asset_issuer || !issue_request_memo) {
+  vaultStellarAccount,
+  issueAmount,
+  assetCode,
+  assetIssuer,
+  issueRequestMemo,
+}: GenerateSep0007UriScheme) {
+  if (!vaultStellarAccount || !issueAmount || !assetCode || !assetIssuer || !issueRequestMemo) {
     return null;
   }
-  return `web+stellar:pay?destination=${vault_stellar_account}&amount=${issue_amount}&asset_code=${asset_code}&asset_issuer=${asset_issuer}&memo=${issue_request_memo}&memo_type=MEMO_TEXT`;
+  return `web+stellar:pay?destination=${vaultStellarAccount}&amount=${issueAmount}&asset_code=${assetCode}&asset_issuer=${assetIssuer}&memo=${issueRequestMemo}&memo_type=MEMO_TEXT`;
 }

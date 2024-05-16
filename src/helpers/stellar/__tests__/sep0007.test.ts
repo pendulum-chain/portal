@@ -3,11 +3,11 @@ import { generateSEP0007URIScheme } from '../sep0007';
 describe('generateSEP0007URIScheme', () => {
   test('should return a valid SEP0007 URI scheme', () => {
     const params = {
-      vault_stellar_account: 'GABCDEF',
-      issue_amount: '100',
-      asset_code: 'XLM',
-      asset_issuer: 'GHIJKL',
-      issue_request_memo: 'MEMO',
+      vaultStellarAccount: 'GABCDEF',
+      issueAmount: '100',
+      assetCode: 'XLM',
+      assetIssuer: 'GHIJKL',
+      issueRequestMemo: 'MEMO',
     };
 
     const expectedURI =
@@ -16,13 +16,13 @@ describe('generateSEP0007URIScheme', () => {
     expect(generateSEP0007URIScheme(params)).toBe(expectedURI);
   });
 
-  test('should throw an error when invalid parameters are provided', () => {
+  test('should return null when invalid parameters are provided', () => {
     const params = {
-      vault_stellar_account: '',
-      issue_amount: '',
-      asset_code: '',
-      asset_issuer: '',
-      issue_request_memo: '',
+      vaultStellarAccount: '',
+      issueAmount: '',
+      assetCode: '',
+      assetIssuer: '',
+      issueRequestMemo: '',
     };
 
     expect(generateSEP0007URIScheme(params)).toBe(null);

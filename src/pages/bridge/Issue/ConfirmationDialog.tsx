@@ -50,11 +50,11 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   const transactionURIScheme = useMemo(
     () =>
       generateSEP0007URIScheme({
-        vault_stellar_account: destination,
-        issue_amount: totalAmount,
-        asset_code: asset?.getCode().toString() || '',
-        asset_issuer: asset?.getIssuer() || '',
-        issue_request_memo: expectedStellarMemo,
+        vaultStellarAccount: destination,
+        issueAmount: totalAmount,
+        assetCode: asset?.getCode().toString() || '',
+        assetIssuer: asset?.getIssuer() || '',
+        issueRequestMemo: expectedStellarMemo,
       }),
     [asset, destination, expectedStellarMemo, totalAmount],
   );
