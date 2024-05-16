@@ -63,7 +63,7 @@ function parseQuoteError(error: MessageCallErrorResult): string {
         case 'SwapPool#backstopBurn: TIMELOCK':
           return 'You cannot redeem tokens from the backstop pool yet.';
         case 'SwapPool#backstopBurn():INSUFFICIENT_COVERAGE':
-          return 'The input amount is too large.';
+          return 'The input amount is too large. The resulting coverage ratio of the pool must not exceed 100%.';
       }
       return 'Cannot determine value of shares';
   }

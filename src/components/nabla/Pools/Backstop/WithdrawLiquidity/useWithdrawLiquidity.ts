@@ -62,7 +62,7 @@ function parseError(error: MessageCallErrorResult): string {
         case 'withdrawExcessSwapLiquidity():BALANCE':
           return "You don't have enough LP tokens to redeem.";
         case 'SwapPool#backstopDrain():INSUFFICIENT_COVERAGE':
-          return 'The input amount is too large.';
+          return 'The input amount is too large. The resulting coverage ratio of the pool must not drop below 100%.';
       }
       return 'Cannot determine value of shares';
   }

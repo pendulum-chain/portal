@@ -108,10 +108,10 @@ export function useTokenOutAmount<FormFieldValues extends FieldValues>({
           case 'error':
             return 'Something went wrong';
           case 'panic':
-            return error.errorCode === 0x11 ? 'The input amount is too large' : 'Something went wrong';
+            return error.errorCode === 0x11 ? 'The input amount is too large.' : 'Something went wrong';
           case 'reverted':
             return error.description === 'SwapPool: EXCEEDS_MAX_COVERAGE_RATIO'
-              ? 'The input amount is too large'
+              ? 'The input amount is too large. The resulting coverage ratio of the pools must not exceed 200%.'
               : 'Something went wrong';
         }
       },
