@@ -90,10 +90,9 @@ export function useTokenOutAmount<FormFieldValues extends FieldValues>({
         if (toToken === undefined || fromToken === undefined || debouncedAmountBigDecimal === undefined)
           return undefined;
         const amountOut = parseContractBalanceResponse(toToken.decimals, data[0]);
-        const effectiveExchangeRate = stringifyBigWithSignificantDecimals(
-          amountOut.preciseBigDecimal.div(debouncedAmountBigDecimal),
-          6,
-        );
+        const effectiveExchangeRate = debouncedAmountBigDecimal.gt(0)
+          ? stringifyBigWithSignificantDecimals(amountOut.preciseBigDecimal.div(debouncedAmountBigDecimal), 6)
+          : '0';
         const minAmountOut = subtractBigDecimalPercentage(amountOut.preciseBigDecimal, slippage);
 
         return {

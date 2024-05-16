@@ -48,7 +48,7 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
   const totalSupplyOfLpTokens = rawToDecimal(backstopPool.totalSupply, backstopPool.token.decimals);
   const poolToWithdraw = selectedPool ?? backstopPool;
 
-  const submitEnabled = !withdrawalQuote.isLoading && withdrawalQuote.enabled && Object.keys(errors).length > 0;
+  const submitEnabled = !withdrawalQuote.isLoading && withdrawalQuote.enabled && Object.keys(errors).length === 0;
 
   return (
     <div className="text-[initial] dark:text-neutral-200">

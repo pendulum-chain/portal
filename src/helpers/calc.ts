@@ -4,10 +4,14 @@ import { NablaInstanceSwapPool } from '../hooks/nabla/useNablaInstance';
 export type Percent = number;
 
 /** Calculate share percentage */
-export function calcSharePercentage(total: Big, share: Big) {
+export function calcSharePercentage(total: Big, share: Big): string {
+  return calcSharePercentageNumber(total, share).toFixed(2);
+}
+
+export function calcSharePercentageNumber(total: Big, share: Big): number {
+  if (total.eq(0)) return 0;
   const percentage = share.div(total).mul(new Big(100)).toNumber();
-  const clampedPercentage = Math.max(Math.min(percentage, 100), 0);
-  return clampedPercentage.toFixed(2);
+  return Math.max(Math.min(percentage, 100), 0);
 }
 
 /** Calculate share percentage */

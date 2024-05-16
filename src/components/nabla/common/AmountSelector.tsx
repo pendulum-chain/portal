@@ -7,6 +7,7 @@ import { NumberInput } from './NumberInput';
 import { ChangeEvent, ReactNode } from 'preact/compat';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { ContractBalance } from '../../../helpers/contracts';
+import { calcSharePercentageNumber } from '../../../helpers/calc';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   maxBalance: ContractBalance | undefined;
@@ -121,7 +122,11 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
         max={100}
         size="sm"
         disabled={maxBalance === undefined}
-        value={amountBigDecimal && maxBalance ? amountBigDecimal.div(maxBalance.preciseBigDecimal).toNumber() * 100 : 0}
+        value={
+          amountBigDecimal !== undefined && maxBalance !== undefined
+            ? calcSharePercentageNumber(maxBalance.preciseBigDecimal, amountBigDecimal)
+            : 0
+        }
         onChange={(ev: ChangeEvent<HTMLInputElement>) => {
           if (maxBalance === undefined) return;
           setValue(formFieldName, fractionOfValue(maxBalance.preciseBigDecimal, Number(ev.currentTarget.value)) as K, {

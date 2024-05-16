@@ -38,7 +38,7 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
       </TransactionProgress>
       <div className={hideCss}>
         <div className="flex items-center gap-2 mb-8 mt-2">
-          <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
+          <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
             <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
           </Button>
           <h3 className="text-3xl font-normal">Deposit {data.token.symbol}</h3>
