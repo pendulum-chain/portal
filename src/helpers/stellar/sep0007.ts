@@ -13,8 +13,12 @@ export function generateSEP0007URIScheme({
   assetIssuer,
   issueRequestMemo,
 }: GenerateSep0007UriScheme) {
-  if (!vaultStellarAccount || !issueAmount || !assetCode || !assetIssuer || !issueRequestMemo) {
+  const isXLM = assetCode === 'XLM';
+
+  if (!vaultStellarAccount || !issueAmount || !issueRequestMemo || (!isXLM && (!assetCode || !assetIssuer))) {
     return null;
   }
-  return `web+stellar:pay?destination=${vaultStellarAccount}&amount=${issueAmount}&asset_code=${assetCode}&asset_issuer=${assetIssuer}&memo=${issueRequestMemo}&memo_type=MEMO_TEXT`;
+
+  const assetIssuerProperty = assetIssuer ? `&asset_issuer=${assetIssuer}` : '';
+  return `web+stellar:pay?destination=${vaultStellarAccount}&amount=${issueAmount}&asset_code=${assetCode}${assetIssuerProperty}&memo=${issueRequestMemo}&memo_type=MEMO_TEXT`;
 }
