@@ -105,6 +105,7 @@ export const links: Links = ({ tenantName }) => [
     title: 'Forex AMM',
     hidden:
       (nablaConfig.environment && !nablaConfig.environment.includes(config.env)) ||
+      !tenantName ||
       (tenantName && !nablaConfig.tenants.includes(tenantName)),
     prefix: <NablaIcon />,
     props: {
