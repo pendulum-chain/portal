@@ -135,7 +135,7 @@ export const actionsColumn = ({
           }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
           disabled={!canUnstake}
-          style={{ opacity: canUnstake ? '1' : '0' }}
+          style={{ opacity: canUnstake ? '1' : '0', gap: '0.5rem' }}
         >
           Unstake
         </Button>
