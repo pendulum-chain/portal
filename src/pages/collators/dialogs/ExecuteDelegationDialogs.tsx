@@ -84,14 +84,6 @@ function ExecuteDelegationDialogs(props: ExecuteDelegationDialogsProps) {
     createJoinDelegatorsExtrinsic,
   ]);
 
-  console.log('----rerender----');
-  console.log('DelegateToCollatorDialog: ', Boolean(selectedCandidate && !delegationAmount));
-  console.log('selectedCandidate: ', selectedCandidate);
-  console.log('delegationAmount: ', delegationAmount);
-  console.log('ConfirmDelegateDialog: ', Boolean(selectedCandidate && delegationAmount));
-  console.log('DelegationSuccessfulDialog: ', confirmationDialogVisible);
-  console.log('----------------');
-
   const resetForm = () => {
     setDelegationAmount(undefined);
     onClose();
