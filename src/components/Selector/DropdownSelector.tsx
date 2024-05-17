@@ -13,7 +13,7 @@ function DropdownSelector<T extends { id: unknown; displayName: string }>(props:
     <div className="flex flex-grow">
       <div className="dropdown min-w-[95px] flex justify-end">
         {children}
-        <Dropdown.Menu className="w-52">
+        <Dropdown.Menu className="w-52 z-50">
           {items.map((item) => (
             <Dropdown.Item
               key={item.id}
