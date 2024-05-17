@@ -24,17 +24,16 @@ export const Dialog: React.FC<DialogProps> = ({ visible, onClose, headerText, co
 
   const handleClose = useCallback(
     (dialog: HTMLDialogElement) => {
-      console.log('isSubmitting: ', isSubmitting);
       if (isSubmitting) {
-        console.log('dialog.close()');
         setIsSubmitting(false);
         dialog.close();
         return;
       }
-      console.log('handleClose(dialog)');
-      handleClose(dialog);
+
+      dialog.close();
+      onClose();
     },
-    [isSubmitting],
+    [isSubmitting, onClose],
   );
 
   const closeListener = useCallback(() => {
@@ -50,18 +49,16 @@ export const Dialog: React.FC<DialogProps> = ({ visible, onClose, headerText, co
     if (dialog) {
       dialog.addEventListener('close', closeListener);
       if (visible && !dialog.open) {
-        console.log('opening dialog: ', headerText);
         dialog.showModal();
       } else if (!visible && dialog.open) {
-        console.log('closing dialog: ', headerText);
-        // dialog.close()
+        dialog.close();
       }
 
       return () => {
         dialog.removeEventListener('close', closeListener);
       };
     }
-  }, [handleClose, visible, closeListener, headerText]);
+  }, [visible, closeListener, headerText]);
 
   const handleFormSubmit = (event: Event) => {
     if (form) {
@@ -82,7 +79,7 @@ export const Dialog: React.FC<DialogProps> = ({ visible, onClose, headerText, co
   );
 
   return createPortal(
-    <Modal className={`bg-base-200 border border-[--modal-border]`} id={id} ref={ref} autofocus>
+    <Modal className={`bg-base-200 border border-[--modal-border]`} id={id} ref={ref}>
       <Modal.Header className={`text-2xl claim-title flex mb-5 ${headerText ? 'justify-between' : 'justify-end'}`}>
         {headerText} <CloseButton onClick={onClose} />
       </Modal.Header>
