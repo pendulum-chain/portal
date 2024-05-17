@@ -244,6 +244,7 @@ input[type='number'] {
 .btn,
 .input {
   line-height: 1.5;
+  gap: 0;
 }
 
 .input-ghost:focus {
@@ -286,7 +287,7 @@ table th:hover .sort {
 .btn[disabled]:hover {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
-  background-color: hsl(var(--s));
+  background-color: oklch(var(--s));
   opacity: 0.3;
 }
 
@@ -314,6 +315,38 @@ w3m-modal {
 .badge {
   height: 25px;
   white-space: nowrap;
+}
+
+/* These classes are bugged in the newest version of DaisyUI, that's why they are overrided */
+
+.table :where(th, td) {
+  white-space: nowrap;
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table:where(:not(.table-zebra)) :where(thead, tbody, tfoot) :where(tr:not(:last-child) :where(th, td)) {
+  border-bottom-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: hsl(var(--b2, var(--b1)) / var(--tw-border-opacity));
+}
+
+.menu :where(li) > :where(*:not(ul)) {
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: currentColor;
+}
+
+.collapse-content {
+  max-height: 0;
+}
+
+.collapse-open .collapse-content {
+  max-height: none;
+}
+
+.collapse-arrow > .collapse-title:after {
+  top: 50%;
 }
 
 @layer components {
