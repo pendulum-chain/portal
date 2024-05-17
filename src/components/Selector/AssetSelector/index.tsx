@@ -11,6 +11,7 @@ import {
   getAssetIcon,
   onOrmlAssetOnChange,
   onStellarAssetOnChange,
+  getAssetName,
 } from './helpers';
 
 interface AssetSelectorProps {
@@ -55,11 +56,11 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
       <Button
         disabled={disabled}
         size="xs"
-        className="btn rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5"
+        className="btn rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-neutral-content"
         type="button"
       >
         <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full mr-1 ">
-          <img src={getAssetIcon(selectedAsset)} alt="Pendulum" className="h-full w-auto " />
+          <img src={getAssetIcon(selectedAsset)} alt={getAssetName(selectedAsset)} className="h-full w-auto " />
         </span>
         <strong className="font-bold">{selectedItem?.displayName}</strong>
         {items.length > 1 ? <ChevronDownIcon className="w-4 h-4 inline ml-px" /> : <div className="px-1" />}
