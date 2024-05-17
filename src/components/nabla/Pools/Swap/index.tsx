@@ -2,6 +2,7 @@ import { useNablaInstance } from '../../../../hooks/nabla/useNablaInstance';
 import ModalProvider from '../../../../services/modal';
 import { useSharedState } from '../../../../shared/Provider';
 import Table, { SortingOrder } from '../../../Table';
+import { NablaFootnote } from '../../common/NablaFootnote';
 import { SwapPoolModals } from './SwapPoolModals';
 import { columnsWithMyAmount, columnsWithoutMyAmount, SwapPoolColumn } from './columns';
 
@@ -24,6 +25,7 @@ const SwapPools = (): JSX.Element | null => {
         search
         sortBy={{ name: SortingOrder.ASC }}
       />
+      <NablaFootnote />
     </ModalProvider>
   );
 };

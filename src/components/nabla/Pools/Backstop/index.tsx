@@ -5,6 +5,7 @@ import { useNablaInstance } from '../../../../hooks/nabla/useNablaInstance';
 import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
 import { Erc20Balance } from '../../common/Erc20Balance';
 import { BackstopPoolModals, LiquidityModalProps } from './BackstopPoolModals';
+import { NablaFootnote } from '../../common/NablaFootnote';
 
 const BackstopPoolsBody = (): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
@@ -16,7 +17,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
 
   return (
     <>
-      <div className="text-[initial] dark:text-neutral-200 center gap-4 w-full">
+      <div className="text-[initial] dark:text-neutral-200 center w-full">
         <Card bordered className="w-full max-w-xl bg-base-200">
           <div className="card-body p-4 md:p-6">
             <div className="flex items-center justify-between gap-2 text-3xl">
@@ -59,6 +60,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
             </div>
           </div>
         </Card>
+        <NablaFootnote />
       </div>
       <BackstopPoolModals />
     </>

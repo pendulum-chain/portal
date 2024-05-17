@@ -9,6 +9,7 @@ import { PoolSelectorModal } from '../common/PoolSelectorModal';
 import Validation from '../../Form/Validation';
 import { TransactionSettingsDropdown } from '../common/TransactionSettingsDropdown';
 import { SwapProgress } from '../common/SwapProgress';
+import { NablaFootnote } from '../common/NablaFootnote';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -100,6 +101,7 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
           </form>
         </FormProvider>
       </Card>
+      <NablaFootnote />
       <PoolSelectorModal
         swapPools={swapPools}
         open={!!modalType}
