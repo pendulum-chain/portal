@@ -1,5 +1,6 @@
 import { Button, Modal } from 'react-daisyui';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
+import { Dialog } from '../collators/dialogs/Dialog';
 
 interface DialogProps {
   visible: boolean;
@@ -24,15 +25,5 @@ export const GasSuccessDialog: React.FC<DialogProps> = (props) => {
     </Button>
   );
 
-  return (
-    <Modal className="bg-base-200" open={visible}>
-      <Modal.Header className={`text-2xl claim-title flex mb-5 justify-end`}>
-        <button onClick={onClose} className="btn btn-ghost">
-          x
-        </button>
-      </Modal.Header>
-      <Modal.Body>{content}</Modal.Body>
-      <Modal.Actions className="justify-center mt-4">{actions}</Modal.Actions>
-    </Modal>
-  );
+  return <Dialog visible={visible} onClose={onClose} content={content} actions={actions} />;
 };
