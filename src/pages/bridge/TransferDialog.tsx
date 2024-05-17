@@ -2,13 +2,12 @@ import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
-import { Divider, Link, Modal } from 'react-daisyui';
+import { Divider, Link, Collapse } from 'react-daisyui';
 import { useGlobalState } from '../../GlobalStateProvider';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
-import { CloseButton } from '../../components/CloseButton';
 import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
 import {
@@ -89,17 +88,17 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
         <h1 className="text-2xl transfer-dialog-contrast-text font-semibold mb-1">{title}</h1>
         {content}
         <Divider className="mx-5 mb-2 mt-1" />
-        <div
+        <Collapse
           id="details"
           tabIndex={0}
           onClick={toggle}
-          className={`collapse collapse-arrow rounded-lg bg-black bg-opacity-3 transfer-dialog-text flex flex-col w-11/12 ${collapseVisibility}`}
+          className={`collapse-arrow rounded-lg bg-black bg-opacity-3 transfer-dialog-text flex flex-col w-11/12 ${collapseVisibility}`}
         >
-          <div className="collapse-title flex flex-row justify-between">
+          <Collapse.Title className="flex flex-row justify-between">
             <div className="text-sm">Bridge fee</div>
             <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
-          </div>
-          <div className="collapse-content space-y-4">
+          </Collapse.Title>
+          <Collapse.Content className="space-y-4">
             <div className="flex flex-row justify-between">
               <div className="text-sm">Destination Address (Stellar)</div>
               <CopyableAddress
@@ -140,8 +139,8 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
                 />
               </div>
             )}
-          </div>
-        </div>
+          </Collapse.Content>
+        </Collapse>
       </div>
       {footer}
     </>
