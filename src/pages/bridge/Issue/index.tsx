@@ -71,7 +71,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'), tokenSymbol)),
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
