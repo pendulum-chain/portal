@@ -77,8 +77,8 @@ export const links: Links = ({ tenantName }) => [
         title: 'Bridge',
       },
       {
-        link: './spacewalk/transfers',
-        title: 'Transfers',
+        link: './spacewalk/transactions',
+        title: 'Transactions',
       },
     ],
   },
