@@ -2,6 +2,7 @@ import { H256 } from '@polkadot/types/interfaces';
 import type { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesVaultId } from '@polkadot/types/lookup';
 import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { Compact, u128 } from '@polkadot/types-codec';
 
 export interface RichIssueRequest {
   id: H256;
@@ -46,7 +47,10 @@ export function useIssuePallet() {
           return undefined;
         }
 
-        return api.tx.issue?.requestIssue(amount, vaultId);
+        const integerAmount = parseFloat(amount).toFixed(0);
+        const compactAmount: Compact<u128> =  api.createType('Compact<u128>', integerAmount);
+
+        return api.tx.issue?.requestIssue(compactAmount, vaultId);
       },
     };
   }, [api]);
