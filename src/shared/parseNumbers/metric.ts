@@ -31,7 +31,7 @@ export const decimalToNative = (value: BigNumber | number | string, decimals: nu
   return bigIntValue.times(multiplier).round(0);
 };
 
-export const decimalToRaw = (value: BigNumber | number | string, decimals: number) => {
+export const decimalToRaw = (value: BigNumber | string, decimals: number) => {
   return decimalToNative(value, decimals);
 };
 
