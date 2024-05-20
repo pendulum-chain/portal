@@ -43,7 +43,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
               </span>
               {showMaxTokensFor && (
                 <span className="content-end">
-                  {nativeToDecimal(vault[showMaxTokensFor]?.toString() || '0').toFixed(2)}{' '}
+                  {nativeToDecimal((vault[showMaxTokensFor] as unknown as { amount: string }).amount || '0').toFixed(2)}
                   {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
                 </span>
               )}
