@@ -12,6 +12,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [],
     esbuildOptions: {
+      target: 'esnext',
       // Node.js global to browser globalThis
       define: {
         global: 'globalThis',
@@ -22,5 +23,8 @@ export default defineConfig({
         polyfillNode({}),
       ],
     },
+  },
+  build: {
+    target: ['esnext'],
   },
 });

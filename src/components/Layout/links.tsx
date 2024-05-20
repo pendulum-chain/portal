@@ -102,7 +102,7 @@ export const links: Links = ({ tenantName }) => [
   },
   {
     link: '/nabla',
-    title: 'Nabla',
+    title: 'Forex AMM',
     hidden:
       (nablaConfig.environment && !nablaConfig.environment.includes(config.env)) ||
       (tenantName && !nablaConfig.tenants.includes(tenantName)),

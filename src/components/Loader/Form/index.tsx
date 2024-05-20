@@ -36,5 +36,4 @@ const FormLoader = ({
   );
 };
 
-export const defaultPageLoader = <FormLoader />;
 export default FormLoader;
