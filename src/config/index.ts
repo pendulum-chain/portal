@@ -53,11 +53,10 @@ export const config = {
       deadline: 30,
     },
   },
-  backstop: {
+  pools: {
     defaults: {
       slippage: 0.1,
     },
-    securityFee: 0.01, // 1%
   },
   transaction: {
     settings: {

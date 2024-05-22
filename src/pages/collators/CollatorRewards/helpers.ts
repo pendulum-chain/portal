@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
 import { ShowToast, ToastMessage } from '../../../shared/showToast';
@@ -65,9 +65,9 @@ export const handleTransactionStatus = (
   events: EventRecord[],
   api: ApiPromise,
   showToast: ShowToast,
-  setSubmissionPending: StateUpdater<boolean>,
+  setSubmissionPending: Dispatch<StateUpdater<boolean>>,
   refreshRewards: () => void,
-  setUpdateEnabled: StateUpdater<boolean>,
+  setUpdateEnabled: Dispatch<StateUpdater<boolean>>,
 ) => {
   const errors = getErrors(events, api);
   if (status.isInBlock) {

@@ -1,4 +1,4 @@
-import { StateUpdater, useEffect, useState } from 'preact/hooks';
+import { StateUpdater, Dispatch, useEffect, useState } from 'preact/hooks';
 import { isEmpty } from 'lodash';
 import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
@@ -25,8 +25,8 @@ export interface BuyoutSettings {
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
-    setSubmissionPending: StateUpdater<boolean>,
-    setConfirmationDialogVisible: StateUpdater<boolean>,
+    setSubmissionPending: Dispatch<StateUpdater<boolean>>,
+    setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
     isExchangeAmount: boolean,
   ) => void;
 }
@@ -119,8 +119,8 @@ export const useBuyout = (): BuyoutSettings => {
   async function handleBuyout(
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: number,
-    setSubmissionPending: StateUpdater<boolean>,
-    setConfirmationDialogVisible: StateUpdater<boolean>,
+    setSubmissionPending: Dispatch<StateUpdater<boolean>>,
+    setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
     isExchangeAmount: boolean,
   ) {
     if (!api || !walletAccount) {
