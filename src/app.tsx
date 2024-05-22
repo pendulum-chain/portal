@@ -24,7 +24,6 @@ const TransfersPage = <SuspenseLoad importFn={() => import('./pages/bridge/Trans
 const BackstopPoolsPage = (
   <SuspenseLoad importFn={() => import('./pages/nabla/backstop-pools')} fallback={defaultPageLoader} />
 );
-const DevPage = <SuspenseLoad importFn={() => import('./pages/nabla/dev')} fallback={defaultPageLoader} />;
 const Bridge = <SuspenseLoad importFn={() => import('./pages/bridge')} fallback={defaultPageLoader} />;
 const Staking = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
 
@@ -51,7 +50,6 @@ export function App() {
             <Route path="swap" element={SwapPage} />
             <Route path="swap-pools" element={SwapPoolsPage} />
             <Route path="backstop-pools" element={BackstopPoolsPage} />
-            {!config.isProd && <Route path="dev" element={DevPage} />}
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="staking" element={Staking} />

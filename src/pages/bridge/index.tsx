@@ -1,5 +1,5 @@
 import React from 'preact/compat';
-import { StateUpdater, useMemo, useState } from 'preact/hooks';
+import { StateUpdater, Dispatch, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
 import AmplitudeLogo from '../../assets/AmplitudeLogo';
@@ -21,7 +21,7 @@ enum BridgeTabs {
 
 interface BridgeContextValue {
   selectedAsset?: Asset;
-  setSelectedAsset: StateUpdater<Asset | undefined>;
+  setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
 }
 
 export const BridgeContext = React.createContext<BridgeContextValue>({ setSelectedAsset: () => undefined });

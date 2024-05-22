@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { JSX, useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Signer } from '@polkadot/types/types';
 import { ApiPromise } from '@polkadot/api';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { BTreeMap } from '@polkadot/types-codec';
 
 import { useGlobalState } from '../../../GlobalStateProvider';
@@ -82,7 +82,7 @@ export function CollatorRewards() {
     unstakingDataJSON: UnstakingDataType,
     api: ApiPromise,
     tokenSymbol: string,
-    setTokensTipText: StateUpdater<string>,
+    setTokensTipText: Dispatch<StateUpdater<string>>,
   ) {
     const tooltipText = await generateUnstakingTooltipText(unstakingDataJSON, api, tokenSymbol);
     setTokensTipText(tooltipText);
@@ -93,7 +93,7 @@ export function CollatorRewards() {
     setUserAvailableBalanceForUnlock(tokensReadyToUnlock);
   }
 
-  function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: StateUpdater<string>) {
+  function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: Dispatch<StateUpdater<string>>) {
     const unstakingParts: number[] = [];
     unstakingData.forEach((n) => unstakingParts.push(Number(n.toString())));
     const allUnstakingTokens = unstakingParts.reduce((a, b) => a + b, 0);

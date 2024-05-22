@@ -2,11 +2,13 @@
 import { ComponentChildren } from 'preact';
 import { createContext, useCallback, useContext, useState } from 'preact/compat';
 
+export type ModalTypes = 'AddLiquidity' | 'WithdrawLiquidity' | 'Redeem';
+
 export type ModalState<T extends Dict<any> = Dict<any>> = {
-  type?: number;
+  type?: ModalTypes;
   props?: T;
 };
-export type ToggleModal<T extends Dict<any> = Dict<any>> = (type?: number | ModalState<T>) => void;
+export type ToggleModal<T extends Dict<any> = Dict<any>> = (type?: ModalTypes | ModalState<T>) => void;
 
 const ModalStateContext = createContext<ModalState | undefined>(undefined);
 const ModalToggleContext = createContext<ToggleModal | undefined>(undefined);
@@ -25,9 +27,12 @@ export interface ModalProviderProps {
 const ModalProvider = ({ children }: ModalProviderProps): JSX.Element | null => {
   const [state, setModalState] = useState<ModalState>({});
 
-  const toggleModal: ToggleModal = useCallback((type = {}) => {
-    if (typeof type === 'number') setModalState({ type });
-    else setModalState(type);
+  const toggleModal: ToggleModal = useCallback((type) => {
+    if (type === undefined) {
+      setModalState({});
+    } else if (typeof type === 'string') {
+      setModalState({ type });
+    } else setModalState(type);
   }, []);
 
   return (

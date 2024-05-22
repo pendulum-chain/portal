@@ -1,70 +1,128 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useQueryClient } from '@tanstack/react-query';
+import * as Yup from 'yup';
 import { useCallback } from 'preact/compat';
 import { useForm, useWatch } from 'react-hook-form';
-import { cacheKeys } from '../../../../../constants/cache';
-import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
-import { subtractPercentage } from '../../../../../helpers/calc';
-import { useGetAppDataByTenant } from '../../../../../hooks/useGetAppDataByTenant';
-import { useModalToggle } from '../../../../../services/modal';
-import { decimalToNative, FixedU128Decimals } from '../../../../../shared/parseNumbers/metric';
-import { useContractBalance } from '../../../../../shared/useContractBalance';
-import { useContractWrite } from '../../../../../shared/useContractWrite';
-import schema from './schema';
-import { WithdrawLiquidityValues } from './types';
 
-export const useWithdrawLiquidity = (poolAddress: string, tokenAddress: string) => {
+import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';
+import { subtractBigDecimalPercentage } from '../../../../../helpers/calc';
+import { useModalToggle } from '../../../../../services/modal';
+import { decimalToRaw } from '../../../../../shared/parseNumbers/metric';
+import { erc20WrapperAbi } from '../../../../../contracts/nabla/ERC20Wrapper';
+import { useErc20ContractBalance } from '../../../../../hooks/nabla/useErc20ContractBalance';
+import { useContractWrite } from '../../../../../hooks/nabla/useContractWrite';
+import { useQueryClient } from '@tanstack/react-query';
+import { cacheKeys } from '../../../../../constants/cache';
+import { useQuote } from '../../../../../hooks/nabla/useQuote';
+import { MessageCallErrorResult } from '../../../../../hooks/nabla/useContractRead';
+import { refetchDelayed } from '../../../../../helpers/query';
+
+interface WithdrawLiquidityValues {
+  amount: string;
+}
+
+const schema = Yup.object<WithdrawLiquidityValues>().shape({
+  amount: Yup.string().required(),
+});
+
+function parseQuoteError(error: MessageCallErrorResult): string {
+  switch (error.type) {
+    case 'error':
+      return 'Cannot determine value of shares';
+    case 'panic':
+      return error.errorCode === 0x11
+        ? 'The input amount is too large. You cannot directly redeem all LP tokens right now. Try to redeem from the backstop pool instead.'
+        : 'Cannot determine value of shares';
+    case 'reverted':
+      return 'Cannot determine value of shares';
+  }
+}
+
+export const useSwapPoolWithdrawLiquidity = (
+  swapPoolAddress: string,
+  tokenAddress: string,
+  poolTokenDecimals: number,
+  lpTokenDecimals: number,
+) => {
   const queryClient = useQueryClient();
-  const { indexerUrl } = useGetAppDataByTenant('nabla').data || {};
   const toggle = useModalToggle();
 
-  const balanceQuery = useContractBalance({ contractAddress: tokenAddress, decimals: FixedU128Decimals });
-  const depositQuery = useContractBalance({ contractAddress: poolAddress, decimals: FixedU128Decimals });
+  const balanceQuery = useErc20ContractBalance(erc20WrapperAbi, {
+    contractAddress: tokenAddress,
+    decimals: poolTokenDecimals,
+  });
+
+  const depositQuery = useErc20ContractBalance(swapPoolAbi, {
+    contractAddress: swapPoolAddress,
+    decimals: lpTokenDecimals,
+  });
 
   const form = useForm<WithdrawLiquidityValues>({
     resolver: yupResolver(schema),
     defaultValues: {
-      amount: 0,
+      amount: undefined,
     },
   });
-  const { handleSubmit, reset } = form;
 
   const mutation = useContractWrite({
     abi: swapPoolAbi,
-    address: poolAddress,
+    address: swapPoolAddress,
     method: 'withdraw',
-    onError: () => {
-      // ? log error - alert not needed as the transaction modal displays the error
-    },
-    onSuccess: () => {
-      reset();
-      balanceQuery.refetch();
-      depositQuery.refetch();
-      queryClient.refetchQueries([cacheKeys.swapPools, indexerUrl]);
+    mutateOptions: {
+      onError: () => {
+        // ? log error - alert not needed as the transaction modal displays the error
+      },
+      onSuccess: () => {
+        form.reset();
+        balanceQuery.refetch();
+        depositQuery.refetch();
+        refetchDelayed(queryClient, [cacheKeys.nablaInstance]);
+      },
     },
   });
-  const { mutate } = mutation;
 
+  const amountString = useWatch({
+    control: form.control,
+    name: 'amount',
+    defaultValue: '0',
+  });
+
+  const withdrawalQuote = useQuote({
+    lpTokenAmountString: amountString,
+    lpTokenDecimals,
+    maximumLpTokenAmount: depositQuery.data?.preciseBigDecimal,
+    poolTokenDecimals,
+    contractAddress: swapPoolAddress,
+    contractAbi: swapPoolAbi,
+    messageName: 'quoteWithdraw',
+    primaryCacheKey: cacheKeys.quoteSwapPoolWithdraw,
+    constructArgs: useCallback((amountIn: string | undefined) => (amountIn !== undefined ? [amountIn] : []), []),
+    parseError: parseQuoteError,
+    form,
+  });
+
+  // TODO also make slippage here configurable
+  const { mutate } = mutation;
   const onSubmit = useCallback(
-    () =>
-      handleSubmit((variables) => {
-        if (!variables.amount) return;
-        return mutate([
-          decimalToNative(variables.amount, FixedU128Decimals).toString(),
-          decimalToNative(subtractPercentage(variables.amount, 0.5), FixedU128Decimals).toString(),
-        ]);
-      }),
-    [handleSubmit, mutate],
+    (variables: WithdrawLiquidityValues) => {
+      if (!variables.amount || withdrawalQuote.data === undefined) return;
+      const minimumAmount = subtractBigDecimalPercentage(withdrawalQuote.data.preciseBigDecimal, 0.5);
+
+      mutate([
+        decimalToRaw(variables.amount, lpTokenDecimals).round(0, 0).toString(),
+        decimalToRaw(minimumAmount, poolTokenDecimals).round(0, 0).toString(),
+      ]);
+    },
+    [withdrawalQuote.data, mutate, lpTokenDecimals, poolTokenDecimals],
   );
 
-  const amount =
-    Number(
-      useWatch({
-        control: form.control,
-        name: 'amount',
-        defaultValue: 0,
-      }),
-    ) || 0;
-
-  return { form, amount, mutation, onSubmit, toggle, balanceQuery, depositQuery };
+  return {
+    form,
+    amountString,
+    mutation,
+    onSubmit: form.handleSubmit(onSubmit),
+    toggle,
+    balanceQuery,
+    depositQuery,
+    withdrawalQuote,
+  };
 };

@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { ColumnDef } from '@tanstack/table-core';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyableAddress } from '../../components/PublicKey';
@@ -109,8 +109,8 @@ export const actionsColumn = ({
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidate: StateUpdater<ParachainStakingCandidate | undefined>;
-  setUnstaking: StateUpdater<boolean>;
+  setSelectedCandidate: Dispatch<StateUpdater<ParachainStakingCandidate | undefined>>;
+  setUnstaking: Dispatch<StateUpdater<boolean>>;
 }): ColumnDef<TCollator> => ({
   header: '',
   enableSorting: false,
