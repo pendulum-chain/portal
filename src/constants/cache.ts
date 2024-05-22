@@ -1,18 +1,19 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 
 export const cacheKeys = {
-  assets: 'assets',
-  backstopPools: 'backstopPools',
-  swapData: 'swapData',
-  swapPools: 'swapPools',
+  accountBalance: 'accountBalance',
   tokens: 'tokens',
   tokenAllowance: 'tokenAllowance',
   balance: 'balance',
   walletBalance: 'walletBalance',
-  walletBalances: 'walletBalances',
   tokenOutAmount: 'tokenOutAmount',
+  quoteSwapPoolRedeem: 'quoteSwapPoolRedeem',
+  quoteSwapPoolWithdraw: 'quoteSwapPoolWithdraw',
+  quoteBackstopPoolWithdraw: 'quoteBackstopPoolWithdraw',
+  quoteBackstopPoolDrain: 'quoteBackstopPoolDrain',
   sharesTargetWorth: 'sharesTargetWorth',
   tokenPrice: 'tokenPrice',
+  nablaInstance: 'nablaInstance',
 };
 
 export type QueryOptions = Partial<
