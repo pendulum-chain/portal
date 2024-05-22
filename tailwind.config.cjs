@@ -1,6 +1,5 @@
 import { colors } from './src/constants/colors';
 
-// eslint-disable-next-line no-undef
 module.exports = {
   darkMode: 'class',
   content: [
@@ -8,7 +7,6 @@ module.exports = {
     'node_modules/daisyui/dist/**/*.js',
     'node_modules/react-daisyui/dist/**/*.js',
   ],
-  // eslint-disable-next-line no-undef
   plugins: [require('daisyui')],
   themes: ['pendulum', 'amplitude'],
   theme: {
