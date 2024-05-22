@@ -211,7 +211,7 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!!formState.errors.amount}
+              disabled={!!formState.errors.amount || submissionPending}
             >
               Bridge
             </Button>
