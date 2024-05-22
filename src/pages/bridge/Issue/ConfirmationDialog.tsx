@@ -1,15 +1,15 @@
-import { VoidFn } from '@polkadot/api-base/types';
-import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useMemo } from 'preact/compat';
 import { Button, Divider } from 'react-daisyui';
+
 import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
+import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
-import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
+import { generateSEP0007URIScheme } from '../../../helpers/stellar/sep0007';
+import { StellarUriScheme } from './StellarURIScheme';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
@@ -20,10 +20,6 @@ interface ConfirmationDialogProps {
 
 export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element {
   const { issueRequest, visible, onClose, onConfirm } = props;
-
-  const { subscribeActiveBlockNumber } = useSecurityPallet();
-  const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [_, setRemainingDurationString] = useState<string>('');
 
   const totalAmount = useMemo(
     () =>
@@ -36,12 +32,12 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   const asset = useMemo(() => {
     const currency = issueRequest?.request.asset;
     return currency && convertCurrencyToStellarAsset(currency);
-  }, [issueRequest?.request.asset]);
+  }, [issueRequest]);
 
   const destination = useMemo(() => {
     const rawDestinationAddress = issueRequest?.request.stellarAddress;
     return rawDestinationAddress ? convertRawHexKeyToPublicKey(rawDestinationAddress.toHex()).publicKey() : '';
-  }, [issueRequest?.request.stellarAddress]);
+  }, [issueRequest]);
 
   const expectedStellarMemo = useMemo(() => {
     if (!issueRequest) {
@@ -51,31 +47,17 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
     return deriveShortenedRequestId(issueRequest.id);
   }, [issueRequest]);
 
-  useEffect(() => {
-    let unsub: VoidFn = () => undefined;
-    subscribeActiveBlockNumber((blockNumber) => {
-      setActiveBlockNumber(blockNumber);
-    }).then((u) => (unsub = u));
-
-    return unsub;
-  }, [subscribeActiveBlockNumber]);
-
-  const deadline = useMemo(() => {
-    const openTime = issueRequest?.request.opentime.toNumber() || 0;
-    const period = issueRequest?.request.period.toNumber() || 0;
-    const end = calculateDeadline(activeBlockNumber, openTime, period, 12);
-
-    return end;
-  }, [activeBlockNumber, issueRequest]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newDeadlineString = deadline.diff(DateTime.now()).toFormat('hh:mm:ss');
-      setRemainingDurationString(newDeadlineString);
-    });
-
-    return () => clearInterval(interval);
-  }, [deadline]);
+  const transactionURIScheme = useMemo(
+    () =>
+      generateSEP0007URIScheme({
+        vaultStellarAccount: destination,
+        issueAmount: totalAmount,
+        assetCode: asset?.getCode().toString() || '',
+        assetIssuer: asset?.getIssuer() || '',
+        issueRequestMemo: expectedStellarMemo,
+      }),
+    [asset, destination, expectedStellarMemo, totalAmount],
+  );
 
   const content = useMemo(
     () => (
@@ -95,8 +77,12 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
           <CopyableAddress variant="short" publicKey={destination} />
+
+          <StellarUriScheme transactionURIScheme={transactionURIScheme} />
+
           <div className="mt-4">Within {issueRequest && <TransferCountdown request={issueRequest?.request} />}</div>
         </div>
+
         <Divider />
         <div>
           {asset?.getAssetType() !== 'native' && (
@@ -122,7 +108,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         </ul>
       </>
     ),
-    [asset, destination, expectedStellarMemo, issueRequest, totalAmount],
+    [asset, destination, expectedStellarMemo, issueRequest, totalAmount, transactionURIScheme],
   );
 
   const actions = useMemo(
