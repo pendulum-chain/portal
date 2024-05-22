@@ -247,6 +247,10 @@ input[type='number'] {
   gap: 0;
 }
 
+.btn:has(.loading) {
+  gap: 0.5rem;
+}
+
 .input-ghost:focus {
   color: inherit;
 }
@@ -317,7 +321,7 @@ w3m-modal {
   white-space: nowrap;
 }
 
-/* These classes are bugged in the newest version of DaisyUI, that's why they are overrided */
+/*  These classes are flawed in the version 4.11.1 of DaisyUI, so they are overwritten */
 
 .table :where(th, td) {
   white-space: nowrap;
@@ -348,6 +352,20 @@ w3m-modal {
 .collapse-arrow > .collapse-title:after {
   top: 50%;
 }
+
+.collapse {
+  border-radius: unset;
+}
+
+.modal-box {
+  scrollbar-width: none;
+}
+
+:root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
+  scrollbar-gutter: unset;
+}
+
+/* End of overwriting */
 
 @layer components {
   .badge-secondary-content {
