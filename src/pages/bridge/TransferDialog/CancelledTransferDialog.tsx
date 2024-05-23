@@ -4,7 +4,7 @@ import { CopyableAddress } from '../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { toTitle } from '../../../helpers/string';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
-import { TransferType } from '../TransfersColumns';
+import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 
 export function CancelledTransferDialog(props: TransferDialogProps) {

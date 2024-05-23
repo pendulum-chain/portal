@@ -1,6 +1,7 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
+
 import { useGlobalState } from '../../GlobalStateProvider';
 import Table, { SortingOrder } from '../../components/Table';
 import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
@@ -8,13 +9,14 @@ import { useIssuePallet } from '../../hooks/spacewalk/useIssuePallet';
 import { useRedeemPallet } from '../../hooks/spacewalk/useRedeemPallet';
 import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
 import { nativeToDecimal } from '../../shared/parseNumbers/metric';
+
 import {
-  CancelledTransferDialog,
-  CompletedTransferDialog,
-  FailedTransferDialog,
-  PendingTransferDialog,
-  ReimbursedTransferDialog,
-} from './TransferDialog';
+  CancelledTransactionDialog,
+  CompletedTransactionDialog,
+  FailedTransactionDialog,
+  PendingTransactionDialog,
+  ReimbursedTransactionDialog,
+} from './TransactionDialog';
 import {
   TTransfer,
   TransferType,
@@ -24,10 +26,10 @@ import {
   transactionIdColumn,
   typeColumnCreator,
   updatedColumn,
-} from './TransfersColumns';
+} from './TransactionsColumns';
 import './styles.css';
 
-function Transfers(): JSX.Element {
+function Transactions(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
   const { subscribeActiveBlockNumber } = useSecurityPallet();
@@ -111,51 +113,31 @@ function Transfers(): JSX.Element {
     return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn];
   }, [tenantName]);
 
+
+  const getDialog = (DialogComponent: React.ComponentType<{ transfer: TTransfer; visible: boolean; onClose: () => void }>) =>
+    currentTransfer
+      ? <DialogComponent transfer={currentTransfer} visible onClose={() => setCurrentTransfer(undefined)} />
+      : <></>;
+
+  const dialogs: Record<string, JSX.Element> = {
+    Pending: getDialog(PendingTransactionDialog),
+    Completed: getDialog(CompletedTransactionDialog),
+    Reimbursed: getDialog(ReimbursedTransactionDialog),
+    Cancelled: getDialog(CancelledTransactionDialog),
+    Failed: getDialog(FailedTransactionDialog),
+  };
+
   return (
     <div className="overflow-x-auto mt-10">
-      {currentTransfer && (
-        <PendingTransferDialog
-          transfer={currentTransfer}
-          visible={currentTransfer.status === 'Pending'}
-          onClose={() => setCurrentTransfer(undefined)}
-        />
-      )}
-      {currentTransfer && (
-        <CompletedTransferDialog
-          transfer={currentTransfer}
-          visible={currentTransfer.status === 'Completed'}
-          onClose={() => setCurrentTransfer(undefined)}
-        />
-      )}
-      {currentTransfer && (
-        <ReimbursedTransferDialog
-          transfer={currentTransfer}
-          visible={currentTransfer.status === 'Reimbursed'}
-          onClose={() => setCurrentTransfer(undefined)}
-        />
-      )}
-      {currentTransfer && (
-        <CancelledTransferDialog
-          transfer={currentTransfer}
-          visible={currentTransfer.status === 'Cancelled'}
-          onClose={() => setCurrentTransfer(undefined)}
-        />
-      )}
-      {currentTransfer && (
-        <FailedTransferDialog
-          transfer={currentTransfer}
-          visible={currentTransfer.status === 'Failed'}
-          onClose={() => setCurrentTransfer(undefined)}
-        />
-      )}
+      {currentTransfer && dialogs[currentTransfer.status]}
       <Table
         data={data}
         columns={columns}
         isLoading={false}
         search={false}
         pageSize={8}
-        rowCallback={(row) => setCurrentTransfer(row.original)}
-        title="Transfers"
+        rowCallback={row => setCurrentTransfer(row.original)}
+        title="Transactions"
         sortBy={{ updated: SortingOrder.DESC }}
         oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
         evenRowsClassname="bg-base-200 border-b-base-300 table-border"
@@ -163,4 +145,4 @@ function Transfers(): JSX.Element {
     </div>
   );
 }
-export default Transfers;
+export default Transactions;

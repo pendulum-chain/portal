@@ -5,7 +5,7 @@ import WarningDialogIcon from '../../../assets/dialog-status-warning';
 import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
 import { toTitle } from '../../../helpers/string';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
-import { TransferType } from '../TransfersColumns';
+import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 
 export function FailedTransferDialog(props: TransferDialogProps) {

@@ -186,7 +186,7 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
         onConfirm={() => {
           setConfirmationDialogVisible(false);
-          navigateTo(`/${tenantName}/spacewalk/transfers`);
+          navigateTo(`/${tenantName}/spacewalk/transactions`);
         }}
       />
       <div className="w-full">

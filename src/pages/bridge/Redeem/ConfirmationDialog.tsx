@@ -56,7 +56,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
       <Button
         color="primary"
         onClick={() => {
-          navigateTo(`/${tenantName}/spacewalk/transfers`);
+          navigateTo(`/${tenantName}/spacewalk/transactions`);
         }}
       >
         View Progress

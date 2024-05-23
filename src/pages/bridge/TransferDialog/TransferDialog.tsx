@@ -10,7 +10,7 @@ import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { toTitle } from '../../../helpers/string';
 import { useVaultRegistryPallet } from '../../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
-import { TTransfer } from '../TransfersColumns';
+import { TTransfer } from '../TransactionsColumns';
 import { Dialog } from '../../collators/dialogs/Dialog';
 
 export interface BaseTransferDialogProps {
