@@ -11,7 +11,7 @@ import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
 import { toTitle } from '../../../helpers/string';
 import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
-import { TransferType } from '../TransfersColumns';
+import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 
 export function PendingTransferDialog(props: TransferDialogProps) {
