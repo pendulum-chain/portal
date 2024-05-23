@@ -19,7 +19,6 @@ export function isU128(value: unknown): boolean {
     }
 
     try {
-      // Convert the value to a Big instance
       const bigValue = new Big(value);
 
       // Check if the value is negative or decimal
