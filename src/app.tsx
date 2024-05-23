@@ -20,7 +20,7 @@ const NablaPage = <SuspenseLoad importFn={() => import('./pages/nabla')} fallbac
 const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
 const SwapPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap')} fallback={defaultPageLoader} />;
 const SwapPoolsPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap-pools')} fallback={defaultPageLoader} />;
-const TransfersPage = <SuspenseLoad importFn={() => import('./pages/bridge/Transfers')} fallback={defaultPageLoader} />;
+const TransactionsPage = <SuspenseLoad importFn={() => import('./pages/bridge/Transactions')} fallback={defaultPageLoader} />;
 const BackstopPoolsPage = (
   <SuspenseLoad importFn={() => import('./pages/nabla/backstop-pools')} fallback={defaultPageLoader} />
 );
@@ -43,7 +43,7 @@ export function App() {
           <Route path="stats" element={StatsPage} />
           <Route path="spacewalk">
             <Route path="bridge" element={Bridge} />
-            <Route path="transfers" element={TransfersPage} />
+            <Route path="transactions" element={TransactionsPage} />
           </Route>
           <Route path="nabla" Component={() => <AppsProvider app="nabla" />}>
             <Route path="" element={NablaPage} />

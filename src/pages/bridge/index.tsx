@@ -29,8 +29,7 @@ export const BridgeContext = React.createContext<BridgeContextValue>({ setSelect
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const { chain } = useNodeInfoState().state;
-  const nativeCurrency = chain === 'Amplitude' ? 'AMPE' : 'PEN';
+  const { chain, tokenSymbol } = useNodeInfoState().state;
   const wrappedCurrencySuffix = SpacewalkConstants.WrappedCurrencySuffix;
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
 
@@ -38,11 +37,15 @@ function Bridge(): JSX.Element | null {
     if (!chain) return;
     switch (tabValue) {
       case BridgeTabs.Issue:
-        return <Issue network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
+        return (
+          <Issue network={chain} nativeCurrency={tokenSymbol || ''} wrappedCurrencySuffix={wrappedCurrencySuffix} />
+        );
       case BridgeTabs.Redeem:
-        return <Redeem network={chain} nativeCurrency={nativeCurrency} wrappedCurrencySuffix={wrappedCurrencySuffix} />;
+        return (
+          <Redeem network={chain} nativeCurrency={tokenSymbol || ''} wrappedCurrencySuffix={wrappedCurrencySuffix} />
+        );
     }
-  }, [chain, nativeCurrency, tabValue, wrappedCurrencySuffix]);
+  }, [chain, tokenSymbol, tabValue, wrappedCurrencySuffix]);
 
   const getTabProps = (index: number) => ({
     active: tabValue === index,

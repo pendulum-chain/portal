@@ -13481,6 +13481,7 @@ __metadata:
     preact: "npm:^10.19.3"
     prettier: "npm:^3.1.1"
     react-daisyui: "npm:^5.0.0"
+    qrcode.react: "npm:^3.1.0"
     react-device-detect: "npm:^2.2.3"
     react-error-overlay: "npm:6.0.9"
     react-hook-form: "npm:^7.43.2"
@@ -14342,6 +14343,15 @@ __metadata:
   bin:
     qrcode-terminal: ./bin/qrcode-terminal.js
   checksum: 1d8996a743d6c95e22056bd45fe958c306213adc97d7ef8cf1e03bc1aeeb6f27180a747ec3d761141921351eb1e3ca688f7b673ab54cdae9fa358dffaa49563c
+  languageName: node
+  linkType: hard
+
+"qrcode.react@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "qrcode.react@npm:3.1.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: af183e99ecaad90f7ef14bd027510ae7866935693c53ccf81b172438abbbf7f29c283c5dc7c2141b420d2413960b8f8dca8d9949646475afe669ed638e8fb722
   languageName: node
   linkType: hard
 

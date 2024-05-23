@@ -7,6 +7,7 @@ interface InputFieldProps {
   additionalStyle?: string;
 }
 
+
 export const InputField = ({ register, readOnly = false, additionalStyle }: InputFieldProps) => (
   <div className="w-full flex justify-between">
     <div className="flex-grow text-4xl text-black font-outfit">
