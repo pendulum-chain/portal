@@ -25,6 +25,8 @@ import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+import { Signer } from '@polkadot/types/types';
+import { isU128 } from '../../../shared/parseNumbers/isU128';
 
 interface IssueProps {
   network: string;
@@ -134,7 +136,7 @@ function Issue(props: IssueProps): JSX.Element {
       setSubmissionPending(true);
 
       requestIssueExtrinsic
-        .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        .signAndSend(walletAccount.address, { signer: walletAccount.signer as Signer }, (result) => {
           const { status, events } = result;
 
           const errors = getErrors(events, api);
@@ -196,7 +198,7 @@ function Issue(props: IssueProps): JSX.Element {
               formControl: {
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
-                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']),
+                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']) || (!isU128(amountNative) ? 'Invalid value' : ''),
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),
@@ -228,7 +230,7 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!isEmpty(formState.errors)}
+              disabled={!isEmpty(formState.errors) || !isU128(amountNative)}
             >
               Bridge
             </Button>

@@ -3,6 +3,8 @@ import type { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesVaultId }
 import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { Compact, u128 } from '@polkadot/types-codec';
+import Big from 'big.js';
+import { isU128 } from '../../shared/parseNumbers/isU128';
 
 export interface RichIssueRequest {
   id: H256;
@@ -47,8 +49,11 @@ export function useIssuePallet() {
           return undefined;
         }
 
-        const integerAmount = parseFloat(amount).toFixed(0);
-        const compactAmount: Compact<u128> =  api.createType('Compact<u128>', integerAmount);
+        const u128Amount = Big(amount)
+
+        if(!isU128(u128Amount)) return;
+
+        const compactAmount: Compact<u128> =  api.createType('Compact<u128>', u128Amount.toString());
 
         return api.tx.issue?.requestIssue(compactAmount, vaultId);
       },
