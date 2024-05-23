@@ -2,13 +2,12 @@ import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
-import { Divider, Link, Modal } from 'react-daisyui';
+import { Divider, Link } from 'react-daisyui';
 import { useGlobalState } from '../../GlobalStateProvider';
 import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
 import PendingDialogIcon from '../../assets/dialog-status-pending';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import WarningDialogIcon from '../../assets/dialog-status-warning';
-import { CloseButton } from '../../components/CloseButton';
 import { CopyableAddress } from '../../components/PublicKey';
 import TransferCountdown from '../../components/TransferCountdown';
 import {
@@ -22,10 +21,10 @@ import { toTitle } from '../../helpers/string';
 import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
 import { useVaultRegistryPallet } from '../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../shared/parseNumbers/metric';
-import { TTransfer, TransferType } from './TransfersColumns';
+import { TTransfer, TransferType } from './TransactionsColumns';
 import { Dialog } from '../collators/dialogs/Dialog';
 
-interface BaseTransferDialogProps {
+interface BaseTransactionDialogProps {
   id: string;
   visible: boolean;
   showMemo?: boolean;
@@ -39,7 +38,7 @@ interface BaseTransferDialogProps {
   onConfirm?: () => void;
 }
 
-function BaseTransferDialog(props: BaseTransferDialogProps) {
+function BaseTransactionDialog(props: BaseTransactionDialogProps) {
   const { id, statusIcon, showMemo, transfer, visible, title, content, footer, actions, onClose, onConfirm } = props;
 
   const { tenantName } = useGlobalState();
@@ -162,13 +161,13 @@ function BaseTransferDialog(props: BaseTransferDialogProps) {
   );
 }
 
-interface TransferDialogProps {
+interface TransactionDialogProps {
   transfer: TTransfer;
   visible: boolean;
   onClose?: () => void;
 }
 
-export function CompletedTransferDialog(props: TransferDialogProps) {
+export function CompletedTransactionDialog(props: TransactionDialogProps) {
   const { transfer, visible, onClose } = props;
   const { tenantName } = useGlobalState();
   let stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
@@ -189,7 +188,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
     </>
   );
   return (
-    <BaseTransferDialog
+    <BaseTransactionDialog
       id="completed-transfer-modal"
       transfer={transfer}
       title="Completed!"
@@ -202,7 +201,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   );
 }
 
-export function CancelledTransferDialog(props: TransferDialogProps) {
+export function CancelledTransactionDialog(props: TransactionDialogProps) {
   const { transfer, visible, onClose } = props;
   const { tenantName } = useGlobalState();
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
@@ -226,7 +225,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
     </>
   );
   return (
-    <BaseTransferDialog
+    <BaseTransactionDialog
       id="completed-transfer-modal"
       transfer={transfer}
       title="Cancelled"
@@ -239,7 +238,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
   );
 }
 
-export function ReimbursedTransferDialog(props: TransferDialogProps) {
+export function ReimbursedTransactionDialog(props: TransactionDialogProps) {
   const { transfer, visible, onClose } = props;
 
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
@@ -260,7 +259,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
     </>
   );
   return (
-    <BaseTransferDialog
+    <BaseTransactionDialog
       id="reimbursed-transfer-modal"
       transfer={transfer}
       title="Reimburse Successful!"
@@ -273,7 +272,7 @@ export function ReimbursedTransferDialog(props: TransferDialogProps) {
   );
 }
 
-export function PendingTransferDialog(props: TransferDialogProps) {
+export function PendingTransactionDialog(props: TransactionDialogProps) {
   const { transfer, visible, onClose } = props;
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
   const destinationStellarAddress = convertRawHexKeyToPublicKey(transfer.original.stellarAddress.toHex()).publicKey();
@@ -350,7 +349,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     </>
   );
   return (
-    <BaseTransferDialog
+    <BaseTransactionDialog
       id="pending-transfer-modal"
       transfer={transfer}
       title={'Pending'}
@@ -364,7 +363,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   );
 }
 
-export function FailedTransferDialog(props: TransferDialogProps) {
+export function FailedTransactionDialog(props: TransactionDialogProps) {
   const { transfer, visible, onClose } = props;
   const { tenantName } = useGlobalState();
   const stellarAsset = convertCurrencyToStellarAsset(transfer.original.asset)?.getCode();
@@ -399,7 +398,7 @@ export function FailedTransferDialog(props: TransferDialogProps) {
     </div>
   );
   return (
-    <BaseTransferDialog
+    <BaseTransactionDialog
       id="completed-transfer-modal"
       transfer={transfer}
       title="Your bridge request to Stellar has Failed"
@@ -413,4 +412,4 @@ export function FailedTransferDialog(props: TransferDialogProps) {
   );
 }
 
-export default BaseTransferDialog;
+export default BaseTransactionDialog;

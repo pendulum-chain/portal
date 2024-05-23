@@ -1,9 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { isEmpty } from 'lodash';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
-import { useForm } from 'react-hook-form';
+import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
@@ -14,13 +16,15 @@ import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIs
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../shared/useAccountBalance';
+import { TenantName } from '../../../models/Tenant';
+import { ToastMessage, showToast } from '../../../shared/showToast';
+
 import { FeeBox } from '../FeeBox';
+import { prioritizeXLMAsset } from '../helpers';
+
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-import { ToastMessage, showToast } from '../../../shared/showToast';
-import { prioritizeXLMAsset } from '../helpers';
-import { TenantName } from '../../../models/Tenant';
 
 interface IssueProps {
   network: string;
@@ -34,6 +38,18 @@ export type IssueFormValues = {
   to: number;
 };
 
+const getFirstErrorMessage = (
+  formState: { errors: FieldErrors<IssueFormValues> },
+  errorKeys: (keyof IssueFormValues)[],
+) => {
+  for (const key of errorKeys) {
+    if (formState.errors[key]?.message) {
+      return formState.errors[key]?.message?.toString();
+    }
+  }
+  return '';
+};
+
 function Issue(props: IssueProps): JSX.Element {
   const { network, wrappedCurrencySuffix, nativeCurrency } = props;
 
@@ -44,7 +60,7 @@ function Issue(props: IssueProps): JSX.Element {
   const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
   const { walletAccount, dAppName, tenantName } = useGlobalState();
-  const { api } = useNodeInfoState().state;
+  const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueGriefingCollateral } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
@@ -53,8 +69,9 @@ function Issue(props: IssueProps): JSX.Element {
 
   const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
 
-  const { handleSubmit, watch, register, formState, setValue } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'))),
+  const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'), tokenSymbol)),
+    mode: 'onChange',
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -158,7 +175,8 @@ function Issue(props: IssueProps): JSX.Element {
 
   useMemo(() => {
     setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
-  }, [amount, issueGriefingCollateral, setValue]);
+    trigger('securityDeposit');
+  }, [amount, issueGriefingCollateral, setValue, trigger]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
@@ -168,7 +186,7 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
         onConfirm={() => {
           setConfirmationDialogVisible(false);
-          navigateTo(`/${tenantName}/spacewalk/transfers`);
+          navigateTo(`/${tenantName}/spacewalk/transactions`);
         }}
       />
       <div className="w-full">
@@ -178,8 +196,7 @@ function Issue(props: IssueProps): JSX.Element {
               formControl: {
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
-                error:
-                  formState.errors.amount?.message?.toString() || formState.errors.securityDeposit?.message?.toString(),
+                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']),
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),
@@ -211,7 +228,7 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!!formState.errors.amount}
+              disabled={!isEmpty(formState.errors)}
             >
               Bridge
             </Button>
