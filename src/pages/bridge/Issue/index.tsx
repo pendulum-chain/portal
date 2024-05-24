@@ -86,7 +86,7 @@ function Issue(props: IssueProps): JSX.Element {
     () => (
       <ul className="list-disc pl-4">
         <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
-        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem. </li>
+        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem.</li>
         <li>
           Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
           operator program, more
@@ -218,9 +218,10 @@ function Issue(props: IssueProps): JSX.Element {
             amountNative={amountNative}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
-            network={network}
-            wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
+            network={network}
+            showSecurityDeposit
+            wrappedCurrencySuffix={wrappedCurrencySuffix}
           />
           {walletAccount ? (
             <Button
