@@ -12,7 +12,7 @@ const isValidBigSource = (value: unknown): value is BigSource => {
     }
   };
 
-export function isU128(value: unknown): boolean {
+export function isU128Compatible(value: unknown): boolean {
 
     if (!isValidBigSource(value)) {
         return false;

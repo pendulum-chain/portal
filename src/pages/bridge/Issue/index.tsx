@@ -26,7 +26,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { Signer } from '@polkadot/types/types';
-import { isU128 } from '../../../shared/parseNumbers/isU128';
+import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
 
 interface IssueProps {
   network: string;
@@ -198,7 +198,7 @@ function Issue(props: IssueProps): JSX.Element {
               formControl: {
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
-                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']) || (!isU128(amountNative) ? 'Invalid value' : ''),
+                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']) || (!isU128Compatible(amountNative) ? 'Invalid value' : ''),
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),
@@ -230,7 +230,7 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!isEmpty(formState.errors) || !isU128(amountNative)}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative)}
             >
               Bridge
             </Button>

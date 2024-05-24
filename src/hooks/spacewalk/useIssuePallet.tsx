@@ -4,7 +4,7 @@ import { useMemo } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { Compact, u128 } from '@polkadot/types-codec';
 import Big from 'big.js';
-import { isU128 } from '../../shared/parseNumbers/isU128';
+import { isU128Compatible } from '../../shared/parseNumbers/isU128Compatible';
 
 export interface RichIssueRequest {
   id: H256;
@@ -51,7 +51,7 @@ export function useIssuePallet() {
 
         const u128Amount = Big(amount)
 
-        if(!isU128(u128Amount)) return;
+        if(!isU128Compatible(u128Amount)) return;
 
         const compactAmount: Compact<u128> =  api.createType('Compact<u128>', u128Amount.toString());
 
