@@ -139,7 +139,7 @@ function ClaimRewardsDialog(props: Props) {
   };
 
   const actions = (
-    <Button color="primary" loading={loading} onClick={getButtonAction(step)} disabled={!walletAccount}>
+    <Button color="primary" loading={loading} onClick={getButtonAction(step)} disabled={!walletAccount || loading}>
       {getButtonText(step)}
     </Button>
   );

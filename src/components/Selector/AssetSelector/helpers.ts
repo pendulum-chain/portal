@@ -27,6 +27,11 @@ export function getAssetIcon(asset?: BlockchainAsset): string {
   return isStellarAsset(asset) ? getIcon(asset?.code) : getIcon(asset.metadata.symbol);
 }
 
+export function getAssetName(asset?: BlockchainAsset): string {
+  if (!asset) return '';
+  return isStellarAsset(asset) ? asset?.code : asset.metadata.symbol;
+}
+
 const findAsset = (
   compare: (asset: BlockchainAsset) => boolean,
   assets: BlockchainAsset[],
