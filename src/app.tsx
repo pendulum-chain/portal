@@ -39,18 +39,17 @@ enum PATHS {
   STAKING = 'staking',
 }
 
-export enum PAGES_PATHS {
-  DASHBOARD = 'dashboard',
-  GAS = 'gas',
-  BRIDGE = `${PATHS.SPACEWALK}/${PATHS.BRIDGE}`,
-  TRANSACTIONS = `${PATHS.SPACEWALK}/${PATHS.TRANSACTIONS}`,
-  NABLA = 'nabla',
-  NABLA_SWAP = `${PATHS.NABLA}/${PATHS.NABLA_SWAP}`,
-  NABLA_SWAP_POOLS = `${PATHS.NABLA}/${PATHS.NABLA_SWAP_POOLS}`,
-  NABLA_BACKSTOP_POOLS = `${PATHS.NABLA}/${PATHS.NABLA_BACKSTOP_POOLS}`,
-  STAKING = 'staking',
-
-}
+export const PAGES_PATHS = {
+  DASHBOARD: 'dashboard',
+  GAS: 'gas',
+  BRIDGE: `${PATHS.SPACEWALK}/${PATHS.BRIDGE}`,
+  TRANSACTIONS: `${PATHS.SPACEWALK}/${PATHS.TRANSACTIONS}`,
+  NABLA: 'nabla',
+  NABLA_SWAP: `${PATHS.NABLA}/${PATHS.NABLA_SWAP}`,
+  NABLA_SWAP_POOLS: `${PATHS.NABLA}/${PATHS.NABLA_SWAP_POOLS}`,
+  NABLA_BACKSTOP_POOLS: `${PATHS.NABLA}/${PATHS.NABLA_BACKSTOP_POOLS}`,
+  STAKING: 'staking',
+};
 
 function enableOnAmplitude(tenantName: TenantName, page: JSX.Element){
   if((tenantName === TenantName.Foucoco || tenantName === TenantName.Amplitude)){
