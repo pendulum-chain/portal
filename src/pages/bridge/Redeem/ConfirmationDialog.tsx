@@ -7,6 +7,7 @@ import { RichRedeemRequest } from '../../../hooks/spacewalk/useRedeemPallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
 import { useMemo } from 'preact/hooks';
+import { PAGES_PATHS } from '../../../app';
 
 interface ConfirmationDialogProps {
   redeemRequest: RichRedeemRequest | undefined;
@@ -56,7 +57,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
       <Button
         color="primary"
         onClick={() => {
-          navigateTo(`/${tenantName}/spacewalk/transactions`);
+          navigateTo(`/${tenantName}${PAGES_PATHS.TRANSACTIONS}`);
         }}
       >
         View Progress

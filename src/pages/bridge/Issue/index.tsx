@@ -25,6 +25,7 @@ import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+import { PAGES_PATHS } from '../../../app';
 
 interface IssueProps {
   network: string;
@@ -186,7 +187,7 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
         onConfirm={() => {
           setConfirmationDialogVisible(false);
-          navigateTo(`/${tenantName}/spacewalk/transactions`);
+          navigateTo(`/${tenantName}${PAGES_PATHS.TRANSACTIONS}`);
         }}
       />
       <div className="w-full">
