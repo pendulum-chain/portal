@@ -28,7 +28,7 @@ export interface BuyoutSettings {
     amount: number,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isExchange: boolean,
+    isBuyoutInNativeToken: boolean,
   ) => void;
 }
 
@@ -53,6 +53,12 @@ function handleBuyoutError(error: string) {
 
   showToast(ToastMessage.BUYOUT_ERROR, 'The buyout failed:' + error);
   return;
+}
+
+function generateBuyoutExtrinsicPayload(isBuyoutInNativeToken: boolean, amount: number) {
+  // { exchange: { amount: number } } is in selected token (KSM/USDT/DOT)
+  // { buyout: { amount: number } } is in native token (AMPE/PEN)
+  return isBuyoutInNativeToken ? { buyout: { amount } } : { exchange: { amount } };
 }
 
 export const useBuyout = (): BuyoutSettings => {
@@ -122,7 +128,7 @@ export const useBuyout = (): BuyoutSettings => {
     amount: number,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isExchange: boolean,
+    isBuyoutInNativeToken: boolean,
   ) {
     if (!api || !walletAccount) {
       return;
@@ -135,10 +141,9 @@ export const useBuyout = (): BuyoutSettings => {
     const assetId = currency.currencyId;
     if (!assetId) return;
 
-    // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
-    const exchange = isExchange ? { exchange: { amount: scaledCurrency } } : { buyout: { amount: scaledCurrency } };
+    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(isBuyoutInNativeToken, scaledCurrency);
 
-    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, exchange);
+    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, buyoutExtrinsicData);
 
     try {
       await doSubmitExtrinsic(
