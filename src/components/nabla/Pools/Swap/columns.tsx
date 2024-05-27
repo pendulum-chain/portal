@@ -1,13 +1,18 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Badge, Button } from 'react-daisyui';
-import { SwapPool } from '../../../../../gql/graphql';
 import { useModalToggle } from '../../../../services/modal';
-import { FixedU128Decimals, nativeToDecimal, prettyNumbers } from '../../../../shared/parseNumbers/metric';
-import { LiquidityModalProps, ModalTypes } from './Modals/types';
+import { rawToDecimal } from '../../../../shared/parseNumbers/metric';
+import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
+import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { Erc20Balance } from '../../common/Erc20Balance';
+import { LiquidityModalProps } from './SwapPoolModals';
+import Big from 'big.js';
 
-export type SwapPoolColumn = SwapPool & {
-  myAmount?: number;
+export type SwapPoolColumn = NablaInstanceSwapPool & {
+  backstopPool: NablaInstanceBackstopPool;
 };
+
+const BIG_100 = new Big(100);
 
 export const nameColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Name',
@@ -19,7 +24,7 @@ export const nameColumn: ColumnDef<SwapPoolColumn> = {
 export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Pool liabilities',
   accessorKey: 'liabilities',
-  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.liabilities || 0, FixedU128Decimals).toNumber()),
+  accessorFn: (row) => rawToDecimal(row.totalLiabilities, row.lpTokenDecimals).toFixed(2, 0),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',
@@ -29,7 +34,7 @@ export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
 export const reservesColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Reserves',
   accessorKey: 'reserves',
-  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.reserves || 0, FixedU128Decimals).toNumber()),
+  accessorFn: (row) => rawToDecimal(row.reserve, row.token.decimals).toFixed(2, 0),
   enableSorting: true,
   meta: {
     className: 'text-right justify-end',
@@ -39,9 +44,9 @@ export const reservesColumn: ColumnDef<SwapPoolColumn> = {
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
   header: 'APR',
   accessorKey: 'apr',
-  accessorFn: (_row) => 0,
+  accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props): JSX.Element | null => (
-    <Badge color="success" className="py-1 px-2 h-auto rounded-md text-blackAlpha-700">
+    <Badge className="py-1 px-2 h-auto rounded-lg text-blackAlpha-700 dark:text-white bg-success/35">
       {props.renderValue()}%
     </Badge>
   ),
@@ -54,8 +59,17 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
 export const myAmountColumn: ColumnDef<SwapPoolColumn> = {
   header: 'My Pool Amount',
   accessorKey: 'myAmount',
-  accessorFn: (row) => prettyNumbers(nativeToDecimal(row.myAmount || 0, FixedU128Decimals).toNumber()),
-  enableSorting: true,
+  cell: ({ row: { original } }) => (
+    <Erc20Balance
+      abi={swapPoolAbi}
+      erc20ContractDefinition={{
+        contractAddress: original.id,
+        decimals: original.lpTokenDecimals,
+        symbol: original.symbol,
+      }}
+    />
+  ),
+  enableSorting: false,
   meta: {
     className: 'text-right justify-end',
   },
@@ -66,7 +80,7 @@ const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknow
   return (
     <div className="flex items-center justify-end gap-2 text-right">
       <Button
-        onClick={() => toggle({ type: ModalTypes.AddLiquidity, props: { data: original } })}
+        onClick={() => toggle({ type: 'AddLiquidity', props: { data: original } })}
         size="sm"
         variant="outline"
         className="px-3"
@@ -76,7 +90,7 @@ const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknow
       <Button
         onClick={() =>
           toggle({
-            type: ModalTypes.WithdrawLiquidity,
+            type: 'WithdrawLiquidity',
             props: { data: original },
           })
         }
@@ -100,4 +114,12 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
   cell: (props): JSX.Element | null => <ActionsColumn {...props} />,
 } as const;
 
-export const columns = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, myAmountColumn, actionsColumn];
+export const columnsWithMyAmount = [
+  nameColumn,
+  liabilitiesColumn,
+  reservesColumn,
+  aprColumn,
+  myAmountColumn,
+  actionsColumn,
+];
+export const columnsWithoutMyAmount = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, actionsColumn];

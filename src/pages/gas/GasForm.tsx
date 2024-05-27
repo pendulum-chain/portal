@@ -1,4 +1,4 @@
-import { StateUpdater, useMemo } from 'preact/hooks';
+import { StateUpdater, Dispatch, useMemo } from 'preact/hooks';
 import { useForm } from 'react-hook-form';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
@@ -157,7 +157,10 @@ export const GasForm: React.FC<GasFormProps> = ({
       <From {...FromProps} />
       <From {...ToProps} />
       <FeeHint amount={watch('toAmount')} />
-      <SubmitButton loading={submissionPending} disabled={Boolean(fromPropsError) || Boolean(toPropsError)} />
+      <SubmitButton
+        loading={submissionPending}
+        disabled={Boolean(fromPropsError) || Boolean(toPropsError) || submissionPending}
+      />
     </form>
   );
 };

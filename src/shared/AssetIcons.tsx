@@ -41,6 +41,6 @@ const icons: IconMap = {
   GLMR,
 };
 
-export function getIcon(token: string | undefined) {
-  return token && Object.keys(icons).includes(token) ? icons[token] : DefaultIcon;
+export function getIcon(token: string | undefined, defaultIcon = DefaultIcon) {
+  return token && Object.keys(icons).includes(token) ? icons[token] : defaultIcon;
 }
