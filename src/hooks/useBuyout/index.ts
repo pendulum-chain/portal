@@ -28,7 +28,7 @@ export interface BuyoutSettings {
     amount: number,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isExchangeAmount: boolean,
+    isExchange: boolean,
   ) => void;
 }
 
@@ -122,7 +122,7 @@ export const useBuyout = (): BuyoutSettings => {
     amount: number,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isExchangeAmount: boolean,
+    isExchange: boolean,
   ) {
     if (!api || !walletAccount) {
       return;
@@ -132,13 +132,11 @@ export const useBuyout = (): BuyoutSettings => {
     }
 
     const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
-
-    const assetId = currency.currencyId.asXcm;
+    const assetId = currency.currencyId;
+    if (!assetId) return;
 
     // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
-    const exchange = isExchangeAmount
-      ? { buyout: { amount: scaledCurrency } }
-      : { exchange: { amount: scaledCurrency } };
+    const exchange = isExchange ? { exchange: { amount: scaledCurrency } } : { buyout: { amount: scaledCurrency } };
 
     const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, exchange);
 
