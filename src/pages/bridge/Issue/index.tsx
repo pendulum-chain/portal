@@ -25,6 +25,7 @@ import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
+import { useEffect } from 'preact/compat';
 
 interface IssueProps {
   network: string;
@@ -173,10 +174,15 @@ function Issue(props: IssueProps): JSX.Element {
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
 
-  useMemo(() => {
+  useEffect(() => {
     setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
     trigger('securityDeposit');
   }, [amount, issueGriefingCollateral, setValue, trigger]);
+
+  useEffect(() => {
+    // Trigger form validation when the selected asset changes
+    trigger();
+  }, [trigger, selectedAsset, maxIssuable]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
