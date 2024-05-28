@@ -1,3 +1,4 @@
+import BigNumber from 'big.js';
 import { StateUpdater, Dispatch, useEffect, useState } from 'preact/hooks';
 import { isEmpty, find } from 'lodash';
 import { Option } from '@polkadot/types-codec';
@@ -55,10 +56,11 @@ function handleBuyoutError(error: string) {
   return;
 }
 
-function generateBuyoutExtrinsicPayload(isBuyoutInNativeToken: boolean, amount: number) {
+function generateBuyoutExtrinsicPayload(isBuyoutInNativeToken: boolean, amount: BigNumber) {
+  const amountString = amount.toString();
   // { exchange: { amount: number } } is in selected token (KSM/USDT/DOT)
   // { buyout: { amount: number } } is in native token (AMPE/PEN)
-  return isBuyoutInNativeToken ? { buyout: { amount } } : { exchange: { amount } };
+  return isBuyoutInNativeToken ? { buyout: { amount: amountString } } : { exchange: { amount: amountString } };
 }
 
 export const useBuyout = (): BuyoutSettings => {
@@ -137,11 +139,14 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
+    const amountRaw = decimalToNative(
+      amount,
+      isBuyoutInNativeToken ? nativeCurrency?.metadata.decimals : currency.metadata.decimals,
+    );
     const assetId = currency.currencyId;
     if (!assetId) return;
 
-    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(isBuyoutInNativeToken, scaledCurrency);
+    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(isBuyoutInNativeToken, amountRaw);
 
     const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, buyoutExtrinsicData);
 
