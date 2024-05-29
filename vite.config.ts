@@ -20,7 +20,7 @@ export default defineConfig({
       plugins: [
         // Enable esbuild polyfill plugins. We use the default settings.
         // see https://github.com/cyco130/esbuild-plugin-polyfill-node?tab=readme-ov-file#options
-        polyfillNode({}),
+        // polyfillNode({}),
       ],
     },
   },

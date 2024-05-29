@@ -128,7 +128,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
         color="primary"
         loading={loading}
         onClick={getButtonAction(step)}
-        disabled={!walletAccount}
+        disabled={!walletAccount || loading}
         fullWidth={true}
       >
         {loading ? '' : 'Claim'}

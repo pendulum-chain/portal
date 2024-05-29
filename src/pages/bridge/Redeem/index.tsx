@@ -189,6 +189,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               loading={submissionPending}
               onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
               type="submit"
+              disabled={submissionPending}
             >
               Bridge
             </Button>

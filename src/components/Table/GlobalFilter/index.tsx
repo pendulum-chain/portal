@@ -1,6 +1,6 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { TargetedEvent, useCallback, useRef } from 'preact/compat';
-import { Button, Input, InputGroup } from 'react-daisyui';
+import { Button, Input, Join } from 'react-daisyui';
 
 export interface GlobalFilterProps {
   globalFilter?: string;
@@ -20,7 +20,7 @@ export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProp
   return (
     <form onSubmit={onSearch}>
       <div className="form-control max-w-72">
-        <InputGroup size="sm">
+        <Join>
           <Input
             ref={inputRef}
             size="sm"
@@ -39,7 +39,7 @@ export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProp
           >
             <MagnifyingGlassIcon className="w-3 h-3" />
           </Button>
-        </InputGroup>
+        </Join>
       </div>
     </form>
   );

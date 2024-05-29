@@ -1,8 +1,8 @@
+import { useEffect, useCallback, useMemo, useState } from 'preact/compat';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Signer } from '@polkadot/types/types';
 import Big from 'big.js';
 import { isEmpty } from 'lodash';
-import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -89,7 +89,7 @@ function Issue(props: IssueProps): JSX.Element {
     () => (
       <ul className="list-disc pl-4">
         <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
-        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem. </li>
+        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem.</li>
         <li>
           Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
           operator program, more
@@ -177,10 +177,15 @@ function Issue(props: IssueProps): JSX.Element {
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
 
-  useMemo(() => {
+  useEffect(() => {
     setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
     trigger('securityDeposit');
   }, [amount, issueGriefingCollateral, setValue, trigger]);
+
+  useEffect(() => {
+    // Trigger form validation when the selected asset changes
+    trigger();
+  }, [trigger, selectedAsset, maxIssuable]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
@@ -225,9 +230,10 @@ function Issue(props: IssueProps): JSX.Element {
             amountNative={amountNative}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
-            network={network}
-            wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
+            network={network}
+            showSecurityDeposit
+            wrappedCurrencySuffix={wrappedCurrencySuffix}
           />
           {walletAccount ? (
             <Button
@@ -235,7 +241,7 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative)}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative) || submissionPending}
             >
               Bridge
             </Button>
