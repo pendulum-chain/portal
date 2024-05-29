@@ -14,6 +14,7 @@ import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenApproval } from '../../../common/TokenApproval';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
+import { useGlobalState } from '../../../../../GlobalStateProvider';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;
@@ -22,6 +23,8 @@ export interface AddLiquidityProps {
 const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const { toggle, onSubmit, mutation, depositQuery, balanceQuery, amountString, amountBigDecimal, form } =
     useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
+
+  const { walletAccount } = useGlobalState();
 
   const {
     formState: { errors },
@@ -45,14 +48,16 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         </div>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
-            <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>
-                Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
-              </p>
-              <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance: <TokenBalance query={balanceQuery} symbol={data.token.symbol}></TokenBalance>
-              </p>
-            </div>
+            {walletAccount && (
+              <div className="flex justify-between align-end text-sm text-initial my-3">
+                <p>
+                  Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
+                </p>
+                <p className="text-neutral-500 dark:text-neutral-400 text-right">
+                  Balance: <TokenBalance query={balanceQuery} symbol={data.token.symbol}></TokenBalance>
+                </p>
+              </div>
+            )}
             <AmountSelector maxBalance={balanceQuery.data} formFieldName="amount" form={form} />
             <Validation className="text-center mt-2" errors={errors} />
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300  p-4 mt-4">
@@ -62,17 +67,19 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div>Your pool Share</div>
-                <div>
-                  {depositQuery.data === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
-                  )}
-                  %
+              {walletAccount && (
+                <div className="flex items-center justify-between">
+                  <div>Your pool Share</div>
+                  <div>
+                    {depositQuery.data === undefined ? (
+                      <NumberLoader />
+                    ) : (
+                      calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
+                    )}
+                    %
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="mt-8">
               <TokenApproval

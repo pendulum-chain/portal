@@ -6,10 +6,13 @@ import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
 import { Erc20Balance } from '../../common/Erc20Balance';
 import { BackstopPoolModals, LiquidityModalProps } from './BackstopPoolModals';
 import { NablaFootnote } from '../../common/NablaFootnote';
+import { useGlobalState } from '../../../../GlobalStateProvider';
 
 const BackstopPoolsBody = (): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
   const { nabla, isLoading } = useNablaInstance();
+
+  const { walletAccount } = useGlobalState();
 
   if (isLoading) return <Skeleton className="bg-neutral-200 h-48 w-full" />;
   const pool = nabla?.backstopPool;
@@ -22,16 +25,20 @@ const BackstopPoolsBody = (): JSX.Element | null => {
           <div className="card-body p-4 md:p-6">
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
-              <div>
-                <Erc20Balance
-                  abi={backstopPoolAbi}
-                  erc20ContractDefinition={{
-                    contractAddress: pool.id,
-                    decimals: pool.lpTokenDecimals,
-                    symbol: pool.symbol,
-                  }}
-                />
-              </div>
+              {walletAccount ? (
+                <div>
+                  <Erc20Balance
+                    abi={backstopPoolAbi}
+                    erc20ContractDefinition={{
+                      contractAddress: pool.id,
+                      decimals: pool.lpTokenDecimals,
+                      symbol: pool.symbol,
+                    }}
+                  />
+                </div>
+              ) : (
+                <span>0</span>
+              )}
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
               <Button
