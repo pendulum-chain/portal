@@ -91,4 +91,20 @@ describe('NumericInput Component', () => {
     await userEvent.type(inputElement, '-123');
     expect(inputElement.value).toBe('123');
   });
+
+  it('should not allow more decimals than maxDecimals', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={2} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '123.45');
+    expect(inputElement.value).toBe('123.45');
+  });
+
+  it('should not allow more decimals than default maxDecimals', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '123.4567890123456789abcgdehyu0123456.2746472.93.2.7.3.5.3');
+    expect(inputElement.value).toBe('123.456789012343');
+  });
 });

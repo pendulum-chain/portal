@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Signer } from '@polkadot/types/types';
 import Big from 'big.js';
 import { isEmpty } from 'lodash';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -25,8 +26,8 @@ import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-import { Signer } from '@polkadot/types/types';
 import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
+import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
 
 interface IssueProps {
   network: string;
@@ -196,9 +197,12 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             {...{
               formControl: {
+                maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
-                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']) || (!isU128Compatible(amountNative) ? 'Invalid value' : ''),
+                error:
+                  getFirstErrorMessage(formState, ['amount', 'securityDeposit']) ||
+                  (!isU128Compatible(amountNative) ? 'Exceeds the max allowed value.' : ''),
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),

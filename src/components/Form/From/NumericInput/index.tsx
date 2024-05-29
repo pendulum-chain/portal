@@ -1,10 +1,12 @@
 import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
+import { USER_INPUT_MAX_DECIMALS, exceedsMaxDecimals } from '../../../../shared/parseNumbers/decimal';
 
-interface InputFieldProps {
+interface NumericInputProps {
   register: UseFormRegisterReturn;
   readOnly?: boolean;
   additionalStyle?: string;
+  maxDecimals?: number;
 }
 
 function isValidNumericInput(value: string): boolean {
@@ -18,7 +20,27 @@ function alreadyHasDecimal(e: KeyboardEvent) {
   return decimalChars.some((char) => e.key === char && e.target && (e.target as HTMLInputElement).value.includes('.'));
 }
 
-export const NumericInput = ({ register, readOnly = false, additionalStyle }: InputFieldProps) => (
+function handleOnInput(e: KeyboardEvent): void {
+  const target = e.target as HTMLInputElement;
+  target.value = target.value.replace(/,/g, '.');
+}
+
+function handleOnKeyPress(e: KeyboardEvent, maxDecimals: number): void {
+  if (!isValidNumericInput(e.key) || alreadyHasDecimal(e)) {
+    e.preventDefault();
+  }
+  const target = e.target as HTMLInputElement;
+  if (exceedsMaxDecimals(target.value, maxDecimals - 1)) {
+    target.value = target.value.slice(0, -1);
+  }
+}
+
+export const NumericInput = ({
+  register,
+  readOnly = false,
+  additionalStyle,
+  maxDecimals = USER_INPUT_MAX_DECIMALS.PENDULUM,
+}: NumericInputProps) => (
   <div className="w-full flex justify-between">
     <div className="flex-grow text-4xl text-black font-outfit">
       <Input
@@ -30,15 +52,8 @@ export const NumericInput = ({ register, readOnly = false, additionalStyle }: In
           additionalStyle
         }
         minlength="1"
-        onKeyPress={(e: KeyboardEvent) => {
-          if (!isValidNumericInput(e.key) || alreadyHasDecimal(e)) {
-            e.preventDefault();
-          }
-        }}
-        onInput={(e: KeyboardEvent) => {
-          const target = e.target as HTMLInputElement;
-          target.value = target.value.replace(/,/g, '.');
-        }}
+        onKeyPress={(e: KeyboardEvent) => handleOnKeyPress(e, maxDecimals)}
+        onInput={handleOnInput}
         pattern="^[0-9]*[.,]?[0-9]*$"
         placeholder="0.0"
         readOnly={readOnly}
