@@ -153,6 +153,7 @@ function Issue(props: IssueProps): JSX.Element {
             // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const issueId = (requestIssueEvent.data as any).issueId;
 
               getIssueRequest(issueId).then((issueRequest) => {
