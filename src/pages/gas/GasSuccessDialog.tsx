@@ -1,4 +1,4 @@
-import { Button, Modal } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import { Dialog } from '../collators/dialogs/Dialog';
 
@@ -20,7 +20,7 @@ export const GasSuccessDialog: React.FC<DialogProps> = (props) => {
   );
 
   const actions = (
-    <Button className="px-6 text-black" color="primary" onClick={onClose} fullWidth={true}>
+    <Button className="px-6 text-neutral" color="primary" onClick={onClose} fullWidth={true}>
       OK
     </Button>
   );

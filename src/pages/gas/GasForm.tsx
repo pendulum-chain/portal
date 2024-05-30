@@ -145,7 +145,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       assets: [nativeCurrency],
       selectedAsset: nativeCurrency,
       setSelectedAsset: () => {
-        return null;
+        return undefined;
       },
     },
     badges: {},

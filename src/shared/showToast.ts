@@ -6,6 +6,7 @@ export enum ToastMessage {
   TX_SUBMISSION_FAILED = 'TX_SUBMISSION_FAILED',
   UPDATED_DELEGATOR_REWARDS = 'UPDATED_DELEGATOR_REWARDS',
   NO_WALLET_SELECTED = 'NO_WALLET_SELECTED',
+  BUYOUT_ERROR = 'BUYOUT_ERROR',
   ERROR = 'ERROR',
   INFO = 'INFO',
 }
@@ -61,6 +62,13 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
     message: 'Info',
     options: {
       type: toast.TYPE.INFO,
+    },
+  },
+  [ToastMessage.BUYOUT_ERROR]: {
+    message: 'A buyout error occurred',
+    options: {
+      type: toast.TYPE.ERROR,
+      toastId: ToastMessage.BUYOUT_ERROR,
     },
   },
 };
