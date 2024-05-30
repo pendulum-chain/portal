@@ -48,7 +48,10 @@ export const amountColumn: ColumnDef<PortfolioAsset> = {
   accessorKey: 'amount',
   enableMultiSort: true,
   cell: ({ row }) => {
-    return <div title={row.original.amount.toString()}>{row.original.amount.toFixed(3)}</div>;
+    const amount = row.original.amount;
+    const amountToFixed = amount.toFixed(3);
+    const displayValue = Number(amountToFixed) >= 0.001 ? amountToFixed : amount.toPrecision(3);
+    return <div title={row.original.amount.toString()}>{displayValue}</div>;
   },
 };
 
