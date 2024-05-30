@@ -96,7 +96,7 @@ describe('NumericInput Component', () => {
     const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={2} />);
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
-    await userEvent.type(inputElement, '123.45');
+    await userEvent.type(inputElement, '123.45479187249871298774985');
     expect(inputElement.value).toBe('123.45');
   });
 
