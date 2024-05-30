@@ -12,7 +12,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
-import { decimalToNative } from '../../shared/parseNumbers/metric';
+import { ChainDecimals, decimalToNative } from '../../shared/parseNumbers/metric';
 import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
@@ -26,10 +26,9 @@ export interface BuyoutSettings {
   sellFee: PerMill;
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
-    amount: number,
+    amount: string,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isBuyoutInNativeToken: boolean,
   ) => void;
 }
 
@@ -56,11 +55,10 @@ function handleBuyoutError(error: string) {
   return;
 }
 
-function generateBuyoutExtrinsicPayload(isBuyoutInNativeToken: boolean, amount: BigNumber) {
+function generateBuyoutExtrinsicPayload(amount: BigNumber) {
   const amountString = amount.toString();
-  // { exchange: { amount: number } } is in selected token (KSM/USDT/DOT)
-  // { buyout: { amount: number } } is in native token (AMPE/PEN)
-  return isBuyoutInNativeToken ? { buyout: { amount: amountString } } : { exchange: { amount: amountString } };
+  // We always go the 'buyout' route because the 'exchange' route does not work sometimes
+  return { buyout: { amount: amountString } };
 }
 
 export const useBuyout = (): BuyoutSettings => {
@@ -127,10 +125,9 @@ export const useBuyout = (): BuyoutSettings => {
 
   async function handleBuyout(
     currency: OrmlTraitsAssetRegistryAssetMetadata,
-    amount: number,
+    amount: string,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isBuyoutInNativeToken: boolean,
   ) {
     if (!api || !walletAccount) {
       return;
@@ -139,16 +136,13 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    const amountRaw = decimalToNative(
-      amount,
-      isBuyoutInNativeToken ? nativeCurrency?.metadata.decimals : currency.metadata.decimals,
-    );
+    const amountRaw = decimalToNative(amount, nativeCurrency?.metadata.decimals ?? ChainDecimals);
     const assetId = currency.currencyId;
     if (!assetId) return;
 
-    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(isBuyoutInNativeToken, amountRaw);
+    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(amountRaw);
 
-    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, buyoutExtrinsicData);
+    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout(assetId, buyoutExtrinsicData);
 
     try {
       await doSubmitExtrinsic(

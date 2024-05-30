@@ -50,14 +50,11 @@ const Gas = () => {
 
   const onSubmit = async (data: IssueFormValues) => {
     if (nativeCurrency && selectedFromToken) {
-      // If the user has selected the min or max amount by clicking the badge button, we call the buyout extrinsic in the
-      // direction of the native token being the input token. This way we ensure that the amount is perfectly within the buyout limits and
-      // the transaction does not fail due to imprecise calculations.
-      const isBuyoutInNativeToken = data.isMin || data.isMax;
       const token = selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata;
-      const amount = data.isMin ? buyoutNativeToken.min : data.isMax ? buyoutNativeToken.max : Number(data.fromAmount);
+      // We use the toAmount as the amount to buyout because we always use the specified output amount
+      const amount = data.toAmount;
 
-      handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible, isBuyoutInNativeToken);
+      handleBuyout(token, amount, setSubmissionPending, setConfirmationDialogVisible);
     }
   };
 
