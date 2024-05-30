@@ -23,9 +23,9 @@ const BackstopPoolsBody = (): JSX.Element | null => {
       <div className="text-[initial] dark:text-neutral-200 center w-full">
         <Card bordered className="w-full max-w-xl bg-base-200">
           <div className="card-body p-4 md:p-6">
-            <div className="flex items-center justify-between gap-2 text-3xl">
-              <h2>My pool balance</h2>
-              {walletAccount ? (
+            {walletAccount && (
+              <div className="flex items-center justify-between gap-2 text-3xl">
+                <h2>My pool balance</h2>
                 <div>
                   <Erc20Balance
                     abi={backstopPoolAbi}
@@ -36,10 +36,8 @@ const BackstopPoolsBody = (): JSX.Element | null => {
                     }}
                   />
                 </div>
-              ) : (
-                <span>0</span>
-              )}
-            </div>
+              </div>
+            )}
             <div className="flex flex-col items-center gap-2 mt-4">
               <Button
                 className="w-full"
