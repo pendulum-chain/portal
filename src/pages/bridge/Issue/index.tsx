@@ -42,9 +42,11 @@ export type IssueFormValues = {
 };
 
 const getFirstErrorMessage = (
-  formState: { errors: FieldErrors<IssueFormValues> },
+  formState: { isDirty: boolean; errors: FieldErrors<IssueFormValues> },
   errorKeys: (keyof IssueFormValues)[],
 ) => {
+  if (!formState.isDirty) return;
+
   for (const key of errorKeys) {
     if (formState.errors[key]?.message) {
       return formState.errors[key]?.message?.toString();
