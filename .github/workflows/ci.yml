@@ -47,12 +47,6 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --immutable --inline-builds
 
-      - name: 📋 Yarn Lock Changes
-        uses: Simek/yarn-lock-changes@main
-        with:
-          updateComment: 'true'
-          token: ${{ secrets.GH_TOKEN }}
-
       - name: ✏️ Lint
         run: yarn lint:ts
 
