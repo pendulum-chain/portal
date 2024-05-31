@@ -21,7 +21,7 @@ import { TenantName } from '../../../models/Tenant';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 
 import { FeeBox } from '../FeeBox';
-import { prioritizeXLMAsset } from '../helpers';
+import { prioritizeXLMAsset, useCalculateGriefingCollateral } from '../helpers';
 
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
@@ -67,7 +67,6 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, dAppName, tenantName } = useGlobalState();
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { issueGriefingCollateralFee } = useFeePallet().getFees();
   const { balance } = useAccountBalance();
 
   const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
@@ -86,6 +85,8 @@ function Issue(props: IssueProps): JSX.Element {
   const amountNative = useMemo(() => {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
+
+  const griefingCollateral = useCalculateGriefingCollateral(amountNative, selectedAsset);
 
   const disclaimerContent = useMemo(
     () => (
@@ -180,9 +181,9 @@ function Issue(props: IssueProps): JSX.Element {
   );
 
   useEffect(() => {
-    setValue('securityDeposit', amount * issueGriefingCollateralFee.toNumber());
+    setValue('securityDeposit', griefingCollateral.toNumber());
     trigger('securityDeposit');
-  }, [amount, issueGriefingCollateralFee, setValue, trigger]);
+  }, [amount, griefingCollateral, setValue, trigger]);
 
   useEffect(() => {
     // Trigger form validation when the selected asset changes
@@ -234,7 +235,7 @@ function Issue(props: IssueProps): JSX.Element {
             extrinsic={requestIssueExtrinsic}
             nativeCurrency={nativeCurrency}
             network={network}
-            showSecurityDeposit
+            securityDeposit={griefingCollateral}
             wrappedCurrencySuffix={wrappedCurrencySuffix}
           />
           {walletAccount ? (

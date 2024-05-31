@@ -4,10 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
 import { ChainDecimals, nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
-import { usePriceFetcher } from '../../hooks/usePriceFetcher';
-import { useCalculateGriefingCollateral } from './helpers';
-import { useNodeInfoState } from '../../NodeInfoProvider';
-import { convertStellarAssetToCurrency } from '../../helpers/spacewalk';
 
 interface FeeBoxProps {
   // The amount of the bridged asset denoted in the smallest unit of the asset
@@ -16,24 +12,19 @@ interface FeeBoxProps {
   extrinsic?: SubmittableExtrinsic;
   nativeCurrency: string;
   network: string;
-  showSecurityDeposit?: boolean;
+  securityDeposit?: Big;
   wrappedCurrencySuffix?: string;
 }
 
 export function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency, showSecurityDeposit } = props;
+  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency, securityDeposit } = props;
   const amount = props.amountNative;
   const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
   const { getFees, getTransactionFee } = useFeePallet();
-  const { getTokenPriceForCurrency } = usePriceFetcher();
   const fees = getFees();
-  const { api } = useNodeInfoState().state;
 
   const [collapseVisibility, setCollapseVisibility] = useState('');
   const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
-  const bridgedAssetCurrencyId = useMemo(() => {
-    return bridgedAsset && api ? convertStellarAssetToCurrency(bridgedAsset, api) : null;
-  }, [bridgedAsset, api]);
 
   useEffect(() => {
     if (!extrinsic) {
@@ -48,8 +39,6 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const bridgeFee = useMemo(() => {
     return nativeStellarToDecimal(amount.mul(fees.issueFee));
   }, [amount, fees]);
-
-  const griefingCollateral = useCalculateGriefingCollateral(amount, bridgedAssetCurrencyId);
 
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {
@@ -92,11 +81,11 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
             {bridgeFee.toString()} {bridgedAsset?.getCode()}
           </span>
         </div>
-        {showSecurityDeposit && (
+        {securityDeposit && (
           <div className="flex justify-between mt-2">
             <span>Security Deposit</span>
             <span className="text-right">
-              {griefingCollateral.toFixed(ChainDecimals)} {nativeCurrency}
+              {securityDeposit.toFixed(ChainDecimals)} {nativeCurrency}
             </span>
           </div>
         )}
