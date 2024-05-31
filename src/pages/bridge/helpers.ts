@@ -2,6 +2,9 @@ import { Asset } from 'stellar-base';
 import Big from 'big.js';
 import { nativeStellarToDecimal } from '../../shared/parseNumbers/metric';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { usePriceFetcher } from '../../hooks/usePriceFetcher';
+import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
+import { useEffect, useState } from 'preact/compat';
 
 export function prioritizeXLMAsset(assets?: Asset[]): Asset[] {
   if (!assets) {
@@ -15,22 +18,29 @@ const isInvalid = (value: unknown) => {
   return !value;
 };
 
-export const calculateGriefingCollateral = async (
+export const useCalculateGriefingCollateral = (
   amount: Big,
   wrappedCurrency: SpacewalkPrimitivesCurrencyId | null | undefined,
-  griefingCollateralCurrency: SpacewalkPrimitivesCurrencyId | null | undefined,
-  getTokenPriceForCurrency: (currency: SpacewalkPrimitivesCurrencyId) => Promise<number>,
-  issueGriefingCollateralFee: Big,
 ) => {
-  if (isInvalid(amount) || isInvalid(wrappedCurrency) || isInvalid(griefingCollateralCurrency)) return new Big(0);
+  const { getTokenPriceForCurrency } = usePriceFetcher();
+  const { getFees } = useFeePallet();
+  const [griefingCollateral, setGriefingCollateral] = useState<Big>(new Big(0));
 
-  const assetUSDPrice = await getTokenPriceForCurrency(wrappedCurrency!);
+  const { griefingCollateralCurrency, issueGriefingCollateralFee } = getFees();
 
-  const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
+  useEffect(() => {
+    if (isInvalid(amount) || isInvalid(wrappedCurrency) || isInvalid(griefingCollateralCurrency)) return;
 
-  const griefingCollateralCurrencyUSD = await getTokenPriceForCurrency(griefingCollateralCurrency!);
-  if (isInvalid(griefingCollateralCurrencyUSD)) return new Big(0);
+    getTokenPriceForCurrency(wrappedCurrency!).then((assetUSDPrice) => {
+      const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
 
-  const griefingCollateralValue = amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD);
-  return griefingCollateralValue;
+      getTokenPriceForCurrency(griefingCollateralCurrency!).then((griefingCollateralCurrencyUSD) => {
+        if (isInvalid(griefingCollateralCurrencyUSD)) return;
+
+        setGriefingCollateral(amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD));
+      });
+    });
+  }, [amount, getTokenPriceForCurrency, griefingCollateralCurrency, issueGriefingCollateralFee, wrappedCurrency]);
+
+  return griefingCollateral;
 };

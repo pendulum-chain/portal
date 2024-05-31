@@ -5,7 +5,7 @@ import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
 import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';
-import { calculateGriefingCollateral } from './helpers';
+import { useCalculateGriefingCollateral } from './helpers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertStellarAssetToCurrency } from '../../helpers/spacewalk';
 
@@ -49,28 +49,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     return nativeStellarToDecimal(amount.mul(fees.issueFee));
   }, [amount, fees]);
 
-  const [griefingCollateral, setGriefingCollateral] = useState(Big(0));
-
-  useEffect(() => {
-    const fetchGriefingCollateral = async () => {
-      const calculatedGriefingCollateral = await calculateGriefingCollateral(
-        amount,
-        bridgedAssetCurrencyId,
-        fees.griefingCollateralCurrency,
-        getTokenPriceForCurrency,
-        fees.issueGriefingCollateralFee,
-      );
-      calculatedGriefingCollateral && setGriefingCollateral(calculatedGriefingCollateral);
-    };
-    fetchGriefingCollateral();
-  }, [
-    amount,
-    bridgedAssetCurrencyId,
-    wrappedCurrencySuffix,
-    getTokenPriceForCurrency,
-    fees.griefingCollateralCurrency,
-    fees.issueGriefingCollateralFee,
-  ]);
+  const griefingCollateral = useCalculateGriefingCollateral(amount, bridgedAssetCurrencyId);
 
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {
