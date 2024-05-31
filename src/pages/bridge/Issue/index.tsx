@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useCallback, useMemo, useState } from 'preact/compat';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Signer } from '@polkadot/types/types';
 import Big from 'big.js';
 import { isEmpty } from 'lodash';
-import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -26,7 +26,8 @@ import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-import { useEffect } from 'preact/compat';
+import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
+import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
 
 interface IssueProps {
   network: string;
@@ -41,9 +42,11 @@ export type IssueFormValues = {
 };
 
 const getFirstErrorMessage = (
-  formState: { errors: FieldErrors<IssueFormValues> },
+  formState: { isDirty: boolean; errors: FieldErrors<IssueFormValues> },
   errorKeys: (keyof IssueFormValues)[],
 ) => {
+  if (!formState.isDirty) return;
+
   for (const key of errorKeys) {
     if (formState.errors[key]?.message) {
       return formState.errors[key]?.message?.toString();
@@ -136,7 +139,7 @@ function Issue(props: IssueProps): JSX.Element {
       setSubmissionPending(true);
 
       requestIssueExtrinsic
-        .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        .signAndSend(walletAccount.address, { signer: walletAccount.signer as Signer }, (result) => {
           const { status, events } = result;
 
           const errors = getErrors(events, api);
@@ -152,6 +155,7 @@ function Issue(props: IssueProps): JSX.Element {
             // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const issueId = (requestIssueEvent.data as any).issueId;
 
               getIssueRequest(issueId).then((issueRequest) => {
@@ -201,9 +205,12 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             {...{
               formControl: {
+                maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
-                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']),
+                error:
+                  getFirstErrorMessage(formState, ['amount', 'securityDeposit']) ||
+                  (!isU128Compatible(amountNative) ? 'Exceeds the max allowed value.' : ''),
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),
@@ -236,7 +243,7 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!isEmpty(formState.errors) || submissionPending}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative) || submissionPending}
             >
               Bridge
             </Button>

@@ -4706,6 +4706,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/user-event@npm:^14.5.2":
+  version: 14.5.2
+  resolution: "@testing-library/user-event@npm:14.5.2"
+  peerDependencies:
+    "@testing-library/dom": ">=7.21.4"
+  checksum: 68a0c2aa28a3c8e6eb05cafee29705438d7d8a9427423ce5064d44f19c29e89b5636de46dd2f28620fb10abba75c67130185bbc3aa23ac1163a227a5f36641e1
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -7918,9 +7927,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.787
-  resolution: "electron-to-chromium@npm:1.4.787"
-  checksum: fa509ca710186461dd53e31773a7b06af3a958ab9b06b2e3d1d64de35204df2ff6f2050c94186adf4b850583666a50d30a6912103a0e3f5bcfc97864712ff424
+  version: 1.4.786
+  resolution: "electron-to-chromium@npm:1.4.786"
+  checksum: ba07145a675d4fefda595cc263d4410d7ab49a35c269daa4bebb43993170f4a77942a0b1d80c5de41ac72aa2f595f15ddc129917e0a0ea6a817bed0ddbfd52dd
   languageName: node
   linkType: hard
 
@@ -13430,6 +13439,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.1.6"
     "@testing-library/preact": "npm:^3.2.3"
     "@testing-library/preact-hooks": "npm:^1.1.0"
+    "@testing-library/user-event": "npm:^14.5.2"
     "@types/big.js": "npm:^6.2.2"
     "@types/jest": "npm:^29.5.11"
     "@types/lodash": "npm:^4.14.202"
@@ -15139,15 +15149,15 @@ __metadata:
   linkType: hard
 
 "sass@npm:^1.58.3":
-  version: 1.77.4
-  resolution: "sass@npm:1.77.4"
+  version: 1.77.3
+  resolution: "sass@npm:1.77.3"
   dependencies:
     chokidar: "npm:>=3.0.0 <4.0.0"
     immutable: "npm:^4.0.0"
     source-map-js: "npm:>=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: b9cb4882bded282aabe38d011adfce375e1f282184fcf93dc3da5d5be834c6aa53c474c15634c351ef7bd85146cfd1cc81343654cc3bcf000d78e856da4225ef
+  checksum: 131469168a4c41f9c3eeaac8a91b3ada0ff4746c8588ce1bc4b819c9245281075a895d5fc74f6edeeb32142a572af8a0799bd0ae698614a1fcfcfbd97b0b1256
   languageName: node
   linkType: hard
 
@@ -16508,9 +16518,9 @@ __metadata:
   linkType: hard
 
 "type@npm:^2.7.2":
-  version: 2.7.3
-  resolution: "type@npm:2.7.3"
-  checksum: dec6902c2c42fcb86e3adf8cdabdf80e5ef9de280872b5fd547351e9cca2fe58dd2aa6d2547626ddff174145db272f62d95c7aa7038e27c11315657d781a688d
+  version: 2.7.2
+  resolution: "type@npm:2.7.2"
+  checksum: 84c2382788fe24e0bc3d64c0c181820048f672b0f06316aa9c7bdb373f8a09f8b5404f4e856bc4539fb931f2f08f2adc4c53f6c08c9c0314505d70c29a1289e1
   languageName: node
   linkType: hard
 
