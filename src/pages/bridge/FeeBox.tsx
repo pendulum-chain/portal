@@ -3,7 +3,7 @@ import Big from 'big.js';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
-import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
+import { ChainDecimals, nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 import { useCalculateGriefingCollateral } from './helpers';
 import { useNodeInfoState } from '../../NodeInfoProvider';
@@ -96,14 +96,14 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
           <div className="flex justify-between mt-2">
             <span>Security Deposit</span>
             <span className="text-right">
-              {griefingCollateral.toString()} {nativeCurrency}
+              {griefingCollateral.toFixed(ChainDecimals)} {nativeCurrency}
             </span>
           </div>
         )}
         <div className="flex justify-between mt-2">
           <span>Transaction Fee</span>
           <span className="text-right">
-            {transactionFee.toFixed(12)} {nativeCurrency}
+            {transactionFee.toFixed(ChainDecimals)} {nativeCurrency}
           </span>
         </div>
       </div>
