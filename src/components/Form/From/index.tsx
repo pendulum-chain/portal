@@ -18,6 +18,7 @@ export interface FromProps {
     readOnly?: boolean;
     disabled?: boolean;
     setValue?: (n: number) => void;
+    maxDecimals?: number;
   };
   asset: {
     assets?: BlockchainAsset[];
