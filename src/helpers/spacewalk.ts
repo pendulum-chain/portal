@@ -63,6 +63,10 @@ export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrency
   return convertCurrencyToStellarAsset(currency)?.getCode() + SpacewalkConstants.WrappedCurrencySuffix;
 }
 
+function padRight(s: string, length: number, char: string) {
+  return s + char.repeat(length - s.length);
+}
+
 export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): SpacewalkPrimitivesCurrencyId {
   if (asset.isNative()) {
     return api.createType('SpacewalkPrimitivesCurrencyId', { Stellar: 'StellarNative' });
@@ -73,7 +77,8 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
     const issuer = api.createType('Raw', issuerRawPublicKey, 32);
 
     if (asset.getCode().length <= 4) {
-      const code = api.createType('Raw', asset.getCode(), 4);
+      const paddedCode = padRight(asset.getCode(), 4, '\0');
+      const code = api.createType('Raw', paddedCode, 4);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
         Stellar: {
           AlphaNum4: {
@@ -83,7 +88,8 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
         },
       });
     } else {
-      const code = api.createType('Raw', asset.getCode(), 12);
+      const paddedCode = padRight(asset.getCode(), 12, '\0');
+      const code = api.createType('Raw', paddedCode, 12);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
         Stellar: {
           AlphaNum12: {
