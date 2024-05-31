@@ -7,6 +7,7 @@ interface NumericInputProps {
   readOnly?: boolean;
   additionalStyle?: string;
   maxDecimals?: number;
+  defaultValue?: string;
 }
 
 function isValidNumericInput(value: string): boolean {
@@ -40,6 +41,7 @@ export const NumericInput = ({
   readOnly = false,
   additionalStyle,
   maxDecimals = USER_INPUT_MAX_DECIMALS.PENDULUM,
+  defaultValue,
 }: NumericInputProps) => (
   <div className="w-full flex justify-between">
     <div className="flex-grow text-4xl text-black font-outfit">
@@ -61,6 +63,7 @@ export const NumericInput = ({
         step="any"
         type="text"
         inputmode="decimal"
+        value={defaultValue}
         {...register}
       />
     </div>
