@@ -53,31 +53,23 @@ const Amount = ({
           />
         </div>
         <div className="flex">
-          {hideHalfButton ? (
-            <></>
-          ) : (
-            <>
-              <button
-                className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-                onClick={() => setValue(roundNumber(Number(max) * 0.5))}
-                type="button"
-              >
-                50%
-              </button>
-            </>
+          {hideHalfButton ? null : (
+            <button
+              className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
+              onClick={() => setValue(roundNumber(Number(max) * 0.5))}
+              type="button"
+            >
+              50%
+            </button>
           )}
-          {hideMaxButton ? (
-            <></>
-          ) : (
-            <>
-              <button
-                className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
-                onClick={() => setValue(calculateMaxAmount(Number(max), fullMax))}
-                type="button"
-              >
-                MAX
-              </button>
-            </>
+          {hideMaxButton ? null : (
+            <button
+              className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
+              onClick={() => setValue(calculateMaxAmount(Number(max), fullMax))}
+              type="button"
+            >
+              MAX
+            </button>
           )}
         </div>
       </div>
