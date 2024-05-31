@@ -74,8 +74,7 @@ export const usePriceFetcher = () => {
 
   const getTokenPriceForCurrency = useCallback(
     async (currency: SpacewalkPrimitivesCurrencyId) => {
-      if (typeof currency.toHuman() === 'string' && (currency.toHuman() as string).toUpperCase() === 'NATIVE')
-        return handleNativeTokenPrice();
+      if (currency.toHuman() === 'Native') return handleNativeTokenPrice();
       const asset = getAllAssetsMetadata().find((asset) => {
         return isEqual(asset.currencyId.toHuman(), currency.toHuman());
       });
