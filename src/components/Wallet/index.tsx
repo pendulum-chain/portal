@@ -15,8 +15,9 @@ import WalletConnect from './WalletConnect';
 const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
   const { walletAccount, setWalletAccount, removeWalletAccount } = useGlobalState();
   const { wallet, address } = walletAccount || {};
-  const { query, balance } = useAccountBalance();
+  const { query, balances } = useAccountBalance();
   const { ss58Format, tokenSymbol } = useNodeInfoState().state;
+  const { total: balance } = balances;
 
   return (
     <>

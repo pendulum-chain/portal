@@ -1,7 +1,6 @@
 import { Asset } from 'stellar-base';
 import Big from 'big.js';
 import { nativeStellarToDecimal } from '../../shared/parseNumbers/metric';
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
 import { useEffect, useState } from 'preact/compat';

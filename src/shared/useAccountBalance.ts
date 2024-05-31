@@ -8,7 +8,7 @@ import { cacheKeys } from '../constants/cache';
 
 export interface UseAccountBalanceResponse {
   query: UseQueryResult<FrameSystemAccountInfo | undefined, unknown>;
-  balance?: string;
+  balances: { total: string; transferable: string };
   enabled: boolean;
 }
 
@@ -44,15 +44,23 @@ export const useAccountBalance = (
   );
   const { data } = query;
   const decimals = options?.decimals;
-  const balance = useMemo(() => {
-    const val = data?.data.free;
-    if (!isValid(val)) return undefined;
-    return prettyNumbers(nativeToDecimal(val || 0, decimals).toNumber());
-  }, [data?.data, decimals]);
+
+  const balances = useMemo(() => {
+    if (!data || !data?.data) return { total: '0', transferable: '0' };
+
+    const { free: freeRaw, frozen: frozenRaw, reserved: reservedRaw } = data.data;
+
+    const free = nativeToDecimal(freeRaw || 0, decimals).toNumber();
+    const frozen = nativeToDecimal(frozenRaw || 0, decimals).toNumber();
+    const reserved = nativeToDecimal(reservedRaw || 0, decimals).toNumber();
+    const total = prettyNumbers(free);
+    const transferable = prettyNumbers(free - frozen - reserved);
+    return { total, transferable };
+  }, [data, decimals]);
 
   return {
     query,
-    balance,
+    balances,
     enabled,
   };
 };

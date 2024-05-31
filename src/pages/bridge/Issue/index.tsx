@@ -12,7 +12,6 @@ import { useNodeInfoState } from '../../../NodeInfoProvider';
 import From from '../../../components/Form/From';
 import OpenWallet from '../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
 import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
 import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
 import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
@@ -67,14 +66,15 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, dAppName, tenantName } = useGlobalState();
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { balance } = useAccountBalance();
+  const { balances } = useAccountBalance();
+  const { transferable } = balances;
 
   const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
 
   const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'), tokenSymbol)),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(transferable || '0.0'), tokenSymbol)),
     mode: 'onChange',
   });
 
