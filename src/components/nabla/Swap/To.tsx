@@ -81,12 +81,10 @@ export function To({
       <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
         <div className="text-sm mt-px">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
         <div className="flex gap-1 text-sm">
-          Your balance:{' '}
+          Balance:{' '}
           <Erc20Balance
             abi={erc20WrapperAbi}
-            erc20ContractDefinition={
-              toToken ? { contractAddress: toToken.id, decimals: toToken.decimals, symbol: toToken.symbol } : undefined
-            }
+            erc20ContractDefinition={toToken ? { contractAddress: toToken.id, decimals: toToken.decimals } : undefined}
           />
         </div>
       </div>
