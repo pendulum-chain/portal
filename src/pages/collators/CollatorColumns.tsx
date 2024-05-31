@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { ColumnDef } from '@tanstack/table-core';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyableAddress } from '../../components/PublicKey';
@@ -135,7 +135,7 @@ export const actionsColumn = ({
           }}
           startIcon={<UnlinkIcon className="w-4 h-4" />}
           disabled={!canUnstake}
-          style={{ opacity: canUnstake ? '1' : '0' }}
+          style={{ opacity: canUnstake ? '1' : '0', gap: '0.5rem' }}
         >
           Unstake
         </Button>

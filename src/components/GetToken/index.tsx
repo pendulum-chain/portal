@@ -25,7 +25,7 @@ const tenantColors = {
     text: 'text-primary',
     arrowFill: '#4EE59A',
     tokenIcon: ampe,
-    button: 'bg-primary',
+    button: 'btn-primary',
   },
 };
 

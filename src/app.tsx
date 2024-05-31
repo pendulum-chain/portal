@@ -18,11 +18,12 @@ const NablaPage = <SuspenseLoad importFn={() => import('./pages/nabla')} fallbac
 const StatsPage = <SuspenseLoad importFn={() => import('./pages/stats')} fallback={defaultPageLoader} />;
 const SwapPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap')} fallback={defaultPageLoader} />;
 const SwapPoolsPage = <SuspenseLoad importFn={() => import('./pages/nabla/swap-pools')} fallback={defaultPageLoader} />;
-const TransfersPage = <SuspenseLoad importFn={() => import('./pages/bridge/Transfers')} fallback={defaultPageLoader} />;
+const TransactionsPage = (
+  <SuspenseLoad importFn={() => import('./pages/bridge/Transactions')} fallback={defaultPageLoader} />
+);
 const BackstopPoolsPage = (
   <SuspenseLoad importFn={() => import('./pages/nabla/backstop-pools')} fallback={defaultPageLoader} />
 );
-const DevPage = <SuspenseLoad importFn={() => import('./pages/nabla/dev')} fallback={defaultPageLoader} />;
 const Bridge = <SuspenseLoad importFn={() => import('./pages/bridge')} fallback={defaultPageLoader} />;
 const Staking = <SuspenseLoad importFn={() => import('./pages/collators/Collators')} fallback={defaultPageLoader} />;
 
@@ -37,22 +38,23 @@ export const App = () => (
         <Route path="stats" element={StatsPage} />
         <Route path="spacewalk">
           <Route path="bridge" element={Bridge} />
-          <Route path="transfers" element={TransfersPage} />
+          <Route path="transactions" element={TransactionsPage} />
         </Route>
         <Route path="nabla" Component={() => <AppsProvider app="nabla" />}>
           <Route path="" element={NablaPage} />
           <Route path="swap" element={SwapPage} />
           <Route path="swap-pools" element={SwapPoolsPage} />
           <Route path="backstop-pools" element={BackstopPoolsPage} />
-          {!config.isProd && <Route path="dev" element={DevPage} />}
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="staking" element={Staking} />
         <Route path="*" element={<NotFound />} />
       </Route>
-      <Route path="*" element={<NotFound />} />
     </Routes>
     <TermsAndConditions />
     <ToastContainer />
+    <div id="modals">
+      {/* This is where the dialogs/modals are rendered. It is placed here because it is the highest point in the app where the tailwind data-theme is available */}
+    </div>
   </>
 );

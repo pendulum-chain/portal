@@ -2,7 +2,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { memo, useEffect, useState } from 'preact/compat';
 import { usePriceFetcher } from '../../../hooks/usePriceFetcher';
-import { numberLoader } from '../../Loader';
+import { NumberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
   address?: string;
@@ -28,7 +28,7 @@ const TokenPrice = memo(({ currency, prefix = null, loader, fallback = null }: T
 
   const isLoading = price === null;
 
-  if (isLoading) return <>{loader}</> || numberLoader;
+  if (isLoading) return <>{loader}</> || NumberLoader;
   if (!price) return <>{fallback}</>;
   return (
     <span>

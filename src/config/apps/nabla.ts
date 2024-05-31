@@ -8,7 +8,6 @@ export type NablaConfig = AppConfigBase &
         indexerUrl: string;
         router: string;
         oracle: string;
-        curve: string;
       }
     >
   >;
@@ -17,11 +16,8 @@ export const nablaConfig: NablaConfig = {
   tenants: [TenantName.Foucoco],
   environment: ['staging', 'development'],
   foucoco: {
-    indexerUrl: 'https://squid.subsquid.io/foucoco-squid/graphql',
-
-    // TODO: if these addresses change we will need to fetch them from the indexer
-    router: '6nHNN8GfwaUcSvp7QhRJZtXY5yQLBeVz3J2RCx395ma9MbeV',
-    oracle: '6guy27fyEZpKyBwWfysB6X2N3RDgrVertCaZ4ont8FPqdD9C',
-    curve: '6mxUgPWk76RzqnUnEryZkFNZ3tqqdtwyrXmaWwMJ2n311cZE',
+    indexerUrl: 'https://pendulum.squids.live/foucoco-squid/graphql',
+    router: '6h54SUQjbXjYbYT7p7vDcXSVGAQNgu78jkhErLJoW7EXo3ry',
+    oracle: '6nT6THovpSsTtCCi9Lae1NoAAviLbzULaEo41Yg5eYJrCZXu',
   },
 };

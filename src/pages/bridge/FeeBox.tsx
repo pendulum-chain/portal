@@ -8,17 +8,18 @@ import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 import { calculateGriefingCollateral } from './helpers';
 
 interface FeeBoxProps {
-  bridgedAsset?: Asset;
   // The amount of the bridged asset denoted in the smallest unit of the asset
   amountNative: Big;
+  bridgedAsset?: Asset;
   extrinsic?: SubmittableExtrinsic;
-  network: string;
-  wrappedCurrencySuffix?: string;
   nativeCurrency: string;
+  network: string;
+  showSecurityDeposit?: boolean;
+  wrappedCurrencySuffix?: string;
 }
 
 export function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency } = props;
+  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency, showSecurityDeposit } = props;
   const amount = props.amountNative;
   const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
   const { getFees, getTransactionFee } = useFeePallet();
@@ -107,12 +108,14 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
             {bridgeFee.toString()} {bridgedAsset?.getCode()}
           </span>
         </div>
-        <div className="flex justify-between mt-2">
-          <span>Security Deposit</span>
-          <span className="text-right">
-            {griefingCollateral.toString()} {nativeCurrency}
-          </span>
-        </div>
+        {showSecurityDeposit && (
+          <div className="flex justify-between mt-2">
+            <span>Security Deposit</span>
+            <span className="text-right">
+              {griefingCollateral.toString()} {nativeCurrency}
+            </span>
+          </div>
+        )}
         <div className="flex justify-between mt-2">
           <span>Transaction Fee</span>
           <span className="text-right">

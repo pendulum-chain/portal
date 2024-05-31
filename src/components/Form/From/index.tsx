@@ -1,5 +1,5 @@
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
 
 import { BlockchainAsset } from '../../Selector/AssetSelector/helpers';

@@ -244,6 +244,11 @@ input[type='number'] {
 .btn,
 .input {
   line-height: 1.5;
+  gap: 0;
+}
+
+.btn:has(.loading) {
+  gap: 0.5rem;
 }
 
 .input-ghost:focus {
@@ -286,7 +291,7 @@ table th:hover .sort {
 .btn[disabled]:hover {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
-  background-color: hsl(var(--s));
+  background-color: oklch(var(--s));
   opacity: 0.3;
 }
 
@@ -315,6 +320,52 @@ w3m-modal {
   height: 25px;
   white-space: nowrap;
 }
+
+/*  These classes are flawed in the version 4.11.1 of DaisyUI, so they are overwritten */
+
+.table :where(th, td) {
+  white-space: nowrap;
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table:where(:not(.table-zebra)) :where(thead, tbody, tfoot) :where(tr:not(:last-child) :where(th, td)) {
+  border-bottom-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: oklch(var(--b2, var(--b1)) / var(--tw-border-opacity));
+}
+
+.menu :where(li) > :where(*:not(ul)) {
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: currentColor;
+}
+
+.collapse-content {
+  max-height: 0;
+}
+
+.collapse-open .collapse-content {
+  max-height: none;
+}
+
+.collapse-arrow > .collapse-title:after {
+  top: 50%;
+}
+
+.collapse {
+  border-radius: unset;
+}
+
+.modal-box {
+  scrollbar-width: none;
+}
+
+:root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
+  scrollbar-gutter: unset;
+}
+
+/* End of overwriting */
 
 @layer components {
   .badge-secondary-content {

@@ -1,28 +1,36 @@
 import { Button, Card } from 'react-daisyui';
-import { useBackstopPools } from '../../../../hooks/nabla/useBackstopPools';
 import ModalProvider, { useModalToggle } from '../../../../services/modal';
-import { FixedU128Decimals } from '../../../../shared/parseNumbers/metric';
-import Balance from '../../../Balance';
 import { Skeleton } from '../../../Skeleton';
-import Modals from './Modals';
-import { LiquidityModalProps, ModalTypes } from './Modals/types';
+import { useNablaInstance } from '../../../../hooks/nabla/useNablaInstance';
+import { backstopPoolAbi } from '../../../../contracts/nabla/BackstopPool';
+import { Erc20Balance } from '../../common/Erc20Balance';
+import { BackstopPoolModals, LiquidityModalProps } from './BackstopPoolModals';
+import { NablaFootnote } from '../../common/NablaFootnote';
 
 const BackstopPoolsBody = (): JSX.Element | null => {
   const toggle = useModalToggle<LiquidityModalProps>();
-  const { data, isLoading } = useBackstopPools();
+  const { nabla, isLoading } = useNablaInstance();
 
   if (isLoading) return <Skeleton className="bg-neutral-200 h-48 w-full" />;
-  const pool = data?.[0];
+  const pool = nabla?.backstopPool;
   if (!pool) return <h3 className="text-center">No backstop pools</h3>;
+
   return (
     <>
-      <div className="text-[initial] dark:text-neutral-200 center gap-4 w-full">
+      <div className="text-[initial] dark:text-neutral-200 center w-full">
         <Card bordered className="w-full max-w-xl bg-base-200">
           <div className="card-body p-4 md:p-6">
             <div className="flex items-center justify-between gap-2 text-3xl">
               <h2>My pool balance</h2>
               <div>
-                <Balance address={pool.id} decimals={FixedU128Decimals} />
+                <Erc20Balance
+                  abi={backstopPoolAbi}
+                  erc20ContractDefinition={{
+                    contractAddress: pool.id,
+                    decimals: pool.lpTokenDecimals,
+                    symbol: pool.symbol,
+                  }}
+                />
               </div>
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
@@ -31,7 +39,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
                 color="primary"
                 onClick={() =>
                   toggle({
-                    type: ModalTypes.AddLiquidity,
+                    type: 'AddLiquidity',
                     props: { data: pool },
                   })
                 }
@@ -43,8 +51,7 @@ const BackstopPoolsBody = (): JSX.Element | null => {
                 color="secondary"
                 onClick={() =>
                   toggle({
-                    type: ModalTypes.WithdrawLiquidity,
-                    props: { data: pool },
+                    type: 'WithdrawLiquidity',
                   })
                 }
               >
@@ -53,13 +60,14 @@ const BackstopPoolsBody = (): JSX.Element | null => {
             </div>
           </div>
         </Card>
+        <NablaFootnote />
       </div>
-      <Modals />
+      <BackstopPoolModals />
     </>
   );
 };
 
-const BactopPools = (): JSX.Element | null => {
+const BackstopPools = (): JSX.Element | null => {
   return (
     <ModalProvider>
       <BackstopPoolsBody />
@@ -67,4 +75,4 @@ const BactopPools = (): JSX.Element | null => {
   );
 };
 
-export default BactopPools;
+export default BackstopPools;

@@ -1,4 +1,5 @@
-import { StateUpdater, useEffect, useState } from 'preact/hooks';
+import BigNumber from 'big.js';
+import { StateUpdater, Dispatch, useEffect, useState } from 'preact/hooks';
 import { isEmpty, find } from 'lodash';
 import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
@@ -11,7 +12,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
-import { decimalToNative } from '../../shared/parseNumbers/metric';
+import { ChainDecimals, decimalToNative } from '../../shared/parseNumbers/metric';
 import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
@@ -53,6 +54,12 @@ function handleBuyoutError(error: string) {
 
   showToast(ToastMessage.BUYOUT_ERROR, 'The buyout failed:' + error);
   return;
+}
+
+function generateBuyoutExtrinsicPayload(amount: BigNumber) {
+  const amountString = amount.toString();
+  // We always go the 'buyout' route because the 'exchange' route does not work sometimes
+  return { buyout: { amount: amountString } };
 }
 
 export const useBuyout = (): BuyoutSettings => {
@@ -131,16 +138,13 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
+    const amountRaw = decimalToNative(amount, nativeCurrency?.metadata.decimals ?? ChainDecimals);
+    const assetId = currency.currencyId;
+    if (!assetId) return;
 
-    const assetId = currency.currencyId.asXcm;
+    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(amountRaw);
 
-    // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
-    const exchange = isExchangeAmount
-      ? { buyout: { amount: scaledCurrency } }
-      : { exchange: { amount: scaledCurrency } };
-
-    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId }, exchange);
+    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout(assetId, buyoutExtrinsicData);
 
     try {
       await doSubmitExtrinsic(

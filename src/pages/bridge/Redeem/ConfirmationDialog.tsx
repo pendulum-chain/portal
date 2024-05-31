@@ -18,6 +18,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
   const { redeemRequest, visible, onClose } = props;
   const navigateTo = useNavigate();
   const { tenantName } = useGlobalState();
+
   const totalAmount = redeemRequest ? nativeStellarToDecimal(redeemRequest.request.amount.toString()).toString() : '';
   const currency = redeemRequest?.request.asset;
   const asset = currency && convertCurrencyToStellarAsset(currency);
@@ -55,7 +56,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
       <Button
         color="primary"
         onClick={() => {
-          navigateTo(`/${tenantName}/spacewalk/transfers`);
+          navigateTo(`/${tenantName}/spacewalk/transactions`);
         }}
       >
         View Progress

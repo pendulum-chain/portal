@@ -1,6 +1,7 @@
 import Big from 'big.js';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
+
 import { nativeToDecimal, nativeToFormatMetric } from '../../../shared/parseNumbers/metric';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 import { Dialog } from './Dialog';
@@ -107,7 +108,13 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
   const actions = useMemo(
     () => (
       <div className="flex-col align-center w-full">
-        <Button className="px-6 w-full mb-2" color="primary" loading={submissionPending} onClick={onConfirm}>
+        <Button
+          className="px-6 w-full mb-2"
+          color="primary"
+          loading={submissionPending}
+          onClick={onConfirm}
+          disabled={submissionPending}
+        >
           {titleAction}
         </Button>
         <Button className="px-6 w-full mr-0 ml-0" color="primary" variant="outline" onClick={onCancel}>
