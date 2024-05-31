@@ -11,38 +11,24 @@ export function prioritizeXLMAsset(assets?: Asset[]): Asset[] {
   return assets.sort((a, b) => (a.code === 'XLM' ? -1 : b.code === 'XLM' ? 1 : 0));
 }
 
+const isInvalid = (value: unknown) => {
+  return !value;
+};
+
 export const calculateGriefingCollateral = async (
   amount: Big,
-  assetCode: string | undefined,
-  wrappedCurrencySuffix: string,
+  wrappedCurrency: SpacewalkPrimitivesCurrencyId | null | undefined,
+  griefingCollateralCurrency: SpacewalkPrimitivesCurrencyId | null | undefined,
   getTokenPriceForCurrency: (currency: SpacewalkPrimitivesCurrencyId) => Promise<number>,
-  griefingCollateralCurrency: string | undefined,
   issueGriefingCollateralFee: Big,
 ) => {
-  const isInvalid = (value: unknown) => {
-    if (!value) {
-      return true;
-    }
-    return false;
-  };
+  if (isInvalid(amount) || isInvalid(wrappedCurrency) || isInvalid(griefingCollateralCurrency)) return new Big(0);
 
-  if (isInvalid(amount)) return new Big(0);
-
-  if (isInvalid(assetCode)) return new Big(0);
-
-  const assetUSDPrice = await getTokenPriceForCurrency(
-    `${assetCode}${wrappedCurrencySuffix}` as unknown as SpacewalkPrimitivesCurrencyId,
-  );
-  if (isInvalid(assetUSDPrice)) return new Big(0);
+  const assetUSDPrice = await getTokenPriceForCurrency(wrappedCurrency!);
 
   const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
-  if (!griefingCollateralCurrency || typeof griefingCollateralCurrency !== 'string') {
-    return new Big(0);
-  }
 
-  const griefingCollateralCurrencyUSD = await getTokenPriceForCurrency(
-    griefingCollateralCurrency as unknown as SpacewalkPrimitivesCurrencyId,
-  );
+  const griefingCollateralCurrencyUSD = await getTokenPriceForCurrency(griefingCollateralCurrency!);
   if (isInvalid(griefingCollateralCurrencyUSD)) return new Big(0);
 
   const griefingCollateralValue = amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD);

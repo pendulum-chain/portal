@@ -6,6 +6,8 @@ import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
 import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';
 import { calculateGriefingCollateral } from './helpers';
+import { useNodeInfoState } from '../../NodeInfoProvider';
+import { convertStellarAssetToCurrency } from '../../helpers/spacewalk';
 
 interface FeeBoxProps {
   // The amount of the bridged asset denoted in the smallest unit of the asset
@@ -25,9 +27,13 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
   const { getFees, getTransactionFee } = useFeePallet();
   const { getTokenPriceForCurrency } = usePriceFetcher();
   const fees = getFees();
+  const { api } = useNodeInfoState().state;
 
   const [collapseVisibility, setCollapseVisibility] = useState('');
   const [transactionFee, setTransactionFee] = useState<Big>(Big(0));
+  const bridgedAssetCurrencyId = useMemo(() => {
+    return bridgedAsset && api ? convertStellarAssetToCurrency(bridgedAsset, api) : null;
+  }, [bridgedAsset, api]);
 
   useEffect(() => {
     if (!extrinsic) {
@@ -49,10 +55,9 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     const fetchGriefingCollateral = async () => {
       const calculatedGriefingCollateral = await calculateGriefingCollateral(
         amount,
-        bridgedAsset?.code,
-        wrappedCurrencySuffix || '',
+        bridgedAssetCurrencyId,
+        fees.griefingCollateralCurrency,
         getTokenPriceForCurrency,
-        fees.griefingCollateralCurrency?.toHuman() as string,
         fees.issueGriefingCollateralFee,
       );
       calculatedGriefingCollateral && setGriefingCollateral(calculatedGriefingCollateral);
@@ -60,7 +65,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     fetchGriefingCollateral();
   }, [
     amount,
-    bridgedAsset?.code,
+    bridgedAssetCurrencyId,
     wrappedCurrencySuffix,
     getTokenPriceForCurrency,
     fees.griefingCollateralCurrency,

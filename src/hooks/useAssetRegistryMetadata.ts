@@ -29,9 +29,11 @@ interface UseAssetRegistryMetadata {
 
 function convertToOrmlAssetRegistryAssetMetadata(metadata: [StorageKey, Codec]): OrmlTraitsAssetRegistryAssetMetadata {
   const { decimals, name, symbol, additional } = metadata[1].toHuman() as CurrencyMetadataType;
-  const currencyIdArray = metadata[0].toHuman() as unknown as SpacewalkPrimitivesCurrencyId[];
-  const currencyId = currencyIdArray[0];
-
+  const currencyIdStorageKey = metadata[0] as StorageKey;
+  // We need to convert the currencyId StorageKey to the correct type
+  const currencyIdJsonArray = currencyIdStorageKey.toHuman() as unknown as SpacewalkPrimitivesCurrencyId[];
+  const currencyIdJson = currencyIdJsonArray[0];
+  const currencyId = currencyIdStorageKey.registry.createType('SpacewalkPrimitivesCurrencyId', currencyIdJson);
   return {
     metadata: { decimals: Number(decimals), name, symbol, additional },
     currencyId,

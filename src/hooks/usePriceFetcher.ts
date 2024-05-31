@@ -68,15 +68,17 @@ export const usePriceFetcher = () => {
   );
 
   const handleNativeTokenPrice = useCallback(() => {
-    if (currentTenant === TenantName.Pendulum) return pricesCache['PEN'];
-    return pricesCache['AMPE'];
+    if (currentTenant === TenantName.Pendulum) return pricesCache['Pendulum:PEN'];
+    return pricesCache['Amplitude:AMPE'];
   }, [currentTenant, pricesCache]);
 
   const getTokenPriceForCurrency = useCallback(
     async (currency: SpacewalkPrimitivesCurrencyId) => {
-      if (typeof currency === 'string' && (currency as string).toUpperCase() === 'NATIVE')
+      if (typeof currency.toHuman() === 'string' && (currency.toHuman() as string).toUpperCase() === 'NATIVE')
         return handleNativeTokenPrice();
-      const asset = getAllAssetsMetadata().find((asset) => isEqual(asset.currencyId, currency));
+      const asset = getAllAssetsMetadata().find((asset) => {
+        return isEqual(asset.currencyId.toHuman(), currency.toHuman());
+      });
       if (!asset) {
         return 0;
       }
