@@ -1,5 +1,5 @@
 import { Button, Range } from 'react-daisyui';
-import { FieldPath, FieldValues, PathValue, UseFormRegisterReturn, UseFormReturn, useWatch } from 'react-hook-form';
+import { FieldPath, FieldValues, PathValue, UseFormReturn, useWatch } from 'react-hook-form';
 import { useEffect, useMemo } from 'preact/hooks';
 import Big from 'big.js';
 
@@ -8,7 +8,6 @@ import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { ContractBalance } from '../../../helpers/contracts';
 import { calcSharePercentageNumber } from '../../../helpers/calc';
 import { NumericInput } from '../../Form/From/NumericInput';
-import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   maxBalance: ContractBalance | undefined;
@@ -70,7 +69,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
         register={form.register(formFieldName)}
         autoFocus
-        maxDecimals={USER_INPUT_MAX_DECIMALS.STELLAR}
+        maxDecimals={maxBalance?.decimals}
       />
     );
   }
@@ -83,7 +82,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
             additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
             register={form.register(formFieldName)}
             autoFocus
-            maxDecimals={USER_INPUT_MAX_DECIMALS.STELLAR}
+            maxDecimals={maxBalance?.decimals}
           />
           <Button
             className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
