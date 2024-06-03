@@ -13,6 +13,7 @@ import { FormProvider } from 'react-hook-form';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
@@ -103,14 +104,18 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
                   </button>
                 </div>
               )}
-              <Button
-                color="primary"
-                className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
-                type="submit"
-                disabled={!submitEnabled}
-              >
-                Withdraw
-              </Button>
+              {walletAccount ? (
+                <Button
+                  color="primary"
+                  className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                  type="submit"
+                  disabled={!submitEnabled}
+                >
+                  Withdraw
+                </Button>
+              ) : (
+                <OpenWallet />
+              )}
               <Button
                 color="secondary"
                 className="mt-2 w-full"

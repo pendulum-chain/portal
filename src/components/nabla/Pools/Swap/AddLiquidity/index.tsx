@@ -15,6 +15,7 @@ import { TokenApproval } from '../../../common/TokenApproval';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;
@@ -90,9 +91,13 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 decimalAmount={amountBigDecimal}
                 enabled={submitEnabled}
               >
-                <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
-                  Deposit
-                </Button>
+                {walletAccount ? (
+                  <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
+                    Deposit
+                  </Button>
+                ) : (
+                  <OpenWallet />
+                )}
               </TokenApproval>
               <Button
                 color="secondary"

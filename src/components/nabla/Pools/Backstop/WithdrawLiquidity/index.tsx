@@ -17,6 +17,7 @@ import { PoolSelectorModal } from '../../../common/PoolSelectorModal';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
 const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element | null => {
   const [showTokenModal, setShowTokenModal] = useState(false);
@@ -150,9 +151,13 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
               )}
             </div>
             <div className="mt-8">
-              <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
-                Withdraw
-              </Button>
+              {walletAccount ? (
+                <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
+                  Withdraw
+                </Button>
+              ) : (
+                <OpenWallet />
+              )}
               <Button color="secondary" className="mt-2 w-full" type="button" onClick={() => toggle()}>
                 Cancel
               </Button>

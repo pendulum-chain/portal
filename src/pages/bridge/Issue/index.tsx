@@ -64,7 +64,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { walletAccount, dAppName, tenantName } = useGlobalState();
+  const { walletAccount, tenantName } = useGlobalState();
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueGriefingCollateral } = useFeePallet().getFees();
@@ -248,7 +248,7 @@ function Issue(props: IssueProps): JSX.Element {
               Bridge
             </Button>
           ) : (
-            <OpenWallet dAppName={dAppName} />
+            <OpenWallet />
           )}
           <Disclaimer content={disclaimerContent} />
         </form>

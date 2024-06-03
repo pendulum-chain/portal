@@ -14,6 +14,7 @@ import { TransactionSettingsDropdown } from '../../../common/TransactionSettings
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
 import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
 export type RedeemLiquidityValues = {
   amount: number;
@@ -140,14 +141,18 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                   Withdraw from swap pool
                 </button>
               </div>
-              <Button
-                color="primary"
-                className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
-                type="submit"
-                disabled={!submitEnabled}
-              >
-                Redeem
-              </Button>
+              {walletAccount ? (
+                <Button
+                  color="primary"
+                  className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                  type="submit"
+                  disabled={!submitEnabled}
+                >
+                  Redeem
+                </Button>
+              ) : (
+                <OpenWallet />
+              )}
               <Button
                 color="secondary"
                 className="mt-2 w-full"
