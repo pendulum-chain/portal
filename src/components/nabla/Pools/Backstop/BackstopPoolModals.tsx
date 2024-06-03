@@ -7,7 +7,6 @@ import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
 
 export type LiquidityModalProps = {
   data?: NablaInstanceBackstopPool;
-  onClose: () => void;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

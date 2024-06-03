@@ -8,10 +8,10 @@ import WithdrawLiquidity from './WithdrawLiquidity';
 
 export type LiquidityModalProps = {
   data: SwapPoolColumn;
-  onClose: () => void;
 };
 
-const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<LiquidityModalProps>>> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<any>>> = {
   AddLiquidity,
   WithdrawLiquidity,
   Redeem,
