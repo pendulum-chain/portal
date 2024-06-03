@@ -1,28 +1,40 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { useNodeInfoState } from '../NodeInfoProvider';
-import { AssetId, OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
+import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
 import { StorageKey } from '@polkadot/types';
 import { Codec } from '@polkadot/types-codec/types';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 type CurrencyMetadataType = {
   decimals: string;
   name: string;
   symbol: string;
+  additional: {
+    diaKeys: {
+      blockchain: string;
+      symbol: string;
+    };
+    feePerSecond: string;
+  };
   // There are more coming, but are not used in this context
 };
 
 interface UseAssetRegistryMetadata {
-  getAssetMetadata: (assetId: AssetId) => Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined>;
+  getAssetMetadata: (
+    currencyId: SpacewalkPrimitivesCurrencyId,
+  ) => Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined>;
   getNativeAssetMetadata: () => Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined>;
+  getAllAssetsMetadata: () => OrmlTraitsAssetRegistryAssetMetadata[];
 }
 
 function convertToOrmlAssetRegistryAssetMetadata(metadata: [StorageKey, Codec]): OrmlTraitsAssetRegistryAssetMetadata {
-  const { decimals, name, symbol } = metadata[1].toHuman() as CurrencyMetadataType;
-  const assetId = (metadata[0].toHuman() as string[])[0] as string;
+  const { decimals, name, symbol, additional } = metadata[1].toHuman() as CurrencyMetadataType;
+  const currencyIdArray = metadata[0].toHuman() as unknown as SpacewalkPrimitivesCurrencyId[];
+  const currencyId = currencyIdArray[0];
 
   return {
-    metadata: { decimals: Number(decimals), name, symbol },
-    assetId,
+    metadata: { decimals: Number(decimals), name, symbol, additional },
+    currencyId,
   };
 }
 
@@ -42,17 +54,22 @@ export const useAssetRegistryMetadata = (): UseAssetRegistryMetadata => {
   }, [fetchMetadata]);
 
   const getAssetMetadata = useCallback(
-    async (assetId: AssetId): Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined> =>
+    async (currencyId: SpacewalkPrimitivesCurrencyId): Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined> =>
       metadataCache.find(
         // When JSON.stringify we check for the same object structure as OrmlTraitsAssetRegistryAssetMetadata.assetId's are really different
-        (m: OrmlTraitsAssetRegistryAssetMetadata) => JSON.stringify(m.assetId) === JSON.stringify(assetId),
+        (m: OrmlTraitsAssetRegistryAssetMetadata) => JSON.stringify(m.currencyId) === JSON.stringify(currencyId),
       ),
     [metadataCache],
   );
 
   const getNativeAssetMetadata = useCallback(async () => {
-    return getAssetMetadata('Native');
+    const nativeCurrencyId = 'Native' as unknown as SpacewalkPrimitivesCurrencyId;
+    return getAssetMetadata(nativeCurrencyId);
   }, [getAssetMetadata]);
 
-  return { getAssetMetadata, getNativeAssetMetadata };
+  const getAllAssetsMetadata = useCallback(() => {
+    return metadataCache;
+  }, [metadataCache]);
+
+  return { getAssetMetadata, getNativeAssetMetadata, getAllAssetsMetadata };
 };

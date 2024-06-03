@@ -332,7 +332,7 @@ w3m-modal {
 .table:where(:not(.table-zebra)) :where(thead, tbody, tfoot) :where(tr:not(:last-child) :where(th, td)) {
   border-bottom-width: 1px;
   --tw-border-opacity: 1;
-  border-color: hsl(var(--b2, var(--b1)) / var(--tw-border-opacity));
+  border-color: oklch(var(--b2, var(--b1)) / var(--tw-border-opacity));
 }
 
 .menu :where(li) > :where(*:not(ul)) {
@@ -371,4 +371,17 @@ w3m-modal {
   .badge-secondary-content {
     @apply bg-secondary-content;
   }
+}
+
+/* Style to hide accessibility hints */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

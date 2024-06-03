@@ -1,5 +1,6 @@
+import BigNumber from 'big.js';
 import { StateUpdater, Dispatch, useEffect, useState } from 'preact/hooks';
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
 
@@ -11,8 +12,9 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
-import { decimalToNative } from '../../shared/parseNumbers/metric';
+import { ChainDecimals, decimalToNative } from '../../shared/parseNumbers/metric';
 import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 export interface BuyoutSettings {
   buyoutNativeToken: {
@@ -24,33 +26,39 @@ export interface BuyoutSettings {
   sellFee: PerMill;
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
-    amount: number,
+    amount: string,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isExchangeAmount: boolean,
   ) => void;
 }
+
+const BuyoutErrors: Record<string, string> = {
+  '1010: Invalid Transaction: Custom error: 4': 'Wrong asset to buyout',
+  '1010: Invalid Transaction: Custom error: 3': 'The buyout amount is too low',
+  '1010: Invalid Transaction: Custom error: 2': 'Max buyout reached',
+  '1010: Invalid Transaction: Custom error: 1': 'Calculation error',
+  '1010: Invalid Transaction: Custom error: 0': 'Not enough funds',
+  Cancelled: 'The buyout was cancelled',
+};
 
 function handleBuyoutError(error: string) {
   if (!error) return;
 
-  if (error.includes('1010: Invalid Transaction: Custom error: 3')) {
-    showToast(ToastMessage.ERROR, 'The buyout amount is too low');
+  const errorKey = find(Object.keys(BuyoutErrors), (key) => error.trim().includes(key));
+
+  if (errorKey) {
+    showToast(ToastMessage.BUYOUT_ERROR, BuyoutErrors[errorKey]);
     return;
   }
 
-  if (error.includes('1010: Invalid Transaction: Custom error: 2')) {
-    showToast(ToastMessage.ERROR, 'Max buyout reached');
-    return;
-  }
-
-  if (error.includes('Cancelled')) {
-    showToast(ToastMessage.ERROR, 'The buyout was cancelled');
-    return;
-  }
-
-  showToast(ToastMessage.ERROR, 'The buyout failed:' + error);
+  showToast(ToastMessage.BUYOUT_ERROR, 'The buyout failed:' + error);
   return;
+}
+
+function generateBuyoutExtrinsicPayload(amount: BigNumber) {
+  const amountString = amount.toString();
+  // We always go the 'buyout' route because the 'exchange' route does not work sometimes
+  return { buyout: { amount: amountString } };
 }
 
 export const useBuyout = (): BuyoutSettings => {
@@ -70,14 +78,13 @@ export const useBuyout = (): BuyoutSettings => {
       if (api) {
         const allowedCurrenciesEntries = await api.query.treasuryBuyoutExtension.allowedCurrencies.entries();
 
-        for (const currency of allowedCurrenciesEntries) {
-          if (currency.length && currency[0] && currency[0].toHuman()) {
-            const currencyXCMId: { XCM: number } = (currency[0].toHuman() as { XCM: number }[])[0];
-            const currencyMetadata = await getAssetMetadata(currencyXCMId);
+        for (const [currency, _] of allowedCurrenciesEntries) {
+          const currencyKeyHuman = currency.toHuman() as unknown as SpacewalkPrimitivesCurrencyId[];
+          const currencyId = currencyKeyHuman[0];
+          const currencyMetadata = await getAssetMetadata(currencyId);
 
-            if (currencyMetadata) {
-              allowedCurrencies.push(currencyMetadata);
-            }
+          if (currencyMetadata) {
+            allowedCurrencies.push(currencyMetadata);
           }
         }
       }
@@ -118,10 +125,9 @@ export const useBuyout = (): BuyoutSettings => {
 
   async function handleBuyout(
     currency: OrmlTraitsAssetRegistryAssetMetadata,
-    amount: number,
+    amount: string,
     setSubmissionPending: Dispatch<StateUpdater<boolean>>,
     setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
-    isExchangeAmount: boolean,
   ) {
     if (!api || !walletAccount) {
       return;
@@ -130,16 +136,13 @@ export const useBuyout = (): BuyoutSettings => {
       throw new Error('Treasury Buyout does not exist');
     }
 
-    const scaledCurrency = decimalToNative(amount, currency.metadata.decimals).toNumber();
+    const amountRaw = decimalToNative(amount, nativeCurrency?.metadata.decimals ?? ChainDecimals);
+    const assetId = currency.currencyId;
+    if (!assetId) return;
 
-    const assetId = currency.assetId as { XCM: number };
+    const buyoutExtrinsicData = generateBuyoutExtrinsicPayload(amountRaw);
 
-    // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
-    const exchange = isExchangeAmount
-      ? { buyout: { amount: scaledCurrency } }
-      : { exchange: { amount: scaledCurrency } };
-
-    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
+    const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout(assetId, buyoutExtrinsicData);
 
     try {
       await doSubmitExtrinsic(
