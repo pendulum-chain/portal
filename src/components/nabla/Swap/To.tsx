@@ -15,6 +15,7 @@ import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
 import { getIcon } from '../../../shared/AssetIcons';
+import { useGlobalState } from '../../../GlobalStateProvider';
 
 export interface ToProps {
   onOpenSelector: () => void;
@@ -35,6 +36,8 @@ export function To({
 }: ToProps): JSX.Element | null {
   const [isOpen, { toggle }] = useBoolean(true);
   const { setValue } = useFormContext<SwapFormValues>();
+
+  const { walletAccount } = useGlobalState();
 
   useEffect(() => {
     setValue('toAmount', toAmountQuote.data?.amountOut.preciseString ?? '0', {
@@ -80,13 +83,17 @@ export function To({
       </div>
       <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
         <div className="text-sm mt-px">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
-        <div className="flex gap-1 text-sm">
-          Balance:{' '}
-          <Erc20Balance
-            abi={erc20WrapperAbi}
-            erc20ContractDefinition={toToken ? { contractAddress: toToken.id, decimals: toToken.decimals } : undefined}
-          />
-        </div>
+        {walletAccount && (
+          <div className="flex gap-1 text-sm">
+            Balance:{' '}
+            <Erc20Balance
+              abi={erc20WrapperAbi}
+              erc20ContractDefinition={
+                toToken ? { contractAddress: toToken.id, decimals: toToken.decimals } : undefined
+              }
+            />
+          </div>
+        )}
       </div>
       <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
       <div
