@@ -20,7 +20,7 @@ export const SubmitButton = ({ loading, disabled }: { loading?: boolean; disable
           {tokenSymbol && !loading ? `Get ${tokenSymbol}` : ''}
         </Button>
       ) : (
-        <OpenWallet dAppName={dAppName} />
+        <OpenWallet />
       )}
     </>
   );
