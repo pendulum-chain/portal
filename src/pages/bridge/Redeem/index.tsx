@@ -194,7 +194,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               Bridge
             </Button>
           ) : (
-            <OpenWallet dAppName={dAppName} />
+            <OpenWallet />
           )}
         </form>
       </div>

@@ -385,3 +385,12 @@ w3m-modal {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* Fix wallet select modal to allow for scrolling */
+#react-portal-modal-container main {
+  overflow-y: auto;
+}
+
+#react-portal-modal-container > div > div {
+  max-height: 90vh;
+}

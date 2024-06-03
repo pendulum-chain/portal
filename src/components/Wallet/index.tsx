@@ -12,8 +12,12 @@ import MetamaskWallet from './MetamaskWallet';
 import NovaWallet from './NovaWallet';
 import WalletConnect from './WalletConnect';
 
-const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
-  const { walletAccount, setWalletAccount, removeWalletAccount } = useGlobalState();
+interface Props {
+  isHeader?: boolean;
+}
+
+const OpenWallet = (props: Props): JSX.Element => {
+  const { walletAccount, dAppName, setWalletAccount, removeWalletAccount } = useGlobalState();
   const { wallet, address } = walletAccount || {};
   const { query, balance } = useAccountBalance();
   const { ss58Format, tokenSymbol } = useNodeInfoState().state;
@@ -64,7 +68,12 @@ const OpenWallet = ({ dAppName }: { dAppName: string }): JSX.Element => {
             open={false}
             showAccountsList={true}
             triggerComponent={
-              <Button size="sm" className={`text-sm min-h-[2.1rem] h-auto px-1 sm:px-3`} color="primary" type="button">
+              <Button
+                size={props.isHeader ? 'sm' : undefined}
+                className={props.isHeader ? 'text-sm min-h-[2.1rem] h-auto px-1 sm:px-3 ' : 'w-full'}
+                color="primary"
+                type="button"
+              >
                 Connect to Wallet
               </Button>
             }

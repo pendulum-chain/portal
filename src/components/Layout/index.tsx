@@ -70,7 +70,7 @@ export default function Layout(): JSX.Element | null {
                 <Bars3Icon className="w-7" />
               </button>
             </div>
-            <OpenWallet dAppName={dAppName} />
+            <OpenWallet isHeader />
             <ChainSelector />
             <GetToken />
             <div className="dropdown dropdown-end mr-2 hidden">

@@ -4,6 +4,7 @@ import { Big } from 'big.js';
 
 import { ApprovalState, useErc20TokenApproval } from '../../../hooks/nabla/useErc20TokenApproval';
 import { multiplyByPowerOfTen } from '../../../shared/parseNumbers/metric';
+import OpenWallet from '../../Wallet';
 
 export type TokenApprovalProps = ButtonProps & {
   token: string;
@@ -50,15 +51,11 @@ export function TokenApproval({
 
   const isDisabled = isNoAccount || isApprovalPending || disabled || !decimalAmount;
 
-  const buttonText = isNoAccount
-    ? 'Please connect your wallet'
-    : isApprovalPending
-      ? 'Approving'
-      : isLoading
-        ? 'Loading'
-        : 'Approve';
+  const buttonText = isApprovalPending ? 'Approving' : isLoading ? 'Loading' : 'Approve';
 
-  return (
+  return isNoAccount ? (
+    <OpenWallet />
+  ) : (
     <Button
       className={`w-full ${className}`}
       color="primary"
