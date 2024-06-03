@@ -28,8 +28,6 @@ const getErrorMessage = (data?: ExecuteMessageResult['result']) => {
 
 export function TransactionProgress({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null {
   if (mutation.isIdle) return null;
-  const status = mutation.data?.result?.type;
-  const isSuccess = status === 'success';
   const errorMsg = getErrorMessage(mutation.data?.result);
   if (mutation.isLoading) {
     const isPending = false; // TODO: currently there is not status for this (waiting confirmation in wallet)
@@ -51,16 +49,18 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
   return (
     <>
       <div className="center mt-6">
-        {isSuccess ? (
+        {mutation.isSuccess ? (
           <CheckCircleIcon className="w-36 h-36 text-green-400" stroke-width={1} />
         ) : (
           <ExclamationCircleIcon className="w-36 h-36 text-red-400" stroke-width={1} />
         )}
       </div>
       <div className="text-center mt-4">
-        <h4 className="text-2xl text-[--text]">{isSuccess ? 'Transaction successful' : 'Transaction failed'}</h4>
+        <h4 className="text-2xl text-[--text]">
+          {mutation.isSuccess ? 'Transaction successful' : 'Transaction failed'}
+        </h4>
       </div>
-      {!isSuccess && !!errorMsg && <p className="text-center mt-1">{errorMsg}</p>}
+      {!mutation.isSuccess && !!errorMsg && <p className="text-center mt-1">{errorMsg}</p>}
       {!!onClose && (
         <Button color="primary" className="w-full mt-6" onClick={onClose}>
           Close

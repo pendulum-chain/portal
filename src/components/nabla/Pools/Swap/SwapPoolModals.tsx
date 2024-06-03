@@ -1,36 +1,38 @@
 import { FunctionalComponent } from 'preact';
-import { Modal } from 'react-daisyui';
 import { ModalTypes, useModal } from '../../../../services/modal';
-import ModalCloseButton from '../../../Button/ModalClose';
+import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
+import { SwapPoolColumn } from './columns';
 import AddLiquidity from './AddLiquidity';
 import Redeem from './Redeem';
 import WithdrawLiquidity from './WithdrawLiquidity';
 
-import { SwapPoolColumn } from './columns';
-
 export type LiquidityModalProps = {
-  data?: SwapPoolColumn;
+  data: SwapPoolColumn;
+  onClose: () => void;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<any>>> = {
-  AddLiquidity: AddLiquidity,
-  WithdrawLiquidity: WithdrawLiquidity,
-  Redeem: Redeem,
+const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<LiquidityModalProps>>> = {
+  AddLiquidity,
+  WithdrawLiquidity,
+  Redeem,
 };
 
 export function SwapPoolModals() {
   const [{ type, props }, setModal] = useModal<LiquidityModalProps>();
 
   const Component = type ? modalsUi[type] : undefined;
-  return (
-    <>
-      <Modal className="bg-[--bg-modal]" open={!!Component}>
-        <Modal.Header className="mb-0">
-          <ModalCloseButton onClick={() => setModal()} />
-        </Modal.Header>
-        <Modal.Body>{Component ? <Component {...props} /> : null}</Modal.Body>
-      </Modal>
-    </>
-  );
+  const onClose = () => setModal();
+
+  if (props && props.data) {
+    return (
+      <Dialog
+        onClose={onClose}
+        visible={!!Component}
+        actions={<></>}
+        content={Component ? <Component {...props} onClose={onClose} /> : <></>}
+      />
+    );
+  }
+
+  return null;
 }
