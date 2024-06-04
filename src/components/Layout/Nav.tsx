@@ -28,7 +28,7 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <section className={`collapse  ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
+    <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
       <button
         type="button"
         className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
@@ -93,7 +93,7 @@ const Nav = memo(({ onClick }: NavProps) => {
       {links(state).map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
-          <div onMouseEnter={handleMouseEnter}>
+          <div onMouseEnter={handleMouseEnter} className="my-2.5">
             <CollapseMenu
               key={i}
               link={item.link}
