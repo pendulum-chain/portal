@@ -69,7 +69,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
           {fromTokenBalance !== undefined && walletAccount && (
             <>
               <span className="mr-1">
-                Your Balance: <TokenBalance query={fromTokenBalance} symbol={fromToken?.symbol}></TokenBalance>
+                Balance: <TokenBalance query={fromTokenBalance} symbol={''} />
               </span>
               <button
                 className="text-primary hover:underline"

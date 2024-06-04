@@ -10,13 +10,23 @@ interface NavButtonContentProps {
 export const NavCollapseButtonContent: React.FC<NavButtonContentProps> = ({ item, isPlaying }) => (
   <>
     {isLottieOptions(item.prefix) ? (
-      <Lottie options={item.prefix.lottieOptions} isStopped={!isPlaying} {...item.prefix.componentOptions} />
+      <Lottie
+        options={item.prefix.lottieOptions}
+        isStopped={!isPlaying}
+        isClickToPauseDisabled={true}
+        {...item.prefix.componentOptions}
+      />
     ) : (
       item.prefix
     )}
     {isLottieOptions(item.title) ? (
       <span>
-        <Lottie options={item.title.lottieOptions} isStopped={!isPlaying} {...item.title.componentOptions} />
+        <Lottie
+          options={item.title.lottieOptions}
+          isStopped={!isPlaying}
+          isClickToPauseDisabled={true}
+          {...item.title.componentOptions}
+        />
       </span>
     ) : (
       <span>{item.title}</span>
