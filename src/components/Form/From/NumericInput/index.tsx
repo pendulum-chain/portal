@@ -8,6 +8,7 @@ interface NumericInputProps {
   additionalStyle?: string;
   maxDecimals?: number;
   defaultValue?: string;
+  autoFocus?: boolean;
 }
 
 function isValidNumericInput(value: string): boolean {
@@ -42,6 +43,7 @@ export const NumericInput = ({
   additionalStyle,
   maxDecimals = USER_INPUT_MAX_DECIMALS.PENDULUM,
   defaultValue,
+  autoFocus,
 }: NumericInputProps) => (
   <div className="w-full flex justify-between">
     <div className="flex-grow text-4xl text-black font-outfit">
@@ -64,6 +66,7 @@ export const NumericInput = ({
         type="text"
         inputmode="decimal"
         value={defaultValue}
+        autoFocus={autoFocus}
         {...register}
       />
     </div>

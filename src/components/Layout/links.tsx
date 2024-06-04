@@ -21,8 +21,17 @@ export type LottieOptions = { lottieOptions: Options } & {
   componentOptions: { height?: number; width?: number; style?: Record<string, string | number> };
 };
 
-export function isLottieOptions(obj: any): obj is LottieOptions {
-  return obj && typeof obj === 'object' && 'lottieOptions' in obj && 'animationData' in obj['lottieOptions'];
+export function isLottieOptions(obj: unknown): obj is LottieOptions {
+  if (typeof obj === 'object' && obj !== null) {
+    const possibleLottieOptions = obj as { lottieOptions?: unknown };
+    return (
+      'lottieOptions' in possibleLottieOptions &&
+      typeof possibleLottieOptions.lottieOptions === 'object' &&
+      possibleLottieOptions.lottieOptions !== null &&
+      'animationData' in possibleLottieOptions.lottieOptions
+    );
+  }
+  return false;
 }
 
 export type TitleOptions = LottieOptions | ComponentChildren;

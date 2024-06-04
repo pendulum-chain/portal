@@ -13,6 +13,8 @@ import { FormProvider } from 'react-hook-form';
 import { TransactionSettingsDropdown } from '../../../common/TransactionSettingsDropdown';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
+import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
 export type RedeemLiquidityValues = {
   amount: number;
@@ -26,6 +28,8 @@ export interface RedeemProps {
 const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
   const { toggle, mutation, onSubmit, updateStorage, balanceQuery, depositQuery, amountString, form, withdrawalQuote } =
     useRedeem(data);
+
+  const { walletAccount } = useGlobalState();
 
   const {
     register,
@@ -51,14 +55,16 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
         </div>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
-            <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>
-                Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
-              </p>
-              <p className="text-neutral-500 text-right">
-                Balance: <TokenBalance query={balanceQuery} symbol={data.backstopPool.token.symbol}></TokenBalance>
-              </p>
-            </div>
+            {walletAccount && (
+              <div className="flex justify-between align-end text-sm text-initial my-3">
+                <p>
+                  Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
+                </p>
+                <p className="text-neutral-500 text-right">
+                  Balance: <TokenBalance query={balanceQuery} symbol={data.backstopPool.token.symbol}></TokenBalance>
+                </p>
+              </div>
+            )}
             <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
               <div className="flex items-center pt-2">
                 <div className="flex items-center justify-between flex-grow mr-2">
@@ -106,17 +112,19 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                   {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div>Your swap pool share</div>
-                <div>
-                  {depositQuery.data === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
-                  )}
-                  %
+              {walletAccount && (
+                <div className="flex items-center justify-between">
+                  <div>Your swap pool share</div>
+                  <div>
+                    {depositQuery.data === undefined ? (
+                      <NumberLoader />
+                    ) : (
+                      calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
+                    )}
+                    %
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="mt-2">
               <div className="text-center">
@@ -133,14 +141,18 @@ const Redeem = ({ data }: RedeemProps): JSX.Element | null => {
                   Withdraw from swap pool
                 </button>
               </div>
-              <Button
-                color="primary"
-                className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
-                type="submit"
-                disabled={!submitEnabled}
-              >
-                Redeem
-              </Button>
+              {walletAccount ? (
+                <Button
+                  color="primary"
+                  className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                  type="submit"
+                  disabled={!submitEnabled}
+                >
+                  Redeem
+                </Button>
+              ) : (
+                <OpenWallet />
+              )}
               <Button
                 color="secondary"
                 className="mt-2 w-full"
