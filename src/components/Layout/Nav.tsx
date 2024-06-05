@@ -63,7 +63,7 @@ export const NavItem = ({
       {suffix}
     </>
   );
-  const cls = `nav-item font-2 ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
+  const cls = `nav-item font-outfit ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
