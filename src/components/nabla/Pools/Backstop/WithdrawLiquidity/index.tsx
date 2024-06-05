@@ -19,7 +19,12 @@ import { AmountSelector } from '../../../common/AmountSelector';
 import { useGlobalState } from '../../../../../GlobalStateProvider';
 import OpenWallet from '../../../../Wallet';
 
-const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element | null => {
+interface WithdrawLiquidityBodyProps {
+  nabla: NablaInstance;
+  onClose: () => void;
+}
+
+const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): JSX.Element | null => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const {
     form,
@@ -61,11 +66,12 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
         onClose={() => {
           backstopWithdraw.mutation.reset();
           backstopDrain.mutation.reset();
+          onClose();
         }}
       >
         <PoolProgress symbol={backstopPool.symbol} amount={amountString} />
       </TransactionProgress>
-      <h3 className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
+      <h3 className={`flex items-center gap-2 mb-8 mt-2 ${hideCss} absolute top-0 translate-y-2/4`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
           <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
         </Button>
@@ -184,7 +190,11 @@ function filter(swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
 }
 
-function WithdrawLiquidity() {
+export interface WithdrawLiquidityProps {
+  onClose: () => void;
+}
+
+function WithdrawLiquidity({ onClose }: WithdrawLiquidityProps) {
   const { nabla, isLoading } = useNablaInstance();
 
   const filteredNabla = useMemo(
@@ -202,7 +212,7 @@ function WithdrawLiquidity() {
 
   if (!filteredNabla) return <>Nothing found</>;
 
-  return <WithdrawLiquidityBody nabla={filteredNabla} />;
+  return <WithdrawLiquidityBody nabla={filteredNabla} onClose={onClose} />;
 }
 
 export default WithdrawLiquidity;

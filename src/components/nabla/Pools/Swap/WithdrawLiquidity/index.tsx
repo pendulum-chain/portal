@@ -17,9 +17,10 @@ import OpenWallet from '../../../../Wallet';
 
 export interface WithdrawLiquidityProps {
   data: SwapPoolColumn;
+  onClose: () => void;
 }
 
-const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null => {
+const WithdrawLiquidity = ({ data, onClose }: WithdrawLiquidityProps): JSX.Element | null => {
   const { toggle, mutation, onSubmit, balanceQuery, depositQuery, amountString, form, withdrawalQuote } =
     useSwapPoolWithdrawLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
 
@@ -37,11 +38,17 @@ const WithdrawLiquidity = ({ data }: WithdrawLiquidityProps): JSX.Element | null
   const hideCss = !mutation.isIdle ? 'hidden' : '';
   return (
     <div className="text-[initial] dark:text-neutral-200">
-      <TransactionProgress mutation={mutation} onClose={mutation.reset}>
+      <TransactionProgress
+        mutation={mutation}
+        onClose={() => {
+          mutation.reset();
+          onClose();
+        }}
+      >
         <PoolProgress symbol={data.symbol} amount={amountString} />
       </TransactionProgress>
       <div className={hideCss}>
-        <div className="flex items-center gap-2 mt-2 mb-8">
+        <div className="flex items-center gap-2 mt-2 mb-8 absolute top-0 translate-y-2/4">
           <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
             <ArrowLeftIcon className="w-4 h-4" />
           </Button>

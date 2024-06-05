@@ -92,24 +92,6 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: './staking',
-    title: 'Staking',
-    props: {
-      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
-    },
-    prefix: <StakingIcon />,
-  },
-  {
-    link: `https://${tenantName}.polkassembly.io/`,
-    title: 'Governance',
-    props: {
-      target: '_blank',
-      rel: 'nofollow noreferrer',
-    },
-    prefix: <GovernanceIcon />,
-    suffix: <ExternalIcon />,
-  },
-  {
     link: '/nabla',
     title: 'Forex AMM',
     hidden:
@@ -134,6 +116,25 @@ export const links: Links = ({ tenantName }) => [
       },
     ],
   },
+  {
+    link: './staking',
+    title: 'Staking',
+    props: {
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
+    },
+    prefix: <StakingIcon />,
+  },
+  {
+    link: `https://${tenantName}.polkassembly.io/`,
+    title: 'Governance',
+    props: {
+      target: '_blank',
+      rel: 'nofollow noreferrer',
+    },
+    prefix: <GovernanceIcon />,
+    suffix: <ExternalIcon />,
+  },
+
   {
     link: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
     title: 'Buy PEN',
