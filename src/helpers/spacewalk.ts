@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { ApiPromise } from '@polkadot/api';
 import { U8aFixed } from '@polkadot/types-codec';
 import { H256 } from '@polkadot/types/interfaces';
@@ -63,10 +64,6 @@ export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrency
   return convertCurrencyToStellarAsset(currency)?.getCode() + SpacewalkConstants.WrappedCurrencySuffix;
 }
 
-function padRight(s: string, length: number, char: string) {
-  return s + char.repeat(length - s.length);
-}
-
 export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): SpacewalkPrimitivesCurrencyId {
   if (asset.isNative()) {
     return api.createType('SpacewalkPrimitivesCurrencyId', { Stellar: 'StellarNative' });
@@ -77,7 +74,7 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
     const issuer = api.createType('Raw', issuerRawPublicKey, 32);
 
     if (asset.getCode().length <= 4) {
-      const paddedCode = padRight(asset.getCode(), 4, '\0');
+      const paddedCode = _.padEnd(asset.getCode(), 4, '\0');
       const code = api.createType('Raw', paddedCode, 4);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
         Stellar: {
@@ -88,7 +85,7 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
         },
       });
     } else {
-      const paddedCode = padRight(asset.getCode(), 12, '\0');
+      const paddedCode = _.padEnd(asset.getCode(), 12, '\0');
       const code = api.createType('Raw', paddedCode, 12);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
         Stellar: {
