@@ -20,13 +20,14 @@ import { TenantName } from '../../../models/Tenant';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 
 import { FeeBox } from '../FeeBox';
-import { prioritizeXLMAsset, useCalculateGriefingCollateral } from '../helpers';
+import { prioritizeXLMAsset } from '../helpers';
 
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
 import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
+import { useCalculateGriefingCollateral } from '../../../hooks/spacewalk/useCalculateGriefingCollateral';
 
 interface IssueProps {
   network: string;
