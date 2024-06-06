@@ -1,9 +1,9 @@
-import { useGlobalState } from '../../../GlobalStateProvider';
-import CancelledDialogIcon from '../../../assets/dialog-status-cancelled';
-import { CopyableAddress } from '../../../components/PublicKey';
-import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { toTitle } from '../../../helpers/string';
-import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import CancelledDialogIcon from '../../../../assets/dialog-status-cancelled';
+import { CopyableAddress } from '../../../../components/PublicKey';
+import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
+import { toTitle } from '../../../../helpers/string';
+import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 

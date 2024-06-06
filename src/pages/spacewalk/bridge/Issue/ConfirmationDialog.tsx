@@ -1,14 +1,14 @@
 import { useMemo } from 'preact/compat';
 import { Button, Divider } from 'react-daisyui';
 
-import { CopyableAddress, PublicKey } from '../../../components/PublicKey';
-import TransferCountdown from '../../../components/TransferCountdown';
-import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
-import { RichIssueRequest } from '../../../hooks/spacewalk/useIssuePallet';
-import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
-import { Dialog } from '../../collators/dialogs/Dialog';
-import { generateSEP0007URIScheme } from '../../../helpers/stellar/sep0007';
+import { CopyableAddress, PublicKey } from '../../../../components/PublicKey';
+import TransferCountdown from '../../../../components/TransferCountdown';
+import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
+import { RichIssueRequest } from '../../../../hooks/spacewalk/useIssuePallet';
+import { nativeStellarToDecimal } from '../../../../shared/parseNumbers/metric';
+import { Dialog } from '../../../collators/dialogs/Dialog';
+import { generateSEP0007URIScheme } from '../../../../helpers/stellar/sep0007';
 import { StellarUriScheme } from './StellarURIScheme';
 
 interface ConfirmationDialogProps {

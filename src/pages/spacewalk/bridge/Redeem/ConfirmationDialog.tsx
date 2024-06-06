@@ -1,13 +1,13 @@
 import { Button } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { PublicKey } from '../../../components/PublicKey';
-import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { RichRedeemRequest } from '../../../hooks/spacewalk/useRedeemPallet';
-import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
-import { Dialog } from '../../collators/dialogs/Dialog';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import { PublicKey } from '../../../../components/PublicKey';
+import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
+import { RichRedeemRequest } from '../../../../hooks/spacewalk/useRedeemPallet';
+import { nativeStellarToDecimal } from '../../../../shared/parseNumbers/metric';
+import { Dialog } from '../../../collators/dialogs/Dialog';
 import { useMemo } from 'preact/hooks';
-import { PAGES_PATHS } from '../../../app';
+import { PAGES_PATHS } from '../../../../app';
 
 interface ConfirmationDialogProps {
   redeemRequest: RichRedeemRequest | undefined;

@@ -1,9 +1,9 @@
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { ColumnDef } from '@tanstack/table-core';
 import { DateTime } from 'luxon';
-import { PublicKey } from '../../components/PublicKey';
-import { toTitle } from '../../helpers/string';
-import { TenantName } from '../../models/Tenant';
+import { PublicKey } from '../../../components/PublicKey';
+import { toTitle } from '../../../helpers/string';
+import { TenantName } from '../../../models/Tenant';
 export type TransferStatus = 'Pending' | 'Completed' | 'Cancelled' | 'Reimbursed' | 'Failed' | 'Retried';
 
 export enum TransferType {

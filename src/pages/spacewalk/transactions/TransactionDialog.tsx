@@ -3,26 +3,26 @@ import { DateTime } from 'luxon';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
 import { Divider, Link, Collapse } from 'react-daisyui';
-import { useGlobalState } from '../../GlobalStateProvider';
-import CancelledDialogIcon from '../../assets/dialog-status-cancelled';
-import PendingDialogIcon from '../../assets/dialog-status-pending';
-import SuccessDialogIcon from '../../assets/dialog-status-success';
-import WarningDialogIcon from '../../assets/dialog-status-warning';
-import { CopyableAddress } from '../../components/PublicKey';
-import TransferCountdown from '../../components/TransferCountdown';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import CancelledDialogIcon from '../../../assets/dialog-status-cancelled';
+import PendingDialogIcon from '../../../assets/dialog-status-pending';
+import SuccessDialogIcon from '../../../assets/dialog-status-success';
+import WarningDialogIcon from '../../../assets/dialog-status-warning';
+import { CopyableAddress } from '../../../components/PublicKey';
+import TransferCountdown from '../../../components/TransferCountdown';
 import {
   addSuffix,
   calculateDeadline,
   convertCurrencyToStellarAsset,
   deriveShortenedRequestId,
-} from '../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
-import { toTitle } from '../../helpers/string';
-import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
-import { useVaultRegistryPallet } from '../../hooks/spacewalk/useVaultRegistryPallet';
-import { nativeToDecimal } from '../../shared/parseNumbers/metric';
+} from '../../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
+import { toTitle } from '../../../helpers/string';
+import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
+import { useVaultRegistryPallet } from '../../../hooks/spacewalk/useVaultRegistryPallet';
+import { nativeToDecimal } from '../../..//shared/parseNumbers/metric';
+import { Dialog } from '../../collators/dialogs/Dialog';
 import { TTransfer, TransferType } from './TransactionsColumns';
-import { Dialog } from '../collators/dialogs/Dialog';
 
 interface BaseTransactionDialogProps {
   id: string;

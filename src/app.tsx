@@ -12,14 +12,16 @@ import TermsAndConditions from './TermsAndConditions';
 /**
  * Components need to be default exports inside the file for suspense loading to work properly
  */
+const pages = import.meta.glob('./pages/**/index.tsx');
+
 const loadPage = (path: string) => (
-  <SuspenseLoad importFn={() => import(`./pages/${path}/index.tsx`)} fallback={defaultPageLoader} />
+  <SuspenseLoad importFn={pages[`./pages/${path}/index.tsx`]} fallback={defaultPageLoader} />
 );
 
 const Dashboard = loadPage('dashboard');
 const Gas = loadPage('gas');
-const Bridge = loadPage('bridge');
-const TransactionsPage = loadPage('bridge/Transactions');
+const Bridge = loadPage('spacewalk/bridge');
+const TransactionsPage = loadPage('spacewalk/transactions');
 const Staking = loadPage('collators');
 const NablaPage = loadPage('nabla');
 const SwapPage = loadPage('nabla/swap');
@@ -59,7 +61,7 @@ export function App() {
         <Route path="/:network/" element={<Layout />}>
           <Route index element={<Navigate to={PATHS.DASHBOARD} replace />} />
           <Route path={PATHS.DASHBOARD} element={Dashboard} />
-          <Route path="gas" element={Gas} />
+          <Route path={PATHS.GAS} element={Gas} />
           <Route path={PATHS.SPACEWALK}>
             <Route path={PATHS.BRIDGE} element={Bridge} />
             <Route path={PATHS.TRANSACTIONS} element={TransactionsPage} />
