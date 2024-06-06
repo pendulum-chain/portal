@@ -21,6 +21,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 import { prioritizeXLMAsset } from '../helpers';
+import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
 
 export type RedeemFormValues = {
   amount: number;
@@ -146,6 +147,7 @@ function Redeem(props: RedeemProps): JSX.Element {
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
                 error: formState.errors.amount?.message,
+                maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),
@@ -187,11 +189,12 @@ function Redeem(props: RedeemProps): JSX.Element {
               loading={submissionPending}
               onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
               type="submit"
+              disabled={submissionPending}
             >
               Bridge
             </Button>
           ) : (
-            <OpenWallet dAppName={dAppName} />
+            <OpenWallet />
           )}
         </form>
       </div>

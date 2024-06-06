@@ -145,7 +145,7 @@ export const GasForm: React.FC<GasFormProps> = ({
       assets: [nativeCurrency],
       selectedAsset: nativeCurrency,
       setSelectedAsset: () => {
-        return null;
+        return undefined;
       },
     },
     badges: {},
@@ -157,7 +157,10 @@ export const GasForm: React.FC<GasFormProps> = ({
       <From {...FromProps} />
       <From {...ToProps} />
       <FeeHint amount={watch('toAmount')} />
-      <SubmitButton loading={submissionPending} disabled={Boolean(fromPropsError) || Boolean(toPropsError)} />
+      <SubmitButton
+        loading={submissionPending}
+        disabled={Boolean(fromPropsError) || Boolean(toPropsError) || submissionPending}
+      />
     </form>
   );
 };

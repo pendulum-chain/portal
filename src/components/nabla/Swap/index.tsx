@@ -10,6 +10,7 @@ import Validation from '../../Form/Validation';
 import { TransactionSettingsDropdown } from '../common/TransactionSettingsDropdown';
 import { SwapProgress } from '../common/SwapProgress';
 import { NablaFootnote } from '../common/NablaFootnote';
+import { SwapAssetsButton } from '../../SwapAssetsButton';
 
 const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
   const {
@@ -83,6 +84,11 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               fromFormFieldName="fromAmount"
               fromTokenBalance={fromTokenBalance}
             />
+            <SwapAssetsButton
+              onClick={() => {
+                toToken && onFromChange(toToken.id);
+              }}
+            />
             <To
               toToken={toToken}
               fromToken={fromToken}
@@ -95,7 +101,6 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
             />
             <Validation className="text-center mb-2" errors={errors} />
             <div className="mt-6">
-              {/* <Validation errors={errors} className="mb-2" /> */}
               <ApprovalSubmit token={fromToken} disabled={!submitEnabled} fromAmount={fromAmount} />
             </div>
           </form>

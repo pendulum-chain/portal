@@ -28,7 +28,7 @@ const CollapseMenu = ({
   const [isOpen, { toggle }] = useBoolean(isActive);
 
   return (
-    <section className={`collapse  ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
+    <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
       <button
         type="button"
         className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
@@ -63,7 +63,7 @@ export const NavItem = ({
       {suffix}
     </>
   );
-  const cls = `nav-item font-2 ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
+  const cls = `nav-item font-outfit ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>
       {linkUi}
@@ -93,7 +93,7 @@ const Nav = memo(({ onClick }: NavProps) => {
       {links(state).map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
-          <div onMouseEnter={handleMouseEnter}>
+          <div onMouseEnter={handleMouseEnter} className="my-2.5">
             <CollapseMenu
               key={i}
               link={item.link}

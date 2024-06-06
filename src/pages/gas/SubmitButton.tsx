@@ -11,7 +11,7 @@ export const SubmitButton = ({ loading, disabled }: { loading?: boolean; disable
     <>
       {walletAccount ? (
         <Button
-          className="w-full text-black text-base"
+          className="w-full text-neutral text-base"
           color="primary"
           type="submit"
           loading={!tokenSymbol || loading}
@@ -20,7 +20,7 @@ export const SubmitButton = ({ loading, disabled }: { loading?: boolean; disable
           {tokenSymbol && !loading ? `Get ${tokenSymbol}` : ''}
         </Button>
       ) : (
-        <OpenWallet dAppName={dAppName} />
+        <OpenWallet />
       )}
     </>
   );

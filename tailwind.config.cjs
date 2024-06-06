@@ -1,6 +1,5 @@
 import { colors } from './src/constants/colors';
 
-// eslint-disable-next-line no-undef
 module.exports = {
   darkMode: 'class',
   content: [
@@ -8,7 +7,6 @@ module.exports = {
     'node_modules/daisyui/dist/**/*.js',
     'node_modules/react-daisyui/dist/**/*.js',
   ],
-  // eslint-disable-next-line no-undef
   plugins: [require('daisyui')],
   themes: ['pendulum', 'amplitude'],
   theme: {
@@ -31,17 +29,17 @@ module.exports = {
         pendulum: {
           primary: '#907EA0',
           'primary-content': '#fff',
-          secondary: '#F4F5F6',
-          'secondary-content': '#58667E',
+          secondary: '#F4F2F6',
+          'secondary-content': '#667892',
           accent: '#1DE7DF',
-          neutral: '#EFF2F5',
-          'accent-content': '#000',
-          'base-100': '#F5F9FA',
+          neutral: '#F4F8F9',
+          'accent-content': '#1B365D',
+          'base-100': '#F4F8F9',
           'base-200': '#fff',
-          'base-300': '#F7F7F7',
-          '--base-400': '#E7E7E7',
-          'base-content': '#58667E',
-          '--text': '#111',
+          'base-300': '#E8EBEF',
+          '--base-400': '#DAE9EB',
+          'base-content': '#32253E',
+          '--text': '#1B365D',
           '--bg-modal': '#fff',
           '--modal-border': '#E5E5E5',
           '--rounded-btn': '9px',
@@ -55,7 +53,6 @@ module.exports = {
           accent: '#4EE59A',
           'accent-content': '#fff',
           neutral: '#141414',
-          'neutral-focus': '#111318',
           'neutral-content': '#B9B9B9',
           'base-100': '#1C1C1C',
           'base-200': '#141414',

@@ -14,14 +14,19 @@ import { TransactionProgress } from '../../../common/TransactionProgress';
 import { TokenApproval } from '../../../common/TokenApproval';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
+import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
 export interface AddLiquidityProps {
   data: SwapPoolColumn;
+  onClose: () => void;
 }
 
-const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
+const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element | null => {
   const { toggle, onSubmit, mutation, depositQuery, balanceQuery, amountString, amountBigDecimal, form } =
     useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
+
+  const { walletAccount } = useGlobalState();
 
   const {
     formState: { errors },
@@ -31,13 +36,20 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
   const submitEnabled = amountBigDecimal?.gt(new Big(0)) && Object.keys(errors).length === 0;
 
   const hideCss = !mutation.isIdle ? 'hidden' : '';
+
   return (
     <div className="text-[initial] dark:text-neutral-200">
-      <TransactionProgress mutation={mutation} onClose={mutation.reset}>
+      <TransactionProgress
+        mutation={mutation}
+        onClose={() => {
+          mutation.reset();
+          onClose();
+        }}
+      >
         <PoolProgress symbol={data.token.symbol} amount={amountString} />
       </TransactionProgress>
       <div className={hideCss}>
-        <div className="flex items-center gap-2 mb-8 mt-2">
+        <div className="flex items-center gap-2 mb-8 mt-2 absolute top-0 translate-y-2/4">
           <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
             <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
           </Button>
@@ -45,14 +57,16 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
         </div>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
-            <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>
-                Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
-              </p>
-              <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance: <TokenBalance query={balanceQuery} symbol={data.token.symbol}></TokenBalance>
-              </p>
-            </div>
+            {walletAccount && (
+              <div className="flex justify-between align-end text-sm text-initial my-3">
+                <p>
+                  Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
+                </p>
+                <p className="text-neutral-500 dark:text-neutral-400 text-right">
+                  Balance: <TokenBalance query={balanceQuery} symbol={data.token.symbol}></TokenBalance>
+                </p>
+              </div>
+            )}
             <AmountSelector maxBalance={balanceQuery.data} formFieldName="amount" form={form} />
             <Validation className="text-center mt-2" errors={errors} />
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300  p-4 mt-4">
@@ -62,17 +76,19 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                   {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {data.symbol}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div>Your pool Share</div>
-                <div>
-                  {depositQuery.data === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
-                  )}
-                  %
+              {walletAccount && (
+                <div className="flex items-center justify-between">
+                  <div>Your pool Share</div>
+                  <div>
+                    {depositQuery.data === undefined ? (
+                      <NumberLoader />
+                    ) : (
+                      calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
+                    )}
+                    %
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="mt-8">
               <TokenApproval
@@ -83,9 +99,13 @@ const AddLiquidity = ({ data }: AddLiquidityProps): JSX.Element | null => {
                 decimalAmount={amountBigDecimal}
                 enabled={submitEnabled}
               >
-                <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
-                  Deposit
-                </Button>
+                {walletAccount ? (
+                  <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
+                    Deposit
+                  </Button>
+                ) : (
+                  <OpenWallet />
+                )}
               </TokenApproval>
               <Button
                 color="secondary"

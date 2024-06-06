@@ -1,9 +1,10 @@
 import { Button, ButtonProps } from 'react-daisyui';
+import { useCallback } from 'preact/hooks';
 import { Big } from 'big.js';
 
 import { ApprovalState, useErc20TokenApproval } from '../../../hooks/nabla/useErc20TokenApproval';
-import { useCallback } from 'preact/hooks';
 import { multiplyByPowerOfTen } from '../../../shared/parseNumbers/metric';
+import OpenWallet from '../../Wallet';
 
 export type TokenApprovalProps = ButtonProps & {
   token: string;
@@ -34,29 +35,37 @@ export function TokenApproval({
     decimals,
   });
 
+  const isApprovalPending = state === ApprovalState.PENDING;
+  const isNoAccount = state === ApprovalState.NO_ACCOUNT;
+  const isLoading = state === ApprovalState.LOADING;
+  const isApproved = state === ApprovalState.APPROVED;
+
   const onClick = useCallback(() => {
-    if (state === ApprovalState.PENDING || decimalAmount === undefined) return;
+    if (isApprovalPending || !decimalAmount) return;
 
     const nativeAmount = multiplyByPowerOfTen(decimalAmount, decimals);
     mutate([spender, nativeAmount.round(0, 0).toFixed()]);
-  }, [state, mutate, decimalAmount, decimals, spender]);
+  }, [isApprovalPending, mutate, decimalAmount, decimals, spender]);
 
-  if (state === ApprovalState.APPROVED || !enabled) return children;
+  if (isApproved || !enabled) return children;
 
-  const noAccount = state === ApprovalState.NO_ACCOUNT;
-  const isPending = state === ApprovalState.PENDING;
-  const isLoading = state === ApprovalState.LOADING;
+  const isDisabled = isNoAccount || isApprovalPending || disabled || !decimalAmount;
 
-  return (
+  const buttonText = isApprovalPending ? 'Approving' : isLoading ? 'Loading' : 'Approve';
+
+  return isNoAccount ? (
+    <OpenWallet />
+  ) : (
     <Button
-      className={`w-full${isPending || isLoading ? ' loading' : ''} ${className}`}
+      className={`w-full ${className}`}
       color="primary"
       {...rest}
       type="button"
-      disabled={noAccount || isPending || disabled || decimalAmount === undefined}
+      loading={isApprovalPending || isLoading}
+      disabled={isDisabled}
       onClick={onClick}
     >
-      {noAccount ? 'Please connect your wallet' : isPending ? 'Approving' : isLoading ? 'Loading' : 'Approve'}
+      {buttonText}
     </Button>
   );
 }

@@ -157,12 +157,25 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
         to: prev?.to === f ? prev?.from : prev?.to,
       };
       updateStorage(updated);
-      setValue('from', updated.from);
-      //if (updated.to && prev?.to === f) setValue('to', updated.to);
+
+      if (prev.to === f) {
+        const prevToAmount = toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals;
+        setValue('fromAmount', prevToAmount || '0');
+      } else {
+        setValue('from', updated.from);
+      }
+
       if (onChange && event) onChange(updated.from, updated.to);
       setTokenModal(undefined);
     },
-    [getValues, onChange, setTokenModal, setValue, updateStorage],
+    [
+      getValues,
+      onChange,
+      setTokenModal,
+      setValue,
+      toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals,
+      updateStorage,
+    ],
   );
 
   const onToChange = useCallback(
@@ -174,12 +187,26 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
         from: prev?.from === t ? prev?.to : prev?.from,
       };
       updateStorage(updated);
+
+      if (prev.from === t) {
+        const prevToAmount = toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals;
+        setValue('fromAmount', prevToAmount || '0');
+      }
+
       if (updated.from && prev?.from !== updated.from) setValue('from', updated.from);
       setValue('to', updated.to);
+
       if (onChange && event) onChange(updated.from, updated.to);
       setTokenModal(undefined);
     },
-    [getValues, onChange, setTokenModal, setValue, updateStorage],
+    [
+      getValues,
+      onChange,
+      setTokenModal,
+      setValue,
+      toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals,
+      updateStorage,
+    ],
   );
 
   // when props change (url updated)

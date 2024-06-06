@@ -8,13 +8,13 @@ import { NotFound } from './components/NotFound';
 import { SuspenseLoad } from './components/Suspense';
 import { config } from './config';
 import TermsAndConditions from './TermsAndConditions';
-import { useGlobalState } from './GlobalStateProvider';
-import { TenantName } from './models/Tenant';
 
 /**
  * Components need to be default exports inside the file for suspense loading to work properly
  */
-const loadPage = (path: string)  => <SuspenseLoad importFn={() => import(`./pages/${path}`)} fallback={defaultPageLoader} />;
+const loadPage = (path: string) => (
+  <SuspenseLoad importFn={() => import(`./pages/${path}/index.tsx`)} fallback={defaultPageLoader} />
+);
 
 const Dashboard = loadPage('dashboard');
 const Gas = loadPage('gas');
@@ -51,15 +51,7 @@ export const PAGES_PATHS = {
   STAKING: 'staking',
 };
 
-function enableOnAmplitude(tenantName: TenantName, page: JSX.Element){
-  if((tenantName === TenantName.Foucoco || tenantName === TenantName.Amplitude)){
-    return page;
-  }
-}
-
 export function App() {
-  const { tenantName } = useGlobalState();
-
   return (
     <>
       <Routes>
@@ -67,7 +59,7 @@ export function App() {
         <Route path="/:network/" element={<Layout />}>
           <Route index element={<Navigate to={PATHS.DASHBOARD} replace />} />
           <Route path={PATHS.DASHBOARD} element={Dashboard} />
-          {enableOnAmplitude(tenantName, <Route path="gas" element={Gas} />)}
+          <Route path="gas" element={Gas} />
           <Route path={PATHS.SPACEWALK}>
             <Route path={PATHS.BRIDGE} element={Bridge} />
             <Route path={PATHS.TRANSACTIONS} element={TransactionsPage} />
@@ -82,10 +74,14 @@ export function App() {
           <Route path={PATHS.STAKING} element={Staking} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="staking" element={Staking} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <TermsAndConditions />
       <ToastContainer />
+      <div id="modals">
+        {/* This is where the dialogs/modals are rendered. It is placed here because it is the highest point in the app where the tailwind data-theme is available */}
+      </div>
     </>
   );
 }

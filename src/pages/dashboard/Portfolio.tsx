@@ -17,7 +17,7 @@ function Portfolio() {
       <div className="p-4 flex flex-row justify-between">
         <div className="font-bold text-xl">Wallet</div>
         <div className="text-xl" title={accountTotalBalance.toString()}>
-          $ {accountTotalBalance.toFixed(2)}
+          $ {accountTotalBalance.toPrecision(2)}
         </div>
       </div>
       {walletAccount && (
@@ -28,7 +28,7 @@ function Portfolio() {
           isLoading={!balances}
           sortBy={{ amount: SortingOrder.DESC, token: SortingOrder.ASC }}
           search={false}
-          pageSize={5}
+          pageSize={8}
           oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
           evenRowsClassname="border-b-base-300 table-border"
         />

@@ -3,6 +3,7 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 import StakedIcon from '../../../../assets/collators-staked-icon';
 import { nativeToFormatMetric } from '../../../../shared/parseNumbers/metric';
+import { Tooltip } from 'react-daisyui';
 
 interface StakingContentProps {
   onButtonClick: () => void;
@@ -41,9 +42,9 @@ export const StakingContent: React.FC<StakingContentProps> = ({
       <div className="flex flex-row items-center mb-1">
         <h3>{nativeToFormatMetric(unstaking, tokenSymbol)}</h3>
         {Number(unstaking) ? (
-          <div className="tooltip tooltip-secondary whitespace-pre-line" data-tip={tokensTipText}>
+          <Tooltip message={tokensTipText} color="secondary">
             <ExclamationCircleIcon className="w-5 h-5 ml-2 text-gray-400" />
-          </div>
+          </Tooltip>
         ) : null}
       </div>
       <button

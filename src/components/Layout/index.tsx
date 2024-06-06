@@ -56,10 +56,10 @@ export default function Layout(): JSX.Element | null {
             </a>
           </div>
           <Nav onClick={() => setVisible(false)} />
-          <div className="sidebar-footer mx-auto">
+          <footer className="sidebar-footer mx-auto">
             <NetworkId />
             <SocialAndTermLinks />
-          </div>
+          </footer>
         </aside>
       </div>
       <section>
@@ -70,7 +70,7 @@ export default function Layout(): JSX.Element | null {
                 <Bars3Icon className="w-7" />
               </button>
             </div>
-            <OpenWallet dAppName={dAppName} />
+            <OpenWallet isHeader />
             <ChainSelector />
             <GetToken />
             <div className="dropdown dropdown-end mr-2 hidden">

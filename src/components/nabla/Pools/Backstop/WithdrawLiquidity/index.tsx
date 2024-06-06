@@ -16,8 +16,15 @@ import { TransactionSettingsDropdown } from '../../../common/TransactionSettings
 import { PoolSelectorModal } from '../../../common/PoolSelectorModal';
 import { TokenBalance } from '../../../common/TokenBalance';
 import { AmountSelector } from '../../../common/AmountSelector';
+import { useGlobalState } from '../../../../../GlobalStateProvider';
+import OpenWallet from '../../../../Wallet';
 
-const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element | null => {
+interface WithdrawLiquidityBodyProps {
+  nabla: NablaInstance;
+  onClose: () => void;
+}
+
+const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): JSX.Element | null => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const {
     form,
@@ -33,6 +40,8 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
     onSubmit,
     updateStorage,
   } = useWithdrawLiquidity(nabla);
+
+  const { walletAccount } = useGlobalState();
 
   const {
     register,
@@ -57,11 +66,12 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
         onClose={() => {
           backstopWithdraw.mutation.reset();
           backstopDrain.mutation.reset();
+          onClose();
         }}
       >
         <PoolProgress symbol={backstopPool.symbol} amount={amountString} />
       </TransactionProgress>
-      <h3 className={`flex items-center gap-2 mb-8 mt-2 ${hideCss}`}>
+      <h3 className={`flex items-center gap-2 mb-8 mt-2 ${hideCss} absolute top-0 translate-y-2/4`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
           <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
         </Button>
@@ -81,14 +91,16 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
       <div className={hideCss}>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
-            <div className="flex justify-between align-end text-sm text-initial my-3">
-              <p>
-                Deposited: <TokenBalance query={depositQuery} symbol={backstopPool.symbol}></TokenBalance>
-              </p>
-              <p className="text-neutral-500 dark:text-neutral-400 text-right">
-                Balance: <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
-              </p>
-            </div>
+            {walletAccount && (
+              <div className="flex justify-between align-end text-sm text-initial my-3">
+                <p>
+                  Deposited: <TokenBalance query={depositQuery} symbol={backstopPool.symbol}></TokenBalance>
+                </p>
+                <p className="text-neutral-500 dark:text-neutral-400 text-right">
+                  Balance: <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
+                </p>
+              </div>
+            )}
             <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
               <div className="flex items-start justify-start pt-2">
                 <div className="flex-grow">
@@ -100,10 +112,12 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                       significantDecimals={2}
                     ></TokenBalance>
                   </div>
-                  <div className="text-neutral-500 text-sm dark:text-neutral-400 flex items-center justify-between flex-grow mr-2">
-                    <div>Your current balance</div>
-                    <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
-                  </div>
+                  {walletAccount && (
+                    <div className="text-neutral-500 text-sm dark:text-neutral-400 flex items-center justify-between flex-grow mr-2">
+                      <div>Your current balance</div>
+                      <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
+                    </div>
+                  )}
                 </div>
                 <TransactionSettingsDropdown
                   setSlippage={(slippage) => {
@@ -128,22 +142,28 @@ const WithdrawLiquidityBody = ({ nabla }: { nabla: NablaInstance }): JSX.Element
                   {stringifyBigWithSignificantDecimals(totalSupplyOfLpTokens, 2)} {backstopPool.symbol}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div>Your backstop pool share</div>
-                <div>
-                  {depositQuery.data === undefined ? (
-                    <NumberLoader />
-                  ) : (
-                    calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
-                  )}
-                  %
+              {walletAccount && (
+                <div className="flex items-center justify-between">
+                  <div>Your backstop pool share</div>
+                  <div>
+                    {depositQuery.data === undefined ? (
+                      <NumberLoader />
+                    ) : (
+                      calcSharePercentage(totalSupplyOfLpTokens, depositQuery.data.preciseBigDecimal)
+                    )}
+                    %
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="mt-8">
-              <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
-                Withdraw
-              </Button>
+              {walletAccount ? (
+                <Button color="primary" className="w-full" type="submit" disabled={!submitEnabled}>
+                  Withdraw
+                </Button>
+              ) : (
+                <OpenWallet />
+              )}
               <Button color="secondary" className="mt-2 w-full" type="button" onClick={() => toggle()}>
                 Cancel
               </Button>
@@ -170,7 +190,11 @@ function filter(swapPools: NablaInstanceSwapPool[]): NablaInstanceSwapPool[] {
   return swapPools?.filter((pool) => getPoolSurplusNativeAmount(pool) > 0n);
 }
 
-function WithdrawLiquidity() {
+export interface WithdrawLiquidityProps {
+  onClose: () => void;
+}
+
+function WithdrawLiquidity({ onClose }: WithdrawLiquidityProps) {
   const { nabla, isLoading } = useNablaInstance();
 
   const filteredNabla = useMemo(
@@ -188,7 +212,7 @@ function WithdrawLiquidity() {
 
   if (!filteredNabla) return <>Nothing found</>;
 
-  return <WithdrawLiquidityBody nabla={filteredNabla} />;
+  return <WithdrawLiquidityBody nabla={filteredNabla} onClose={onClose} />;
 }
 
 export default WithdrawLiquidity;

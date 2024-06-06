@@ -12,6 +12,7 @@ import { UseContractReadResult } from '../../../hooks/nabla/useContractRead';
 import { ContractBalance } from '../../../helpers/contracts';
 import { TokenBalance } from '../common/TokenBalance';
 import { getIcon } from '../../../shared/AssetIcons';
+import { useGlobalState } from '../../../GlobalStateProvider';
 
 interface FromProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   fromToken: NablaInstanceToken | undefined;
@@ -31,6 +32,8 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
   fromTokenBalance,
 }: FromProps<FormFieldValues, TFieldName>) {
   const { setValue } = useFormContext<SwapFormValues>();
+
+  const { walletAccount } = useGlobalState();
 
   return (
     <div
@@ -63,10 +66,10 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
           {fromToken ? <NablaTokenPrice address={fromToken.id} fallback="$ -" /> : '$ -'}
         </div>
         <div className="flex gap-1 text-sm">
-          {fromTokenBalance !== undefined && (
+          {fromTokenBalance !== undefined && walletAccount && (
             <>
               <span className="mr-1">
-                Your Balance: <TokenBalance query={fromTokenBalance} symbol={fromToken?.symbol}></TokenBalance>
+                Balance: <TokenBalance query={fromTokenBalance} symbol={''} />
               </span>
               <button
                 className="text-primary hover:underline"

@@ -1,7 +1,8 @@
+import { useEffect, useCallback, useMemo, useState } from 'preact/compat';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Signer } from '@polkadot/types/types';
 import Big from 'big.js';
 import { isEmpty } from 'lodash';
-import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -26,6 +27,8 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { PAGES_PATHS } from '../../../app';
+import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
+import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
 
 interface IssueProps {
   network: string;
@@ -40,9 +43,11 @@ export type IssueFormValues = {
 };
 
 const getFirstErrorMessage = (
-  formState: { errors: FieldErrors<IssueFormValues> },
+  formState: { isDirty: boolean; errors: FieldErrors<IssueFormValues> },
   errorKeys: (keyof IssueFormValues)[],
 ) => {
+  if (!formState.isDirty) return;
+
   for (const key of errorKeys) {
     if (formState.errors[key]?.message) {
       return formState.errors[key]?.message?.toString();
@@ -60,7 +65,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   const navigateTo = useNavigate();
   const { createIssueRequestExtrinsic, getIssueRequest } = useIssuePallet();
-  const { walletAccount, dAppName, tenantName } = useGlobalState();
+  const { walletAccount, tenantName } = useGlobalState();
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
   const { issueGriefingCollateral } = useFeePallet().getFees();
@@ -87,7 +92,7 @@ function Issue(props: IssueProps): JSX.Element {
     () => (
       <ul className="list-disc pl-4">
         <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
-        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem. </li>
+        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem.</li>
         <li>
           Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
           operator program, more
@@ -135,7 +140,7 @@ function Issue(props: IssueProps): JSX.Element {
       setSubmissionPending(true);
 
       requestIssueExtrinsic
-        .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+        .signAndSend(walletAccount.address, { signer: walletAccount.signer as Signer }, (result) => {
           const { status, events } = result;
 
           const errors = getErrors(events, api);
@@ -151,6 +156,7 @@ function Issue(props: IssueProps): JSX.Element {
             // We only expect one event but loop over all of them just in case
             for (const requestIssueEvent of requestIssueEvents) {
               // We do not have a proper type for this event, so we have to cast it to any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const issueId = (requestIssueEvent.data as any).issueId;
 
               getIssueRequest(issueId).then((issueRequest) => {
@@ -174,10 +180,15 @@ function Issue(props: IssueProps): JSX.Element {
     [api, getIssueRequest, requestIssueExtrinsic, selectedVault, walletAccount],
   );
 
-  useMemo(() => {
+  useEffect(() => {
     setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
     trigger('securityDeposit');
   }, [amount, issueGriefingCollateral, setValue, trigger]);
+
+  useEffect(() => {
+    // Trigger form validation when the selected asset changes
+    trigger();
+  }, [trigger, selectedAsset, maxIssuable]);
 
   return (
     <div className="flex items-center justify-center h-full space-walk py-4">
@@ -195,9 +206,12 @@ function Issue(props: IssueProps): JSX.Element {
           <From
             {...{
               formControl: {
+                maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
                 register: register('amount'),
                 setValue: (n: number) => setValue('amount', n),
-                error: getFirstErrorMessage(formState, ['amount', 'securityDeposit']),
+                error:
+                  getFirstErrorMessage(formState, ['amount', 'securityDeposit']) ||
+                  (!isU128Compatible(amountNative) ? 'Exceeds the max allowed value.' : ''),
               },
               asset: {
                 assets: prioritizeXLMAsset(wrappedAssets),
@@ -219,9 +233,10 @@ function Issue(props: IssueProps): JSX.Element {
             amountNative={amountNative}
             bridgedAsset={selectedAsset}
             extrinsic={requestIssueExtrinsic}
-            network={network}
-            wrappedCurrencySuffix={wrappedCurrencySuffix}
             nativeCurrency={nativeCurrency}
+            network={network}
+            showSecurityDeposit
+            wrappedCurrencySuffix={wrappedCurrencySuffix}
           />
           {walletAccount ? (
             <Button
@@ -229,12 +244,12 @@ function Issue(props: IssueProps): JSX.Element {
               color="primary"
               loading={submissionPending}
               type="submit"
-              disabled={!isEmpty(formState.errors)}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative) || submissionPending}
             >
               Bridge
             </Button>
           ) : (
-            <OpenWallet dAppName={dAppName} />
+            <OpenWallet />
           )}
           <Disclaimer content={disclaimerContent} />
         </form>

@@ -1,13 +1,13 @@
 import { FromProps } from '..';
 import { Badges } from '../Badges';
 import { FromDescription } from '../Description';
-import { InputField } from '../InputField';
+import { NumericInput } from '../NumericInput';
 import { AssetSelector } from '../../../Selector';
 import { AssetSelectorOnChange } from '../../../Selector/AssetSelector/helpers';
 
 export const SwapFrom = ({
   className,
-  formControl: { register, readOnly = false, error, disabled = false },
+  formControl: { register, readOnly = false, error, disabled = false, maxDecimals },
   asset: { assetSuffix, assets, selectedAsset, setSelectedAsset },
   description: { customText, network },
   badges: { minBadge, maxBadge },
@@ -37,10 +37,11 @@ export const SwapFrom = ({
       </div>
     </div>
 
-    <InputField
+    <NumericInput
+      additionalStyle={disabled ? 'text-gray-400 focus:text-gray-400' : ''}
+      maxDecimals={maxDecimals}
       register={register}
       readOnly={readOnly}
-      additionalStyle={disabled ? 'text-gray-400 focus:text-gray-400' : ''}
     />
 
     {error ? (
