@@ -1,18 +1,17 @@
 import { Asset } from 'stellar-base';
 import Big from 'big.js';
+import { useEffect, useState, useMemo } from 'preact/compat';
 import { nativeStellarToDecimal } from '../../shared/parseNumbers/metric';
-import { usePriceFetcher } from '../usePriceFetcher';
-import { useFeePallet } from './useFeePallet';
-import { useEffect, useState } from 'preact/compat';
-import { useMemo } from 'react';
 import { convertStellarAssetToCurrency } from '../../helpers/spacewalk';
 import { useNodeInfoState } from '../../NodeInfoProvider';
+import { usePriceFetcher } from '../usePriceFetcher';
+import { useFeePallet } from './useFeePallet';
 
 const isInvalid = (value: unknown) => {
   return !value;
 };
 
-export const useCalculateGriefingCollateral = (amount: Big, bridgedAsset: Asset | undefined) => {
+export const useCalculateGriefingCollateral = (amount: Big, bridgedAsset?: Asset): Big.Big => {
   const { getTokenPriceForCurrency } = usePriceFetcher();
   const { getFees } = useFeePallet();
   const [griefingCollateral, setGriefingCollateral] = useState<Big>(new Big(0));
@@ -25,17 +24,25 @@ export const useCalculateGriefingCollateral = (amount: Big, bridgedAsset: Asset 
   }, [bridgedAsset, api]);
 
   useEffect(() => {
-    if (isInvalid(amount) || isInvalid(bridgedCurrency) || isInvalid(griefingCollateralCurrency)) return;
+    const calculateGriefingCollateral = async () => {
+      if (isInvalid(amount) || isInvalid(bridgedCurrency) || isInvalid(griefingCollateralCurrency)) return;
 
-    getTokenPriceForCurrency(bridgedCurrency!).then((assetUSDPrice) => {
-      const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
+      if (bridgedCurrency && griefingCollateralCurrency) {
+        try {
+          const assetUSDPrice = await getTokenPriceForCurrency(bridgedCurrency);
+          const amountUSD = nativeStellarToDecimal(amount).mul(assetUSDPrice);
 
-      getTokenPriceForCurrency(griefingCollateralCurrency!).then((griefingCollateralCurrencyUSD) => {
-        if (isInvalid(griefingCollateralCurrencyUSD)) return;
+          const griefingCollateralCurrencyUSD = await getTokenPriceForCurrency(griefingCollateralCurrency);
+          if (isInvalid(griefingCollateralCurrencyUSD)) return;
 
-        setGriefingCollateral(amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD));
-      });
-    });
+          setGriefingCollateral(amountUSD.mul(issueGriefingCollateralFee).div(griefingCollateralCurrencyUSD));
+        } catch (error) {
+          console.error('Error calculating griefing collateral:', error);
+        }
+      }
+    };
+
+    calculateGriefingCollateral();
   }, [amount, getTokenPriceForCurrency, griefingCollateralCurrency, issueGriefingCollateralFee, bridgedCurrency]);
 
   return griefingCollateral;
