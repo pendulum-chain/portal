@@ -9,25 +9,6 @@ import { SuspenseLoad } from './components/Suspense';
 import { config } from './config';
 import TermsAndConditions from './TermsAndConditions';
 
-/**
- * Components need to be default exports inside the file for suspense loading to work properly
- */
-const pages = import.meta.glob('./pages/**/index.tsx');
-
-const loadPage = (path: string) => (
-  <SuspenseLoad importFn={pages[`./pages/${path}/index.tsx`]} fallback={defaultPageLoader} />
-);
-
-const Dashboard = loadPage('dashboard');
-const Gas = loadPage('gas');
-const Bridge = loadPage('spacewalk/bridge');
-const TransactionsPage = loadPage('spacewalk/transactions');
-const Staking = loadPage('collators');
-const NablaPage = loadPage('nabla');
-const SwapPage = loadPage('nabla/swap');
-const SwapPoolsPage = loadPage('nabla/swap-pools');
-const BackstopPoolsPage = loadPage('nabla/backstop-pools');
-
 enum PATHS {
   DASHBOARD = 'dashboard',
   GAS = 'gas',
@@ -42,16 +23,35 @@ enum PATHS {
 }
 
 export const PAGES_PATHS = {
-  DASHBOARD: 'dashboard',
-  GAS: 'gas',
+  DASHBOARD: PATHS.DASHBOARD,
+  GAS: PATHS.GAS,
   BRIDGE: `${PATHS.SPACEWALK}/${PATHS.BRIDGE}`,
   TRANSACTIONS: `${PATHS.SPACEWALK}/${PATHS.TRANSACTIONS}`,
-  NABLA: 'nabla',
+  NABLA: PATHS.NABLA,
   NABLA_SWAP: `${PATHS.NABLA}/${PATHS.NABLA_SWAP}`,
   NABLA_SWAP_POOLS: `${PATHS.NABLA}/${PATHS.NABLA_SWAP_POOLS}`,
   NABLA_BACKSTOP_POOLS: `${PATHS.NABLA}/${PATHS.NABLA_BACKSTOP_POOLS}`,
-  STAKING: 'staking',
+  STAKING: PATHS.STAKING,
 };
+
+/**
+ * Components need to be default exports inside the file for suspense loading to work properly
+ */
+const pages = import.meta.glob('./pages/**/index.tsx');
+
+const loadPage = (path: string) => (
+  <SuspenseLoad importFn={pages[`./pages/${path}/index.tsx`]} fallback={defaultPageLoader} />
+);
+
+const Dashboard = loadPage(PAGES_PATHS.DASHBOARD);
+const Gas = loadPage(PAGES_PATHS.GAS);
+const Bridge = loadPage(PAGES_PATHS.BRIDGE);
+const TransactionsPage = loadPage(PAGES_PATHS.TRANSACTIONS);
+const Staking = loadPage(PAGES_PATHS.STAKING);
+const NablaPage = loadPage(PAGES_PATHS.NABLA);
+const SwapPage = loadPage(PAGES_PATHS.NABLA_SWAP);
+const SwapPoolsPage = loadPage(PAGES_PATHS.NABLA_SWAP_POOLS);
+const BackstopPoolsPage = loadPage(PAGES_PATHS.NABLA_BACKSTOP_POOLS);
 
 export function App() {
   return (
