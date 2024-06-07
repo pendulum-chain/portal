@@ -14,6 +14,7 @@ import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
+import { PAGES_PATHS } from '../../app';
 
 export type LinkParameter = { isActive?: boolean };
 
@@ -55,7 +56,7 @@ export type Links = (state: Partial<GlobalState>) => LinkItem[];
 
 export const links: Links = ({ tenantName }) => [
   {
-    link: './dashboard',
+    link: `./${PAGES_PATHS.DASHBOARD}`,
     title: 'Dashboard',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
@@ -74,7 +75,7 @@ export const links: Links = ({ tenantName }) => [
     suffix: <ExternalIcon />,
   },
   {
-    link: './spacewalk',
+    link: '/spacewalk',
     title: getSpacewalkText(tenantName),
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
@@ -82,11 +83,11 @@ export const links: Links = ({ tenantName }) => [
     prefix: getSpacewalkInterpolation(tenantName),
     submenu: [
       {
-        link: './spacewalk/bridge',
+        link: `./${PAGES_PATHS.BRIDGE}`,
         title: 'Bridge',
       },
       {
-        link: './spacewalk/transactions',
+        link: `./${PAGES_PATHS.TRANSACTIONS}`,
         title: 'Transactions',
       },
     ],
@@ -103,15 +104,15 @@ export const links: Links = ({ tenantName }) => [
     },
     submenu: [
       {
-        link: './nabla/swap',
+        link: `./${PAGES_PATHS.NABLA_SWAP}`,
         title: 'Swap',
       },
       {
-        link: './nabla/swap-pools',
+        link: `./${PAGES_PATHS.NABLA_SWAP_POOLS}`,
         title: 'Swap Pools',
       },
       {
-        link: './nabla/backstop-pools',
+        link: `./${PAGES_PATHS.NABLA_BACKSTOP_POOLS}`,
         title: 'Backstop Pool',
       },
     ],
