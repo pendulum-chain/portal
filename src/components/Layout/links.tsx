@@ -118,7 +118,7 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: './staking',
+    link: `./${PAGES_PATHS.STAKING}`,
     title: 'Staking',
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
