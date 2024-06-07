@@ -40,7 +40,7 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
           </h4>
           {children}
           <p className="text-neutral-500 my-5">
-            {isPending ? 'Confirm this transaction in your wallet' : 'Waiting for transaction to complete'}
+            {isPending ? 'Confirm this transaction in your wallet' : 'Proceed in your wallet'}
           </p>
         </div>
       </>
