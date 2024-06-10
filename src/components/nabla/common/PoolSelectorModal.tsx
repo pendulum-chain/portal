@@ -91,7 +91,7 @@ function PoolList({ swapPools, backstopPool, onSelect, selected }: PoolListProps
                   <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
                 )}
               </span>
-              <span className="flex flex-col">
+              <span className="flex flex-col ml-3">
                 <span className="text-lg dark:text-white leading-5">
                   <strong>
                     {showPoolType ? (type === 'backstopPool' ? 'Backstop Pool ' : 'Swap Pool ') : ''}
