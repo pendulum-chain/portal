@@ -76,47 +76,13 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
   }
 
   return (
-    <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1">
-          <NumericInput
-            additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
-            register={form.register(formFieldName)}
-            autoFocus
-            maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
-          />
-          <Button
-            className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-            size="sm"
-            type="button"
-            onClick={() => {
-              if (maxBalance !== undefined) {
-                setValue(formFieldName, fractionOfValue(maxBalance.preciseBigDecimal, 50) as K, {
-                  shouldDirty: true,
-                  shouldTouch: true,
-                });
-              }
-            }}
-          >
-            50%
-          </Button>
-          <Button
-            className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-            size="sm"
-            type="button"
-            onClick={() => {
-              if (maxBalance !== undefined) {
-                setValue(formFieldName, fractionOfValue(maxBalance.preciseBigDecimal, 100) as K, {
-                  shouldDirty: true,
-                  shouldTouch: true,
-                });
-              }
-            }}
-          >
-            MAX
-          </Button>
-        </div>
-      </div>
+    <div className="relative rounded-lg bg-base-300 p-4">
+      <NumericInput
+        additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
+        register={form.register(formFieldName)}
+        autoFocus
+        maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
+      />
       <Range
         color={maxBalance === undefined ? 'secondary' : 'primary'}
         min={0}
