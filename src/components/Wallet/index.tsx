@@ -1,4 +1,4 @@
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftEndOnRectangleIcon } from '@heroicons/react/20/solid';
 import { WalletSelect } from '@talismn/connect-components';
 import { Button, Divider, Dropdown } from 'react-daisyui';
 import { isMobile } from 'react-device-detect';
@@ -56,7 +56,7 @@ const OpenWallet = (props: Props): JSX.Element => {
               {balance} {tokenSymbol}
             </p>
             <Button className="bg-base-300" size="sm" onClick={removeWalletAccount}>
-              <ArrowLeftOnRectangleIcon className="mr-2 w-5" />
+              <ArrowLeftEndOnRectangleIcon className="mr-2 w-5" />
               Disconnect
             </Button>
           </Dropdown.Menu>
