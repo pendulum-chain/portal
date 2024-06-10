@@ -74,7 +74,7 @@ const OpenWallet = (props: Props): JSX.Element => {
                 color="primary"
                 type="button"
               >
-                Connect to Wallet
+                Connect Wallet
               </Button>
             }
             onAccountSelected={setWalletAccount}
