@@ -151,7 +151,8 @@ const Redeem = ({ data, onClose }: RedeemProps): JSX.Element | null => {
               {walletAccount ? (
                 <Button
                   color="primary"
-                  className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                  className="w-full"
+                  loading={withdrawalQuote.isLoading}
                   type="submit"
                   disabled={!submitEnabled}
                 >

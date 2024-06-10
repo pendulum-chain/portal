@@ -114,7 +114,8 @@ const WithdrawLiquidity = ({ data, onClose }: WithdrawLiquidityProps): JSX.Eleme
               {walletAccount ? (
                 <Button
                   color="primary"
-                  className={`w-full ${withdrawalQuote.isLoading ? 'loading' : ''}`}
+                  className="w-full"
+                  loading={withdrawalQuote.isLoading}
                   type="submit"
                   disabled={!submitEnabled}
                 >
