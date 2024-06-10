@@ -1,14 +1,14 @@
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
-import { Avatar, AvatarProps, Button, Input, Modal } from 'react-daisyui';
+import { Avatar, AvatarProps, Button, Input } from 'react-daisyui';
 
 import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { repeat } from '../../../helpers/general';
-import ModalCloseButton from '../../Button/ModalClose';
 import { Skeleton } from '../../Skeleton';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../hooks/nabla/useNablaInstance';
 import { getIcon } from '../../../shared/AssetIcons';
+import { Dialog } from '../../../pages/collators/dialogs/Dialog';
 
 export type PoolEntry =
   | { type: 'swapPool'; pool: NablaInstanceSwapPool }
@@ -114,7 +114,7 @@ interface PoolSelectorModalProps extends PoolListProps {
   open: boolean;
 }
 
-export function PoolSelectorModal({
+export const PoolSelectorModal = ({
   swapPools,
   backstopPool,
   selected,
@@ -122,22 +122,14 @@ export function PoolSelectorModal({
   onSelect,
   onClose,
   open,
-}: PoolSelectorModalProps) {
-  return (
-    <Modal className="bg-[--bg-modal]" open={open}>
-      <Modal.Header className="mb-0">
-        <ModalCloseButton onClick={onClose} />
-        <h3 className="text-2xl font-normal">{backstopPool !== undefined ? 'Select a pool' : 'Select a token'}</h3>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="py-4">
-          {isLoading ? (
-            repeat(<Skeleton className="w-full h-10 mb-2" />)
-          ) : (
-            <PoolList swapPools={swapPools} backstopPool={backstopPool} onSelect={onSelect} selected={selected} />
-          )}
-        </div>
-      </Modal.Body>
-    </Modal>
+}: PoolSelectorModalProps) => {
+  const content = isLoading ? (
+    <>{repeat(<Skeleton className="w-full h-10 mb-2" />)}</>
+  ) : (
+    <PoolList swapPools={swapPools} backstopPool={backstopPool} onSelect={onSelect} selected={selected} />
   );
-}
+
+  const title = backstopPool !== undefined ? 'Select a pool' : 'Select a token';
+
+  return <Dialog visible={open} onClose={onClose} actions={<></>} content={content} headerText={title} />;
+};
