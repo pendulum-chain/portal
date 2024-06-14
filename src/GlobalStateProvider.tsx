@@ -41,7 +41,6 @@ const initTalisman = async (dAppName: string, selected?: string) => {
 };
 const initWalletConnect = async (chainId: string) => {
   const provider = await walletConnectService.getProvider();
-  //const pairings = provider.client.pairing.getAll({ active: true });
   if (!provider?.session) return;
   return await walletConnectService.init(provider?.session, chainId);
 };
