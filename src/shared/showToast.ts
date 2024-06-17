@@ -9,6 +9,7 @@ export enum ToastMessage {
   BUYOUT_ERROR = 'BUYOUT_ERROR',
   ERROR = 'ERROR',
   INFO = 'INFO',
+  WARNING = 'WARNING',
 }
 
 type ToastSettings = {
@@ -62,6 +63,12 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
     message: 'Info',
     options: {
       type: toast.TYPE.INFO,
+    },
+  },
+  [ToastMessage.WARNING]: {
+    message: 'Warning',
+    options: {
+      type: toast.TYPE.WARNING,
     },
   },
   [ToastMessage.BUYOUT_ERROR]: {
