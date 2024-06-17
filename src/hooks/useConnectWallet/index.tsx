@@ -1,11 +1,12 @@
-import { StateUpdater, useCallback, useEffect, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { Wallet, WalletAccount, getWallets } from '@talismn/connect-wallets';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useGlobalState } from '../../GlobalStateProvider';
+import { ToastMessage, showToast } from '../../shared/showToast';
 
 export const useConnectWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>();
-  const [selectedWallet, setSelectedWallet] = useState<Wallet>();
+  const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
 
   const { dAppName } = useGlobalState();
 
@@ -14,13 +15,27 @@ export const useConnectWallet = () => {
     setWallets(installedWallets);
   }, []);
 
-  const { mutate: selectWallet, data: accounts } = useMutation(async (wallet: Wallet) => {
+  const {
+    mutate: selectWallet,
+    data: accounts,
+    isLoading: loading,
+  } = useMutation<WalletAccount[], unknown, Wallet | undefined, unknown>(async (wallet) => {
     setSelectedWallet(wallet);
 
-    await wallet.enable(dAppName);
+    if (!wallet) return [];
 
-    return wallet.getAccounts();
+    try {
+      await wallet.enable(dAppName);
+
+      return wallet.getAccounts();
+    } catch (e) {
+      showToast(
+        ToastMessage.WARNING,
+        'There is already opened pending connection for this wallet. Please close it and try again.',
+      );
+      return [];
+    }
   });
 
-  return { accounts, wallets, selectWallet };
+  return { accounts, wallets, selectWallet, loading, selectedWallet };
 };
