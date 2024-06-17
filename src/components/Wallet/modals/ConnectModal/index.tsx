@@ -1,7 +1,6 @@
 import { Button } from 'react-daisyui';
 import { useState } from 'preact/hooks';
-import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
-import { ConnectModalContent } from './ConnectModalContent';
+import { ConnectModalDialog } from './ConnectModalDialog';
 
 export interface ConnectProps {
   isHeader?: boolean;
@@ -21,12 +20,11 @@ export const ConnectModal = ({ isHeader }: ConnectProps) => {
       >
         Connect Wallet
       </Button>
-      <Dialog
+      <ConnectModalDialog
         visible={visible}
-        headerText="Connect wallet"
-        onClose={() => setVisible((state) => !state)}
-        content={<ConnectModalContent />}
-        actions={<></>}
+        onClose={() => {
+          setVisible(false);
+        }}
       />
     </>
   );

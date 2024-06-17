@@ -1,22 +1,19 @@
-import { Collapse, Loading } from 'react-daisyui';
+import { Collapse } from 'react-daisyui';
+import { useConnectWallet } from '../../../../hooks/useConnectWallet';
+import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
 import { ConnectModalWalletsList } from './ConnectModalList/ConnectModalWalletsList';
 import { ConnectModalAccountsList } from './ConnectModalList/ConnectModalAccountsList';
-import { useConnectWallet } from '../../../../hooks/useConnectWallet';
+import { ConnectModalDialogLoading } from './ConnectModalDialogLoading';
 
-const ConnectModalLoading = () => (
-  <article className="flex flex-col items-center justify-center">
-    <Loading variant="dots" size="lg" />
-    <h1 className="text-2xl">Connecting wallet</h1>
-    <p className="mt-2.5 w-52 text-center text-sm">Please approve walletName and approve transaction.</p>
-  </article>
-);
+interface ConnectModalDialogProps {
+  visible: boolean;
+  onClose: () => void;
+}
 
-export const ConnectModalContent = () => {
-  const { wallets, accounts, selectWallet } = useConnectWallet();
+export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps) => {
+  const { wallets, accounts, selectWallet, loading, selectedWallet } = useConnectWallet();
 
-  // if (loading) return <ConnectModalLoading />;
-
-  return (
+  const content = (
     <article className="flex flex-wrap gap-2">
       <Collapse defaultChecked icon="arrow" open name="wallets">
         <Collapse.Title>Select Wallet</Collapse.Title>
@@ -37,5 +34,24 @@ export const ConnectModalContent = () => {
         </Collapse.Content>
       </Collapse>
     </article>
+  );
+
+  return (
+    <Dialog
+      visible={visible}
+      headerText={loading ? '' : 'Connect wallet'}
+      onClose={() => {
+        selectWallet(undefined);
+        onClose();
+      }}
+      content={
+        loading ? (
+          <ConnectModalDialogLoading selectedWallet={selectedWallet?.title || selectedWallet?.extensionName || ''} />
+        ) : (
+          content
+        )
+      }
+      actions={<></>}
+    />
   );
 };
