@@ -7,6 +7,7 @@ export enum ToastMessage {
   UPDATED_DELEGATOR_REWARDS = 'UPDATED_DELEGATOR_REWARDS',
   NO_WALLET_SELECTED = 'NO_WALLET_SELECTED',
   BUYOUT_ERROR = 'BUYOUT_ERROR',
+  WALLET_ALREADY_OPEN_PENDING_CONNECTION = 'WALLET_ALREADY_OPEN_PENDING_CONNECTION',
   ERROR = 'ERROR',
   INFO = 'INFO',
   WARNING = 'WARNING',
@@ -76,6 +77,13 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
     options: {
       type: toast.TYPE.ERROR,
       toastId: ToastMessage.BUYOUT_ERROR,
+    },
+  },
+  [ToastMessage.WALLET_ALREADY_OPEN_PENDING_CONNECTION]: {
+    message: 'There is already an open pending connection for this wallet. Please close it and try again.',
+    options: {
+      toastId: ToastMessage.WALLET_ALREADY_OPEN_PENDING_CONNECTION,
+      type: toast.TYPE.WARNING,
     },
   },
 };

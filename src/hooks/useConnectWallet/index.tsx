@@ -28,11 +28,8 @@ export const useConnectWallet = () => {
       await wallet.enable(dAppName);
 
       return wallet.getAccounts();
-    } catch (e) {
-      showToast(
-        ToastMessage.WARNING,
-        'There is already opened pending connection for this wallet. Please close it and try again.',
-      );
+    } catch {
+      showToast(ToastMessage.WALLET_ALREADY_OPEN_PENDING_CONNECTION);
       return [];
     }
   });
