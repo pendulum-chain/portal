@@ -2,14 +2,19 @@ import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { SessionTypes } from '@walletconnect/types';
 import { useCallback, useEffect, useState } from 'preact/compat';
-import logo from '../../../assets/wallet-connect.svg';
+import logo from '../../../../assets/wallet-connect.svg';
 import { config } from '../../../../config';
 import { chainIds, walletConnectConfig } from '../../../../config/walletConnect';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { walletConnectService } from '../../../../services/walletConnect';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
+import { Button } from 'react-daisyui';
 
-const WalletConnect = () => {
+interface WalletConnectProps {
+  onClick: () => void;
+}
+
+const WalletConnect = ({ onClick }: WalletConnectProps) => {
   const [loading, setLoading] = useState(false);
   const [provider, setProvider] = useState<Promise<UniversalProvider> | undefined>();
   const [modal, setModal] = useState<WalletConnectModal | undefined>();
@@ -58,14 +63,13 @@ const WalletConnect = () => {
     setLoading(true);
     try {
       await handleConnect();
-
-      //@eslint-disable-next-line no-explicit-any
-    } catch (error: any) {
-      showToast(ToastMessage.ERROR, error);
+    } catch (error: unknown) {
+      showToast(ToastMessage.ERROR, error as string);
     } finally {
       setLoading(false);
+      onClick();
     }
-  }, [handleConnect]);
+  }, [handleConnect, onClick]);
 
   useEffect(() => {
     if (provider) return;
@@ -78,16 +82,10 @@ const WalletConnect = () => {
   }, [provider]);
 
   return (
-    <div className="-mt-8">
-      <button
-        className={`flex items-center gap-4 p-4 rounded-xl text-left w-full bg-[var(--modal-control-background)] hover:bg-[var(--modal-active-background)]`}
-        onClick={walletConnectClick}
-        disabled={loading}
-      >
-        <img src={logo} width="32" height="32" alt="Wallet Connect" />
-        {loading ? 'Loading...' : 'Wallet connect'}
-      </button>
-    </div>
+    <Button className="flex outline-primary" onClick={walletConnectClick} disabled={loading}>
+      <img src={logo} alt="WalletConnect connect button" width={32} height={32} />
+      <p className="ml-2">{loading ? 'Loading...' : 'Wallet connect'}</p>
+    </Button>
   );
 };
 export default WalletConnect;

@@ -7,7 +7,6 @@ import { ToastMessage, showToast } from '../../shared/showToast';
 export const useConnectWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>();
   const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
-
   const { dAppName } = useGlobalState();
 
   useEffect(() => {

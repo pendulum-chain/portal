@@ -1,20 +1,22 @@
 import { Wallet } from '@talismn/connect-wallets';
 import { ConnectModalListWalletsItem } from './ConnectModalWalletsListItem';
+import WalletConnect from '../../../../wallets/WalletConnect';
 
 interface ConnectWalletListProps {
-  items?: Wallet[];
+  wallets?: Wallet[];
   onClick: (wallet: Wallet) => void;
+  onClose: () => void;
   makeInstallable?: boolean;
 }
 
-export function ConnectModalWalletsList({ items, onClick, makeInstallable }: ConnectWalletListProps) {
-  if (!items) {
-    return null;
+export function ConnectModalWalletsList({ wallets, onClick, makeInstallable, onClose }: ConnectWalletListProps) {
+  if (!wallets?.length) {
+    return <p>No wallet installed</p>;
   }
 
   return (
     <section className="grid grid-cols-2 gap-4">
-      {items.map((wallet: Wallet) => (
+      {wallets.map((wallet: Wallet) => (
         <ConnectModalListWalletsItem
           key={wallet.extensionName}
           wallet={wallet}
@@ -22,6 +24,8 @@ export function ConnectModalWalletsList({ items, onClick, makeInstallable }: Con
           makeInstallable={makeInstallable}
         />
       ))}
+
+      <WalletConnect onClick={onClose} />
     </section>
   );
 }

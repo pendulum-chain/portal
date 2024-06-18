@@ -2,7 +2,7 @@ import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-d
 import { WalletAccount } from '@talismn/connect-wallets';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { Modal } from 'react-daisyui';
-import logo from '../../../assets/nova-wallet.png';
+import logo from '../../../../assets/nova-wallet.png';
 import { GlobalState } from '../../../../GlobalStateProvider';
 import { PublicKey } from '../../../PublicKey';
 
@@ -86,7 +86,7 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
           {accounts.map((a, i) => (
             <button
               key={i}
-              className={`flex items-center gap-4 p-4 rounded-xl text-left w-full bg-[var(--modal-control-background)] hover:bg-[var(--modal-active-background)]`}
+              className={`flex w-full items-center gap-4 rounded-xl bg-[var(--modal-control-background)] p-4 text-left hover:bg-[var(--modal-active-background)]`}
               onClick={() => setSelectedAccount(a)}
             >
               <img src={logo} width="32" height="32" alt="Nova Wallet" />
@@ -101,7 +101,7 @@ const NovaWallet = ({ setWalletAccount }: NovaWalletProps) => {
         </div>
       </Modal>
       <button
-        className={`flex items-center gap-4 p-4 rounded-xl text-left w-full bg-[var(--modal-control-background)] hover:bg-[var(--modal-active-background)]`}
+        className={`flex w-full items-center gap-4 rounded-xl bg-[var(--modal-control-background)] p-4 text-left hover:bg-[var(--modal-active-background)]`}
         onClick={onClick}
       >
         <img src={logo} width="32" height="32" alt="Nova Wallet" />

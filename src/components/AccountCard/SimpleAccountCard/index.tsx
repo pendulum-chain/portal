@@ -9,6 +9,7 @@ interface AccountProps {
 
 export const SimpleAccountCard = ({ account }: AccountProps) => {
   const { setWalletAccount } = useGlobalState();
+
   return (
     <li className="w-full">
       <button
