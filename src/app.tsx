@@ -9,7 +9,7 @@ import { SuspenseLoad } from './components/Suspense';
 import { config } from './config';
 import TermsAndConditions from './TermsAndConditions';
 
-enum PATHS {
+export enum PATHS {
   DASHBOARD = 'dashboard',
   GAS = 'gas',
   SPACEWALK = 'spacewalk',

@@ -14,7 +14,7 @@ import { nablaConfig } from '../../config/apps/nabla';
 import { GlobalState } from '../../GlobalStateProvider';
 import { TenantName } from '../../models/Tenant';
 import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
-import { PAGES_PATHS } from '../../app';
+import { PAGES_PATHS, PATHS } from '../../app';
 
 export type LinkParameter = { isActive?: boolean };
 
@@ -75,7 +75,7 @@ export const links: Links = ({ tenantName }) => [
     suffix: <ExternalIcon />,
   },
   {
-    link: '/spacewalk',
+    link: `/${PATHS.SPACEWALK}`,
     title: getSpacewalkText(tenantName),
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : tenantName === TenantName.Pendulum ? 'active' : ''),
@@ -93,7 +93,7 @@ export const links: Links = ({ tenantName }) => [
     ],
   },
   {
-    link: '/nabla',
+    link: `/${PATHS.NABLA}`,
     title: 'Forex AMM',
     hidden:
       (nablaConfig.environment && !nablaConfig.environment.includes(config.env)) ||
