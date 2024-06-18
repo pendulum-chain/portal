@@ -341,14 +341,6 @@ w3m-modal {
   color: currentColor;
 }
 
-.collapse-content {
-  max-height: 0;
-}
-
-.collapse-open .collapse-content {
-  max-height: none;
-}
-
 .collapse-arrow > .collapse-title:after {
   top: 50%;
 }
