@@ -7,6 +7,7 @@ import { RichRedeemRequest } from '../../../hooks/spacewalk/useRedeemPallet';
 import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
 import { useMemo } from 'preact/hooks';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';
 
 interface ConfirmationDialogProps {
   redeemRequest: RichRedeemRequest | undefined;
@@ -40,7 +41,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         <div className="mt-6">
           <div className="text-sm mt-2 text-center">
             This typically takes only a few minutes. Contact
-            <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+            <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
               support
             </a>
             if your transaction is still pending after 10 minutes.

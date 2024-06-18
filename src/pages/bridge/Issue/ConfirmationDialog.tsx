@@ -10,6 +10,7 @@ import { nativeStellarToDecimal } from '../../../shared/parseNumbers/metric';
 import { Dialog } from '../../collators/dialogs/Dialog';
 import { generateSEP0007URIScheme } from '../../../helpers/stellar/sep0007';
 import { StellarUriScheme } from './StellarURIScheme';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
@@ -100,7 +101,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           </li>
           <li className="mt-1">
             Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
-            <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+            <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
               support
             </a>
             if your transaction is still pending after 10 minutes.

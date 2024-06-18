@@ -28,6 +28,7 @@ import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
 import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';
 
 interface IssueProps {
   network: string;
@@ -107,7 +108,7 @@ function Issue(props: IssueProps): JSX.Element {
         </li>
         <li>
           Estimated time for issuing: In a minute after submitting the Stellar payment to the vault. Contact
-          <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+          <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
             support
           </a>
           if your transaction is still pending after 10 minutes.

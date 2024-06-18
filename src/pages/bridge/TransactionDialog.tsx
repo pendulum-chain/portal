@@ -23,6 +23,7 @@ import { useVaultRegistryPallet } from '../../hooks/spacewalk/useVaultRegistryPa
 import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { TTransfer, TransferType } from './TransactionsColumns';
 import { Dialog } from '../collators/dialogs/Dialog';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../shared/constants';
 
 interface BaseTransactionDialogProps {
   id: string;
@@ -330,7 +331,7 @@ export function PendingTransactionDialog(props: TransactionDialogProps) {
       <div className="mt-4" />
       <div className="text-sm px-5 ">
         Note: Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
-        <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+        <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
           support
         </a>
         if your transaction is still pending after 10 minutes.
