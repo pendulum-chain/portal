@@ -1,5 +1,5 @@
-import SuccessDialogIcon from '../../../assets/dialog-status-success';
-import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
+import SuccessDialogIcon from '../../../../assets/dialog-status-success';
+import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 
 export function ReimbursedTransferDialog(props: TransferDialogProps) {

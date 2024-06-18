@@ -1,7 +1,7 @@
 import { Button, Checkbox } from 'react-daisyui';
-import VaultSelector from '../../../components/Selector/VaultSelector';
-import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { Dialog } from '../../collators/dialogs/Dialog';
+import VaultSelector from '../../../../components/Selector/VaultSelector';
+import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
+import { Dialog } from '../../../staking/dialogs/Dialog';
 import { useMemo } from 'preact/hooks';
 
 interface Props {

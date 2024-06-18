@@ -7,18 +7,18 @@ import { Button } from 'react-daisyui';
 import { FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { useNodeInfoState } from '../../../NodeInfoProvider';
-import From from '../../../components/Form/From';
-import OpenWallet from '../../../components/Wallet';
-import { getErrors, getEventBySectionAndMethod } from '../../../helpers/substrate';
-import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
-import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
-import useBridgeSettings from '../../../hooks/spacewalk/useBridgeSettings';
-import { decimalToStellarNative, nativeToDecimal } from '../../../shared/parseNumbers/metric';
-import { useAccountBalance } from '../../../shared/useAccountBalance';
-import { TenantName } from '../../../models/Tenant';
-import { ToastMessage, showToast } from '../../../shared/showToast';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import { useNodeInfoState } from '../../../../NodeInfoProvider';
+import From from '../../../../components/Form/From';
+import OpenWallet from '../../../../components/Wallet';
+import { getErrors, getEventBySectionAndMethod } from '../../../../helpers/substrate';
+import { useFeePallet } from '../../../../hooks/spacewalk/useFeePallet';
+import { RichIssueRequest, useIssuePallet } from '../../../../hooks/spacewalk/useIssuePallet';
+import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
+import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
+import { useAccountBalance } from '../../../../shared/useAccountBalance';
+import { TenantName } from '../../../../models/Tenant';
+import { ToastMessage, showToast } from '../../../../shared/showToast';
 
 import { FeeBox } from '../FeeBox';
 import { prioritizeXLMAsset } from '../helpers';
@@ -26,8 +26,9 @@ import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-import { isU128Compatible } from '../../../shared/parseNumbers/isU128Compatible';
-import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
+import { PAGES_PATHS } from '../../../../app';
+import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
 
 interface IssueProps {
   network: string;
@@ -197,7 +198,7 @@ function Issue(props: IssueProps): JSX.Element {
         onClose={() => setConfirmationDialogVisible(false)}
         onConfirm={() => {
           setConfirmationDialogVisible(false);
-          navigateTo(`/${tenantName}/spacewalk/transactions`);
+          navigateTo(`/${tenantName}${PAGES_PATHS.TRANSACTIONS}`);
         }}
       />
       <div className="w-full">
