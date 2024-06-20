@@ -1,10 +1,10 @@
 import { Link } from 'react-daisyui';
 
-import { useGlobalState } from '../../../GlobalStateProvider';
-import WarningDialogIcon from '../../../assets/dialog-status-warning';
-import { convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { toTitle } from '../../../helpers/string';
-import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import WarningDialogIcon from '../../../../assets/dialog-status-warning';
+import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
+import { toTitle } from '../../../../helpers/string';
+import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 

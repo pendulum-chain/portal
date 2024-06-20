@@ -1,8 +1,8 @@
-import { useGlobalState } from '../../../GlobalStateProvider';
-import SuccessDialogIcon from '../../../assets/dialog-status-success';
-import { CopyableAddress } from '../../../components/PublicKey';
-import { addSuffix, convertCurrencyToStellarAsset } from '../../../helpers/spacewalk';
-import { toTitle } from '../../../helpers/string';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import SuccessDialogIcon from '../../../../assets/dialog-status-success';
+import { CopyableAddress } from '../../../../components/PublicKey';
+import { addSuffix, convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
+import { toTitle } from '../../../../helpers/string';
 import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 

@@ -2,17 +2,17 @@ import React from 'preact/compat';
 import { StateUpdater, Dispatch, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
-import AmplitudeLogo from '../../assets/AmplitudeLogo';
-import PendulumLogo from '../../assets/PendulumLogo';
-import SettingsIcon from '../../assets/SettingsIcon';
-import StellarLogo from '../../assets/StellarLogo';
-import { SpacewalkConstants } from '../../helpers/spacewalk';
-import { useNodeInfoState } from '../../NodeInfoProvider';
+import AmplitudeLogo from '../../../assets/AmplitudeLogo';
+import PendulumLogo from '../../../assets/PendulumLogo';
+import SettingsIcon from '../../../assets/SettingsIcon';
+import StellarLogo from '../../../assets/StellarLogo';
+import { SpacewalkConstants } from '../../../helpers/spacewalk';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
+import { TenantName } from '../../../models/Tenant';
 import Issue from './Issue';
 import SettingsDialog from './Issue/SettingsDialog';
 import Redeem from './Redeem';
-import './styles.css';
-import { TenantName } from '../../models/Tenant';
+import '../styles.css';
 
 enum BridgeTabs {
   Issue = 0,

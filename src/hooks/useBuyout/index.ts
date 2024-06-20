@@ -6,7 +6,7 @@ import { Codec } from '@polkadot/types-codec/types';
 
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { nativeToFormatDecimalPure } from '../../shared/parseNumbers/decimal';
-import { doSubmitExtrinsic } from '../../pages/collators/dialogs/helpers';
+import { doSubmitExtrinsic } from '../../pages/staking/dialogs/helpers';
 import { useGlobalState } from '../../GlobalStateProvider';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from './types';

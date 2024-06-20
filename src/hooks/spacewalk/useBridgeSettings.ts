@@ -6,7 +6,7 @@ import { Asset } from 'stellar-sdk';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
-import { BridgeContext } from '../../pages/bridge';
+import { BridgeContext } from '../../pages/spacewalk/bridge';
 import { ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { Balance } from '@polkadot/types/interfaces';
