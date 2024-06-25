@@ -14,6 +14,13 @@ export const walletConnectService = {
       (await UniversalProvider.init({
         projectId: config.walletConnect.projectId,
         relayUrl: config.walletConnect.url,
+        metadata: {
+          name: 'Pendulum Portal',
+          description:
+            'The Pendulum Portal allows users to interact with all features of the Pendulum-related parachains.',
+          url: 'https://portal.pendulumchain.org',
+          icons: ['https://portal.pendulumchain.org/assets/favicon.7ffed586.png'],
+        },
       } as UniversalProviderOpts));
     return this.provider;
   },
