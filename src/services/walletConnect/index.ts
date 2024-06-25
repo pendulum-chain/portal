@@ -19,7 +19,7 @@ export const walletConnectService = {
           description:
             'The Pendulum Portal allows users to interact with all features of the Pendulum-related parachains.',
           url: 'https://portal.pendulumchain.org',
-          icons: [],
+          icons: ['https://portal.pendulumchain.org/assets/favicon.7ffed586.png'],
         },
       } as UniversalProviderOpts));
     return this.provider;
