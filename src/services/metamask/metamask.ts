@@ -1,35 +1,34 @@
+import { WalletAccount } from '@talismn/connect-wallets';
 import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
 import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
+import { MetamaskSnapApi } from '@chainsafe/metamask-polkadot-adapter/build/types';
 import type { SnapNetworks } from '@chainsafe/metamask-polkadot-types';
 import { Signer } from '@polkadot/api/types';
 import { web3EnablePromise } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
-import { WalletAccount } from '@talismn/connect-wallets';
-import logo from '../../assets/metamask-wallet.png';
+
 import { TenantName } from '../../models/Tenant';
+import { trimAddress } from '../../helpers/addressFormatter';
 
 export const WALLET_SOURCE_METAMASK = 'metamask';
 
 export function tenantToSnapNetwork(tenantName: TenantName): SnapNetworks {
-  switch (tenantName) {
-    case TenantName.Pendulum:
-      return 'polkadot';
-    case TenantName.Amplitude:
-      return 'kusama';
-    default:
-      return 'kusama';
-  }
+  const tenantNetworkMap: { [key in TenantName]?: SnapNetworks } = {
+    [TenantName.Pendulum]: 'polkadot',
+    [TenantName.Amplitude]: 'kusama',
+  };
+
+  return tenantNetworkMap[tenantName] || 'kusama';
 }
 
 export async function installPolkadotSnap(relayChain: SnapNetworks): Promise<boolean> {
   try {
     await enablePolkadotSnap({ networkName: relayChain });
-    console.info('Snap installed!!');
     return true;
   } catch (err) {
-    console.error(err);
+    console.error('Failed to install PolkadotSnap, ', err);
     return false;
   }
 }
@@ -56,9 +55,7 @@ export interface SnapInitializationResponse {
 
 export async function initiatePolkadotSnap(relayChain: SnapNetworks): Promise<SnapInitializationResponse> {
   try {
-    console.info('Attempting to connect to snap...');
     const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: relayChain });
-    console.info('Snap installed!');
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
   } catch (e) {
     console.error(e);
@@ -72,37 +69,17 @@ export interface ExtensionAccount {
   signer: Signer;
 }
 
-export async function buildWalletAccount(extAcc: ExtensionAccount) {
-  return {
-    address: extAcc.address,
-    source: extAcc.source,
-    name: extAcc.name,
-    signer: extAcc.signer as WalletAccount['signer'],
-    wallet: {
-      enable: () => undefined,
-      extensionName: 'polkadot-js',
-      title: 'Metamask Wallet',
-      installUrl: 'https://metamask.io/',
-      logo: {
-        src: logo,
-        alt: 'Metamask Wallet',
-      },
-      installed: true,
-      extension: undefined,
-      signer: extAcc.signer,
-      /**
-       * The following methods are tagged as 'Unused' since they are only required by the @talisman package,
-       * which we are not using to handle this wallet connection.
-       */
-      getAccounts: () => Promise.resolve([]), // Unused
-      subscribeAccounts: () => undefined, // Unused
-      transformError: (err: Error) => err, // Unused
-    },
-  };
-}
+export const buildWalletAccount = (extAcc: ExtensionAccount): WalletAccount => ({
+  address: extAcc.address,
+  source: extAcc.source,
+  name: extAcc.name,
+  signer: extAcc.signer as WalletAccount['signer'],
+  wallet: undefined,
+});
 
-export async function initiateMetamaskInjectedAccount(tenantName: TenantName) {
+const getProvider = async (tenantName: TenantName) => {
   const provider = await initiatePolkadotSnap(tenantToSnapNetwork(tenantName));
+
   if (!provider.isSnapInstalled) {
     const installResult = await installPolkadotSnap(tenantToSnapNetwork(tenantName));
     if (!installResult) {
@@ -110,31 +87,37 @@ export async function initiateMetamaskInjectedAccount(tenantName: TenantName) {
       return;
     }
   }
-  if (provider.snap) {
-    const api = provider.snap.getMetamaskSnapApi();
-    const injectedMetamaskAccount: ExtensionAccount = {
-      address: await api.getAddress(),
-      name: 'Metamask Snap',
-      source: WALLET_SOURCE_METAMASK,
-      signer: {
-        signPayload: async (payload: SignerPayloadJSON) => {
-          const stringResult = await api.signPayloadJSON(payload);
-          // Metamask snap doesn't provide a request Id, but just the hex string, so
-          // adding id: 1 to be compliant with SignerResult
-          return { id: 1, signature: stringResult } as SignerResult;
-        },
-        signRaw: async (raw: SignerPayloadRaw) => {
-          const stringResult = await api.signPayloadRaw(raw);
-          // Metamask snap doesn't provide a request Id, but just the hex string, so
-          // adding id: 1 to be compliant with SignerResult
-          return { id: 1, signature: stringResult } as SignerResult;
-        },
-        update: (id, status) => {
-          console.log('Status update for Id %d: %s', id, status.toHuman());
-        },
-      },
-    };
-    return await buildWalletAccount(injectedMetamaskAccount);
-  }
-  return undefined;
+
+  return provider;
+};
+
+const getSigner = (api: MetamaskSnapApi) => ({
+  signPayload: async (payload: SignerPayloadJSON) => {
+    const stringResult = await api.signPayloadJSON(payload);
+    // Metamask snap doesn't provide a request Id, but just the hex string, so
+    // adding id: 1 to be compliant with SignerResult
+    return { id: 1, signature: stringResult } as SignerResult;
+  },
+  signRaw: async (raw: SignerPayloadRaw) => {
+    const stringResult = await api.signPayloadRaw(raw);
+    // Metamask snap doesn't provide a request Id, but just the hex string, so
+    // adding id: 1 to be compliant with SignerResult
+    return { id: 1, signature: stringResult } as SignerResult;
+  },
+});
+
+export async function initiateMetamaskInjectedAccount(tenantName: TenantName) {
+  const provider = await getProvider(tenantName);
+
+  if (!provider?.snap) return undefined;
+  const api = provider.snap.getMetamaskSnapApi();
+  const address = await api.getAddress();
+
+  const injectedMetamaskAccount: ExtensionAccount = {
+    address,
+    name: trimAddress(address),
+    source: WALLET_SOURCE_METAMASK,
+    signer: getSigner(api),
+  };
+  return await buildWalletAccount(injectedMetamaskAccount);
 }

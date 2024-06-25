@@ -20,12 +20,10 @@ export const useConnectWallet = () => {
     isLoading: loading,
   } = useMutation<WalletAccount[], unknown, Wallet | undefined, unknown>(async (wallet) => {
     setSelectedWallet(wallet);
-
     if (!wallet) return [];
 
     try {
       await wallet.enable(dAppName);
-
       return wallet.getAccounts();
     } catch {
       showToast(ToastMessage.WALLET_ALREADY_OPEN_PENDING_CONNECTION);

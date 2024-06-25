@@ -1,41 +1,21 @@
-import { useCallback, useEffect, useState } from 'preact/compat';
-import { Button, Modal } from 'react-daisyui';
+import { useEffect, useState } from 'preact/compat';
+import { Button } from 'react-daisyui';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import logo from '../../../../assets/metamask-wallet.png';
-import {
-  ExtensionAccount,
-  buildWalletAccount,
-  initiateMetamaskInjectedAccount,
-} from '../../../../services/metamask/metamask';
-import { CloseButton } from '../../../CloseButton';
+import { ExtensionAccount, buildWalletAccount } from '../../../../services/metamask/metamask';
 import { PublicKey } from '../../../PublicKey';
 import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
 
 const MetamaskWallet = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [accounts, setAccounts] = useState<ExtensionAccount[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<ExtensionAccount>();
-  const { tenantName, setWalletAccount } = useGlobalState();
-
-  const onClick = useCallback(async () => {
-    const injectedMetamaskAccount = (await initiateMetamaskInjectedAccount(tenantName)) as ExtensionAccount;
-    if (injectedMetamaskAccount) {
-      setAccounts([injectedMetamaskAccount]);
-      setOpenModal(true);
-    } else {
-      console.error('Something went wrong, snap not found.');
-      setOpenModal(false);
-    }
-  }, [setOpenModal, tenantName]);
+  const { setWalletAccount } = useGlobalState();
 
   useEffect(() => {
     if (selectedAccount) {
-      buildWalletAccount(selectedAccount)
-        .then((account) => setWalletAccount(account))
-        .then(() => {
-          setOpenModal(false);
-        })
-        .catch((error) => console.error(error));
+      const account = buildWalletAccount(selectedAccount);
+      setWalletAccount(account);
+      setOpenModal(false);
     }
   }, [selectedAccount, setWalletAccount]);
 
@@ -51,7 +31,7 @@ const MetamaskWallet = () => {
           <div>
             <div className="text-sm">{a.name}</div>
             <div className="text-xs text-neutral-500">
-              <PublicKey publicKey={a.address} variant="shorter" />{' '}
+              <PublicKey publicKey={a.address} />
             </div>
           </div>
         </button>

@@ -1,7 +1,6 @@
 import { Wallet } from '@talismn/connect-wallets';
 import { ConnectModalListWalletsItem } from './ConnectModalWalletsListItem';
 import WalletConnect from '../../../../wallets/WalletConnect';
-import MetamaskWallet from '../../../../wallets/MetamaskWallet';
 
 interface ConnectWalletListProps {
   wallets?: Wallet[];
@@ -25,9 +24,7 @@ export function ConnectModalWalletsList({ wallets, onClick, makeInstallable, onC
           makeInstallable={makeInstallable}
         />
       ))}
-
       <WalletConnect onClick={onClose} />
-      <MetamaskWallet />
     </section>
   );
 }
