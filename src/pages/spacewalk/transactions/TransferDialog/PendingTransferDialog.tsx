@@ -17,7 +17,7 @@ import { useSecurityPallet } from '../../../../hooks/spacewalk/useSecurityPallet
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
-import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;

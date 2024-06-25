@@ -10,7 +10,7 @@ import { nativeStellarToDecimal } from '../../../../shared/parseNumbers/metric';
 import { Dialog } from '../../../staking/dialogs/Dialog';
 import { generateSEP0007URIScheme } from '../../../../helpers/stellar/sep0007';
 import { StellarUriScheme } from './StellarURIScheme';
-import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;
