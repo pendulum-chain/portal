@@ -1,27 +1,27 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import From from '../../../../components/Form/From';
 import LabelledInputField from '../../../../components/LabelledInputField';
 import OpenWallet from '../../../../components/Wallet';
-import { useGlobalState } from '../../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../../helpers/spacewalk';
 import { isPublicKey } from '../../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../../helpers/substrate';
 import { RichRedeemRequest, useRedeemPallet } from '../../../../hooks/spacewalk/useRedeemPallet';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../../hooks/useBalances';
-import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
+import { ToastMessage, showToast } from '../../../../shared/showToast';
 import { FeeBox } from '../FeeBox';
+import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
-import { ToastMessage, showToast } from '../../../../shared/showToast';
-import { prioritizeXLMAsset } from '../helpers';
-import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
 
 export type RedeemFormValues = {
   amount: number;
@@ -43,7 +43,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { selectedVault, selectedAsset, wrappedAssets, setSelectedAsset } = useBridgeSettings();
 
-  const { walletAccount, dAppName } = useGlobalState();
+  const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { balances } = useBalances();
   const { wrappedCurrencySuffix, nativeCurrency, network } = props;
@@ -132,14 +132,14 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk py-4 w-full">
+    <div className="flex items-center justify-center w-full h-full py-4 space-walk">
       <ConfirmationDialog
         redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
+        <form className="flex flex-col px-5" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <From
             {...{
               formControl: {
@@ -161,7 +161,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               badges: {},
             }}
           />
-          <label className="label flex align-center">
+          <label className="flex label align-center">
             <span className="text-sm">{`Max redeemable: ${maxRedeemable.toFixed(2)}
               ${selectedAsset?.code || ''}`}</span>
           </label>

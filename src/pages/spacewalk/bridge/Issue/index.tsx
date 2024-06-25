@@ -28,7 +28,7 @@ import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { PAGES_PATHS } from '../../../../app';
 import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
-import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 
 interface IssueProps {
   network: string;

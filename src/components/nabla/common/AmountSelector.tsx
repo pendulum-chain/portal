@@ -8,7 +8,7 @@ import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { ContractBalance } from '../../../helpers/contracts';
 import { calcSharePercentageNumber } from '../../../helpers/calc';
 import { NumericInput } from '../../Form/From/NumericInput';
-import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
+import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/maxDecimals';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   maxBalance: ContractBalance | undefined;

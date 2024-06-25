@@ -1,6 +1,6 @@
 import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { USER_INPUT_MAX_DECIMALS, exceedsMaxDecimals } from '../../../../shared/parseNumbers/decimal';
+import { handleOnKeyPressExceedsMaxDecimals, USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 
 interface NumericInputProps {
   register: UseFormRegisterReturn;
@@ -11,30 +11,9 @@ interface NumericInputProps {
   autoFocus?: boolean;
 }
 
-function isValidNumericInput(value: string): boolean {
-  return /^[0-9.,]*$/.test(value);
-}
-
-function alreadyHasDecimal(e: KeyboardEvent) {
-  const decimalChars = ['.', ','];
-
-  // In the onInput event, "," is replaced by ".", so we check if the e.target.value already contains a "."
-  return decimalChars.some((char) => e.key === char && e.target && (e.target as HTMLInputElement).value.includes('.'));
-}
-
 function handleOnInput(e: KeyboardEvent): void {
   const target = e.target as HTMLInputElement;
   target.value = target.value.replace(/,/g, '.');
-}
-
-function handleOnKeyPress(e: KeyboardEvent, maxDecimals: number): void {
-  if (!isValidNumericInput(e.key) || alreadyHasDecimal(e)) {
-    e.preventDefault();
-  }
-  const target = e.target as HTMLInputElement;
-  if (exceedsMaxDecimals(target.value, maxDecimals - 1)) {
-    target.value = target.value.slice(0, -1);
-  }
 }
 
 export const NumericInput = ({
@@ -45,7 +24,7 @@ export const NumericInput = ({
   defaultValue,
   autoFocus,
 }: NumericInputProps) => (
-  <div className="w-full flex justify-between">
+  <div className="flex justify-between w-full">
     <div className="flex-grow text-4xl text-black font-outfit">
       <Input
         autocomplete="off"
@@ -56,7 +35,7 @@ export const NumericInput = ({
           additionalStyle
         }
         minlength="1"
-        onKeyPress={(e: KeyboardEvent) => handleOnKeyPress(e, maxDecimals)}
+        onKeyPress={(e: KeyboardEvent) => handleOnKeyPressExceedsMaxDecimals(e, maxDecimals)}
         onInput={handleOnInput}
         pattern="^[0-9]*[.,]?[0-9]*$"
         placeholder="0.0"
