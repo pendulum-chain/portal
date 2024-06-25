@@ -2,15 +2,19 @@ import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 
-import { useGlobalState } from '../../../GlobalStateProvider';
-import PendingDialogIcon from '../../../assets/dialog-status-pending';
-import { CopyableAddress } from '../../../components/PublicKey';
-import TransferCountdown from '../../../components/TransferCountdown';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
-import { toTitle } from '../../../helpers/string';
-import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
-import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import PendingDialogIcon from '../../../../assets/dialog-status-pending';
+import { CopyableAddress } from '../../../../components/PublicKey';
+import TransferCountdown from '../../../../components/TransferCountdown';
+import {
+  calculateDeadline,
+  convertCurrencyToStellarAsset,
+  deriveShortenedRequestId,
+} from '../../../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
+import { toTitle } from '../../../../helpers/string';
+import { useSecurityPallet } from '../../../../hooks/spacewalk/useSecurityPallet';
+import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';

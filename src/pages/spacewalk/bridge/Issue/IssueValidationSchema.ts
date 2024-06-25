@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { IssueFormValues } from '.';
-import { transformNumber } from '../../../helpers/yup';
+import { transformNumber } from '../../../../helpers/yup';
 
 export function getIssueValidationSchema(maxIssuable: number, balance: number, tokenSymbol?: string) {
   return Yup.object<IssueFormValues>().shape({
