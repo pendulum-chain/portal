@@ -67,7 +67,12 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element | null 
                 </p>
               </div>
             )}
-            <AmountSelector maxBalance={balanceQuery.data} formFieldName="amount" form={form} />
+            <AmountSelector
+              maxBalance={balanceQuery.data}
+              formFieldName="amount"
+              form={form}
+              showAvailableActions={true}
+            />
             <Validation className="text-center mt-2" errors={errors} />
             <div className="relative flex w-full flex-col gap-4 rounded-lg bg-base-300 text-neutral-500 dark:text-neutral-300  p-4 mt-4">
               <div className="flex items-center justify-between">

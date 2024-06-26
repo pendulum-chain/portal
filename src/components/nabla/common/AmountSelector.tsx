@@ -1,4 +1,4 @@
-import { Button, Range } from 'react-daisyui';
+import { Range } from 'react-daisyui';
 import { FieldPath, FieldValues, PathValue, UseFormReturn, useWatch } from 'react-hook-form';
 import { useEffect, useMemo } from 'preact/hooks';
 import Big from 'big.js';
@@ -9,13 +9,15 @@ import { ContractBalance } from '../../../helpers/contracts';
 import { calcSharePercentageNumber } from '../../../helpers/calc';
 import { NumericInput } from '../../Form/From/NumericInput';
 import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
+import { AvailableActions } from '../../Form/From/AvailableActions';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   maxBalance: ContractBalance | undefined;
   formFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
   children?: ReactNode;
-  onlyShowNumberInput?: boolean;
+  onlyShowNumericInput?: boolean;
+  showAvailableActions?: boolean;
 }
 
 export function AmountSelector<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
@@ -23,7 +25,8 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
   maxBalance,
   form,
   children,
-  onlyShowNumberInput,
+  onlyShowNumericInput,
+  showAvailableActions = false,
 }: AmountSelectorProps<FormFieldValues, TFieldName>) {
   type K = PathValue<FormFieldValues, TFieldName>;
 
@@ -64,7 +67,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
     }
   }, [amountString, amountBigDecimal, formFieldName, maxBalance, setError, clearErrors]);
 
-  if (onlyShowNumberInput === true) {
+  if (onlyShowNumericInput === true) {
     return (
       <NumericInput
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
@@ -83,6 +86,17 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
         autoFocus
         maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
       />
+      {showAvailableActions ? (
+        <div className="justify-end flex w-full">
+          <AvailableActions
+            setValue={(n) => setValue(formFieldName, n as K)}
+            max={maxBalance?.approximateNumber}
+            hideAvailable={true}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
       <Range
         color={maxBalance === undefined ? 'secondary' : 'primary'}
         min={0}
