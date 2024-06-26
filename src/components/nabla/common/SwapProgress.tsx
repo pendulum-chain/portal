@@ -1,6 +1,6 @@
 import { JSX } from 'preact';
 import { TransactionProgress, TransactionProgressProps } from '../common/TransactionProgress';
-import { Dialog } from '../../../pages/collators/dialogs/Dialog';
+import { Dialog } from '../../../pages/staking/dialogs/Dialog';
 
 export type SwapProgressProps = {
   open: boolean;

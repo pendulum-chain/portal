@@ -8,7 +8,7 @@ import { repeat } from '../../../helpers/general';
 import { Skeleton } from '../../Skeleton';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../hooks/nabla/useNablaInstance';
 import { getIcon } from '../../../shared/AssetIcons';
-import { Dialog } from '../../../pages/collators/dialogs/Dialog';
+import { Dialog } from '../../../pages/staking/dialogs/Dialog';
 
 export type PoolEntry =
   | { type: 'swapPool'; pool: NablaInstanceSwapPool }
