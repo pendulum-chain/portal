@@ -19,8 +19,9 @@ interface Props {
 const OpenWallet = (props: Props): JSX.Element => {
   const { walletAccount, dAppName, setWalletAccount, removeWalletAccount } = useGlobalState();
   const { wallet, address } = walletAccount || {};
-  const { query, balance } = useAccountBalance();
+  const { query, balances } = useAccountBalance();
   const { ss58Format, tokenSymbol } = useNodeInfoState().state;
+  const { total: balance } = balances;
 
   return (
     <>

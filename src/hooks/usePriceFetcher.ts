@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/compat';
+import { TenantName } from '../models/Tenant';
+import useSwitchChain from './useSwitchChain';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { nativeToDecimal } from '../shared/parseNumbers/metric';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
@@ -19,6 +21,7 @@ type PricesCache = { [diaKeys: string]: number };
 
 export const usePriceFetcher = () => {
   const [pricesCache, setPricesCache] = useState<PricesCache>({});
+  const { currentTenant } = useSwitchChain();
   const { api } = useNodeInfoState().state;
   const { getAllAssetsMetadata } = useAssetRegistryMetadata();
 
@@ -64,15 +67,23 @@ export const usePriceFetcher = () => {
     [pricesCache],
   );
 
+  const handleNativeTokenPrice = useCallback(() => {
+    if (currentTenant === TenantName.Pendulum) return pricesCache['Pendulum:PEN'];
+    return pricesCache['Amplitude:AMPE'];
+  }, [currentTenant, pricesCache]);
+
   const getTokenPriceForCurrency = useCallback(
     async (currency: SpacewalkPrimitivesCurrencyId) => {
-      const asset = getAllAssetsMetadata().find((asset) => isEqual(asset.currencyId, currency));
+      if (currency.toHuman() === 'Native') return handleNativeTokenPrice();
+      const asset = getAllAssetsMetadata().find((asset) => {
+        return isEqual(asset.currencyId.toHuman(), currency.toHuman());
+      });
       if (!asset) {
         return 0;
       }
       return getTokenPriceForKeys(asset.metadata.additional.diaKeys);
     },
-    [getAllAssetsMetadata, getTokenPriceForKeys],
+    [getAllAssetsMetadata, getTokenPriceForKeys, handleNativeTokenPrice],
   );
 
   return { getTokenPriceForKeys, getTokenPriceForCurrency };

@@ -12,9 +12,9 @@ import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import From from '../../../../components/Form/From';
 import OpenWallet from '../../../../components/Wallet';
 import { getErrors, getEventBySectionAndMethod } from '../../../../helpers/substrate';
-import { useFeePallet } from '../../../../hooks/spacewalk/useFeePallet';
 import { RichIssueRequest, useIssuePallet } from '../../../../hooks/spacewalk/useIssuePallet';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
+import { useCalculateGriefingCollateral } from '../../../../hooks/spacewalk/useCalculateGriefingCollateral';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../../shared/useAccountBalance';
 import { TenantName } from '../../../../models/Tenant';
@@ -68,15 +68,15 @@ function Issue(props: IssueProps): JSX.Element {
   const { walletAccount, tenantName } = useGlobalState();
   const { api, tokenSymbol } = useNodeInfoState().state;
   const { selectedVault, selectedAsset, setSelectedAsset, wrappedAssets } = useBridgeSettings();
-  const { issueGriefingCollateral } = useFeePallet().getFees();
-  const { balance } = useAccountBalance();
+  const { balances } = useAccountBalance();
+  const { transferable } = balances;
 
   const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
 
   const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(balance || '0.0'), tokenSymbol)),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(transferable || '0.0'), tokenSymbol)),
     mode: 'onChange',
   });
 
@@ -87,6 +87,8 @@ function Issue(props: IssueProps): JSX.Element {
   const amountNative = useMemo(() => {
     return amount ? decimalToStellarNative(amount) : Big(0);
   }, [amount]);
+
+  const griefingCollateral = useCalculateGriefingCollateral(amountNative, selectedAsset);
 
   const disclaimerContent = useMemo(
     () => (
@@ -181,9 +183,9 @@ function Issue(props: IssueProps): JSX.Element {
   );
 
   useEffect(() => {
-    setValue('securityDeposit', amount * issueGriefingCollateral.toNumber());
+    setValue('securityDeposit', griefingCollateral.toNumber());
     trigger('securityDeposit');
-  }, [amount, issueGriefingCollateral, setValue, trigger]);
+  }, [amount, griefingCollateral, setValue, trigger]);
 
   useEffect(() => {
     // Trigger form validation when the selected asset changes
@@ -235,7 +237,7 @@ function Issue(props: IssueProps): JSX.Element {
             extrinsic={requestIssueExtrinsic}
             nativeCurrency={nativeCurrency}
             network={network}
-            showSecurityDeposit
+            securityDeposit={griefingCollateral}
             wrappedCurrencySuffix={wrappedCurrencySuffix}
           />
           {walletAccount ? (
