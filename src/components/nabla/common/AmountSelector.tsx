@@ -67,7 +67,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
     }
   }, [amountString, amountBigDecimal, formFieldName, maxBalance, setError, clearErrors]);
 
-  if (onlyShowNumericInput === true) {
+  if (onlyShowNumericInput) {
     return (
       <NumericInput
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
@@ -91,7 +91,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
           <AvailableActions
             setValue={(n) => setValue(formFieldName, n as K)}
             max={maxBalance?.approximateNumber}
-            hideAvailable={true}
+            hideAvailableBalance={true}
           />
         </div>
       ) : (
