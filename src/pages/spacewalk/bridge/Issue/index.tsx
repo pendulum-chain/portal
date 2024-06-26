@@ -27,7 +27,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
 import { getIssueValidationSchema } from './IssueValidationSchema';
 import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
-import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 import { PAGES_PATHS } from '../../../../app';
 

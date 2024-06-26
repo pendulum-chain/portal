@@ -5,11 +5,6 @@ const MINIMUM_DECIMAL_PLACES = 2;
 const DECIMAL_PLACES = 6;
 const MICRO = 1e-6;
 
-export enum USER_INPUT_MAX_DECIMALS {
-  PENDULUM = 12,
-  STELLAR = 7,
-}
-
 const formatNumberLessThanMicro = (tokenSymbol?: string) => {
   return `< 0.000001 ${tokenSymbol ? tokenSymbol : ''}`;
 };
@@ -40,9 +35,3 @@ export const nativeToFormatDecimal = (value: BigNumber | number | string, tokenS
 
 // Without the tokenSymbol and prettyNumbers, formatNumberLessThanMicro functions
 export const nativeToFormatDecimalPure = (value: BigNumber | number | string) => nativeToDecimal(value).toNumber();
-
-export function exceedsMaxDecimals(value: unknown, maxDecimals: number) {
-  if (value === undefined || value === null) return true;
-  const decimalPlaces = value.toString().split('.')[1];
-  return decimalPlaces ? decimalPlaces.length > maxDecimals : false;
-}

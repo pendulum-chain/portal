@@ -50,11 +50,14 @@ describe('NumericInput Component', () => {
     expect(inputElement.value).toBe('1.1');
   });
 
-  it('should work with readOnly prop', () => {
+  it('should work with readOnly prop', async () => {
     const { getByPlaceholderText } = render(<NumericInput register={mockRegister} readOnly={true} />);
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     expect(inputElement).toHaveAttribute('readOnly');
+
+    await userEvent.type(inputElement, '123');
+    expect(inputElement.value).toBe('');
   });
 
   it('should apply additional styles', () => {
@@ -105,6 +108,49 @@ describe('NumericInput Component', () => {
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '123.4567890123456789abcgdehyu0123456.2746472.93.2.7.3.5.3');
-    expect(inputElement.value).toBe('123.456789012343');
+    expect(inputElement.value).toBe('123.456789012345');
+  });
+
+  it('should allow replace any digit user wants', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={3} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '123.421');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{arrowleft}{arrowleft}{backspace}');
+    // The keyboard is being reset to the end of the input, so we need to move it back to the left
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{arrowleft}{arrowleft}4');
+    expect(inputElement.value).toBe('143.421');
+
+    await userEvent.keyboard('{arrowleft}{arrowleft}{backspace}');
+    await userEvent.keyboard('{arrowleft}{arrowleft}7');
+    expect(inputElement.value).toBe('143.721');
+
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{backspace}');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}9');
+    expect(inputElement.value).toBe('1439721');
+  });
+
+  it('should initialize with default value', () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} defaultValue="123.45" />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    expect(inputElement.value).toBe('123.45');
+  });
+
+  it('should remain unchanged on invalid input', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} defaultValue="123.45" />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '!!!');
+    expect(inputElement.value).toBe('123.45');
+  });
+
+  it('should handle paste invalid characters', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    inputElement.focus();
+    await userEvent.paste('123.4567890123456789abcgdehyu0123456.2746472.93.2.7.3.5.3');
+    expect(inputElement.value).toBe('123.456789012345');
   });
 });
