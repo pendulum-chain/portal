@@ -2,8 +2,8 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { Asset } from 'stellar-sdk';
-import { useFeePallet } from '../../hooks/spacewalk/useFeePallet';
-import { nativeStellarToDecimal, nativeToDecimal } from '../../shared/parseNumbers/metric';
+import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
+import { ChainDecimals, nativeStellarToDecimal, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 
 interface FeeBoxProps {
   // The amount of the bridged asset denoted in the smallest unit of the asset
@@ -12,12 +12,12 @@ interface FeeBoxProps {
   extrinsic?: SubmittableExtrinsic;
   nativeCurrency: string;
   network: string;
-  showSecurityDeposit?: boolean;
+  securityDeposit?: Big;
   wrappedCurrencySuffix?: string;
 }
 
 export function FeeBox(props: FeeBoxProps): JSX.Element {
-  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency, showSecurityDeposit } = props;
+  const { bridgedAsset, extrinsic, network, wrappedCurrencySuffix, nativeCurrency, securityDeposit } = props;
   const amount = props.amountNative;
   const wrappedCurrencyName = bridgedAsset ? bridgedAsset.getCode() + (wrappedCurrencySuffix || '') : '';
   const { getFees, getTransactionFee } = useFeePallet();
@@ -40,10 +40,6 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     return nativeStellarToDecimal(amount.mul(fees.issueFee));
   }, [amount, fees]);
 
-  const griefingCollateral = useMemo(() => {
-    return nativeStellarToDecimal(amount.mul(fees.issueGriefingCollateral));
-  }, [amount, fees]);
-
   const toggle = useCallback(() => {
     if (collapseVisibility === '') {
       setCollapseVisibility('collapse-open');
@@ -63,6 +59,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
 
     return nativeStellarToDecimal(amount).sub(bridgeFee);
   }, [amount, bridgeFee]);
+
   return (
     <div
       tabIndex={0}
@@ -84,18 +81,18 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
             {bridgeFee.toString()} {bridgedAsset?.getCode()}
           </span>
         </div>
-        {showSecurityDeposit && (
+        {securityDeposit && (
           <div className="flex justify-between mt-2">
             <span>Security Deposit</span>
             <span className="text-right">
-              {griefingCollateral.toString()} {nativeCurrency}
+              {securityDeposit.toFixed(ChainDecimals)} {nativeCurrency}
             </span>
           </div>
         )}
         <div className="flex justify-between mt-2">
           <span>Transaction Fee</span>
           <span className="text-right">
-            {transactionFee.toFixed(12)} {nativeCurrency}
+            {transactionFee.toFixed(ChainDecimals)} {nativeCurrency}
           </span>
         </div>
       </div>

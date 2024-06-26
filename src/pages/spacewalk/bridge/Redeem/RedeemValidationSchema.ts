@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { RedeemFormValues } from '.';
-import { StellarPublicKeyPattern } from '../../../helpers/stellar';
-import { transformNumber } from '../../../helpers/yup';
+import { StellarPublicKeyPattern } from '../../../../helpers/stellar';
+import { transformNumber } from '../../../../helpers/yup';
 
 export function getRedeemValidationSchema(maxRedeemable: number, balance: number) {
   return Yup.object<RedeemFormValues>().shape({
