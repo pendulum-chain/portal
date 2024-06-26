@@ -9,6 +9,7 @@ import { useAccountBalance } from '../../shared/useAccountBalance';
 import useSwitchChain from '../../hooks/useSwitchChain';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { TenantName } from '../../models/Tenant';
+import { useGlobalState } from '../../GlobalStateProvider';
 
 const tenantColors = {
   [TenantName.Pendulum]: {
@@ -73,18 +74,22 @@ export const GetToken = () => {
   const { total } = useAccountBalance().balances;
   const { currentTenant } = useSwitchChain();
   const { tokenSymbol } = useNodeInfoState().state;
+  const { walletAccount } = useGlobalState();
+
+  const isUserLoggedIn = walletAccount?.address;
+  const isBalanceZero = Number(total) === 0;
 
   const link = `/${currentTenant}/gas`;
 
-  const isBalanceZero = Number(total) === 0;
-
   return (
     <section className="flex items-center">
-      {isBalanceZero && (
+      {isBalanceZero && isUserLoggedIn ? (
         <>
           <InsufficientFundsTooltip tenantName={currentTenant} />
           <JumpingArrow tenantName={currentTenant} />
         </>
+      ) : (
+        <></>
       )}
 
       {tokenSymbol ? (
