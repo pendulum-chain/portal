@@ -3,11 +3,7 @@ export enum USER_INPUT_MAX_DECIMALS {
   STELLAR = 7,
 }
 
-function isValidNumericInput(value: string): boolean {
-  return /^[0-9.,]*$/.test(value);
-}
-
-function alreadyHasDecimal(e: KeyboardEvent) {
+export function alreadyHasDecimal(e: KeyboardEvent) {
   const decimalChars = ['.', ','];
 
   // In the onInput event, "," is replaced by ".", so we check if the e.target.value already contains a "."
@@ -18,6 +14,7 @@ export function trimMaxDecimals(value: string, maxDecimals: number): string {
   const [integer, decimal] = value.split('.');
   return decimal ? `${integer}.${decimal.slice(0, maxDecimals)}` : value;
 }
+
 export function exceedsMaxDecimals(value: unknown, maxDecimals: number) {
   if (value === undefined || value === null) return true;
   const decimalPlaces = value.toString().split('.')[1];
@@ -31,13 +28,8 @@ function truncateIfExceedsMaxDecimals(value: string, maxDecimals: number): strin
   return value;
 }
 
-export function handleOnKeyPressExceedsMaxDecimals(e: KeyboardEvent, maxDecimals: number): void {
-  if (!isValidNumericInput(e.key) || alreadyHasDecimal(e)) {
-    e.preventDefault();
-  }
+export function handleOnInputExceedsMaxDecimals(e: KeyboardEvent, maxDecimals: number): void {
   const target = e.target as HTMLInputElement;
 
-  // We subtract 1 from maxDecimals because the onKeyPress event is triggered before the new character is added to the target.value
-  const onKeyPressMaxDecimals = maxDecimals - 1;
-  target.value = truncateIfExceedsMaxDecimals(target.value, onKeyPressMaxDecimals);
+  target.value = truncateIfExceedsMaxDecimals(target.value, maxDecimals);
 }
