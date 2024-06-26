@@ -1,4 +1,4 @@
-import { trimMaxDecimals, USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
+import { trimToMaxDecimals, USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 
 interface AvailableActionsProps {
   max?: number;
@@ -13,7 +13,7 @@ export const AvailableActions = ({
 }: AvailableActionsProps) => {
   const handleSetValue = (percentage: number) => {
     if (max !== undefined && setValue !== undefined) {
-      const trimmedValue = trimMaxDecimals(String(max * percentage), maxDecimals);
+      const trimmedValue = trimToMaxDecimals(String(max * percentage), maxDecimals);
       setValue(Number(trimmedValue));
     }
   };

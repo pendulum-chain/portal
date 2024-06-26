@@ -1,11 +1,8 @@
 import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
-import {
-  alreadyHasDecimal,
-  handleOnInputExceedsMaxDecimals,
-  USER_INPUT_MAX_DECIMALS,
-} from '../../../../shared/parseNumbers/maxDecimals';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
+import { handleOnChangeNumericInput } from './helpers';
 
 interface NumericInputProps {
   register: UseFormRegisterReturn;
@@ -16,14 +13,6 @@ interface NumericInputProps {
   autoFocus?: boolean;
 }
 
-const isValidNumericInput = (value: string): boolean => /^[0-9.,]*$/.test(value);
-
-function handleOnKeyPressNumericInput(e: KeyboardEvent): void {
-  if (!isValidNumericInput(e.key) || alreadyHasDecimal(e)) {
-    e.preventDefault();
-  }
-}
-
 export const NumericInput = ({
   register,
   readOnly = false,
@@ -32,17 +21,16 @@ export const NumericInput = ({
   defaultValue,
   autoFocus,
 }: NumericInputProps) => {
-  function handleOnInput(e: KeyboardEvent): void {
-    const target = e.target as HTMLInputElement;
-    target.value = target.value.replace(/,/g, '.');
-
-    handleOnInputExceedsMaxDecimals(e, maxDecimals);
+  function handleOnChange(e: KeyboardEvent): void {
+    handleOnChangeNumericInput(e, maxDecimals);
+    register.onChange(e);
   }
 
   return (
     <div className="flex justify-between w-full">
       <div className="flex-grow text-4xl text-black font-outfit">
         <Input
+          {...register}
           autocomplete="off"
           autocorrect="off"
           autocapitalize="none"
@@ -50,9 +38,8 @@ export const NumericInput = ({
             'input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none focus:text-accent-content text-accent-content ' +
             additionalStyle
           }
-          onKeyPress={handleOnKeyPressNumericInput}
           minlength="1"
-          onInput={handleOnInput}
+          onChange={handleOnChange}
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0.0"
           readOnly={readOnly}
@@ -62,7 +49,6 @@ export const NumericInput = ({
           inputmode="decimal"
           value={defaultValue}
           autoFocus={autoFocus}
-          {...register}
         />
       </div>
     </div>
