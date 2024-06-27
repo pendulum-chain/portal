@@ -11,13 +11,13 @@ interface ConnectModalDialogProps {
 }
 
 export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps) => {
-  const { allAccounts, allWallets, handleSelectWallet, loading, selectedWallet } = useWalletConnection();
+  const { allAccounts, allWallets, selectWallet, loading, selectedWallet } = useWalletConnection();
   const content = (
     <article className="flex flex-wrap gap-2">
       <Collapse defaultChecked icon="arrow" open name="wallets">
         <Collapse.Title>Select Wallet</Collapse.Title>
         <Collapse.Content>
-          <ConnectModalWalletsList wallets={allWallets} onClick={handleSelectWallet} onClose={onClose} />
+          <ConnectModalWalletsList wallets={allWallets} onClick={selectWallet} onClose={onClose} />
           <p className="mt-3.5 text-center text-xs">
             Want to know more?
             <a href="#" className="ml-1 text-primary hover:underline">
@@ -40,7 +40,7 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
       visible={visible}
       headerText={loading ? '' : 'Connect wallet'}
       onClose={() => {
-        handleSelectWallet(undefined);
+        selectWallet(undefined);
         onClose();
       }}
       content={
