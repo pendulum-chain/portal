@@ -4,7 +4,6 @@ import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/
 import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
 import { MetamaskSnapApi } from '@chainsafe/metamask-polkadot-adapter/build/types';
 import type { SnapNetworks } from '@chainsafe/metamask-polkadot-types';
-import { Signer } from '@polkadot/api/types';
 import { web3EnablePromise } from '@polkadot/extension-dapp';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
@@ -62,20 +61,6 @@ export async function initiatePolkadotSnap(relayChain: SnapNetworks): Promise<Sn
     return { isSnapInstalled: false };
   }
 }
-export interface ExtensionAccount {
-  address: string;
-  name: string;
-  source: string;
-  signer: Signer;
-}
-
-export const buildWalletAccount = (extAcc: ExtensionAccount): WalletAccount => ({
-  address: extAcc.address,
-  source: extAcc.source,
-  name: extAcc.name,
-  signer: extAcc.signer as WalletAccount['signer'],
-  wallet: undefined,
-});
 
 const getProvider = async (tenantName: TenantName) => {
   const provider = await initiatePolkadotSnap(tenantToSnapNetwork(tenantName));
@@ -113,12 +98,13 @@ export async function initiateMetamaskInjectedAccount(tenantName: TenantName): P
   const api = provider.snap.getMetamaskSnapApi();
   const address = await api.getAddress();
 
-  const injectedMetamaskAccount: ExtensionAccount = {
+  const injectedMetamaskAccount: WalletAccount = {
     address,
     name: trimAddress(address),
     source: WALLET_SOURCE_METAMASK,
     signer: getSigner(api),
+    wallet: undefined,
   };
 
-  return await [buildWalletAccount(injectedMetamaskAccount)];
+  return await [injectedMetamaskAccount];
 }
