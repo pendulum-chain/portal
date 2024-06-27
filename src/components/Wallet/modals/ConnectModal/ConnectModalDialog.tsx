@@ -19,12 +19,6 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
         <Collapse.Title>Select Wallet</Collapse.Title>
         <Collapse.Content>
           <ConnectModalWalletsList wallets={wallets} onClick={selectWallet} onClose={onClose} />
-          <p className="mt-3.5 text-center text-xs">
-            Want to know more?
-            <a href="#" className="ml-1 text-primary hover:underline">
-              Learn more about wallets
-            </a>
-          </p>
         </Collapse.Content>
       </Collapse>
       <Collapse defaultChecked icon="arrow" open name="accounts">
