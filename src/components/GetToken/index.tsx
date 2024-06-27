@@ -78,6 +78,7 @@ export const GetToken = () => {
 
   const isBalanceZero = Number(balance) === 0;
 
+  const showCurrentToken = getTokenIcon(currentTenant)
   return (
     <section className="flex items-center">
       {isBalanceZero && (
@@ -90,8 +91,14 @@ export const GetToken = () => {
       {tokenSymbol ? (
         <NavLink to={link}>
           <Button size="sm" className={`text-sm px-2 sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
-            {getTokenIcon(currentTenant)}
+            <div className="hidden md:flex">
+            {showCurrentToken}
             <p className="text-neutral">GET {tokenSymbol}</p>
+            </div>
+            <div className="md:hidden flex">
+              <p className="text-neutral mr-2">GET</p>
+              {showCurrentToken}
+            </div>
           </Button>
         </NavLink>
       ) : (
