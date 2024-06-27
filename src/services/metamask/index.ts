@@ -1,11 +1,8 @@
 import { WalletAccount } from '@talismn/connect-wallets';
 import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
-import type { InjectedMetamaskExtension } from '@chainsafe/metamask-polkadot-adapter/src/types';
 import { MetamaskSnapApi } from '@chainsafe/metamask-polkadot-adapter/build/types';
 import type { SnapNetworks } from '@chainsafe/metamask-polkadot-types';
-import { web3EnablePromise } from '@polkadot/extension-dapp';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 
 import { TenantName } from '../../models/Tenant';
@@ -32,27 +29,12 @@ export async function installPolkadotSnap(relayChain: SnapNetworks): Promise<boo
   }
 }
 
-export async function isPolkadotSnapInstalled(): Promise<boolean> {
-  return !!(await getInjectedMetamaskExtension());
-}
-
-export async function getInjectedMetamaskExtension(): Promise<InjectedMetamaskExtension | null> {
-  const extensions = await web3EnablePromise;
-  return getMetamaskExtension(extensions || []) || null;
-}
-
-function getMetamaskExtension(extensions: InjectedExtension[]): InjectedMetamaskExtension | undefined {
-  return extensions.find((item) => item.name === 'metamask-polkadot-snap') as unknown as
-    | InjectedMetamaskExtension
-    | undefined;
-}
-
-export interface SnapInitializationResponse {
+export interface InitiatePolkadotSnapResponse {
   isSnapInstalled: boolean;
   snap?: MetamaskPolkadotSnap;
 }
 
-export async function initiatePolkadotSnap(relayChain: SnapNetworks): Promise<SnapInitializationResponse> {
+export async function initiatePolkadotSnap(relayChain: SnapNetworks): Promise<InitiatePolkadotSnapResponse> {
   try {
     const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: relayChain });
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };

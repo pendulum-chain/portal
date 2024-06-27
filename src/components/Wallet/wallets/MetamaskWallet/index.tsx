@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import logo from '../../../../assets/metamask-wallet.png';
-import { ExtensionAccount, buildWalletAccount } from '../../../../services/metamask/metamask';
+import { ExtensionAccount, buildWalletAccount } from '../../../../services/metamask';
 import { PublicKey } from '../../../PublicKey';
 import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
 

@@ -9,7 +9,7 @@ import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
-import { initiateMetamaskInjectedAccount, WALLET_SOURCE_METAMASK } from './services/metamask/metamask';
+import { initiateMetamaskInjectedAccount, WALLET_SOURCE_METAMASK } from './services/metamask';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
 

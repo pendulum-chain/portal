@@ -1,15 +1,15 @@
 import { useGlobalState } from '../../../GlobalStateProvider';
-import { Wallet } from '@talismn/connect-wallets';
+import { Wallet, WalletAccount } from '@talismn/connect-wallets';
 import { useMemo, useState } from 'preact/hooks';
-import { ExtensionAccount, initiateMetamaskInjectedAccount } from '../../../services/metamask/metamask';
+import { initiateMetamaskInjectedAccount } from '../../../services/metamask';
 import logo from '../../../assets/metamask-wallet.png';
 
 export const useMetamask = () => {
   const { tenantName } = useGlobalState();
-  const [accounts, setAccounts] = useState<ExtensionAccount[]>([]);
+  const [accounts, setAccounts] = useState<WalletAccount[]>([]);
 
   async function selectWallet() {
-    const injectedMetamaskAccount = (await initiateMetamaskInjectedAccount(tenantName)) as ExtensionAccount[];
+    const injectedMetamaskAccount = await initiateMetamaskInjectedAccount(tenantName);
     if (injectedMetamaskAccount) {
       setAccounts(injectedMetamaskAccount);
     }
