@@ -106,10 +106,10 @@ const getSigner = (api: MetamaskSnapApi) => ({
   },
 });
 
-export async function initiateMetamaskInjectedAccount(tenantName: TenantName) {
+export async function initiateMetamaskInjectedAccount(tenantName: TenantName): Promise<WalletAccount[]> {
   const provider = await getProvider(tenantName);
 
-  if (!provider?.snap) return undefined;
+  if (!provider?.snap) return [];
   const api = provider.snap.getMetamaskSnapApi();
   const address = await api.getAddress();
 
@@ -119,5 +119,6 @@ export async function initiateMetamaskInjectedAccount(tenantName: TenantName) {
     source: WALLET_SOURCE_METAMASK,
     signer: getSigner(api),
   };
-  return await buildWalletAccount(injectedMetamaskAccount);
+
+  return await [buildWalletAccount(injectedMetamaskAccount)];
 }

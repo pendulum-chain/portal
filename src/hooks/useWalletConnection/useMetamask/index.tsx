@@ -9,9 +9,9 @@ export const useMetamask = () => {
   const [accounts, setAccounts] = useState<ExtensionAccount[]>([]);
 
   async function selectWallet() {
-    const injectedMetamaskAccount = (await initiateMetamaskInjectedAccount(tenantName)) as ExtensionAccount;
+    const injectedMetamaskAccount = (await initiateMetamaskInjectedAccount(tenantName)) as ExtensionAccount[];
     if (injectedMetamaskAccount) {
-      setAccounts([injectedMetamaskAccount]);
+      setAccounts(injectedMetamaskAccount);
     }
   }
 
