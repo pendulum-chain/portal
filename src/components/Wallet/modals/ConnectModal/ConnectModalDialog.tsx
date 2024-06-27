@@ -1,10 +1,9 @@
 import { Collapse } from 'react-daisyui';
-import { useConnectWallet } from '../../../../hooks/useConnectWallet';
 import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
 import { ConnectModalWalletsList } from './ConnectModalList/ConnectModalWalletsList';
 import { ConnectModalAccountsList } from './ConnectModalList/ConnectModalAccountsList';
 import { ConnectModalDialogLoading } from './ConnectModalDialogLoading';
-import { useMetamask } from '../../../../hooks/useMetamask';
+import { useWalletConnection } from '../../../../hooks/useWalletConnection';
 
 interface ConnectModalDialogProps {
   visible: boolean;
@@ -12,20 +11,13 @@ interface ConnectModalDialogProps {
 }
 
 export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps) => {
-  const { wallets, accounts, selectWallet, loading, selectedWallet } = useConnectWallet();
-
-  const { accounts: metamaskAccounts, selectedWallet: metamaskSelectedWallet } = useMetamask();
-  const allWallets = [...(wallets || []), metamaskSelectedWallet];
-  const allAccounts = [...(accounts || []), ...metamaskAccounts];
-
-  console.log('allWallets:', allWallets);
-
+  const { allAccounts, allWallets, handleSelectWallet, loading, selectedWallet } = useWalletConnection();
   const content = (
     <article className="flex flex-wrap gap-2">
       <Collapse defaultChecked icon="arrow" open name="wallets">
         <Collapse.Title>Select Wallet</Collapse.Title>
         <Collapse.Content>
-          <ConnectModalWalletsList wallets={allWallets} onClick={(wallet) => selectWallet(wallet)} onClose={onClose} />
+          <ConnectModalWalletsList wallets={allWallets} onClick={handleSelectWallet} onClose={onClose} />
           <p className="mt-3.5 text-center text-xs">
             Want to know more?
             <a href="#" className="ml-1 text-primary hover:underline">
@@ -48,7 +40,7 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
       visible={visible}
       headerText={loading ? '' : 'Connect wallet'}
       onClose={() => {
-        selectWallet(undefined);
+        handleSelectWallet(undefined);
         onClose();
       }}
       content={

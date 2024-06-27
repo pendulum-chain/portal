@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Wallet, WalletAccount, getWallets } from '@talismn/connect-wallets';
 import { useMutation } from '@tanstack/react-query';
-import { useGlobalState } from '../../GlobalStateProvider';
-import { ToastMessage, showToast } from '../../shared/showToast';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import { ToastMessage, showToast } from '../../../shared/showToast';
 
 export const useConnectWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>();
