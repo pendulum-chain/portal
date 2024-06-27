@@ -4,6 +4,7 @@ import { ConnectModalWalletsList } from './ConnectModalList/ConnectModalWalletsL
 import { ConnectModalAccountsList } from './ConnectModalList/ConnectModalAccountsList';
 import { ConnectModalDialogLoading } from './ConnectModalDialogLoading';
 import { useWalletConnection } from '../../../../hooks/useWalletConnection';
+import { METAMASK_EXTENSION_NAME } from '../../../../services/metamask';
 
 interface ConnectModalDialogProps {
   visible: boolean;
@@ -11,13 +12,13 @@ interface ConnectModalDialogProps {
 }
 
 export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps) => {
-  const { allAccounts, allWallets, selectWallet, loading, selectedWallet } = useWalletConnection();
+  const { accounts, wallets, selectWallet, loading, selectedWallet } = useWalletConnection();
   const content = (
     <article className="flex flex-wrap gap-2">
       <Collapse defaultChecked icon="arrow" open name="wallets">
         <Collapse.Title>Select Wallet</Collapse.Title>
         <Collapse.Content>
-          <ConnectModalWalletsList wallets={allWallets} onClick={selectWallet} onClose={onClose} />
+          <ConnectModalWalletsList wallets={wallets} onClick={selectWallet} onClose={onClose} />
           <p className="mt-3.5 text-center text-xs">
             Want to know more?
             <a href="#" className="ml-1 text-primary hover:underline">
@@ -29,7 +30,15 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
       <Collapse defaultChecked icon="arrow" open name="accounts">
         <Collapse.Title>Choose Account</Collapse.Title>
         <Collapse.Content>
-          <ConnectModalAccountsList accounts={allAccounts || []} />
+          <ConnectModalAccountsList accounts={accounts || []} />
+          {selectedWallet?.extensionName === METAMASK_EXTENSION_NAME ? (
+            <p className="text-xs text-center mt-3">
+              For Metamask connection we use Polkadot-Snap which creates only one Polkadot account for your Metamask
+              Wallet.
+            </p>
+          ) : (
+            <></>
+          )}
         </Collapse.Content>
       </Collapse>
     </article>

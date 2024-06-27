@@ -9,7 +9,7 @@ import { storageKeys } from './constants/localStorage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { TenantName } from './models/Tenant';
 import { ThemeName } from './models/Theme';
-import { initiateMetamaskInjectedAccount, WALLET_SOURCE_METAMASK } from './services/metamask';
+import { initiateMetamaskInjectedAccount, METAMASK_EXTENSION_NAME } from './services/metamask';
 import { storageService } from './services/storage/local';
 import { walletConnectService } from './services/walletConnect';
 
@@ -48,9 +48,9 @@ const initWalletConnect = async (chainId: string) => {
 const initMetamaskWallet = async (tenantName: TenantName) => {
   const metamaskWalletAddress = storageService.get(`metamask-snap-account`);
   if (metamaskWalletAddress) {
-    return await initiateMetamaskInjectedAccount(tenantName);
+    const injectedAccounts = await initiateMetamaskInjectedAccount(tenantName);
+    return injectedAccounts[0];
   }
-  return;
 };
 
 const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
@@ -104,7 +104,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     (wallet: WalletAccount | undefined) => {
       set(wallet?.address);
       setWallet(wallet);
-      if (wallet?.source === WALLET_SOURCE_METAMASK) {
+      if (wallet?.source === METAMASK_EXTENSION_NAME) {
         storageService.set(`metamask-snap-account`, wallet.address);
       }
     },

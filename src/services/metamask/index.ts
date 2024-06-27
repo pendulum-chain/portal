@@ -1,14 +1,14 @@
 import { WalletAccount } from '@talismn/connect-wallets';
+import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
 import { MetamaskSnapApi } from '@chainsafe/metamask-polkadot-adapter/build/types';
 import type { SnapNetworks } from '@chainsafe/metamask-polkadot-types';
-import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 
 import { TenantName } from '../../models/Tenant';
 import { trimAddress } from '../../helpers/addressFormatter';
 
-export const WALLET_SOURCE_METAMASK = 'metamask';
+export const METAMASK_EXTENSION_NAME = 'metamask';
 
 export function tenantToSnapNetwork(tenantName: TenantName): SnapNetworks {
   const tenantNetworkMap: { [key in TenantName]?: SnapNetworks } = {
@@ -83,7 +83,7 @@ export async function initiateMetamaskInjectedAccount(tenantName: TenantName): P
   const injectedMetamaskAccount: WalletAccount = {
     address,
     name: trimAddress(address),
-    source: WALLET_SOURCE_METAMASK,
+    source: METAMASK_EXTENSION_NAME,
     signer: getSigner(api),
     wallet: undefined,
   };
