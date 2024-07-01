@@ -7,9 +7,10 @@ import { useMemo } from 'preact/hooks';
 interface Props {
   onClose: () => void;
   visible: boolean;
+  bridgeDirection: 'issue' | 'redeem';
 }
 
-export function SettingsDialog({ visible, onClose }: Props) {
+export function SettingsDialog({ bridgeDirection, visible, onClose }: Props) {
   const { manualVaultSelection, vaultsForCurrency, setManualVaultSelection, selectedVault, setSelectedVault } =
     useBridgeSettings();
 
@@ -37,7 +38,7 @@ export function SettingsDialog({ visible, onClose }: Props) {
               vaults={vaultsForCurrency}
               onChange={setSelectedVault}
               selectedVault={selectedVault}
-              showMaxTokensFor="issuableTokens"
+              bridgeDirection={bridgeDirection}
             />
           </div>
         )}

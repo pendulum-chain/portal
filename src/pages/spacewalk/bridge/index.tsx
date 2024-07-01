@@ -52,10 +52,16 @@ function Bridge(): JSX.Element | null {
     onClick: () => setTabValue(index),
   });
 
+  const bridgeDirection = tabValue === BridgeTabs.Issue ? 'issue' : 'redeem';
+
   return chain ? (
     <BridgeContext.Provider value={{ selectedAsset, setSelectedAsset }}>
       <div className="h-full flex items-center justify-center mt-4">
-        <SettingsDialog visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
+        <SettingsDialog
+          bridgeDirection={bridgeDirection}
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+        />
         <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
           <div className="flex justify-between px-5 mt-5">
             <Tabs className="flex w-5/6 flex-grow justify-center tabs-boxed">
