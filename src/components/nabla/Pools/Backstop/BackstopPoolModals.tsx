@@ -24,7 +24,6 @@ export function BackstopPoolModals() {
     <Dialog
       onClose={onClose}
       visible={!!Component}
-      actions={<></>}
       content={Component ? <Component {...props} onClose={onClose} /> : <></>}
     />
   );

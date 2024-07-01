@@ -21,7 +21,6 @@ export const useConnectWallet = () => {
   } = useMutation<WalletAccount[], unknown, Wallet | undefined, unknown>(async (wallet) => {
     setSelectedWallet(wallet);
     if (!wallet) return [];
-
     try {
       await wallet.enable(dAppName);
       return wallet.getAccounts();

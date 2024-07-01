@@ -8,7 +8,7 @@ interface DialogProps {
   onClose: () => void;
   headerText?: string;
   content: JSX.Element;
-  actions: JSX.Element;
+  actions?: JSX.Element;
   form?: {
     onSubmit: (event?: Event) => void | Promise<void>;
     className?: string;

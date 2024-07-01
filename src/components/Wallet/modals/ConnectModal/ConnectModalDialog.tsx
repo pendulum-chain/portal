@@ -13,47 +13,61 @@ interface ConnectModalDialogProps {
 
 export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps) => {
   const { accounts, wallets, selectWallet, loading, selectedWallet } = useWalletConnection();
+
+  const accountsContent = (
+    <Collapse defaultChecked icon="arrow" open name="accounts">
+      <Collapse.Title>Choose Account</Collapse.Title>
+      <Collapse.Content>
+        <ConnectModalAccountsList accounts={accounts || []} />
+        {selectedWallet?.extensionName === METAMASK_EXTENSION_NAME ? (
+          <p className="mt-3 text-xs text-center">
+            For Metamask connection we use Polkadot-Snap which creates only one Polkadot address for your Metamask
+            Wallet.
+          </p>
+        ) : (
+          <></>
+        )}
+      </Collapse.Content>
+    </Collapse>
+  );
+
+  const walletsContent = (
+    <Collapse defaultChecked icon="arrow" open name="wallets">
+      <Collapse.Title>Select Wallet</Collapse.Title>
+      <Collapse.Content>
+        <ConnectModalWalletsList wallets={wallets} onClick={selectWallet} onClose={onClose} />
+      </Collapse.Content>
+    </Collapse>
+  );
+
   const content = (
     <article className="flex flex-wrap gap-2">
-      <Collapse defaultChecked icon="arrow" open name="wallets">
-        <Collapse.Title>Select Wallet</Collapse.Title>
-        <Collapse.Content>
-          <ConnectModalWalletsList wallets={wallets} onClick={selectWallet} onClose={onClose} />
-        </Collapse.Content>
-      </Collapse>
-      <Collapse defaultChecked icon="arrow" open name="accounts">
-        <Collapse.Title>Choose Account</Collapse.Title>
-        <Collapse.Content>
-          <ConnectModalAccountsList accounts={accounts || []} />
-          {selectedWallet?.extensionName === METAMASK_EXTENSION_NAME ? (
-            <p className="text-xs text-center mt-3">
-              For Metamask connection we use Polkadot-Snap which creates only one Polkadot account for your Metamask
-              Wallet.
-            </p>
-          ) : (
-            <></>
-          )}
-        </Collapse.Content>
-      </Collapse>
+      {walletsContent}
+      {(accounts.length) ? accountsContent : <></>}
     </article>
   );
 
   return (
-    <Dialog
+    loading ? (
+      <Dialog
       visible={visible}
-      headerText={loading ? '' : 'Connect wallet'}
+      content={<ConnectModalDialogLoading selectedWallet={selectedWallet?.title || selectedWallet?.extensionName || ''} />}
       onClose={() => {
         selectWallet(undefined);
         onClose();
       }}
-      content={
-        loading ? (
-          <ConnectModalDialogLoading selectedWallet={selectedWallet?.title || selectedWallet?.extensionName || ''} />
-        ) : (
-          content
-        )
-      }
-      actions={<></>}
     />
-  );
+    )
+    : (
+      <Dialog
+      visible={visible}
+      headerText='Connect wallet'
+      onClose={() => {
+        selectWallet(undefined);
+        onClose();
+      }}
+      content={content}
+    />
+    )
+  )
 };
