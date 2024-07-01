@@ -18,7 +18,7 @@ export const ConnectModal = ({ isHeader }: ConnectProps) => {
         type="button"
         onClick={() => setVisible(true)}
       >
-        Connect Wallet
+        Connect <span className="hidden md:block">Wallet</span>
       </Button>
       <ConnectModalDialog
         visible={visible}

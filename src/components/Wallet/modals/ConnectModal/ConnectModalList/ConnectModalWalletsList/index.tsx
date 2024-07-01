@@ -15,7 +15,7 @@ export function ConnectModalWalletsList({ wallets, onClick, makeInstallable, onC
   }
 
   return (
-    <section className="grid grid-cols-2 gap-4">
+    <section className="grid md:grid-cols-2 gap-4">
       {wallets.map((wallet: Wallet) => (
         <ConnectModalListWalletsItem
           key={wallet.extensionName}

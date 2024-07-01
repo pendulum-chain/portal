@@ -18,7 +18,11 @@ function buttonOnClick(props: WalletButtonProps) {
 }
 
 export const ConnectModalListWalletsItem = (props: WalletButtonProps) => (
-  <Button key={props.wallet.extensionName} className="flex outline-primary" onClick={() => buttonOnClick(props)}>
+  <Button
+    key={props.wallet.extensionName}
+    className="w-full flex justify-center md:justify-start outline-primary"
+    onClick={() => buttonOnClick(props)}
+  >
     <img src={props.wallet.logo.src} alt={props.wallet.logo.alt} width={32} height={32} />
     <p className="ml-2">{props.wallet.title}</p>
   </Button>
