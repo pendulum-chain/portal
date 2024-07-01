@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { isEmpty } from 'lodash';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
@@ -16,6 +17,7 @@ import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../../hooks/useBalances';
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
+import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
 import { FeeBox } from '../FeeBox';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
@@ -57,9 +59,10 @@ function Redeem(props: RedeemProps): JSX.Element {
   const redeemableTokens = selectedVault?.redeemableTokens?.toJSON?.().amount ?? selectedVault?.redeemableTokens;
   const maxRedeemable = nativeToDecimal(redeemableTokens || 0).toNumber();
 
-  const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
+  const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<RedeemFormValues>({
     defaultValues: {},
     resolver: yupResolver(getRedeemValidationSchema(maxRedeemable, selectedAssetsBalance)),
+    mode: 'onChange',
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -187,9 +190,8 @@ function Redeem(props: RedeemProps): JSX.Element {
               className="w-full"
               color="primary"
               loading={submissionPending}
-              onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
               type="submit"
-              disabled={submissionPending}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative) || submissionPending}
             >
               Bridge
             </Button>
