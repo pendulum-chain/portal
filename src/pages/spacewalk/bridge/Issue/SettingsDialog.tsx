@@ -1,13 +1,14 @@
 import { Button, Checkbox } from 'react-daisyui';
+import { useMemo } from 'preact/hooks';
 import VaultSelector from '../../../../components/Selector/VaultSelector';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import { Dialog } from '../../../staking/dialogs/Dialog';
-import { useMemo } from 'preact/hooks';
+import { BridgeDirection } from '../index';
 
 interface Props {
   onClose: () => void;
   visible: boolean;
-  bridgeDirection: 'issue' | 'redeem';
+  bridgeDirection: BridgeDirection;
 }
 
 export function SettingsDialog({ bridgeDirection, visible, onClose }: Props) {

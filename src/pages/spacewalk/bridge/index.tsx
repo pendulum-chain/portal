@@ -19,6 +19,11 @@ enum BridgeTabs {
   Redeem = 1,
 }
 
+export enum BridgeDirection {
+  Issue = 'issue',
+  Redeem = 'redeem',
+}
+
 interface BridgeContextValue {
   selectedAsset?: Asset;
   setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
@@ -52,7 +57,7 @@ function Bridge(): JSX.Element | null {
     onClick: () => setTabValue(index),
   });
 
-  const bridgeDirection = tabValue === BridgeTabs.Issue ? 'issue' : 'redeem';
+  const bridgeDirection = tabValue === BridgeTabs.Issue ? BridgeDirection.Issue : BridgeDirection.Redeem;
 
   return chain ? (
     <BridgeContext.Provider value={{ selectedAsset, setSelectedAsset }}>

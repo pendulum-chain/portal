@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
+import { BridgeDirection } from '../../pages/spacewalk/bridge';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { ExtendedRegistryVault } from '../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../shared/parseNumbers/metric';
@@ -8,7 +9,7 @@ import { PublicKey } from '../PublicKey';
 interface VaultSelectorProps {
   vaults: ExtendedRegistryVault[];
   selectedVault?: ExtendedRegistryVault;
-  bridgeDirection?: 'issue' | 'redeem';
+  bridgeDirection?: BridgeDirection;
   onChange: (vault: ExtendedRegistryVault) => void;
 }
 
