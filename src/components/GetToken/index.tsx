@@ -9,6 +9,7 @@ import { useAccountBalance } from '../../shared/useAccountBalance';
 import useSwitchChain from '../../hooks/useSwitchChain';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { TenantName } from '../../models/Tenant';
+import { isDesktop } from 'react-device-detect';
 
 const tenantColors = {
   [TenantName.Pendulum]: {
@@ -81,12 +82,13 @@ export const GetToken = () => {
   const showCurrentToken = getTokenIcon(currentTenant)
   return (
     <section className="flex items-center">
-      {isBalanceZero && (
+      {(isBalanceZero && isDesktop) ? (
         <>
           <InsufficientFundsTooltip tenantName={currentTenant} />
           <JumpingArrow tenantName={currentTenant} />
         </>
-      )}
+      ) : <></>
+      }
 
       {tokenSymbol ? (
         <NavLink to={link}>
