@@ -95,8 +95,8 @@ export const GetToken = () => {
             {showCurrentToken}
             <p className="text-neutral">GET {tokenSymbol}</p>
             </div>
-            <div className="md:hidden flex">
-              <p className="text-neutral mr-2">GET</p>
+            <div className="flex md:hidden">
+              <p className="mr-2 text-neutral">GET</p>
               {showCurrentToken}
             </div>
           </Button>
