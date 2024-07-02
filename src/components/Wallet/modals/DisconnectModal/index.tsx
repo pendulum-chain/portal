@@ -23,7 +23,7 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
   <Button
     size="sm"
     color="ghost"
-    className="text-sm border-base-300 border-1 bg-base-200 min-h-[2.1rem] h-auto px-1 sm:px-3"
+    className="text-sm border-base-300 border-1 bg-base-200 min-h-[2.1rem] h-auto px-1 sm:px-3 overflow-hidden ellipsis max-w36 sm:max-w-fit"
     title={wallet?.title}
     type="button"
   >
@@ -34,7 +34,7 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
         {balance} {tokenSymbol}
       </span>
     )}
-    {walletAccount?.name}
+    <p className="truncate">{walletAccount?.name}</p>
     <img src={wallet?.logo?.src || ''} className="w-[20px] ml-2" alt={wallet?.logo?.alt || ''} />
   </Button>
 );
@@ -65,11 +65,11 @@ const WalletDropdownMenu = ({
         inline={true}
       />
     </div>
-    <p className="truncate my-6 text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
+    <p className="my-6 text-2xl font-bold text-center truncate" title={`${balance} ${tokenSymbol}`}>
       {balance} {tokenSymbol}
     </p>
     <Button className="bg-base-300" size="sm" onClick={removeWalletAccount}>
-      <ArrowLeftEndOnRectangleIcon className="mr-2 w-5" />
+      <ArrowLeftEndOnRectangleIcon className="w-5 mr-2" />
       Disconnect
     </Button>
   </Dropdown.Menu>
