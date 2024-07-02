@@ -1,6 +1,6 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { ComponentType, useEffect, useMemo, useState } from 'preact/compat';
 
 import { useGlobalState } from '../../GlobalStateProvider';
 import Table, { SortingOrder } from '../../components/Table';
@@ -114,7 +114,7 @@ function Transactions(): JSX.Element {
   }, [tenantName]);
 
 
-  const getDialog = (DialogComponent: React.ComponentType<{ transfer: TTransfer; visible: boolean; onClose: () => void }>) =>
+  const getDialog = (DialogComponent: ComponentType<{ transfer: TTransfer; visible: boolean; onClose: () => void }>) =>
     currentTransfer
       ? <DialogComponent transfer={currentTransfer} visible onClose={() => setCurrentTransfer(undefined)} />
       : <></>;
@@ -128,7 +128,7 @@ function Transactions(): JSX.Element {
   };
 
   return (
-    <div className="overflow-x-auto mt-10">
+    <div className="mt-10 overflow-x-auto">
       {currentTransfer && dialogs[currentTransfer.status]}
       <Table
         data={data}

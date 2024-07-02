@@ -1,3 +1,4 @@
+import { FC } from 'preact/compat';
 import { Button } from 'react-daisyui';
 
 export interface ClaimButtonProps {
@@ -5,7 +6,7 @@ export interface ClaimButtonProps {
   disabled: boolean;
 }
 
-export const ClaimButton: React.FC<ClaimButtonProps> = ({ onClick, disabled }) => (
+export const ClaimButton: FC<ClaimButtonProps> = ({ onClick, disabled }) => (
   <Button
     onClick={onClick}
     className="btn btn-primary btn-outline rounded-md w-full xs:w-1/2 leading-3 p-0 min-h-fit max-h-10"

@@ -1,3 +1,4 @@
+import { FC } from 'preact/compat';
 import useSwitchChain from '../../../../hooks/useSwitchChain';
 import { TenantName } from '../../../../models/Tenant';
 
@@ -31,7 +32,7 @@ const getTenantColors = (tenantName: TenantName) => {
   return tenantColors[tenantName];
 };
 
-export const Badges: React.FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) => {
+export const Badges: FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) => {
   const { currentTenant } = useSwitchChain();
   const colors = getTenantColors(currentTenant);
 

@@ -3,6 +3,7 @@ import { UpdateButton, UpdateButtonProps } from './UpdateButton';
 
 import { nativeToFormatDecimal } from '../../../../shared/parseNumbers/decimal';
 import RewardsIcon from '../../../../assets/collators-rewards-icon';
+import { FC } from 'preact/compat';
 
 interface StakingRewardsContentProps {
   updateButton: UpdateButtonProps;
@@ -11,7 +12,7 @@ interface StakingRewardsContentProps {
   estimatedRewards: string;
 }
 
-export const StakingRewardsContent: React.FC<StakingRewardsContentProps> = ({
+export const StakingRewardsContent: FC<StakingRewardsContentProps> = ({
   updateButton,
   claimButton,
   estimatedRewards,

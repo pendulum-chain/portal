@@ -1,13 +1,14 @@
 import Lottie from 'react-lottie';
 
 import { LinkItem, isLottieOptions } from './links';
+import { FC } from 'preact/compat';
 
 interface NavButtonContentProps {
   item: LinkItem;
   isPlaying: boolean;
 }
 
-export const NavCollapseButtonContent: React.FC<NavButtonContentProps> = ({ item, isPlaying }) => (
+export const NavCollapseButtonContent: FC<NavButtonContentProps> = ({ item, isPlaying }) => (
   <>
     {isLottieOptions(item.prefix) ? (
       <Lottie

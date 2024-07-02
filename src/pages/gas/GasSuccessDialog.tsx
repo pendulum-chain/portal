@@ -1,6 +1,7 @@
 import { Button } from 'react-daisyui';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import { Dialog } from '../collators/dialogs/Dialog';
+import { FC } from 'preact/compat';
 
 interface DialogProps {
   visible: boolean;
@@ -8,7 +9,7 @@ interface DialogProps {
   token: string;
 }
 
-export const GasSuccessDialog: React.FC<DialogProps> = (props) => {
+export const GasSuccessDialog: FC<DialogProps> = (props) => {
   const { visible, onClose, token } = props;
 
   const content = (
