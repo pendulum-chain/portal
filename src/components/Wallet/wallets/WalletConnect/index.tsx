@@ -1,6 +1,7 @@
 import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { SessionTypes } from '@walletconnect/types';
+import { Button } from 'react-daisyui';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import logo from '../../../../assets/wallet-connect.svg';
 import { config } from '../../../../config';
@@ -8,7 +9,6 @@ import { chainIds, walletConnectConfig } from '../../../../config/walletConnect'
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { walletConnectService } from '../../../../services/walletConnect';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
-import { Button } from 'react-daisyui';
 
 interface WalletConnectProps {
   onClick: () => void;
@@ -82,7 +82,7 @@ const WalletConnect = ({ onClick }: WalletConnectProps) => {
   }, [provider]);
 
   return (
-    <Button className="w-full flex justify-center md:justify-start outline-primary" onClick={walletConnectClick} disabled={loading}>
+    <Button className="flex justify-center w-full md:justify-start outline-primary" onClick={walletConnectClick} disabled={loading}>
       <img src={logo} alt="WalletConnect connect button" width={32} height={32} />
       <p className="ml-2">{loading ? 'Loading...' : 'Wallet Connect'}</p>
     </Button>

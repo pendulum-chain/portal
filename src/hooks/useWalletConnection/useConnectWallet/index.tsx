@@ -3,6 +3,8 @@ import { Wallet, WalletAccount, getWallets } from '@talismn/connect-wallets';
 import { useMutation } from '@tanstack/react-query';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { ToastMessage, showToast } from '../../../shared/showToast';
+import { storageService } from '../../../services/storage/local';
+import { LocalStorageKeys } from '../../useLocalStorage';
 
 export const useConnectWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>();
@@ -23,6 +25,12 @@ export const useConnectWallet = () => {
     if (!wallet) return [];
     try {
       await wallet.enable(dAppName);
+
+      // Save selected wallet name to local storage
+      if(wallet.installed){
+          storageService.set(LocalStorageKeys.SELECTED_WALLET_NAME, wallet.extensionName);
+      }
+
       return wallet.getAccounts();
     } catch {
       showToast(ToastMessage.WALLET_ALREADY_OPEN_PENDING_CONNECTION);
