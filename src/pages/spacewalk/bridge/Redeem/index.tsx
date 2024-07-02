@@ -1,27 +1,30 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { isEmpty } from 'lodash';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
+import { Signer } from '@polkadot/types/types';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import From from '../../../../components/Form/From';
 import LabelledInputField from '../../../../components/LabelledInputField';
 import OpenWallet from '../../../../components/Wallet';
-import { useGlobalState } from '../../../../GlobalStateProvider';
 import { assetDisplayName } from '../../../../helpers/spacewalk';
 import { isPublicKey } from '../../../../helpers/stellar';
 import { getErrors, getEventBySectionAndMethod } from '../../../../helpers/substrate';
 import { RichRedeemRequest, useRedeemPallet } from '../../../../hooks/spacewalk/useRedeemPallet';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../../hooks/useBalances';
-import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
+import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
+import { ToastMessage, showToast } from '../../../../shared/showToast';
 import { FeeBox } from '../FeeBox';
+import { prioritizeXLMAsset } from '../helpers';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
-import { ToastMessage, showToast } from '../../../../shared/showToast';
-import { prioritizeXLMAsset } from '../helpers';
-import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
 
 export type RedeemFormValues = {
   amount: number;
@@ -43,7 +46,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { createRedeemRequestExtrinsic, getRedeemRequest } = useRedeemPallet();
   const { selectedVault, selectedAsset, wrappedAssets, setSelectedAsset } = useBridgeSettings();
 
-  const { walletAccount, dAppName } = useGlobalState();
+  const { walletAccount } = useGlobalState();
   const { api } = useNodeInfoState().state;
   const { balances } = useBalances();
   const { wrappedCurrencySuffix, nativeCurrency, network } = props;
@@ -60,6 +63,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {},
     resolver: yupResolver(getRedeemValidationSchema(maxRedeemable, selectedAssetsBalance)),
+    mode: 'onChange',
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -91,8 +95,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSubmissionPending(true);
 
     requestRedeemExtrinsic
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result: any) => {
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as Signer }, (result) => {
         const { status, events } = result;
 
         const errors = getErrors(events, api);
@@ -111,8 +114,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const redeemId = (requestRedeemEvent.data as any).redeemId;
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            getRedeemRequest(redeemId).then((redeemRequest: any) => {
+            getRedeemRequest(redeemId).then((redeemRequest) => {
               setSubmittedRedeemRequest(redeemRequest);
             });
           }
@@ -132,14 +134,14 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk py-4 w-full">
+    <div className="flex items-center justify-center w-full h-full py-4 space-walk">
       <ConfirmationDialog
         redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
+        <form className="flex flex-col px-5" onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}>
           <From
             {...{
               formControl: {
@@ -161,7 +163,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               badges: {},
             }}
           />
-          <label className="label flex align-center">
+          <label className="flex label align-center">
             <span className="text-sm">{`Max redeemable: ${maxRedeemable.toFixed(2)}
               ${selectedAsset?.code || ''}`}</span>
           </label>
@@ -187,9 +189,8 @@ function Redeem(props: RedeemProps): JSX.Element {
               className="w-full"
               color="primary"
               loading={submissionPending}
-              onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
               type="submit"
-              disabled={submissionPending}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative) || submissionPending}
             >
               Bridge
             </Button>
