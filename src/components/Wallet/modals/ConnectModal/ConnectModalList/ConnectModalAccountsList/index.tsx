@@ -1,7 +1,7 @@
 import { WalletAccount } from '@talismn/connect-wallets';
 import { useDeferredValue, useState } from 'preact/compat';
 import { SearchInput } from '../../../../../SearchInput';
-import { SimpleAccountCard } from '../../../../../AccountCard/SimpleAccountCard';
+import { AccountCard } from '../../../../../AccountCard';
 
 interface ConnectModalAccountsListProps {
   accounts: WalletAccount[];
@@ -20,7 +20,7 @@ export const ConnectModalAccountsList = ({ accounts }: ConnectModalAccountsListP
       <SearchInput set={setInputSearchValue} />
       <ul className="mt-2">
         {filteredAccounts.map((account: WalletAccount) => (
-          <SimpleAccountCard account={account} key={account.address} />
+          <AccountCard account={account} key={account.address} />
         ))}
       </ul>
     </section>
