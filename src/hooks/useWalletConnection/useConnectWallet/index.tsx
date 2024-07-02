@@ -6,13 +6,16 @@ import { ToastMessage, showToast } from '../../../shared/showToast';
 import { storageService } from '../../../services/storage/local';
 import { LocalStorageKeys } from '../../useLocalStorage';
 
+
+const alwaysShowWallets = ['talisman', 'subwallet-js', 'polkadot-js']
+
 export const useConnectWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>();
   const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
   const { dAppName } = useGlobalState();
 
   useEffect(() => {
-    const installedWallets = getWallets().filter((wallet) => wallet.installed);
+    const installedWallets = getWallets().filter((wallet) => alwaysShowWallets.includes(wallet.extensionName) || wallet.installed);
     setWallets(installedWallets);
   }, []);
 
