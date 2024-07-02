@@ -1,15 +1,17 @@
 import { Button, Checkbox } from 'react-daisyui';
+import { useMemo } from 'preact/hooks';
 import VaultSelector from '../../../../components/Selector/VaultSelector';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import { Dialog } from '../../../staking/dialogs/Dialog';
-import { useMemo } from 'preact/hooks';
+import { BridgeDirection } from '../index';
 
 interface Props {
   onClose: () => void;
   visible: boolean;
+  bridgeDirection: BridgeDirection;
 }
 
-export function SettingsDialog({ visible, onClose }: Props) {
+export function SettingsDialog({ bridgeDirection, visible, onClose }: Props) {
   const { manualVaultSelection, vaultsForCurrency, setManualVaultSelection, selectedVault, setSelectedVault } =
     useBridgeSettings();
 
@@ -37,7 +39,7 @@ export function SettingsDialog({ visible, onClose }: Props) {
               vaults={vaultsForCurrency}
               onChange={setSelectedVault}
               selectedVault={selectedVault}
-              showMaxTokensFor="issuableTokens"
+              bridgeDirection={bridgeDirection}
             />
           </div>
         )}
