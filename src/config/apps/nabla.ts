@@ -23,6 +23,6 @@ export const nablaConfig: NablaConfig = {
   pendulum: {
     indexerUrl: 'https://pendulum.squids.live/pendulum-squid/graphql',
     router: '6buMJsFCbXpHRyacKTjBn3Jss241b2aA7CZf9tKzKHMJWpcJ',
-    oracle: '6d3R7qJNDUMFRDrbkhPe3UZpPwzE4y4PjqXxgK3uJD6PT91S',
+    oracle: '6f9uHwN2r5w82Bjrywc4wmZYb6TN64bZH5Ev87qmJ675uFvq',
   },
 };
