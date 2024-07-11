@@ -56,11 +56,15 @@ export const useAssetRegistryMetadata = (): UseAssetRegistryMetadata => {
   }, [fetchMetadata]);
 
   const getAssetMetadata = useCallback(
-    async (currencyId: SpacewalkPrimitivesCurrencyId): Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined> =>
-      metadataCache.find(
+    async (currencyId: SpacewalkPrimitivesCurrencyId): Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined> => {
+      return metadataCache.find((currencyMetadata: OrmlTraitsAssetRegistryAssetMetadata) => {
+        const currencyMetadataHuman =
+          currencyMetadata.currencyId.toHuman() as unknown as SpacewalkPrimitivesCurrencyId[];
+
         // When JSON.stringify we check for the same object structure as OrmlTraitsAssetRegistryAssetMetadata.assetId's are really different
-        (m: OrmlTraitsAssetRegistryAssetMetadata) => JSON.stringify(m.currencyId) === JSON.stringify(currencyId),
-      ),
+        return JSON.stringify(currencyMetadataHuman) === JSON.stringify(currencyId);
+      });
+    },
     [metadataCache],
   );
 
