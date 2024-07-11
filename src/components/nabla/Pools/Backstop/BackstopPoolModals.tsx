@@ -3,7 +3,7 @@ import { NablaInstanceBackstopPool } from '../../../../hooks/nabla/useNablaInsta
 import { ModalTypes, useModal } from '../../../../services/modal';
 import AddLiquidity from './AddLiquidity';
 import WithdrawLiquidity from './WithdrawLiquidity';
-import { Dialog } from '../../../../pages/staking/dialogs/Dialog';
+import { Dialog } from '../../../Dialog';
 
 export type LiquidityModalProps = {
   data?: NablaInstanceBackstopPool;

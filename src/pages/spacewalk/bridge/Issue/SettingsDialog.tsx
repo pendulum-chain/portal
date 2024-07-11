@@ -3,7 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { ChangeEvent } from 'preact/compat';
 import VaultSelector from '../../../../components/Selector/VaultSelector';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
-import { Dialog } from '../../../staking/dialogs/Dialog';
+import { Dialog } from '../../../../components/Dialog';
 import { BridgeDirection } from '../index';
 
 interface Props {

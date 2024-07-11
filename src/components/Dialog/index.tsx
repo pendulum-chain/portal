@@ -1,7 +1,6 @@
 import { Modal } from 'react-daisyui';
 import { FC, createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
-
-import { CloseButton } from '../../../components/CloseButton';
+import { CloseButton } from '../CloseButton';
 
 interface DialogProps {
   visible: boolean;

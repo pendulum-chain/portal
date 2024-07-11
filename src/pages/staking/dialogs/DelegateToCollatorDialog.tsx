@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import ChainLogo from '../../../assets/ChainLogo';
 import Amount from '../../../components/Form/Amount';
 import { PublicKey } from '../../../components/PublicKey';
+import { Dialog } from '../../../components/Dialog';
 import {
   ParachainStakingCandidate,
   ParachainStakingInflationInflationInfo,
@@ -12,7 +13,6 @@ import {
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 import { DelegationMode } from './ExecuteDelegationDialogs';
 import { FormValues, getStakingValidationSchema } from './ValidationSchema';
-import { Dialog } from './Dialog';
 
 interface DelegateToCollatorDialogProps {
   availableBalance?: string;

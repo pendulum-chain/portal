@@ -6,12 +6,12 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import Amount from '../../../components/Form/Amount';
+import { Dialog } from '../../../components/Dialog';
 import { getErrors } from '../../../helpers/substrate';
 import { ParachainStakingInflationInflationInfo, useStakingPallet } from '../../../hooks/staking/useStakingPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
-import { getClaimingValidationSchema } from './ValidationSchema';
 import { ToastMessage, showToast } from '../../../shared/showToast';
-import { Dialog } from './Dialog';
+import { getClaimingValidationSchema } from './ValidationSchema';
 
 interface Props {
   userRewardsBalance?: string;

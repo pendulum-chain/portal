@@ -7,10 +7,10 @@ import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../.
 import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
 import { RichIssueRequest } from '../../../../hooks/spacewalk/useIssuePallet';
 import { nativeStellarToDecimal } from '../../../../shared/parseNumbers/metric';
-import { Dialog } from '../../../staking/dialogs/Dialog';
+import { Dialog } from '../../../../components/Dialog';
 import { generateSEP0007URIScheme } from '../../../../helpers/stellar/sep0007';
-import { StellarUriScheme } from './StellarURIScheme';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
+import { StellarUriScheme } from './StellarURIScheme';
 
 interface ConfirmationDialogProps {
   issueRequest: RichIssueRequest | undefined;

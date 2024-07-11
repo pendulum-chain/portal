@@ -1,10 +1,10 @@
 import { Collapse } from 'react-daisyui';
-import { Dialog } from '../../../../pages/staking/dialogs/Dialog';
+import { useWalletConnection } from '../../../../hooks/useWalletConnection';
+import { METAMASK_EXTENSION_NAME } from '../../../../services/metamask';
+import { Dialog } from '../../../Dialog';
 import { ConnectModalWalletsList } from './ConnectModalList/ConnectModalWalletsList';
 import { ConnectModalAccountsList } from './ConnectModalList/ConnectModalAccountsList';
 import { ConnectModalDialogLoading } from './ConnectModalDialogLoading';
-import { useWalletConnection } from '../../../../hooks/useWalletConnection';
-import { METAMASK_EXTENSION_NAME } from '../../../../services/metamask';
 
 interface ConnectModalDialogProps {
   visible: boolean;
