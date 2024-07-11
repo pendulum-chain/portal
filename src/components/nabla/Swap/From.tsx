@@ -45,7 +45,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
             maxBalance={fromTokenBalance.data}
             formFieldName={fromFormFieldName}
             form={form}
-            onlyShowNumberInput={true}
+            onlyShowNumericInput={true}
           />
         </div>
         <Button

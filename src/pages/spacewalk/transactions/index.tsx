@@ -2,13 +2,17 @@ import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
 import { ComponentType, useEffect, useMemo, useState } from 'preact/compat';
 
-import { useGlobalState } from '../../GlobalStateProvider';
-import Table, { SortingOrder } from '../../components/Table';
-import { calculateDeadline, convertCurrencyToStellarAsset, estimateRequestCreationTime } from '../../helpers/spacewalk';
-import { useIssuePallet } from '../../hooks/spacewalk/useIssuePallet';
-import { useRedeemPallet } from '../../hooks/spacewalk/useRedeemPallet';
-import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
-import { nativeToDecimal } from '../../shared/parseNumbers/metric';
+import { useGlobalState } from '../../../GlobalStateProvider';
+import Table, { SortingOrder } from '../../../components/Table';
+import {
+  calculateDeadline,
+  convertCurrencyToStellarAsset,
+  estimateRequestCreationTime,
+} from '../../../helpers/spacewalk';
+import { useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
+import { useRedeemPallet } from '../../../hooks/spacewalk/useRedeemPallet';
+import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
+import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 
 import {
   CancelledTransactionDialog,
@@ -27,7 +31,7 @@ import {
   typeColumnCreator,
   updatedColumn,
 } from './TransactionsColumns';
-import './styles.css';
+import '../styles.css';
 
 function Transactions(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
@@ -113,11 +117,12 @@ function Transactions(): JSX.Element {
     return [updatedColumn, amountColumn, assetColumn, transactionIdColumn, typeColumn, statusColumn];
   }, [tenantName]);
 
-
   const getDialog = (DialogComponent: ComponentType<{ transfer: TTransfer; visible: boolean; onClose: () => void }>) =>
-    currentTransfer
-      ? <DialogComponent transfer={currentTransfer} visible onClose={() => setCurrentTransfer(undefined)} />
-      : <></>;
+    currentTransfer ? (
+      <DialogComponent transfer={currentTransfer} visible onClose={() => setCurrentTransfer(undefined)} />
+    ) : (
+      <></>
+    );
 
   const dialogs: Record<string, JSX.Element> = {
     Pending: getDialog(PendingTransactionDialog),
@@ -136,7 +141,7 @@ function Transactions(): JSX.Element {
         isLoading={false}
         search={false}
         pageSize={8}
-        rowCallback={row => setCurrentTransfer(row.original)}
+        rowCallback={(row) => setCurrentTransfer(row.original)}
         title="Transactions"
         sortBy={{ updated: SortingOrder.DESC }}
         oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { ApiPromise } from '@polkadot/api';
 import { U8aFixed } from '@polkadot/types-codec';
 import { H256 } from '@polkadot/types/interfaces';
@@ -65,7 +66,7 @@ export function currencyToStellarAssetCode(currency: SpacewalkPrimitivesCurrency
 
 export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): SpacewalkPrimitivesCurrencyId {
   if (asset.isNative()) {
-    return api.createType('SpacewalkPrimitivesCurrencyId', 'StellarNative');
+    return api.createType('SpacewalkPrimitivesCurrencyId', { Stellar: 'StellarNative' });
   } else {
     const pair = Keypair.fromPublicKey(asset.getIssuer());
     // We need the raw public key, not the base58 encoded version
@@ -73,19 +74,25 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
     const issuer = api.createType('Raw', issuerRawPublicKey, 32);
 
     if (asset.getCode().length <= 4) {
-      const code = api.createType('Raw', asset.getCode(), 4);
+      const paddedCode = _.padEnd(asset.getCode(), 4, '\0');
+      const code = api.createType('Raw', paddedCode, 4);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
-        AlphaNum4: {
-          code,
-          issuer,
+        Stellar: {
+          AlphaNum4: {
+            code,
+            issuer,
+          },
         },
       });
     } else {
-      const code = api.createType('Raw', asset.getCode(), 12);
+      const paddedCode = _.padEnd(asset.getCode(), 12, '\0');
+      const code = api.createType('Raw', paddedCode, 12);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
-        AlphaNum12: {
-          code,
-          issuer,
+        Stellar: {
+          AlphaNum12: {
+            code,
+            issuer,
+          },
         },
       });
     }

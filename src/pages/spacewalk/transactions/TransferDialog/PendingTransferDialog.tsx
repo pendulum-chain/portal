@@ -2,17 +2,22 @@ import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
 import { useEffect, useMemo, useState } from 'preact/compat';
 
-import { useGlobalState } from '../../../GlobalStateProvider';
-import PendingDialogIcon from '../../../assets/dialog-status-pending';
-import { CopyableAddress } from '../../../components/PublicKey';
-import TransferCountdown from '../../../components/TransferCountdown';
-import { calculateDeadline, convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
-import { toTitle } from '../../../helpers/string';
-import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
-import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import PendingDialogIcon from '../../../../assets/dialog-status-pending';
+import { CopyableAddress } from '../../../../components/PublicKey';
+import TransferCountdown from '../../../../components/TransferCountdown';
+import {
+  calculateDeadline,
+  convertCurrencyToStellarAsset,
+  deriveShortenedRequestId,
+} from '../../../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
+import { toTitle } from '../../../../helpers/string';
+import { useSecurityPallet } from '../../../../hooks/spacewalk/useSecurityPallet';
+import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TransferType } from '../TransactionsColumns';
 import { TransferDialogProps, BaseTransferDialog } from './TransferDialog';
+import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 
 export function PendingTransferDialog(props: TransferDialogProps) {
   const { transfer, visible, onClose } = props;
@@ -73,7 +78,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
       <div className="mt-4" />
       <div className="text-sm px-5 ">
         Note: Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
-        <a href="https://t.me/pendulum_chain" target="_blank" rel="noreferrer" className="mx-1 text-primary">
+        <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
           support
         </a>
         if your transaction is still pending after 10 minutes.

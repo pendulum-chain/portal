@@ -1,5 +1,5 @@
 import { Collapse } from 'react-daisyui';
-import { Dialog } from '../../../../pages/collators/dialogs/Dialog';
+import { Dialog } from '../../../../pages/staking/dialogs/Dialog';
 import { ConnectModalWalletsList } from './ConnectModalList/ConnectModalWalletsList';
 import { ConnectModalAccountsList } from './ConnectModalList/ConnectModalAccountsList';
 import { ConnectModalDialogLoading } from './ConnectModalDialogLoading';
@@ -43,31 +43,30 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
   const content = (
     <article className="flex flex-wrap gap-2">
       {walletsContent}
-      {(accounts.length) ? accountsContent : <></>}
+      {accounts.length ? accountsContent : <></>}
     </article>
   );
 
-  return (
-    loading ? (
-      <Dialog
+  return loading ? (
+    <Dialog
       visible={visible}
-      content={<ConnectModalDialogLoading selectedWallet={selectedWallet?.title || selectedWallet?.extensionName || ''} />}
+      content={
+        <ConnectModalDialogLoading selectedWallet={selectedWallet?.title || selectedWallet?.extensionName || ''} />
+      }
       onClose={() => {
         selectWallet(undefined);
         onClose();
       }}
     />
-    )
-    : (
-      <Dialog
+  ) : (
+    <Dialog
       visible={visible}
-      headerText='Connect wallet'
+      headerText="Connect wallet"
       onClose={() => {
         selectWallet(undefined);
         onClose();
       }}
       content={content}
     />
-    )
-  )
+  );
 };

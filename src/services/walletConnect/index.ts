@@ -1,7 +1,7 @@
 import { Signer } from '@polkadot/types/types';
 import { WalletAccount } from '@talismn/connect-wallets';
 import type { SessionTypes } from '@walletconnect/types/dist/types/sign-client/session';
-import UniversalProvider from '@walletconnect/universal-provider';
+import UniversalProvider, { UniversalProviderOpts } from '@walletconnect/universal-provider';
 import logo from '../../assets/wallet-connect.svg';
 import { config } from '../../config';
 
@@ -15,12 +15,13 @@ export const walletConnectService = {
         projectId: config.walletConnect.projectId,
         relayUrl: config.walletConnect.url,
         metadata: {
-          name: 'Pendulum Chain Portal',
-          description: 'Pendulum Chain Portal',
-          url: 'https://portal.pendulumchain.org/',
-          icons: ['https://walletconnect.com/walletconnect-logo.png'],
+          name: 'Pendulum Portal',
+          description:
+            'The Pendulum Portal allows users to interact with all features of the Pendulum-related parachains.',
+          url: 'https://portal.pendulumchain.org',
+          icons: ['https://portal.pendulumchain.org/assets/favicon.7ffed586.png'],
         },
-      }));
+      } as UniversalProviderOpts));
     return this.provider;
   },
   init: async function init(session: SessionTypes.Struct, chainId: string): Promise<WalletAccount> {

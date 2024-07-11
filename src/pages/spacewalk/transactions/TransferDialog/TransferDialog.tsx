@@ -3,15 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
 import { Divider } from 'react-daisyui';
 
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { CopyableAddress } from '../../../components/PublicKey';
-import { deriveShortenedRequestId } from '../../../helpers/spacewalk';
-import { convertRawHexKeyToPublicKey } from '../../../helpers/stellar';
-import { toTitle } from '../../../helpers/string';
-import { useVaultRegistryPallet } from '../../../hooks/spacewalk/useVaultRegistryPallet';
-import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
+import { useGlobalState } from '../../../../GlobalStateProvider';
+import { CopyableAddress } from '../../../../components/PublicKey';
+import { deriveShortenedRequestId } from '../../../../helpers/spacewalk';
+import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
+import { toTitle } from '../../../../helpers/string';
+import { useVaultRegistryPallet } from '../../../../hooks/spacewalk/useVaultRegistryPallet';
+import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TTransfer } from '../TransactionsColumns';
-import { Dialog } from '../../collators/dialogs/Dialog';
+import { Dialog } from '../../../staking/dialogs/Dialog';
 
 export interface BaseTransferDialogProps {
   id: string;

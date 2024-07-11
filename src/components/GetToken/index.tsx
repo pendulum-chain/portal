@@ -71,13 +71,13 @@ const getTokenIcon = (currentTenant: TenantName) => {
 };
 
 export const GetToken = () => {
-  const { balance } = useAccountBalance();
+  const { total } = useAccountBalance().balances;
   const { currentTenant } = useSwitchChain();
   const { tokenSymbol } = useNodeInfoState().state;
 
   const link = `/${currentTenant}/gas`;
 
-  const isBalanceZero = Number(balance) === 0;
+  const isBalanceZero = Number(total) === 0;
 
   const showCurrentToken = getTokenIcon(currentTenant)
   return (

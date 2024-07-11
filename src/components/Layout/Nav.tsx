@@ -23,7 +23,7 @@ const CollapseMenu = ({
   const isActive = useMemo(() => {
     const [path] = pathname.split('?');
     const paths = path.split('/').filter(Boolean);
-    return paths[1].startsWith(link.replace('/', '')) ? true : false;
+    return paths[1] && paths[1].startsWith(link.replace('/', '')) ? true : false;
   }, [link, pathname]);
   const [isOpen, { toggle }] = useBoolean(isActive);
 

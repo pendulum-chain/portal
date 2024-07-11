@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
+import { BridgeDirection } from '../../pages/spacewalk/bridge';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { ExtendedRegistryVault } from '../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../shared/parseNumbers/metric';
@@ -8,12 +9,27 @@ import { PublicKey } from '../PublicKey';
 interface VaultSelectorProps {
   vaults: ExtendedRegistryVault[];
   selectedVault?: ExtendedRegistryVault;
-  showMaxTokensFor?: 'issuableTokens' | 'redeemableTokens';
+  bridgeDirection?: BridgeDirection;
   onChange: (vault: ExtendedRegistryVault) => void;
 }
 
+function getMaxTokensForVault(vault: ExtendedRegistryVault, type: 'issue' | 'redeem') {
+  const maxTokens = type === 'issue' ? vault.issuableTokens : vault.redeemableTokens;
+  if (!maxTokens) return '0';
+
+  try {
+    const balance: { amount: string } = maxTokens.toJSON();
+
+    return nativeToDecimal(balance.amount.toString()).toFixed(2);
+  } catch (error) {
+    console.error('Error parsing max tokens', error);
+    return '0';
+  }
+}
+
 function VaultSelector(props: VaultSelectorProps): JSX.Element {
-  const { vaults, selectedVault, showMaxTokensFor, onChange } = props;
+  const { vaults, selectedVault, bridgeDirection, onChange } = props;
+
   return (
     <div className="dropdown w-full mt-3">
       <Button
@@ -35,15 +51,15 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
               }
               onChange(vault);
             }}
-            className="w-full rounded-md"
+            className="w-full rounded-md flex"
           >
             <span className="w-full flex place-content-between">
               <span className="flex">
                 <PublicKey publicKey={vault.id.accountId.toString()} variant="short" />
               </span>
-              {showMaxTokensFor && (
+              {bridgeDirection && (
                 <span className="content-end">
-                  {nativeToDecimal((vault[showMaxTokensFor] as unknown as { amount: string }).amount || '0').toFixed(2)}
+                  {getMaxTokensForVault(vault, bridgeDirection)}{' '}
                   {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
                 </span>
               )}

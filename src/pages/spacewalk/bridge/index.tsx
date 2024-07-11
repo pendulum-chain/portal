@@ -2,21 +2,26 @@ import { createContext } from 'preact/compat';
 import { StateUpdater, Dispatch, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
-import AmplitudeLogo from '../../assets/AmplitudeLogo';
-import PendulumLogo from '../../assets/PendulumLogo';
-import SettingsIcon from '../../assets/SettingsIcon';
-import StellarLogo from '../../assets/StellarLogo';
-import { SpacewalkConstants } from '../../helpers/spacewalk';
-import { useNodeInfoState } from '../../NodeInfoProvider';
+import AmplitudeLogo from '../../../assets/AmplitudeLogo';
+import PendulumLogo from '../../../assets/PendulumLogo';
+import SettingsIcon from '../../../assets/SettingsIcon';
+import StellarLogo from '../../../assets/StellarLogo';
+import { SpacewalkConstants } from '../../../helpers/spacewalk';
+import { useNodeInfoState } from '../../../NodeInfoProvider';
+import { TenantName } from '../../../models/Tenant';
 import Issue from './Issue';
 import SettingsDialog from './Issue/SettingsDialog';
 import Redeem from './Redeem';
-import './styles.css';
-import { TenantName } from '../../models/Tenant';
+import '../styles.css';
 
 enum BridgeTabs {
   Issue = 0,
   Redeem = 1,
+}
+
+export enum BridgeDirection {
+  Issue = 'issue',
+  Redeem = 'redeem',
 }
 
 interface BridgeContextValue {
@@ -52,10 +57,16 @@ function Bridge(): JSX.Element | null {
     onClick: () => setTabValue(index),
   });
 
+  const bridgeDirection = tabValue === BridgeTabs.Issue ? BridgeDirection.Issue : BridgeDirection.Redeem;
+
   return chain ? (
     <BridgeContext.Provider value={{ selectedAsset, setSelectedAsset }}>
       <div className="flex items-center justify-center h-full mt-4">
-        <SettingsDialog visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
+        <SettingsDialog
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+          bridgeDirection={bridgeDirection}
+        />
         <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
           <div className="flex justify-between px-5 mt-5">
             <Tabs className="flex justify-center flex-grow w-5/6 tabs-boxed">

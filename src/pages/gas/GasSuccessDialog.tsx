@@ -1,7 +1,7 @@
+import { FC } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
-import { Dialog } from '../collators/dialogs/Dialog';
-import { FC } from 'preact/compat';
+import { Dialog } from '../staking/dialogs/Dialog';
 
 interface DialogProps {
   visible: boolean;

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'preact/compat';
-import BellIcon from '../../../assets/bell';
+import BellIcon from '../../../../assets/bell';
 
 type Props = {
   content: JSX.Element;
