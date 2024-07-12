@@ -1,5 +1,5 @@
 import { Modal } from 'react-daisyui';
-import { createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
+import { FC, createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
 
 import { CloseButton } from '../../../components/CloseButton';
 
@@ -16,7 +16,7 @@ interface DialogProps {
   id?: string;
 }
 
-export const Dialog: React.FC<DialogProps> = ({ visible, onClose, headerText, content, actions, id, form }) => {
+export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content, actions, id, form }) => {
   const ref = useRef<HTMLDialogElement>(null);
 
   // If it was the form submission we want to only close the dialog without calling onClose
