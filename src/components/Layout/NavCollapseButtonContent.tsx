@@ -1,7 +1,7 @@
+import { FC } from 'preact/compat';
 import Lottie from 'react-lottie';
 
 import { LinkItem, isLottieOptions } from './links';
-import { FC } from 'preact/compat';
 
 interface NavButtonContentProps {
   item: LinkItem;
