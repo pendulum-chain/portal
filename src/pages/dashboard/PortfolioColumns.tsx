@@ -1,8 +1,12 @@
 import { ColumnDef } from '@tanstack/table-core';
 import { getIcon } from '../../shared/AssetIcons';
+import { Asset } from 'stellar-sdk';
 
 export interface PortfolioAsset {
+  // token is the symbol of the asset
   token: string;
+  // asset is also passed if it's a Stellar asset
+  asset?: Asset;
   price: number;
   amount: number;
   usdValue?: number;
@@ -16,7 +20,11 @@ export const tokenColumn: ColumnDef<PortfolioAsset> = {
     return (
       <div className="flex flex-row">
         <img
-          src={getIcon(row.original.token)}
+          src={
+            row.original.asset
+              ? getIcon(row.original.asset.code, row.original.asset.issuer)
+              : getIcon(row.original.token)
+          }
           className="mr-2"
           style={{
             objectFit: 'cover',

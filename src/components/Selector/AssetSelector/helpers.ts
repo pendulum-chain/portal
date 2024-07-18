@@ -24,7 +24,7 @@ function areOrmlAssets(obj?: BlockchainAsset[]): obj is OrmlTraitsAssetRegistryA
 
 export function getAssetIcon(asset?: BlockchainAsset): string {
   if (!asset) return '';
-  return isStellarAsset(asset) ? getIcon(asset?.code) : getIcon(asset.metadata.symbol);
+  return isStellarAsset(asset) ? getIcon(asset?.code, asset?.issuer) : getIcon(asset.metadata.symbol);
 }
 
 export function getAssetName(asset?: BlockchainAsset): string {
