@@ -12,12 +12,15 @@ export type AssetSelectorOnChange = Dispatch<StateUpdater<BlockchainAsset | unde
 export function isStellarAsset(obj?: BlockchainAsset): obj is Asset {
   return Boolean(obj && 'getCode' in obj && typeof obj.getCode === 'function');
 }
+
 export function areStellarAssets(objs?: BlockchainAsset[]): objs is Asset[] {
   return objs !== undefined && objs.every((obj) => isStellarAsset(obj));
 }
+
 export function isOrmlAsset(obj?: BlockchainAsset): obj is OrmlTraitsAssetRegistryAssetMetadata {
   return Boolean(obj && 'metadata' in obj && typeof obj.metadata === 'object' && 'symbol' in obj.metadata);
 }
+
 function areOrmlAssets(obj?: BlockchainAsset[]): obj is OrmlTraitsAssetRegistryAssetMetadata[] {
   return Array.isArray(obj) && obj.every(isOrmlAsset);
 }
@@ -107,12 +110,14 @@ function generateAssetItems(
   const formattedAssets = assets.map((asset) => ({
     displayName: formatAssets(asset),
     id: getCode(asset),
+    icon: getAssetIcon(asset),
   }));
 
   const selectedAssetItem = selectedAsset
     ? {
         displayName: formatAssets(selectedAsset),
         id: getCode(selectedAsset),
+        icon: getAssetIcon(selectedAsset),
       }
     : undefined;
 
