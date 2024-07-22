@@ -1,4 +1,5 @@
 import { Dropdown } from 'react-daisyui';
+import { getIcon } from '../../shared/AssetIcons';
 
 interface Props<T> {
   items: T[];
@@ -25,6 +26,7 @@ function DropdownSelector<T extends { id: unknown; displayName: string }>(props:
                 onChange(item);
               }}
             >
+              <img src={getIcon(item.displayName)} className="w-6" />
               {item.displayName}
             </Dropdown.Item>
           ))}

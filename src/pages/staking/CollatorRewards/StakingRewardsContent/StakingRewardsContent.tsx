@@ -1,3 +1,4 @@
+import { FC } from 'preact/compat';
 import { ClaimButton, ClaimButtonProps } from './ClaimButton';
 import { UpdateButton, UpdateButtonProps } from './UpdateButton';
 
@@ -11,7 +12,7 @@ interface StakingRewardsContentProps {
   estimatedRewards: string;
 }
 
-export const StakingRewardsContent: React.FC<StakingRewardsContentProps> = ({
+export const StakingRewardsContent: FC<StakingRewardsContentProps> = ({
   updateButton,
   claimButton,
   estimatedRewards,

@@ -1,4 +1,5 @@
 import { StateUpdater, Dispatch, useMemo } from 'preact/hooks';
+import { ChangeEvent, FC } from 'preact/compat';
 import { useForm } from 'react-hook-form';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
@@ -8,7 +9,6 @@ import { FeeHint } from './FeeHint';
 import { SubmitButton } from './SubmitButton';
 import { formatToFixedDecimals, formatToSignificantDecimals } from './helpers';
 import useBalances from '../../hooks/useBalances';
-import { ChangeEvent } from 'preact/compat';
 
 export type IssueFormValues = {
   isMax: boolean;
@@ -29,7 +29,7 @@ interface GasFormProps {
   submissionPending: boolean;
 }
 
-export const GasForm: React.FC<GasFormProps> = ({
+export const GasForm: FC<GasFormProps> = ({
   onSubmit,
   currencies,
   setSelectedFromToken,

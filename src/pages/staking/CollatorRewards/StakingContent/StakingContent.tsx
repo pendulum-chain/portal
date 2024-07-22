@@ -1,9 +1,10 @@
+import { FC } from 'preact/compat';
+import { Tooltip } from 'react-daisyui';
 import Big from 'big.js';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 import StakedIcon from '../../../../assets/collators-staked-icon';
 import { nativeToFormatMetric } from '../../../../shared/parseNumbers/metric';
-import { Tooltip } from 'react-daisyui';
 
 interface StakingContentProps {
   onButtonClick: () => void;
@@ -15,7 +16,7 @@ interface StakingContentProps {
   tokensTipText: string;
 }
 
-export const StakingContent: React.FC<StakingContentProps> = ({
+export const StakingContent: FC<StakingContentProps> = ({
   onButtonClick,
   userStakingAmount = '0.00',
   userAvailableBalance,

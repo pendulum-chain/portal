@@ -6,9 +6,9 @@ import { useBuyout } from '../../hooks/useBuyout';
 import { BlockchainAsset, isOrmlAsset } from '../../components/Selector/AssetSelector/helpers';
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
 import { GasForm, IssueFormValues } from './GasForm';
-import { calculateForCurrentFromToken, calculatePriceNativeForCurrentFromToken } from './helpers';
 import { GasSuccessDialog } from './GasSuccessDialog';
 import { GasSkeleton } from './GasSkeleton';
+import { calculateForCurrentFromToken, calculatePriceNativeForCurrentFromToken } from './helpers';
 
 const Gas = () => {
   const { currencies, buyoutNativeToken, sellFee, nativeCurrency, handleBuyout } = useBuyout();

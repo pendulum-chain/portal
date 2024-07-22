@@ -1,3 +1,4 @@
+import { FC } from 'preact/compat';
 import { Button } from 'react-daisyui';
 
 export interface UpdateButtonProps {
@@ -6,7 +7,7 @@ export interface UpdateButtonProps {
   onClick: () => void;
 }
 
-export const UpdateButton: React.FC<UpdateButtonProps> = ({ loading, disabled, onClick }) => (
+export const UpdateButton: FC<UpdateButtonProps> = ({ loading, disabled, onClick }) => (
   <Button
     loading={loading}
     onClick={onClick}
