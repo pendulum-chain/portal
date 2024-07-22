@@ -24,7 +24,6 @@ const getStellarAssetIcon = (assetCode: string, assetIssuer: string) => {
   } else if (assetCode.includes('BRL')) {
     return BRL;
   } else if (assetCode.includes('EURC')) {
-    console.log('Trying to get icon for EURC', assetCode, assetIssuer);
     if (assetIssuer === MYKOBO_ISSUER) {
       return mEURC;
     } else {
