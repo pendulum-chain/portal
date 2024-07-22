@@ -18,6 +18,7 @@ import DefaultIcon from '../assets/coins/placeholder.png';
 // The public key of Mykobo's EURC issuer account
 const MYKOBO_ISSUER = 'GAQRF3UGHBT6JYQZ7YSUYCIYWAF4T2SAA5237Q5LIQYJOHHFAWDXZ7NM';
 
+// Maps all supported Stellar assets to icons. The EURC tokens are handled separately in `getAssetIcon()`
 const stellarAssets = [
   { code: 'AUDD', icon: AUDD },
   { code: 'BRL', icon: BRL },
@@ -36,10 +37,16 @@ const polkadotAssets = [
   { code: 'GLMR', icon: GLMR },
 ];
 
-const getAssetIcon = (assetCode: string, assetIssuer: string, assets: { code: string; icon: string }[]) => {
+const handleSpecialAsset = (assetCode: string, assetIssuer: string) => {
+  // The EURC tokens are handled separately because they can be issued by multiple issuers
   if (assetCode.includes('EURC')) {
     return assetIssuer === MYKOBO_ISSUER ? mEURC : cEURC;
   }
+};
+
+const getAssetIcon = (assetCode: string, assetIssuer: string, assets: { code: string; icon: string }[]) => {
+  const specialAsset = handleSpecialAsset(assetCode, assetIssuer);
+  if (specialAsset) return specialAsset;
 
   const asset = assets.find((asset) => assetCode.includes(asset.code));
 
