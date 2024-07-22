@@ -3,6 +3,7 @@ import { StateUpdater, Dispatch } from 'preact/hooks';
 import { getIcon } from '../../../shared/AssetIcons';
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../../hooks/useBuyout/types';
 import { assetDisplayName } from '../../../helpers/spacewalk';
+import { stringifyStellarAsset } from '../../../helpers/stellar';
 
 /* Types */
 export type BlockchainAsset = Asset | OrmlTraitsAssetRegistryAssetMetadata;
@@ -47,7 +48,7 @@ const findAsset = (
 };
 
 function compareAsset(newItem: { id: string }) {
-  return (asset: Asset) => asset.getCode() === newItem.id;
+  return (asset: Asset) => stringifyStellarAsset(asset) === newItem.id;
 }
 
 function compareOrmlAsset(newItem: { id: string }) {
@@ -78,22 +79,22 @@ export function generateAssetSelectorItem(
 ) {
   if (areStellarAssets(assets)) {
     const formatAsset = (asset: Asset) => assetDisplayName(asset, assetPrefix, assetSuffix);
-    const getCode = (asset: Asset) => asset.getCode();
+    const getId = (asset: Asset) => stringifyStellarAsset(asset);
 
     return generateAssetItems(
       assets,
       formatAsset as (asset: BlockchainAsset) => string,
-      getCode as (asset: BlockchainAsset) => string,
+      getId as (asset: BlockchainAsset) => string,
       selectedAsset,
     );
   } else if (areOrmlAssets(assets)) {
     const formatAsset = (asset: OrmlTraitsAssetRegistryAssetMetadata) => asset.metadata.symbol;
-    const getCode = (asset: OrmlTraitsAssetRegistryAssetMetadata) => asset.metadata.symbol;
+    const getId = (asset: OrmlTraitsAssetRegistryAssetMetadata) => asset.metadata.symbol;
 
     return generateAssetItems(
       assets,
       formatAsset as (asset: BlockchainAsset) => string,
-      getCode as (asset: BlockchainAsset) => string,
+      getId as (asset: BlockchainAsset) => string,
       selectedAsset,
     );
   }
@@ -104,19 +105,19 @@ export function generateAssetSelectorItem(
 function generateAssetItems(
   assets: BlockchainAsset[],
   formatAssets: (asset: BlockchainAsset) => string,
-  getCode: (asset: BlockchainAsset) => string,
+  getId: (asset: BlockchainAsset) => string,
   selectedAsset?: BlockchainAsset,
 ) {
   const formattedAssets = assets.map((asset) => ({
     displayName: formatAssets(asset),
-    id: getCode(asset),
+    id: getId(asset),
     icon: getAssetIcon(asset),
   }));
 
   const selectedAssetItem = selectedAsset
     ? {
         displayName: formatAssets(selectedAsset),
-        id: getCode(selectedAsset),
+        id: getId(selectedAsset),
         icon: getAssetIcon(selectedAsset),
       }
     : undefined;
