@@ -26,12 +26,12 @@ function areOrmlAssets(obj?: BlockchainAsset[]): obj is OrmlTraitsAssetRegistryA
   return Array.isArray(obj) && obj.every(isOrmlAsset);
 }
 
-export function getAssetIcon(asset?: BlockchainAsset): string {
+function getAssetIcon(asset?: BlockchainAsset): string {
   if (!asset) return '';
   return isStellarAsset(asset) ? getIcon(asset?.code, asset?.issuer) : getIcon(asset.metadata.symbol);
 }
 
-export function getAssetName(asset?: BlockchainAsset): string {
+function getAssetName(asset?: BlockchainAsset): string {
   if (!asset) return '';
   return isStellarAsset(asset) ? asset?.code : asset.metadata.symbol;
 }
@@ -102,6 +102,13 @@ export function generateAssetSelectorItem(
   return { formattedAssets: [], selectedAssetItem: undefined };
 }
 
+export interface AssetItem {
+  displayName: string;
+  id: string;
+  name: string;
+  icon?: string;
+}
+
 function generateAssetItems(
   assets: BlockchainAsset[],
   formatAssets: (asset: BlockchainAsset) => string,
@@ -112,6 +119,7 @@ function generateAssetItems(
     displayName: formatAssets(asset),
     id: getId(asset),
     icon: getAssetIcon(asset),
+    name: getAssetName(asset),
   }));
 
   const selectedAssetItem = selectedAsset
@@ -119,6 +127,7 @@ function generateAssetItems(
         displayName: formatAssets(selectedAsset),
         id: getId(selectedAsset),
         icon: getAssetIcon(selectedAsset),
+        name: getAssetName(selectedAsset),
       }
     : undefined;
 

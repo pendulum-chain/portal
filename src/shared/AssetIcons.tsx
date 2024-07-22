@@ -18,52 +18,54 @@ import DefaultIcon from '../assets/coins/placeholder.png';
 // The public key of Mykobo's EURC issuer account
 const MYKOBO_ISSUER = 'GAQRF3UGHBT6JYQZ7YSUYCIYWAF4T2SAA5237Q5LIQYJOHHFAWDXZ7NM';
 
-const getStellarAssetIcon = (assetCode: string, assetIssuer: string) => {
-  if (assetCode.includes('AUDD')) {
-    return AUDD;
-  } else if (assetCode.includes('BRL')) {
-    return BRL;
-  } else if (assetCode.includes('EURC')) {
-    if (assetIssuer === MYKOBO_ISSUER) {
-      return mEURC;
-    } else {
-      // Use the Circle EURC icon for all other EURC issuers
-      return cEURC;
-    }
-  } else if (assetCode.includes('NGNC')) {
-    return NGNC;
-  } else if (assetCode.includes('TZS')) {
-    return TZS;
-  } else if (assetCode.includes('USDC')) {
-    return USDC;
-  } else if (assetCode.includes('XLM')) {
-    return XLM;
-  }
+// Maps all supported Stellar assets to icons. The EURC tokens are handled separately in `getAssetIcon()`
+const stellarAssets = [
+  { code: 'AUDD', icon: AUDD },
+  { code: 'BRL', icon: BRL },
+  { code: 'NGNC', icon: NGNC },
+  { code: 'TZS', icon: TZS },
+  { code: 'USDC', icon: USDC },
+  { code: 'XLM', icon: XLM },
+];
 
-  return undefined;
+const polkadotAssets = [
+  { code: 'PEN', icon: PEN },
+  { code: 'DOT', icon: DOT },
+  { code: 'AMPE', icon: AMPE },
+  { code: 'KSM', icon: KSM },
+  { code: 'USDT', icon: USDT },
+  { code: 'GLMR', icon: GLMR },
+];
+
+const handleSpecialAsset = (assetCode: string, assetIssuer: string) => {
+  // The EURC tokens are handled separately because they can be issued by multiple issuers
+  if (assetCode.includes('EURC')) {
+    return assetIssuer === MYKOBO_ISSUER ? mEURC : cEURC;
+  }
+};
+
+const getAssetIcon = (assetCode: string, assetIssuer: string, assets: { code: string; icon: string }[]) => {
+  const specialAsset = handleSpecialAsset(assetCode, assetIssuer);
+  if (specialAsset) return specialAsset;
+
+  const asset = assets.find((asset) => assetCode.includes(asset.code));
+
+  return asset?.icon || undefined;
+};
+
+const getStellarAssetIcon = (assetCode: string, assetIssuer?: string) => {
+  return getAssetIcon(assetCode, assetIssuer || '', stellarAssets);
 };
 
 const getPolkadotAssetIcon = (assetCode: string) => {
-  if (assetCode.includes('PEN')) {
-    return PEN;
-  } else if (assetCode.includes('DOT')) {
-    return DOT;
-  } else if (assetCode.includes('AMPE')) {
-    return AMPE;
-  } else if (assetCode.includes('KSM')) {
-    return KSM;
-  } else if (assetCode.includes('USDT')) {
-    return USDT;
-  } else if (assetCode.includes('GLMR')) {
-    return GLMR;
-  }
-
-  return undefined;
+  return getAssetIcon(assetCode, '', polkadotAssets);
 };
 
 export function getIcon(token: string | undefined, issuer?: string, defaultIcon = DefaultIcon) {
-  const polkadotIcon = getPolkadotAssetIcon(token || '');
-  const stellarIcon = getStellarAssetIcon(token || '', issuer || '');
+  if (!token) return defaultIcon;
+
+  const polkadotIcon = getPolkadotAssetIcon(token);
+  const stellarIcon = getStellarAssetIcon(token, issuer);
 
   return polkadotIcon || stellarIcon || defaultIcon;
 }
