@@ -1,10 +1,12 @@
 import { Collapse } from 'react-daisyui';
+import { useState } from 'preact/hooks';
 import { useWalletConnection } from '../../../../hooks/useWalletConnection';
 import { METAMASK_EXTENSION_NAME } from '../../../../services/metamask';
 import { Dialog } from '../../../Dialog';
 import { ConnectModalWalletsList } from './ConnectModalList/ConnectModalWalletsList';
 import { ConnectModalAccountsList } from './ConnectModalList/ConnectModalAccountsList';
 import { ConnectModalDialogLoading } from './ConnectModalDialogLoading';
+import { Wallet } from '@talismn/connect-wallets';
 
 interface ConnectModalDialogProps {
   visible: boolean;
@@ -13,10 +15,11 @@ interface ConnectModalDialogProps {
 
 export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps) => {
   const { accounts, wallets, selectWallet, loading, selectedWallet } = useWalletConnection();
+  const [isAccountsCollapseOpen, setIsAccountsCollapseOpen] = useState(false);
 
   const accountsContent = (
-    <Collapse defaultChecked icon="arrow" open name="accounts">
-      <Collapse.Title>Choose Account</Collapse.Title>
+    <Collapse defaultChecked icon="arrow" open={isAccountsCollapseOpen} name="accounts">
+      <Collapse.Title onClick={() => setIsAccountsCollapseOpen((state) => !state)}>Choose Account</Collapse.Title>
       <Collapse.Content>
         <ConnectModalAccountsList accounts={accounts || []} />
         {selectedWallet?.extensionName === METAMASK_EXTENSION_NAME ? (
@@ -32,10 +35,17 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
   );
 
   const walletsContent = (
-    <Collapse defaultChecked icon="arrow" open name="wallets">
+    <Collapse defaultChecked open name="wallets">
       <Collapse.Title>Select Wallet</Collapse.Title>
       <Collapse.Content>
-        <ConnectModalWalletsList wallets={wallets} onClick={selectWallet} onClose={onClose} />
+        <ConnectModalWalletsList
+          wallets={wallets}
+          onClick={(wallet: Wallet) => {
+            setIsAccountsCollapseOpen(true);
+            selectWallet(wallet);
+          }}
+          onClose={onClose}
+        />
       </Collapse.Content>
     </Collapse>
   );
