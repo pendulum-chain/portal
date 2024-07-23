@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/table-core';
-import { getIcon } from '../../shared/AssetIcons';
 import { Asset } from 'stellar-sdk';
+import { getIcon } from '../../shared/AssetIcons';
 
 export interface PortfolioAsset {
   // token is the symbol of the asset
@@ -16,26 +16,22 @@ export const tokenColumn: ColumnDef<PortfolioAsset> = {
   header: 'Token',
   accessorKey: 'token',
   enableMultiSort: true,
-  cell: ({ row }) => {
-    return (
-      <div className="flex flex-row">
-        <img
-          src={
-            row.original.asset
-              ? getIcon(row.original.asset.code, row.original.asset.issuer)
-              : getIcon(row.original.token)
-          }
-          className="mr-2"
-          style={{
-            objectFit: 'cover',
-            width: '32px',
-            height: '32px',
-          }}
-        />
-        <div className="leading-8"> {row.original.token} </div>
-      </div>
-    );
-  },
+  cell: ({ row }) => (
+    <div className="flex flex-row">
+      <img
+        src={
+          row.original.asset ? getIcon(row.original.asset.code, row.original.asset.issuer) : getIcon(row.original.token)
+        }
+        className="mr-2"
+        style={{
+          objectFit: 'cover',
+          width: '32px',
+          height: '32px',
+        }}
+      />
+      <div className="leading-8"> {row.original.token} </div>
+    </div>
+  ),
 };
 
 export const priceColumn: ColumnDef<PortfolioAsset> = {

@@ -37,35 +37,34 @@ const polkadotAssets = [
   { code: 'GLMR', icon: GLMR },
 ];
 
-const handleSpecialAsset = (assetCode: string, assetIssuer: string) => {
+const assets = [...stellarAssets, ...polkadotAssets];
+
+const handleSpecialAsset = (assetCode: string, assetIssuer?: string) => {
   // The EURC tokens are handled separately because they can be issued by multiple issuers
   if (assetCode.includes('EURC')) {
-    return assetIssuer === MYKOBO_ISSUER ? mEURC : cEURC;
+    if (assetIssuer === MYKOBO_ISSUER) {
+      return mEURC;
+    }
+    return cEURC;
   }
 };
 
-const getAssetIcon = (assetCode: string, assetIssuer: string, assets: { code: string; icon: string }[]) => {
+const getAssetIcon = (assetCode: string, assetIssuer?: string) => {
   const specialAsset = handleSpecialAsset(assetCode, assetIssuer);
-  if (specialAsset) return specialAsset;
+
+  if (specialAsset) {
+    return specialAsset;
+  }
 
   const asset = assets.find((asset) => assetCode.includes(asset.code));
 
   return asset?.icon || undefined;
 };
 
-const getStellarAssetIcon = (assetCode: string, assetIssuer?: string) => {
-  return getAssetIcon(assetCode, assetIssuer || '', stellarAssets);
-};
-
-const getPolkadotAssetIcon = (assetCode: string) => {
-  return getAssetIcon(assetCode, '', polkadotAssets);
-};
-
 export function getIcon(token: string | undefined, issuer?: string, defaultIcon = DefaultIcon) {
   if (!token) return defaultIcon;
 
-  const polkadotIcon = getPolkadotAssetIcon(token);
-  const stellarIcon = getStellarAssetIcon(token, issuer);
+  const icon = getAssetIcon(token, issuer);
 
-  return polkadotIcon || stellarIcon || defaultIcon;
+  return icon || defaultIcon;
 }
