@@ -1,5 +1,4 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { isDesktop } from 'react-device-detect';
 import AmplitudeLogo from '../assets/AmplitudeLogo';
 import PendulumLogo from '../assets/PendulumLogo';
 import { toTitle } from '../helpers/string';
@@ -13,7 +12,7 @@ const ChainSelector = (): JSX.Element => {
   return (
     <details className="w-30 dropdown">
       <summary
-        className="text-sm border-base-300 bg-base-200 min-h-[2.1rem] h-auto px-2 sm:px-3 btn btn-sm btn-ghost"
+        className="text-sm border-base-300 bg-base-200 min-h-[2.1rem] h-auto px-2 sm:px-3 btn btn-sm btn-ghost flex"
         title={currentTenant}
       >
         {currentTenant === TenantName.Pendulum ? (
@@ -21,8 +20,8 @@ const ChainSelector = (): JSX.Element => {
         ) : (
           <AmplitudeLogo className="w-4 h-4 mr-1 " />
         )}
-        {isDesktop ? <span className="mr-1 text-sm sm:mr-2">{currentTenant ? toTitle(currentTenant) : ''}</span> : <></>}
-        <ChevronDownIcon className="w-4 h-4" stroke-width="2" />
+        <span className="mr-1 text-sm sm:mr-2">{currentTenant ? toTitle(currentTenant) : ''}</span>
+        <ChevronDownIcon className="hidden sm:block w-4 h-4" stroke-width="2" />
       </summary>
       <ul className="text-sm border-base-300 border bg-base-200 rounded-xl shadow-none menu dropdown-content z-[1]">
         {options.map((option, i) => (

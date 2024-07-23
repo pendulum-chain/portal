@@ -69,15 +69,15 @@ function Bridge(): JSX.Element | null {
         />
         <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
           <div className="flex justify-between px-5 mt-5">
-            <Tabs className="flex justify-center flex-grow w-5/6 tabs-boxed">
-              <Tabs.Tab className="w-2/5 p-2 h-fit" {...getTabProps(0)}>
+            <Tabs className="flex justify-center flex-grow sm:w-5/6 tabs-boxed">
+              <Tabs.Tab className="w-1/2 sm:w-2/5 p-2 h-full text-xs sm:text-sm " {...getTabProps(0)}>
                 {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="w-6 h-6 mr-1" />}
                 {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
                   <AmplitudeLogo className="w-6 h-6 mr-1" />
                 )}
                 To {chain}
               </Tabs.Tab>
-              <Tabs.Tab className="w-2/5 p-2 h-fit" {...getTabProps(1)}>
+              <Tabs.Tab className="w-1/2 sm:w-2/5 p-2 h-full text-xs sm:text-sm " {...getTabProps(1)}>
                 <StellarLogo className="w-6 h-6 mr-1" />
                 To Stellar
               </Tabs.Tab>

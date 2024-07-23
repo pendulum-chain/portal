@@ -1,9 +1,9 @@
 import { Wallet, WalletAccount } from '@talismn/connect-wallets';
 import { UseQueryResult } from '@tanstack/react-query';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
-
 import { ArrowLeftEndOnRectangleIcon } from '@heroicons/react/20/solid';
 import { Button, Dropdown } from 'react-daisyui';
+
 import { getAddressForFormat } from '../../../../helpers/addressFormatter';
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import { useAccountBalance } from '../../../../shared/useAccountBalance';
@@ -23,7 +23,7 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
   <Button
     size="sm"
     color="ghost"
-    className="text-sm border-base-300 border-1 bg-base-200 min-h-[2.1rem] h-auto px-1 sm:px-3 overflow-hidden ellipsis max-w36 sm:max-w-fit"
+    className="text-sm border-base-300 border-1 bg-base-200 min-h-[2.1rem] h-auto px-5 sm:px-3 overflow-hidden ellipsis max-w36 sm:max-w-fit"
     title={wallet?.title}
     type="button"
   >
@@ -34,8 +34,8 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
         {balance} {tokenSymbol}
       </span>
     )}
-    <p className="truncate">{walletAccount?.name}</p>
-    <img src={wallet?.logo?.src || ''} className="w-[20px] ml-2" alt={wallet?.logo?.alt || ''} />
+    <p className="hidden sm:block truncate">{walletAccount?.name}</p>
+    <img src={wallet?.logo?.src || ''} className="w-[20px] sm:ml-2" alt={wallet?.logo?.alt || ''} />
   </Button>
 );
 
@@ -56,7 +56,7 @@ const WalletDropdownMenu = ({
   tokenSymbol,
   removeWalletAccount,
 }: WalletDropdownMenuProps) => (
-  <Dropdown.Menu className="text-center border border-base-300 bg-base-200 shadow-lg min-w-[240px] p-3 mt-2">
+  <Dropdown.Menu className="text-center border border-base-300 bg-base-200 shadow-lg min-w-[240px] p-3 mt-2 right-0">
     <div className="text-sm text-neutral-400">{walletAccount?.name}</div>
     <div className="text-neutral-500">
       <CopyableAddress

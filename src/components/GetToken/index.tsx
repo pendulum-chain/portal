@@ -1,5 +1,6 @@
 import { Button } from 'react-daisyui';
 import { NavLink } from 'react-router-dom';
+import { isDesktop } from 'react-device-detect';
 
 import ampe from '../../assets/ampe.svg';
 import pen from '../../assets/pen.svg';
@@ -9,7 +10,6 @@ import { useAccountBalance } from '../../shared/useAccountBalance';
 import useSwitchChain from '../../hooks/useSwitchChain';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { TenantName } from '../../models/Tenant';
-import { isDesktop } from 'react-device-detect';
 
 const tenantColors = {
   [TenantName.Pendulum]: {

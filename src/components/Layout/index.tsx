@@ -64,15 +64,9 @@ export default function Layout(): JSX.Element | null {
       </div>
       <section>
         <header>
-          <div className="flex flex-row-reverse items-center gap-2 h-15">
-            <div className="mobile-menu">
-              <button type="button" onClick={() => setVisible((prev) => !prev)}>
-                <Bars3Icon className="w-7" />
-              </button>
-            </div>
-            <OpenWallet isHeader />
-            <ChainSelector />
+          <div className="flex items-center justify-end gap-2 h-15">
             <GetToken />
+            <ChainSelector />
             <div className="hidden mr-2 dropdown dropdown-end">
               <button className="flex items-center py-2 space-x-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
@@ -99,6 +93,12 @@ export default function Layout(): JSX.Element | null {
                   <FooterLink />
                 </li>
               </ul>
+            </div>
+            <OpenWallet isHeader />
+            <div className="mobile-menu">
+              <button type="button" onClick={() => setVisible((prev) => !prev)}>
+                <Bars3Icon className="w-7" />
+              </button>
             </div>
           </div>
         </header>
