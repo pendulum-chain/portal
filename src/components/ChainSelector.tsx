@@ -21,7 +21,7 @@ const ChainSelector = (): JSX.Element => {
           <AmplitudeLogo className="w-4 h-4 mr-1 " />
         )}
         <span className="mr-1 text-sm sm:mr-2">{currentTenant ? toTitle(currentTenant) : ''}</span>
-        <ChevronDownIcon className="hidden sm:block w-4 h-4" stroke-width="2" />
+        <ChevronDownIcon className="w-4 h-4" stroke-width="2" />
       </summary>
       <ul className="text-sm border-base-300 border bg-base-200 rounded-xl shadow-none menu dropdown-content z-[1]">
         {options.map((option, i) => (

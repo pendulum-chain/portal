@@ -12,6 +12,7 @@ import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import './styles.sass';
+import { isMobile } from 'react-device-detect';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
@@ -62,7 +63,7 @@ export default function Layout(): JSX.Element | null {
           </footer>
         </aside>
       </div>
-      <section>
+      <section className={visible && isMobile ? 'opacity-25' : ''}>
         <header>
           <div className="flex items-center justify-end gap-2 h-15">
             <GetToken />
@@ -102,7 +103,14 @@ export default function Layout(): JSX.Element | null {
             </div>
           </div>
         </header>
-        <main className="flex-wrap flex-grow w-full px-4 py-4">
+        <main
+          className="flex-wrap flex-grow w-full px-4 py-4"
+          onClick={() => {
+            if (visible && isMobile) {
+              setVisible(false);
+            }
+          }}
+        >
           <Outlet />
         </main>
       </section>
