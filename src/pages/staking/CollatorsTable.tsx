@@ -36,9 +36,11 @@ function CollatorsTable() {
     return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
   }, [walletAccount, ss58Format]);
 
-  useMemo(() => {
+  useEffect(() => {
     setUserStaking(undefined);
-    return candidates?.forEach((candidate) => {
+    if (!candidates) return;
+
+    candidates.map((candidate) => {
       const isDelegator = candidate.delegators.find((delegator) => delegator.owner === userAccountAddress);
       if (isDelegator) {
         setUserStaking({
