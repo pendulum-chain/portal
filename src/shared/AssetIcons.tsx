@@ -12,6 +12,13 @@ import USDC from '../assets/coins/USDC.png';
 import USDT from '../assets/coins/USDT.png';
 import XLM from '../assets/coins/XLM.png';
 import GLMR from '../assets/coins/GLMR.png';
+import PINK from '../assets/coins/PINK.svg';
+import HDX from '../assets/coins/HDX.png';
+import ASTR from '../assets/coins/ASTR.png';
+import BRZ from '../assets/coins/BRZ.png';
+import PDEX from '../assets/coins/PDEX.png';
+import BNC from '../assets/coins/BNC.png';
+import USDC_axl from '../assets/coins/USDC_axl.svg';
 
 import DefaultIcon from '../assets/coins/placeholder.png';
 
@@ -35,6 +42,12 @@ const polkadotAssets = [
   { code: 'KSM', icon: KSM },
   { code: 'USDT', icon: USDT },
   { code: 'GLMR', icon: GLMR },
+  { code: 'PINK', icon: PINK },
+  { code: 'HDX', icon: HDX },
+  { code: 'ASTR', icon: ASTR },
+  { code: 'BRZ', icon: BRZ },
+  { code: 'PDEX', icon: PDEX },
+  { code: 'BNC', icon: BNC },
 ];
 
 const assets = [...stellarAssets, ...polkadotAssets];
@@ -46,6 +59,10 @@ const handleSpecialAsset = (assetCode: string, assetIssuer?: string) => {
       return mEURC;
     }
     return cEURC;
+  }
+
+  if (assetCode === 'USDC.axl') {
+    return USDC_axl;
   }
 };
 
