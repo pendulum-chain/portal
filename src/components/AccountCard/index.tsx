@@ -18,7 +18,9 @@ export const AccountCard = ({ account }: AccountProps) => {
         onClick={() => setWalletAccount(account)}
       >
         <ChainLogo className="w-8 h-8" />
-        <p className="ml-2.5">{trimAddress(account.address)}</p>
+        <p className="ml-2.5">
+          {account.name} | {trimAddress(account.address)}
+        </p>
       </button>
     </li>
   );
