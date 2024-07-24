@@ -83,7 +83,7 @@ function PoolList({ swapPools, backstopPool, onSelect, selected }: PoolListProps
                 <Avatar
                   size={'xs' as AvatarProps['size']}
                   letters={pool.token.symbol}
-                  src={getIcon(pool.token.symbol, pendulumIcon)}
+                  src={getIcon(pool.token.symbol)}
                   shape="circle"
                   className="text-xs"
                 />

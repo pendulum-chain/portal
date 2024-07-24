@@ -9,6 +9,7 @@ import { usePriceFetcher } from './usePriceFetcher';
 import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
+import { convertCurrencyToStellarAsset } from '../helpers/spacewalk';
 
 function useBalances() {
   const { walletAccount } = useGlobalState();
@@ -59,8 +60,13 @@ function useBalances() {
           const amount = nativeToDecimal(free || '0', asset.metadata.decimals).toNumber();
           const usdValue = price * amount;
 
+          // If the token is a Stellar CurrencyId we want to return it as well
+          // so we can display the correct icon in the portfolio
+          const stellarAsset = convertCurrencyToStellarAsset(asset.currencyId) || undefined;
+
           return {
             token,
+            asset: stellarAsset,
             price,
             amount,
             usdValue,
