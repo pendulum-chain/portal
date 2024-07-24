@@ -18,6 +18,7 @@ import ASTR from '../assets/coins/ASTR.png';
 import BRZ from '../assets/coins/BRZ.png';
 import PDEX from '../assets/coins/PDEX.png';
 import BNC from '../assets/coins/BNC.png';
+import USDC_axl from '../assets/coins/USDC_axl.svg';
 
 import DefaultIcon from '../assets/coins/placeholder.png';
 
@@ -58,6 +59,10 @@ const handleSpecialAsset = (assetCode: string, assetIssuer?: string) => {
       return mEURC;
     }
     return cEURC;
+  }
+
+  if (assetCode === 'USDC.axl') {
+    return USDC_axl;
   }
 };
 
