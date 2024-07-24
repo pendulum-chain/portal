@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from "preact/compat";
 
 interface Props {
   className?: string;

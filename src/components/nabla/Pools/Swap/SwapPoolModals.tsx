@@ -1,6 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { ModalTypes, useModal } from '../../../../services/modal';
-import { Dialog } from '../../../../pages/staking/dialogs/Dialog';
+import { Dialog } from '../../../Dialog';
 import { SwapPoolColumn } from './columns';
 import AddLiquidity from './AddLiquidity';
 import Redeem from './Redeem';
@@ -28,7 +28,6 @@ export function SwapPoolModals() {
       <Dialog
         onClose={onClose}
         visible={!!Component}
-        actions={<></>}
         content={Component ? <Component {...props} onClose={onClose} /> : <></>}
       />
     );

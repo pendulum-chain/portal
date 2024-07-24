@@ -1,7 +1,7 @@
-import { Button } from 'react-daisyui';
 import { FC } from 'preact/compat';
+import { Button } from 'react-daisyui';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
-import { Dialog } from '../staking/dialogs/Dialog';
+import { Dialog } from '../../components/Dialog';
 
 interface DialogProps {
   visible: boolean;
@@ -13,8 +13,8 @@ export const GasSuccessDialog: FC<DialogProps> = ({ visible, onClose, token }) =
   const content = (
     <div className="flex flex-col items-center justify-between">
       <SuccessDialogIcon />
-      <h2 className="text-xl mt-6">You have successfully purchased {token}!</h2>
-      <p className="text-sm dark:text-neutral-400 text-neutral-500 mt-2 mx-4 sm:mx-16 text-center"></p>
+      <h2 className="mt-6 text-xl">You have successfully purchased {token}!</h2>
+      <p className="mx-4 mt-2 text-sm text-center dark:text-neutral-400 text-neutral-500 sm:mx-16"></p>
     </div>
   );
 

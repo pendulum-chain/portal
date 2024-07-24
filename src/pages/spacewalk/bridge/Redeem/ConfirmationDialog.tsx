@@ -5,7 +5,7 @@ import { PublicKey } from '../../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { RichRedeemRequest } from '../../../../hooks/spacewalk/useRedeemPallet';
 import { nativeStellarToDecimal } from '../../../../shared/parseNumbers/metric';
-import { Dialog } from '../../../staking/dialogs/Dialog';
+import { Dialog } from '../../../../components/Dialog';
 import { useMemo } from 'preact/hooks';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 import { PAGES_PATHS } from '../../../../app';
