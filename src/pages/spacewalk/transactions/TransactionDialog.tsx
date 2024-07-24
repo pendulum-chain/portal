@@ -21,7 +21,7 @@ import { toTitle } from '../../../helpers/string';
 import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { useVaultRegistryPallet } from '../../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../..//shared/parseNumbers/metric';
-import { Dialog } from '../../staking/dialogs/Dialog';
+import { Dialog } from '../../../components/Dialog';
 import { TTransfer, TransferType } from './TransactionsColumns';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../shared/constants';
 

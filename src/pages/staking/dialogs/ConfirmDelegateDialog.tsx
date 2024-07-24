@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 
 import { nativeToDecimal, nativeToFormatMetric } from '../../../shared/parseNumbers/metric';
+import { Dialog } from '../../../components/Dialog';
 import { DelegationMode } from './ExecuteDelegationDialogs';
-import { Dialog } from './Dialog';
 
 interface ConfirmDelegateDialogProps {
   availableBalance?: string;

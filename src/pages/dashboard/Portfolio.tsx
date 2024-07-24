@@ -13,7 +13,7 @@ function Portfolio() {
   }, []);
 
   return (
-    <div className="card portfolio rounded-md bg-base-100 mr-20">
+    <div className="card portfolio rounded-md bg-base-100">
       <div className="p-4 flex flex-row justify-between">
         <div className="font-bold text-xl">Wallet</div>
         <div className="text-xl" title={accountTotalBalance.toString()}>

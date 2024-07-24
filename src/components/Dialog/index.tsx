@@ -1,14 +1,13 @@
 import { Modal } from 'react-daisyui';
 import { FC, createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
-
-import { CloseButton } from '../../../components/CloseButton';
+import { CloseButton } from '../CloseButton';
 
 interface DialogProps {
   visible: boolean;
   onClose: () => void;
   headerText?: string;
   content: JSX.Element;
-  actions: JSX.Element;
+  actions?: JSX.Element;
   form?: {
     onSubmit: (event?: Event) => void | Promise<void>;
     className?: string;

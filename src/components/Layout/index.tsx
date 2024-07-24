@@ -12,10 +12,11 @@ import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
 import './styles.sass';
+import { isMobile } from 'react-device-detect';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
-  const { tenantName, dAppName } = useGlobalState();
+  const { tenantName } = useGlobalState();
   const isPendulum = tenantName === TenantName.Pendulum;
   const isTestnet = tenantName === TenantName.Foucoco;
   const sideBarLogo = isPendulum ? PendulumLogo : AmplitudeLogo;
@@ -34,7 +35,7 @@ export default function Layout(): JSX.Element | null {
 
   return (
     <div id="main-wrapper" className="flex">
-      <div id="sidebar-wrapper" className="flex flex-wrap z-50">
+      <div id="sidebar-wrapper" className="z-50 flex flex-wrap">
         <aside
           id="sidebar"
           className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
@@ -56,25 +57,19 @@ export default function Layout(): JSX.Element | null {
             </a>
           </div>
           <Nav onClick={() => setVisible(false)} />
-          <footer className="sidebar-footer mx-auto">
+          <footer className="mx-auto sidebar-footer">
             <NetworkId />
             <SocialAndTermLinks />
           </footer>
         </aside>
       </div>
-      <section>
+      <section className={visible && isMobile ? 'opacity-25' : ''}>
         <header>
-          <div className="flex items-center flex-row-reverse h-15 gap-2">
-            <div className="mobile-menu">
-              <button type="button" onClick={() => setVisible((prev) => !prev)}>
-                <Bars3Icon className="w-7" />
-              </button>
-            </div>
-            <OpenWallet isHeader />
-            <ChainSelector />
+          <div className="flex items-center justify-end gap-2 h-15">
             <GetToken />
-            <div className="dropdown dropdown-end mr-2 hidden">
-              <button className="flex space-x-2 items-center py-2 btn no-animation">
+            <ChainSelector />
+            <div className="hidden mr-2 dropdown dropdown-end">
+              <button className="flex items-center py-2 space-x-2 btn no-animation">
                 <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
                   {isPendulum ? 'Pendulum' : 'Amplitude'}
                 </span>
@@ -94,15 +89,28 @@ export default function Layout(): JSX.Element | null {
                   />
                 </svg>
               </button>
-              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <ul tabIndex={0} className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52">
                 <li>
                   <FooterLink />
                 </li>
               </ul>
             </div>
+            <OpenWallet isHeader />
+            <div className="mobile-menu">
+              <button type="button" onClick={() => setVisible((prev) => !prev)}>
+                <Bars3Icon className="w-7" />
+              </button>
+            </div>
           </div>
         </header>
-        <main className="w-full flex-wrap px-4 py-4 flex-grow">
+        <main
+          className="flex-wrap flex-grow w-full px-4 py-4"
+          onClick={() => {
+            if (visible && isMobile) {
+              setVisible(false);
+            }
+          }}
+        >
           <Outlet />
         </main>
       </section>

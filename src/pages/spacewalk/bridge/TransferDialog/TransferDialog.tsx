@@ -11,7 +11,7 @@ import { toTitle } from '../../../../helpers/string';
 import { useVaultRegistryPallet } from '../../../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { TTransfer } from '../../transactions/TransactionsColumns';
-import { Dialog } from '../../../staking/dialogs/Dialog';
+import { Dialog } from '../../../../components/Dialog';
 
 export interface BaseTransferDialogProps {
   id: string;
