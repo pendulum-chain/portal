@@ -1,4 +1,5 @@
 import { Dropdown } from 'react-daisyui';
+import { AssetItem } from './AssetSelector/helpers';
 
 interface Props<T> {
   items: T[];
@@ -7,7 +8,7 @@ interface Props<T> {
   children: JSX.Element;
 }
 
-function DropdownSelector<T extends { id: unknown; displayName: string }>(props: Props<T>) {
+function DropdownSelector<T extends AssetItem>(props: Props<T>) {
   const { items, onChange, children } = props;
   return (
     <div className="flex flex-grow">
@@ -25,6 +26,7 @@ function DropdownSelector<T extends { id: unknown; displayName: string }>(props:
                 onChange(item);
               }}
             >
+              {item.icon && <img src={item.icon} className="w-6" alt={item?.name} />}
               {item.displayName}
             </Dropdown.Item>
           ))}

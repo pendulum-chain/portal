@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'preact/compat';
+import { CSSProperties, memo, useCallback } from 'preact/compat';
 import { Button } from 'react-daisyui';
 import CopyIcon from '../../assets/CopyIcon';
 import { useClipboard } from '../../hooks/useClipboard';
@@ -42,7 +42,7 @@ export function shortenName(name: string, intendedLength: number) {
 interface PublicKeyProps {
   publicKey: string;
   variant?: Variant;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   className?: string;
   showRaw?: boolean;
 }
@@ -52,7 +52,7 @@ export const PublicKey = memo(function PublicKey(props: PublicKeyProps) {
   const { variant = 'full', className } = props;
   const digits = getDigitCounts(props.variant);
 
-  const style: React.CSSProperties = {
+  const style: CSSProperties = {
     userSelect: 'text',
     WebkitUserSelect: 'text',
     whiteSpace: variant !== 'full' ? 'pre' : undefined,
@@ -72,7 +72,7 @@ interface AddressProps {
   publicKey: string;
   variant?: Variant;
   inline?: boolean;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   className?: string;
   icon?: JSX.Element;
   onClick?: () => void;
@@ -83,7 +83,7 @@ interface AddressProps {
 export const ClickableAddress = memo(function ClickableAddress(props: AddressProps) {
   return (
     <Button
-      className="rounded h-1 p-1 m-0"
+      className="h-1 p-1 m-0 rounded"
       style={props.inline ? { height: 'inherit', minHeight: '0', padding: 0 } : {}}
       color="ghost"
       type="button"

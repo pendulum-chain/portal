@@ -45,7 +45,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
             maxBalance={fromTokenBalance.data}
             formFieldName={fromFormFieldName}
             form={form}
-            onlyShowNumberInput={true}
+            onlyShowNumericInput={true}
           />
         </div>
         <Button
@@ -55,7 +55,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
           type="button"
         >
           <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
-            <img src={getIcon(fromToken?.symbol, pendulumIcon)} alt="Pendulum" className="h-full w-auto" />
+            <img src={getIcon(fromToken?.symbol)} alt={fromToken?.name} className="h-full w-auto" />
           </span>
           <strong className="font-bold">{fromToken?.symbol || 'Select'}</strong>
           <ChevronDownIcon className="w-4 h-4 inline ml-px" />

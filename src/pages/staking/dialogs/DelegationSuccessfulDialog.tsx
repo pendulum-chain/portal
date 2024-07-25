@@ -1,6 +1,6 @@
 import { Button } from 'react-daisyui';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
-import { Dialog } from './Dialog';
+import { Dialog } from '../../../components/Dialog';
 
 interface DelegationSuccessfulDialogProps {
   visible: boolean;

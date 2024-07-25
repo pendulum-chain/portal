@@ -1,9 +1,10 @@
+import { FC } from 'preact/compat';
+import { Tooltip } from 'react-daisyui';
 import Big from 'big.js';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 import StakedIcon from '../../../../assets/collators-staked-icon';
 import { nativeToFormatMetric } from '../../../../shared/parseNumbers/metric';
-import { Tooltip } from 'react-daisyui';
 
 interface StakingContentProps {
   onButtonClick: () => void;
@@ -15,7 +16,7 @@ interface StakingContentProps {
   tokensTipText: string;
 }
 
-export const StakingContent: React.FC<StakingContentProps> = ({
+export const StakingContent: FC<StakingContentProps> = ({
   onButtonClick,
   userStakingAmount = '0.00',
   userAvailableBalance,
@@ -25,9 +26,9 @@ export const StakingContent: React.FC<StakingContentProps> = ({
   tokensTipText,
 }) => (
   <div className="flex flex-wrap items-center">
-    <div className="w-1/2 flex items-center">
+    <div className="flex items-center w-1/2">
       <div className="mr-3">
-        <StakedIcon className="staked-icon mt-1" />
+        <StakedIcon className="mt-1 staked-icon" />
       </div>
       <div>
         <h3>{nativeToFormatMetric(userStakingAmount, tokenSymbol)}</h3>
@@ -49,7 +50,7 @@ export const StakingContent: React.FC<StakingContentProps> = ({
       </div>
       <button
         disabled={!userAvailableBalanceForUnlock.toNumber()}
-        className="btn btn-primary btn-unlock min-h-fit max-h-10 w-full m-auto px-8"
+        className="w-full px-8 m-auto btn btn-primary btn-unlock min-h-fit max-h-10"
         onClick={onButtonClick}
       >
         Unlock

@@ -1,4 +1,4 @@
-import React from 'preact/compat';
+import { createContext } from 'preact/compat';
 import { StateUpdater, Dispatch, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
@@ -19,12 +19,17 @@ enum BridgeTabs {
   Redeem = 1,
 }
 
+export enum BridgeDirection {
+  Issue = 'issue',
+  Redeem = 'redeem',
+}
+
 interface BridgeContextValue {
   selectedAsset?: Asset;
   setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
 }
 
-export const BridgeContext = React.createContext<BridgeContextValue>({ setSelectedAsset: () => undefined });
+export const BridgeContext = createContext<BridgeContextValue>({ setSelectedAsset: () => undefined });
 
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
@@ -52,28 +57,34 @@ function Bridge(): JSX.Element | null {
     onClick: () => setTabValue(index),
   });
 
+  const bridgeDirection = tabValue === BridgeTabs.Issue ? BridgeDirection.Issue : BridgeDirection.Redeem;
+
   return chain ? (
     <BridgeContext.Provider value={{ selectedAsset, setSelectedAsset }}>
-      <div className="h-full flex items-center justify-center mt-4">
-        <SettingsDialog visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
+      <div className="flex items-center justify-center h-full mt-4">
+        <SettingsDialog
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+          bridgeDirection={bridgeDirection}
+        />
         <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
           <div className="flex justify-between px-5 mt-5">
-            <Tabs className="flex w-5/6 flex-grow justify-center tabs-boxed">
-              <Tabs.Tab className="w-2/5 h-fit p-2" {...getTabProps(0)}>
+            <Tabs className="flex justify-center flex-grow sm:w-5/6 tabs-boxed">
+              <Tabs.Tab className="w-1/2 sm:w-2/5 p-2 h-full text-xs sm:text-sm " {...getTabProps(0)}>
                 {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="w-6 h-6 mr-1" />}
                 {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
                   <AmplitudeLogo className="w-6 h-6 mr-1" />
                 )}
                 To {chain}
               </Tabs.Tab>
-              <Tabs.Tab className="w-2/5 h-fit p-2" {...getTabProps(1)}>
+              <Tabs.Tab className="w-1/2 sm:w-2/5 p-2 h-full text-xs sm:text-sm " {...getTabProps(1)}>
                 <StellarLogo className="w-6 h-6 mr-1" />
                 To Stellar
               </Tabs.Tab>
             </Tabs>
             <Button
               color="ghost"
-              className="settings p-1 min-h-0 h-fit m-auto"
+              className="min-h-0 p-1 m-auto settings h-fit"
               onClick={() => setSettingsVisible(true)}
             >
               <SettingsIcon />

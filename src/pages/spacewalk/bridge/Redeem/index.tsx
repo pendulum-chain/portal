@@ -1,9 +1,11 @@
 import Big from 'big.js';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { isEmpty } from 'lodash';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
+import { Signer } from '@polkadot/types/types';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import From from '../../../../components/Form/From';
@@ -17,6 +19,7 @@ import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../../hooks/useBalances';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
+import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
 import { FeeBox } from '../FeeBox';
 import { prioritizeXLMAsset } from '../helpers';
@@ -60,6 +63,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
     defaultValues: {},
     resolver: yupResolver(getRedeemValidationSchema(maxRedeemable, selectedAssetsBalance)),
+    mode: 'onChange',
   });
 
   // We watch the amount because we need to re-render the FeeBox constantly
@@ -91,8 +95,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSubmissionPending(true);
 
     requestRedeemExtrinsic
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result: any) => {
+      .signAndSend(walletAccount.address, { signer: walletAccount.signer as Signer }, (result) => {
         const { status, events } = result;
 
         const errors = getErrors(events, api);
@@ -111,8 +114,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const redeemId = (requestRedeemEvent.data as any).redeemId;
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            getRedeemRequest(redeemId).then((redeemRequest: any) => {
+            getRedeemRequest(redeemId).then((redeemRequest) => {
               setSubmittedRedeemRequest(redeemRequest);
             });
           }
@@ -187,9 +189,8 @@ function Redeem(props: RedeemProps): JSX.Element {
               className="w-full"
               color="primary"
               loading={submissionPending}
-              onSubmit={handleSubmit(submitRequestRedeemExtrinsic)}
               type="submit"
-              disabled={submissionPending}
+              disabled={!isEmpty(formState.errors) || !isU128Compatible(amountNative) || submissionPending}
             >
               Bridge
             </Button>

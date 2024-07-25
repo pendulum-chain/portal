@@ -7,8 +7,8 @@ import Big from 'big.js';
 
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { useGlobalState } from '../../../../GlobalStateProvider';
+import { Dialog } from '../../../../components/Dialog';
 
-import { Dialog } from '../Dialog';
 import { SuccessStep } from '../steps/SuccessStep';
 
 import { getUnlockValidationSchema } from './UnlockValidationSchema';

@@ -24,7 +24,7 @@ export interface BridgeSettings {
 }
 
 function useBridgeSettings(): BridgeSettings {
-  const [vaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
+  const [extendedVaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
@@ -34,10 +34,10 @@ function useBridgeSettings(): BridgeSettings {
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
     Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()])
-      .then((data) => {
+      .then(([vaultsWithIssuableTokens, vaultsWithRedeemableTokens]) => {
         getVaults().forEach((vaultFromRegistry: any) => {
-          const vaultWithIssuable = data[0]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
-          const vaultWithRedeemable = data[1]?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+          const vaultWithIssuable = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
+          const vaultWithRedeemable = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const extended: ExtendedRegistryVault = vaultFromRegistry;
           extended.issuableTokens = vaultWithIssuable ? (vaultWithIssuable[1] as unknown as Balance) : undefined;
           extended.redeemableTokens = vaultWithRedeemable ? (vaultWithRedeemable[1] as unknown as Balance) : undefined;
@@ -51,8 +51,8 @@ function useBridgeSettings(): BridgeSettings {
   }, [getVaults, setExtendedVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens]);
 
   const wrappedAssets = useMemo(() => {
-    if (!vaults) return;
-    const assets = vaults
+    if (!extendedVaults) return;
+    const assets = extendedVaults
       .map((vault) => {
         const currency = vault.id.currencies.wrapped;
         return convertCurrencyToStellarAsset(currency);
@@ -62,12 +62,12 @@ function useBridgeSettings(): BridgeSettings {
       });
     // Deduplicate assets
     return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
-  }, [tenantName, vaults]);
+  }, [tenantName, extendedVaults]);
 
   const vaultsForCurrency = useMemo(() => {
-    if (!vaults) return;
+    if (!extendedVaults) return;
 
-    return vaults.filter((vault) => {
+    return extendedVaults.filter((vault) => {
       if (!selectedAsset) {
         return false;
       }
@@ -75,7 +75,7 @@ function useBridgeSettings(): BridgeSettings {
       const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
       return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(selectedAsset);
     });
-  }, [selectedAsset, vaults]);
+  }, [selectedAsset, extendedVaults]);
 
   useEffect(() => {
     if (vaultsForCurrency && wrappedAssets) {
@@ -99,7 +99,7 @@ function useBridgeSettings(): BridgeSettings {
   return {
     selectedVault,
     manualVaultSelection,
-    vaults,
+    vaults: extendedVaults,
     vaultsForCurrency,
     wrappedAssets,
     selectedAsset,

@@ -1,3 +1,4 @@
+import { FC } from 'preact/compat';
 import { ClaimButton, ClaimButtonProps } from './ClaimButton';
 import { UpdateButton, UpdateButtonProps } from './UpdateButton';
 
@@ -11,21 +12,21 @@ interface StakingRewardsContentProps {
   estimatedRewards: string;
 }
 
-export const StakingRewardsContent: React.FC<StakingRewardsContentProps> = ({
+export const StakingRewardsContent: FC<StakingRewardsContentProps> = ({
   updateButton,
   claimButton,
   estimatedRewards,
   tokenSymbol,
 }) => (
   <div className="flex flex-row">
-    <div className="flex-initial pt-1 pr-5 pb-0">
+    <div className="flex-initial pt-1 pb-0 pr-5">
       <RewardsIcon className="rewards-icon" />
     </div>
     <div className="flex-auto">
       <h3 className="font-semibold primary">{nativeToFormatDecimal(estimatedRewards, tokenSymbol)}</h3>
       <p>Estimated reward</p>
     </div>
-    <div className="flex flex-auto flex-col xs:flex-row place-content-end">
+    <div className="flex flex-col flex-auto xs:flex-row place-content-end">
       <UpdateButton {...updateButton} />
       <ClaimButton {...claimButton} />
     </div>

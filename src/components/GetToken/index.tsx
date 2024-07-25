@@ -1,5 +1,6 @@
 import { Button } from 'react-daisyui';
 import { NavLink } from 'react-router-dom';
+import { isDesktop } from 'react-device-detect';
 
 import ampe from '../../assets/ampe.svg';
 import pen from '../../assets/pen.svg';
@@ -74,29 +75,37 @@ export const GetToken = () => {
   const { currentTenant } = useSwitchChain();
   const { tokenSymbol } = useNodeInfoState().state;
 
+  if (!tokenSymbol) return <></>;
+
   const link = `/${currentTenant}/gas`;
 
   const isBalanceZero = Number(total) === 0;
 
+  const showCurrentToken = getTokenIcon(currentTenant);
+
   return (
     <section className="flex items-center">
-      {isBalanceZero && (
+      {isBalanceZero && isDesktop ? (
         <>
           <InsufficientFundsTooltip tenantName={currentTenant} />
           <JumpingArrow tenantName={currentTenant} />
         </>
-      )}
-
-      {tokenSymbol ? (
-        <NavLink to={link}>
-          <Button size="sm" className={`text-sm px-2 sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
-            {getTokenIcon(currentTenant)}
-            <p className="text-neutral">GET {tokenSymbol}</p>
-          </Button>
-        </NavLink>
       ) : (
         <></>
       )}
+
+      <NavLink to={link}>
+        <Button size="sm" className={`text-sm px-2 sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
+          <div className="hidden md:flex">
+            {showCurrentToken}
+            <p className="text-neutral">GET {tokenSymbol}</p>
+          </div>
+          <div className="flex md:hidden">
+            <p className="mr-2 text-neutral">GET</p>
+            {showCurrentToken}
+          </div>
+        </Button>
+      </NavLink>
     </section>
   );
 };

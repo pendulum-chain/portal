@@ -1,4 +1,4 @@
-import { Button, Range } from 'react-daisyui';
+import { Range } from 'react-daisyui';
 import { FieldPath, FieldValues, PathValue, UseFormReturn, useWatch } from 'react-hook-form';
 import { useEffect, useMemo } from 'preact/hooks';
 import Big from 'big.js';
@@ -9,13 +9,15 @@ import { ContractBalance } from '../../../helpers/contracts';
 import { calcSharePercentageNumber } from '../../../helpers/calc';
 import { NumericInput } from '../../Form/From/NumericInput';
 import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/maxDecimals';
+import { AvailableActions } from '../../Form/From/AvailableActions';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   maxBalance: ContractBalance | undefined;
   formFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
   children?: ReactNode;
-  onlyShowNumberInput?: boolean;
+  onlyShowNumericInput?: boolean;
+  showAvailableActions?: boolean;
 }
 
 export function AmountSelector<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
@@ -23,7 +25,8 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
   maxBalance,
   form,
   children,
-  onlyShowNumberInput,
+  onlyShowNumericInput,
+  showAvailableActions = false,
 }: AmountSelectorProps<FormFieldValues, TFieldName>) {
   type K = PathValue<FormFieldValues, TFieldName>;
 
@@ -64,7 +67,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
     }
   }, [amountString, amountBigDecimal, formFieldName, maxBalance, setError, clearErrors]);
 
-  if (onlyShowNumberInput === true) {
+  if (onlyShowNumericInput) {
     return (
       <NumericInput
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
@@ -76,47 +79,24 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
   }
 
   return (
-    <div className="relative rounded-lg bg-neutral-100 dark:bg-neutral-700 p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1">
-          <NumericInput
-            additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
-            register={form.register(formFieldName)}
-            autoFocus
-            maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
+    <div className="relative p-4 rounded-lg bg-base-300">
+      <NumericInput
+        additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
+        register={form.register(formFieldName)}
+        autoFocus
+        maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
+      />
+      {showAvailableActions ? (
+        <div className="flex justify-end w-full">
+          <AvailableActions
+            setValue={(n) => setValue(formFieldName, n as K)}
+            max={maxBalance?.approximateNumber}
+            hideAvailableBalance={true}
           />
-          <Button
-            className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-            size="sm"
-            type="button"
-            onClick={() => {
-              if (maxBalance !== undefined) {
-                setValue(formFieldName, fractionOfValue(maxBalance.preciseBigDecimal, 50) as K, {
-                  shouldDirty: true,
-                  shouldTouch: true,
-                });
-              }
-            }}
-          >
-            50%
-          </Button>
-          <Button
-            className="bg-neutral-200 dark:bg-neutral-800 px-3 rounded-2xl"
-            size="sm"
-            type="button"
-            onClick={() => {
-              if (maxBalance !== undefined) {
-                setValue(formFieldName, fractionOfValue(maxBalance.preciseBigDecimal, 100) as K, {
-                  shouldDirty: true,
-                  shouldTouch: true,
-                });
-              }
-            }}
-          >
-            MAX
-          </Button>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
       <Range
         color={maxBalance === undefined ? 'secondary' : 'primary'}
         min={0}

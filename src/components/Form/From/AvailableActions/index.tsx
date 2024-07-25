@@ -4,6 +4,7 @@ interface AvailableActionsProps {
   max?: number;
   maxDecimals?: number;
   setValue?: (n: number) => void;
+  hideAvailableBalance?: boolean;
 }
 
 export const AvailableActions = ({
