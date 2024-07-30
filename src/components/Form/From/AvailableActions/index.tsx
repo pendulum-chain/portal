@@ -1,9 +1,11 @@
+import Big from 'big.js';
 import { trimToMaxDecimals, USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
+import { stringifyBigWithSignificantDecimals } from '../../../../shared/parseNumbers/metric';
 
 interface AvailableActionsProps {
-  max?: number;
+  max?: number | Big;
   maxDecimals?: number;
-  setValue?: (n: number) => void;
+  setValue?: (n: string) => void;
   hideAvailableBalance?: boolean;
 }
 
@@ -11,11 +13,13 @@ export const AvailableActions = ({
   max,
   maxDecimals = USER_INPUT_MAX_DECIMALS.PENDULUM,
   setValue,
+  hideAvailableBalance,
 }: AvailableActionsProps) => {
   const handleSetValue = (percentage: number) => {
     if (max !== undefined && setValue !== undefined) {
-      const trimmedValue = trimToMaxDecimals(String(max * percentage), maxDecimals);
-      setValue(Number(trimmedValue));
+      const maxBig = Big(max);
+      const trimmedValue = trimToMaxDecimals(maxBig.mul(percentage).toString(), maxDecimals);
+      setValue(trimmedValue);
     }
   };
 
@@ -26,7 +30,11 @@ export const AvailableActions = ({
     <div className="flex gap-1 text-sm">
       {max !== undefined && setValue !== undefined && (
         <>
-          <span className="mr-1">Available: {max.toFixed(2)}</span>
+          {hideAvailableBalance ? (
+            <></>
+          ) : (
+            <span className="mr-1">Available: {stringifyBigWithSignificantDecimals(Big(max), 2)}</span>
+          )}
           <button className="text-primary hover:underline" onClick={handleSetHalf} type="button">
             50%
           </button>
