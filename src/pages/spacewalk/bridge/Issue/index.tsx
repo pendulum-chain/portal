@@ -91,36 +91,6 @@ function Issue(props: IssueProps): JSX.Element {
 
   const griefingCollateral = useCalculateGriefingCollateral(amountNative, selectedAsset);
 
-  const disclaimerContent = useMemo(
-    () => (
-      <ul className="list-disc pl-4">
-        <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
-        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem.</li>
-        <li>
-          Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
-          operator program, more
-          <a
-            target="_blank"
-            className="text-primary ml-1"
-            href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
-        </li>
-        <li>
-          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault. Contact
-          <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
-            support
-          </a>
-          if your transaction is still pending after 10 minutes.
-        </li>
-      </ul>
-    ),
-    [tenantName],
-  );
-
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !api) {
       return undefined;
@@ -194,7 +164,7 @@ function Issue(props: IssueProps): JSX.Element {
   }, [trigger, selectedAsset, maxIssuable]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk py-4">
+    <div className="space-walk flex h-full items-center justify-center py-4">
       <ConfirmationDialog
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
@@ -205,7 +175,7 @@ function Issue(props: IssueProps): JSX.Element {
         }}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
+        <form className="flex flex-col px-5" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
           <From
             {...{
               formControl: {
@@ -228,7 +198,7 @@ function Issue(props: IssueProps): JSX.Element {
             }}
           />
           <input type="hidden" {...register('securityDeposit')} />
-          <label className="label flex align-center">
+          <label className="align-center label flex">
             <span className="text-sm">{`Max issuable: ${maxIssuable.toFixed(2)} ${selectedAsset?.code || ''}`}</span>
           </label>
 
@@ -254,7 +224,7 @@ function Issue(props: IssueProps): JSX.Element {
           ) : (
             <OpenWallet />
           )}
-          <Disclaimer content={disclaimerContent} />
+          <Disclaimer tenant={tenantName} />
         </form>
       </div>
     </div>
