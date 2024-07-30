@@ -27,7 +27,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
 
 export type RedeemFormValues = {
-  amount: number;
+  amount: string;
   to: string;
 };
 
@@ -134,7 +134,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center w-full h-full py-4 space-walk">
+    <div className="space-walk flex h-full w-full items-center justify-center py-4">
       <ConfirmationDialog
         redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
@@ -147,7 +147,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               formControl: {
                 max: selectedAssetsBalance,
                 register: register('amount'),
-                setValue: (n: number) => setValue('amount', n),
+                setValue: (n: string) => setValue('amount', n),
                 error: formState.errors.amount?.message,
                 maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
               },
@@ -163,7 +163,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               badges: {},
             }}
           />
-          <label className="flex label align-center">
+          <label className="align-center label flex">
             <span className="text-sm">{`Max redeemable: ${maxRedeemable.toFixed(2)}
               ${selectedAsset?.code || ''}`}</span>
           </label>

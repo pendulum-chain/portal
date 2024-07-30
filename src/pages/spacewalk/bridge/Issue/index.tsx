@@ -19,17 +19,17 @@ import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/pars
 import { useAccountBalance } from '../../../../shared/useAccountBalance';
 import { TenantName } from '../../../../models/Tenant';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
-
-import { FeeBox } from '../FeeBox';
-import { prioritizeXLMAsset } from '../helpers';
-
-import { ConfirmationDialog } from './ConfirmationDialog';
-import Disclaimer from './Disclaimer';
-import { getIssueValidationSchema } from './IssueValidationSchema';
 import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 import { PAGES_PATHS } from '../../../../app';
+
+import { FeeBox } from '../FeeBox';
+import { prioritizeXLMAsset } from '../helpers';
+
+import Disclaimer from './Disclaimer';
+import { ConfirmationDialog } from './ConfirmationDialog';
+import { getIssueValidationSchema } from './IssueValidationSchema';
 
 interface IssueProps {
   network: string;
@@ -38,7 +38,7 @@ interface IssueProps {
 }
 
 export type IssueFormValues = {
-  amount: number;
+  amount: string;
   securityDeposit: number;
   to: number;
 };
@@ -101,7 +101,7 @@ function Issue(props: IssueProps): JSX.Element {
           operator program, more
           <a
             target="_blank"
-            className="text-primary ml-1"
+            className="ml-1 text-primary"
             href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
             rel="noreferrer"
           >
@@ -194,7 +194,7 @@ function Issue(props: IssueProps): JSX.Element {
   }, [trigger, selectedAsset, maxIssuable]);
 
   return (
-    <div className="flex items-center justify-center h-full space-walk py-4">
+    <div className="space-walk flex h-full items-center justify-center py-4">
       <ConfirmationDialog
         issueRequest={submittedIssueRequest}
         visible={confirmationDialogVisible}
@@ -205,13 +205,13 @@ function Issue(props: IssueProps): JSX.Element {
         }}
       />
       <div className="w-full">
-        <form className="px-5 flex flex-col" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
+        <form className="flex flex-col px-5" onSubmit={handleSubmit(submitRequestIssueExtrinsic, () => undefined)}>
           <From
             {...{
               formControl: {
                 maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
                 register: register('amount'),
-                setValue: (n: number) => setValue('amount', n),
+                setValue: (n: string) => setValue('amount', n),
                 error:
                   getFirstErrorMessage(formState, ['amount', 'securityDeposit']) ||
                   (!isU128Compatible(amountNative) ? 'Exceeds the max allowed value.' : ''),
@@ -228,7 +228,7 @@ function Issue(props: IssueProps): JSX.Element {
             }}
           />
           <input type="hidden" {...register('securityDeposit')} />
-          <label className="label flex align-center">
+          <label className="align-center label flex">
             <span className="text-sm">{`Max issuable: ${maxIssuable.toFixed(2)} ${selectedAsset?.code || ''}`}</span>
           </label>
 
