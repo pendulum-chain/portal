@@ -19,7 +19,6 @@ export function filterHiddenAssets(assets?: Asset[]): Asset[] {
 
   return assets.filter((asset) => {
     const isHidden = Boolean(HIDDEN_SPACEWALK_ASSETS.find((hidden) => hidden.equals(asset)));
-    console.log('isHidden', isHidden, 'asset', asset);
     return !isHidden;
   });
 }
