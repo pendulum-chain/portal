@@ -17,7 +17,7 @@ export interface FromProps {
     error?: string;
     readOnly?: boolean;
     disabled?: boolean;
-    setValue?: (n: number) => void;
+    setValue?: (n: string) => void;
     maxDecimals?: number;
   };
   asset: {

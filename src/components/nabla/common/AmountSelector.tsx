@@ -8,7 +8,7 @@ import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { ContractBalance } from '../../../helpers/contracts';
 import { calcSharePercentageNumber } from '../../../helpers/calc';
 import { NumericInput } from '../../Form/From/NumericInput';
-import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/decimal';
+import { USER_INPUT_MAX_DECIMALS } from '../../../shared/parseNumbers/maxDecimals';
 import { AvailableActions } from '../../Form/From/AvailableActions';
 
 interface AmountSelectorProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
@@ -79,7 +79,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
   }
 
   return (
-    <div className="relative rounded-lg bg-base-300 p-4">
+    <div className="relative p-4 rounded-lg bg-base-300">
       <NumericInput
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
         register={form.register(formFieldName)}
@@ -87,7 +87,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
         maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
       />
       {showAvailableActions ? (
-        <div className="justify-end flex w-full">
+        <div className="flex justify-end w-full">
           <AvailableActions
             setValue={(n) => setValue(formFieldName, n as K)}
             max={maxBalance?.approximateNumber}

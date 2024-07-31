@@ -17,19 +17,17 @@ import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import { useCalculateGriefingCollateral } from '../../../../hooks/spacewalk/useCalculateGriefingCollateral';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../../shared/useAccountBalance';
-import { TenantName } from '../../../../models/Tenant';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
+import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
+import { PAGES_PATHS } from '../../../../app';
 
 import { FeeBox } from '../FeeBox';
-import { prioritizeXLMAsset } from '../helpers';
+import { filterHiddenAssets, prioritizeXLMAsset } from '../helpers';
 
-import { ConfirmationDialog } from './ConfirmationDialog';
 import Disclaimer from './Disclaimer';
+import { ConfirmationDialog } from './ConfirmationDialog';
 import { getIssueValidationSchema } from './IssueValidationSchema';
-import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
-import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
-import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
-import { PAGES_PATHS } from '../../../../app';
 
 interface IssueProps {
   network: string;
@@ -38,7 +36,7 @@ interface IssueProps {
 }
 
 export type IssueFormValues = {
-  amount: number;
+  amount: string;
   securityDeposit: number;
   to: number;
 };
@@ -181,13 +179,13 @@ function Issue(props: IssueProps): JSX.Element {
               formControl: {
                 maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
                 register: register('amount'),
-                setValue: (n: number) => setValue('amount', n),
+                setValue: (n: string) => setValue('amount', n),
                 error:
                   getFirstErrorMessage(formState, ['amount', 'securityDeposit']) ||
                   (!isU128Compatible(amountNative) ? 'Exceeds the max allowed value.' : ''),
               },
               asset: {
-                assets: prioritizeXLMAsset(wrappedAssets),
+                assets: prioritizeXLMAsset(filterHiddenAssets(wrappedAssets)),
                 selectedAsset,
                 setSelectedAsset,
               },

@@ -2,17 +2,16 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button } from 'react-daisyui';
 import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
 
-import pendulumIcon from '../../../assets/pendulum-icon.svg';
-import { SwapFormValues } from './schema';
-import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { AmountSelector } from '../common/AmountSelector';
+import { TokenBalance } from '../common/TokenBalance';
+import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
 import { UseContractReadResult } from '../../../hooks/nabla/useContractRead';
 import { ContractBalance } from '../../../helpers/contracts';
-import { TokenBalance } from '../common/TokenBalance';
 import { getIcon } from '../../../shared/AssetIcons';
 import { useGlobalState } from '../../../GlobalStateProvider';
+import { SwapFormValues } from './schema';
 
 interface FromProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
   fromToken: NablaInstanceToken | undefined;
@@ -37,10 +36,10 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
 
   return (
     <div
-      className={`rounded-lg bg-base-300 px-4 py-3 border ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
+      className={`rounded-lg border bg-base-300 px-4 py-3 ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
     >
-      <div className="w-full flex justify-between">
-        <div className="flex-grow text-4xl text-[inherit] font-outfit">
+      <div className="flex w-full justify-between">
+        <div className="font-outfit flex-grow text-4xl text-[inherit]">
           <AmountSelector
             maxBalance={fromTokenBalance.data}
             formFieldName={fromFormFieldName}
@@ -50,19 +49,19 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
         </div>
         <Button
           size="xs"
-          className="rounded-full h-7 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-sm font-medium"
+          className="min-h-none mt-0.5 flex h-7 items-center rounded-full border-0 bg-neutral-200 pl-0 pr-1 text-sm font-medium dark:bg-neutral-700"
           onClick={onOpenSelector}
           type="button"
         >
-          <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
+          <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)] p-px">
             <img src={getIcon(fromToken?.symbol)} alt={fromToken?.name} className="h-full w-auto" />
           </span>
           <strong className="font-bold">{fromToken?.symbol || 'Select'}</strong>
-          <ChevronDownIcon className="w-4 h-4 inline ml-px" />
+          <ChevronDownIcon className="ml-px inline h-4 w-4" />
         </Button>
       </div>
-      <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
-        <div className="text-sm mt-px">
+      <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-400">
+        <div className="mt-px text-sm">
           {fromToken ? <NablaTokenPrice address={fromToken.id} fallback="$ -" /> : '$ -'}
         </div>
         <div className="flex gap-1 text-sm">

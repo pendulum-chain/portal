@@ -1,5 +1,5 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import Big from 'big.js';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -18,8 +18,8 @@ import { RichRedeemRequest, useRedeemPallet } from '../../../../hooks/spacewalk/
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import useBalances from '../../../../hooks/useBalances';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
+import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
-import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/decimal';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
 import { FeeBox } from '../FeeBox';
 import { prioritizeXLMAsset } from '../helpers';
@@ -27,7 +27,7 @@ import { ConfirmationDialog } from './ConfirmationDialog';
 import { getRedeemValidationSchema } from './RedeemValidationSchema';
 
 export type RedeemFormValues = {
-  amount: number;
+  amount: string;
   to: string;
 };
 
@@ -60,7 +60,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const redeemableTokens = selectedVault?.redeemableTokens?.toJSON?.().amount ?? selectedVault?.redeemableTokens;
   const maxRedeemable = nativeToDecimal(redeemableTokens || 0).toNumber();
 
-  const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
+  const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<RedeemFormValues>({
     defaultValues: {},
     resolver: yupResolver(getRedeemValidationSchema(maxRedeemable, selectedAssetsBalance)),
     mode: 'onChange',
@@ -134,7 +134,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   }, [api, getRedeemRequest, requestRedeemExtrinsic, selectedVault, walletAccount]);
 
   return (
-    <div className="flex items-center justify-center w-full h-full py-4 space-walk">
+    <div className="space-walk flex h-full w-full items-center justify-center py-4">
       <ConfirmationDialog
         redeemRequest={submittedRedeemRequest}
         visible={confirmationDialogVisible}
@@ -147,7 +147,10 @@ function Redeem(props: RedeemProps): JSX.Element {
               formControl: {
                 max: selectedAssetsBalance,
                 register: register('amount'),
-                setValue: (n: number) => setValue('amount', n),
+                setValue: (n: string) => {
+                  setValue('amount', n);
+                  trigger('amount');
+                },
                 error: formState.errors.amount?.message,
                 maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
               },
@@ -163,7 +166,7 @@ function Redeem(props: RedeemProps): JSX.Element {
               badges: {},
             }}
           />
-          <label className="flex label align-center">
+          <label className="align-center label flex">
             <span className="text-sm">{`Max redeemable: ${maxRedeemable.toFixed(2)}
               ${selectedAsset?.code || ''}`}</span>
           </label>
