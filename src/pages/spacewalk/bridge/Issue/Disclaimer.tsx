@@ -14,7 +14,7 @@ function AmplitudeDisclaimer() {
       <li>Security Deposit: 0.5% of the transaction amount in AMPE, returned after successful bridging.</li>
       <li>
         Estimated Time: Within a minute after submitting the Stellar transaction. Contact
-        <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
+        <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 italic text-primary">
           support
         </a>
         if your transaction is still pending after 10 minutes.
@@ -30,7 +30,7 @@ function PendulumDisclaimer() {
       <li>Security Deposit: 0.5% of the transaction amount in PEN, refunded after successful bridging.</li>
       <li>
         Estimated Time: Within a minute after submitting the Stellar transaction. Contact
-        <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
+        <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 italic text-primary/50">
           support
         </a>
         if your transaction is still pending after 10 minutes.
