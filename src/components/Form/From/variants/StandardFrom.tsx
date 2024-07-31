@@ -37,7 +37,7 @@ export const StandardFrom = ({
       </div>
       <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
         <FromDescription network={network} customText={customText} />
-        <AvailableActions max={max} setValue={setValue} />
+        <AvailableActions max={max} setValue={setValue} maxDecimals={maxDecimals} />
       </div>
     </div>
     <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>

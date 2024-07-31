@@ -26,8 +26,8 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
 
   return (
     <>
-      <div className="flex w-full component-preview items-center justify-center gap-2" style={style}>
-        <div className="form-control w-full">
+      <div className="flex items-center justify-center w-full gap-2 component-preview" style={style}>
+        <div className="w-full form-control">
           <label className="label">
             {label && <span className="label-text">{label}</span>}
             {secondaryLabel && <span className="label-text-alt">{secondaryLabel}</span>}
@@ -57,7 +57,7 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
           </div>
         </div>
       </div>
-      <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>
+      <label className="label">{error && <span className="text-red-400 label-text">{error}</span>}</label>
     </>
   );
 });
