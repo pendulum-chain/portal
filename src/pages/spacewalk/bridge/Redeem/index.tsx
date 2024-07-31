@@ -60,7 +60,7 @@ function Redeem(props: RedeemProps): JSX.Element {
   const redeemableTokens = selectedVault?.redeemableTokens?.toJSON?.().amount ?? selectedVault?.redeemableTokens;
   const maxRedeemable = nativeToDecimal(redeemableTokens || 0).toNumber();
 
-  const { handleSubmit, watch, register, formState, setValue } = useForm<RedeemFormValues>({
+  const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<RedeemFormValues>({
     defaultValues: {},
     resolver: yupResolver(getRedeemValidationSchema(maxRedeemable, selectedAssetsBalance)),
     mode: 'onChange',
@@ -147,7 +147,10 @@ function Redeem(props: RedeemProps): JSX.Element {
               formControl: {
                 max: selectedAssetsBalance,
                 register: register('amount'),
-                setValue: (n: string) => setValue('amount', n),
+                setValue: (n: string) => {
+                  setValue('amount', n);
+                  trigger('amount');
+                },
                 error: formState.errors.amount?.message,
                 maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
               },
