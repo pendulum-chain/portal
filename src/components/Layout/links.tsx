@@ -66,7 +66,6 @@ export const links: Links = ({ tenantName }) => [
   {
     link: 'https://app.zenlink.pro/',
     title: 'Zenlink AMM',
-    hidden: tenantName !== TenantName.Amplitude,
     props: {
       target: '_blank',
       rel: 'nofollow noreferrer',
