@@ -17,11 +17,9 @@ import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import { useCalculateGriefingCollateral } from '../../../../hooks/spacewalk/useCalculateGriefingCollateral';
 import { decimalToStellarNative, nativeToDecimal } from '../../../../shared/parseNumbers/metric';
 import { useAccountBalance } from '../../../../shared/useAccountBalance';
-import { TenantName } from '../../../../models/Tenant';
 import { ToastMessage, showToast } from '../../../../shared/showToast';
 import { isU128Compatible } from '../../../../shared/parseNumbers/isU128Compatible';
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
-import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 import { PAGES_PATHS } from '../../../../app';
 
 import { FeeBox } from '../FeeBox';
@@ -90,36 +88,6 @@ function Issue(props: IssueProps): JSX.Element {
   }, [amount]);
 
   const griefingCollateral = useCalculateGriefingCollateral(amountNative, selectedAsset);
-
-  const disclaimerContent = useMemo(
-    () => (
-      <ul className="list-disc pl-4">
-        <li>Bridge Fee: Currently zero fee, transitioning to 0.1% per transaction soon.</li>
-        <li>Security deposit: 0.5% of the transaction amount locked, returned after successful issue/redeem.</li>
-        <li>
-          Total issuable amount (in USD): {tenantName === TenantName.Pendulum ? 50000 : 20000} USD. Join our vault
-          operator program, more
-          <a
-            target="_blank"
-            className="ml-1 text-primary"
-            href="https://pendulum.gitbook.io/pendulum-docs/build/spacewalk-stellar-bridge/operating-a-vault"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
-        </li>
-        <li>
-          Estimated time for issuing: In a minute after submitting the Stellar payment to the vault. Contact
-          <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
-            support
-          </a>
-          if your transaction is still pending after 10 minutes.
-        </li>
-      </ul>
-    ),
-    [tenantName],
-  );
 
   const requestIssueExtrinsic = useMemo(() => {
     if (!selectedVault || !api) {
@@ -254,7 +222,7 @@ function Issue(props: IssueProps): JSX.Element {
           ) : (
             <OpenWallet />
           )}
-          <Disclaimer content={disclaimerContent} />
+          <Disclaimer tenant={tenantName} />
         </form>
       </div>
     </div>
