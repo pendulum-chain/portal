@@ -41,6 +41,7 @@ function Transactions(): JSX.Element {
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
@@ -108,7 +109,14 @@ function Transactions(): JSX.Element {
 
       return entries;
     };
-    fetchAllEntries().then((res) => setData(res));
+
+    setIsLoading(true);
+    fetchAllEntries()
+      .then((res) => setData(res))
+      .catch(console.error)
+      .finally(() => {
+        setIsLoading(true);
+      });
   }, [activeBlockNumber, walletAccount, getIssueRequests, getRedeemRequests]);
 
   const columns = useMemo(() => {
@@ -138,7 +146,7 @@ function Transactions(): JSX.Element {
       <Table
         data={data}
         columns={columns}
-        isLoading={false}
+        isLoading={isLoading}
         search={false}
         pageSize={8}
         rowCallback={(row) => setCurrentTransfer(row.original)}
@@ -150,4 +158,5 @@ function Transactions(): JSX.Element {
     </div>
   );
 }
+
 export default Transactions;

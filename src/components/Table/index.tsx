@@ -59,7 +59,7 @@ export type TableProps<T> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const defaultData: any[] = [];
-const loading = <>{repeat(<Skeleton className="h-8 mb-2" />, 6)}</>;
+const loading = <>{repeat(<Skeleton className="mb-2 h-8" />, 6)}</>;
 
 const Table = <T,>({
   data = defaultData,
@@ -105,18 +105,17 @@ const Table = <T,>({
     globalFilter,
   } = getState();
 
-  if (isLoading) return loading;
   return (
     <>
       {search ? (
-        <div className="flex flex-wrap flex-row gap-2 mb-2">
+        <div className="mb-2 flex flex-row flex-wrap gap-2">
           <div className="ml-auto">
             <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
           </div>
         </div>
       ) : null}
       <div
-        className={`table-container bg-base-200 table-border rounded-lg overflow-x-auto border border-base-300 ${
+        className={`table-container table-border overflow-x-auto rounded-lg border border-base-300 bg-base-200 ${
           fontSize || 'text-sm'
         } font-semibold ${className})`}
       >
@@ -124,28 +123,28 @@ const Table = <T,>({
         <table className="table w-full">
           <thead>
             {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b table-border">
+              <tr key={headerGroup.id} className="table-border border-b">
                 {headerGroup.headers.map((header) => {
                   const isSortable = header.column.getCanSort();
                   return (
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      className={`${isSortable ? ' cursor-pointer' : ''}`}
+                      className={`${isSortable ? 'cursor-pointer' : ''}`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       <div
                         className={`flex flex-row items-center font-normal ${
                           fontSize || 'text-sm'
-                        } normal-case table-header ${header.column.columnDef.meta?.className || ''}`}
+                        } table-header normal-case ${header.column.columnDef.meta?.className || ''}`}
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {isSortable ? (
-                          <div className={`sort ${header.column.getIsSorted()} ml-2 mb-0.5`}>
+                          <div className={`sort ${header.column.getIsSorted()} mb-0.5 ml-2`}>
                             {header.column.getIsSorted() === 'desc' ? (
-                              <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
+                              <ChevronDownIcon className="h-3 w-3" stroke-width="2" />
                             ) : (
-                              <ChevronUpIcon className="w-3 h-3" stroke-width="2" />
+                              <ChevronUpIcon className="h-3 w-3" stroke-width="2" />
                             )}
                           </div>
                         ) : null}
@@ -157,30 +156,37 @@ const Table = <T,>({
             ))}
           </thead>
           <tbody>
-            {getRowModel().rows.map((row, index) => (
-              <tr
-                key={row.id}
-                onClick={rowCallback ? () => rowCallback(row, index) : undefined}
-                className={rowCallback && 'cursor-pointer highlighted-row'}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <td
-                      key={cell.id}
-                      className={`${cell.column.columnDef.meta?.className || ''} ${
-                        (index % 2 ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'
-                      }`}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  );
-                })}
+            {/* Also check for data.length because we don't want to show the skeleton if we already have data */}
+            {isLoading && data.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length}>{loading}</td>
               </tr>
-            ))}
+            ) : (
+              getRowModel().rows.map((row, index) => (
+                <tr
+                  key={row.id}
+                  onClick={rowCallback ? () => rowCallback(row, index) : undefined}
+                  className={rowCallback && 'highlighted-row cursor-pointer'}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <td
+                        key={cell.id}
+                        className={`${cell.column.columnDef.meta?.className || ''} ${
+                          (index % 2 ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'
+                        }`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
         <Pagination
-          className="justify-end text-neutral-400 normal-case font-normal text-sm mt-2 mb-2"
+          className="mb-2 mt-2 justify-end text-sm font-normal normal-case text-neutral-400"
           currentIndex={pageIndex}
           pageSize={pageSize}
           totalCount={totalCount}
