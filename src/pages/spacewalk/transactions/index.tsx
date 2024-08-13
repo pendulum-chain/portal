@@ -41,7 +41,7 @@ function Transactions(): JSX.Element {
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
   const [data, setData] = useState<TTransfer[] | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let unsub: VoidFn = () => undefined;
@@ -53,6 +53,11 @@ function Transactions(): JSX.Element {
   }, [subscribeActiveBlockNumber]);
 
   useEffect(() => {
+    if (!walletAccount) {
+      console.log('Returning early because no wallet is connected');
+      return;
+    }
+
     const fetchAllEntries = async () => {
       const issueEntries = await getIssueRequests();
       const redeemEntries = await getRedeemRequests();
@@ -112,10 +117,12 @@ function Transactions(): JSX.Element {
 
     setIsLoading(true);
     fetchAllEntries()
-      .then((res) => setData(res))
+      .then((res) => {
+        setData(res);
+      })
       .catch(console.error)
       .finally(() => {
-        setIsLoading(true);
+        setIsLoading(false);
       });
   }, [activeBlockNumber, walletAccount, getIssueRequests, getRedeemRequests]);
 

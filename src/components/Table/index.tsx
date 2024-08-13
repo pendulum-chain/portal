@@ -59,7 +59,6 @@ export type TableProps<T> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const defaultData: any[] = [];
-const loading = <>{repeat(<Skeleton className="mb-2 h-8" />, 6)}</>;
 
 const Table = <T,>({
   data = defaultData,
@@ -77,6 +76,20 @@ const Table = <T,>({
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
+  const showSkeleton = useMemo(() => {
+    return isLoading && data.length === 0;
+  }, [data.length, isLoading]);
+
+  const tableData = useMemo(() => {
+    return showSkeleton ? Array(8).fill({}) : data;
+  }, [showSkeleton, data]);
+
+  const tableColumns = useMemo(() => {
+    return showSkeleton
+      ? columns.map((column) => ({ ...column, cell: () => <Skeleton className="mb-2 h-8" /> }))
+      : columns;
+  }, [showSkeleton, columns]);
+
   const initialSort = useMemo(() => {
     return sortBy
       ? Object.keys(sortBy).map((columnName) => ({ id: columnName, desc: sortBy[columnName] === SortingOrder.DESC }))
@@ -85,8 +98,8 @@ const Table = <T,>({
 
   const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState } =
     useReactTable({
-      columns,
-      data,
+      columns: tableColumns,
+      data: tableData,
       initialState: {
         pagination: {
           pageSize: ps,
@@ -156,33 +169,26 @@ const Table = <T,>({
             ))}
           </thead>
           <tbody>
-            {/* Also check for data.length because we don't want to show the skeleton if we already have data */}
-            {isLoading && data.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length}>{loading}</td>
+            {getRowModel().rows.map((row, index) => (
+              <tr
+                key={row.id}
+                onClick={rowCallback ? () => rowCallback(row, index) : undefined}
+                className={rowCallback && 'highlighted-row cursor-pointer'}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  return (
+                    <td
+                      key={cell.id}
+                      className={`${cell.column.columnDef.meta?.className || ''} ${
+                        (index % 2 ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'
+                      }`}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  );
+                })}
               </tr>
-            ) : (
-              getRowModel().rows.map((row, index) => (
-                <tr
-                  key={row.id}
-                  onClick={rowCallback ? () => rowCallback(row, index) : undefined}
-                  className={rowCallback && 'highlighted-row cursor-pointer'}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td
-                        key={cell.id}
-                        className={`${cell.column.columnDef.meta?.className || ''} ${
-                          (index % 2 ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'
-                        }`}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
         <Pagination
