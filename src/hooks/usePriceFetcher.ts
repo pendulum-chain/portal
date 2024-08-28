@@ -74,7 +74,7 @@ export const usePriceFetcher = () => {
         const batchingServerAssetPrice = await fetchPriceFromBatchingServer(asset);
 
         console.log('batchingServerAssetPrice: ', batchingServerAssetPrice);
-        return batchingServerAssetPrice.json().price;
+        return 0;
       } catch (e) {
         console.error(e);
       }
