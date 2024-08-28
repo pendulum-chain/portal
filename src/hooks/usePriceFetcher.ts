@@ -53,18 +53,34 @@ export const usePriceFetcher = () => {
     fetchPrices().catch(console.error);
   }, [api]);
 
+  const fetchPriceFromBatchingServer = useCallback(
+    async (diaKeys: DiaKeys) =>
+      await fetch('https://batching-server.pendulumchain.tech/currencies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([{ blockchain: diaKeys.blockchain, symbol: diaKeys.symbol }]),
+      }),
+    [],
+  );
+
   const getTokenPriceForKeys = useCallback(
     async (asset: DiaKeys) => {
       try {
         const diaKeys = diaKeysToString(asset);
         const cachedAssetPrice = pricesCache[diaKeys];
         if (cachedAssetPrice) return cachedAssetPrice;
+        const batchingServerAssetPrice = await fetchPriceFromBatchingServer(asset);
+
+        console.log('batchingServerAssetPrice: ', batchingServerAssetPrice);
+        return batchingServerAssetPrice.json().price;
       } catch (e) {
         console.error(e);
       }
       return 0;
     },
-    [pricesCache],
+    [fetchPriceFromBatchingServer, pricesCache],
   );
 
   const handleNativeTokenPrice = useCallback(() => {

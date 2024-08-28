@@ -36,10 +36,11 @@ function useBalances() {
   );
 
   useEffect(() => {
-    const getTokensBalances = async () => {
-      if (!walletAccount) return [];
+    const getTokensBalances = async (): Promise<void> => {
+      if (!walletAccount) return Promise.resolve();
 
       const assets = getAllAssetsMetadata();
+      console.log('assets', assets);
       const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
 
       const getFree = (tokenBalanceRaw: unknown, asset: OrmlTraitsAssetRegistryAssetMetadata) => {
@@ -74,7 +75,7 @@ function useBalances() {
         }),
       );
 
-      return setBalances(tokensBalances);
+      setBalances(tokensBalances);
     };
 
     getTokensBalances().catch(console.error);

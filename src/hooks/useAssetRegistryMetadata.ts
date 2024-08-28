@@ -47,7 +47,7 @@ export const useAssetRegistryMetadata = (): UseAssetRegistryMetadata => {
   const fetchMetadata = useCallback(async () => {
     if (api) {
       const fetchedMetadata = await api.query.assetRegistry.metadata.entries();
-      setMetadataCache(fetchedMetadata.map((m) => convertToOrmlAssetRegistryAssetMetadata(m)));
+      setMetadataCache(fetchedMetadata.map(convertToOrmlAssetRegistryAssetMetadata));
     }
   }, [api]);
 

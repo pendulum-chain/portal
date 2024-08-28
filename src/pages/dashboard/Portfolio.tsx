@@ -8,21 +8,23 @@ function Portfolio() {
   const { walletAccount } = useGlobalState();
   const { balances, accountTotalBalance } = useBalances();
 
+  console.log('balances', balances);
+
   const columns = useMemo(() => {
     return [tokenColumn, priceColumn, amountColumn, usdValueColumn];
   }, []);
 
   return (
-    <div className="card portfolio rounded-md bg-base-100">
-      <div className="p-4 flex flex-row justify-between">
-        <div className="font-bold text-xl">Wallet</div>
+    <div className="portfolio card rounded-md bg-base-100">
+      <div className="flex flex-row justify-between p-4">
+        <div className="text-xl font-bold">Wallet</div>
         <div className="text-xl" title={accountTotalBalance.toString()}>
           $ {accountTotalBalance.toPrecision(2)}
         </div>
       </div>
       {walletAccount && (
         <Table
-          className="bg-base-100 text-md"
+          className="text-md bg-base-100"
           data={balances}
           columns={columns}
           isLoading={!balances}
