@@ -76,7 +76,7 @@ export const config = {
     projectId: '299fda67fbf3b60a31ba8695524534cd',
   },
   alchemyPay: {
-    signatureServer: window.location.hostname + '/.netlify/functions/alchemypay',
+    signatureServer: `${window.location.origin}/.netlify/functions/alchemypay`, // Needs to match the netlify function name
     prodUrl: `https://ramp.alchemypay.org`,
     testUrl: `https://ramptest.alchemypay.org`,
     encodeUrlWithRedirection: async (sourceUrl: string, redirectUrl: string) => {

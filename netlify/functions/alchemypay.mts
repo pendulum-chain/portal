@@ -3,8 +3,23 @@ import crypto from 'crypto';
 
 /// The code in this file is adopted from [AlchemyPay](https://alchemypay.readme.io/v4.0.2/docs/ramp-signature-description)
 
+function uuidToNumber(uuid: string) {
+  // Remove hyphens from the UUID
+  const cleanUUID = uuid.replace(/-/g, '');
+
+  // Convert the cleaned UUID to a BigInt
+  const bigIntValue = BigInt(`0x${cleanUUID}`);
+
+  // Convert BigInt to a number (if within safe range)
+  const uniqueNumber = Number(bigIntValue % BigInt(Number.MAX_SAFE_INTEGER));
+
+  return uniqueNumber;
+}
+
 function generateUniqueMerchantNo() {
-  return crypto.randomUUID();
+  const uuid = crypto.randomUUID();
+  // Remove dashes (-) from UUID
+  return uuidToNumber(uuid);
 }
 
 // Function to generate HMAC SHA256 signature
@@ -15,6 +30,7 @@ function generateSignature(
   secretKey: crypto.BinaryLike | crypto.KeyObject,
 ) {
   const signatureString = timestamp + httpMethod + requestPath;
+  console.log('signing string', signatureString);
   const hmac = crypto.createHmac('sha256', secretKey);
   hmac.update(signatureString);
   const signature = hmac.digest('base64');
@@ -23,6 +39,9 @@ function generateSignature(
 
 // Function to sort parameters and return a string to sign
 function getStringToSign(params: Record<string, never>) {
+  // Filter undefined values from params
+  Object.keys(params).forEach((key) => params[key] === undefined && delete params[key]);
+
   const sortedKeys = Object.keys(params).sort();
   const s2s = sortedKeys
     .map((key) => {
@@ -48,7 +67,7 @@ export default async (req: Request, context: Context) => {
   if (!appSecret) {
     return Response.json(
       {
-        error: 'App secret not found',
+        error: 'Internal server error',
       },
       {
         status: 500,
@@ -63,11 +82,22 @@ export default async (req: Request, context: Context) => {
 
   const merchantOrderNo = generateUniqueMerchantNo();
   // Extract from query parameters
-  const searchParams = new URLSearchParams(req.url);
-  const address = searchParams.get('address');
+  console.log('req', req.url);
+  const url = new URL(req.url);
+  const searchParams = new URLSearchParams(url.searchParams);
+  const address = searchParams.get('address') || undefined;
+  const showTable = searchParams.get('showTable') || undefined;
+  const redirectURL = searchParams.get('redirectURL') || undefined;
+
+  console.log('searchParams', searchParams);
+
+  console.log('redirectURL', redirectURL);
 
   const paramsToSign = {
-    address: address || undefined,
+    address: address,
+    showTable: showTable,
+    redirectURL: redirectURL,
+
     crypto: 'PEN',
     merchantOrderNo: merchantOrderNo,
     network: 'PEN',
@@ -81,8 +111,8 @@ export default async (req: Request, context: Context) => {
 
   return Response.json(
     {
-      ...paramsToSign,
       sign: onRampSignature,
+      requestParams: rawDataToSign,
     },
     {
       status: 200,
