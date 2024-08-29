@@ -3,8 +3,6 @@ import { config } from '../../config';
 export async function createRedirectUrlToAlchemyPay(sourceUrl: string, redirectUrl: string) {
   const parameters = {
     redirectUrl,
-    network: 'PEN',
-    crypto: 'PENDULUM',
     showTable: 'buy',
   };
 
@@ -18,11 +16,10 @@ export async function createRedirectUrlToAlchemyPay(sourceUrl: string, redirectU
     throw new Error('Failed to get signature');
   }
 
-  // Parse the response
   const receivedParameters = await signatureResponse.json();
+  // Extract the sign and requestParams from the response. `requestParams` is the query string without the `sign` component.
+  // The ordering of the parameters is important, so we need to use the received parameters.
   const { sign, requestParams } = receivedParameters;
 
-  const url = sourceUrl + '?' + requestParams + '&sign=' + sign;
-  console.log('url', url);
-  return url;
+  return sourceUrl + '?' + requestParams + '&sign=' + sign;
 }
