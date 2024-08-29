@@ -1,9 +1,9 @@
-import { memo, useMemo, useState } from 'preact/compat';
+import { memo, useEffect, useMemo, useState } from 'preact/compat';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { useGlobalState } from '../../GlobalStateProvider';
 import useBoolean from '../../hooks/useBoolean';
-import { LinkItem, links } from './links';
+import { createLinks, LinkItem } from './links';
 import { NavCollapseButtonContent } from './NavCollapseButtonContent';
 
 const CollapseMenu = ({
@@ -83,14 +83,19 @@ const Nav = memo(({ onClick }: NavProps) => {
   const state = useGlobalState();
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [links, setLinks] = useState<LinkItem[]>([]);
 
   const handleMouseEnter = () => {
     setIsPlaying(true);
   };
 
+  useEffect(() => {
+    createLinks(state.tenantName).then((links) => setLinks(links));
+  }, [state.tenantName]);
+
   return (
     <nav>
-      {links(state).map((item, i) => {
+      {links.map((item, i) => {
         if (item.hidden) return;
         return item.submenu ? (
           <div onMouseEnter={handleMouseEnter} className="my-2.5">
