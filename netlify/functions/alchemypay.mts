@@ -1,6 +1,8 @@
 import type { Context } from '@netlify/functions';
 import crypto from 'crypto';
 
+/// The code in this file is adopted from [AlchemyPay](https://alchemypay.readme.io/v4.0.2/docs/ramp-signature-description)
+
 function generateUniqueMerchantNo() {
   return crypto.randomUUID();
 }
@@ -35,14 +37,13 @@ function getStringToSign(params: Record<string, never>) {
   return s2s;
 }
 
-// ----- Code from AlchemyPay (https://alchemypay.readme.io/v4.0.2/docs/ramp-signature-description) ------
 export default async (req: Request, context: Context) => {
   const onRampHttpMethod = 'GET';
   const onRampRequestPath = '/index/rampPageBuy';
   const timestamp = String(Date.now());
 
-  const appId = 'wNxCyQNce01WLqyL';
-  const appSecret = Netlify.env.get('APP_SECRET');
+  const appId = Netlify.env.get('ALCHEMYPAY_APP_ID');
+  const appSecret = Netlify.env.get('ALCHEMYPAY_APP_SECRET');
 
   if (!appSecret) {
     return Response.json(
