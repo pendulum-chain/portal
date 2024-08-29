@@ -76,7 +76,7 @@ export const config = {
     projectId: '299fda67fbf3b60a31ba8695524534cd',
   },
   alchemyPay: {
-    signatureServer: 'https://oxs7hu9egj.execute-api.us-east-1.amazonaws.com/prd/', // 'alchemypay-signature-service.pendulumchain.tech',
+    signatureServer: window.location.hostname + '/.netlify/functions/alchemypay',
     prodUrl: `https://ramp.alchemypay.org`,
     testUrl: `https://ramptest.alchemypay.org`,
     encodeUrlWithRedirection: async (sourceUrl: string, redirectUrl: string) => {
