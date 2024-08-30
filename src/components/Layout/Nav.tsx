@@ -90,7 +90,10 @@ const Nav = memo(({ onClick }: NavProps) => {
   };
 
   useEffect(() => {
-    createLinks(state.tenantName).then((links) => setLinks(links));
+    const [defaultLinks, loadedLinksPromise] = createLinks(state.tenantName);
+    setLinks(defaultLinks);
+
+    loadedLinksPromise.then((links) => setLinks(links)).catch((error) => console.error("Couldn't load links", error));
   }, [state.tenantName]);
 
   return (
