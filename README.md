@@ -16,6 +16,14 @@ Web application for Pendulum. This project was bootstrapped with [vite](https://
 
 In the project directory, you can run:
 
+### install yarn - corepack
+
+Enable Corepack by executing the command `corepack enable`. Corepack is included by default in Node.js, it manages the
+Yarn version specified in the `packageManager` field.
+
+**Important:** Modern [Yarn](https://yarnpkg.com/getting-started/install) releases should not be installed globally or
+via npm - use Corepack instead.
+
 ### `yarn install`
 
 Install dependencies
