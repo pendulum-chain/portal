@@ -42,7 +42,7 @@ const InsufficientFundsTooltip = ({ tenantName }: { tenantName: TenantName }) =>
   const colors = getTenantColors(tenantName);
 
   return (
-    <div className={`rounded-lg h-8 px-3 flex items-center ${colors.background}`}>
+    <div className={`flex h-8 items-center rounded-lg px-3 ${colors.background}`}>
       <div className="mr-2">
         <Warning fill={colors.warningFill} />
       </div>
@@ -71,7 +71,10 @@ const getTokenIcon = (currentTenant: TenantName) => {
 };
 
 export const GetToken = () => {
-  const { total } = useAccountBalance().balances;
+  const {
+    query: isAccountBalanceLoading,
+    balances: { total },
+  } = useAccountBalance();
   const { currentTenant } = useSwitchChain();
   const { tokenSymbol } = useNodeInfoState().state;
 
@@ -85,7 +88,7 @@ export const GetToken = () => {
 
   return (
     <section className="flex items-center">
-      {isBalanceZero && isDesktop ? (
+      {!isAccountBalanceLoading && isBalanceZero && isDesktop ? (
         <>
           <InsufficientFundsTooltip tenantName={currentTenant} />
           <JumpingArrow tenantName={currentTenant} />
@@ -95,7 +98,7 @@ export const GetToken = () => {
       )}
 
       <NavLink to={link}>
-        <Button size="sm" className={`text-sm px-2 sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
+        <Button size="sm" className={`px-2 text-sm sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
           <div className="hidden md:flex">
             {showCurrentToken}
             <p className="text-neutral">GET {tokenSymbol}</p>
