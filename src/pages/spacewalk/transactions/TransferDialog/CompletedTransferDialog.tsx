@@ -1,6 +1,6 @@
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import SuccessDialogIcon from '../../../../assets/dialog-status-success';
-import { CopyableAddress } from '../../../../components/PublicKey';
+import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
 import { addSuffix, convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { toTitle } from '../../../../helpers/string';
 import { TransferType } from '../TransactionsColumns';
@@ -15,14 +15,14 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
   }
   const content = (
     <>
-      <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+      <div className="transfer-dialog-text text-sm">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <label className="transfer-dialog-label text my-4 rounded-lg px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
-      <div className="flex flex-row justify-between w-11/12">
-        <div className="text-sm transfer-dialog-text">Spacewalk transaction</div>
-        <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
+      <div className="flex w-11/12 flex-row justify-between">
+        <div className="transfer-dialog-text text-sm">Spacewalk transaction</div>
+        <CopyablePublicKey inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
   );

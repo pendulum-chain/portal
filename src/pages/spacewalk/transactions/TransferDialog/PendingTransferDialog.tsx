@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'preact/compat';
 
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import PendingDialogIcon from '../../../../assets/dialog-status-pending';
-import { CopyableAddress } from '../../../../components/PublicKey';
+import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
 import TransferCountdown from '../../../../components/TransferCountdown';
 import {
   calculateDeadline,
@@ -45,24 +45,24 @@ export function PendingTransferDialog(props: TransferDialogProps) {
     <>
       <>
         <div
-          className="text-xl transfer-dialog-contrast-text text-semibold"
+          className="transfer-dialog-contrast-text text-semibold text-xl"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-2" />
-        <div className="transfer-dialog-text flex justify'center text ">
+        <div className="transfer-dialog-text justify'center text flex">
           <div className="mr-2">With the text memo</div>
-          <CopyableAddress
+          <CopyablePublicKey
             inline={true}
             variant="short"
             publicKey={expectedStellarMemo}
             className="transfer-dialog-text"
           />
         </div>
-        <div className="flex justify-center text-md transfer-dialog-text">
+        <div className="text-md transfer-dialog-text flex justify-center">
           <div className="mr-2">In a single transaction to</div>
-          <CopyableAddress
+          <CopyablePublicKey
             inline={true}
-            className="text-sm p-0 transfer-dialog-text"
+            className="transfer-dialog-text p-0 text-sm"
             variant="short"
             publicKey={destinationStellarAddress}
           />
@@ -72,11 +72,11 @@ export function PendingTransferDialog(props: TransferDialogProps) {
         </div>
       </>
 
-      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
+      <label className="transfer-dialog-label text my-4 rounded px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
-      <div className="text-sm px-5 ">
+      <div className="px-5 text-sm">
         Note: Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
         <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
           support
@@ -88,7 +88,7 @@ export function PendingTransferDialog(props: TransferDialogProps) {
   );
   const redeemContent = (
     <>
-      <div className="text-xl mb-2">{`${amountToSend} ${stellarAsset}`}</div>
+      <div className="mb-2 text-xl">{`${amountToSend} ${stellarAsset}`}</div>
       <div className="text-md">The vault has to complete the transaction in:</div>
       <TransferCountdown request={transfer.original} />
       <div className="mt-2" />

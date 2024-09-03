@@ -1,6 +1,6 @@
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import CancelledDialogIcon from '../../../../assets/dialog-status-cancelled';
-import { CopyableAddress } from '../../../../components/PublicKey';
+import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
 import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { toTitle } from '../../../../helpers/string';
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
@@ -14,19 +14,19 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
-      <div className="text-md p-5 transfer-dialog-text align-middle text-center">
+      <div className="p-5 text-center align-middle text-md transfer-dialog-text">
         {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend}
             ${stellarAsset}.`}
       </div>
-      <div className="transfer-dialog-colored-text text-md ">
+      <div className="transfer-dialog-colored-text text-md">
         Contact the team for debugging if you think this is an error.
       </div>
-      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
+      <label className="px-4 py-2 my-4 font-semibold rounded transfer-dialog-label text">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="flex flex-row justify-between w-11/12">
         <div className="text-xs">Spacewalk transaction</div>
-        <CopyableAddress inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
+        <CopyablePublicKey inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
   );

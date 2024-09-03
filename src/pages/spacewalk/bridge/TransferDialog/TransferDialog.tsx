@@ -4,7 +4,7 @@ import { JSXInternal } from 'preact/src/jsx';
 import { Divider } from 'react-daisyui';
 
 import { useGlobalState } from '../../../../GlobalStateProvider';
-import { CopyableAddress } from '../../../../components/PublicKey';
+import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
 import { deriveShortenedRequestId } from '../../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
 import { toTitle } from '../../../../helpers/string';
@@ -74,14 +74,14 @@ export function BaseTransferDialog(props: BaseTransferDialogProps) {
       <div className="flex flex-col items-center justify-between">
         {statusIcon}
         <div className="mt-5" />
-        <h1 className="text-2xl transfer-dialog-contrast-text font-semibold mb-1">{title}</h1>
+        <h1 className="transfer-dialog-contrast-text mb-1 text-2xl font-semibold">{title}</h1>
         {content}
         <Divider className="mx-5 mb-2 mt-1" />
         <div
           id="details"
           tabIndex={0}
           onClick={toggle}
-          className={`collapse collapse-arrow rounded-lg bg-black bg-opacity-3 transfer-dialog-text flex flex-col w-11/12 ${collapseVisibility}`}
+          className={`transfer-dialog-text collapse collapse-arrow flex w-11/12 flex-col rounded-lg bg-black bg-opacity-3 ${collapseVisibility}`}
         >
           <div className="collapse-title flex flex-row justify-between">
             <div className="text-sm">Bridge fee</div>
@@ -90,18 +90,18 @@ export function BaseTransferDialog(props: BaseTransferDialogProps) {
           <div className="collapse-content space-y-4">
             <div className="flex flex-row justify-between">
               <div className="text-sm">Destination Address (Stellar)</div>
-              <CopyableAddress
+              <CopyablePublicKey
                 inline={true}
-                className="text-sm p0"
+                className="p0 text-sm"
                 variant="short"
                 publicKey={destinationStellarAddress}
               />
             </div>
             <div className="flex flex-row justify-between">
               <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
-              <CopyableAddress
+              <CopyablePublicKey
                 inline={true}
-                className="text-sm p-0"
+                className="p-0 text-sm"
                 variant="short"
                 publicKey={transfer.original.vault.accountId.toString()}
               />
@@ -109,9 +109,9 @@ export function BaseTransferDialog(props: BaseTransferDialogProps) {
             {vaultStellarPublicKey && (
               <div className="flex flex-row justify-between">
                 <div className="text-sm">Vault Address (Stellar)</div>
-                <CopyableAddress
+                <CopyablePublicKey
                   inline={true}
-                  className="text-sm p-0"
+                  className="p-0 text-sm"
                   variant="short"
                   publicKey={vaultStellarPublicKey}
                 />
@@ -120,9 +120,9 @@ export function BaseTransferDialog(props: BaseTransferDialogProps) {
             {showMemo && (
               <div className="flex flex-row justify-between">
                 <div className="text-sm">Memo</div>
-                <CopyableAddress
+                <CopyablePublicKey
                   inline={true}
-                  className="text-sm p-0"
+                  className="p-0 text-sm"
                   variant="short"
                   publicKey={expectedStellarMemo}
                 />
