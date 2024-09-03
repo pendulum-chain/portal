@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.5.4",
   "type": "module",
-  "packageManager": "yarn@4.0.1",
+  "packageManager": "yarn@4.4.1",
   "scripts": {
     "dev": "vite",
     "build": "node version.cjs && tsc && vite build && echo '/* /index.html 200' | cat > dist/_redirects",
@@ -24,6 +24,7 @@
     "@chainsafe/metamask-polkadot-types": "^0.6.0",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^2.9.11",
+    "@netlify/functions": "^2.8.1",
     "@pendulum-chain/api": "^0.3.8",
     "@pendulum-chain/api-solang": "^0.4.0",
     "@polkadot/api": "^10.9.1",

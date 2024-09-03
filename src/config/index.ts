@@ -1,5 +1,6 @@
 import { TenantName } from '../models/Tenant';
 import { ThemeName } from '../models/Theme';
+import { createRedirectUrlToAlchemyPay } from '../services/alchemypay';
 
 type TenantConfig = Record<
   TenantName,
@@ -75,10 +76,17 @@ export const config = {
     projectId: '299fda67fbf3b60a31ba8695524534cd',
   },
   alchemyPay: {
-    prodUrl: `https://ramp.alchemypay.org/?appId=wNxCyQNce01WLqyL&network=PEN&crypto=PENDULUM&showTable=buy&type=buy`,
-    testUrl: `https://ramptest.alchemypay.org/?appId=f83Is2y7L425rxl8&network=PEN&crypto=PENDULUM&showTable=buy&type=buy`,
-    encodeUrlWithRedirection: (sourceUrl: string, redirectUrl: string) => {
-      return sourceUrl + '&redirectURL=' + encodeURI(redirectUrl);
+    signatureServer: `${window.location.origin}/.netlify/functions/alchemypay`, // Needs to match the netlify function name
+    prodUrl: `https://ramp.alchemypay.org`,
+    testUrl: `https://ramptest.alchemypay.org`,
+    encodeUrlWithRedirection: async (sourceUrl: string, redirectUrl: string) => {
+      try {
+        // Try to get the right url
+        return await createRedirectUrlToAlchemyPay(sourceUrl, redirectUrl);
+      } catch (e) {
+        console.error('Failed to create redirect url', e);
+        return sourceUrl;
+      }
     },
   },
 };
