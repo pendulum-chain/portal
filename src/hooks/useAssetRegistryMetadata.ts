@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from 'preact/hooks';
+import { useEffect, useCallback } from 'preact/hooks';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { Codec } from '@polkadot/types-codec/types';
+import { StorageKey } from '@polkadot/types';
+import { useQuery } from '@tanstack/react-query';
+import { cacheKeys } from '../constants/cache';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { OrmlTraitsAssetRegistryAssetMetadata } from './useBuyout/types';
-import { StorageKey } from '@polkadot/types';
-import { Codec } from '@polkadot/types-codec/types';
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 type CurrencyMetadataType = {
   decimals: string;
@@ -42,18 +44,24 @@ function convertToOrmlAssetRegistryAssetMetadata(metadata: [StorageKey, Codec]):
 
 export const useAssetRegistryMetadata = (): UseAssetRegistryMetadata => {
   const { api } = useNodeInfoState().state;
-  const [metadataCache, setMetadataCache] = useState<OrmlTraitsAssetRegistryAssetMetadata[]>([]);
 
   const fetchMetadata = useCallback(async () => {
     if (api) {
       const fetchedMetadata = await api.query.assetRegistry.metadata.entries();
-      setMetadataCache(fetchedMetadata.map(convertToOrmlAssetRegistryAssetMetadata));
+      return fetchedMetadata.map(convertToOrmlAssetRegistryAssetMetadata);
     }
+
+    return [];
   }, [api]);
 
+  const { data: metadataCache = [], refetch } = useQuery<OrmlTraitsAssetRegistryAssetMetadata[]>(
+    [cacheKeys.assetRegistryMetadata],
+    fetchMetadata,
+  );
+
   useEffect(() => {
-    fetchMetadata().catch(console.error);
-  }, [fetchMetadata]);
+    api && refetch();
+  }, [api, refetch]);
 
   const getAssetMetadata = useCallback(
     async (currencyId: SpacewalkPrimitivesCurrencyId): Promise<OrmlTraitsAssetRegistryAssetMetadata | undefined> => {

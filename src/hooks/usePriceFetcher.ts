@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'preact/compat';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { isEqual } from 'lodash';
 import { TenantName } from '../models/Tenant';
 import useSwitchChain from './useSwitchChain';
 import { useNodeInfoState } from '../NodeInfoProvider';
 import { nativeToDecimal } from '../shared/parseNumbers/metric';
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
-import { isEqual } from 'lodash';
 
 export interface DiaKeys {
   blockchain: string;
