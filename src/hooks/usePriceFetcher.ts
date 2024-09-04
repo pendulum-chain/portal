@@ -53,17 +53,39 @@ export const usePriceFetcher = () => {
     fetchPrices().catch(console.error);
   }, [api]);
 
-  const fetchPriceFromBatchingServer = useCallback(
-    async (diaKeys: DiaKeys) =>
-      await fetch('https://batching-server.pendulumchain.tech/currencies', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify([{ blockchain: diaKeys.blockchain, symbol: diaKeys.symbol }]),
-      }),
-    [],
-  );
+  const fetchPriceFromBatchingServer = useCallback(async (diaKeys: DiaKeys[]) => {
+    const response = await fetch('http://localhost:3000/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(diaKeys.map(({ blockchain, symbol }) => ({ blockchain, symbol }))),
+    });
+
+    return response.json();
+  }, []);
+
+  useEffect(() => {
+    const fetchPricesFromBatchingServer = async () => {
+      const allAssetsMetadata = getAllAssetsMetadata();
+      const diaKeys = allAssetsMetadata.map((asset) => asset.metadata.additional.diaKeys);
+
+      try {
+        const allPrices = await fetchPriceFromBatchingServer(diaKeys);
+        setPricesCache((prev) => {
+          const newPricesCache = { ...prev };
+          allPrices.forEach(({ symbol, price, blockchain }) => {
+            newPricesCache[diaKeysToString({ symbol, blockchain })] = nativeToDecimal(price.toString()).toNumber();
+          });
+          return newPricesCache;
+        });
+      } catch (error) {
+        console.error('Error fetching prices from batching server:', error);
+      }
+    };
+
+    fetchPricesFromBatchingServer();
+  }, [getAllAssetsMetadata, fetchPriceFromBatchingServer]);
 
   const getTokenPriceForKeys = useCallback(
     async (asset: DiaKeys) => {
@@ -71,16 +93,14 @@ export const usePriceFetcher = () => {
         const diaKeys = diaKeysToString(asset);
         const cachedAssetPrice = pricesCache[diaKeys];
         if (cachedAssetPrice) return cachedAssetPrice;
-        const batchingServerAssetPrice = await fetchPriceFromBatchingServer(asset);
 
-        console.log('batchingServerAssetPrice: ', batchingServerAssetPrice);
         return 0;
       } catch (e) {
         console.error(e);
       }
       return 0;
     },
-    [fetchPriceFromBatchingServer, pricesCache],
+    [pricesCache],
   );
 
   const handleNativeTokenPrice = useCallback(() => {
