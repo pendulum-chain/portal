@@ -8,7 +8,6 @@ function Portfolio() {
   const { walletAccount } = useGlobalState();
   const { balances, accountTotalBalance } = useBalances();
 
-  console.log('balances', balances);
   const columns = useMemo(() => {
     return [tokenColumn, priceColumn, amountColumn, usdValueColumn];
   }, []);
