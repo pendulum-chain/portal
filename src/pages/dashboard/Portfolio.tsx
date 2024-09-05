@@ -26,7 +26,7 @@ function Portfolio() {
           data={balances}
           columns={columns}
           isLoading={!balances}
-          sortBy={{ amount: SortingOrder.DESC, token: SortingOrder.ASC }}
+          sortBy={{ usdValue: SortingOrder.DESC }}
           search={false}
           pageSize={8}
           oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
