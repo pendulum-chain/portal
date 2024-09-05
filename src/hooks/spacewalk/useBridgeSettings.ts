@@ -25,10 +25,15 @@ export interface BridgeSettings {
 
 function useBridgeSettings(): BridgeSettings {
   const [extendedVaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
-  const [manualVaultSelection, setManualVaultSelection] = useState(false);
   const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
-  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
-  const { selectedAsset, setSelectedAsset } = (useContext(BridgeContext) || {}) as any;
+  const {
+    selectedAsset,
+    setSelectedAsset,
+    selectedVault,
+    setSelectedVault,
+    manualVaultSelection,
+    setManualVaultSelection,
+  } = (useContext(BridgeContext) || {}) as any;
   const { tenantName } = useGlobalState();
 
   useEffect(() => {
@@ -94,7 +99,15 @@ function useBridgeSettings(): BridgeSettings {
         }
       }
     }
-  }, [manualVaultSelection, selectedAsset, selectedVault, setSelectedAsset, vaultsForCurrency, wrappedAssets]);
+  }, [
+    manualVaultSelection,
+    selectedAsset,
+    selectedVault,
+    setSelectedAsset,
+    setSelectedVault,
+    vaultsForCurrency,
+    wrappedAssets,
+  ]);
 
   return {
     selectedVault,

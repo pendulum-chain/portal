@@ -1,4 +1,4 @@
-import { createContext } from 'preact/compat';
+import { createContext, useEffect } from 'preact/compat';
 import { StateUpdater, Dispatch, useMemo, useState } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
@@ -7,6 +7,7 @@ import PendulumLogo from '../../../assets/PendulumLogo';
 import SettingsIcon from '../../../assets/SettingsIcon';
 import StellarLogo from '../../../assets/StellarLogo';
 import { SpacewalkConstants } from '../../../helpers/spacewalk';
+import { ExtendedRegistryVault } from '../../../hooks/spacewalk/useVaultRegistryPallet';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { TenantName } from '../../../models/Tenant';
 import Issue from './Issue';
@@ -27,9 +28,17 @@ export enum BridgeDirection {
 interface BridgeContextValue {
   selectedAsset?: Asset;
   setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
+  selectedVault?: ExtendedRegistryVault;
+  setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
+  manualVaultSelection?: boolean;
+  setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
 }
 
-export const BridgeContext = createContext<BridgeContextValue>({ setSelectedAsset: () => undefined });
+export const BridgeContext = createContext<BridgeContextValue>({
+  setSelectedAsset: () => undefined,
+  setSelectedVault: () => undefined,
+  setManualVaultSelection: () => undefined,
+});
 
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
@@ -37,6 +46,8 @@ function Bridge(): JSX.Element | null {
   const { chain, tokenSymbol } = useNodeInfoState().state;
   const wrappedCurrencySuffix = SpacewalkConstants.WrappedCurrencySuffix;
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
+  const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
+  const [manualVaultSelection, setManualVaultSelection] = useState(false);
 
   const Content = useMemo(() => {
     if (!chain) return;
@@ -60,31 +71,40 @@ function Bridge(): JSX.Element | null {
   const bridgeDirection = tabValue === BridgeTabs.Issue ? BridgeDirection.Issue : BridgeDirection.Redeem;
 
   return chain ? (
-    <BridgeContext.Provider value={{ selectedAsset, setSelectedAsset }}>
-      <div className="flex items-center justify-center h-full mt-4">
+    <BridgeContext.Provider
+      value={{
+        selectedAsset,
+        setSelectedAsset,
+        selectedVault,
+        setSelectedVault,
+        manualVaultSelection,
+        setManualVaultSelection,
+      }}
+    >
+      <div className="mt-4 flex h-full items-center justify-center">
         <SettingsDialog
           visible={settingsVisible}
           onClose={() => setSettingsVisible(false)}
           bridgeDirection={bridgeDirection}
         />
-        <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
-          <div className="flex justify-between px-5 mt-5">
-            <Tabs className="flex justify-center flex-grow sm:w-5/6 tabs-boxed">
-              <Tabs.Tab className="w-1/2 sm:w-2/5 p-2 h-full text-xs sm:text-sm " {...getTabProps(0)}>
-                {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="w-6 h-6 mr-1" />}
+        <Card className="bridge-card min-h-500 w-full max-w-[520px] rounded-lg bg-base-200">
+          <div className="mt-5 flex justify-between px-5">
+            <Tabs className="tabs-boxed flex flex-grow justify-center sm:w-5/6">
+              <Tabs.Tab className="h-full w-1/2 p-2 text-xs sm:w-2/5 sm:text-sm" {...getTabProps(0)}>
+                {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="mr-1 h-6 w-6" />}
                 {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
-                  <AmplitudeLogo className="w-6 h-6 mr-1" />
+                  <AmplitudeLogo className="mr-1 h-6 w-6" />
                 )}
                 To {chain}
               </Tabs.Tab>
-              <Tabs.Tab className="w-1/2 sm:w-2/5 p-2 h-full text-xs sm:text-sm " {...getTabProps(1)}>
-                <StellarLogo className="w-6 h-6 mr-1" />
+              <Tabs.Tab className="h-full w-1/2 p-2 text-xs sm:w-2/5 sm:text-sm" {...getTabProps(1)}>
+                <StellarLogo className="mr-1 h-6 w-6" />
                 To Stellar
               </Tabs.Tab>
             </Tabs>
             <Button
               color="ghost"
-              className="min-h-0 p-1 m-auto settings h-fit"
+              className="settings m-auto h-fit min-h-0 p-1"
               onClick={() => setSettingsVisible(true)}
             >
               <SettingsIcon />
