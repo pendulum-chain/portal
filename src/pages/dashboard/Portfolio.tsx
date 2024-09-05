@@ -31,6 +31,7 @@ function Portfolio() {
           pageSize={8}
           oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
           evenRowsClassname="border-b-base-300 table-border"
+          tableFixed
         />
       )}
       {!walletAccount && <div className="p-5"> You need to connect a wallet in order to see your Portfolio. </div>}
