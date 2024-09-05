@@ -51,7 +51,8 @@ matter what URL the browser requests.
 ### Development
 
 Are you experiencing a CORS problem with your batching server? If you want to fetch prices locally, you can use the
-proxy server available at [pendulum-tools](https://github.com/pendulum-chain/pendulum-tools).
+proxy server available at [pendulum-tools](https://github.com/pendulum-chain/pendulum-tools). Change url in
+`src/hooks/usePriceFetcher.ts` file to `http://localhost:3000`
 
 ## Fixing type issues
 
