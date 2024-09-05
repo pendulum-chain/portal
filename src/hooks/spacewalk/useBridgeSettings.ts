@@ -7,7 +7,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { BridgeContext } from '../../pages/spacewalk/bridge';
-import { ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
+import { equalExtendedVaults, ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { Balance } from '@polkadot/types/interfaces';
 
@@ -94,7 +94,11 @@ function useBridgeSettings(): BridgeSettings {
         }
       } else {
         // If the user manually selected a vault, but it's not available anymore, we reset the selection
-        if (selectedVault && !vaultsForCurrency.includes(selectedVault) && vaultsForCurrency.length > 0) {
+        if (
+          selectedVault &&
+          !vaultsForCurrency.some((a) => equalExtendedVaults(a, selectedVault)) &&
+          vaultsForCurrency.length > 0
+        ) {
           setSelectedVault(vaultsForCurrency[0]);
         }
       }

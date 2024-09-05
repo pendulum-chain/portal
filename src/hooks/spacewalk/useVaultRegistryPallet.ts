@@ -10,6 +10,10 @@ export interface ExtendedRegistryVault extends VaultRegistryVault {
   redeemableTokens?: Balance;
 }
 
+export function equalExtendedVaults(a: ExtendedRegistryVault, b: ExtendedRegistryVault) {
+  return a.id.eq(b.id);
+}
+
 export function useVaultRegistryPallet() {
   const { api } = useNodeInfoState().state;
 

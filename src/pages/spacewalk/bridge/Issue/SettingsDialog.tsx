@@ -19,7 +19,7 @@ export function SettingsDialog({ bridgeDirection, visible, onClose }: Props) {
   const content = useMemo(
     () => (
       <div className="text-center">
-        <div className="flex mt-4 align-center">
+        <div className="align-center mt-4 flex">
           <Checkbox
             size="sm"
             color="success"
@@ -28,13 +28,13 @@ export function SettingsDialog({ bridgeDirection, visible, onClose }: Props) {
                 setManualVaultSelection(e.target.checked);
               }
             }}
-            className="rounded checkbox"
+            className="checkbox rounded"
             checked={manualVaultSelection}
           />
           <span className="ml-2">Manually select vault</span>
         </div>
         {manualVaultSelection && vaultsForCurrency && (
-          <div className="flex flex-col items-start justify-start mt-4">
+          <div className="mt-4 flex flex-col items-start justify-start">
             <div>Select Vault</div>
             <VaultSelector
               vaults={vaultsForCurrency}
@@ -46,7 +46,14 @@ export function SettingsDialog({ bridgeDirection, visible, onClose }: Props) {
         )}
       </div>
     ),
-    [manualVaultSelection, vaultsForCurrency, setSelectedVault, selectedVault, setManualVaultSelection],
+    [
+      manualVaultSelection,
+      vaultsForCurrency,
+      setSelectedVault,
+      selectedVault,
+      bridgeDirection,
+      setManualVaultSelection,
+    ],
   );
 
   const actions = useMemo(
