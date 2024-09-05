@@ -24,8 +24,8 @@ Yarn version specified in the `packageManager` field.
 **Important:** Modern [Yarn](https://yarnpkg.com/getting-started/install) releases should not be installed globally or
 via npm - use Corepack instead.
 
-**Note:** If you are using Volta to manage your Node.js versions, you need to follow the
-instructions [here](https://yarnpkg.com/corepack#volta).
+**Note:** If you are using Volta to manage your Node.js versions, you need to follow the instructions
+[here](https://yarnpkg.com/corepack#volta).
 
 ### `yarn install`
 
@@ -47,6 +47,11 @@ The build is minified and the filenames include the hashes.\
 We call on `version.cjs` to show the commit version on the sidebar.\
 We also create a file, on the fly, a file named `_redirects` that will serve the index.html instead of giving a 404 no
 matter what URL the browser requests.
+
+### Development
+
+Are you experiencing a CORS problem with your batching server? If you want to fetch prices locally, you can use the
+proxy server available at [pendulum-tools](https://github.com/pendulum-chain/pendulum-tools).
 
 ## Fixing type issues
 

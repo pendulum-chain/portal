@@ -27,7 +27,7 @@ export const usePriceFetcher = () => {
 
   const getPriceFromBatchingServer = useCallback(async () => {
     try {
-      const response = await fetch('https://batching-server.pendulumchain.tech', {
+      const response = await fetch('https://batching-server.pendulumchain.tech/currencies', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(diaKeys.map(({ blockchain, symbol }) => ({ blockchain, symbol }))),
