@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import _ from 'lodash';
-import { useContext, useEffect, useMemo, useState } from 'preact/compat';
+import { Balance } from '@polkadot/types/interfaces';
+import { useEffect, useMemo, useState } from 'preact/compat';
 import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
+import _ from 'lodash';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
-import { BridgeContext } from '../../pages/spacewalk/bridge';
 import { equalExtendedVaults, ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
 import { ToastMessage, showToast } from '../../shared/showToast';
-import { Balance } from '@polkadot/types/interfaces';
+import { useBridgeContext } from '../../pages/spacewalk/bridge';
 
 export interface BridgeSettings {
   selectedVault?: ExtendedRegistryVault;
@@ -33,14 +32,15 @@ function useBridgeSettings(): BridgeSettings {
     setSelectedVault,
     manualVaultSelection,
     setManualVaultSelection,
-  } = (useContext(BridgeContext) || {}) as any;
+  } = useBridgeContext();
+
   const { tenantName } = useGlobalState();
 
   useEffect(() => {
     const combinedVaults: ExtendedRegistryVault[] = [];
     Promise.all([getVaultsWithIssuableTokens(), getVaultsWithRedeemableTokens()])
       .then(([vaultsWithIssuableTokens, vaultsWithRedeemableTokens]) => {
-        getVaults().forEach((vaultFromRegistry: any) => {
+        getVaults().forEach((vaultFromRegistry) => {
           const vaultWithIssuable = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const vaultWithRedeemable = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const extended: ExtendedRegistryVault = vaultFromRegistry;

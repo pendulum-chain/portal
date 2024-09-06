@@ -1,5 +1,5 @@
-import { createContext, useEffect } from 'preact/compat';
-import { StateUpdater, Dispatch, useMemo, useState } from 'preact/hooks';
+import { createContext } from 'preact/compat';
+import { StateUpdater, Dispatch, useMemo, useState, useContext } from 'preact/hooks';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
 import AmplitudeLogo from '../../../assets/AmplitudeLogo';
@@ -10,8 +10,8 @@ import { SpacewalkConstants } from '../../../helpers/spacewalk';
 import { ExtendedRegistryVault } from '../../../hooks/spacewalk/useVaultRegistryPallet';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { TenantName } from '../../../models/Tenant';
-import Issue from './Issue';
 import SettingsDialog from './Issue/SettingsDialog';
+import Issue from './Issue';
 import Redeem from './Redeem';
 import '../styles.css';
 
@@ -30,15 +30,18 @@ interface BridgeContextValue {
   setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
   selectedVault?: ExtendedRegistryVault;
   setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
-  manualVaultSelection?: boolean;
+  manualVaultSelection: boolean;
   setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
 }
 
-export const BridgeContext = createContext<BridgeContextValue>({
+const BridgeContext = createContext<BridgeContextValue>({
   setSelectedAsset: () => undefined,
   setSelectedVault: () => undefined,
   setManualVaultSelection: () => undefined,
+  manualVaultSelection: false,
 });
+
+export const useBridgeContext = () => useContext(BridgeContext);
 
 function Bridge(): JSX.Element | null {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
