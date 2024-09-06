@@ -7,7 +7,7 @@ export const CloseButton = (props: ButtonProps) => (
     color="ghost"
     size="sm"
     shape="circle"
-    className="text-xl font-thin !leading-5 w-[2.25rem] h-[2.25rem]"
+    className="h-[2.25rem] w-[2.25rem] text-xl font-thin !leading-5"
     style={{ color: 'var(--secondary)' }}
     type="button"
     {...props}

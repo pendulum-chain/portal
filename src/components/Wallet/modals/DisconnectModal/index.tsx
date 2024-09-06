@@ -8,7 +8,7 @@ import { getAddressForFormat } from '../../../../helpers/addressFormatter';
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import { useAccountBalance } from '../../../../shared/useAccountBalance';
 import { useGlobalState } from '../../../../GlobalStateProvider';
-import { CopyableAddress } from '../../../PublicKey';
+import { CopyablePublicKey } from '../../../PublicKey/CopyablePublicKey';
 import { Skeleton } from '../../../Skeleton';
 
 interface WalletButtonProps {
@@ -23,18 +23,18 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
   <Button
     size="sm"
     color="ghost"
-    className="text-sm border-base-300 border-1 bg-base-200 min-h-[2.1rem] h-auto px-5 sm:px-3 overflow-hidden ellipsis max-w36 sm:max-w-fit"
+    className="border-1 ellipsis max-w36 h-auto min-h-[2.1rem] overflow-hidden border-base-300 bg-base-200 px-5 text-sm sm:max-w-fit sm:px-3"
     title={wallet?.title}
     type="button"
   >
     {query.isLoading ? (
-      <Skeleton className="bg-[rgba(0,0,0,.06)] px-2 py-1 mr-2 hidden sm:flex">10000.00 TKN</Skeleton>
+      <Skeleton className="mr-2 hidden bg-[rgba(0,0,0,.06)] px-2 py-1 sm:flex">10000.00 TKN</Skeleton>
     ) : (
-      <span className="items-center bg-[rgba(0,0,0,.06)] px-2 py-0.5 mr-2 rounded-lg hidden sm:flex">
+      <span className="mr-2 hidden items-center rounded-lg bg-[rgba(0,0,0,.06)] px-2 py-0.5 sm:flex">
         {balance} {tokenSymbol}
       </span>
     )}
-    <p className="hidden sm:block truncate">{walletAccount?.name}</p>
+    <p className="hidden truncate sm:block">{walletAccount?.name}</p>
     <img src={wallet?.logo?.src || ''} className="w-[20px] sm:ml-2" alt={wallet?.logo?.alt || ''} />
   </Button>
 );
@@ -56,10 +56,10 @@ const WalletDropdownMenu = ({
   tokenSymbol,
   removeWalletAccount,
 }: WalletDropdownMenuProps) => (
-  <Dropdown.Menu className="text-center border border-base-300 bg-base-200 shadow-lg min-w-[240px] p-3 mt-2 right-0">
+  <Dropdown.Menu className="right-0 mt-2 min-w-[240px] border border-base-300 bg-base-200 p-3 text-center shadow-lg">
     <div className="text-sm text-neutral-400">{walletAccount?.name}</div>
     <div className="text-neutral-500">
-      <CopyableAddress
+      <CopyablePublicKey
         publicKey={ss58Format ? getAddressForFormat(address, ss58Format) : address}
         variant="short"
         inline={true}

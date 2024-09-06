@@ -1,7 +1,7 @@
-import { useMemo } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
 import { Button, Divider } from 'react-daisyui';
 
-import { CopyableAddress, PublicKey } from '../../../../components/PublicKey';
+import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
 import TransferCountdown from '../../../../components/TransferCountdown';
 import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
@@ -67,17 +67,17 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="text-xl">
             Send {totalAmount} {asset?.getCode()}
           </div>
-          <div className="text-sm">
+          <div className="flex items-center justify-center text-sm">
             {asset && asset.getIssuer() && (
               <>
-                issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+                <p>issued by</p> <CopyablePublicKey variant="short" publicKey={asset?.getIssuer()} />
               </>
             )}
           </div>
-          <div className="text mt-4">With the text memo</div>
-          {issueRequest && <CopyableAddress variant="short" publicKey={expectedStellarMemo} />}
-          <div className="text mt-4">In a single transaction to</div>
-          <CopyableAddress variant="short" publicKey={destination} />
+          <div className="mt-4 text">With the text memo</div>
+          {issueRequest && <CopyablePublicKey variant="short" publicKey={expectedStellarMemo} />}
+          <div className="mt-4 text">In a single transaction to</div>
+          <CopyablePublicKey variant="short" publicKey={destination} />
 
           <StellarUriScheme transactionURIScheme={transactionURIScheme} />
 
@@ -93,7 +93,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           )}
         </div>
 
-        <div className="text-sm mt-4">Note:</div>
+        <div className="mt-4 text-sm">Note:</div>
         <ul className="text-sm list-disc list-inside">
           <li className="mt-1">
             Stellar transactions require memos for accurate processing. Failure to include the transaction memo may
