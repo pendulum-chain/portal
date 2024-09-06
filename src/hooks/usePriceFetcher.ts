@@ -6,6 +6,7 @@ import { TenantName } from '../models/Tenant';
 import useSwitchChain from './useSwitchChain';
 import { nativeToDecimal } from '../shared/parseNumbers/metric';
 import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
+import { BATCHING_SERVER_URL } from '../shared/constants';
 
 export interface DiaKeys {
   blockchain: string;
@@ -27,7 +28,7 @@ export const usePriceFetcher = () => {
 
   const getPriceFromBatchingServer = useCallback(async () => {
     try {
-      const response = await fetch('https://batching-server.pendulumchain.tech/currencies', {
+      const response = await fetch(BATCHING_SERVER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(diaKeys.map(({ blockchain, symbol }) => ({ blockchain, symbol }))),
