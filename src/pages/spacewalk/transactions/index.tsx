@@ -55,6 +55,7 @@ function Transactions(): JSX.Element {
   useEffect(() => {
     if (!walletAccount) {
       console.log('Returning early because no wallet is connected');
+      setIsLoading(false);
       return;
     }
 
