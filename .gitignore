@@ -36,3 +36,5 @@ dist-ssr
 
 vite.config.ts.timestamp-*
 coverage/
+# Local Netlify folder
+.netlify

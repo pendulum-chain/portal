@@ -9,8 +9,8 @@ import {
   convertCurrencyToStellarAsset,
   estimateRequestCreationTime,
 } from '../../../helpers/spacewalk';
-import { useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
-import { useRedeemPallet } from '../../../hooks/spacewalk/useRedeemPallet';
+import { RichIssueRequest, useIssuePallet } from '../../../hooks/spacewalk/useIssuePallet';
+import { RichRedeemRequest, useRedeemPallet } from '../../../hooks/spacewalk/useRedeemPallet';
 import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 
@@ -32,84 +32,92 @@ import {
   updatedColumn,
 } from './TransactionsColumns';
 import '../styles.css';
+import { useQuery } from '@tanstack/react-query';
+import { WalletAccount } from '@talismn/connect-wallets';
+
+const fetchAllEntries = async (
+  walletAccount: WalletAccount | undefined,
+  activeBlockNumber: number | undefined,
+  getIssueRequests: () => Promise<RichIssueRequest[]>,
+  getRedeemRequests: () => Promise<RichRedeemRequest[]>,
+) => {
+  const issueEntries = await getIssueRequests();
+  const redeemEntries = await getRedeemRequests();
+  const entries: TTransfer[] = [];
+
+  issueEntries.forEach((e) => {
+    if (!walletAccount || !e.request.requester.eq(walletAccount?.address)) {
+      return;
+    }
+
+    const deadline = calculateDeadline(
+      activeBlockNumber as number,
+      e.request.opentime.toNumber(),
+      e.request.period.toNumber(),
+    );
+
+    const timedOut = deadline < DateTime.now();
+    const pending = e.request.status.type === 'Pending';
+    entries.push({
+      updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
+      amount: nativeToDecimal(e.request.amount.toString()).toString(),
+      asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
+      transactionId: e.id.toString(),
+      type: TransferType.issue,
+      status: timedOut && pending ? 'Cancelled' : e.request.status.type,
+      original: e.request,
+    });
+  });
+
+  redeemEntries.forEach((e) => {
+    if (!walletAccount || !e.request.redeemer.eq(walletAccount?.address)) {
+      return;
+    }
+
+    const deadline = calculateDeadline(
+      activeBlockNumber as number,
+      e.request.opentime.toNumber(),
+      e.request.period.toNumber(),
+    );
+
+    const timedOut = deadline < DateTime.now();
+    const pending = e.request.status.type === 'Pending';
+
+    entries.push({
+      updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
+      amount: nativeToDecimal(e.request.amount.toString()).toString(),
+      asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
+      transactionId: e.id.toString(),
+      type: TransferType.redeem,
+      status: timedOut && pending ? 'Failed' : e.request.status.type,
+      original: e.request,
+    });
+  });
+
+  return entries;
+};
 
 function Transactions(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
-  const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const { getActiveBlockNumber } = useSecurityPallet();
   const { tenantName, walletAccount } = useGlobalState();
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
-  const [data, setData] = useState<TTransfer[] | undefined>(undefined);
 
   useEffect(() => {
-    let unsub: VoidFn = () => undefined;
-    subscribeActiveBlockNumber((blockNumber) => {
+    getActiveBlockNumber().then((blockNumber) => {
       setActiveBlockNumber(blockNumber);
-    }).then((u) => (unsub = u));
+    });
+  }, [getActiveBlockNumber]);
 
-    return unsub;
-  }, [subscribeActiveBlockNumber]);
-
-  useEffect(() => {
-    const fetchAllEntries = async () => {
-      const issueEntries = await getIssueRequests();
-      const redeemEntries = await getRedeemRequests();
-      const entries: TTransfer[] = [];
-
-      issueEntries.forEach((e) => {
-        if (!walletAccount || !e.request.requester.eq(walletAccount?.address)) {
-          return;
-        }
-
-        const deadline = calculateDeadline(
-          activeBlockNumber as number,
-          e.request.opentime.toNumber(),
-          e.request.period.toNumber(),
-        );
-
-        const timedOut = deadline < DateTime.now();
-        const pending = e.request.status.type === 'Pending';
-        entries.push({
-          updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
-          amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
-          transactionId: e.id.toString(),
-          type: TransferType.issue,
-          status: timedOut && pending ? 'Cancelled' : e.request.status.type,
-          original: e.request,
-        });
-      });
-
-      redeemEntries.forEach((e) => {
-        if (!walletAccount || !e.request.redeemer.eq(walletAccount?.address)) {
-          return;
-        }
-
-        const deadline = calculateDeadline(
-          activeBlockNumber as number,
-          e.request.opentime.toNumber(),
-          e.request.period.toNumber(),
-        );
-
-        const timedOut = deadline < DateTime.now();
-        const pending = e.request.status.type === 'Pending';
-
-        entries.push({
-          updated: estimateRequestCreationTime(activeBlockNumber as number, e.request.opentime.toNumber()),
-          amount: nativeToDecimal(e.request.amount.toString()).toString(),
-          asset: convertCurrencyToStellarAsset(e.request.asset)?.code,
-          transactionId: e.id.toString(),
-          type: TransferType.redeem,
-          status: timedOut && pending ? 'Failed' : e.request.status.type,
-          original: e.request,
-        });
-      });
-
-      return entries;
-    };
-    fetchAllEntries().then((res) => setData(res));
-  }, [activeBlockNumber, walletAccount, getIssueRequests, getRedeemRequests]);
+  const { data, isInitialLoading } = useQuery<TTransfer[] | undefined>(
+    ['fetchAllEntries', walletAccount, activeBlockNumber],
+    () => fetchAllEntries(walletAccount, activeBlockNumber, getIssueRequests, getRedeemRequests),
+    {
+      onError: console.error,
+    },
+  );
 
   const columns = useMemo(() => {
     const statusColumn = statusColumnCreator();
@@ -119,7 +127,7 @@ function Transactions(): JSX.Element {
 
   const getDialog = (DialogComponent: ComponentType<{ transfer: TTransfer; visible: boolean; onClose: () => void }>) =>
     currentTransfer ? (
-      <DialogComponent transfer={currentTransfer} visible onClose={() => setCurrentTransfer(undefined)} />
+      <DialogComponent transfer={currentTransfer} visible={true} onClose={() => setCurrentTransfer(undefined)} />
     ) : (
       <></>
     );
@@ -138,7 +146,7 @@ function Transactions(): JSX.Element {
       <Table
         data={data}
         columns={columns}
-        isLoading={false}
+        isLoading={Boolean(walletAccount) && isInitialLoading}
         search={false}
         pageSize={8}
         rowCallback={(row) => setCurrentTransfer(row.original)}
@@ -150,4 +158,5 @@ function Transactions(): JSX.Element {
     </div>
   );
 }
+
 export default Transactions;
