@@ -100,19 +100,16 @@ const fetchAllEntries = async (
 function Transactions(): JSX.Element {
   const { getIssueRequests } = useIssuePallet();
   const { getRedeemRequests } = useRedeemPallet();
-  const { subscribeActiveBlockNumber } = useSecurityPallet();
+  const { getActiveBlockNumber } = useSecurityPallet();
   const { tenantName, walletAccount } = useGlobalState();
   const [currentTransfer, setCurrentTransfer] = useState<TTransfer | undefined>();
   const [activeBlockNumber, setActiveBlockNumber] = useState<number>(0);
 
   useEffect(() => {
-    let unsub: VoidFn = () => undefined;
-    subscribeActiveBlockNumber((blockNumber) => {
+    getActiveBlockNumber().then((blockNumber) => {
       setActiveBlockNumber(blockNumber);
-    }).then((u) => (unsub = u));
-
-    return unsub;
-  }, [subscribeActiveBlockNumber]);
+    });
+  }, [getActiveBlockNumber]);
 
   const { data, isInitialLoading } = useQuery<TTransfer[] | undefined>(
     ['fetchAllEntries', walletAccount, activeBlockNumber],
@@ -149,7 +146,7 @@ function Transactions(): JSX.Element {
       <Table
         data={data}
         columns={columns}
-        isLoading={isInitialLoading}
+        isLoading={Boolean(walletAccount) && isInitialLoading}
         search={false}
         pageSize={8}
         rowCallback={(row) => setCurrentTransfer(row.original)}

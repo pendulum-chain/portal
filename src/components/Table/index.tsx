@@ -77,8 +77,8 @@ const Table = <T,>({
   const totalCount = data.length;
 
   const showSkeleton = useMemo(() => {
-    return isLoading && data.length === 0;
-  }, [data.length, isLoading]);
+    return isLoading;
+  }, [isLoading]);
 
   const tableData = useMemo(() => {
     return showSkeleton ? Array(8).fill({}) : data;
