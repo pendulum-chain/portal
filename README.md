@@ -24,8 +24,8 @@ Yarn version specified in the `packageManager` field.
 **Important:** Modern [Yarn](https://yarnpkg.com/getting-started/install) releases should not be installed globally or
 via npm - use Corepack instead.
 
-**Note:** If you are using Volta to manage your Node.js versions, you need to follow the
-instructions [here](https://yarnpkg.com/corepack#volta).
+**Note:** If you are using Volta to manage your Node.js versions, you need to follow the instructions
+[here](https://yarnpkg.com/corepack#volta).
 
 ### `yarn install`
 
@@ -48,7 +48,15 @@ We call on `version.cjs` to show the commit version on the sidebar.\
 We also create a file, on the fly, a file named `_redirects` that will serve the index.html instead of giving a 404 no
 matter what URL the browser requests.
 
-## Fixing type issues
+## Troubleshooting
+
+### Missing price information
+
+If you are missing the price information about the assets on the dashboard page, you are probably experiencing a CORS
+problem with the batching server. If you want to fetch prices locally, you can use the proxy server available
+at [pendulum-tools](https://github.com/pendulum-chain/pendulum-tools). Change url in `src/hooks/usePriceFetcher.ts` file to `http://localhost:3000`
+
+### Fixing type issues
 
 If you encounter issues with the IDE not detecting the type overwrites of the `@pendulum-chain/types` package properly,
 make sure that all the `@polkadot/xxx` packages match the same version used in the types package. It is also important

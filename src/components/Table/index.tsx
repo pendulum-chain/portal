@@ -55,10 +55,13 @@ export type TableProps<T> = {
   fontSize?: string;
   /** Sets the global font size for the Table. */
   rowCallback?: (row: Row<T>, index: number) => void;
+  /** If true, the table will have fixed columns */
+  tableFixed?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const defaultData: any[] = [];
+const loading = <>{repeat(<Skeleton className="mb-2 h-8" />, 6)}</>;
 
 const Table = <T,>({
   data = defaultData,
@@ -73,6 +76,7 @@ const Table = <T,>({
   fontSize,
   title,
   rowCallback,
+  tableFixed,
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
@@ -96,7 +100,7 @@ const Table = <T,>({
       : undefined;
   }, [sortBy]);
 
-  const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState } =
+  const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState, setSorting } =
     useReactTable({
       columns: tableColumns,
       data: tableData,
@@ -133,7 +137,7 @@ const Table = <T,>({
         } font-semibold ${className})`}
       >
         {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
-        <table className="table w-full">
+        <table className={`table w-full ${tableFixed ? 'table-fixed' : ''}`}>
           <thead>
             {getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="table-border border-b">
@@ -144,7 +148,17 @@ const Table = <T,>({
                       key={header.id}
                       colSpan={header.colSpan}
                       className={`${isSortable ? 'cursor-pointer' : ''}`}
-                      onClick={header.column.getToggleSortingHandler()}
+                      onClick={() => {
+                        if (isSortable) {
+                          const currentSort = header.column.getIsSorted();
+                          setSorting([
+                            {
+                              id: header.column.id,
+                              desc: currentSort === 'asc',
+                            },
+                          ]);
+                        }
+                      }}
                     >
                       <div
                         className={`flex flex-row items-center font-normal ${
@@ -181,7 +195,7 @@ const Table = <T,>({
                       key={cell.id}
                       className={`${cell.column.columnDef.meta?.className || ''} ${
                         (index % 2 ? evenRowsClassname : oddRowsClassname) || 'bg-base-200'
-                      }`}
+                      } ${tableFixed ? 'table-fixed' : ''}`}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>

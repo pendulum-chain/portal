@@ -69,7 +69,7 @@ export const delegatorsColumn: ColumnDef<TCollator> = {
             className="tooltip tooltip-error before:whitespace-pre-wrap before:content-[attr(data-tip)]"
             data-tip="The collator candidate has reached maximum number of delegators"
           >
-            <InformationCircleIcon className="w-4 h-4 ml-1" />
+            <InformationCircleIcon className="ml-1 h-4 w-4" />
           </div>
         )}
       </div>
@@ -124,7 +124,7 @@ export const actionsColumn = ({
     const isDelegator = row.original.candidate.delegators.find(({ owner }) => owner === userAccountAddress);
     const canStake = isDelegator || (walletAccount && !maxDelegatorsReached && (!userStaking || canUnstake));
     return (
-      <div className="flex flex-row justify-start">
+      <div className="mr-2 flex flex-row justify-start">
         <Button
           className="mr-2 text-primary"
           size="sm"
@@ -133,11 +133,11 @@ export const actionsColumn = ({
             setUnstaking(true);
             setSelectedCandidate(row.original.candidate);
           }}
-          startIcon={<UnlinkIcon className="w-4 h-4" />}
+          startIcon={<UnlinkIcon className="h-4 w-4" />}
           disabled={!canUnstake}
-          style={{ opacity: canUnstake ? '1' : '0', gap: '0.5rem' }}
+          style={{ opacity: canUnstake ? '1' : '0' }}
         >
-          Unstake
+          <p className="ml-1">Unstake</p>
         </Button>
         <Button
           size="sm"
@@ -147,7 +147,7 @@ export const actionsColumn = ({
             setSelectedCandidate(row.original.candidate);
           }}
           disabled={!canStake}
-          className="px-8 rounded-md"
+          className="rounded-md px-8"
         >
           Stake
         </Button>
