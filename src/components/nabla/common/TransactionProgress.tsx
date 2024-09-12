@@ -77,6 +77,7 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
         </h4>
       </div>
       {!mutation.isSuccess && !!errorMsg && <p className="mt-1 text-center">{errorMsg}</p>}
+      <div className="mt-6"></div>
       {!!explorerUrl && (
         <a href={explorerUrl} target="_blank" rel="noreferrer">
           <Button color="secondary" className="w-full">
@@ -85,7 +86,7 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
         </a>
       )}
       {!!onClose && (
-        <Button color="primary" className="mt-6 w-full" onClick={onClose}>
+        <Button color="primary" className="mt-2 w-full" onClick={onClose}>
           Close
         </Button>
       )}
