@@ -80,6 +80,20 @@ const Table = <T,>({
 }: TableProps<T>): JSX.Element | null => {
   const totalCount = data.length;
 
+  const showSkeleton = useMemo(() => {
+    return isLoading;
+  }, [isLoading]);
+
+  const tableData = useMemo(() => {
+    return showSkeleton ? Array(8).fill({}) : data;
+  }, [showSkeleton, data]);
+
+  const tableColumns = useMemo(() => {
+    return showSkeleton
+      ? columns.map((column) => ({ ...column, cell: () => <Skeleton className="mb-2 h-8" /> }))
+      : columns;
+  }, [showSkeleton, columns]);
+
   const initialSort = useMemo(() => {
     return sortBy
       ? Object.keys(sortBy).map((columnName) => ({ id: columnName, desc: sortBy[columnName] === SortingOrder.DESC }))
@@ -88,8 +102,8 @@ const Table = <T,>({
 
   const { getHeaderGroups, getRowModel, getPageCount, nextPage, previousPage, setGlobalFilter, getState, setSorting } =
     useReactTable({
-      columns,
-      data,
+      columns: tableColumns,
+      data: tableData,
       initialState: {
         pagination: {
           pageSize: ps,
@@ -108,7 +122,6 @@ const Table = <T,>({
     globalFilter,
   } = getState();
 
-  if (isLoading) return loading;
   return (
     <>
       {search ? (

@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/table-core';
 import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
-import { CopyableAddress } from '../../components/PublicKey';
+import { CopyablePublicKey } from '../../components/PublicKey/CopyablePublicKey';
 import { ParachainStakingCandidate } from '../../hooks/staking/useStakingPallet';
 import { PalletIdentityInfo } from '../../hooks/useIdentityPallet';
 import { nativeToFormatMetric } from '../../shared/parseNumbers/metric';
@@ -43,7 +43,7 @@ export const nameColumn: ColumnDef<TCollator> = {
     return (
       <div className="flex flex-row" title={desc}>
         <div className="mr-2">{(row.original.identityInfo ? row.original.identityInfo.display : 'Unknown') + ' |'}</div>
-        <CopyableAddress publicKey={row.original.candidate.id} variant="short" inline />
+        <CopyablePublicKey publicKey={row.original.candidate.id} variant="short" inline />
       </div>
     );
   },
