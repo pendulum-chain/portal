@@ -1,7 +1,7 @@
 import { Asset } from 'stellar-base';
 
 const MYKOBO_EURC = new Asset('EURC', 'GAQRF3UGHBT6JYQZ7YSUYCIYWAF4T2SAA5237Q5LIQYJOHHFAWDXZ7NM');
-const HIDDEN_SPACEWALK_ASSETS = [MYKOBO_EURC];
+const HIDDEN_SPACEWALK_ASSETS: Asset[] = [];
 
 export function prioritizeXLMAsset(assets?: Asset[]): Asset[] {
   if (!assets) {
