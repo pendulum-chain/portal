@@ -1,13 +1,14 @@
 import { AccountId32, Balance } from '@polkadot/types/interfaces';
 import type { VaultRegistryVault } from '@polkadot/types/lookup';
+import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { isEmpty } from 'lodash';
 
 export interface ExtendedRegistryVault extends VaultRegistryVault {
-  issuableTokens?: Balance;
-  redeemableTokens?: Balance;
+  issuableTokens?: Big;
+  redeemableTokens?: Big;
 }
 
 export function equalExtendedVaults(a: ExtendedRegistryVault, b: ExtendedRegistryVault) {
