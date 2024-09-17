@@ -1,4 +1,4 @@
-import { AccountId32, Balance } from '@polkadot/types/interfaces';
+import { AccountId32 } from '@polkadot/types/interfaces';
 import type { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/hooks';
