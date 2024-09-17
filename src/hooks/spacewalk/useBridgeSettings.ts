@@ -1,4 +1,4 @@
-import { Balance } from '@polkadot/types/interfaces';
+import Big from 'big.js';
 import { useEffect, useMemo, useState } from 'preact/compat';
 import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
@@ -20,6 +20,33 @@ export interface BridgeSettings {
   setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
   setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
   setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+}
+
+/// Finds the best vault for the given asset based on the issuability of vaults
+function findBestVaultForIssuingAsset(
+  vaults: ExtendedRegistryVault[],
+  asset: Asset,
+): ExtendedRegistryVault | undefined {
+  const vaultsWithAsset = vaults.filter((vault) => {
+    const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
+    return vaultCurrencyAsAsset && vaultCurrencyAsAsset.equals(asset);
+  });
+
+  if (vaultsWithAsset.length === 0) {
+    return undefined;
+  }
+
+  return vaultsWithAsset.reduce((bestVault, currentVault) => {
+    if (!bestVault) {
+      return currentVault;
+    }
+
+    if (currentVault.issuableTokens?.gt(bestVault.issuableTokens || new Big(0))) {
+      return currentVault;
+    }
+
+    return bestVault;
+  });
 }
 
 function useBridgeSettings(): BridgeSettings {
@@ -44,8 +71,12 @@ function useBridgeSettings(): BridgeSettings {
           const vaultWithIssuable = vaultsWithIssuableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const vaultWithRedeemable = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const extended: ExtendedRegistryVault = vaultFromRegistry;
-          extended.issuableTokens = vaultWithIssuable ? (vaultWithIssuable[1] as unknown as Balance) : undefined;
-          extended.redeemableTokens = vaultWithRedeemable ? (vaultWithRedeemable[1] as unknown as Balance) : undefined;
+          extended.issuableTokens = vaultWithIssuable
+            ? new Big((vaultWithIssuable[1].toJSON() as unknown as { amount: string }).amount)
+            : undefined;
+          extended.redeemableTokens = vaultWithRedeemable
+            ? new Big((vaultWithRedeemable[1].toJSON() as unknown as { amount: string }).amount)
+            : undefined;
           combinedVaults.push(extended);
         });
         setExtendedVaults(combinedVaults);
@@ -85,9 +116,9 @@ function useBridgeSettings(): BridgeSettings {
   useEffect(() => {
     if (vaultsForCurrency && wrappedAssets) {
       if (!manualVaultSelection) {
-        // TODO build a better algorithm for automatically selecting a vault
         if (vaultsForCurrency.length > 0) {
-          setSelectedVault(vaultsForCurrency[0]);
+          const bestVault = findBestVaultForIssuingAsset(vaultsForCurrency, selectedAsset || wrappedAssets[0]);
+          setSelectedVault(bestVault);
         }
         if (!selectedAsset && wrappedAssets.length > 0) {
           setSelectedAsset(wrappedAssets[0]);
