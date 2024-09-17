@@ -8,7 +8,7 @@ import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/sp
 import { stringifyStellarAsset } from '../../helpers/stellar';
 import { equalExtendedVaults, ExtendedRegistryVault, useVaultRegistryPallet } from './useVaultRegistryPallet';
 import { ToastMessage, showToast } from '../../shared/showToast';
-import { useBridgeContext } from '../../pages/spacewalk/bridge';
+import { BridgeDirection, useBridgeContext } from '../../pages/spacewalk/bridge';
 
 export interface BridgeSettings {
   selectedVault?: ExtendedRegistryVault;
@@ -20,12 +20,14 @@ export interface BridgeSettings {
   setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
   setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
   setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+  bridgeDirection: BridgeDirection;
 }
 
-/// Finds the best vault for the given asset based on the issuability of vaults
-function findBestVaultForIssuingAsset(
+/// Finds the best vault for the given asset based on the issuable or redeemable tokens of each vault.
+function findBestVaultForAsset(
   vaults: ExtendedRegistryVault[],
   asset: Asset,
+  bridgeDirection: BridgeDirection,
 ): ExtendedRegistryVault | undefined {
   const vaultsWithAsset = vaults.filter((vault) => {
     const vaultCurrencyAsAsset = convertCurrencyToStellarAsset(vault.id.currencies.wrapped);
@@ -41,8 +43,14 @@ function findBestVaultForIssuingAsset(
       return currentVault;
     }
 
-    if (currentVault.issuableTokens?.gt(bestVault.issuableTokens || new Big(0))) {
-      return currentVault;
+    if (bridgeDirection === BridgeDirection.Issue) {
+      if (currentVault.issuableTokens?.gt(bestVault.issuableTokens || new Big(0))) {
+        return currentVault;
+      }
+    } else {
+      if (currentVault.redeemableTokens?.gt(bestVault.redeemableTokens || new Big(0))) {
+        return currentVault;
+      }
     }
 
     return bestVault;
@@ -59,6 +67,7 @@ function useBridgeSettings(): BridgeSettings {
     setSelectedVault,
     manualVaultSelection,
     setManualVaultSelection,
+    bridgeDirection,
   } = useBridgeContext();
 
   const { tenantName } = useGlobalState();
@@ -117,7 +126,11 @@ function useBridgeSettings(): BridgeSettings {
     if (vaultsForCurrency && wrappedAssets) {
       if (!manualVaultSelection) {
         if (vaultsForCurrency.length > 0) {
-          const bestVault = findBestVaultForIssuingAsset(vaultsForCurrency, selectedAsset || wrappedAssets[0]);
+          const bestVault = findBestVaultForAsset(
+            vaultsForCurrency,
+            selectedAsset || wrappedAssets[0],
+            bridgeDirection,
+          );
           setSelectedVault(bestVault);
         }
         if (!selectedAsset && wrappedAssets.length > 0) {
@@ -135,6 +148,7 @@ function useBridgeSettings(): BridgeSettings {
       }
     }
   }, [
+    bridgeDirection,
     manualVaultSelection,
     selectedAsset,
     selectedVault,
@@ -154,6 +168,7 @@ function useBridgeSettings(): BridgeSettings {
     setSelectedAsset,
     setSelectedVault,
     setManualVaultSelection,
+    bridgeDirection,
   };
 }
 

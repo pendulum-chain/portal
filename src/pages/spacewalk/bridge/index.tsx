@@ -32,6 +32,7 @@ interface BridgeContextValue {
   setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
   manualVaultSelection: boolean;
   setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+  bridgeDirection: BridgeDirection;
 }
 
 const BridgeContext = createContext<BridgeContextValue>({
@@ -39,6 +40,7 @@ const BridgeContext = createContext<BridgeContextValue>({
   setSelectedVault: () => undefined,
   setManualVaultSelection: () => undefined,
   manualVaultSelection: false,
+  bridgeDirection: BridgeDirection.Issue,
 });
 
 export const useBridgeContext = () => useContext(BridgeContext);
@@ -82,6 +84,7 @@ function Bridge(): JSX.Element | null {
         setSelectedVault,
         manualVaultSelection,
         setManualVaultSelection,
+        bridgeDirection,
       }}
     >
       <div className="mt-4 flex h-full items-center justify-center">
