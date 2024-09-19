@@ -58,7 +58,6 @@ function findBestVaultForAsset(
 }
 
 function useBridgeSettings(): BridgeSettings {
-  const [extendedVaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>();
   const { getVaults, getVaultsWithIssuableTokens, getVaultsWithRedeemableTokens } = useVaultRegistryPallet();
   const {
     selectedAsset,
@@ -68,6 +67,8 @@ function useBridgeSettings(): BridgeSettings {
     manualVaultSelection,
     setManualVaultSelection,
     bridgeDirection,
+    extendedVaults,
+    setExtendedVaults,
   } = useBridgeContext();
 
   const { tenantName } = useGlobalState();
@@ -125,16 +126,14 @@ function useBridgeSettings(): BridgeSettings {
   useEffect(() => {
     if (vaultsForCurrency && wrappedAssets) {
       if (!manualVaultSelection) {
-        if (vaultsForCurrency.length > 0) {
-          const bestVault = findBestVaultForAsset(
-            vaultsForCurrency,
-            selectedAsset || wrappedAssets[0],
-            bridgeDirection,
-          );
+        if (vaultsForCurrency.length > 0 && selectedAsset) {
+          const bestVault = findBestVaultForAsset(vaultsForCurrency, selectedAsset, bridgeDirection);
           setSelectedVault(bestVault);
         }
         if (!selectedAsset && wrappedAssets.length > 0) {
-          setSelectedAsset(wrappedAssets[0]);
+          // Try to select the xlm asset by default
+          const xlmAsset = wrappedAssets.find((asset) => asset.getCode() === 'XLM');
+          setSelectedAsset(xlmAsset || wrappedAssets[0]);
         }
       } else {
         // If the user manually selected a vault, but it's not available anymore, we reset the selection
