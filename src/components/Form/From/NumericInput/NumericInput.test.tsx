@@ -153,4 +153,22 @@ describe('NumericInput Component', () => {
     await userEvent.paste('123.4567890123456789abcgdehyu0123456.2746472.93.2.7.3.5.3');
     expect(inputElement.value).toBe('123.456789012345');
   });
+
+  it('Should not cut the number if user is trying to type more than one "."', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '0.23');
+    await userEvent.keyboard('{arrowleft}.');
+    expect(inputElement.value).toBe('0.23');
+  });
+
+  it('Should not cut the number and set properly the new postion of "." in the number', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '12.34');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{arrowleft}.');
+    expect(inputElement.value).toBe('1.234');
+  });
 });
