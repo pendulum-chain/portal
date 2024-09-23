@@ -171,4 +171,12 @@ describe('NumericInput Component', () => {
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{arrowleft}.');
     expect(inputElement.value).toBe('1.234');
   });
+
+  it('should accept only one "."', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '...........');
+    expect(inputElement.value).toBe('.');
+  });
 });
