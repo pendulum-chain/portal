@@ -163,13 +163,21 @@ describe('NumericInput Component', () => {
     expect(inputElement.value).toBe('0.23');
   });
 
-  it('Should not cut the number and set properly the new postion of "." in the number', async () => {
+  it('Should not cut the number and do not move . position', async () => {
     const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '12.34');
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{arrowleft}.');
-    expect(inputElement.value).toBe('1.234');
+    expect(inputElement.value).toBe('12.34');
+  });
+
+  it('Should not paste the number if more than one .', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.paste('12.34.56');
+    expect(inputElement.value).toBe('');
   });
 
   it('should accept only one "."', async () => {

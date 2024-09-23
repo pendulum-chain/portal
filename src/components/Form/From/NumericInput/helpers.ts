@@ -26,3 +26,29 @@ export function handleOnChangeNumericInput(e: KeyboardEvent, maxDecimals: number
 
   target.value = trimToMaxDecimals(target.value, maxDecimals);
 }
+
+function alreadyHasDecimal(e: KeyboardEvent) {
+  const decimalChars = ['.', ','];
+  return decimalChars.some((char) => e.key === char && e.target && (e.target as HTMLInputElement).value.includes('.'));
+}
+
+export function handleOnKeyPressNumericInput(e: KeyboardEvent): void {
+  if (alreadyHasDecimal(e)) {
+    e.preventDefault();
+  }
+}
+
+export function handleOnPasteNumericInput(e: ClipboardEvent) {
+  const inputElement = e.target as HTMLInputElement;
+  const targetValue = inputElement.value;
+
+  const clipboardData = e.clipboardData?.getData('text/plain') || '';
+  const combinedValue = targetValue + clipboardData;
+
+  const combinedHasManyDecimals = /[.,].*[.,]/.test(combinedValue);
+
+  if (combinedHasManyDecimals) {
+    e.preventDefault();
+    return;
+  }
+}
