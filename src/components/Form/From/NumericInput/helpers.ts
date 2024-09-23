@@ -2,6 +2,12 @@ import { trimToMaxDecimals } from '../../../../shared/parseNumbers/maxDecimals';
 
 const removeNonNumericCharacters = (value: string): string => value.replace(/[^0-9.]/g, '');
 
+const removeExtraDots = (value: string): string => value.replace(/(\..*?)\./g, '$1');
+
+function sanitizeNumericInput(value: string): string {
+  return removeExtraDots(removeNonNumericCharacters(value));
+}
+
 const replaceCommasWithDots = (value: string): string => value.replace(/,/g, '.');
 
 /**
@@ -16,7 +22,7 @@ export function handleOnChangeNumericInput(e: KeyboardEvent, maxDecimals: number
 
   target.value = replaceCommasWithDots(target.value);
 
-  target.value = removeNonNumericCharacters(target.value);
+  target.value = sanitizeNumericInput(target.value);
 
   target.value = trimToMaxDecimals(target.value, maxDecimals);
 }
