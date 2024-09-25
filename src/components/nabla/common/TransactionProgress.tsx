@@ -32,11 +32,9 @@ function getExplorerUrl(tenant: TenantName, data?: ExecuteMessageResult['executi
   if (tenant === TenantName.Pendulum && data?.type === 'extrinsic') {
     return `https://pendulum.subscan.io/extrinsic/${data.txHash.toHex()}`;
   }
-
-  return undefined;
 }
 
-export function TransactionProgress({ mutation, children, onClose }: TransactionProgressProps): JSX.Element | null {
+export function TransactionProgress({ mutation, children, onClose }: TransactionProgressProps) {
   const { tenantName } = useGlobalState();
   const errorMsg = getErrorMessage(mutation.data?.result);
 
@@ -79,10 +77,8 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
       {!mutation.isSuccess && !!errorMsg && <p className="mt-1 text-center">{errorMsg}</p>}
       <div className="mt-6"></div>
       {!!explorerUrl && (
-        <a href={explorerUrl} target="_blank" rel="noreferrer">
-          <Button color="secondary" className="w-full">
-            View on Explorer
-          </Button>
+        <a href={explorerUrl} target="_blank" rel="noreferrer" className="btn btn-primary w-full">
+          View on Explorer
         </a>
       )}
       {!!onClose && (
