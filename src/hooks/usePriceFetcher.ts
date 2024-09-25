@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useState } from 'preact/compat';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
+import { useCallback } from 'preact/compat';
+import { useQuery } from '@tanstack/react-query';
+import { isEqual } from 'lodash';
 import { TenantName } from '../models/Tenant';
 import useSwitchChain from './useSwitchChain';
-import { useNodeInfoState } from '../NodeInfoProvider';
 import { nativeToDecimal } from '../shared/parseNumbers/metric';
-import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { useAssetRegistryMetadata } from './useAssetRegistryMetadata';
-import { isEqual } from 'lodash';
+import { BATCHING_SERVER_URL } from '../shared/constants';
 
 export interface DiaKeys {
   blockchain: string;
@@ -20,68 +21,58 @@ function diaKeysToString(diaKeys: DiaKeys) {
 type PricesCache = { [diaKeys: string]: number };
 
 export const usePriceFetcher = () => {
-  const [pricesCache, setPricesCache] = useState<PricesCache>({});
   const { currentTenant } = useSwitchChain();
-  const { api } = useNodeInfoState().state;
   const { getAllAssetsMetadata } = useAssetRegistryMetadata();
+  const allAssetsMetadata = getAllAssetsMetadata();
+  const diaKeys = allAssetsMetadata.map((asset) => asset.metadata.additional.diaKeys);
 
-  useEffect(() => {
-    if (!api) return;
-
-    const fetchPrices = async () => {
-      const allPrices = await api.query.diaOracleModule.coinInfosMap.entries();
-
-      const prices = allPrices.map(([key, value]) => {
-        const keyJson = key.toHuman() as unknown as DiaKeys[];
-        const assetKeys = keyJson[0];
-        const priceRaw = value.price;
-        const price = nativeToDecimal(priceRaw.toString()).toNumber();
-
-        return { assetKeys, price };
+  const getPriceFromBatchingServer = useCallback(async () => {
+    try {
+      const response = await fetch(BATCHING_SERVER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(diaKeys.map(({ blockchain, symbol }) => ({ blockchain, symbol }))),
       });
 
-      setPricesCache((prev) => {
-        const newPricesCache = { ...prev };
-        prices.forEach(({ assetKeys, price }) => {
-          newPricesCache[diaKeysToString(assetKeys)] = price;
-        });
-
-        return newPricesCache;
-      });
-    };
-
-    fetchPrices().catch(console.error);
-  }, [api]);
-
-  const getTokenPriceForKeys = useCallback(
-    async (asset: DiaKeys) => {
-      try {
-        const diaKeys = diaKeysToString(asset);
-        const cachedAssetPrice = pricesCache[diaKeys];
-        if (cachedAssetPrice) return cachedAssetPrice;
-      } catch (e) {
-        console.error(e);
+      if (!response.ok) {
+        console.error('Batching server response was not ok:', response.status, response.statusText);
+        return {};
       }
-      return 0;
-    },
-    [pricesCache],
+
+      const batchingServerPrices = await response.json();
+
+      return batchingServerPrices.reduce(
+        (acc: PricesCache, { symbol, price, blockchain }: { symbol: string; price: number; blockchain: string }) => {
+          acc[diaKeysToString({ symbol, blockchain })] = nativeToDecimal(price.toString()).toNumber();
+          return acc;
+        },
+        {},
+      );
+    } catch (error) {
+      console.error('Error fetching prices from batching server:', error);
+      return {};
+    }
+  }, [diaKeys]);
+
+  const { data: pricesCache = {} } = useQuery({
+    queryKey: ['prices', allAssetsMetadata],
+    queryFn: getPriceFromBatchingServer,
+  });
+
+  const getTokenPriceForKeys = useCallback((asset: DiaKeys) => pricesCache[diaKeysToString(asset)] || 0, [pricesCache]);
+
+  const handleNativeTokenPrice = useCallback(
+    () => (currentTenant === TenantName.Pendulum ? pricesCache['Pendulum:PEN'] : pricesCache['Amplitude:AMPE']),
+    [currentTenant, pricesCache],
   );
 
-  const handleNativeTokenPrice = useCallback(() => {
-    if (currentTenant === TenantName.Pendulum) return pricesCache['Pendulum:PEN'];
-    return pricesCache['Amplitude:AMPE'];
-  }, [currentTenant, pricesCache]);
-
   const getTokenPriceForCurrency = useCallback(
-    async (currency: SpacewalkPrimitivesCurrencyId) => {
+    (currency: SpacewalkPrimitivesCurrencyId) => {
       if (currency.toHuman() === 'Native') return handleNativeTokenPrice();
-      const asset = getAllAssetsMetadata().find((asset) => {
-        return isEqual(asset.currencyId.toHuman(), currency.toHuman());
-      });
-      if (!asset) {
-        return 0;
-      }
-      return getTokenPriceForKeys(asset.metadata.additional.diaKeys);
+
+      const asset = getAllAssetsMetadata().find((asset) => isEqual(asset.currencyId.toHuman(), currency.toHuman()));
+
+      return asset ? getTokenPriceForKeys(asset.metadata.additional.diaKeys) : 0;
     },
     [getAllAssetsMetadata, getTokenPriceForKeys, handleNativeTokenPrice],
   );
