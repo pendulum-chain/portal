@@ -212,7 +212,7 @@ describe('NumericInput onPaste should sanitize the user input', () => {
   ];
 
   test.each(testCases)(
-    'should sanitize the pasted input "$input" with maxLength $maxLength',
+    'should sanitize the pasted input with maxLength (decimal)',
     ({ input, maxLength, expected }) => {
       const mockEvent = {
         target: { value: '' },
