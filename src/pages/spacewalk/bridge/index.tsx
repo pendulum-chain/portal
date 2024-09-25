@@ -49,7 +49,7 @@ const BridgeContext = createContext<BridgeContextValue>({
 
 export const useBridgeContext = () => useContext(BridgeContext);
 
-function Bridge(): JSX.Element | null {
+function Bridge() {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const { chain, tokenSymbol } = useNodeInfoState().state;

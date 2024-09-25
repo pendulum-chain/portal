@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useEffect, useMemo } from 'preact/compat';
 import { StateUpdater, Dispatch } from 'preact/hooks';
 import { Asset } from 'stellar-sdk';
 import _ from 'lodash';
@@ -35,7 +35,7 @@ function findBestVaultForAsset(
   });
 
   if (vaultsWithAsset.length === 0) {
-    return undefined;
+    return;
   }
 
   return vaultsWithAsset.reduce((bestVault, currentVault) => {
@@ -82,10 +82,10 @@ function useBridgeSettings(): BridgeSettings {
           const vaultWithRedeemable = vaultsWithRedeemableTokens?.find(([id, _]) => id.eq(vaultFromRegistry.id));
           const extended: ExtendedRegistryVault = vaultFromRegistry;
           extended.issuableTokens = vaultWithIssuable
-            ? new Big((vaultWithIssuable[1].toJSON() as unknown as { amount: string }).amount)
+            ? new Big((vaultWithIssuable[1].toJSON() as { amount: string }).amount)
             : undefined;
           extended.redeemableTokens = vaultWithRedeemable
-            ? new Big((vaultWithRedeemable[1].toJSON() as unknown as { amount: string }).amount)
+            ? new Big((vaultWithRedeemable[1].toJSON() as { amount: string }).amount)
             : undefined;
           combinedVaults.push(extended);
         });
