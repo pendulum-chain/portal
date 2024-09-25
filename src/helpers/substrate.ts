@@ -3,6 +3,9 @@ import { ApiPromise } from '@polkadot/api';
 import { PalletBalancesAccountData } from '@polkadot/types/lookup';
 import Big from 'big.js';
 
+/// This function is used to get the frozen account balance from the account data.
+/// There was a breaking change between Polkadot v0.9.42 and v1.1.0 that changed the way the frozen balance is stored.
+/// Previously the frozen balance was in the 'frozen' field but now it's available in 'miscFrozen' and 'feeFrozen'.
 export function getFrozenAccountBalance(balance: PalletBalancesAccountData) {
   const { miscFrozen, feeFrozen } = balance;
   // The old 'frozen' balance is the maximum of the new 'miscFrozen' and 'feeFrozen' balances
