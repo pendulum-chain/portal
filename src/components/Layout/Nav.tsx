@@ -28,7 +28,7 @@ const CollapseMenu = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'} `}>
+    <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'}`}>
       <input type="checkbox" checked={isActive} ref={inputRef} />
       <button
         type="button"
