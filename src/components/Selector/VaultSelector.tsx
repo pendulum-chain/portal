@@ -18,9 +18,7 @@ function getMaxTokensForVault(vault: ExtendedRegistryVault, type: 'issue' | 'red
   if (!maxTokens) return '0';
 
   try {
-    const balance: { amount: string } = maxTokens.toJSON();
-
-    return nativeToDecimal(balance.amount.toString()).toFixed(2);
+    return nativeToDecimal(maxTokens).toFixed(2);
   } catch (error) {
     console.error('Error parsing max tokens', error);
     return '0';
@@ -31,16 +29,16 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
   const { vaults, selectedVault, bridgeDirection, onChange } = props;
 
   return (
-    <div className="dropdown w-full mt-3">
+    <div className="dropdown mt-3 w-full">
       <Button
         type="button"
         color="ghost"
-        className="flex content-center place-content-between w-full border-base-200 bg-base-300 rounded-md no-animation"
+        className="no-animation flex w-full place-content-between content-center rounded-md border-base-200 bg-base-300"
       >
         <PublicKey publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''} variant="full" />
-        <ChevronDownIcon className="w-3 h-3" stroke-width="2" />
+        <ChevronDownIcon className="h-3 w-3" stroke-width="2" />
       </Button>
-      <Dropdown.Menu className="dropdown-content w-full mt-1.5 p-1 border border-base-200 bg-base-300 rounded-md shadow-none">
+      <Dropdown.Menu className="dropdown-content mt-1.5 w-full rounded-md border border-base-200 bg-base-300 p-1 shadow-none">
         {vaults.map((vault) => (
           <Dropdown.Item
             key={vault.id.accountId.toString()}
@@ -51,9 +49,9 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
               }
               onChange(vault);
             }}
-            className="w-full rounded-md flex"
+            className="flex w-full rounded-md"
           >
-            <span className="w-full flex place-content-between">
+            <span className="flex w-full place-content-between">
               <span className="flex">
                 <PublicKey publicKey={vault.id.accountId.toString()} variant="short" />
               </span>

@@ -57,8 +57,7 @@ function Redeem(props: RedeemProps): JSX.Element {
     setSelectedAssetsBalance(amount);
   }, [balances, selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
 
-  const redeemableTokens = selectedVault?.redeemableTokens?.toJSON?.().amount ?? selectedVault?.redeemableTokens;
-  const maxRedeemable = nativeToDecimal(redeemableTokens || 0).toNumber();
+  const maxRedeemable = nativeToDecimal(selectedVault?.redeemableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<RedeemFormValues>({
     defaultValues: {},
