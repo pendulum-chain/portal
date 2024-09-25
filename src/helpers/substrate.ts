@@ -1,19 +1,17 @@
 import { EventRecord } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
-import { PalletBalancesAccountData } from '@polkadot/types/lookup';
 import Big from 'big.js';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
 
 /// This function is used to get the frozen account balance from the account data.
-/// There was a breaking change between Polkadot v0.9.42 and v1.1.0 that changed the way the frozen balance is stored.
-/// Previously the frozen balance was in the 'frozen' field but now it's available in 'miscFrozen' and 'feeFrozen'.
+/// Some types define the frozen balance as `frozen` and others as `miscFrozen` and `feeFrozen`.
 export function getFrozenAccountBalance(balance: PalletBalancesAccountData) {
   const { miscFrozen, feeFrozen } = balance;
-  // The old 'frozen' balance is the maximum of the new 'miscFrozen' and 'feeFrozen' balances
   const frozen = balance.get('frozen');
   if (frozen !== undefined) {
     return new Big(frozen.toString());
   } else {
-    // Return the larger value of miscFrozen and feeFrozen
+    // Return the larger value of miscFrozen and feeFrozen. Usually these are the same.
     const miscFrozenBig = new Big(miscFrozen.toString());
     const feeFrozenBig = new Big(feeFrozen.toString());
     return miscFrozenBig.gt(feeFrozenBig) ? miscFrozenBig : feeFrozenBig;
