@@ -41,7 +41,7 @@ export const NumericInput = ({
           minlength="1"
           onChange={handleOnChange}
           onKeyPress={handleOnKeyPressNumericInput}
-          onPaste={handleOnPasteNumericInput}
+          onPaste={(e: ClipboardEvent) => handleOnPasteNumericInput(e, maxDecimals)}
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0.0"
           readOnly={readOnly}

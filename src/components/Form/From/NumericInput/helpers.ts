@@ -38,17 +38,17 @@ export function handleOnKeyPressNumericInput(e: KeyboardEvent): void {
   }
 }
 
-export function handleOnPasteNumericInput(e: ClipboardEvent) {
+export function handleOnPasteNumericInput(e: ClipboardEvent, maxDecimals: number): string {
   const inputElement = e.target as HTMLInputElement;
   const targetValue = inputElement.value;
 
-  const clipboardData = e.clipboardData?.getData('text/plain') || '';
+  const clipboardData = sanitizeNumericInput(e.clipboardData?.getData('text/plain') || '');
   const combinedValue = targetValue + clipboardData;
 
-  const combinedHasManyDecimals = /[.,].*[.,]/.test(combinedValue);
+  const [integerPart, ...decimalParts] = combinedValue.split('.');
+  const sanitizedValue = integerPart + (decimalParts.length > 0 ? '.' + decimalParts.join('') : '');
 
-  if (combinedHasManyDecimals) {
-    e.preventDefault();
-    return;
-  }
+  e.preventDefault();
+  inputElement.value = trimToMaxDecimals(sanitizedValue, maxDecimals);
+  return trimToMaxDecimals(sanitizedValue, maxDecimals);
 }
