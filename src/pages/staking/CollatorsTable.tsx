@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'preact/hooks';
+import Big from 'big.js';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Table, { SortingOrder } from '../../components/Table';
@@ -18,6 +19,7 @@ import {
   stakedColumn,
 } from './CollatorColumns';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
+import { getFrozenAccountBalance } from '../../helpers/substrate';
 
 function CollatorsTable() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -57,7 +59,8 @@ function CollatorsTable() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      return balance.free.sub(balance.frozen).toString();
+      const frozen = getFrozenAccountBalance(balance);
+      return new Big(balance.free.toString() || 0).sub(frozen).toString();
     };
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));
@@ -132,7 +135,7 @@ function CollatorsTable() {
         }}
       />
       <Table
-        className="collators-list-table bg-base-100 text-md w-full"
+        className="collators-list-table text-md w-full bg-base-100"
         data={data}
         columns={columns}
         isLoading={!candidates}

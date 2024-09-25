@@ -1,5 +1,21 @@
 import { EventRecord } from '@polkadot/types/interfaces';
 import { ApiPromise } from '@polkadot/api';
+import { PalletBalancesAccountData } from '@polkadot/types/lookup';
+import Big from 'big.js';
+
+export function getFrozenAccountBalance(balance: PalletBalancesAccountData) {
+  const { miscFrozen, feeFrozen } = balance;
+  // The old 'frozen' balance is the maximum of the new 'miscFrozen' and 'feeFrozen' balances
+  const frozen = balance.get('frozen');
+  if (frozen !== undefined) {
+    return new Big(frozen.toString());
+  } else {
+    // Return the larger value of miscFrozen and feeFrozen
+    const miscFrozenBig = new Big(miscFrozen.toString());
+    const feeFrozenBig = new Big(feeFrozen.toString());
+    return miscFrozenBig.gt(feeFrozenBig) ? miscFrozenBig : feeFrozenBig;
+  }
+}
 
 export function containsError(events: EventRecord[], api: ApiPromise): boolean {
   const errorEvents = events
