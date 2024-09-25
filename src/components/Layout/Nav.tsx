@@ -1,8 +1,7 @@
-import { memo, useEffect, useMemo, useState } from 'preact/compat';
+import { memo, useEffect, useMemo, useState, useRef } from 'preact/compat';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { useGlobalState } from '../../GlobalStateProvider';
-import useBoolean from '../../hooks/useBoolean';
 import { createLinks, LinkItem } from './links';
 import { NavCollapseButtonContent } from './NavCollapseButtonContent';
 
@@ -25,17 +24,18 @@ const CollapseMenu = ({
     const paths = path.split('/').filter(Boolean);
     return paths[1] && paths[1].startsWith(link.replace('/', '')) ? true : false;
   }, [link, pathname]);
-  const [isOpen, { toggle }] = useBoolean(isActive);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'} ${isOpen ? 'collapse-open' : ''}`}>
+    <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'} `}>
+      <input type="checkbox" checked={isActive} ref={inputRef} />
       <button
         type="button"
         className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
-        onClick={() => toggle()}
         aria-controls={ariaControls}
-        aria-expanded={isOpen}
         aria-disabled={disabled}
+        aria-expanded={inputRef.current?.checked}
       >
         {button}
       </button>
@@ -109,7 +109,7 @@ const Nav = memo(({ onClick }: NavProps) => {
               ariaControls="submenu"
               button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
             >
-              <ul className="submenu" id="submenu">
+              <ul className="submenu" id={`submenu-${i}`}>
                 {item.submenu.map((subItem, j) => (
                   <li key={`${i}-${j}`} className="ml-[3px]">
                     <NavItem item={subItem} onClick={onClick} isSubNavItem={true} />

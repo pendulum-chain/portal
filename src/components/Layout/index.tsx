@@ -38,7 +38,7 @@ export default function Layout(): JSX.Element | null {
       <div id="sidebar-wrapper" className="z-50 flex flex-wrap">
         <aside
           id="sidebar"
-          className={`flex self-start text-center bottom-0 top-0 h-160 pt-8 h-screen transition-all lg:left-0 lg:relative absolute ${bgColor} ${
+          className={`scroll-thin h-160 absolute bottom-0 top-0 flex h-screen self-start pt-8 text-center transition-all lg:relative lg:left-0 ${bgColor} ${
             visible ? 'open left-0' : 'closed -left-full'
           }`}
         >
@@ -57,7 +57,7 @@ export default function Layout(): JSX.Element | null {
             </a>
           </div>
           <Nav onClick={() => setVisible(false)} />
-          <footer className="mx-auto sidebar-footer">
+          <footer className="sidebar-footer mx-auto">
             <NetworkId />
             <SocialAndTermLinks />
           </footer>
@@ -65,12 +65,12 @@ export default function Layout(): JSX.Element | null {
       </div>
       <section className={visible && isMobile ? 'opacity-25' : ''}>
         <header>
-          <div className="flex items-center justify-end gap-2 h-15">
+          <div className="h-15 flex items-center justify-end gap-2">
             <GetToken />
             <ChainSelector />
-            <div className="hidden mr-2 dropdown dropdown-end">
-              <button className="flex items-center py-2 space-x-2 btn no-animation">
-                <span className={`${isPendulum ? 'text-white' : ''}  text-md`}>
+            <div className="dropdown dropdown-end mr-2 hidden">
+              <button className="btn no-animation flex items-center space-x-2 py-2">
+                <span className={`${isPendulum ? 'text-white' : ''} text-md`}>
                   {isPendulum ? 'Pendulum' : 'Amplitude'}
                 </span>
                 <svg
@@ -89,7 +89,7 @@ export default function Layout(): JSX.Element | null {
                   />
                 </svg>
               </button>
-              <ul tabIndex={0} className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52">
+              <ul tabIndex={0} className="menu dropdown-content w-52 rounded-box bg-base-100 p-2 shadow">
                 <li>
                   <FooterLink />
                 </li>
@@ -104,7 +104,7 @@ export default function Layout(): JSX.Element | null {
           </div>
         </header>
         <main
-          className="flex-wrap flex-grow w-full px-4 py-4"
+          className="w-full flex-grow flex-wrap px-4 py-4"
           onClick={() => {
             if (visible && isMobile) {
               setVisible(false);
