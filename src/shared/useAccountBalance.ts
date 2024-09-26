@@ -5,8 +5,6 @@ import { emptyCacheKey, QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 import { cacheKeys } from '../constants/cache';
-import Big from 'big.js';
-import { getFrozenAccountBalance } from '../helpers/substrate';
 
 export interface UseAccountBalanceResponse {
   query: UseQueryResult<FrameSystemAccountInfo | undefined, unknown>;
@@ -50,9 +48,7 @@ export const useAccountBalance = (
   const balances = useMemo(() => {
     if (!data || !data?.data) return { total: '0', transferable: '0' };
 
-    const { free: freeRaw, reserved: reservedRaw } = data.data;
-
-    const frozenRaw = getFrozenAccountBalance(data.data);
+    const { free: freeRaw, frozen: frozenRaw, reserved: reservedRaw } = data.data;
 
     const free = nativeToDecimal(freeRaw || 0, decimals).toNumber();
     const frozen = nativeToDecimal(frozenRaw || 0, decimals).toNumber();

@@ -19,7 +19,6 @@ import {
   stakedColumn,
 } from './CollatorColumns';
 import ExecuteDelegationDialogs from './dialogs/ExecuteDelegationDialogs';
-import { getFrozenAccountBalance } from '../../helpers/substrate';
 
 function CollatorsTable() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -59,8 +58,7 @@ function CollatorsTable() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount?.address);
-      const frozen = getFrozenAccountBalance(balance);
-      return new Big(balance.free.toString() || 0).sub(frozen).toString();
+      return balance.free.sub(balance.frozen).toString();
     };
 
     fetchAvailableBalance().then((balance) => setUserAvailableBalance(balance));

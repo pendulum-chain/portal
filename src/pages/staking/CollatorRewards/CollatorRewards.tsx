@@ -26,7 +26,6 @@ import {
   UnstakingDataType,
   handleTransactionStatus,
 } from './helpers';
-import { getFrozenAccountBalance } from '../../../helpers/substrate';
 
 export function CollatorRewards() {
   const { api, tokenSymbol, ss58Format } = useNodeInfoState().state;
@@ -109,9 +108,7 @@ export function CollatorRewards() {
         return '0';
       }
       const { data: balance } = await api.query.system.account(walletAccount.address);
-      const frozen = getFrozenAccountBalance(balance);
-      const availableBalance = new Big(balance.free.toString()).minus(frozen);
-      setUserAvailableBalance(availableBalance.toString());
+      setUserAvailableBalance(balance.free.sub(balance.frozen).toString());
     };
     const fetchUnstaking = async () => {
       if (!api || !walletAccount) {
