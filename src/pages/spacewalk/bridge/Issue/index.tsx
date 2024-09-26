@@ -70,9 +70,7 @@ function Issue(props: IssueProps): JSX.Element {
   const { balances } = useAccountBalance();
   const { transferable } = balances;
 
-  const issuableTokens = selectedVault?.issuableTokens?.toJSON?.().amount ?? selectedVault?.issuableTokens;
-
-  const maxIssuable = nativeToDecimal(issuableTokens || 0).toNumber();
+  const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(transferable || '0.0'), tokenSymbol)),

@@ -32,18 +32,24 @@ interface BridgeContextValue {
   setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
   manualVaultSelection: boolean;
   setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+  bridgeDirection: BridgeDirection;
+  extendedVaults: ExtendedRegistryVault[];
+  setExtendedVaults: Dispatch<StateUpdater<ExtendedRegistryVault[]>>;
 }
 
 const BridgeContext = createContext<BridgeContextValue>({
   setSelectedAsset: () => undefined,
   setSelectedVault: () => undefined,
-  setManualVaultSelection: () => undefined,
   manualVaultSelection: false,
+  setManualVaultSelection: () => undefined,
+  bridgeDirection: BridgeDirection.Issue,
+  extendedVaults: [],
+  setExtendedVaults: () => undefined,
 });
 
 export const useBridgeContext = () => useContext(BridgeContext);
 
-function Bridge(): JSX.Element | null {
+function Bridge() {
   const [tabValue, setTabValue] = useState(BridgeTabs.Issue);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const { chain, tokenSymbol } = useNodeInfoState().state;
@@ -51,6 +57,7 @@ function Bridge(): JSX.Element | null {
   const [selectedAsset, setSelectedAsset] = useState<Asset>();
   const [selectedVault, setSelectedVault] = useState<ExtendedRegistryVault>();
   const [manualVaultSelection, setManualVaultSelection] = useState(false);
+  const [extendedVaults, setExtendedVaults] = useState<ExtendedRegistryVault[]>([]);
 
   const Content = useMemo(() => {
     if (!chain) return;
@@ -82,6 +89,9 @@ function Bridge(): JSX.Element | null {
         setSelectedVault,
         manualVaultSelection,
         setManualVaultSelection,
+        bridgeDirection,
+        extendedVaults,
+        setExtendedVaults,
       }}
     >
       <div className="mt-4 flex h-full items-center justify-center">
