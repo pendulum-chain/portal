@@ -25,7 +25,7 @@
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^2.9.11",
     "@netlify/functions": "^2.8.1",
-    "@pendulum-chain/api": "^1.1.0",
+    "@pendulum-chain/api": "^1.1.1",
     "@pendulum-chain/api-solang": "^0.4.0",
     "@polkadot/api": "^13.2.1",
     "@polkadot/api-base": "^13.2.1",
