@@ -1,5 +1,5 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Badge, Button } from 'react-daisyui';
+import { Badge, Button, Tooltip } from 'react-daisyui';
 import { useModalToggle } from '../../../../services/modal';
 import { rawToDecimal } from '../../../../shared/parseNumbers/metric';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
@@ -14,15 +14,19 @@ export type SwapPoolColumn = NablaInstanceSwapPool & {
 
 const BIG_100 = new Big(100);
 
-export const nameColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'Name',
-  accessorKey: 'name',
-  accessorFn: (row) => row.token?.name || '',
+export const assetColumn: ColumnDef<SwapPoolColumn> = {
+  header: 'Asset',
+  accessorKey: 'asset',
+  accessorFn: (row) => row.token?.symbol || '',
   enableSorting: true,
 } as const;
 
 export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'Pool liabilities',
+  header: () => (
+    <Tooltip color="secondary" message="Amount of liquidity provided initially by LPs" position="bottom">
+      Pool liabilities
+    </Tooltip>
+  ),
   accessorKey: 'liabilities',
   accessorFn: (row) => rawToDecimal(row.totalLiabilities, row.lpTokenDecimals).toFixed(2, 0),
   enableSorting: true,
@@ -32,7 +36,11 @@ export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
 } as const;
 
 export const reservesColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'Reserves',
+  header: () => (
+    <Tooltip message="Amount of tokens in the pool" color="secondary" position="bottom">
+      Reserves
+    </Tooltip>
+  ),
   accessorKey: 'reserves',
   accessorFn: (row) => rawToDecimal(row.reserve, row.token.decimals).toFixed(2, 0),
   enableSorting: true,
@@ -46,7 +54,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   accessorKey: 'apr',
   accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props): JSX.Element | null => (
-    <Badge className="py-1 px-2 h-auto rounded-lg text-blackAlpha-700 dark:text-white bg-success/35">
+    <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">
       {props.renderValue()}%
     </Badge>
   ),
@@ -115,11 +123,11 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
 } as const;
 
 export const columnsWithMyAmount = [
-  nameColumn,
+  assetColumn,
   liabilitiesColumn,
   reservesColumn,
   aprColumn,
   myAmountColumn,
   actionsColumn,
 ];
-export const columnsWithoutMyAmount = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, actionsColumn];
+export const columnsWithoutMyAmount = [assetColumn, liabilitiesColumn, reservesColumn, aprColumn, actionsColumn];
