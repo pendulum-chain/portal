@@ -3373,16 +3373,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pendulum-chain/type-definitions@npm:0.3.8":
-  version: 0.3.8
-  resolution: "@pendulum-chain/type-definitions@npm:0.3.8"
-  dependencies:
-    "@babel/runtime": "npm:^7.10.2"
-    "@open-web3/orml-type-definitions": "npm:^1.1.4"
-  checksum: 10c0/49852e5ea8872054208fe18d689ab52f103ce5c41f1b86de94bdc8a6160ce4bd4f53c2837cd35d680b387c5223f1d943245d8bcd3ad6eb81b12e83db909eae20
-  languageName: node
-  linkType: hard
-
 "@pendulum-chain/type-definitions@npm:1.1.1":
   version: 1.1.1
   resolution: "@pendulum-chain/type-definitions@npm:1.1.1"
@@ -3404,20 +3394,6 @@ __metadata:
   peerDependencies:
     "@polkadot/api": ">=8"
   checksum: 10c0/b23aa3674723c967b2027cf8eb65a71a24da9ce6ed219bfa1b8d6893e5f3cb7cf2478a2a4371e5a553f5ae531f321dae0930840ca560077d9ae7d49147695032
-  languageName: node
-  linkType: hard
-
-"@pendulum-chain/types@npm:^0.3.8":
-  version: 0.3.8
-  resolution: "@pendulum-chain/types@npm:0.3.8"
-  dependencies:
-    "@babel/runtime": "npm:^7.10.2"
-    "@open-web3/api-mobx": "npm:^1.1.4"
-    "@open-web3/orml-types": "npm:^1.1.4"
-    "@pendulum-chain/type-definitions": "npm:0.3.8"
-  peerDependencies:
-    "@polkadot/api": ">=8"
-  checksum: 10c0/43180061b6af7fa7c355917145f64111db36815f70edb61bae649e51429e2edf86f34ba232c8aedfe4a54f4c0558009f45953686f14801cba637ef0137bf7ee7
   languageName: node
   linkType: hard
 
@@ -13792,7 +13768,7 @@ __metadata:
     "@netlify/functions": "npm:^2.8.1"
     "@pendulum-chain/api": "npm:^1.1.0"
     "@pendulum-chain/api-solang": "npm:^0.4.0"
-    "@pendulum-chain/types": "npm:^0.3.8"
+    "@pendulum-chain/types": "npm:^1.1.1"
     "@polkadot/api": "npm:^13.2.1"
     "@polkadot/api-base": "npm:^13.2.1"
     "@polkadot/api-contract": "npm:^13.2.1"

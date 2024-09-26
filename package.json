@@ -76,7 +76,7 @@
     "@babel/preset-typescript": "^7.24.1",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/client-preset": "^4.2.6",
-    "@pendulum-chain/types": "^0.3.8",
+    "@pendulum-chain/types": "^1.1.1",
     "@polkadot/types-augment": "^13.2.1",
     "@polkadot/types-codec": "^13.2.1",
     "@polkadot/types-create": "^13.2.1",
