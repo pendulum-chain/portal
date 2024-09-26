@@ -3342,18 +3342,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pendulum-chain/api-solang@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@pendulum-chain/api-solang@npm:0.4.0"
+"@pendulum-chain/api-solang@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@pendulum-chain/api-solang@npm:0.7.0"
   peerDependencies:
-    "@polkadot/api": ^10.0
-    "@polkadot/api-contract": ^10.12.1
+    "@polkadot/api": ^13.2
+    "@polkadot/api-contract": ^13.2
     "@polkadot/keyring": "*"
-    "@polkadot/types": ^10.0
-    "@polkadot/types-codec": ^10.0
+    "@polkadot/types": ^13.2
+    "@polkadot/types-codec": ^13.2
     "@polkadot/util": "*"
     "@polkadot/util-crypto": "*"
-  checksum: 10c0/37f0b225b1529dd46b38e050a4fac89acb706bc62b10855db83f4e8658423aeb921f8ad16fadcd21e9aef68aa5ac66274dbdd829247005a3e207a94411ab1cd0
+  checksum: 10c0/de16a29414516e99316cae463267b7b8af3562f5d4ce06edc0fc8a816f04a7e92c8217feb1d6209a5b30f089a3fe884788b73276c70751f3f30e94bd471345fd
   languageName: node
   linkType: hard
 
@@ -13767,7 +13767,7 @@ __metadata:
     "@hookform/resolvers": "npm:^2.9.11"
     "@netlify/functions": "npm:^2.8.1"
     "@pendulum-chain/api": "npm:^1.1.1"
-    "@pendulum-chain/api-solang": "npm:^0.4.0"
+    "@pendulum-chain/api-solang": "npm:^0.7.0"
     "@pendulum-chain/types": "npm:^1.1.1"
     "@polkadot/api": "npm:^13.2.1"
     "@polkadot/api-base": "npm:^13.2.1"
