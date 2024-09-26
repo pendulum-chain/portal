@@ -1,6 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import Big from 'big.js';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Table, { SortingOrder } from '../../components/Table';

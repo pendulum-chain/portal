@@ -14,7 +14,7 @@ import { ToastMessage, showToast } from '../../shared/showToast';
 import { PerMill } from '../../shared/parseNumbers/permill';
 import { ChainDecimals, decimalToNative } from '../../shared/parseNumbers/metric';
 import { useAssetRegistryMetadata } from '../useAssetRegistryMetadata';
-import { SpacewalkPrimitivesCurrencyId, TreasuryBuyoutExtensionAmount } from '@polkadot/types/lookup';
+import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 
 export interface BuyoutSettings {
   buyoutNativeToken: {
