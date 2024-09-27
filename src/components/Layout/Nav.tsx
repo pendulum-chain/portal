@@ -29,7 +29,7 @@ const CollapseMenu = ({
 
   return (
     <section className={`collapse ${disabled ? 'disabled' : 'collapse-arrow'}`}>
-      <input type="checkbox" checked={isActive} ref={inputRef} />
+      <input type="radio" name="menu-item" checked={isActive} ref={inputRef} />
       <button
         type="button"
         className={`nav-item collapse-btn collapse-title ${isActive ? 'active' : ''}`}
