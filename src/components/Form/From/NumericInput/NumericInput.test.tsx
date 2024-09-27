@@ -188,6 +188,16 @@ describe('NumericInput Component', () => {
     await userEvent.type(inputElement, '...........');
     expect(inputElement.value).toBe('.');
   });
+
+  it('should paste properly', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={3} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '123');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    await userEvent.paste('4');
+    expect(inputElement.value).toBe('4123');
+  });
 });
 
 describe('NumericInput onPaste should sanitize the user input', () => {
@@ -215,7 +225,10 @@ describe('NumericInput onPaste should sanitize the user input', () => {
     'should sanitize the pasted input with maxLength (decimal)',
     ({ input, maxLength, expected }) => {
       const mockEvent = {
-        target: { value: '' },
+        target: {
+          setSelectionRange: jest.fn(),
+          value: '',
+        },
         preventDefault: jest.fn(),
         clipboardData: {
           getData: jest.fn().mockReturnValue(input),

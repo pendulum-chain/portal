@@ -40,15 +40,20 @@ export function handleOnKeyPressNumericInput(e: KeyboardEvent): void {
 
 export function handleOnPasteNumericInput(e: ClipboardEvent, maxDecimals: number): string {
   const inputElement = e.target as HTMLInputElement;
-  const targetValue = inputElement.value;
+  const { value, selectionStart, selectionEnd } = inputElement;
 
   const clipboardData = sanitizeNumericInput(e.clipboardData?.getData('text/plain') || '');
-  const combinedValue = targetValue + clipboardData;
+
+  const combinedValue = value.slice(0, selectionStart || 0) + clipboardData + value.slice(selectionEnd || 0);
 
   const [integerPart, ...decimalParts] = combinedValue.split('.');
   const sanitizedValue = integerPart + (decimalParts.length > 0 ? '.' + decimalParts.join('') : '');
 
   e.preventDefault();
   inputElement.value = trimToMaxDecimals(sanitizedValue, maxDecimals);
+
+  const newCursorPosition = (selectionStart || 0) + clipboardData.length;
+  inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
+
   return trimToMaxDecimals(sanitizedValue, maxDecimals);
 }
