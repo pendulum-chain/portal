@@ -26,6 +26,11 @@ export const NumericInput = ({
     register.onChange(e);
   }
 
+  function handleOnPaste(e: ClipboardEvent): void {
+    handleOnPasteNumericInput(e, maxDecimals);
+    register.onChange(e);
+  }
+
   return (
     <div className="flex w-full justify-between">
       <div className="font-outfit flex-grow text-4xl text-black">
@@ -41,7 +46,7 @@ export const NumericInput = ({
           minlength="1"
           onChange={handleOnChange}
           onKeyDown={handleOnKeyDownNumericInput}
-          onPaste={(e: ClipboardEvent) => handleOnPasteNumericInput(e, maxDecimals)}
+          onPaste={handleOnPaste}
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0.0"
           readOnly={readOnly}
