@@ -53,8 +53,9 @@ matter what URL the browser requests.
 ### Missing price information
 
 If you are missing the price information about the assets on the dashboard page, you are probably experiencing a CORS
-problem with the batching server. If you want to fetch prices locally, you can use the proxy server available
-at [pendulum-tools](https://github.com/pendulum-chain/pendulum-tools). Change url in `src/hooks/usePriceFetcher.ts` file to `http://localhost:3000`
+problem with the batching server. If you want to fetch prices locally, you can use the proxy server available at
+[pendulum-tools](https://github.com/pendulum-chain/pendulum-tools). Change url in `src/hooks/usePriceFetcher.ts` file to
+`http://localhost:3000`
 
 ### Fixing type issues
 

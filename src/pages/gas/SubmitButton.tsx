@@ -11,7 +11,7 @@ export const SubmitButton = ({ loading, disabled }: { loading?: boolean; disable
     <>
       {walletAccount ? (
         <Button
-          className="w-full text-neutral text-base"
+          className="w-full text-base text-neutral"
           color="primary"
           type="submit"
           loading={!tokenSymbol || loading}

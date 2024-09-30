@@ -13,11 +13,11 @@ export const SwapFrom = ({
   badges: { minBadge, maxBadge },
 }: FromProps) => (
   <div
-    className={`rounded-lg ${disabled ? 'bg-base-100' : 'bg-base-300'} px-4 py-3 mb-3 ${className || ''} ${
+    className={`rounded-lg ${disabled ? 'bg-base-100' : 'bg-base-300'} mb-3 px-4 py-3 ${className || ''} ${
       error ? 'border border-solid border-red-400' : ''
     }`}
   >
-    <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
+    <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-400">
       <div className="flex items-center">
         <FromDescription network={network} customText={customText} />
         {assets && setSelectedAsset && (

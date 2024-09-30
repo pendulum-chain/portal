@@ -54,27 +54,27 @@ const Redeem = ({ data, onClose }: RedeemProps): JSX.Element | null => {
         <PoolProgress symbol={data.symbol} amount={amountString} />
       </TransactionProgress>
       <div className={hideCss}>
-        <div className="flex items-center gap-2 mt-2 mb-8 absolute top-0 translate-y-2/4">
+        <div className="absolute top-0 mb-8 mt-2 flex translate-y-2/4 items-center gap-2">
           <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
-            <ArrowLeftIcon className="w-4 h-4" />
+            <ArrowLeftIcon className="h-4 w-4" />
           </Button>
           <h3 className="text-3xl font-normal">Redeem from Backstop Pool</h3>
         </div>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             {walletAccount && (
-              <div className="flex justify-between align-end text-sm text-initial my-3">
+              <div className="align-end text-initial my-3 flex justify-between text-sm">
                 <p>
                   Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
                 </p>
-                <p className="text-neutral-500 text-right">
+                <p className="text-right text-neutral-500">
                   Balance: <TokenBalance query={balanceQuery} symbol={data.backstopPool.token.symbol}></TokenBalance>
                 </p>
               </div>
             )}
             <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
               <div className="flex items-center pt-2">
-                <div className="flex items-center justify-between flex-grow mr-2">
+                <div className="mr-2 flex flex-grow items-center justify-between">
                   <div>You will withdraw</div>
                   <TokenBalance
                     query={withdrawalQuote}
@@ -97,8 +97,8 @@ const Redeem = ({ data, onClose }: RedeemProps): JSX.Element | null => {
                 />
               </div>
             </AmountSelector>
-            <Validation className="text-center mt-2" errors={errors} />
-            <div className="relative flex w-full flex-col gap-4 rounded-lg bg-base-300 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
+            <Validation className="mt-2 text-center" errors={errors} />
+            <div className="relative mt-4 flex w-full flex-col gap-4 rounded-lg bg-base-300 p-4 text-neutral-500 dark:text-neutral-300">
               <div className="flex items-center justify-between">
                 <div>Security fee</div>
                 <div>{(data.insuranceFeeBps / 100).toFixed(2)}%</div>

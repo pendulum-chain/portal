@@ -61,11 +61,11 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
       <>
         <div className="flex flex-col items-center justify-between">
           <div className="text-md text-neutral-content">{mode === 'unstaking' ? 'Unstake' : 'Delegate'}</div>
-          <div className="text-xl mt-2">
+          <div className="mt-2 text-xl">
             {delegationAmountDecimal} {tokenSymbol}
           </div>
         </div>
-        <div className="flex justify-between px-4 mt-3">
+        <div className="mt-3 flex justify-between px-4">
           <span className="text-neutral-content">Available balance</span>
           <span>
             {nativeToDecimal(availableBalance).toFixed(2)} {tokenSymbol}
@@ -74,7 +74,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         <div
           tabIndex={0}
           onClick={toggle}
-          className={`collapse cursor-pointer collapse-arrow bg-base-300 rounded-lg my-1 ${collapseVisibility}`}
+          className={`collapse collapse-arrow my-1 cursor-pointer rounded-lg bg-base-300 ${collapseVisibility}`}
         >
           <div className="collapse-title">
             <div className="flex justify-between">
@@ -85,7 +85,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
             </div>
           </div>
           <div className="collapse-content">
-            <div className="flex justify-between mt-4">
+            <div className="mt-4 flex justify-between">
               <span className="text-neutral-content">Fees</span>
               <span>{nativeToFormatMetric(transactionFee, tokenSymbol)}</span>
             </div>
@@ -107,9 +107,9 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
 
   const actions = useMemo(
     () => (
-      <div className="flex-col align-center w-full">
+      <div className="align-center w-full flex-col">
         <Button
-          className="px-6 w-full mb-2"
+          className="mb-2 w-full px-6"
           color="primary"
           loading={submissionPending}
           onClick={onConfirm}
@@ -117,7 +117,7 @@ function ConfirmDelegateDialog(props: ConfirmDelegateDialogProps) {
         >
           {titleAction}
         </Button>
-        <Button className="px-6 w-full mr-0 ml-0" color="primary" variant="outline" onClick={onCancel}>
+        <Button className="ml-0 mr-0 w-full px-6" color="primary" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
       </div>

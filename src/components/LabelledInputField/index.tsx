@@ -26,15 +26,15 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-center w-full gap-2 component-preview" style={style}>
-        <div className="w-full form-control">
+      <div className="component-preview flex w-full items-center justify-center gap-2" style={style}>
+        <div className="form-control w-full">
           <label className="label">
             {label && <span className="label-text">{label}</span>}
             {secondaryLabel && <span className="label-text-alt">{secondaryLabel}</span>}
           </label>
           <div className="input-container">
             <Input
-              className={`border rounded-md bg-transparent ${!error && 'border-neutral-500'}`}
+              className={`rounded-md border bg-transparent ${!error && 'border-neutral-500'}`}
               color={inputColor}
               {...rest}
               onFocus={(event: TargetedEvent) => {
@@ -50,14 +50,14 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
               {...register}
             />
             {extraBtnText && extraBtnAction && (
-              <button type="button" className="rounded-md max-button" onClick={extraBtnAction}>
+              <button type="button" className="max-button rounded-md" onClick={extraBtnAction}>
                 {extraBtnText}
               </button>
             )}
           </div>
         </div>
       </div>
-      <label className="label">{error && <span className="text-red-400 label-text">{error}</span>}</label>
+      <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>
     </>
   );
 });

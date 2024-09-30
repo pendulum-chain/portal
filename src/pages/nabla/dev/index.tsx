@@ -27,7 +27,7 @@ const TokenItem = ({ token }: { token: NablaInstanceToken }) => {
       <div>
         <div className="flex items-center">
           <Button
-            className={`rounded-e-none${isLoading ? ' loading' : ''}`}
+            className={`rounded-e-none${isLoading ? 'loading' : ''}`}
             size="sm"
             color="secondary"
             type="button"
@@ -38,9 +38,9 @@ const TokenItem = ({ token }: { token: NablaInstanceToken }) => {
           </Button>
           <Dropdown vertical="bottom" end>
             <label tabIndex={0} className={`btn btn-secondary btn-sm rounded-s-none`}>
-              <EllipsisVerticalIcon className="w-4 h-4" />
+              <EllipsisVerticalIcon className="h-4 w-4" />
             </label>
-            <Dropdown.Menu tabIndex={0} className="p-0 shadow rounded-lg w-24">
+            <Dropdown.Menu tabIndex={0} className="w-24 rounded-lg p-0 shadow">
               <li>
                 <div
                   role="button"

@@ -73,13 +73,13 @@ export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content,
   const modalBody = (
     <>
       <Modal.Body>{content}</Modal.Body>
-      <Modal.Actions className="justify-center mt-4">{actions}</Modal.Actions>
+      <Modal.Actions className="mt-4 justify-center">{actions}</Modal.Actions>
     </>
   );
 
   return createPortal(
-    <Modal className={`bg-base-200 border border-[--modal-border]`} id={id} ref={ref}>
-      <Modal.Header className={`text-2xl claim-title flex mb-5 ${headerText ? 'justify-between' : 'justify-end'}`}>
+    <Modal className={`border border-[--modal-border] bg-base-200`} id={id} ref={ref}>
+      <Modal.Header className={`claim-title mb-5 flex text-2xl ${headerText ? 'justify-between' : 'justify-end'}`}>
         {headerText} <CloseButton onClick={onClose} />
       </Modal.Header>
       {form ? (

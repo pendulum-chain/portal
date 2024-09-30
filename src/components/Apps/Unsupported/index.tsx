@@ -16,22 +16,22 @@ const Unsupported = ({ app, tenant, supportedTenants }: UnsupportedProps): JSX.E
   return (
     <div className="flex flex-col items-center justify-center py-8">
       <Alert
-        icon={(<ExclamationTriangleIcon className="w-8 h-8 mr-2" />) as AlertProps['icon']}
+        icon={(<ExclamationTriangleIcon className="mr-2 h-8 w-8" />) as AlertProps['icon']}
         status="warning"
-        className="inline-block w-auto mb-6"
+        className="mb-6 inline-block w-auto"
       >
         <div>
-          <div className="text-xl mb-2">
+          <div className="mb-2 text-xl">
             <span className="capitalize">{app}</span> is not supported on <span className="capitalize">{tenant}</span>.
             Switch to one of the following:
           </div>
-          <div className="flex items-center flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {supportedTenants.map((st) => (
               <Button
                 key={st}
                 variant="outline"
                 size="sm"
-                className="capitalize text-base"
+                className="text-base capitalize"
                 type="button"
                 onClick={() => switchChain(st)}
               >

@@ -8,10 +8,10 @@ export const StellarUriScheme: FC<{ transactionURIScheme: string | null }> = ({ 
 
   return (
     <>
-      <p className="text-center mt-4">OR</p>
-      <p className="text-center mt-4">Scan the QR code with a Stellar wallet</p>
+      <p className="mt-4 text-center">OR</p>
+      <p className="mt-4 text-center">Scan the QR code with a Stellar wallet</p>
       <div className="mt-4 flex justify-center">
-        <div className="p-2 bg-white rounded-lg">
+        <div className="rounded-lg bg-white p-2">
           <QRCodeSVG value={transactionURIScheme} />
         </div>
       </div>

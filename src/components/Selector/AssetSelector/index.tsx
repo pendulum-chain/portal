@@ -55,14 +55,14 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
       <Button
         disabled={disabled}
         size="xs"
-        className="btn rounded-full h-4 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-neutral-content"
+        className="min-h-none btn mt-0.5 flex h-4 items-center rounded-full border-0 bg-neutral-200 pl-0 pr-1 text-neutral-content dark:bg-neutral-700"
         type="button"
       >
-        <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full mr-1 ">
-          <img src={selectedItem?.icon} alt={selectedItem?.name} className="h-full w-auto " />
+        <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)]">
+          <img src={selectedItem?.icon} alt={selectedItem?.name} className="h-full w-auto" />
         </span>
         <strong className="font-bold">{selectedItem?.displayName}</strong>
-        {items.length > 1 ? <ChevronDownIcon className="w-4 h-4 inline ml-px" /> : <div className="px-1" />}
+        {items.length > 1 ? <ChevronDownIcon className="ml-px inline h-4 w-4" /> : <div className="px-1" />}
       </Button>
     </DropdownSelector>
   );

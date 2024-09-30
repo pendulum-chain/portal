@@ -23,7 +23,7 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
       <Collapse.Content>
         <ConnectModalAccountsList accounts={accounts || []} />
         {selectedWallet?.extensionName === METAMASK_EXTENSION_NAME ? (
-          <p className="mt-3 text-xs text-center">
+          <p className="mt-3 text-center text-xs">
             For Metamask connection we use Polkadot-Snap which creates only one Polkadot address for your Metamask
             Wallet.
           </p>

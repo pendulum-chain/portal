@@ -40,7 +40,7 @@ export const Badges: FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) => {
     <>
       {minBadge && Number(minBadge.value) ? (
         <div
-          className={`badge ${disabled ? '' : `${colors.min} cursor-pointer`} text-xs mr-2.5`}
+          className={`badge ${disabled ? '' : `${colors.min} cursor-pointer`} mr-2.5 text-xs`}
           onClick={() => {
             if (!disabled && minBadge.onClick) {
               minBadge.onClick();
@@ -54,7 +54,7 @@ export const Badges: FC<BadgesProps> = ({ minBadge, maxBadge, disabled }) => {
       )}
       {maxBadge && Number(maxBadge.value) ? (
         <div
-          className={`badge ${disabled ? '' : `${colors.max} cursor-pointer`}  text-xs`}
+          className={`badge ${disabled ? '' : `${colors.max} cursor-pointer`} text-xs`}
           onClick={() => {
             if (!disabled && maxBadge.onClick) {
               maxBadge.onClick();

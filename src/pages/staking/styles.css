@@ -1,16 +1,16 @@
 [data-theme='amplitude'] {
   .btn-primary {
-    color: #32253E;
+    color: #32253e;
   }
 
   .btn-outline.btn-primary {
-    color: #00F197;
+    color: #00f197;
   }
 
   .btn-outline.btn-primary:hover {
-    color: #32253E;
+    color: #32253e;
   }
- 
+
   .collators-box {
     border: 1px solid #434343;
   }
@@ -19,68 +19,68 @@
     color: #fff;
   }
 
-  .collators-box h3{
+  .collators-box h3 {
     color: #fff;
     font-weight: 500;
   }
-  
-  .collators-box p{
+
+  .collators-box p {
     color: #fff;
     font-weight: 300;
   }
 
   .staked-icon {
-   fill: #fff;
+    fill: #fff;
   }
-  
+
   .rewards-icon {
-    fill: #00F197;
+    fill: #00f197;
   }
 
   .btn-unlock:disabled {
-    background: #00F197;
-    color: #32253E;
+    background: #00f197;
+    color: #32253e;
   }
 }
 
-[data-theme='pendulum'] {  
+[data-theme='pendulum'] {
   .collators-box {
-    border: 1px solid #E5E5E5;
+    border: 1px solid #e5e5e5;
   }
 
   .collators-box .card-title {
     color: #333333;
   }
 
-  .collators-box h3{
+  .collators-box h3 {
     color: #333333;
     font-weight: 500;
   }
-  
-  .collators-box h3.primary{
-    color: #907EA0;
-    font-weight: 600;
-  }  
 
-  .collators-box p{
+  .collators-box h3.primary {
+    color: #907ea0;
+    font-weight: 600;
+  }
+
+  .collators-box p {
     color: #828282;
     font-weight: 300;
   }
 
   .rewards-icon {
-    fill: #907EA0;
+    fill: #907ea0;
   }
 
   .staked-icon {
-    fill: #32253E;
+    fill: #32253e;
   }
-  
+
   .btn-unlock:disabled {
-    background: #907EA0;
+    background: #907ea0;
     color: #fff;
   }
-  
+
   .claim-title {
-    color: #010E19;
+    color: #010e19;
   }
 }

@@ -15,11 +15,11 @@ export type BadgeProps = {
 const AssetBadge = ({ size = 'md', className, children }: BadgeProps): JSX.Element | null => {
   return (
     <span
-      className={`rounded-full bg-neutral-200 flex items-center justify-between font-semibold min-w-[70px] pr-[.5em] ${
+      className={`flex min-w-[70px] items-center justify-between rounded-full bg-neutral-200 pr-[.5em] font-semibold ${
         sizes[size]
       } ${className || ''}`}
     >
-      <span className="rounded-full grow shrink-0 bg-neutral-300 h-full mr-1 p-[.1em]">
+      <span className="mr-1 h-full shrink-0 grow rounded-full bg-neutral-300 p-[.1em]">
         <img src={pendulumIcon} alt="Pendulum" className="h-full w-auto" width={42} height={42} />
       </span>
       {children}

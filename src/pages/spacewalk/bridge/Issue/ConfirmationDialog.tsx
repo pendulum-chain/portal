@@ -74,9 +74,9 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
               </>
             )}
           </div>
-          <div className="mt-4 text">With the text memo</div>
+          <div className="text mt-4">With the text memo</div>
           {issueRequest && <CopyablePublicKey variant="short" publicKey={expectedStellarMemo} />}
-          <div className="mt-4 text">In a single transaction to</div>
+          <div className="text mt-4">In a single transaction to</div>
           <CopyablePublicKey variant="short" publicKey={destination} />
 
           <StellarUriScheme transactionURIScheme={transactionURIScheme} />
@@ -94,7 +94,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
         </div>
 
         <div className="mt-4 text-sm">Note:</div>
-        <ul className="text-sm list-disc list-inside">
+        <ul className="list-inside list-disc text-sm">
           <li className="mt-1">
             Stellar transactions require memos for accurate processing. Failure to include the transaction memo may
             result in the loss of your coins.

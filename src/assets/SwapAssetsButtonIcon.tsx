@@ -38,7 +38,7 @@ export const SwapAssetsButtonIcon = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g className="transition origin-center hover:scale-90">
+      <g className="origin-center transition hover:scale-90">
         <path
           d="M18.5393 27.0103C25.1667 27.0103 30.5393 21.6377 30.5393 15.0103C30.5393 8.38284 25.1667 3.01025 18.5393 3.01025C11.9119 3.01025 6.53931 8.38284 6.53931 15.0103C6.53931 21.6377 11.9119 27.0103 18.5393 27.0103Z"
           fill={themeColors[currentTheme].circle}

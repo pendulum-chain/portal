@@ -53,15 +53,14 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     expire: EXPIRATION_PERIOD,
   });
 
-
   const clearLocalStorageWallets = () => {
     storageService.remove(LocalStorageKeys.SELECTED_WALLET_NAME);
-  }
+  };
 
   const removeWalletAccount = useCallback(async () => {
     await handleWalletConnectDisconnect(walletAccount);
     clear();
-    clearLocalStorageWallets()
+    clearLocalStorageWallets();
     setWallet(undefined);
   }, [clear, walletAccount]);
 
@@ -83,7 +82,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       // skip if tenant already initialized
       if (tenantRef.current === tenantName || accountAddress) return;
       tenantRef.current = tenantName;
-      const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress)
+      const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();

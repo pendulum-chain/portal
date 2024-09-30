@@ -40,7 +40,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="mt-4 text-sm">Your request is being processed</div>
         </div>
         <div className="mt-6">
-          <div className="mt-2 text-sm text-center">
+          <div className="mt-2 text-center text-sm">
             This typically takes only a few minutes. Contact
             <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
               support
