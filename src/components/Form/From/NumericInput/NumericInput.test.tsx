@@ -3,6 +3,7 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 import { render } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 import { NumericInput } from '.';
+import { handleOnPasteNumericInput } from './helpers';
 
 const mockRegister: UseFormRegisterReturn = {
   name: 'testInput',
@@ -153,4 +154,88 @@ describe('NumericInput Component', () => {
     await userEvent.paste('123.4567890123456789abcgdehyu0123456.2746472.93.2.7.3.5.3');
     expect(inputElement.value).toBe('123.456789012345');
   });
+
+  it('Should not cut the number if user is trying to type more than one "."', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '0.23');
+    await userEvent.keyboard('{arrowleft}.');
+    expect(inputElement.value).toBe('0.23');
+  });
+
+  it('Should not cut the number and do not move . position', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '12.34');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}{arrowleft}.');
+    expect(inputElement.value).toBe('12.34');
+  });
+
+  it('Should not paste the number if more than one .', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.paste('12.34.56');
+    expect(inputElement.value).toBe('');
+  });
+
+  it('should accept only one "."', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '...........');
+    expect(inputElement.value).toBe('.');
+  });
+
+  it('should paste properly', async () => {
+    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={3} />);
+    const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
+
+    await userEvent.type(inputElement, '123');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    await userEvent.paste('4');
+    expect(inputElement.value).toBe('4123');
+  });
+});
+
+describe('NumericInput onPaste should sanitize the user input', () => {
+  const testCases = [
+    { input: '1.......4.....2', maxLength: 8, expected: '1.42' },
+    { input: '12....34.....56', maxLength: 8, expected: '12.3456' },
+    { input: '....56789...', maxLength: 5, expected: '.56789' },
+    { input: '1.23..4..56.', maxLength: 6, expected: '1.23456' },
+    { input: '1.....2', maxLength: 8, expected: '1.2' },
+    { input: '123..4...56.7', maxLength: 7, expected: '123.4567' },
+    { input: 'a.b.c.123.4.def56', maxLength: 8, expected: '.123456' },
+    { input: '12abc34....def567', maxLength: 2, expected: '1234.56' },
+    { input: '.....a.b.c......', maxLength: 8, expected: '.' },
+    { input: '12.....3..4..5abc6', maxLength: 7, expected: '12.3456' },
+    { input: '1a2b3c4d5e.1234567', maxLength: 4, expected: '12345.1234' },
+    { input: '12abc@#34..def$%^567', maxLength: 2, expected: '1234.56' },
+    { input: '....!@#$$%^&*((', maxLength: 8, expected: '.' },
+    { input: '123....abc.def456ghi789', maxLength: 4, expected: '123.4567' },
+    { input: '00.00123...4', maxLength: 4, expected: '00.0012' },
+    { input: '.1...2.67.865', maxLength: 3, expected: '.126' },
+    { input: '123abc...', maxLength: 6, expected: '123.' },
+  ];
+
+  test.each(testCases)(
+    'should sanitize the pasted input with maxLength (decimal)',
+    ({ input, maxLength, expected }) => {
+      const mockEvent = {
+        target: {
+          setSelectionRange: jest.fn(),
+          value: '',
+        },
+        preventDefault: jest.fn(),
+        clipboardData: {
+          getData: jest.fn().mockReturnValue(input),
+        },
+      } as unknown as ClipboardEvent;
+
+      expect(handleOnPasteNumericInput(mockEvent, maxLength)).toBe(expected);
+    },
+  );
 });
