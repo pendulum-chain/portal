@@ -14,11 +14,16 @@ export type NablaConfig = AppConfigBase &
   >;
 
 export const nablaConfig: NablaConfig = {
-  tenants: [TenantName.Foucoco],
-  environment: ['staging', 'development'],
+  tenants: [TenantName.Foucoco, TenantName.Pendulum],
+  environment: ['staging', 'development', 'production'],
   foucoco: {
     indexerUrl: 'https://pendulum.squids.live/foucoco-squid/graphql',
     router: '6mYwT4yRrrMK978NszqBvxkvXjYnsmKfs2BkYGJGiR4XY9Sc',
     oracle: '6kqj1tnYUGY3L93YFArXKF2E4tpQ2tUJ4DARwkAjZEyDoof6',
+  },
+  pendulum: {
+    indexerUrl: 'https://pendulum.squids.live/pendulum-squid/graphql',
+    router: '6fEJAs1ycfTNDZY7ZoAtkBhuhHnRVNscdALMBLdjDV12K4uE',
+    oracle: '6fxpVAp3W5mJsXqnBiQresTd8HZDkNMRFCafbXC9X2AAjFHY',
   },
 };
