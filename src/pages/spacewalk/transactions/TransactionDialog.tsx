@@ -8,7 +8,7 @@ import CancelledDialogIcon from '../../../assets/dialog-status-cancelled';
 import PendingDialogIcon from '../../../assets/dialog-status-pending';
 import SuccessDialogIcon from '../../../assets/dialog-status-success';
 import WarningDialogIcon from '../../../assets/dialog-status-warning';
-import { CopyableAddress } from '../../../components/PublicKey';
+import { CopyablePublicKey } from '../../../components/PublicKey/CopyablePublicKey';
 import TransferCountdown from '../../../components/TransferCountdown';
 import {
   addSuffix,
@@ -86,14 +86,14 @@ function BaseTransactionDialog(props: BaseTransactionDialogProps) {
       <div className="flex flex-col items-center justify-between">
         {statusIcon}
         <div className="mt-5" />
-        <h1 className="text-2xl transfer-dialog-contrast-text font-semibold mb-1">{title}</h1>
+        <h1 className="transfer-dialog-contrast-text mb-1 text-2xl font-semibold">{title}</h1>
         {content}
         <Divider className="mx-5 mb-2 mt-1" />
         <Collapse
           id="details"
           tabIndex={0}
           onClick={toggle}
-          className={`collapse-arrow rounded-lg bg-black bg-opacity-3 transfer-dialog-text flex flex-col w-11/12 ${collapseVisibility}`}
+          className={`transfer-dialog-text collapse-arrow flex w-11/12 flex-col rounded-lg bg-black bg-opacity-3 ${collapseVisibility}`}
         >
           <Collapse.Title className="flex flex-row justify-between">
             <div className="text-sm">Bridge fee</div>
@@ -102,18 +102,18 @@ function BaseTransactionDialog(props: BaseTransactionDialogProps) {
           <Collapse.Content className="space-y-4">
             <div className="flex flex-row justify-between">
               <div className="text-sm">Destination Address (Stellar)</div>
-              <CopyableAddress
+              <CopyablePublicKey
                 inline={true}
-                className="text-sm p0"
+                className="p0 text-sm"
                 variant="short"
                 publicKey={destinationStellarAddress}
               />
             </div>
             <div className="flex flex-row justify-between">
               <div className="text-sm">Vault Address ({tenantNameCapitalized})</div>
-              <CopyableAddress
+              <CopyablePublicKey
                 inline={true}
-                className="text-sm p-0"
+                className="p-0 text-sm"
                 variant="short"
                 publicKey={transfer.original.vault.accountId.toString()}
               />
@@ -121,9 +121,9 @@ function BaseTransactionDialog(props: BaseTransactionDialogProps) {
             {vaultStellarPublicKey && (
               <div className="flex flex-row justify-between">
                 <div className="text-sm">Vault Address (Stellar)</div>
-                <CopyableAddress
+                <CopyablePublicKey
                   inline={true}
-                  className="text-sm p-0"
+                  className="p-0 text-sm"
                   variant="short"
                   publicKey={vaultStellarPublicKey}
                 />
@@ -132,9 +132,9 @@ function BaseTransactionDialog(props: BaseTransactionDialogProps) {
             {showMemo && (
               <div className="flex flex-row justify-between">
                 <div className="text-sm">Memo</div>
-                <CopyableAddress
+                <CopyablePublicKey
                   inline={true}
-                  className="text-sm p-0"
+                  className="p-0 text-sm"
                   variant="short"
                   publicKey={expectedStellarMemo}
                 />
@@ -177,14 +177,14 @@ export function CompletedTransactionDialog(props: TransactionDialogProps) {
   }
   const content = (
     <>
-      <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+      <div className="transfer-dialog-text text-sm">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <label className="transfer-dialog-label text my-4 rounded-lg px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
-      <div className="flex flex-row justify-between w-11/12">
-        <div className="text-sm transfer-dialog-text">Spacewalk transaction</div>
-        <CopyableAddress inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
+      <div className="flex w-11/12 flex-row justify-between">
+        <div className="transfer-dialog-text text-sm">Spacewalk transaction</div>
+        <CopyablePublicKey inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
   );
@@ -209,19 +209,19 @@ export function CancelledTransactionDialog(props: TransactionDialogProps) {
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
-      <div className="text-md p-5 transfer-dialog-text align-middle text-center">
+      <div className="text-md transfer-dialog-text p-5 text-center align-middle">
         {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend}
           ${stellarAsset}.`}
       </div>
-      <div className="transfer-dialog-colored-text text-md ">
+      <div className="transfer-dialog-colored-text text-md">
         Contact the team for debugging if you think this is an error.
       </div>
-      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
+      <label className="transfer-dialog-label text my-4 rounded px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
-      <div className="flex flex-row justify-between w-11/12">
+      <div className="flex w-11/12 flex-row justify-between">
         <div className="text-xs">Spacewalk transaction</div>
-        <CopyableAddress inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
+        <CopyablePublicKey inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
   );
@@ -299,24 +299,24 @@ export function PendingTransactionDialog(props: TransactionDialogProps) {
     <>
       <>
         <div
-          className="text-xl transfer-dialog-contrast-text text-semibold"
+          className="transfer-dialog-contrast-text text-semibold text-xl"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-2" />
-        <div className="transfer-dialog-text flex justify'center text ">
+        <div className="transfer-dialog-text justify'center text flex">
           <div className="mr-2">With the text memo</div>
-          <CopyableAddress
+          <CopyablePublicKey
             inline={true}
             variant="short"
             publicKey={expectedStellarMemo}
             className="transfer-dialog-text"
           />
         </div>
-        <div className="flex justify-center text-md transfer-dialog-text">
+        <div className="text-md transfer-dialog-text flex justify-center">
           <div className="mr-2">In a single transaction to</div>
-          <CopyableAddress
+          <CopyablePublicKey
             inline={true}
-            className="text-sm p-0 transfer-dialog-text"
+            className="transfer-dialog-text p-0 text-sm"
             variant="short"
             publicKey={destinationStellarAddress}
           />
@@ -325,11 +325,11 @@ export function PendingTransactionDialog(props: TransactionDialogProps) {
           Within <TransferCountdown request={transfer.original} />
         </div>
       </>
-      <label className="transfer-dialog-label rounded px-4 py-2 my-4 text font-semibold ">
+      <label className="transfer-dialog-label text my-4 rounded px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
-      <div className="text-sm px-5 ">
+      <div className="px-5 text-sm">
         Note: Estimated time for issuing is in a minute after submitting the Stellar payment to the vault, contact
         <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
           support
@@ -341,7 +341,7 @@ export function PendingTransactionDialog(props: TransactionDialogProps) {
   );
   const redeemContent = (
     <>
-      <div className="text-xl mb-2">{`${amountToSend} ${stellarAsset}`}</div>
+      <div className="mb-2 text-xl">{`${amountToSend} ${stellarAsset}`}</div>
       <div className="text-md">The vault has to complete the transaction in:</div>
       <TransferCountdown request={transfer.original} />
       <div className="mt-2" />
@@ -373,7 +373,7 @@ export function FailedTransactionDialog(props: TransactionDialogProps) {
   const content = (
     <>
       <div className="text-xl">{`${amountToSend} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+      <label className="transfer-dialog-label text my-4 rounded-lg px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
     </>
@@ -385,10 +385,10 @@ export function FailedTransactionDialog(props: TransactionDialogProps) {
         compensation.
       </div>
       <div className="mt-4" />
-      <div className="text-md font-bold pb-1">
+      <div className="text-md pb-1 font-bold">
         To redeem your {stellarAsset}, you must now pick one of the two options:
       </div>
-      <div className="text-md pl-2 pb-1">
+      <div className="text-md pb-1 pl-2">
         1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.{' '}
         <Link className="font-semibold underline">Compensate</Link>
       </div>

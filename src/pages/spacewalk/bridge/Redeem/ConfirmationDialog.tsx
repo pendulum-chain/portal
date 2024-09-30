@@ -1,12 +1,12 @@
 import { Button } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'preact/hooks';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { PublicKey } from '../../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { RichRedeemRequest } from '../../../../hooks/spacewalk/useRedeemPallet';
 import { nativeStellarToDecimal } from '../../../../shared/parseNumbers/metric';
 import { Dialog } from '../../../../components/Dialog';
-import { useMemo } from 'preact/hooks';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';
 import { PAGES_PATHS } from '../../../../app';
 
@@ -33,14 +33,14 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
             You will receive {totalAmount} {asset?.getCode()}
           </div>
           {asset && asset.getIssuer() && (
-            <>
-              issued by <PublicKey variant="short" publicKey={asset?.getIssuer()} />
-            </>
+            <div className="flex items-center justify-center text-sm">
+              <div>issued by</div> <PublicKey variant="short" publicKey={asset?.getIssuer()} />
+            </div>
           )}
-          <div className="text-sm mt-4">Your request is being processed</div>
+          <div className="mt-4 text-sm">Your request is being processed</div>
         </div>
         <div className="mt-6">
-          <div className="text-sm mt-2 text-center">
+          <div className="mt-2 text-sm text-center">
             This typically takes only a few minutes. Contact
             <a href={PENDULUM_SUPPORT_CHAT_URL} target="_blank" rel="noreferrer" className="mx-1 text-primary">
               support

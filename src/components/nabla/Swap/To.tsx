@@ -4,7 +4,6 @@ import { Button } from 'react-daisyui';
 import { useFormContext } from 'react-hook-form';
 import Big from 'big.js';
 
-import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { UseTokenOutAmountResult } from '../../../hooks/nabla/useTokenOutAmount';
 import useBoolean from '../../../hooks/useBoolean';
 import { NumberLoader } from '../../Loader';
@@ -48,9 +47,9 @@ export function To({
   }, [toAmountQuote.data?.amountOut.preciseString, setValue]);
 
   return (
-    <div className="rounded-lg bg-base-300 px-4 py-3 border border-transparent">
-      <div className="w-full flex justify-between">
-        <div className="flex-grow text-4xl text-[inherit] font-outfit overflow-x-auto overflow-y-hidden mr-2">
+    <div className="rounded-lg border border-transparent bg-base-300 px-4 py-3">
+      <div className="flex w-full justify-between">
+        <div className="font-outfit mr-2 flex-grow overflow-x-auto overflow-y-hidden text-4xl text-[inherit]">
           {toAmountQuote.isLoading ? (
             <NumberLoader />
           ) : toAmountQuote.data !== undefined ? (
@@ -62,7 +61,7 @@ export function To({
               className="hover:opacity-80"
               title="Refresh"
             >
-              <ArrowPathRoundedSquareIcon className="w-7 h-7" />
+              <ArrowPathRoundedSquareIcon className="h-7 w-7" />
             </button>
           ) : (
             <>0</>
@@ -70,19 +69,19 @@ export function To({
         </div>
         <Button
           size="xs"
-          className="rounded-full h-7 min-h-none border-0 bg-neutral-200 dark:bg-neutral-700 pl-0 pr-1 flex items-center mt-0.5 text-sm font-medium"
+          className="min-h-none mt-0.5 flex h-7 items-center rounded-full border-0 bg-neutral-200 pl-0 pr-1 text-sm font-medium dark:bg-neutral-700"
           onClick={onOpenSelector}
           type="button"
         >
-          <span className="rounded-full bg-[rgba(0,0,0,0.15)] h-full p-px mr-1">
+          <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)] p-px">
             <img src={getIcon(toToken?.symbol)} alt={toToken?.name} className="h-full w-auto" />
           </span>
           <strong className="font-bold">{toToken?.symbol || 'Select'}</strong>
-          <ChevronDownIcon className="w-4 h-4 inline ml-px" />
+          <ChevronDownIcon className="ml-px inline h-4 w-4" />
         </Button>
       </div>
-      <div className="flex justify-between items-center mt-1 dark:text-neutral-300 text-neutral-500">
-        <div className="text-sm mt-px">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
+      <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-300">
+        <div className="mt-px text-sm">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
         {walletAccount && (
           <div className="flex gap-1 text-sm">
             Balance:{' '}
@@ -95,13 +94,13 @@ export function To({
           </div>
         )}
       </div>
-      <div className="mt-4 h-px -mx-4 bg-[rgba(0,0,0,0.15)]" />
+      <div className="-mx-4 mt-4 h-px bg-[rgba(0,0,0,0.15)]" />
       <div
-        className={`collapse overflow-visible dark:text-neutral-300 text-neutral-500 -mx-4 text-sm${
-          isOpen ? ' collapse-open' : ''
+        className={`collapse -mx-4 overflow-visible text-neutral-500 dark:text-neutral-300 text-sm${
+          isOpen ? 'collapse-open' : ''
         }`}
       >
-        <div className="collapse-title cursor-pointer flex justify-between px-4 pt-3 pb-0" onClick={toggle}>
+        <div className="collapse-title flex cursor-pointer justify-between px-4 pb-0 pt-3" onClick={toggle}>
           <div className="flex items-center">
             {fromToken !== undefined &&
             toToken !== undefined &&
@@ -115,9 +114,9 @@ export function To({
           <div>
             <div
               title="More info"
-              className="w-6 h-6 ml-1 flex items-center justify-center rounded-full bg-blackAlpha-200 dark:bg-whiteAlpha-200 hover:opacity-80"
+              className="ml-1 flex h-6 w-6 items-center justify-center rounded-full bg-blackAlpha-200 hover:opacity-80 dark:bg-whiteAlpha-200"
             >
-              <ChevronDownIcon className="w-5 h-5 inline" />
+              <ChevronDownIcon className="inline h-5 w-5" />
             </div>
           </div>
         </div>

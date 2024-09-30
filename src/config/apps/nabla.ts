@@ -1,5 +1,6 @@
 import { TenantName } from '../../models/Tenant';
 import { AppConfigBase } from './types';
+
 export type NablaConfig = AppConfigBase &
   Partial<
     Record<

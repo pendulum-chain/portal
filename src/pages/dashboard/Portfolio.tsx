@@ -13,24 +13,25 @@ function Portfolio() {
   }, []);
 
   return (
-    <div className="card portfolio rounded-md bg-base-100">
-      <div className="p-4 flex flex-row justify-between">
-        <div className="font-bold text-xl">Wallet</div>
+    <div className="portfolio card rounded-md bg-base-100">
+      <div className="flex flex-row justify-between p-4">
+        <div className="text-xl font-bold">Wallet</div>
         <div className="text-xl" title={accountTotalBalance.toString()}>
           $ {accountTotalBalance.toPrecision(2)}
         </div>
       </div>
       {walletAccount && (
         <Table
-          className="bg-base-100 text-md"
+          className="text-md bg-base-100"
           data={balances}
           columns={columns}
           isLoading={!balances}
-          sortBy={{ amount: SortingOrder.DESC, token: SortingOrder.ASC }}
+          sortBy={{ usdValue: SortingOrder.DESC }}
           search={false}
           pageSize={8}
           oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
           evenRowsClassname="border-b-base-300 table-border"
+          tableFixed
         />
       )}
       {!walletAccount && <div className="p-5"> You need to connect a wallet in order to see your Portfolio. </div>}
