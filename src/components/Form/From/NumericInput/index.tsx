@@ -2,7 +2,7 @@ import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
-import { handleOnChangeNumericInput, handleOnKeyPressNumericInput, handleOnPasteNumericInput } from './helpers';
+import { handleOnChangeNumericInput, handleOnKeyDownNumericInput, handleOnPasteNumericInput } from './helpers';
 
 interface NumericInputProps {
   register: UseFormRegisterReturn;
@@ -40,7 +40,7 @@ export const NumericInput = ({
           }
           minlength="1"
           onChange={handleOnChange}
-          onKeyPress={handleOnKeyPressNumericInput}
+          onKeyDown={handleOnKeyDownNumericInput}
           onPaste={(e: ClipboardEvent) => handleOnPasteNumericInput(e, maxDecimals)}
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0.0"

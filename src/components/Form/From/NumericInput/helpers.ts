@@ -27,16 +27,30 @@ export function handleOnChangeNumericInput(e: KeyboardEvent, maxDecimals: number
   target.value = trimToMaxDecimals(target.value, maxDecimals);
 }
 
+/**
+ * Checks if the input already has a decimal point and prevents the user from entering another one.
+ * Why onKeyDown? Because it is triggered before the character is processed and added to the input value.
+ */
+
 function alreadyHasDecimal(e: KeyboardEvent) {
   const decimalChars = ['.', ','];
   return decimalChars.some((char) => e.key === char && e.target && (e.target as HTMLInputElement).value.includes('.'));
 }
 
-export function handleOnKeyPressNumericInput(e: KeyboardEvent): void {
+export function handleOnKeyDownNumericInput(e: KeyboardEvent): void {
   if (alreadyHasDecimal(e)) {
     e.preventDefault();
   }
 }
+
+/**
+ * Handles the paste event to ensure the value does not exceed the maximum number of decimal places,
+ * replaces commas with dots, and removes invalid non-numeric characters.
+ *
+ * @param e - The clipboard event triggered by the input.
+ * @param maxDecimals - The maximum number of decimal places allowed.
+ * @returns The sanitized value after the paste event.
+ */
 
 export function handleOnPasteNumericInput(e: ClipboardEvent, maxDecimals: number): string {
   const inputElement = e.target as HTMLInputElement;
@@ -52,7 +66,8 @@ export function handleOnPasteNumericInput(e: ClipboardEvent, maxDecimals: number
   e.preventDefault();
   inputElement.value = trimToMaxDecimals(sanitizedValue, maxDecimals);
 
-  const newCursorPosition = (selectionStart || 0) + clipboardData.length;
+  const newCursorPosition =
+    (selectionStart || 0) + clipboardData.length - (combinedValue.length - sanitizedValue.length);
   inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
 
   return trimToMaxDecimals(sanitizedValue, maxDecimals);
