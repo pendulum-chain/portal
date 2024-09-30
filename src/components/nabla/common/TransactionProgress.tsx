@@ -76,7 +76,7 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
       </div>
       {!mutation.isSuccess && !!errorMsg && <p className="mt-1 text-center">{errorMsg}</p>}
       <div className="mt-6"></div>
-      {!!explorerUrl && (
+      {explorerUrl && (
         <a href={explorerUrl} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">
           View on Explorer
         </a>

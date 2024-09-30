@@ -186,9 +186,9 @@ export function CollatorRewards() {
     if (loadingToken) {
       return (
         <>
-          <Skeleton className="w-full h-8 mb-2" />
-          <Skeleton className="w-full h-8 mb-2" />
-          <Skeleton className="w-full h-8 mb-2" />
+          <Skeleton className="mb-2 h-8 w-full" />
+          <Skeleton className="mb-2 h-8 w-full" />
+          <Skeleton className="mb-2 h-8 w-full" />
         </>
       );
     }
@@ -198,9 +198,9 @@ export function CollatorRewards() {
 
   return (
     <>
-      <div className="flex flex-col mb-8 justify-between md:flex-row ">
-        <div className="card rounded-lg bg-base-200 mb-3 md:w-1/2 md:mb-0 md:mr-5 collators-box">
-          <div className="card-body py-6 px-4 xs:px-8">
+      <div className="mb-8 flex flex-col justify-between md:flex-row">
+        <div className="collators-box card mb-3 rounded-lg bg-base-200 md:mb-0 md:mr-5 md:w-1/2">
+          <div className="card-body px-4 py-6 xs:px-8">
             <h2 className="card-title font-normal">Staking</h2>
             {renderContentWithLoading(
               <StakingContent
@@ -215,9 +215,9 @@ export function CollatorRewards() {
             )}
           </div>
         </div>
-        <div className="card rounded-lg bg-base-200 md:w-1/2 collators-box">
-          <div className="card-body py-6 px-4 xs:px-8">
-            <h2 className="card-title font-normal mb-2">Staking Rewards</h2>
+        <div className="collators-box card rounded-lg bg-base-200 md:w-1/2">
+          <div className="card-body px-4 py-6 xs:px-8">
+            <h2 className="card-title mb-2 font-normal">Staking Rewards</h2>
             {renderContentWithLoading(
               <StakingRewardsContent
                 updateButton={{
