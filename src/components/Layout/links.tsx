@@ -169,26 +169,25 @@ export function createLinks(tenantName: TenantName): [LinkItem[], Promise<LinkIt
     alchemyPayLinkItem,
   ];
 
-  return [
-    links,
-    new Promise(async (resolve) => {
-      const alchemyPayLink = await config.alchemyPay.encodeUrlWithRedirection(
-        config.alchemyPay.prodUrl,
-        window.location.href,
-      );
+  const getLinks = async () => {
+    const alchemyPayLink = await config.alchemyPay.encodeUrlWithRedirection(
+      config.alchemyPay.prodUrl,
+      window.location.href,
+    );
 
-      resolve([
-        dashboardLinkItem,
-        zenlinkAmmLinkItem,
-        spacewalkLinkItem,
-        nablaLinkItem,
-        stakingLinkItem,
-        governanceLinkItem,
-        {
-          ...alchemyPayLinkItem,
-          link: alchemyPayLink,
-        },
-      ]);
-    }),
-  ];
+    return [
+      dashboardLinkItem,
+      zenlinkAmmLinkItem,
+      spacewalkLinkItem,
+      nablaLinkItem,
+      stakingLinkItem,
+      governanceLinkItem,
+      {
+        ...alchemyPayLinkItem,
+        link: alchemyPayLink,
+      },
+    ];
+  };
+
+  return [links, getLinks()];
 }
