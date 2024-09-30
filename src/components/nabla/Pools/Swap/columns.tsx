@@ -46,7 +46,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   accessorKey: 'apr',
   accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props): JSX.Element | null => (
-    <Badge className="py-1 px-2 h-auto rounded-lg text-blackAlpha-700 dark:text-white bg-success/35">
+    <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">
       {props.renderValue()}%
     </Badge>
   ),

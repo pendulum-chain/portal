@@ -104,8 +104,7 @@ export const useLocalStorage = <T>({
   return { state, set, merge, clear };
 };
 
-
 export enum LocalStorageKeys {
-  TERMS_AND_CONDITIONS = "TERMS_AND_CONDITIONS",
-  SELECTED_WALLET_NAME = "SELECTED_WALLET_NAME",
+  TERMS_AND_CONDITIONS = 'TERMS_AND_CONDITIONS',
+  SELECTED_WALLET_NAME = 'SELECTED_WALLET_NAME',
 }

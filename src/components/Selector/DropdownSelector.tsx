@@ -12,9 +12,9 @@ function DropdownSelector<T extends AssetItem>(props: Props<T>) {
   const { items, onChange, children } = props;
   return (
     <div className="flex flex-grow">
-      <div className="dropdown min-w-[95px] flex justify-end">
+      <div className="dropdown flex min-w-[95px] justify-end">
         {children}
-        <Dropdown.Menu className="w-52 z-50">
+        <Dropdown.Menu className="z-50 w-52">
           {items.map((item) => (
             <Dropdown.Item
               key={item.id}

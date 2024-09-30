@@ -17,7 +17,7 @@ export const AccountCard = ({ account }: AccountProps) => {
         className="flex w-full cursor-pointer items-center rounded border-l-2 border-transparent p-1.5 hover:border-primary hover:bg-base-100"
         onClick={() => setWalletAccount(account)}
       >
-        <ChainLogo className="w-8 h-8" />
+        <ChainLogo className="h-8 w-8" />
         <p className="ml-2.5">
           {account.name} | {trimAddress(account.address)}
         </p>

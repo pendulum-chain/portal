@@ -17,7 +17,7 @@ export const StandardFrom = ({
         error ? 'border border-solid border-red-400' : ''
       }`}
     >
-      <div className="w-full flex justify-between">
+      <div className="flex w-full justify-between">
         <NumericInput
           additionalStyle={disabled ? 'text-gray-400 focus:text-gray-400' : ''}
           maxDecimals={maxDecimals}
@@ -35,7 +35,7 @@ export const StandardFrom = ({
           />
         )}
       </div>
-      <div className="flex justify-between items-center mt-1 dark:text-neutral-400 text-neutral-500">
+      <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-400">
         <FromDescription network={network} customText={customText} />
         <AvailableActions max={max} setValue={setValue} maxDecimals={maxDecimals} />
       </div>

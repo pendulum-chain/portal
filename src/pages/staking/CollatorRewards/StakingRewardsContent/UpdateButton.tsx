@@ -11,7 +11,7 @@ export const UpdateButton: FC<UpdateButtonProps> = ({ loading, disabled, onClick
   <Button
     loading={loading}
     onClick={onClick}
-    className="btn btn-primary w-full xs:w-1/2 xs:mr-2 mb-2 rounded-md p-0 leading-3 min-h-fit max-h-10"
+    className="btn btn-primary mb-2 max-h-10 min-h-fit w-full rounded-md p-0 leading-3 xs:mr-2 xs:w-1/2"
     disabled={disabled || loading}
   >
     {loading ? '' : 'Update'}

@@ -16,11 +16,7 @@ export function ConnectModalWalletsList({ wallets, onClick, onClose }: ConnectWa
   return (
     <section className="grid gap-4 md:grid-cols-2">
       {wallets.map((wallet: Wallet) => (
-        <ConnectModalListWalletsItem
-          key={wallet.extensionName}
-          wallet={wallet}
-          onClick={onClick}
-        />
+        <ConnectModalListWalletsItem key={wallet.extensionName} wallet={wallet} onClick={onClick} />
       ))}
       <WalletConnect onClick={onClose} />
     </section>

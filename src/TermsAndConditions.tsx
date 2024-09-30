@@ -16,7 +16,7 @@ const TermsAndConditions = (_props: PropsWithChildren) => {
     <Modal open={true} style={{ borderRadius: '5px' }}>
       <Modal.Header className="text-3xl">T&Cs</Modal.Header>
       <Modal.Body>
-        <div className="text-lg mb-5">
+        <div className="mb-5 text-lg">
           <Link
             style={{ textDecoration: 'underline' }}
             color="accent"
@@ -26,13 +26,13 @@ const TermsAndConditions = (_props: PropsWithChildren) => {
             View Terms and Conditions
           </Link>
         </div>
-        <div className="text-lg flex">
+        <div className="flex text-lg">
           <Checkbox checked={checked} onClick={() => setChecked(!checked)} color="primary" size="md" />
           <span className="pl-2">I have read and accept the terms and conditions</span>
         </div>
       </Modal.Body>
-      <Modal.Actions className="justify-center mt-10">
-        <Button className="px-12 text-thin w-full" color="primary" onClick={acceptTerms} disabled={!checked}>
+      <Modal.Actions className="mt-10 justify-center">
+        <Button className="text-thin w-full px-12" color="primary" onClick={acceptTerms} disabled={!checked}>
           Agree
         </Button>
       </Modal.Actions>

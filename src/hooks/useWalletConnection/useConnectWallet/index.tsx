@@ -6,8 +6,7 @@ import { ToastMessage, showToast } from '../../../shared/showToast';
 import { storageService } from '../../../services/storage/local';
 import { LocalStorageKeys } from '../../useLocalStorage';
 
-
-const alwaysShowWallets = ['talisman', 'subwallet-js', 'polkadot-js']
+const alwaysShowWallets = ['talisman', 'subwallet-js', 'polkadot-js'];
 
 export const useConnectWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>();
@@ -15,7 +14,9 @@ export const useConnectWallet = () => {
   const { dAppName } = useGlobalState();
 
   useEffect(() => {
-    const installedWallets = getWallets().filter((wallet) => alwaysShowWallets.includes(wallet.extensionName) || wallet.installed);
+    const installedWallets = getWallets().filter(
+      (wallet) => alwaysShowWallets.includes(wallet.extensionName) || wallet.installed,
+    );
     setWallets(installedWallets);
   }, []);
 
@@ -30,8 +31,8 @@ export const useConnectWallet = () => {
       await wallet.enable(dAppName);
 
       // Save selected wallet name to local storage
-      if(wallet.installed){
-          storageService.set(LocalStorageKeys.SELECTED_WALLET_NAME, wallet.extensionName);
+      if (wallet.installed) {
+        storageService.set(LocalStorageKeys.SELECTED_WALLET_NAME, wallet.extensionName);
       }
 
       return wallet.getAccounts();

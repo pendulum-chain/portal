@@ -17,7 +17,7 @@ export function FailedTransferDialog(props: TransferDialogProps) {
   const content = (
     <>
       <div className="text-xl">{`${amountToSend} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label rounded-lg px-4 py-2 my-4 text font-semibold ">
+      <label className="transfer-dialog-label text my-4 rounded-lg px-4 py-2 font-semibold">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
     </>
@@ -29,10 +29,10 @@ export function FailedTransferDialog(props: TransferDialogProps) {
         compensation.
       </div>
       <div className="mt-4" />
-      <div className="text-md font-bold pb-1">
+      <div className="text-md pb-1 font-bold">
         To redeem your {stellarAsset}, you must now pick one of the two options:
       </div>
-      <div className="text-md pl-2 pb-1">
+      <div className="text-md pb-1 pl-2">
         1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.{' '}
         <Link className="font-semibold underline">Compensate</Link>
       </div>

@@ -82,7 +82,11 @@ const WalletConnect = ({ onClick }: WalletConnectProps) => {
   }, [provider]);
 
   return (
-    <Button className="flex justify-center w-full md:justify-start outline-primary" onClick={walletConnectClick} disabled={loading}>
+    <Button
+      className="flex w-full justify-center outline-primary md:justify-start"
+      onClick={walletConnectClick}
+      disabled={loading}
+    >
       <img src={logo} alt="WalletConnect connect button" width={32} height={32} />
       <p className="ml-2">{loading ? 'Loading...' : 'Wallet Connect'}</p>
     </Button>
