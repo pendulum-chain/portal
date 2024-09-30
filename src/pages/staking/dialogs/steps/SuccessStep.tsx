@@ -11,6 +11,6 @@ export const SuccessStep: FC<SuccessStepProps> = ({ title, description }) => (
     <SuccessDialogIcon />
     <div className="mt-4" />
     <h2 className="text-xl">{title}</h2>
-    <p className="text-sm dark:text-neutral-400 text-neutral-500 mt-2 mx-4 sm:mx-16 text-center">{description}</p>
+    <p className="mx-4 mt-2 text-center text-sm text-neutral-500 dark:text-neutral-400 sm:mx-16">{description}</p>
   </div>
 );

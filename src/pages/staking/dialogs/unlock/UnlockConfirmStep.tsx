@@ -13,12 +13,12 @@ interface UnlockConfirmStepProps {
 export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, balance, gasFee, error }) => {
   const noSetValue = () => null;
   return (
-    <div className="rounded-lg flex flex-col items-center w-full">
-      <div className="w-full flex justify-end items-center text-sm dark:text-neutral-400 text-neutral-500 mb-1">
+    <div className="flex w-full flex-col items-center rounded-lg">
+      <div className="mb-1 flex w-full items-center justify-end text-sm text-neutral-500 dark:text-neutral-400">
         <img src={gasolinePump} alt="gasoline icon" className="h-full w-auto" width={42} height={42} />
         <span className="ml-1">${gasFee}</span>
       </div>
-      <form className="flex flex-col w-full">
+      <form className="flex w-full flex-col">
         <Amount
           register={register}
           max={balance}

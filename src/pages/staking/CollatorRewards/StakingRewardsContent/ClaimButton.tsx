@@ -9,7 +9,7 @@ export interface ClaimButtonProps {
 export const ClaimButton: FC<ClaimButtonProps> = ({ onClick, disabled }) => (
   <Button
     onClick={onClick}
-    className="btn btn-primary btn-outline rounded-md w-full xs:w-1/2 leading-3 p-0 min-h-fit max-h-10"
+    className="btn btn-outline btn-primary max-h-10 min-h-fit w-full rounded-md p-0 leading-3 xs:w-1/2"
     disabled={disabled}
   >
     Claim

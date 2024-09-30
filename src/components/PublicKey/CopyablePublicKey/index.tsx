@@ -16,6 +16,6 @@ export const CopyablePublicKey = ({ onClick, publicKey, ...props }: CopyablePubl
   };
 
   return (
-    <ClickablePublicKey {...{ ...props, publicKey }} onClick={handleClick} icon={<CopyIcon className="w-4 h-4" />} />
+    <ClickablePublicKey {...{ ...props, publicKey }} onClick={handleClick} icon={<CopyIcon className="h-4 w-4" />} />
   );
 };

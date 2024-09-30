@@ -33,11 +33,11 @@ export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProp
           <Button
             size="sm"
             color="secondary"
-            className="dark:bg-neutral-700 dark:border-neutral-700"
+            className="dark:border-neutral-700 dark:bg-neutral-700"
             bordered
             type="submit"
           >
-            <MagnifyingGlassIcon className="w-3 h-3" />
+            <MagnifyingGlassIcon className="h-3 w-3" />
           </Button>
         </Join>
       </div>

@@ -26,9 +26,9 @@ export const StakingContent: FC<StakingContentProps> = ({
   tokensTipText,
 }) => (
   <div className="flex flex-wrap items-center">
-    <div className="flex items-center w-1/2">
+    <div className="flex w-1/2 items-center">
       <div className="mr-3">
-        <StakedIcon className="mt-1 staked-icon" />
+        <StakedIcon className="staked-icon mt-1" />
       </div>
       <div>
         <h3>{nativeToFormatMetric(userStakingAmount, tokenSymbol)}</h3>
@@ -39,18 +39,18 @@ export const StakingContent: FC<StakingContentProps> = ({
       <h3>{nativeToFormatMetric(userAvailableBalance, tokenSymbol)}</h3>
       <p>Free balance</p>
     </div>
-    <div className="flex flex-col items-center w-full mt-5">
-      <div className="flex flex-row items-center mb-1">
+    <div className="mt-5 flex w-full flex-col items-center">
+      <div className="mb-1 flex flex-row items-center">
         <h3>{nativeToFormatMetric(unstaking, tokenSymbol)}</h3>
         {Number(unstaking) ? (
           <Tooltip message={tokensTipText} color="secondary">
-            <ExclamationCircleIcon className="w-5 h-5 ml-2 text-gray-400" />
+            <ExclamationCircleIcon className="ml-2 h-5 w-5 text-gray-400" />
           </Tooltip>
         ) : null}
       </div>
       <button
         disabled={!userAvailableBalanceForUnlock.toNumber()}
-        className="w-full px-8 m-auto btn btn-primary btn-unlock min-h-fit max-h-10"
+        className="btn-unlock btn btn-primary m-auto max-h-10 min-h-fit w-full px-8"
         onClick={onButtonClick}
       >
         Unlock

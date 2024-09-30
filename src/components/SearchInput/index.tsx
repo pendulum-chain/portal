@@ -7,7 +7,7 @@ interface SearchInputProps {
 
 export const SearchInput = ({ set, ...p }: SearchInputProps) => (
   <label className="input input-bordered flex items-center" htmlFor="search">
-    <MagnifyingGlassIcon className="size-5 text-neutral-400 mr-1" />
+    <MagnifyingGlassIcon className="mr-1 size-5 text-neutral-400" />
     <input
       className="w-full"
       type="text"

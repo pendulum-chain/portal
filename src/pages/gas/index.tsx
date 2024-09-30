@@ -64,15 +64,15 @@ const Gas = () => {
   if (!selectedFromToken || !nativeCurrency) return <GasSkeleton />;
 
   return (
-    <div className="h-full flex items-center justify-center mt-4">
+    <div className="mt-4 flex h-full items-center justify-center">
       <GasSuccessDialog
         visible={confirmationDialogVisible}
         onClose={() => setConfirmationDialogVisible(false)}
         token={nativeCurrency.metadata.symbol}
       />
-      <Card className="bridge-card bg-base-200 min-h-500 w-full max-w-[520px] rounded-lg">
-        <div className="py-6 px-8">
-          <h1 className="text-[28px] mb-8">Get {nativeCurrency.metadata.symbol}</h1>
+      <Card className="bridge-card min-h-500 w-full max-w-[520px] rounded-lg bg-base-200">
+        <div className="px-8 py-6">
+          <h1 className="mb-8 text-[28px]">Get {nativeCurrency.metadata.symbol}</h1>
           <GasForm
             submissionPending={submissionPending}
             currencies={currencies.length ? currencies : []}
