@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "fix"
+      prefix: "bot-chore:"
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "*"
@@ -17,9 +17,9 @@ updates:
       - "dependencies"
       - "security"
     assignees:
-      - "sharqiewicz"
+      - "Sharqiewicz"
     reviewers:
-      - "sharqiewicz"
+      - "Sharqiewicz"
     group:
       name: "all-dependencies"
       patterns:
