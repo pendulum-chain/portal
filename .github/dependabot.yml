@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "fix"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+    security-updates: true
+    rebase-strategy: "auto"
+    pull-request-branch-name:
+      separator: "-"
+    labels:
+      - "dependencies"
+      - "security"
+    assignees:
+      - "sharqiewicz"
+    reviewers:
+      - "sharqiewicz"
+    group:
+      name: "all-dependencies"
+      patterns:
+        - "*"
