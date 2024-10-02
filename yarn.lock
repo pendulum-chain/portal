@@ -3684,7 +3684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/keyring@npm:^12.3.2, @polkadot/keyring@npm:^12.6.2":
+"@polkadot/keyring@npm:^12.6.2":
   version: 12.6.2
   resolution: "@polkadot/keyring@npm:12.6.2"
   dependencies:
@@ -9996,10 +9996,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:~16.6.0":
-  version: 16.6.0
-  resolution: "graphql@npm:16.6.0"
-  checksum: 10c0/3a2c15ff58b69d017618d2b224fa6f3c4a7937e1f711c3a5e0948db536b4931e6e649560b53de7cc26735e027ceea6e2d0a6bb7c29fc4639b290313e3aa71618
+"graphql@npm:~16.9.0":
+  version: 16.9.0
+  resolution: "graphql@npm:16.9.0"
+  checksum: 10c0/a8850f077ff767377237d1f8b1da2ec70aeb7623cdf1dfc9e1c7ae93accc0c8149c85abe68923be9871a2934b1bce5a2496f846d4d56e1cfb03eaaa7ddba9b6a
   languageName: node
   linkType: hard
 
@@ -13979,7 +13979,7 @@ __metadata:
     "@polkadot/api-contract": "npm:^13.2.1"
     "@polkadot/api-derive": "npm:^13.2.1"
     "@polkadot/extension-dapp": "npm:^0.46.5"
-    "@polkadot/keyring": "npm:^12.3.2"
+    "@polkadot/keyring": "npm:^13.1.1"
     "@polkadot/rpc-augment": "npm:^13.2.1"
     "@polkadot/rpc-core": "npm:^13.2.1"
     "@polkadot/rpc-provider": "npm:^13.2.1"
@@ -14033,7 +14033,7 @@ __metadata:
     eslint-plugin-jest: "npm:^27.6.1"
     eslint-plugin-react: "npm:^7.33.2"
     eslint-plugin-react-hooks: "npm:^4.6.0"
-    graphql: "npm:~16.6.0"
+    graphql: "npm:~16.9.0"
     graphql-request: "npm:~6.1.0"
     husky: "npm:>=6"
     jest: "npm:^29.7.0"
