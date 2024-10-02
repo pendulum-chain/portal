@@ -6,10 +6,7 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "bot-chore:"
-    open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: "*"
-    security-updates: true
+    open-pull-requests-limit: 5
     rebase-strategy: "auto"
     pull-request-branch-name:
       separator: "-"
@@ -21,6 +18,6 @@ updates:
     reviewers:
       - "Sharqiewicz"
     group:
-      name: "all-dependencies"
+      name: "security-dependencies"
       patterns:
         - "*"
