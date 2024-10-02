@@ -17,6 +17,3 @@ updates:
       - "Sharqiewicz"
     reviewers:
       - "Sharqiewicz"
-    groups:
-      security-dependencies:
-        applies-to: security-updates
