@@ -51,7 +51,7 @@
     "@walletconnect/universal-provider": "^2.11.1",
     "big.js": "^6.2.1",
     "bn.js": "^5.2.1",
-    "bs58": "^5.0.0",
+    "bs58": "^6.0.0",
     "graphql": "~16.9.0",
     "graphql-request": "~6.1.0",
     "lodash": "^4.17.21",
