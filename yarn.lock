@@ -3684,7 +3684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/keyring@npm:^12.3.2, @polkadot/keyring@npm:^12.6.2":
+"@polkadot/keyring@npm:^12.6.2":
   version: 12.6.2
   resolution: "@polkadot/keyring@npm:12.6.2"
   dependencies:
@@ -13979,7 +13979,7 @@ __metadata:
     "@polkadot/api-contract": "npm:^13.2.1"
     "@polkadot/api-derive": "npm:^13.2.1"
     "@polkadot/extension-dapp": "npm:^0.46.5"
-    "@polkadot/keyring": "npm:^12.3.2"
+    "@polkadot/keyring": "npm:^13.1.1"
     "@polkadot/rpc-augment": "npm:^13.2.1"
     "@polkadot/rpc-core": "npm:^13.2.1"
     "@polkadot/rpc-provider": "npm:^13.2.1"
