@@ -2701,12 +2701,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/functions@npm:^2.8.1":
-  version: 2.8.1
-  resolution: "@netlify/functions@npm:2.8.1"
+"@netlify/functions@npm:^2.8.2":
+  version: 2.8.2
+  resolution: "@netlify/functions@npm:2.8.2"
   dependencies:
-    "@netlify/serverless-functions-api": "npm:1.19.1"
-  checksum: 10c0/4a6b6411aea25d6ab223814b46afb0c394ee3b20ff82717d788e5ce6ea3590c2c99e1af5cf9693c8871736751afe54053f6fd6a3916c9362d1f5a2e4195d2b3c
+    "@netlify/serverless-functions-api": "npm:1.26.1"
+  checksum: 10c0/f543259e68a04f73ff967924c2894d4099f083e83494a60e46478dd874d2d9b8d671751766899b6d99a09f9ea30309dd6b0ef025d6bc49604fb42e57e10e55ba
   languageName: node
   linkType: hard
 
@@ -2717,13 +2717,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/serverless-functions-api@npm:1.19.1":
-  version: 1.19.1
-  resolution: "@netlify/serverless-functions-api@npm:1.19.1"
+"@netlify/serverless-functions-api@npm:1.26.1":
+  version: 1.26.1
+  resolution: "@netlify/serverless-functions-api@npm:1.26.1"
   dependencies:
     "@netlify/node-cookies": "npm:^0.1.0"
     urlpattern-polyfill: "npm:8.0.2"
-  checksum: 10c0/461deb4857fc637526b590ea2d59bba9b5cdff082c10891033fbd99523d731afdd23a09493dbbcf6770beb26304b9e2e4e0ccf677f8bd11d4bff6bb631ecc19d
+  checksum: 10c0/eb5bd829d4c557a66c5a39dde72faf96afa16eaa905d93066ef65248a9449721dbf038e9b83aeed329662bbdc6061e7b8e9e4cd3166da8d4fa774029bda804ef
   languageName: node
   linkType: hard
 
@@ -13960,7 +13960,7 @@ __metadata:
     "@graphql-codegen/client-preset": "npm:^4.2.6"
     "@heroicons/react": "npm:^2.1.1"
     "@hookform/resolvers": "npm:^2.9.11"
-    "@netlify/functions": "npm:^2.8.1"
+    "@netlify/functions": "npm:^2.8.2"
     "@pendulum-chain/api": "npm:^1.1.1"
     "@pendulum-chain/api-solang": "npm:^0.7.0"
     "@pendulum-chain/types": "npm:^1.1.1"
