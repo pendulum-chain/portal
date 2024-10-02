@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "bot-chore:"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+    pull-request-branch-name:
+      separator: "-"
+    labels:
+      - "dependencies"
+      - "security"
+    assignees:
+      - "Sharqiewicz"
+    reviewers:
+      - "Sharqiewicz"
