@@ -81,7 +81,18 @@ export function To({
         </Button>
       </div>
       <div className="flex items-center justify-between mt-1 text-neutral-500 dark:text-neutral-300">
-        <div className="mt-px text-sm">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
+        <div className="mt-px text-sm">
+          {toToken ? (
+            <NablaTokenPrice
+              formatByAmount={true}
+              currentTokenAmount={Number(toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals) || 0}
+              address={toToken.id}
+              fallback="$ -"
+            />
+          ) : (
+            '$ -'
+          )}
+        </div>
         {walletAccount && (
           <div className="flex gap-1 text-sm">
             Balance:{' '}
