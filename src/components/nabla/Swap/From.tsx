@@ -1,6 +1,7 @@
+import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button } from 'react-daisyui';
-import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
+import Big from 'big.js';
 
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
@@ -14,21 +15,23 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { SwapFormValues } from './schema';
 
 interface FromProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
-  fromToken: NablaInstanceToken | undefined;
-  onOpenSelector: () => void;
-  inputHasError: boolean;
-  fromFormFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
   fromTokenBalance: UseContractReadResult<ContractBalance | undefined>;
+  fromToken?: NablaInstanceToken;
+  fromAmount?: Big;
+  fromFormFieldName: TFieldName;
+  onOpenSelector: () => void;
+  inputHasError: boolean;
 }
 
 export function From<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
+  form,
   fromToken,
+  fromAmount,
+  fromTokenBalance,
+  fromFormFieldName,
   onOpenSelector,
   inputHasError,
-  fromFormFieldName,
-  form,
-  fromTokenBalance,
 }: FromProps<FormFieldValues, TFieldName>) {
   const { setValue } = useFormContext<SwapFormValues>();
 
@@ -65,7 +68,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
           {fromToken ? (
             <NablaTokenPrice
               formatByAmount={true}
-              currentTokenAmount={form.watch(fromFormFieldName)}
+              currentTokenAmount={fromAmount}
               address={fromToken.id}
               fallback="$ -"
             />

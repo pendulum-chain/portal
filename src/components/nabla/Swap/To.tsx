@@ -5,24 +5,24 @@ import { useFormContext } from 'react-hook-form';
 import Big from 'big.js';
 
 import { UseTokenOutAmountResult } from '../../../hooks/nabla/useTokenOutAmount';
-import useBoolean from '../../../hooks/useBoolean';
-import { NumberLoader } from '../../Loader';
-import { Skeleton } from '../../Skeleton';
-import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
+import useBoolean from '../../../hooks/useBoolean';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
 import { getIcon } from '../../../shared/AssetIcons';
 import { useGlobalState } from '../../../GlobalStateProvider';
+import { NumberLoader } from '../../Loader';
+import { Skeleton } from '../../Skeleton';
+import { SwapFormValues } from './schema';
 
 export interface ToProps {
-  onOpenSelector: () => void;
-  fromToken: NablaInstanceToken | undefined;
-  toToken: NablaInstanceToken | undefined;
+  fromToken?: NablaInstanceToken;
+  fromAmount?: Big;
+  toToken?: NablaInstanceToken;
   toAmountQuote: UseTokenOutAmountResult;
-  fromAmount: Big | undefined;
   slippage: number;
+  onOpenSelector: () => void;
 }
 
 export function To({
@@ -47,8 +47,8 @@ export function To({
   }, [toAmountQuote.data?.amountOut.preciseString, setValue]);
 
   return (
-    <div className="px-4 py-3 border border-transparent rounded-lg bg-base-300">
-      <div className="flex justify-between w-full">
+    <div className="rounded-lg border border-transparent bg-base-300 px-4 py-3">
+      <div className="flex w-full justify-between">
         <div className="font-outfit mr-2 flex-grow overflow-x-auto overflow-y-hidden text-4xl text-[inherit]">
           {toAmountQuote.isLoading ? (
             <NumberLoader />
@@ -74,18 +74,18 @@ export function To({
           type="button"
         >
           <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)] p-px">
-            <img src={getIcon(toToken?.symbol)} alt={toToken?.name} className="w-auto h-full" />
+            <img src={getIcon(toToken?.symbol)} alt={toToken?.name} className="h-full w-auto" />
           </span>
           <strong className="font-bold">{toToken?.symbol || 'Select'}</strong>
-          <ChevronDownIcon className="inline w-4 h-4 ml-px" />
+          <ChevronDownIcon className="ml-px inline h-4 w-4" />
         </Button>
       </div>
-      <div className="flex items-center justify-between mt-1 text-neutral-500 dark:text-neutral-300">
+      <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-300">
         <div className="mt-px text-sm">
           {toToken ? (
             <NablaTokenPrice
               formatByAmount={true}
-              currentTokenAmount={Number(toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals) || 0}
+              currentTokenAmount={Big(toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals ?? 0)}
               address={toToken.id}
               fallback="$ -"
             />
@@ -111,7 +111,7 @@ export function To({
           isOpen ? 'collapse-open' : ''
         }`}
       >
-        <div className="flex justify-between px-4 pt-3 pb-0 cursor-pointer collapse-title" onClick={toggle}>
+        <div className="collapse-title flex cursor-pointer justify-between px-4 pb-0 pt-3" onClick={toggle}>
           <div className="flex items-center">
             {fromToken !== undefined &&
             toToken !== undefined &&
@@ -125,13 +125,13 @@ export function To({
           <div>
             <div
               title="More info"
-              className="flex items-center justify-center w-6 h-6 ml-1 rounded-full bg-blackAlpha-200 hover:opacity-80 dark:bg-whiteAlpha-200"
+              className="ml-1 flex h-6 w-6 items-center justify-center rounded-full bg-blackAlpha-200 hover:opacity-80 dark:bg-whiteAlpha-200"
             >
-              <ChevronDownIcon className="inline w-5 h-5" />
+              <ChevronDownIcon className="inline h-5 w-5" />
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-5 collapse-content">
+        <div className="collapse-content flex flex-col gap-5">
           <div className="flex justify-between pt-6">
             <div>Expected Output:</div>
             {toAmountQuote.data !== undefined ? (

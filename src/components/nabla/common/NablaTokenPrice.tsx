@@ -1,20 +1,21 @@
-import { NumberLoader } from '../../Loader';
+import Big from 'big.js';
 import { useNablaTokenPrice } from '../../../hooks/nabla/useNablaTokenPrice';
+import { NumberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
   address: string;
   prefix?: ReactNode;
   fallback?: ReactNode;
-  currentTokenAmount?: number;
+  currentTokenAmount?: Big;
   formatByAmount?: boolean;
 };
 
 export function NablaTokenPrice({
-  currentTokenAmount,
   address,
   prefix = null,
   fallback = null,
   formatByAmount = false,
+  currentTokenAmount = Big(0),
 }: TokenPriceProps): JSX.Element | null {
   const { data, isLoading } = useNablaTokenPrice(address);
   if (isLoading) return <NumberLoader />;
@@ -22,9 +23,8 @@ export function NablaTokenPrice({
   if (data === undefined) return fallback;
 
   if (formatByAmount) {
-    const currentAmountPrice = (Number(data.approximateStrings.atLeast2Decimals) * (currentTokenAmount || 0)).toFixed(
-      2,
-    );
+    const currentAmountPrice = Big(data.approximateStrings.atLeast2Decimals).mul(currentTokenAmount).toFixed(2);
+
     return (
       <span>
         {prefix}${currentAmountPrice}

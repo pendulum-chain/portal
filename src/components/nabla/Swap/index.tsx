@@ -44,10 +44,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   return (
     <>
-      <Card bordered className="w-full max-w-xl shadow-0 bg-base-200">
+      <Card bordered className="shadow-0 w-full max-w-xl bg-base-200">
         <FormProvider {...form}>
           <form className="card-body text-neutral-800 dark:text-neutral-200" onSubmit={onSubmit}>
-            <div className="flex justify-between mb-2">
+            <div className="mb-2 flex justify-between">
               <Card.Title tag="h2" className="text-3xl font-normal">
                 Swap
               </Card.Title>
@@ -71,18 +71,19 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
                 })}
                 button={
                   <Button color="ghost" shape="circle" className="text-neutral-600" type="button">
-                    <Cog8ToothIcon className="w-8 h-8" />
+                    <Cog8ToothIcon className="h-8 w-8" />
                   </Button>
                 }
               />
             </div>
             <From
-              fromToken={fromToken}
-              onOpenSelector={() => setModalType('from')}
-              inputHasError={inputHasErrors}
               form={form}
+              fromToken={fromToken}
+              fromAmount={fromAmount}
               fromFormFieldName="fromAmount"
               fromTokenBalance={fromTokenBalance}
+              onOpenSelector={() => setModalType('from')}
+              inputHasError={inputHasErrors}
             />
             <SwapAssetsButton
               onClick={() => {
@@ -90,13 +91,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               }}
             />
             <To
-              toToken={toToken}
               fromToken={fromToken}
+              fromAmount={fromAmount}
+              toToken={toToken}
               toAmountQuote={
                 inputHasErrors ? { enabled: false, data: undefined, error: null, isLoading: false } : toAmountQuote
               }
               onOpenSelector={() => setModalType('to')}
-              fromAmount={fromAmount}
               slippage={slippage}
             />
             <Validation className="mb-2 text-center" errors={errors} />
