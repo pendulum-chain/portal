@@ -39,13 +39,10 @@ const Nav = memo(({ onClick }: NavProps) => {
 
   return (
     <nav>
-      {links.map((item, i) => {
-        if (item.hidden) return;
-
+      {links.map((item) => {
         return item.submenu ? (
-          <div onMouseEnter={handleMouseEnter} className="my-2.5">
+          <div onMouseEnter={handleMouseEnter} className="my-2.5" key={item.link}>
             <NavCollapseMenu
-              key={i}
               disabled={item.disabled}
               ariaControls="submenu"
               button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
@@ -53,9 +50,9 @@ const Nav = memo(({ onClick }: NavProps) => {
               link={item.link}
               onClick={setActiveSelection}
             >
-              <ul className="submenu" id={`submenu-${i}`}>
-                {item.submenu.map((subItem, j) => (
-                  <li key={`${i}-${j}`} className="ml-[3px]">
+              <ul className="submenu" id={`submenu-${item.title}`}>
+                {item.submenu.map((subItem) => (
+                  <li key={`${item.link}-${subItem.link}`} className="ml-[3px]">
                     <NavItem item={subItem} onClick={onClick} isSubNavItem={true} />
                   </li>
                 ))}
@@ -64,7 +61,7 @@ const Nav = memo(({ onClick }: NavProps) => {
           </div>
         ) : (
           <NavItem
-            key={i}
+            key={item.link}
             item={item}
             onClick={() => {
               setActiveSelection(item.link);
