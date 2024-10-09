@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { CSSProperties, useEffect, useState } from 'preact/compat';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Button } from 'react-daisyui';
 
 import DropdownSelector from '../DropdownSelector';

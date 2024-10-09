@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { Button, Divider } from 'react-daisyui';
 
 import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';

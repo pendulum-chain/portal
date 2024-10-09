@@ -1,4 +1,4 @@
-import { ComponentChildren } from 'preact';
+import { ComponentChildren } from 'react';
 import { useGlobalState } from './GlobalStateProvider';
 import { useNodeInfoState } from './NodeInfoProvider';
 import { SharedStateProvider } from './shared/Provider';

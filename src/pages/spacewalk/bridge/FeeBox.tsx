@@ -1,6 +1,6 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
-import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Asset } from 'stellar-sdk';
 import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
 import { ChainDecimals, nativeStellarToDecimal, nativeToDecimal } from '../../../shared/parseNumbers/metric';

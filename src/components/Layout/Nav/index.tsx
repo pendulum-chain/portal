@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from 'preact/compat';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { NavCollapseButtonContent } from '../NavCollapseButtonContent';

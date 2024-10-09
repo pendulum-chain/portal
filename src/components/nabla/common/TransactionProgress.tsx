@@ -1,5 +1,5 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { ComponentChildren } from 'preact';
+import { ComponentChildren } from 'react';
 import { Button } from 'react-daisyui';
 import { ExecuteMessageResult } from '@pendulum-chain/api-solang';
 
@@ -64,9 +64,9 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
     <>
       <div className="center mt-6">
         {mutation.isSuccess ? (
-          <CheckCircleIcon className="h-36 w-36 text-green-400" stroke-width={1} />
+          <CheckCircleIcon className="h-36 w-36 text-green-400" strokeWidth={1} />
         ) : (
-          <ExclamationCircleIcon className="h-36 w-36 text-red-400" stroke-width={1} />
+          <ExclamationCircleIcon className="h-36 w-36 text-red-400" strokeWidth={1} />
         )}
       </div>
       <div className="mt-4 text-center">

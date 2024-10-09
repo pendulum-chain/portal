@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import { ClaimButton, ClaimButtonProps } from './ClaimButton';
 import { UpdateButton, UpdateButtonProps } from './UpdateButton';
 

@@ -1,5 +1,5 @@
 import { Big } from 'big.js';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { activeOptions } from '../../constants/cache';

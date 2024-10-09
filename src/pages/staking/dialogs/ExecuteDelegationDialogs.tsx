@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'react';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
 import { ParachainStakingCandidate, useStakingPallet } from '../../../hooks/staking/useStakingPallet';

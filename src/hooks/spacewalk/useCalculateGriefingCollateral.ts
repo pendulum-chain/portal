@@ -1,6 +1,6 @@
 import { Asset } from 'stellar-base';
 import Big from 'big.js';
-import { useEffect, useState, useMemo } from 'preact/compat';
+import { useEffect, useState, useMemo } from 'react';
 import { nativeStellarToDecimal } from '../../shared/parseNumbers/metric';
 import { convertStellarAssetToCurrency } from '../../helpers/spacewalk';
 import { useNodeInfoState } from '../../NodeInfoProvider';

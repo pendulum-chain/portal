@@ -1,6 +1,6 @@
 import { hexToU8a } from '@polkadot/util';
-import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { JSXInternal } from 'react/src/jsx';
 import { Divider } from 'react-daisyui';
 
 import { useGlobalState } from '../../../../GlobalStateProvider';

@@ -1,5 +1,5 @@
 import { Button } from 'react-daisyui';
-import { useState } from 'preact/hooks';
+import { useState } from 'react';
 import { ConnectModalDialog } from './ConnectModalDialog';
 
 export interface ConnectProps {

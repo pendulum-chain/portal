@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { useGlobalState } from '../../../GlobalStateProvider';

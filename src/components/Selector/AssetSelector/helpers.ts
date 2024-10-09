@@ -1,5 +1,5 @@
 import { Asset } from 'stellar-sdk';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'react';
 import { getIcon } from '../../../shared/AssetIcons';
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../../hooks/useBuyout/types';
 import { assetDisplayName } from '../../../helpers/spacewalk';

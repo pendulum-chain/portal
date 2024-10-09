@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { WalletAccount } from '@talismn/connect-wallets';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'react';
 import { getErrors } from '../../../helpers/substrate';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 

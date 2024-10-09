@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import { Button } from 'react-daisyui';
 import SuccessDialogIcon from '../../assets/dialog-status-success';
 import { Dialog } from '../../components/Dialog';

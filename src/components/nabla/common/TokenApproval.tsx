@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { useCallback } from 'preact/hooks';
+import { useCallback } from 'react';
 import { Big } from 'big.js';
 
 import { ApprovalState, useErc20TokenApproval } from '../../../hooks/nabla/useErc20TokenApproval';

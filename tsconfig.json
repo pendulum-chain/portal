@@ -18,8 +18,8 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
     "paths": {
-      "react": ["./node_modules/preact/compat/"],
-      "react-dom": ["./node_modules/preact/compat/"]
+      "react": ["./node_modules/react/"],
+      "react-dom": ["./node_modules/react/"]
     },
     "types": ["node", "jest", "@testing-library/jest-dom"]
   },

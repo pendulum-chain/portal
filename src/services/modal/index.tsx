@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentChildren } from 'preact';
-import { createContext, useCallback, useContext, useState } from 'preact/compat';
+import { ComponentChildren } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 export type ModalTypes = 'AddLiquidity' | 'WithdrawLiquidity' | 'Redeem';
 

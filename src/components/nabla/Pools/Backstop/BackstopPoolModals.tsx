@@ -1,4 +1,4 @@
-import { FunctionalComponent } from 'preact';
+import { FunctionalComponent } from 'react';
 import { NablaInstanceBackstopPool } from '../../../../hooks/nabla/useNablaInstance';
 import { ModalTypes, useModal } from '../../../../services/modal';
 import AddLiquidity from './AddLiquidity';

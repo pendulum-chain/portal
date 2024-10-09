@@ -1,6 +1,6 @@
 import { H256 } from '@polkadot/types/interfaces';
 import type { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesVaultId } from '@polkadot/types/lookup';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { Compact, u128 } from '@polkadot/types-codec';
 import Big from 'big.js';

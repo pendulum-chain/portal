@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useState } from 'react';
 import { Wallet, WalletAccount, getWallets } from '@talismn/connect-wallets';
 import { useMutation } from '@tanstack/react-query';
 import { useGlobalState } from '../../../GlobalStateProvider';

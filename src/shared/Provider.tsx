@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
-import { ComponentChildren, createContext } from 'preact';
-import { useContext, useMemo } from 'preact/compat';
+import { ComponentChildren, createContext } from 'react';
+import { useContext, useMemo } from 'react';
 
 export interface State {
   api?: ApiPromise;

@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'react';
 import { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
 import { ShowToast, ToastMessage } from '../../../shared/showToast';

@@ -1,8 +1,8 @@
 import Big from 'big.js';
-import { JSX, useCallback, useEffect, useMemo, useState } from 'preact/compat';
+import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { Signer } from '@polkadot/types/types';
 import { ApiPromise } from '@polkadot/api';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'react';
 import { BTreeMap } from '@polkadot/types-codec';
 
 import { useGlobalState } from '../../../GlobalStateProvider';

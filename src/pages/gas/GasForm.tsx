@@ -1,5 +1,5 @@
-import { StateUpdater, Dispatch, useMemo } from 'preact/hooks';
-import { ChangeEvent, FC } from 'preact/compat';
+import { StateUpdater, Dispatch, useMemo } from 'react';
+import { ChangeEvent, FC } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';

@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/preact';
-import { Fragment } from 'preact';
+import { render, screen } from '@testing-library/react';
+import { Fragment } from 'react';
 import Box from '.';
 
 describe('Box', () => {

@@ -1,4 +1,4 @@
-import { FunctionalComponent } from 'preact';
+import { FunctionalComponent } from 'react';
 import { ModalTypes, useModal } from '../../../../services/modal';
 import { Dialog } from '../../../Dialog';
 import { SwapPoolColumn } from './columns';

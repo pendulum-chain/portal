@@ -1,6 +1,6 @@
 import Big from 'big.js';
-import { useEffect, useMemo } from 'preact/compat';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { useEffect, useMemo } from 'react';
+import { StateUpdater, Dispatch } from 'react';
 import { Asset } from 'stellar-sdk';
 import _ from 'lodash';
 import { useGlobalState } from '../../GlobalStateProvider';

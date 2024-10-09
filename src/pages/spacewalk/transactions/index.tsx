@@ -1,6 +1,6 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { DateTime } from 'luxon';
-import { ComponentType, useEffect, useMemo, useState } from 'preact/compat';
+import { ComponentType, useEffect, useMemo, useState } from 'react';
 
 import { useGlobalState } from '../../../GlobalStateProvider';
 import Table, { SortingOrder } from '../../../components/Table';

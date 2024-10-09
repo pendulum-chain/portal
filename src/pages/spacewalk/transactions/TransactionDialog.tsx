@@ -1,7 +1,7 @@
 import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
-import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { JSXInternal } from 'react/src/jsx';
 import { Divider, Link, Collapse } from 'react-daisyui';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import CancelledDialogIcon from '../../../assets/dialog-status-cancelled';

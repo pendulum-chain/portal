@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { StateUpdater } from 'preact/hooks';
+import { StateUpdater } from 'react';
 
 interface SearchInputProps {
   set: Dispatch<StateUpdater<string>>;

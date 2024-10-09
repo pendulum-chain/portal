@@ -1,5 +1,5 @@
-import { createContext } from 'preact/compat';
-import { StateUpdater, Dispatch, useMemo, useState, useContext } from 'preact/hooks';
+import { createContext } from 'react';
+import { StateUpdater, Dispatch, useMemo, useState, useContext } from 'react';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from 'stellar-sdk';
 import AmplitudeLogo from '../../../assets/AmplitudeLogo';

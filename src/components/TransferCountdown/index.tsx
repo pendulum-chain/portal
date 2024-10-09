@@ -1,7 +1,7 @@
 import { VoidFn } from '@polkadot/api-base/types';
 import { SpacewalkPrimitivesIssueIssueRequest, SpacewalkPrimitivesRedeemRedeemRequest } from '@polkadot/types/lookup';
 import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useEffect, useMemo, useState } from 'react';
 import { calculateDeadline } from '../../helpers/spacewalk';
 import { useSecurityPallet } from '../../hooks/spacewalk/useSecurityPallet';
 

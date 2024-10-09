@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useMemo, useState } from 'preact/compat';
+import { useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, getPoolSurplusNativeAmount } from '../../../../../helpers/calc';

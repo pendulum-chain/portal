@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/compat';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import Big from 'big.js';
 

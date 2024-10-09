@@ -9,7 +9,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo } from 'preact/compat';
+import { useMemo } from 'react';
 import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
@@ -169,9 +169,9 @@ const Table = <T,>({
                         {isSortable ? (
                           <div className={`sort ${header.column.getIsSorted()} mb-0.5 ml-2`}>
                             {header.column.getIsSorted() === 'desc' ? (
-                              <ChevronDownIcon className="h-3 w-3" stroke-width="2" />
+                              <ChevronDownIcon className="h-3 w-3" strokeWidth="2" />
                             ) : (
-                              <ChevronUpIcon className="h-3 w-3" stroke-width="2" />
+                              <ChevronUpIcon className="h-3 w-3" strokeWidth="2" />
                             )}
                           </div>
                         ) : null}

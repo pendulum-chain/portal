@@ -1,9 +1,9 @@
 import { Range } from 'react-daisyui';
 import { FieldPath, FieldValues, PathValue, UseFormReturn, useWatch } from 'react-hook-form';
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'react';
 import Big from 'big.js';
 
-import { ChangeEvent, ReactNode } from 'preact/compat';
+import { ChangeEvent, ReactNode } from 'react';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
 import { ContractBalance } from '../../../helpers/contracts';
 import { calcSharePercentageNumber } from '../../../helpers/calc';

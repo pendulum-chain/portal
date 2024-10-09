@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FC, memo } from 'preact/compat';
+import { FC, memo } from 'react';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { TenantName } from '../../models/Tenant';
 

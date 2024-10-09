@@ -1,6 +1,6 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
-import { memo, useEffect, useState } from 'preact/compat';
+import { memo, useEffect, useState } from 'react';
 import { usePriceFetcher } from '../../../hooks/usePriceFetcher';
 import { NumberLoader } from '../../Loader';
 

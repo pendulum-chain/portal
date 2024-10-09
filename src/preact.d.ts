@@ -1,4 +1,4 @@
-import JSX = preact.JSX;
+import JSX = react.JSX;
 
 type SetStateAction<S> = S | ((prevState: S) => S);
 

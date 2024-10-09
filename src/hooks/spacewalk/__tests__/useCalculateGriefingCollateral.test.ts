@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/preact';
+import { waitFor } from '@testing-library/react';
 import { Asset } from 'stellar-base';
 import Big from 'big.js';
 import { useFeePallet } from '../useFeePallet';

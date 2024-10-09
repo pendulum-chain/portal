@@ -1,5 +1,6 @@
 import { Modal } from 'react-daisyui';
-import { FC, createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CloseButton } from '../CloseButton';
 
 interface DialogProps {
@@ -73,7 +74,7 @@ export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content,
   const modalBody = (
     <>
       <Modal.Body>{content}</Modal.Body>
-      <Modal.Actions className="mt-4 justify-center">{actions}</Modal.Actions>
+      <Modal.Actions className="justify-center mt-4">{actions}</Modal.Actions>
     </>
   );
 

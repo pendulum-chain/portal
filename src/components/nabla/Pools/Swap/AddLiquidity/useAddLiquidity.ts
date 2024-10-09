@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useForm, useWatch } from 'react-hook-form';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'react';
 import Big from 'big.js';
 import { useQueryClient } from '@tanstack/react-query';
 

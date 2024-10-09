@@ -1,5 +1,5 @@
 import BigNumber from 'big.js';
-import { StateUpdater, Dispatch, useEffect, useState } from 'preact/hooks';
+import { StateUpdater, Dispatch, useEffect, useState } from 'react';
 import { isEmpty, find } from 'lodash';
 import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';

@@ -1,4 +1,4 @@
-import { ComponentChildren } from 'preact';
+import { ComponentChildren } from 'react';
 import { NavLinkProps } from 'react-router-dom';
 import { Options } from 'react-lottie';
 

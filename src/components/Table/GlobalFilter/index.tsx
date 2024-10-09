@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { TargetedEvent, useCallback, useRef } from 'preact/compat';
+import { TargetedEvent, useCallback, useRef } from 'react';
 import { Button, Input, Join } from 'react-daisyui';
 
 export interface GlobalFilterProps {

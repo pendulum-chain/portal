@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect } from 'react';
 import { Card } from 'react-daisyui';
 
 import { usePriceFetcher } from '../../hooks/usePriceFetcher';

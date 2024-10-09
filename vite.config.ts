@@ -1,23 +1,12 @@
-import preact from '@preact/preset-vite';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [preact()],
-  esbuild: {
-    logOverride: { 'this-is-undefined-in-esm': 'silent' },
-  },
-  optimizeDeps: {
-    exclude: [],
-    esbuildOptions: {
-      target: 'esnext',
-      // Node.js global to browser globalThis
-      define: {
-        global: 'globalThis',
-      },
-    },
-  },
-  build: {
-    target: ['esnext'],
+  plugins: [react()],
+  define: {
+    // By default, Vite doesn't include shims for NodeJS/
+    // necessary for segment analytics lib to work
+    global: {},
   },
 });

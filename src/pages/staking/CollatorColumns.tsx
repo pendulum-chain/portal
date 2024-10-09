@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { ColumnDef } from '@tanstack/table-core';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { StateUpdater, Dispatch } from 'react';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyablePublicKey } from '../../components/PublicKey/CopyablePublicKey';
