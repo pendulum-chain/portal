@@ -23,7 +23,7 @@ export function NablaTokenPrice({
   if (data === undefined) return fallback;
 
   if (formatByAmount) {
-    const currentAmountPrice = Big(data.approximateStrings.atLeast2Decimals).mul(currentTokenAmount).toFixed(2);
+    const currentAmountPrice = Big(data.approximateStrings.atLeast2Decimals).mul(currentTokenAmount).toFixed(2, 0);
 
     return (
       <span>
