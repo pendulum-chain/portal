@@ -5,24 +5,24 @@ import { useFormContext } from 'react-hook-form';
 import Big from 'big.js';
 
 import { UseTokenOutAmountResult } from '../../../hooks/nabla/useTokenOutAmount';
-import useBoolean from '../../../hooks/useBoolean';
-import { NumberLoader } from '../../Loader';
-import { Skeleton } from '../../Skeleton';
-import { SwapFormValues } from './schema';
 import { NablaInstanceToken } from '../../../hooks/nabla/useNablaInstance';
+import useBoolean from '../../../hooks/useBoolean';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { Erc20Balance } from '../common/Erc20Balance';
 import { getIcon } from '../../../shared/AssetIcons';
 import { useGlobalState } from '../../../GlobalStateProvider';
+import { NumberLoader } from '../../Loader';
+import { Skeleton } from '../../Skeleton';
+import { SwapFormValues } from './schema';
 
 export interface ToProps {
-  onOpenSelector: () => void;
-  fromToken: NablaInstanceToken | undefined;
-  toToken: NablaInstanceToken | undefined;
+  fromToken?: NablaInstanceToken;
+  fromAmount?: Big;
+  toToken?: NablaInstanceToken;
   toAmountQuote: UseTokenOutAmountResult;
-  fromAmount: Big | undefined;
   slippage: number;
+  onOpenSelector: () => void;
 }
 
 export function To({
@@ -81,7 +81,18 @@ export function To({
         </Button>
       </div>
       <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-300">
-        <div className="mt-px text-sm">{toToken ? <NablaTokenPrice address={toToken.id} fallback="$ -" /> : '$ -'}</div>
+        <div className="mt-px text-sm">
+          {toToken ? (
+            <NablaTokenPrice
+              formatByAmount={true}
+              currentTokenAmount={Big(toAmountQuote.data?.amountOut.approximateStrings.atLeast4Decimals ?? 0)}
+              address={toToken.id}
+              fallback="$ -"
+            />
+          ) : (
+            '$ -'
+          )}
+        </div>
         {walletAccount && (
           <div className="flex gap-1 text-sm">
             Balance:{' '}
@@ -96,7 +107,7 @@ export function To({
       </div>
       <div className="-mx-4 mt-4 h-px bg-[rgba(0,0,0,0.15)]" />
       <div
-        className={`collapse -mx-4 overflow-visible text-neutral-500 dark:text-neutral-300 text-sm${
+        className={`collapse -mx-4 overflow-visible text-sm text-neutral-500 dark:text-neutral-300 ${
           isOpen ? 'collapse-open' : ''
         }`}
       >

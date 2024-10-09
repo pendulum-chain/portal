@@ -77,12 +77,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               />
             </div>
             <From
-              fromToken={fromToken}
-              onOpenSelector={() => setModalType('from')}
-              inputHasError={inputHasErrors}
               form={form}
+              fromToken={fromToken}
+              fromAmount={fromAmount}
               fromFormFieldName="fromAmount"
               fromTokenBalance={fromTokenBalance}
+              onOpenSelector={() => setModalType('from')}
+              inputHasError={inputHasErrors}
             />
             <SwapAssetsButton
               onClick={() => {
@@ -90,13 +91,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               }}
             />
             <To
-              toToken={toToken}
               fromToken={fromToken}
+              fromAmount={fromAmount}
+              toToken={toToken}
               toAmountQuote={
                 inputHasErrors ? { enabled: false, data: undefined, error: null, isLoading: false } : toAmountQuote
               }
               onOpenSelector={() => setModalType('to')}
-              fromAmount={fromAmount}
               slippage={slippage}
             />
             <Validation className="mb-2 text-center" errors={errors} />

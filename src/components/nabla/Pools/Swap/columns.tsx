@@ -1,12 +1,13 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Badge, Button } from 'react-daisyui';
+import { Avatar, Badge, Button } from 'react-daisyui';
+import Big from 'big.js';
 import { useModalToggle } from '../../../../services/modal';
 import { rawToDecimal } from '../../../../shared/parseNumbers/metric';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { getIcon } from '../../../../shared/AssetIcons';
 import { Erc20Balance } from '../../common/Erc20Balance';
 import { LiquidityModalProps } from './SwapPoolModals';
-import Big from 'big.js';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
   backstopPool: NablaInstanceBackstopPool;
@@ -17,7 +18,14 @@ const BIG_100 = new Big(100);
 export const nameColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Name',
   accessorKey: 'name',
-  accessorFn: (row) => row.token?.name || '',
+  accessorFn: (row) => row.token.name,
+  cell: ({ row: { original } }) =>
+    (
+      <div className="flex items-center">
+        <Avatar src={getIcon(original.token.symbol)} shape="circle" size={32} />
+        <p className="ml-2.5">{original.token.name}</p>
+      </div>
+    ) || '',
   enableSorting: true,
 } as const;
 
@@ -46,7 +54,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   accessorKey: 'apr',
   accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props): JSX.Element | null => (
-    <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">
+    <Badge className="h-auto px-2 py-1 rounded-lg bg-success/35 text-blackAlpha-700 dark:text-white">
       {props.renderValue()}%
     </Badge>
   ),
