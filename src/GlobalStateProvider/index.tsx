@@ -76,7 +76,6 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
   useEffect(() => {
     const run = async () => {
       if (!storageAddress) {
-        removeWalletAccount();
         return;
       }
       // skip if tenant already initialized
