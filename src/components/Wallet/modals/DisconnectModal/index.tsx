@@ -77,10 +77,11 @@ const WalletDropdownMenu = ({
 
 export const DisconnectModal = () => {
   const { walletAccount, removeWalletAccount } = useGlobalState();
-  const { query, balances } = useAccountBalance();
   const { ss58Format, tokenSymbol } = useNodeInfoState().state;
   const { wallet, address } = walletAccount || {};
-  const { total: balance } = balances;
+
+  const { query, balances } = useAccountBalance();
+  const { transferable: transferableBalance } = balances;
 
   if (!address) return <></>;
 
@@ -89,7 +90,7 @@ export const DisconnectModal = () => {
       <WalletButton
         wallet={wallet}
         query={query}
-        balance={balance}
+        balance={transferableBalance}
         tokenSymbol={tokenSymbol}
         walletAccount={walletAccount}
       />
@@ -97,7 +98,7 @@ export const DisconnectModal = () => {
         walletAccount={walletAccount}
         ss58Format={ss58Format}
         address={address}
-        balance={balance}
+        balance={transferableBalance}
         tokenSymbol={tokenSymbol}
         removeWalletAccount={removeWalletAccount}
       />
