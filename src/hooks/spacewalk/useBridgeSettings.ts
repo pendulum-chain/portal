@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import { useEffect, useMemo } from 'preact/compat';
 import { StateUpdater, Dispatch } from 'preact/hooks';
-import { Asset } from 'stellar-sdk';
+import { Asset } from '@stellar/stellar-sdk';
 import _ from 'lodash';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';

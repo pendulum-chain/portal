@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/preact';
-import { Asset } from 'stellar-base';
+import { Asset } from '@stellar/stellar-sdk';
 import Big from 'big.js';
 import { useFeePallet } from '../useFeePallet';
 import { useCalculateGriefingCollateral } from '../useCalculateGriefingCollateral';

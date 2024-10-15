@@ -5,7 +5,7 @@ import { H256 } from '@polkadot/types/interfaces';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import bs58 from 'bs58';
 import { DateTime } from 'luxon';
-import { Asset, Keypair } from 'stellar-sdk';
+import { Asset, Keypair } from '@stellar/stellar-sdk';
 import { TenantName } from '../models/Tenant';
 import { convertRawHexKeyToPublicKey } from './stellar';
 
