@@ -9,6 +9,8 @@ import NablaIcon from '../../assets/nabla';
 import OnrampIcon from '../../assets/onramp';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
+import WalletIcon from '../../assets/wallet';
+
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { TenantName } from '../../models/Tenant';
@@ -141,6 +143,15 @@ export function createLinks(tenantName: TenantName): [LinkItem[], Promise<LinkIt
     suffix: <ExternalIcon />,
   };
 
+  const fundWalletItem: LinkItem = {
+    link: `./${PATHS.FUND_WALLET}`,
+    title: 'Fund Wallet',
+    prefix: <WalletIcon />,
+    props: {
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
+    },
+  };
+
   const alchemyPayLinkItem: LinkItem = {
     link: config.alchemyPay.prodUrl,
     title: 'Buy PEN',
@@ -182,6 +193,7 @@ export function createLinks(tenantName: TenantName): [LinkItem[], Promise<LinkIt
       nablaLinkItem,
       stakingLinkItem,
       governanceLinkItem,
+      fundWalletItem,
       {
         ...alchemyPayLinkItem,
         link: alchemyPayLink,
