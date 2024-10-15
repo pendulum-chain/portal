@@ -1,5 +1,5 @@
 import { Modal } from 'react-daisyui';
-import { FC, createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
+import { createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { CloseButton } from '../CloseButton';
 
 interface DialogProps {
@@ -9,13 +9,13 @@ interface DialogProps {
   content: JSX.Element;
   actions?: JSX.Element;
   form?: {
-    onSubmit: (event?: Event) => void | Promise<void>;
+    onSubmit: (event?: Event) => void;
     className?: string;
   };
   id?: string;
 }
 
-export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content, actions, id, form }) => {
+export function Dialog({ visible, onClose, headerText, content, actions, id, form }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
 
   // If it was the form submission we want to only close the dialog without calling onClose
@@ -55,6 +55,7 @@ export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content,
 
       return () => {
         dialog.removeEventListener('close', closeListener);
+        dialog.close();
       };
     }
   }, [visible, closeListener, headerText]);
@@ -92,4 +93,4 @@ export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content,
     </Modal>,
     container,
   );
-};
+}
