@@ -55,7 +55,6 @@ export function Dialog({ visible, onClose, headerText, content, actions, id, for
 
       return () => {
         dialog.removeEventListener('close', closeListener);
-        dialog.close();
       };
     }
   }, [visible, closeListener, headerText]);
