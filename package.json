@@ -130,7 +130,7 @@
   },
   "engines": {
     "npm": "please-use-yarn",
-    "yarn": ">=1.22.19"
+    "yarn": ">=4.0.0"
   },
   "resolutions": {
     "@polkadot/api": "^13.2.1",
