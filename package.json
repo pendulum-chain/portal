@@ -21,8 +21,8 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "@chainsafe/metamask-polkadot-adapter": "^0.6.0",
-    "@chainsafe/metamask-polkadot-types": "^0.6.0",
+    "@chainsafe/metamask-polkadot-adapter": "^0.8.1",
+    "@chainsafe/metamask-polkadot-types": "^0.9.1",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^2.9.11",
     "@netlify/functions": "^2.8.2",
