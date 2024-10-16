@@ -16,7 +16,6 @@
     "test:coverage": "jest --coverage",
     "codegen": "graphql-codegen --config codegen.ts",
     "format": "prettier . --write",
-    "release": "semantic-release",
     "verify": "yarn lint && yarn lint:ts && yarn test",
     "postinstall": "husky install"
   },
@@ -84,12 +83,6 @@
     "@polkadot/types-create": "^13.2.1",
     "@polkadot/types-known": "^13.2.1",
     "@preact/preset-vite": "^2.5.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^11.1.0",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^9.2.6",
-    "@semantic-release/npm": "^11.0.1",
-    "@semantic-release/release-notes-generator": "^12.1.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.1.6",
     "@testing-library/preact": "^3.2.3",
@@ -123,7 +116,6 @@
     "prettier-plugin-tailwindcss": "^0.6.8",
     "react-error-overlay": "6.0.9",
     "react-table": "^7.8.0",
-    "semantic-release": "^22.0.12",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3",
     "vite": "^5.4.9"
