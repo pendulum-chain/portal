@@ -1,19 +1,54 @@
 import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
-import PendulumLogo from '../../assets/PendulumLogo';
-import AmplitudeLogo from '../../assets/AmplitudeLogo';
-import StellarLogo from '../../assets/StellarLogo';
-import { useNodeInfoState } from '../../NodeInfoProvider';
+import { useGlobalState } from '../../GlobalStateProvider';
+import { useMemo } from 'preact/compat';
 
 enum FundWalletTabs {
   Buy = 0,
   Exchange = 1,
 }
 
+interface ContentProps {
+  tabValue: FundWalletTabs;
+  tenantName: TenantName;
+}
+
+function Content(props: ContentProps) {
+  const { tabValue, tenantName } = props;
+
+  const BuyingText = useMemo(() => {
+    switch (tenantName) {
+      case TenantName.Amplitude:
+        return 'Currently no options available, try Exchange!';
+      case TenantName.Pendulum:
+        return 'Purchase PEN through AlchemyPay, a payment system that enables users to easily buy cryptocurrencies using traditional payment methods such as credit cards, bank transfers, or mobile wallets.';
+      default:
+        return '';
+    }
+  }, [tenantName]);
+
+  const ExchangeText = useMemo(() => {
+    switch (tenantName) {
+      case TenantName.Amplitude:
+        return 'Before buying or trading AMPE, make sure to review the specific terms and conditions of each exchange.';
+      case TenantName.Pendulum:
+        return 'Before buying or trading PEN, make sure to review the specific terms and conditions of each exchange.';
+      default:
+        return '';
+    }
+  }, [tenantName]);
+
+  return (
+    <div className="my-6 text-sm text-secondary-content">
+      {tabValue === FundWalletTabs.Buy ? BuyingText : ExchangeText}
+    </div>
+  );
+}
+
 function FundWallet() {
   const [tabValue, setTabValue] = useState(FundWalletTabs.Buy);
-  const { chain, tokenSymbol } = useNodeInfoState().state;
+  const { tenantName } = useGlobalState();
 
   const getTabProps = (index: number) => ({
     active: tabValue === index,
@@ -38,6 +73,7 @@ function FundWallet() {
             </Tabs.Tab>
           </Tabs>
         </div>
+        <Content tabValue={tabValue} tenantName={tenantName} />
       </Card>
     </div>
   );
