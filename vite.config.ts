@@ -11,10 +11,6 @@ export default defineConfig({
     exclude: [],
     esbuildOptions: {
       target: 'esnext',
-      // Node.js global to browser globalThis
-      define: {
-        global: 'globalThis',
-      },
     },
   },
   build: {
