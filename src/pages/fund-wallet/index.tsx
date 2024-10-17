@@ -9,8 +9,11 @@ import { ZenlinkIcon } from '../../assets/zenlink';
 import { StellaswapIcon } from '../../assets/stellaswap';
 import ExternalIcon from '../../assets/ExternalIcon';
 import { config } from '../../config';
+import './styles.css';
 
-const CARD_DATA: Record<TenantName, { buy: ContentCardProps[]; exchange: ContentCardProps[] }> = {
+type CardDetail = Omit<ContentCardProps, 'tenantName'>;
+
+const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] }> = {
   pendulum: {
     buy: [
       {
@@ -58,6 +61,7 @@ interface ContentCardProps {
   title: string;
   image: JSX.Element;
   href: string | Promise<string>;
+  tenantName: TenantName;
 }
 
 function ContentCard(props: ContentCardProps) {
@@ -72,11 +76,13 @@ function ContentCard(props: ContentCardProps) {
     }
   }, [props.href]);
 
+  const fill = props.tenantName === TenantName.Pendulum ? 'black' : 'white';
+
   return (
     <a href={finalHref} target="_blank" rel="noreferrer">
       <Card className="mt-2 flex flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
-        <div className="ml-6 h-20 w-40">{image}</div>
-        <ExternalIcon className="ml-auto mr-1 h-5 w-5" />,
+        <div className={`ml-6 h-20 w-40 fill-${fill}`}>{image}</div>
+        <ExternalIcon className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
       </Card>
     </a>
   );
@@ -117,7 +123,7 @@ function Content(props: ContentProps) {
       {tabValue === FundWalletTabs.Buy ? BuyingText : ExchangeText}
       <div className="mt-4">
         {CARD_DATA[tenantName][tabValue].map((data, index) => (
-          <ContentCard key={index} title={data.title} image={data.image} href={data.href} />
+          <ContentCard key={index} title={data.title} image={data.image} href={data.href} tenantName={tenantName} />
         ))}
       </div>
     </div>
@@ -133,16 +139,16 @@ function FundWallet() {
     onClick: () => setTabValue(index),
   });
 
-  const tabClassName = 'h-full w-full text-lg sm:text-md py-5';
+  const tabClassName = 'h-full w-full text-lg sm:text-md text-primary font-bold py-5';
 
   return (
     <div className="mt-4 flex h-full items-center justify-center">
-      <Card bordered className="shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
+      <Card bordered className="tab-card shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
         <Card.Title tag="h2" className="text-3xl font-normal">
           Fund Wallet
         </Card.Title>
         <div className="mt-5 flex justify-between">
-          <Tabs className="tabs-boxed flex flex-grow justify-center bg-base-100 sm:w-5/6">
+          <Tabs className="tabs-boxed flex flex-grow justify-center border border-neutral-500 bg-base-100 p-0 sm:w-5/6">
             <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Buy)}>
               Buy
             </Tabs.Tab>
