@@ -23,7 +23,6 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
     message: 'Could not establish connection with the bridge...',
     options: {
       toastId: ToastMessage.BRIDGE_CONNECTION_ERROR,
-
       type: toast.TYPE.ERROR,
     },
   },
