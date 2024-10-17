@@ -2,11 +2,61 @@ import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { useMemo } from 'preact/compat';
+import { FunctionComponent, useMemo } from 'preact/compat';
+
+// import AlchemyPayLogo from '../../assets/alchemy-pay.png';
+// import MexcLogo from '../../assets/mexc.png';
+// import StellaSwapLogo from '../../assets/stellaswap.png';
+import { ZenlinkIcon } from '../../assets/zenlink';
+
+interface CardDetail {
+  title: string;
+  image: FunctionComponent<{ className: string }>;
+}
+
+const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] }> = {
+  pendulum: {
+    // buy: [{ title: 'AlchemyPay', image: AlchemyPayLogo }],
+    buy: [],
+    exchange: [
+      // { title: 'MEXC', image: MexcLogo },
+      // { title: 'StellaSwap', image: StellaSwapLogo },
+      { title: 'Zenlink', image: ZenlinkIcon },
+    ],
+  },
+  amplitude: {
+    buy: [],
+    exchange: [{ title: 'Zenlink', image: ZenlinkIcon }],
+  },
+  foucoco: {
+    buy: [],
+    exchange: [],
+  },
+  local: {
+    buy: [],
+    exchange: [],
+  },
+};
 
 enum FundWalletTabs {
-  Buy = 0,
-  Exchange = 1,
+  Buy = 'buy',
+  Exchange = 'exchange',
+}
+
+interface ContentCardProps {
+  title: string;
+  image: FunctionComponent<{ className: string }>;
+}
+
+function ContentCard(props: ContentCardProps) {
+  const { title, image } = props;
+
+  return (
+    <Card className="flex flex-row items-center rounded-md bg-base-300/60 p-6">
+      {image({ className: 'w-8 h-8' })}
+      <div className="ml-2 text-2xl font-bold text-primary">{title}</div>
+    </Card>
+  );
 }
 
 interface ContentProps {
@@ -42,6 +92,11 @@ function Content(props: ContentProps) {
   return (
     <div className="my-6 text-sm text-secondary-content">
       {tabValue === FundWalletTabs.Buy ? BuyingText : ExchangeText}
+      <div className="mt-4">
+        {CARD_DATA[tenantName][tabValue].map((data, index) => (
+          <ContentCard key={index} title={data.title} image={data.image} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -50,7 +105,7 @@ function FundWallet() {
   const [tabValue, setTabValue] = useState(FundWalletTabs.Buy);
   const { tenantName } = useGlobalState();
 
-  const getTabProps = (index: number) => ({
+  const getTabProps = (index: FundWalletTabs) => ({
     active: tabValue === index,
     onClick: () => setTabValue(index),
   });
@@ -65,10 +120,10 @@ function FundWallet() {
         </Card.Title>
         <div className="mt-5 flex justify-between">
           <Tabs className="tabs-boxed flex flex-grow justify-center border border-neutral-500 sm:w-5/6">
-            <Tabs.Tab className={tabClassName} {...getTabProps(0)}>
+            <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Buy)}>
               Buy
             </Tabs.Tab>
-            <Tabs.Tab className={tabClassName} {...getTabProps(1)}>
+            <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Exchange)}>
               Exchange
             </Tabs.Tab>
           </Tabs>
