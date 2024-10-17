@@ -5,4 +5,5 @@ export default {
     tailwindcss: {},
     autoprefixer: {},
   },
+  
 };
