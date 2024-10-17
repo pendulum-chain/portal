@@ -144,6 +144,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
 
   const fundWalletItem: LinkItem = {
     link: `./${PATHS.FUND_WALLET}`,
+    hidden: tenantName === TenantName.Foucoco,
     title: 'Fund Wallet',
     prefix: <WalletIcon />,
     props: {
