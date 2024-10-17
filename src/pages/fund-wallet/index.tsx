@@ -53,7 +53,7 @@ function ContentCard(props: ContentCardProps) {
 
   return (
     <Card className="flex flex-row items-center rounded-md bg-base-300/60 p-6">
-      {image({ className: 'w-8 h-8' })}
+      {image({ className: 'w-40 h-20' })}
       <div className="ml-2 text-2xl font-bold text-primary">{title}</div>
     </Card>
   );
