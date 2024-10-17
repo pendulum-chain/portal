@@ -1,4 +1,4 @@
-import { Asset } from 'stellar-base';
+import { Asset } from '@stellar/stellar-sdk';
 import Big from 'big.js';
 import { useEffect, useState, useMemo } from 'preact/compat';
 import { nativeStellarToDecimal } from '../../shared/parseNumbers/metric';

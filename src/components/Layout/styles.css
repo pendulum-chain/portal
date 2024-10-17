@@ -1,0 +1,157 @@
+@media (max-width: 1023px) {
+  .mobile-menu button {
+    display: block !important;
+  }
+
+  #sidebar {
+    box-shadow: 5px 0 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.mobile-menu {
+  margin-left: 4px;
+}
+
+.mobile-menu button {
+  display: none;
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.2s ease-out;
+  opacity: 0.9;
+}
+
+.mobile-menu button:hover {
+  opacity: 0.85;
+}
+
+#sidebar-wrapper {
+  position: static;
+  border-right: 1px solid var(--border);
+}
+
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  width: 270px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+#sidebar-wrapper .logo {
+  width: 160px;
+}
+
+.foucoco-tag {
+  position: absolute;
+  color: var(--primary);
+  font-size: 11px;
+  letter-spacing: 1px;
+  left: 66px;
+  top: 70px;
+}
+
+#main-wrapper > section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+}
+
+#main-wrapper > section > header {
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  z-index: 49;
+}
+
+nav {
+  margin: 0 10px auto 10px;
+}
+
+.nav-item {
+  position: relative;
+  width: 100%;
+  color: var(--text-primary);
+  display: flex;
+  text-align: left;
+  transition: all 0.2s ease-out;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 9px;
+  margin: 10px 0;
+  padding: 10px 16px;
+}
+
+.nav-item.active .nav-arrow {
+  visibility: visible;
+}
+
+.nav-item.hidden {
+  display: none;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background-color: var(--selected-nav-item);
+}
+
+.nav-item.disabled {
+  pointer-events: none;
+  color: var(--text-primary-disabled);
+}
+
+.nav-item .nav-arrow {
+  visibility: hidden;
+}
+
+.nav-item svg {
+  fill: currentColor;
+}
+
+.nav-item svg:first-of-type {
+  width: 32px;
+  height: 32px;
+}
+
+.nav-item span {
+  display: block;
+  margin-left: 14px;
+  width: 140px;
+  height: auto;
+  color: var(--text-primary);
+}
+
+.nav-item .coming-soon-tag {
+  position: absolute;
+  right: 0.1em;
+  line-height: 14px;
+  font-size: 10px;
+  padding: 5px 10px;
+  background: var(--tag-background);
+  border-radius: 14px;
+  color: var(--primary);
+  opacity: 1;
+}
+
+.collapse-btn {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.disabled {
+  pointer-events: none;
+  color: var(--text-primary-disabled);
+}
+
+.submenu .nav-item {
+  margin: 0;
+  padding: 12px 25px 12px 45px;
+  background-color: transparent !important;
+}
+
+.submenu .nav-item:hover,
+.submenu .nav-item.active {
+  color: var(--primary);
+}

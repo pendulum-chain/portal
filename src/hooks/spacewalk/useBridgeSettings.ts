@@ -1,8 +1,8 @@
 import Big from 'big.js';
 import { useEffect, useMemo } from 'preact/compat';
 import { StateUpdater, Dispatch } from 'preact/hooks';
-import { Asset } from 'stellar-sdk';
-import _ from 'lodash';
+import { Asset } from '@stellar/stellar-sdk';
+import { uniqBy } from 'lodash';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { convertCurrencyToStellarAsset, shouldFilterOut } from '../../helpers/spacewalk';
 import { stringifyStellarAsset } from '../../helpers/stellar';
@@ -107,7 +107,7 @@ function useBridgeSettings(): BridgeSettings {
         return asset != null && !shouldFilterOut(tenantName, asset);
       });
     // Deduplicate assets
-    return _.uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
+    return uniqBy(assets, (asset: Asset) => stringifyStellarAsset(asset));
   }, [tenantName, extendedVaults]);
 
   const vaultsForCurrency = useMemo(() => {
