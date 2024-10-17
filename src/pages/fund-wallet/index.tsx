@@ -2,17 +2,23 @@ import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { useMemo } from 'preact/compat';
-
+import { useEffect, useMemo } from 'preact/compat';
 import { AlchemyPayIcon } from '../../assets/alchemypay';
 import { MexcIcon } from '../../assets/mexc';
 import { ZenlinkIcon } from '../../assets/zenlink';
 import { StellaswapIcon } from '../../assets/stellaswap';
 import ExternalIcon from '../../assets/ExternalIcon';
+import { config } from '../../config';
 
 const CARD_DATA: Record<TenantName, { buy: ContentCardProps[]; exchange: ContentCardProps[] }> = {
   pendulum: {
-    buy: [{ title: 'AlchemyPay', image: <AlchemyPayIcon className="h-full w-full" />, href: '' }],
+    buy: [
+      {
+        title: 'AlchemyPay',
+        image: <AlchemyPayIcon className="h-full w-full" />,
+        href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
+      },
+    ],
     exchange: [
       { title: 'MEXC', image: <MexcIcon className="h-full w-full" />, href: 'https://www.mexc.com/exchange/PEN_USDT' },
       {
@@ -51,14 +57,23 @@ enum FundWalletTabs {
 interface ContentCardProps {
   title: string;
   image: JSX.Element;
-  href: string;
+  href: string | Promise<string>;
 }
 
 function ContentCard(props: ContentCardProps) {
-  const { image, href } = props;
+  const { image } = props;
+
+  const [finalHref, setFinalHref] = useState<string>('');
+  useEffect(() => {
+    if (typeof props.href === 'string') {
+      setFinalHref(props.href);
+    } else {
+      props.href.then(setFinalHref);
+    }
+  }, [props.href]);
 
   return (
-    <a href={href} target="_blank" rel="noreferrer">
+    <a href={finalHref} target="_blank" rel="noreferrer">
       <Card className="mt-2 flex flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
         <div className="ml-6 h-20 w-40">{image}</div>
         <ExternalIcon className="ml-auto mr-1 h-5 w-5" />,
