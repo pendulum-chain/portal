@@ -1,0 +1,13 @@
+[data-theme='amplitude'] {
+  .tab-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
+    color: #32253e;
+  }
+
+  .tab-card .tabs-boxed :not(.tab-active) > svg {
+    fill: var(--primary);
+  }
+
+  .tab-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
+    background-color: var(--primary);
+  }
+}
