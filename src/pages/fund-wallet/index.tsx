@@ -7,6 +7,7 @@ import { FunctionComponent, useMemo } from 'preact/compat';
 // import AlchemyPayLogo from '../../assets/alchemy-pay.png';
 // import MexcLogo from '../../assets/mexc.png';
 // import StellaSwapLogo from '../../assets/stellaswap.png';
+import { MexcIcon } from '../../assets/mexc';
 import { ZenlinkIcon } from '../../assets/zenlink';
 
 interface CardDetail {
@@ -19,7 +20,7 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     // buy: [{ title: 'AlchemyPay', image: AlchemyPayLogo }],
     buy: [],
     exchange: [
-      // { title: 'MEXC', image: MexcLogo },
+      { title: 'MEXC', image: MexcIcon },
       // { title: 'StellaSwap', image: StellaSwapLogo },
       { title: 'Zenlink', image: ZenlinkIcon },
     ],
