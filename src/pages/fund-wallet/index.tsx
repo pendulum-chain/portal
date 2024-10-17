@@ -2,32 +2,36 @@ import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { FunctionComponent, useMemo } from 'preact/compat';
+import { useMemo } from 'preact/compat';
 
-// import AlchemyPayLogo from '../../assets/alchemy-pay.png';
-// import MexcLogo from '../../assets/mexc.png';
-// import StellaSwapLogo from '../../assets/stellaswap.png';
+import { AlchemyPayIcon } from '../../assets/alchemypay';
 import { MexcIcon } from '../../assets/mexc';
 import { ZenlinkIcon } from '../../assets/zenlink';
+import { StellaswapIcon } from '../../assets/stellaswap';
+import ExternalIcon from '../../assets/ExternalIcon';
 
-interface CardDetail {
-  title: string;
-  image: FunctionComponent<{ className: string }>;
-}
-
-const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] }> = {
+const CARD_DATA: Record<TenantName, { buy: ContentCardProps[]; exchange: ContentCardProps[] }> = {
   pendulum: {
-    // buy: [{ title: 'AlchemyPay', image: AlchemyPayLogo }],
-    buy: [],
+    buy: [{ title: 'AlchemyPay', image: <AlchemyPayIcon className="h-full w-full" />, href: '' }],
     exchange: [
-      { title: 'MEXC', image: MexcIcon },
-      // { title: 'StellaSwap', image: StellaSwapLogo },
-      { title: 'Zenlink', image: ZenlinkIcon },
+      { title: 'MEXC', image: <MexcIcon className="h-full w-full" />, href: 'https://www.mexc.com/exchange/PEN_USDT' },
+      {
+        title: 'StellaSwap',
+        image: <StellaswapIcon className="h-full w-full" />,
+        href: 'https://app.stellaswap.com/exchange/swap',
+      },
+      { title: 'Zenlink', image: <ZenlinkIcon className="h-full w-full" />, href: 'https://app.zenlink.pro/swap' },
     ],
   },
   amplitude: {
     buy: [],
-    exchange: [{ title: 'Zenlink', image: ZenlinkIcon }],
+    exchange: [
+      {
+        title: 'Zenlink',
+        image: <ZenlinkIcon className="h-full w-full" />,
+        href: 'https://app.zenlink.pro/swap',
+      },
+    ],
   },
   foucoco: {
     buy: [],
@@ -46,17 +50,20 @@ enum FundWalletTabs {
 
 interface ContentCardProps {
   title: string;
-  image: FunctionComponent<{ className: string }>;
+  image: JSX.Element;
+  href: string;
 }
 
 function ContentCard(props: ContentCardProps) {
-  const { title, image } = props;
+  const { image, href } = props;
 
   return (
-    <Card className="flex flex-row items-center rounded-md bg-base-300/60 p-6">
-      {image({ className: 'w-40 h-20' })}
-      <div className="ml-2 text-2xl font-bold text-primary">{title}</div>
-    </Card>
+    <a href={href} target="_blank" rel="noreferrer">
+      <Card className="mt-2 flex flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
+        <div className="ml-6 h-20 w-40">{image}</div>
+        <ExternalIcon className="ml-auto mr-1 h-5 w-5" />,
+      </Card>
+    </a>
   );
 }
 
@@ -91,11 +98,11 @@ function Content(props: ContentProps) {
   }, [tenantName]);
 
   return (
-    <div className="my-6 text-sm text-secondary-content">
+    <div className="my-4 text-sm text-secondary-content">
       {tabValue === FundWalletTabs.Buy ? BuyingText : ExchangeText}
       <div className="mt-4">
         {CARD_DATA[tenantName][tabValue].map((data, index) => (
-          <ContentCard key={index} title={data.title} image={data.image} />
+          <ContentCard key={index} title={data.title} image={data.image} href={data.href} />
         ))}
       </div>
     </div>
@@ -120,7 +127,7 @@ function FundWallet() {
           Fund Wallet
         </Card.Title>
         <div className="mt-5 flex justify-between">
-          <Tabs className="tabs-boxed flex flex-grow justify-center border border-neutral-500 sm:w-5/6">
+          <Tabs className="tabs-boxed flex flex-grow justify-center bg-base-100 sm:w-5/6">
             <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Buy)}>
               Buy
             </Tabs.Tab>

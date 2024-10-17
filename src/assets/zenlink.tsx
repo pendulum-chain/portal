@@ -7,7 +7,6 @@ interface Props {
 
 export const ZenlinkIcon: FC<Props> = ({ className = 'dark:fill-white fill-black', fill = 'black' }) => (
   <svg width="137px" height="40px" viewBox="0 0 137 40" version="1.1" className={className}>
-    <title>henpai</title>
     <g id="页面-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g fill={fill} id="Patract-官网备份-2" transform="translate(-160.000000, -20.000000)" fillRule="nonzero">
         <g id="henpai" transform="translate(160.000000, 20.000000)">
