@@ -10,7 +10,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useMemo } from 'preact/compat';
-import { repeat } from '../../helpers/general';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
 import { GlobalFilter } from './GlobalFilter';
@@ -61,7 +60,6 @@ export type TableProps<T> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const defaultData: any[] = [];
-const loading = <>{repeat(<Skeleton className="mb-2 h-8" />, 6)}</>;
 
 const Table = <T,>({
   data = defaultData,

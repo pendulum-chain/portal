@@ -1,6 +1,7 @@
 import { Bars3Icon } from '@heroicons/react/20/solid';
 import { memo, useState } from 'preact/compat';
 import { Outlet } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 import { useGlobalState } from '../../GlobalStateProvider';
 import AmplitudeLogo from '../../assets/amplitude-logo.svg';
 import PendulumLogo from '../../assets/pendulum-logo.png';
@@ -11,8 +12,7 @@ import { GetToken } from '../GetToken';
 import Nav from './Nav';
 import NetworkId from './NetworkId';
 import SocialAndTermLinks from './SocialAndTermLinks';
-import './styles.sass';
-import { isMobile } from 'react-device-detect';
+import './styles.css';
 
 export default function Layout(): JSX.Element | null {
   const [visible, setVisible] = useState(false);

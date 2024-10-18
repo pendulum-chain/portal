@@ -1,6 +1,6 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/preact-hooks';
 import { waitFor } from '@testing-library/preact';
-import { Asset } from 'stellar-base';
+import { Asset } from '@stellar/stellar-sdk';
 import Big from 'big.js';
 import { useFeePallet } from '../useFeePallet';
 import { useCalculateGriefingCollateral } from '../useCalculateGriefingCollateral';
@@ -47,7 +47,7 @@ describe('useCalculateGriefingCollateral', () => {
   it('should return 0 griefing collateral if amount is not valid', async () => {
     const { result } = renderHook(() => useCalculateGriefingCollateral(new Big(0), VALID_ASSET));
 
-    const expectation = () => expect(result.current.eq(new Big(0))).toBeTruthy();
+    const expectation = () => expect(result.current?.eq(new Big(0))).toBeTruthy();
 
     expectation();
     await waitFor(expectation);
@@ -56,7 +56,7 @@ describe('useCalculateGriefingCollateral', () => {
   it('should return 0 griefing collateral if bridgedAsset is not valid', async () => {
     const { result } = renderHook(() => useCalculateGriefingCollateral(new Big(1000), undefined));
 
-    const expectation = () => expect(result.current.eq(new Big(0))).toBeTruthy();
+    const expectation = () => expect(result.current?.eq(new Big(0))).toBeTruthy();
 
     expectation();
     await waitFor(expectation);
@@ -70,7 +70,7 @@ describe('useCalculateGriefingCollateral', () => {
 
     const { result } = renderHook(() => useCalculateGriefingCollateral(new Big(1000), VALID_ASSET));
 
-    const expectation = () => expect(result.current.eq(new Big(0))).toBeTruthy();
+    const expectation = () => expect(result.current?.eq(new Big(0))).toBeTruthy();
 
     expectation();
     await waitFor(expectation);
@@ -81,7 +81,7 @@ describe('useCalculateGriefingCollateral', () => {
     const { result } = renderHook(() => useCalculateGriefingCollateral(amount, VALID_ASSET));
 
     // First returned value (before useEffect is fired)
-    expect(result.current.eq(0)).toBeTruthy();
+    expect(result.current?.eq(0)).toBeTruthy();
 
     const griefingFee = mockGetFees().issueGriefingCollateralFee;
     // Since we assume the same price for all assets, the decimal griefing collateral is the amount * griefingFee / decimals
@@ -90,6 +90,6 @@ describe('useCalculateGriefingCollateral', () => {
       .div(10 ** 12)
       .toNumber();
 
-    await waitFor(() => expect(result.current.eq(griefingAmount)).toBeTruthy());
+    await waitFor(() => expect(result.current?.eq(griefingAmount)).toBeTruthy());
   });
 });
