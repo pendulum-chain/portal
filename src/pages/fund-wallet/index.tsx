@@ -7,7 +7,7 @@ import { AlchemyPayIcon } from '../../assets/alchemypay';
 import { MexcIcon } from '../../assets/mexc';
 import { ZenlinkIcon } from '../../assets/zenlink';
 import { StellaswapIcon } from '../../assets/stellaswap';
-import ExternalIcon from '../../assets/ExternalIcon';
+import ExternalIcon from '../../assets/ExternalIcon.svg';
 import { config } from '../../config';
 import './styles.css';
 
@@ -18,18 +18,18 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     buy: [
       {
         title: 'AlchemyPay',
-        image: <AlchemyPayIcon className="h-full w-full" />,
+        image: <AlchemyPayIcon className="w-full h-full" />,
         href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
       },
     ],
     exchange: [
-      { title: 'MEXC', image: <MexcIcon className="h-full w-full" />, href: 'https://www.mexc.com/exchange/PEN_USDT' },
+      { title: 'MEXC', image: <MexcIcon className="w-full h-full" />, href: 'https://www.mexc.com/exchange/PEN_USDT' },
       {
         title: 'StellaSwap',
-        image: <StellaswapIcon className="h-full w-full" />,
+        image: <StellaswapIcon className="w-full h-full" />,
         href: 'https://app.stellaswap.com/exchange/swap',
       },
-      { title: 'Zenlink', image: <ZenlinkIcon className="h-full w-full" />, href: 'https://app.zenlink.pro/swap' },
+      { title: 'Zenlink', image: <ZenlinkIcon className="w-full h-full" />, href: 'https://app.zenlink.pro/swap' },
     ],
   },
   amplitude: {
@@ -37,7 +37,7 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     exchange: [
       {
         title: 'Zenlink',
-        image: <ZenlinkIcon className="h-full w-full" />,
+        image: <ZenlinkIcon className="w-full h-full" />,
         href: 'https://app.zenlink.pro/swap',
       },
     ],
@@ -80,9 +80,9 @@ function ContentCard(props: ContentCardProps) {
 
   return (
     <a href={finalHref} target="_blank" rel="noreferrer">
-      <Card className="mt-2 flex flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
+      <Card className="flex flex-row items-center px-4 mt-2 rounded-md bg-base-300/60 hover:opacity-70">
         <div className={`ml-6 h-20 w-40 fill-${fill}`}>{image}</div>
-        <ExternalIcon className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
+        <img src={ExternalIcon} className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
       </Card>
     </a>
   );
@@ -142,13 +142,13 @@ function FundWallet() {
   const tabClassName = 'h-full w-full text-lg sm:text-md text-primary font-bold py-5';
 
   return (
-    <div className="mt-4 flex h-full items-center justify-center">
-      <Card bordered className="tab-card shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
+    <div className="flex items-center justify-center h-full mt-4">
+      <Card bordered className="w-full max-w-xl px-8 py-6 tab-card shadow-0 bg-base-200">
         <Card.Title tag="h2" className="text-3xl font-normal">
           Fund Wallet
         </Card.Title>
-        <div className="mt-5 flex justify-between">
-          <Tabs className="tabs-boxed flex flex-grow justify-center border border-neutral-500 bg-base-100 p-0 sm:w-5/6">
+        <div className="flex justify-between mt-5">
+          <Tabs className="flex justify-center flex-grow p-0 border tabs-boxed border-neutral-500 bg-base-100 sm:w-5/6">
             <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Buy)}>
               Buy
             </Tabs.Tab>

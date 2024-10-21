@@ -2,8 +2,8 @@ import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
 import { Options } from 'react-lottie';
 
+import ExternalIcon from '../../assets/ExternalIcon.svg';
 import DashboardIcon from '../../assets/dashboard';
-import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import StakingIcon from '../../assets/staking';
@@ -74,7 +74,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <SwapIcon className="p-1" />,
-    suffix: <ExternalIcon />,
+    suffix: <img src={ExternalIcon} className="w-3 h-5 ml-auto" />,
   };
 
   const spacewalkLinkItem: LinkItem = {
@@ -139,7 +139,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: <ExternalIcon />,
+    suffix: <img src={ExternalIcon} className="w-3 h-5 ml-auto" />,
   };
 
   const fundWalletItem: LinkItem = {
