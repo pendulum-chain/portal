@@ -5,6 +5,7 @@ import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
 import mexcIcon from '../../assets/exchange/mexc.svg';
 import zenlinkIcon from '../../assets/exchange/zenlink.svg';
+import zenlinkDarkIcon from '../../assets/exchange/zenlink-dark-mode.svg';
 import stellaswapIcon from '../../assets/exchange/stellaswap.svg';
 import alchemyPayIcon from '../../assets/alchemypay.svg';
 import { ExternalIcon } from '../../assets/ExternalIcon';
@@ -45,7 +46,7 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     exchange: [
       {
         title: 'Zenlink',
-        image: <img src={zenlinkIcon} className="h-full w-full" />,
+        image: <img src={zenlinkDarkIcon} className="h-full w-full" />,
         href: 'https://app.zenlink.pro/swap',
       },
     ],
