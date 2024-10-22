@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'preact/compat';
+import { useEffect } from 'preact/compat';
 import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
@@ -97,35 +97,32 @@ function ContentCard(props: ContentCardProps) {
   );
 }
 
+type ContentPropsTenants = Exclude<TenantName, TenantName.Foucoco | TenantName.Local>;
+
 interface ContentProps {
   tabValue: FundWalletTabs;
-  tenantName: TenantName;
 }
 
-function Content(props: ContentProps) {
-  const { tabValue, tenantName } = props;
+const BuyingTextMap: Record<ContentPropsTenants, string> = {
+  [TenantName.Amplitude]: 'Currently no options available, try Exchange!',
+  [TenantName.Pendulum]:
+    'Purchase PEN through AlchemyPay, a payment system that enables users to easily buy cryptocurrencies using traditional payment methods such as credit cards, bank transfers, or mobile wallets.',
+};
 
-  const BuyingText = useMemo(() => {
-    switch (tenantName) {
-      case TenantName.Amplitude:
-        return 'Currently no options available, try Exchange!';
-      case TenantName.Pendulum:
-        return 'Purchase PEN through AlchemyPay, a payment system that enables users to easily buy cryptocurrencies using traditional payment methods such as credit cards, bank transfers, or mobile wallets.';
-      default:
-        return '';
-    }
-  }, [tenantName]);
+const ExchangeTextMap: Record<ContentPropsTenants, string> = {
+  [TenantName.Amplitude]:
+    'Before buying or trading AMPE, make sure to review the specific terms and conditions of each exchange.',
+  [TenantName.Pendulum]:
+    'Before buying or trading PEN, make sure to review the specific terms and conditions of each exchange.',
+};
 
-  const ExchangeText = useMemo(() => {
-    switch (tenantName) {
-      case TenantName.Amplitude:
-        return 'Before buying or trading AMPE, make sure to review the specific terms and conditions of each exchange.';
-      case TenantName.Pendulum:
-        return 'Before buying or trading PEN, make sure to review the specific terms and conditions of each exchange.';
-      default:
-        return '';
-    }
-  }, [tenantName]);
+function Content({ tabValue }: ContentProps) {
+  const { tenantName } = useGlobalState();
+
+  if (tenantName === TenantName.Foucoco || tenantName === TenantName.Local) return <></>;
+
+  const BuyingText = BuyingTextMap[tenantName];
+  const ExchangeText = ExchangeTextMap[tenantName];
 
   return (
     <div className="my-4 text-sm text-secondary-content">
@@ -141,7 +138,6 @@ function Content(props: ContentProps) {
 
 function FundWallet() {
   const [tabValue, setTabValue] = useState(FundWalletTabs.Buy);
-  const { tenantName } = useGlobalState();
 
   const getTabProps = (index: FundWalletTabs) => ({
     active: tabValue === index,
@@ -166,7 +162,7 @@ function FundWallet() {
             </Tabs.Tab>
           </Tabs>
         </div>
-        <Content tabValue={tabValue} tenantName={tenantName} />
+        <Content tabValue={tabValue} />
       </Card>
     </div>
   );
