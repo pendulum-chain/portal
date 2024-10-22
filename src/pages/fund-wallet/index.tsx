@@ -3,6 +3,7 @@ import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
+import banxaIcon from '../../assets/exchange/banxa-gradient.png';
 import mexcIcon from '../../assets/exchange/mexc.svg';
 import zenlinkIcon from '../../assets/exchange/zenlink.svg';
 import zenlinkDarkIcon from '../../assets/exchange/zenlink-dark-mode.svg';
@@ -19,25 +20,30 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     buy: [
       {
         title: 'AlchemyPay',
-        image: <img src={alchemyPayIcon} className="h-full w-full" />,
+        image: <img src={alchemyPayIcon} className="ml-6 w-40" />,
         href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
       },
     ],
     exchange: [
       {
         title: 'MEXC',
-        image: <img src={mexcIcon} className="h-full w-full" />,
+        image: <img src={mexcIcon} className="ml-6 w-40" />,
         href: 'https://www.mexc.com/exchange/PEN_USDT',
       },
       {
         title: 'StellaSwap',
-        image: <img src={stellaswapIcon} className="h-full w-full" />,
+        image: <img src={stellaswapIcon} className="ml-6 w-40" />,
         href: 'https://app.stellaswap.com/exchange/swap',
       },
       {
         title: 'Zenlink',
-        image: <img src={zenlinkIcon} className="h-full w-full" />,
+        image: <img src={zenlinkIcon} className="ml-6 w-40" />,
         href: 'https://app.zenlink.pro/swap',
+      },
+      {
+        title: 'Banxa',
+        image: <img src={banxaIcon} className="ml-2 w-40" />,
+        href: 'https://checkout.banxa.com/',
       },
     ],
   },
@@ -46,7 +52,7 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     exchange: [
       {
         title: 'Zenlink',
-        image: <img src={zenlinkDarkIcon} className="h-full w-full" />,
+        image: <img src={zenlinkDarkIcon} className="ml-6 w-40" />,
         href: 'https://app.zenlink.pro/swap',
       },
     ],
@@ -73,25 +79,22 @@ interface ContentCardProps {
   tenantName: TenantName;
 }
 
-function ContentCard(props: ContentCardProps) {
-  const { image } = props;
-
+function ContentCard({ image, href }: ContentCardProps) {
   const [finalHref, setFinalHref] = useState<string>('');
-  useEffect(() => {
-    if (typeof props.href === 'string') {
-      setFinalHref(props.href);
-    } else {
-      props.href.then(setFinalHref);
-    }
-  }, [props.href]);
 
-  const fill = props.tenantName === TenantName.Pendulum ? 'black' : 'white';
+  useEffect(() => {
+    if (typeof href === 'string') {
+      setFinalHref(href);
+    } else {
+      href.then(setFinalHref);
+    }
+  }, [href]);
 
   return (
     <a href={finalHref} target="_blank" rel="noreferrer">
-      <Card className="mt-2 flex flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
-        <div className={`ml-6 h-20 w-40 fill-${fill}`}>{image}</div>
-        <ExternalIcon className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
+      <Card className="mt-2 flex h-20 flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
+        {image}
+        <ExternalIcon className="ml-auto mr-1 h-5 w-5 dark:fill-white" />,
       </Card>
     </a>
   );
