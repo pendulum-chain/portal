@@ -1,4 +1,4 @@
-import { Asset } from 'stellar-sdk';
+import { Asset } from '@stellar/stellar-sdk';
 import { StateUpdater, Dispatch } from 'preact/hooks';
 import { getIcon } from '../../../shared/AssetIcons';
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../../hooks/useBuyout/types';

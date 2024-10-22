@@ -3,7 +3,6 @@ import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, AvatarProps, Button, Input } from 'react-daisyui';
 
-import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { repeat } from '../../../helpers/general';
 import { Skeleton } from '../../Skeleton';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../hooks/nabla/useNablaInstance';

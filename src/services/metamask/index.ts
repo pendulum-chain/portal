@@ -3,7 +3,7 @@ import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/typ
 import { enablePolkadotSnap } from '@chainsafe/metamask-polkadot-adapter';
 import type { MetamaskPolkadotSnap } from '@chainsafe/metamask-polkadot-adapter/build/snap';
 import { MetamaskSnapApi } from '@chainsafe/metamask-polkadot-adapter/build/types';
-import type { SnapNetworks } from '@chainsafe/metamask-polkadot-types';
+import type { SnapNetworks, SnapConfig } from '@chainsafe/metamask-polkadot-types';
 
 import { TenantName } from '../../models/Tenant';
 import { trimAddress } from '../../helpers/addressFormatter';
@@ -21,7 +21,7 @@ export function tenantToSnapNetwork(tenantName: TenantName): SnapNetworks {
 
 export async function installPolkadotSnap(relayChain: SnapNetworks): Promise<boolean> {
   try {
-    await enablePolkadotSnap({ networkName: relayChain });
+    await enablePolkadotSnap({ networkName: relayChain } as SnapConfig);
     return true;
   } catch (err) {
     console.error('Failed to install PolkadotSnap, ', err);
@@ -36,7 +36,7 @@ export interface InitiatePolkadotSnapResponse {
 
 export async function initiatePolkadotSnap(relayChain: SnapNetworks): Promise<InitiatePolkadotSnapResponse> {
   try {
-    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: relayChain });
+    const metamaskPolkadotSnap = await enablePolkadotSnap({ networkName: relayChain } as SnapConfig);
     return { isSnapInstalled: true, snap: metamaskPolkadotSnap };
   } catch (e) {
     console.error(e);
@@ -60,6 +60,7 @@ const getProvider = async (tenantName: TenantName) => {
 
 const getSigner = (api: MetamaskSnapApi) => ({
   signPayload: async (payload: SignerPayloadJSON) => {
+    // @ts-expect-error The types are compatible, the library uses an older version of types definition
     const stringResult = await api.signPayloadJSON(payload);
     // Metamask snap doesn't provide a request Id, but just the hex string, so
     // adding id: 1 to be compliant with SignerResult

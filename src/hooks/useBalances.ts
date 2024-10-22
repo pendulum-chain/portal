@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'preact/compat';
 import { useGlobalState } from '../GlobalStateProvider';
 import { getAddressForFormat } from '../helpers/addressFormatter';
