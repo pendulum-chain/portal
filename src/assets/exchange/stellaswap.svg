@@ -1,17 +1,7 @@
-import { FC } from 'preact/compat';
-
-interface Props {
-  className?: string;
-  fill?: string;
-}
-
-export const StellaswapIcon: FC<Props> = ({ className = 'dark:fill-white fill-black', fill = 'black' }) => (
-  <svg
-    className={className}
+<svg
     width="180"
     height="37"
     viewBox="0 0 180 37"
-    fill={fill}
     xmlns="http://www.w3.org/2000/svg"
   >
     <g clipPath="url(#clip0_5784_1733)">
@@ -83,8 +73,8 @@ export const StellaswapIcon: FC<Props> = ({ className = 'dark:fill-white fill-bl
         y2="19.1996"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="#E2107B" />
-        <stop offset="1" stopColor="#301748" />
+        <stop stop-color="#E2107B" />
+        <stop offset="1" stop-color="#301748" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_5784_1733"
@@ -94,8 +84,8 @@ export const StellaswapIcon: FC<Props> = ({ className = 'dark:fill-white fill-bl
         y2="17.0267"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="#E2107B" />
-        <stop offset="1" stopColor="#0D1126" />
+        <stop stop-color="#E2107B" />
+        <stop offset="1" stop-color="#0D1126" />
       </linearGradient>
       <linearGradient
         id="paint2_linear_5784_1733"
@@ -105,8 +95,8 @@ export const StellaswapIcon: FC<Props> = ({ className = 'dark:fill-white fill-bl
         y2="5.36741"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="#E2107B" />
-        <stop offset="1" stopColor="#0D1126" />
+        <stop stop-color="#E2107B" />
+        <stop offset="1" stop-color="#0D1126" />
       </linearGradient>
       <linearGradient
         id="paint3_linear_5784_1733"
@@ -116,8 +106,8 @@ export const StellaswapIcon: FC<Props> = ({ className = 'dark:fill-white fill-bl
         y2="13.7996"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="#E2107B" />
-        <stop offset="1" stopColor="#0D1126" />
+        <stop stop-color="#E2107B" />
+        <stop offset="1" stop-color="#0D1126" />
       </linearGradient>
       <linearGradient
         id="paint4_linear_5784_1733"
@@ -127,12 +117,11 @@ export const StellaswapIcon: FC<Props> = ({ className = 'dark:fill-white fill-bl
         y2="21.9806"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="#301748" />
-        <stop offset="1" stopColor="#E2107B" />
+        <stop stop-color="#301748" />
+        <stop offset="1" stop-color="#E2107B" />
       </linearGradient>
       <clipPath id="clip0_5784_1733">
         <rect width="180" height="36" fill="white" transform="translate(0 0.124512)" />
       </clipPath>
     </defs>
   </svg>
-);

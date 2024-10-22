@@ -3,11 +3,11 @@ import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useEffect, useMemo } from 'preact/compat';
-import { AlchemyPayIcon } from '../../assets/alchemypay';
 import { MexcIcon } from '../../assets/mexc';
 import { ZenlinkIcon } from '../../assets/zenlink';
-import { StellaswapIcon } from '../../assets/stellaswap';
-import ExternalIcon from '../../assets/ExternalIcon.svg';
+import stellaswapIcon from '../../assets/exchange/stellaswap.svg';
+import alchemyPayIcon from '../../assets/alchemypay.svg';
+import externalIcon from '../../assets/ExternalIcon.svg';
 import { config } from '../../config';
 import './styles.css';
 
@@ -18,7 +18,7 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
     buy: [
       {
         title: 'AlchemyPay',
-        image: <AlchemyPayIcon className="w-full h-full" />,
+        image: <img src={alchemyPayIcon} className="w-full h-full" />,
         href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
       },
     ],
@@ -26,7 +26,7 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
       { title: 'MEXC', image: <MexcIcon className="w-full h-full" />, href: 'https://www.mexc.com/exchange/PEN_USDT' },
       {
         title: 'StellaSwap',
-        image: <StellaswapIcon className="w-full h-full" />,
+        image: <img src={stellaswapIcon} className="w-full h-full" />,
         href: 'https://app.stellaswap.com/exchange/swap',
       },
       { title: 'Zenlink', image: <ZenlinkIcon className="w-full h-full" />, href: 'https://app.zenlink.pro/swap' },
@@ -82,7 +82,7 @@ function ContentCard(props: ContentCardProps) {
     <a href={finalHref} target="_blank" rel="noreferrer">
       <Card className="flex flex-row items-center px-4 mt-2 rounded-md bg-base-300/60 hover:opacity-70">
         <div className={`ml-6 h-20 w-40 fill-${fill}`}>{image}</div>
-        <img src={ExternalIcon} className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
+        <img src={externalIcon} className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
       </Card>
     </a>
   );
