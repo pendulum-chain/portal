@@ -1,6 +1,7 @@
-import { useEffect } from 'preact/compat';
-import { Card, Tabs } from 'react-daisyui';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/compat';
+import { Card } from 'react-daisyui';
+import { motion } from 'framer-motion';
+
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
 import banxaIcon from '../../assets/exchange/banxa-gradient.png';
@@ -103,7 +104,7 @@ function ContentCard({ image, href }: ContentCardProps) {
 type ContentPropsTenants = Exclude<TenantName, TenantName.Foucoco | TenantName.Local>;
 
 interface ContentProps {
-  tabValue: FundWalletTabs;
+  activeTab: FundWalletTabs;
 }
 
 const BuyingTextMap: Record<ContentPropsTenants, string> = {
@@ -119,7 +120,7 @@ const ExchangeTextMap: Record<ContentPropsTenants, string> = {
     'Before buying or trading PEN, make sure to review the specific terms and conditions of each exchange.',
 };
 
-function Content({ tabValue }: ContentProps) {
+function Content({ activeTab }: ContentProps) {
   const { tenantName } = useGlobalState();
 
   if (tenantName === TenantName.Foucoco || tenantName === TenantName.Local) return <></>;
@@ -129,9 +130,9 @@ function Content({ tabValue }: ContentProps) {
 
   return (
     <div className="my-4 text-sm text-secondary-content">
-      {tabValue === FundWalletTabs.Buy ? BuyingText : ExchangeText}
+      {activeTab === FundWalletTabs.Buy ? BuyingText : ExchangeText}
       <div className="mt-4">
-        {CARD_DATA[tenantName][tabValue].map((data, index) => (
+        {CARD_DATA[tenantName][activeTab].map((data, index) => (
           <ContentCard key={index} title={data.title} image={data.image} href={data.href} tenantName={tenantName} />
         ))}
       </div>
@@ -140,32 +141,47 @@ function Content({ tabValue }: ContentProps) {
 }
 
 function FundWallet() {
-  const [tabValue, setTabValue] = useState(FundWalletTabs.Buy);
+  const [activeTab, setActiveTab] = useState(FundWalletTabs.Buy);
 
   const getTabProps = (index: FundWalletTabs) => ({
-    active: tabValue === index,
-    onClick: () => setTabValue(index),
+    'data-active': activeTab === index,
+    onClick: () => setActiveTab(index),
   });
 
-  const tabClassName = 'h-full w-full text-lg sm:text-md text-primary font-bold py-5';
+  const TabItem = ({ index, label }: { index: FundWalletTabs; label: string }) => (
+    <a
+      role="tab"
+      className="sm:text-md group tab relative h-full w-full py-5 text-lg font-bold text-primary"
+      {...getTabProps(index)}
+    >
+      <p className="z-20 group-data-[active=true]:text-white">{label}</p>
+      {activeTab === index && (
+        <motion.div
+          layoutId="bubble"
+          // @ts-expect-error Caused by Preact, remove this comment once migrated to React
+          className="absolute inset-0 z-10 rounded-lg bg-primary"
+          transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+        />
+      )}
+    </a>
+  );
 
   return (
-    <div className="mt-4 flex h-full items-center justify-center">
+    <div className="mt-4 flex justify-center">
       <Card bordered className="tab-card shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
         <Card.Title tag="h2" className="text-3xl font-normal">
           Fund Wallet
         </Card.Title>
         <div className="mt-5 flex justify-between">
-          <Tabs className="tabs-boxed flex flex-grow justify-center border border-neutral-500 bg-base-100 p-0 sm:w-5/6">
-            <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Buy)}>
-              Buy
-            </Tabs.Tab>
-            <Tabs.Tab className={tabClassName} {...getTabProps(FundWalletTabs.Exchange)}>
-              Exchange
-            </Tabs.Tab>
-          </Tabs>
+          <div
+            role="tablist"
+            className="tabs-boxed tabs flex flex-grow justify-center border border-neutral-500 bg-base-100 p-0 sm:w-5/6"
+          >
+            <TabItem index={FundWalletTabs.Buy} label="Buy" />
+            <TabItem index={FundWalletTabs.Exchange} label="Exchange" />
+          </div>
         </div>
-        <Content tabValue={tabValue} />
+        <Content activeTab={activeTab} />
       </Card>
     </div>
   );
