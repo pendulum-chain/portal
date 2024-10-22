@@ -7,7 +7,7 @@ import mexcIcon from '../../assets/exchange/mexc.svg';
 import zenlinkIcon from '../../assets/exchange/zenlink.svg';
 import stellaswapIcon from '../../assets/exchange/stellaswap.svg';
 import alchemyPayIcon from '../../assets/alchemypay.svg';
-import externalIcon from '../../assets/ExternalIcon.svg';
+import { ExternalIcon } from '../../assets/ExternalIcon';
 import { config } from '../../config';
 import './styles.css';
 
@@ -90,7 +90,7 @@ function ContentCard(props: ContentCardProps) {
     <a href={finalHref} target="_blank" rel="noreferrer">
       <Card className="mt-2 flex flex-row items-center rounded-md bg-base-300/60 px-4 hover:opacity-70">
         <div className={`ml-6 h-20 w-40 fill-${fill}`}>{image}</div>
-        <img src={externalIcon} className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
+        <ExternalIcon className={`ml-auto mr-1 h-5 w-5 fill-${fill}`} />,
       </Card>
     </a>
   );

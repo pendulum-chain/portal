@@ -2,13 +2,13 @@ import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
 import { Options } from 'react-lottie';
 
-import ExternalIcon from '../../assets/ExternalIcon.svg';
+import { ExternalIcon } from '../../assets/ExternalIcon';
 import DashboardIcon from '../../assets/dashboard';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
-import WalletIcon from '../../assets/wallet';
+import { WalletIcon } from '../../assets/wallet';
 
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
@@ -74,7 +74,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <SwapIcon className="p-1" />,
-    suffix: <img src={ExternalIcon} className="w-3 h-5 ml-auto" />,
+    suffix: <ExternalIcon className="ml-auto h-5 w-3" />,
   };
 
   const spacewalkLinkItem: LinkItem = {
@@ -139,7 +139,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: <img src={ExternalIcon} className="w-3 h-5 ml-auto" />,
+    suffix: <ExternalIcon className="ml-auto h-5 w-3 fill-white" />,
   };
 
   const fundWalletItem: LinkItem = {
