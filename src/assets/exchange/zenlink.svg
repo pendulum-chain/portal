@@ -1,13 +1,5 @@
-import { FC } from 'preact/compat';
 
-interface Props {
-  className?: string;
-  fill?: string;
-}
-
-export const ZenlinkIcon: FC<Props> = ({ className = 'dark:fill-white fill-black', fill = 'black' }) => (
   <svg
-    className={className}
     width="137"
     height="41"
     viewBox="0 0 137 41"
@@ -37,4 +29,3 @@ export const ZenlinkIcon: FC<Props> = ({ className = 'dark:fill-white fill-black
       <path d="M102.084 15.3754C103.233 15.3754 104.168 14.419 104.168 13.241C104.168 12.0629 103.236 11.1065 102.084 11.1065C100.932 11.1065 99.999 12.0629 99.999 13.241C99.999 14.419 100.932 15.3754 102.084 15.3754Z" />
     </g>
   </svg>
-);
