@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'preact/compat';
 import { Card } from 'react-daisyui';
-import { motion } from 'framer-motion';
 
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -12,11 +11,13 @@ import stellaswapIcon from '../../assets/exchange/stellaswap.svg';
 import alchemyPayIcon from '../../assets/alchemypay.svg';
 import { ExternalIcon } from '../../assets/ExternalIcon';
 import { config } from '../../config';
+import { FundWalletTabs } from './FundWalletTabs';
 import './styles.css';
 
 type CardDetail = Omit<ContentCardProps, 'tenantName'>;
+type FundSupportedTenants = Exclude<TenantName, TenantName.Foucoco | TenantName.Local>;
 
-const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] }> = {
+const CARD_DATA: Record<FundSupportedTenants, { buy: CardDetail[]; exchange: CardDetail[] }> = {
   pendulum: {
     buy: [
       {
@@ -58,17 +59,9 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
       },
     ],
   },
-  foucoco: {
-    buy: [],
-    exchange: [],
-  },
-  local: {
-    buy: [],
-    exchange: [],
-  },
 };
 
-enum FundWalletTabs {
+export enum FundWalletTab {
   Buy = 'buy',
   Exchange = 'exchange',
 }
@@ -101,19 +94,17 @@ function ContentCard({ image, href }: ContentCardProps) {
   );
 }
 
-type ContentPropsTenants = Exclude<TenantName, TenantName.Foucoco | TenantName.Local>;
-
 interface ContentProps {
-  activeTab: FundWalletTabs;
+  activeTab: FundWalletTab;
 }
 
-const BuyingTextMap: Record<ContentPropsTenants, string> = {
+const BuyingTextMap: Record<FundSupportedTenants, string> = {
   [TenantName.Amplitude]: 'Currently no options available, try Exchange!',
   [TenantName.Pendulum]:
     'Purchase PEN through AlchemyPay, a payment system that enables users to easily buy cryptocurrencies using traditional payment methods such as credit cards, bank transfers, or mobile wallets.',
 };
 
-const ExchangeTextMap: Record<ContentPropsTenants, string> = {
+const ExchangeTextMap: Record<FundSupportedTenants, string> = {
   [TenantName.Amplitude]:
     'Before buying or trading AMPE, make sure to review the specific terms and conditions of each exchange.',
   [TenantName.Pendulum]:
@@ -130,7 +121,7 @@ function Content({ activeTab }: ContentProps) {
 
   return (
     <div className="my-4 text-sm text-secondary-content">
-      {activeTab === FundWalletTabs.Buy ? BuyingText : ExchangeText}
+      {activeTab === FundWalletTab.Buy ? BuyingText : ExchangeText}
       <div className="mt-4">
         {CARD_DATA[tenantName][activeTab].map((data, index) => (
           <ContentCard key={index} title={data.title} image={data.image} href={data.href} tenantName={tenantName} />
@@ -141,30 +132,7 @@ function Content({ activeTab }: ContentProps) {
 }
 
 function FundWallet() {
-  const [activeTab, setActiveTab] = useState(FundWalletTabs.Buy);
-
-  const getTabProps = (index: FundWalletTabs) => ({
-    'data-active': activeTab === index,
-    onClick: () => setActiveTab(index),
-  });
-
-  const TabItem = ({ index, label }: { index: FundWalletTabs; label: string }) => (
-    <a
-      role="tab"
-      className="sm:text-md group tab relative h-full w-full py-5 text-lg font-bold text-primary"
-      {...getTabProps(index)}
-    >
-      <p className="z-20 group-data-[active=true]:text-white">{label}</p>
-      {activeTab === index && (
-        <motion.div
-          layoutId="bubble"
-          // @ts-expect-error Caused by Preact, remove this comment once migrated to React
-          className="absolute inset-0 z-10 rounded-lg bg-primary"
-          transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-        />
-      )}
-    </a>
-  );
+  const [activeTab, setActiveTab] = useState(FundWalletTab.Buy);
 
   return (
     <div className="mt-4 flex justify-center">
@@ -172,15 +140,7 @@ function FundWallet() {
         <Card.Title tag="h2" className="text-3xl font-normal">
           Fund Wallet
         </Card.Title>
-        <div className="mt-5 flex justify-between">
-          <div
-            role="tablist"
-            className="tabs-boxed tabs flex flex-grow justify-center border border-neutral-500 bg-base-100 p-0 sm:w-5/6"
-          >
-            <TabItem index={FundWalletTabs.Buy} label="Buy" />
-            <TabItem index={FundWalletTabs.Exchange} label="Exchange" />
-          </div>
-        </div>
+        <FundWalletTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <Content activeTab={activeTab} />
       </Card>
     </div>
