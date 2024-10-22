@@ -1,9 +1,9 @@
+import { useEffect, useMemo } from 'preact/compat';
 import { Card, Tabs } from 'react-daisyui';
 import { useState } from 'preact/hooks';
 import { TenantName } from '../../models/Tenant';
 import { useGlobalState } from '../../GlobalStateProvider';
-import { useEffect, useMemo } from 'preact/compat';
-import { MexcIcon } from '../../assets/mexc';
+import mexcIcon from '../../assets/exchange/mexc.svg';
 import zenlinkIcon from '../../assets/exchange/zenlink.svg';
 import stellaswapIcon from '../../assets/exchange/stellaswap.svg';
 import alchemyPayIcon from '../../assets/alchemypay.svg';
@@ -23,7 +23,11 @@ const CARD_DATA: Record<TenantName, { buy: CardDetail[]; exchange: CardDetail[] 
       },
     ],
     exchange: [
-      { title: 'MEXC', image: <MexcIcon className="h-full w-full" />, href: 'https://www.mexc.com/exchange/PEN_USDT' },
+      {
+        title: 'MEXC',
+        image: <img src={mexcIcon} className="h-full w-full" />,
+        href: 'https://www.mexc.com/exchange/PEN_USDT',
+      },
       {
         title: 'StellaSwap',
         image: <img src={stellaswapIcon} className="h-full w-full" />,
