@@ -1,17 +1,7 @@
-import { FC } from 'preact/compat';
-
-interface Props {
-  className?: string;
-  fill?: string;
-}
-
-export const AlchemyPayIcon: FC<Props> = ({ className = 'dark:fill-white fill-black', fill = '#0B48E5' }) => (
-  <svg
-    className={className}
+<svg
     width="176"
     height="33"
     viewBox="0 0 176 33"
-    fill={fill}
     xmlns="http://www.w3.org/2000/svg"
   >
     <g clipPath="url(#clip0_5784_1571)">
@@ -109,4 +99,4 @@ export const AlchemyPayIcon: FC<Props> = ({ className = 'dark:fill-white fill-bl
       </clipPath>
     </defs>
   </svg>
-);
+
