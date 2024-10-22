@@ -143,8 +143,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
   };
 
   const fundWalletItem: LinkItem = {
-    link: `./${PATHS.FUND_WALLET}`,
-    hidden: tenantName === TenantName.Foucoco,
+    link: tenantName === TenantName.Foucoco ? config.faucetPage : `./${PATHS.FUND_WALLET}`,
     title: 'Fund Wallet',
     prefix: <WalletIcon />,
     props: {

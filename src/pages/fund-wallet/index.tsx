@@ -13,7 +13,6 @@ export enum FundWalletTab {
 
 function FundWallet() {
   const [activeTab, setActiveTab] = useState(FundWalletTab.Buy);
-
   return (
     <div className="mt-4 flex justify-center">
       <Card bordered className="tab-card shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
