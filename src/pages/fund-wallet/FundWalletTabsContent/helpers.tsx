@@ -11,7 +11,7 @@ import { CardExternalLinkProps } from '../../../components/CardExternalLink';
 
 import { FundWalletTab } from '..';
 
-type FundSupportedTenants = Exclude<TenantName, TenantName.Foucoco | TenantName.Local>;
+export type FundSupportedTenants = Exclude<TenantName, TenantName.Foucoco | TenantName.Local>;
 
 const EXCHANGE_LIST: Record<FundSupportedTenants, { buy: CardExternalLinkProps[]; exchange: CardExternalLinkProps[] }> =
   {

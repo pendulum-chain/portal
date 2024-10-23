@@ -1,25 +1,14 @@
-import { useGlobalState } from '../../../GlobalStateProvider';
-import { TenantName } from '../../../models/Tenant';
 import { CardExternalLink } from '../../../components/CardExternalLink';
 
 import { FundWalletTab } from '..';
-import { getActiveText, getExchangeList } from './helpers';
-import { config } from '../../../config';
+import { getActiveText, getExchangeList, FundSupportedTenants } from './helpers';
 
 interface FundWalletTabsContentProps {
   activeTab: FundWalletTab;
+  tenantName: FundSupportedTenants;
 }
 
-export function FundWalletTabsContent({ activeTab }: FundWalletTabsContentProps) {
-  const { tenantName } = useGlobalState();
-
-  if (tenantName === TenantName.Foucoco || tenantName === TenantName.Local)
-    return (
-      <a className="btn btn-secondary mt-8" href={config.faucetPage} rel="noopener noreferrer" target="_blank">
-        Top up with Faucet
-      </a>
-    );
-
+export function FundWalletTabsContent({ activeTab, tenantName }: FundWalletTabsContentProps) {
   const activeText = getActiveText(tenantName, activeTab);
   const exchangeList = getExchangeList(tenantName, activeTab);
 
