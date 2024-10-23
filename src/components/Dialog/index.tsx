@@ -1,5 +1,5 @@
 import { Modal } from 'react-daisyui';
-import { FC, createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
+import { createPortal, useCallback, useEffect, useRef, useState } from 'preact/compat';
 import { CloseButton } from '../CloseButton';
 
 interface DialogProps {
@@ -9,13 +9,13 @@ interface DialogProps {
   content: JSX.Element;
   actions?: JSX.Element;
   form?: {
-    onSubmit: (event?: Event) => void | Promise<void>;
+    onSubmit: (event?: Event) => void;
     className?: string;
   };
   id?: string;
 }
 
-export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content, actions, id, form }) => {
+export function Dialog({ visible, onClose, headerText, content, actions, id, form }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
 
   // If it was the form submission we want to only close the dialog without calling onClose
@@ -73,13 +73,13 @@ export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content,
   const modalBody = (
     <>
       <Modal.Body>{content}</Modal.Body>
-      <Modal.Actions className="justify-center mt-4">{actions}</Modal.Actions>
+      <Modal.Actions className="mt-4 justify-center">{actions}</Modal.Actions>
     </>
   );
 
   return createPortal(
-    <Modal className={`bg-base-200 border border-[--modal-border]`} id={id} ref={ref}>
-      <Modal.Header className={`text-2xl claim-title flex mb-5 ${headerText ? 'justify-between' : 'justify-end'}`}>
+    <Modal className={`border border-[--modal-border] bg-base-200`} id={id} ref={ref}>
+      <Modal.Header className={`claim-title mb-5 flex text-2xl ${headerText ? 'justify-between' : 'justify-end'}`}>
         {headerText} <CloseButton onClick={onClose} />
       </Modal.Header>
       {form ? (
@@ -92,4 +92,4 @@ export const Dialog: FC<DialogProps> = ({ visible, onClose, headerText, content,
     </Modal>,
     container,
   );
-};
+}

@@ -14,7 +14,7 @@ export const GasSuccessDialog: FC<DialogProps> = ({ visible, onClose, token }) =
     <div className="flex flex-col items-center justify-between">
       <SuccessDialogIcon />
       <h2 className="mt-6 text-xl">You have successfully purchased {token}!</h2>
-      <p className="mx-4 mt-2 text-sm text-center dark:text-neutral-400 text-neutral-500 sm:mx-16"></p>
+      <p className="mx-4 mt-2 text-center text-sm text-neutral-500 dark:text-neutral-400 sm:mx-16"></p>
     </div>
   );
 

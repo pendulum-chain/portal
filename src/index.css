@@ -353,6 +353,10 @@ w3m-modal {
   scrollbar-width: none;
 }
 
+.scroll-thin {
+  scrollbar-width: thin;
+}
+
 :root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
   scrollbar-gutter: unset;
 }

@@ -12,25 +12,25 @@ const ChainSelector = (): JSX.Element => {
   return (
     <details className="w-30 dropdown">
       <summary
-        className="text-sm border-base-300 bg-base-200 min-h-[2.1rem] h-auto px-2 sm:px-3 btn btn-sm btn-ghost flex"
+        className="btn btn-ghost btn-sm flex h-auto min-h-[2.1rem] border-base-300 bg-base-200 px-2 text-sm sm:px-3"
         title={currentTenant}
       >
         {currentTenant === TenantName.Pendulum ? (
-          <PendulumLogo className="w-4 h-5 mr-1" />
+          <PendulumLogo className="mr-1 h-5 w-4" />
         ) : (
-          <AmplitudeLogo className="w-4 h-4 mr-1 " />
+          <AmplitudeLogo className="mr-1 h-4 w-4" />
         )}
         <span className="mr-1 text-sm sm:mr-2">{currentTenant ? toTitle(currentTenant) : ''}</span>
-        <ChevronDownIcon className="w-4 h-4" stroke-width="2" />
+        <ChevronDownIcon className="h-4 w-4" stroke-width="2" />
       </summary>
-      <ul className="text-sm border-base-300 border bg-base-200 rounded-xl shadow-none menu dropdown-content z-[1]">
+      <ul className="menu dropdown-content z-[1] rounded-xl border border-base-300 bg-base-200 text-sm shadow-none">
         {options.map((option, i) => (
           <li key={i} onClick={() => switchChain(option)}>
             <a>
               {option === TenantName.Pendulum ? (
-                <PendulumLogo light={currentTenant !== TenantName.Pendulum} className="w-5 h-6 mr-1" />
+                <PendulumLogo light={currentTenant !== TenantName.Pendulum} className="mr-1 h-6 w-5" />
               ) : (
-                <AmplitudeLogo className="w-5 h-5 mr-1" />
+                <AmplitudeLogo className="mr-1 h-5 w-5" />
               )}
               <span className="mr-3 text-sm">{toTitle(option)}</span>
             </a>

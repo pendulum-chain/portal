@@ -17,21 +17,21 @@ const FormLoader = ({
   button = true,
 }: FormLoaderProps): JSX.Element => {
   return (
-    <div className={`flex flex-col w-full gap-5 ${className}`}>
+    <div className={`flex w-full flex-col gap-5 ${className}`}>
       {repeat(
         <div>
-          {label && <Skeleton className="h-[1rem] w-[8rem] rounded-md mb-1" />}
+          {label && <Skeleton className="mb-1 h-[1rem] w-[8rem] rounded-md" />}
           <Skeleton className="h-[2.8rem] w-full rounded-md" />
         </div>,
         inputs,
       )}
       {textarea && (
         <div>
-          {label && <Skeleton className="h-[1rem] w-[8rem] rounded-md mb-1" />}
-          <Skeleton className="h-[8rem] rounded-md w-full" />
+          {label && <Skeleton className="mb-1 h-[1rem] w-[8rem] rounded-md" />}
+          <Skeleton className="h-[8rem] w-full rounded-md" />
         </div>
       )}
-      {button && <Skeleton className="h-[4rem] rounded-md w-full mt-6" />}
+      {button && <Skeleton className="mt-6 h-[4rem] w-full rounded-md" />}
     </div>
   );
 };

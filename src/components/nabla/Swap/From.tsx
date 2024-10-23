@@ -1,6 +1,7 @@
+import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Button } from 'react-daisyui';
-import { FieldPath, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
+import Big from 'big.js';
 
 import { NablaTokenPrice } from '../common/NablaTokenPrice';
 import { fractionOfValue } from '../../../shared/parseNumbers/metric';
@@ -14,21 +15,23 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 import { SwapFormValues } from './schema';
 
 interface FromProps<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>> {
-  fromToken: NablaInstanceToken | undefined;
-  onOpenSelector: () => void;
-  inputHasError: boolean;
-  fromFormFieldName: TFieldName;
   form: UseFormReturn<FormFieldValues>;
   fromTokenBalance: UseContractReadResult<ContractBalance | undefined>;
+  fromToken?: NablaInstanceToken;
+  fromAmount?: Big;
+  fromFormFieldName: TFieldName;
+  onOpenSelector: () => void;
+  inputHasError: boolean;
 }
 
 export function From<FormFieldValues extends FieldValues, TFieldName extends FieldPath<FormFieldValues>>({
+  form,
   fromToken,
+  fromAmount,
+  fromTokenBalance,
+  fromFormFieldName,
   onOpenSelector,
   inputHasError,
-  fromFormFieldName,
-  form,
-  fromTokenBalance,
 }: FromProps<FormFieldValues, TFieldName>) {
   const { setValue } = useFormContext<SwapFormValues>();
 
@@ -38,7 +41,7 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
     <div
       className={`rounded-lg border bg-base-300 px-4 py-3 ${inputHasError ? 'border-red-600' : 'border-transparent'}`}
     >
-      <div className="flex w-full justify-between">
+      <div className="flex justify-between w-full">
         <div className="font-outfit flex-grow text-4xl text-[inherit]">
           <AmountSelector
             maxBalance={fromTokenBalance.data}
@@ -54,15 +57,24 @@ export function From<FormFieldValues extends FieldValues, TFieldName extends Fie
           type="button"
         >
           <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)] p-px">
-            <img src={getIcon(fromToken?.symbol)} alt={fromToken?.name} className="h-full w-auto" />
+            <img src={getIcon(fromToken?.symbol)} alt={fromToken?.name} className="w-auto h-full" />
           </span>
           <strong className="font-bold">{fromToken?.symbol || 'Select'}</strong>
-          <ChevronDownIcon className="ml-px inline h-4 w-4" />
+          <ChevronDownIcon className="inline w-4 h-4 ml-px" />
         </Button>
       </div>
-      <div className="mt-1 flex items-center justify-between text-neutral-500 dark:text-neutral-400">
+      <div className="flex items-center justify-between mt-1 text-neutral-500 dark:text-neutral-400">
         <div className="mt-px text-sm">
-          {fromToken ? <NablaTokenPrice address={fromToken.id} fallback="$ -" /> : '$ -'}
+          {fromToken ? (
+            <NablaTokenPrice
+              formatByAmount={true}
+              currentTokenAmount={fromAmount}
+              address={fromToken.id}
+              fallback="$ -"
+            />
+          ) : (
+            '$ -'
+          )}
         </div>
         <div className="flex gap-1 text-sm">
           {fromTokenBalance !== undefined && walletAccount && (

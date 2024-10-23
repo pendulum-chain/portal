@@ -1,18 +1,18 @@
 [data-theme='pendulum'] {
   .odd-rows {
-    background-color: #F5F9FA;
+    background-color: #f5f9fa;
   }
 
   .table-border {
-    border-color: #DFE0EB;
+    border-color: #dfe0eb;
   }
-  
+
   .table-header {
-    color: #9FA2B4;
+    color: #9fa2b4;
   }
 
   .table-container {
-    color: #252733; 
+    color: #252733;
   }
 
   .highlighted-row:hover td {
@@ -22,7 +22,7 @@
 
 [data-theme='amplitude'] {
   .odd-rows {
-    background-color: #2A2A2A;
+    background-color: #2a2a2a;
   }
 
   .table-border {
@@ -34,10 +34,10 @@
   }
 
   .table-container {
-    color: #fff; 
+    color: #fff;
   }
 
   .highlighted-row:hover td {
-    background-color:#333 ;
+    background-color: #333;
   }
 }

@@ -49,11 +49,11 @@ export function useIssuePallet() {
           return undefined;
         }
 
-        const u128Amount = Big(amount)
+        const u128Amount = Big(amount);
 
-        if(!isU128Compatible(u128Amount)) return;
+        if (!isU128Compatible(u128Amount)) return;
 
-        const compactAmount: Compact<u128> =  api.createType('Compact<u128>', u128Amount.toString());
+        const compactAmount: Compact<u128> = api.createType('Compact<u128>', u128Amount.toString());
 
         return api.tx.issue?.requestIssue(compactAmount, vaultId);
       },

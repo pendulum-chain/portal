@@ -1,7 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import Big from 'big.js';
 import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
-import { Asset } from 'stellar-sdk';
+import { Asset } from '@stellar/stellar-sdk';
 import { useFeePallet } from '../../../hooks/spacewalk/useFeePallet';
 import { ChainDecimals, nativeStellarToDecimal, nativeToDecimal } from '../../../shared/parseNumbers/metric';
 
@@ -64,7 +64,7 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
     <div
       tabIndex={0}
       onClick={toggle}
-      className={`collapse cursor-pointer collapse-arrow bg-base-300 rounded-lg my-4 ${collapseVisibility}`}
+      className={`collapse collapse-arrow my-4 cursor-pointer rounded-lg bg-base-300 ${collapseVisibility}`}
     >
       <div className="collapse-title">
         <div className="flex justify-between">
@@ -75,21 +75,21 @@ export function FeeBox(props: FeeBoxProps): JSX.Element {
         </div>
       </div>
       <div className="collapse-content">
-        <div className="flex justify-between mt-2">
+        <div className="mt-2 flex justify-between">
           <span>Bridge Fee</span>
           <span className="text-right">
             {bridgeFee.toString()} {bridgedAsset?.getCode()}
           </span>
         </div>
         {securityDeposit && (
-          <div className="flex justify-between mt-2">
+          <div className="mt-2 flex justify-between">
             <span>Security Deposit</span>
             <span className="text-right">
               {securityDeposit.toFixed(ChainDecimals)} {nativeCurrency}
             </span>
           </div>
         )}
-        <div className="flex justify-between mt-2">
+        <div className="mt-2 flex justify-between">
           <span>Transaction Fee</span>
           <span className="text-right">
             {transactionFee.toFixed(ChainDecimals)} {nativeCurrency}

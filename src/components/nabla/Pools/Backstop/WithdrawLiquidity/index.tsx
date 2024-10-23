@@ -71,13 +71,13 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
       >
         <PoolProgress symbol={backstopPool.symbol} amount={amountString} />
       </TransactionProgress>
-      <h3 className={`flex items-center gap-2 mb-8 mt-2 ${hideCss} absolute top-0 translate-y-2/4`}>
+      <h3 className={`mb-8 mt-2 flex items-center gap-2 ${hideCss} absolute top-0 translate-y-2/4`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
-          <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
+          <ArrowLeftIcon className="h-4 w-4 dark:text-neutral-400" />
         </Button>
-        <span className="text-3xl font-normal ">Withdraw from</span>
+        <span className="text-3xl font-normal">Withdraw from</span>
         <Button
-          className="bg-neutral-200 dark:bg-neutral-800 px-2 rounded-2xl"
+          className="rounded-2xl bg-neutral-200 px-2 dark:bg-neutral-800"
           size="sm"
           type="button"
           onClick={() => setShowTokenModal(true)}
@@ -85,18 +85,18 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
           <strong className="font-bold">
             {selectedPool === undefined ? 'Backstop Pool' : `Swap Pool ${selectedPool.token.symbol}`}
           </strong>
-          <ChevronDownIcon className="w-4 h-4 inline" />
+          <ChevronDownIcon className="inline h-4 w-4" />
         </Button>
       </h3>
       <div className={hideCss}>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             {walletAccount && (
-              <div className="flex justify-between align-end text-sm text-initial my-3">
+              <div className="align-end text-initial my-3 flex justify-between text-sm">
                 <p>
                   Deposited: <TokenBalance query={depositQuery} symbol={backstopPool.symbol}></TokenBalance>
                 </p>
-                <p className="text-neutral-500 dark:text-neutral-400 text-right">
+                <p className="text-right text-neutral-500 dark:text-neutral-400">
                   Balance: <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
                 </p>
               </div>
@@ -104,7 +104,7 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
             <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
               <div className="flex items-start justify-start pt-2">
                 <div className="flex-grow">
-                  <div className="flex items-center justify-between flex-grow mr-2">
+                  <div className="mr-2 flex flex-grow items-center justify-between">
                     <div>You will withdraw</div>
                     <TokenBalance
                       query={withdrawalQuote}
@@ -113,7 +113,7 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
                     ></TokenBalance>
                   </div>
                   {walletAccount && (
-                    <div className="text-neutral-500 text-sm dark:text-neutral-400 flex items-center justify-between flex-grow mr-2">
+                    <div className="mr-2 flex flex-grow items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
                       <div>Your current balance</div>
                       <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
                     </div>
@@ -134,8 +134,8 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
                 />
               </div>
             </AmountSelector>
-            <Validation className="text-center mt-2" errors={errors} />
-            <div className="relative flex w-full flex-col gap-4 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-300 p-4 mt-4">
+            <Validation className="mt-2 text-center" errors={errors} />
+            <div className="relative mt-4 flex w-full flex-col gap-4 rounded-lg bg-neutral-100 p-4 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-300">
               <div className="flex items-center justify-between">
                 <div>Total backstop pool LP tokens</div>
                 <div>

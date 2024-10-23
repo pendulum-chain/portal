@@ -1,4 +1,4 @@
-import { Asset, Keypair, StrKey } from 'stellar-sdk';
+import { Asset, Keypair, StrKey } from '@stellar/stellar-sdk';
 import { Buffer } from 'buffer';
 
 // Applying this assignment to the global object here - because Buffer is used only in this file. If Buffer is to be used in several places - it should be added to the global object in the entry file of the application.

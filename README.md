@@ -5,7 +5,6 @@
 ![Preact](https://img.shields.io/badge/-Preact-05122A?style=flat&logo=preact)&nbsp;
 ![Vite](https://img.shields.io/badge/-Vite-05122A?style=flat&logo=vite)&nbsp;
 ![Tailwind CSS](https://img.shields.io/badge/-Tailwind-05122A?style=flat&logo=tailwindcss)&nbsp;
-![SASS](https://img.shields.io/badge/-Sass-05122A?style=flat&logo=sass)&nbsp;
 ![Polkadot](https://img.shields.io/badge/-Polkadot-05122A?style=flat&logo=polkadot)&nbsp;
 
 ---
@@ -53,8 +52,9 @@ matter what URL the browser requests.
 ### Missing price information
 
 If you are missing the price information about the assets on the dashboard page, you are probably experiencing a CORS
-problem with the batching server. If you want to fetch prices locally, you can use the proxy server available
-at [pendulum-tools](https://github.com/pendulum-chain/pendulum-tools). Change url in `src/hooks/usePriceFetcher.ts` file to `http://localhost:3000`
+problem with the batching server. If you want to fetch prices locally, you can use the proxy server available at
+[pendulum-tools](https://github.com/pendulum-chain/pendulum-tools). Change url in `src/hooks/usePriceFetcher.ts` file to
+`http://localhost:3000`
 
 ### Fixing type issues
 

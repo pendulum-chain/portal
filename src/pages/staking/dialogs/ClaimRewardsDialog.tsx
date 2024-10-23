@@ -95,7 +95,7 @@ function ClaimRewardsDialog(props: Props) {
     switch (step) {
       case ClaimStep.Confirm:
         return (
-          <div className="rounded-lg flex flex-col items-center w-full">
+          <div className="flex w-full flex-col items-center rounded-lg">
             <form className="flex flex-col">
               <Amount
                 fullMax={true}

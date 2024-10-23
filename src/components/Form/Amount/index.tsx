@@ -43,8 +43,8 @@ const Amount = ({
         error ? 'border border-solid border-red-400' : ''
       }`}
     >
-      <div className="w-full flex justify-between">
-        <div className="flex-grow text-4xl text-accent-content font-outfit">
+      <div className="flex w-full justify-between">
+        <div className="font-outfit flex-grow text-4xl text-accent-content">
           <NumericInput
             register={register}
             readOnly={readOnly}
@@ -55,7 +55,7 @@ const Amount = ({
         <div className="flex">
           {hideHalfButton ? null : (
             <button
-              className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
+              className="mx-1 font-semibold text-accent-content underline hover:opacity-70"
               onClick={() => setValue(roundNumber(Number(max) * 0.5))}
               type="button"
             >
@@ -64,7 +64,7 @@ const Amount = ({
           )}
           {hideMaxButton ? null : (
             <button
-              className="text-accent-content underline hover:opacity-70 mx-1 font-semibold"
+              className="mx-1 font-semibold text-accent-content underline hover:opacity-70"
               onClick={() => setValue(calculateMaxAmount(Number(max), fullMax))}
               type="button"
             >
@@ -73,8 +73,8 @@ const Amount = ({
           )}
         </div>
       </div>
-      <div className="flex justify-between items-center dark:text-neutral-400 text-neutral-500">
-        <div className="text-sm mt-px">Amount</div>
+      <div className="flex items-center justify-between text-neutral-500 dark:text-neutral-400">
+        <div className="mt-px text-sm">Amount</div>
         <div className="flex gap-1 text-sm">
           {max !== undefined && <span className="mr-1">Available: {max.toFixed(2)}</span>}
         </div>

@@ -58,7 +58,7 @@ function handleBuyoutError(error: string) {
 function generateBuyoutExtrinsicPayload(amount: BigNumber) {
   const amountString = amount.toString();
   // We always go the 'buyout' route because the 'exchange' route does not work sometimes
-  return { buyout: { amount: amountString } };
+  return { Buyout: { amount: amountString } };
 }
 
 export const useBuyout = (): BuyoutSettings => {

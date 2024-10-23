@@ -4,14 +4,14 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 export const SubmitButton = ({ loading, disabled }: { loading?: boolean; disabled?: boolean }) => {
-  const { walletAccount, dAppName } = useGlobalState();
+  const { walletAccount } = useGlobalState();
   const { tokenSymbol } = useNodeInfoState().state;
 
   return (
     <>
       {walletAccount ? (
         <Button
-          className="w-full text-neutral text-base"
+          className="w-full text-base text-neutral"
           color="primary"
           type="submit"
           loading={!tokenSymbol || loading}

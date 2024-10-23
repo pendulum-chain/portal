@@ -2,7 +2,7 @@ import { Input } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
-import { handleOnChangeNumericInput } from './helpers';
+import { handleOnChangeNumericInput, handleOnKeyDownNumericInput, handleOnPasteNumericInput } from './helpers';
 
 interface NumericInputProps {
   register: UseFormRegisterReturn;
@@ -26,20 +26,27 @@ export const NumericInput = ({
     register.onChange(e);
   }
 
+  function handleOnPaste(e: ClipboardEvent): void {
+    handleOnPasteNumericInput(e, maxDecimals);
+    register.onChange(e);
+  }
+
   return (
-    <div className="flex justify-between w-full">
-      <div className="flex-grow text-4xl text-black font-outfit">
+    <div className="flex w-full justify-between">
+      <div className="font-outfit flex-grow text-4xl text-black">
         <Input
           {...register}
           autocomplete="off"
           autocorrect="off"
           autocapitalize="none"
           className={
-            'input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none focus:text-accent-content text-accent-content ' +
+            'font-outfit input-ghost w-full pl-0 text-4xl text-accent-content focus:text-accent-content focus:outline-none ' +
             additionalStyle
           }
           minlength="1"
           onChange={handleOnChange}
+          onKeyDown={handleOnKeyDownNumericInput}
+          onPaste={handleOnPaste}
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0.0"
           readOnly={readOnly}

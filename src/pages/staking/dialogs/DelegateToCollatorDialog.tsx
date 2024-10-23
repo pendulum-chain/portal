@@ -45,13 +45,13 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
   const CollatorInfo = useMemo(
     () =>
       collator ? (
-        <div className="flex flex-col bg-base-300 rounded-md xs:flex-row xs:items-center justify-between text-right p-5 gap-2">
+        <div className="flex flex-col justify-between gap-2 rounded-md bg-base-300 p-5 text-right xs:flex-row xs:items-center">
           <div className="flex flex-row items-center">
-            <ChainLogo className="w-8 h-8 mr-2" width="50" height="50" />
+            <ChainLogo className="mr-2 h-8 w-8" width="50" height="50" />
             <PublicKey variant="shorter" publicKey={collator.id} />
           </div>
           <div>
-            <div className="text-lg text-accent-content font-semibold">APR {annual || '0.00%'}</div>
+            <div className="text-lg font-semibold text-accent-content">APR {annual || '0.00%'}</div>
             <div className="text-sm text-neutral-content" hidden={mode === 'delegatingMore'}>
               Min Bond {nativeToDecimal(minDelegatorStake).toFixed(4)} {tokenSymbol}
             </div>
@@ -97,7 +97,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
 
   const actions = useMemo(
     () => (
-      <Button className="px-6 w-full" type="submit" color="primary" disabled={!!error}>
+      <Button className="w-full px-6" type="submit" color="primary" disabled={!!error}>
         {titleAction}
       </Button>
     ),

@@ -3,7 +3,6 @@ import { matchSorter } from 'match-sorter';
 import { ChangeEvent, useMemo, useState } from 'preact/compat';
 import { Avatar, AvatarProps, Button, Input } from 'react-daisyui';
 
-import pendulumIcon from '../../../assets/pendulum-icon.svg';
 import { repeat } from '../../../helpers/general';
 import { Skeleton } from '../../Skeleton';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../hooks/nabla/useNablaInstance';
@@ -50,7 +49,7 @@ function PoolList({ swapPools, backstopPool, onSelect, selected }: PoolListProps
     <div className="relative">
       <Input
         bordered
-        className="sticky top-0 w-full mb-8 z-10"
+        className="sticky top-0 z-10 mb-8 w-full"
         onChange={(ev: ChangeEvent<HTMLInputElement>) => setFilter(ev.currentTarget.value)}
         placeholder="Find by name or address"
       />
@@ -77,7 +76,7 @@ function PoolList({ swapPools, backstopPool, onSelect, selected }: PoolListProps
               color="secondary"
               key={pool.id}
               onClick={() => onSelect(poolEntry)}
-              className="w-full items-center justify-start gap-4 px-3 py-2 h-auto border-0 bg-blackAlpha-200 text-left hover:opacity-80 dark:bg-whiteAlpha-200"
+              className="h-auto w-full items-center justify-start gap-4 border-0 bg-blackAlpha-200 px-3 py-2 text-left hover:opacity-80 dark:bg-whiteAlpha-200"
             >
               <span className="relative">
                 <Avatar
@@ -88,17 +87,17 @@ function PoolList({ swapPools, backstopPool, onSelect, selected }: PoolListProps
                   className="text-xs"
                 />
                 {isSelected && (
-                  <CheckIcon className="absolute -right-1 -top-1 w-5 h-5 p-[3px] text-white bg-green-600 rounded-full" />
+                  <CheckIcon className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-green-600 p-[3px] text-white" />
                 )}
               </span>
-              <span className="flex flex-col ml-3">
-                <span className="text-lg dark:text-white leading-5">
+              <span className="ml-3 flex flex-col">
+                <span className="text-lg leading-5 dark:text-white">
                   <strong>
                     {showPoolType ? (type === 'backstopPool' ? 'Backstop Pool ' : 'Swap Pool ') : ''}
                     {!showPoolType || type === 'swapPool' ? pool.token.symbol : ''}
                   </strong>
                 </span>
-                <span className="text-sm text-neutral-500 leading-5">{pool.token.name}</span>
+                <span className="text-sm leading-5 text-neutral-500">{pool.token.name}</span>
               </span>
             </Button>
           );
@@ -124,7 +123,7 @@ export const PoolSelectorModal = ({
   open,
 }: PoolSelectorModalProps) => {
   const content = isLoading ? (
-    <>{repeat(<Skeleton className="w-full h-10 mb-2" />)}</>
+    <>{repeat(<Skeleton className="mb-2 h-10 w-full" />)}</>
   ) : (
     <PoolList swapPools={swapPools} backstopPool={backstopPool} onSelect={onSelect} selected={selected} />
   );

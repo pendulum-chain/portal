@@ -4,72 +4,69 @@ import { useMemo } from 'preact/hooks';
 import logo from '../../../assets/nova-wallet.png';
 
 declare global {
-    interface Window {
-      injectedWeb3?: {
-        'polkadot-js'?: boolean
-        [key: string]: unknown;
-      };
-      walletExtension?: {
-        isNovaWallet?: boolean;
-        [key: string]: unknown;
-      };
-    }
+  interface Window {
+    injectedWeb3?: {
+      'polkadot-js'?: boolean;
+      [key: string]: unknown;
+    };
+    walletExtension?: {
+      isNovaWallet?: boolean;
+      [key: string]: unknown;
+    };
   }
-
-
-function isNovaInstalled() {
-
-    const injectedExtension = window?.injectedWeb3?.['polkadot-js']
-    const isNovaWallet = window?.walletExtension?.isNovaWallet
-
-    return !!(injectedExtension && isNovaWallet)
 }
 
-async function getAccounts(): Promise<WalletAccount[]>{
-    const _ = await web3Enable('Pendulum Chain Portal');
-    const accounts = await web3Accounts();
+function isNovaInstalled() {
+  const injectedExtension = window?.injectedWeb3?.['polkadot-js'];
+  const isNovaWallet = window?.walletExtension?.isNovaWallet;
 
-    const walletAccounts = Promise.all(accounts
-    .filter(({ meta: { source } }) => source === 'polkadot-js')
-    .map(
-        async ({ address, meta }) => {
+  return !!(injectedExtension && isNovaWallet);
+}
+
+async function getAccounts(): Promise<WalletAccount[]> {
+  const _ = await web3Enable('Pendulum Chain Portal');
+  const accounts = await web3Accounts();
+
+  const walletAccounts = Promise.all(
+    accounts
+      .filter(({ meta: { source } }) => source === 'polkadot-js')
+      .map(async ({ address, meta }) => {
         const signer = await web3FromAddress(address);
 
         const account: WalletAccount = {
-            address,
-            name: meta.name,
-            source: meta.source,
-            signer,
-            wallet: undefined
-        }
+          address,
+          name: meta.name,
+          source: meta.source,
+          signer,
+          wallet: undefined,
+        };
 
         return account;
-    }));
+      }),
+  );
 
-    return await walletAccounts
+  return await walletAccounts;
 }
 
-
 export const useNova = () => {
-
   const selectedWallet: Wallet = useMemo(
     () => ({
-        extensionName: 'polkadot-js',
-        title: 'Nova Wallet',
-        installUrl: 'https://novawallet.io/',
-        logo: {
-          src: logo,
-          alt: 'Nova Wallet',
-        },
-        installed: isNovaInstalled(),
+      extensionName: 'polkadot-js',
+      title: 'Nova Wallet',
+      installUrl: 'https://novawallet.io/',
+      logo: {
+        src: logo,
+        alt: 'Nova Wallet',
+      },
+      installed: isNovaInstalled(),
 
-        extension: undefined,
-        signer: undefined,
-        getAccounts,
-        subscribeAccounts: () => undefined, // Unused
-        enable: () => undefined,
-        transformError: (err: Error) => new Error(err.message),
-      }),
+      extension: undefined,
+      signer: undefined,
+      getAccounts,
+      subscribeAccounts: () => undefined, // Unused
+      enable: () => undefined,
+      transformError: (err: Error) => new Error(err.message),
+    }),
 
     [],
   );

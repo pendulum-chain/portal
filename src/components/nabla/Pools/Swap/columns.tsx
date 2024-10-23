@@ -1,12 +1,13 @@
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Badge, Button, Tooltip } from 'react-daisyui';
+import { Avatar, Badge, Button } from 'react-daisyui';
+import Big from 'big.js';
 import { useModalToggle } from '../../../../services/modal';
 import { rawToDecimal } from '../../../../shared/parseNumbers/metric';
 import { NablaInstanceBackstopPool, NablaInstanceSwapPool } from '../../../../hooks/nabla/useNablaInstance';
 import { swapPoolAbi } from '../../../../contracts/nabla/SwapPool';
+import { getIcon } from '../../../../shared/AssetIcons';
 import { Erc20Balance } from '../../common/Erc20Balance';
 import { LiquidityModalProps } from './SwapPoolModals';
-import Big from 'big.js';
 
 export type SwapPoolColumn = NablaInstanceSwapPool & {
   backstopPool: NablaInstanceBackstopPool;
@@ -17,16 +18,18 @@ const BIG_100 = new Big(100);
 export const assetColumn: ColumnDef<SwapPoolColumn> = {
   header: 'Asset',
   accessorKey: 'asset',
-  accessorFn: (row) => row.token?.symbol || '',
+  accessorFn: (row) => row.token.symbol,
+  cell: ({ row: { original } }) => (
+    <div className="flex items-center">
+      <Avatar src={getIcon(original.token.symbol)} shape="circle" size={32} />
+      <p className="ml-2.5">{original.token.symbol}</p>
+    </div>
+  ),
   enableSorting: true,
 } as const;
 
 export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
-  header: () => (
-    <Tooltip color="secondary" message="Amount of liquidity provided initially by LPs" position="bottom">
-      Pool liabilities
-    </Tooltip>
-  ),
+  header: 'Pool liabilities',
   accessorKey: 'liabilities',
   accessorFn: (row) => rawToDecimal(row.totalLiabilities, row.lpTokenDecimals).toFixed(2, 0),
   enableSorting: true,
@@ -36,11 +39,7 @@ export const liabilitiesColumn: ColumnDef<SwapPoolColumn> = {
 } as const;
 
 export const reservesColumn: ColumnDef<SwapPoolColumn> = {
-  header: () => (
-    <Tooltip message="Amount of tokens in the pool" color="secondary" position="bottom">
-      Reserves
-    </Tooltip>
-  ),
+  header: 'Reserves',
   accessorKey: 'reserves',
   accessorFn: (row) => rawToDecimal(row.reserve, row.token.decimals).toFixed(2, 0),
   enableSorting: true,

@@ -22,7 +22,7 @@ function Selector<T extends { id: any; displayName: string }>(props: Props<T>) {
         </label>
       )}
       <Select
-        className="w-fit max-w-full h-10 border border-neutral-500 rounded-md bg-transparent"
+        className="h-10 w-fit max-w-full rounded-md border border-neutral-500 bg-transparent"
         onChange={(e: ChangeEvent) => {
           if (!ofSelect(e.target)) return;
           const id = e.target.value;

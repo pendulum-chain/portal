@@ -16,7 +16,7 @@ export const SwapAssetsButton = ({ onClick }: SwapAssetsButtonProps) => {
 
   return (
     <button type="button" onClick={onButtonClick}>
-      <div className={`flex justify-center duration-300 cursor-pointer ${isRotated ? 'rotate-180' : ''}`}>
+      <div className={`flex cursor-pointer justify-center duration-300 ${isRotated ? 'rotate-180' : ''}`}>
         <SwapAssetsButtonIcon />
       </div>
       <span className="visually-hidden">Swap selected assets</span>

@@ -44,10 +44,10 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
 
   return (
     <>
-      <Card bordered className="w-full max-w-xl bg-base-200 shadow-0">
+      <Card bordered className="shadow-0 w-full max-w-xl bg-base-200">
         <FormProvider {...form}>
-          <form className="card-body dark:text-neutral-200 text-neutral-800" onSubmit={onSubmit}>
-            <div className="flex justify-between mb-2">
+          <form className="card-body text-neutral-800 dark:text-neutral-200" onSubmit={onSubmit}>
+            <div className="mb-2 flex justify-between">
               <Card.Title tag="h2" className="text-3xl font-normal">
                 Swap
               </Card.Title>
@@ -77,12 +77,13 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               />
             </div>
             <From
-              fromToken={fromToken}
-              onOpenSelector={() => setModalType('from')}
-              inputHasError={inputHasErrors}
               form={form}
+              fromToken={fromToken}
+              fromAmount={fromAmount}
               fromFormFieldName="fromAmount"
               fromTokenBalance={fromTokenBalance}
+              onOpenSelector={() => setModalType('from')}
+              inputHasError={inputHasErrors}
             />
             <SwapAssetsButton
               onClick={() => {
@@ -90,16 +91,16 @@ const Swap = (props: UseSwapComponentProps): JSX.Element | null => {
               }}
             />
             <To
-              toToken={toToken}
               fromToken={fromToken}
+              fromAmount={fromAmount}
+              toToken={toToken}
               toAmountQuote={
                 inputHasErrors ? { enabled: false, data: undefined, error: null, isLoading: false } : toAmountQuote
               }
               onOpenSelector={() => setModalType('to')}
-              fromAmount={fromAmount}
               slippage={slippage}
             />
-            <Validation className="text-center mb-2" errors={errors} />
+            <Validation className="mb-2 text-center" errors={errors} />
             <div className="mt-6">
               <ApprovalSubmit token={fromToken} disabled={!submitEnabled} fromAmount={fromAmount} />
             </div>
