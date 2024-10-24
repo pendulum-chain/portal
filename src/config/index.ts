@@ -22,6 +22,7 @@ export const config = {
   isProd: env === 'production',
   isDev: env === 'development',
   defaultPage: '/pendulum/dashboard',
+  faucetPage: 'https://faucet-service.pendulumchain.tech/',
   tenants: {
     [TenantName.Amplitude]: {
       name: 'Amplitude',
