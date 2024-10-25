@@ -1,6 +1,7 @@
 import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
 import { Options } from 'react-lottie';
+import { WalletIcon } from '@heroicons/react/24/outline';
 
 import { ExternalIcon } from '../../assets/ExternalIcon';
 import DashboardIcon from '../../assets/dashboard';
@@ -8,7 +9,6 @@ import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
-import { WalletIcon } from '../../assets/wallet';
 
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
@@ -139,13 +139,13 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: <ExternalIcon className="ml-auto h-5 w-3 fill-white" />,
+    suffix: <ExternalIcon className="ml-auto h-5 w-3" />,
   };
 
   const fundWalletItem: LinkItem = {
     link: tenantName === TenantName.Foucoco ? config.faucetPage : `./${PATHS.FUND_WALLET}`,
     title: 'Fund Wallet',
-    prefix: <WalletIcon />,
+    prefix: <WalletIcon className="icon-small ml-1 fill-none" />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
