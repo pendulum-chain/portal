@@ -76,22 +76,20 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     [set],
   );
 
-  const accountAddress = walletAccount?.address;
   useEffect(() => {
     const run = async () => {
       if (!storageAddress) {
         return;
       }
       // skip if tenant already initialized
-      console.log('skipping if tenant already initialized', tenantRef.current === tenantName || accountAddress);
-      if (tenantRef.current === tenantName || (accountAddress && storageAddress === accountAddress)) return;
+      if (tenantRef.current === tenantName) return;
       tenantRef.current = tenantName;
       const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
       console.log('In useEffect, selecting wallet: ', selectedWallet);
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();
-  }, [storageAddress, dAppName, tenantName, accountAddress]);
+  }, [storageAddress, dAppName, tenantName]);
 
   const providerValue = useMemo<GlobalState>(
     () => ({
