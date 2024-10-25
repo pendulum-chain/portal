@@ -22,6 +22,11 @@ const EXCHANGE_LIST: Record<FundSupportedTenants, { buy: CardExternalLinkProps[]
           children: <img src={alchemyPayIcon} className="ml-6 w-40" />,
           href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
         },
+        {
+          title: 'Banxa',
+          children: <img src={banxaIcon} className="ml-2 w-40" />,
+          href: 'https://checkout.banxa.com/',
+        },
       ],
       exchange: [
         {
@@ -38,11 +43,6 @@ const EXCHANGE_LIST: Record<FundSupportedTenants, { buy: CardExternalLinkProps[]
           title: 'Zenlink',
           children: <img src={zenlinkIcon} className="ml-6 w-40" />,
           href: 'https://app.zenlink.pro/swap',
-        },
-        {
-          title: 'Banxa',
-          children: <img src={banxaIcon} className="ml-2 w-40" />,
-          href: 'https://checkout.banxa.com/',
         },
       ],
     },
