@@ -50,14 +50,17 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     clear,
   } = useLocalStorage<string | undefined>({
     key: `${storageKeys.ACCOUNT}`,
-    expire: EXPIRATION_PERIOD,
+    expire: undefined,
   });
+
+  console.log('storageAddress', storageAddress);
 
   const clearLocalStorageWallets = () => {
     storageService.remove(LocalStorageKeys.SELECTED_WALLET_NAME);
   };
 
   const removeWalletAccount = useCallback(async () => {
+    console.log('Removing wallet account', walletAccount);
     await handleWalletConnectDisconnect(walletAccount);
     clear();
     clearLocalStorageWallets();
@@ -87,7 +90,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();
-  }, [storageAddress, removeWalletAccount, dAppName, tenantName, accountAddress]);
+  }, [storageAddress, dAppName, tenantName, accountAddress]);
 
   const providerValue = useMemo<GlobalState>(
     () => ({
