@@ -53,9 +53,6 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     expire: undefined,
   });
 
-  console.log('storageAddress', storageAddress);
-  console.log('walletAccount', walletAccount);
-
   const clearLocalStorageWallets = () => {
     storageService.remove(LocalStorageKeys.SELECTED_WALLET_NAME);
   };
@@ -82,20 +79,11 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
         return;
       }
       // skip if tenant already initialized
-      console.log(
-        'tenantRef.current',
-        tenantRef.current,
-        'tenantName',
-        tenantName,
-        'returning early',
-        tenantRef.current === tenantName,
-      );
       if (tenantRef.current === tenantName) return;
       tenantRef.current = tenantName;
-      // Delay this to allow the wallet extension to be injected
+      // Delay this to allow the wallet extension to be injected, otherwise the call to wallet.enable() might fail
       setTimeout(async () => {
         const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
-        console.log('In useEffect, selecting wallet: ', selectedWallet);
         if (selectedWallet) setWallet(selectedWallet);
       }, 400);
     };

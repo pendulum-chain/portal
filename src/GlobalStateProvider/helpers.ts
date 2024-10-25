@@ -9,19 +9,12 @@ import { LocalStorageKeys } from '../hooks/useLocalStorage';
 
 const initTalisman = async (dAppName: string, selected?: string) => {
   const name = storageService.get(LocalStorageKeys.SELECTED_WALLET_NAME);
-  console.log('name', name);
   if (!name?.length) return;
   const wallet = getWalletBySource(name);
-  console.log('wallet', wallet);
   if (!wallet) return;
-  console.log('before wallet enable');
   await wallet.enable(dAppName);
-  console.log('after wallet enable');
   const accounts = await wallet.getAccounts();
-  console.log('accounts', accounts);
-  const selectedWallet = accounts.find((a) => a.address === selected) || accounts[0];
-  console.log('selectedWallet', selectedWallet, accounts, selected);
-  return selectedWallet;
+  return accounts.find((a) => a.address === selected) || accounts[0];
 };
 
 const initWalletConnect = async (chainId: string) => {
@@ -40,15 +33,11 @@ const initMetamask = async (tenantName: TenantName) => {
 
 export const initSelectedWallet = async (dAppName: TenantName, tenantName: TenantName, storageAddress: string) => {
   const appName = dAppName || TenantName.Amplitude;
-  console.log('in initSelectedWallet', appName, tenantName, storageAddress);
-
-  const talismanWallet = await initTalisman(appName, storageAddress);
-  console.log('talismanWallet', talismanWallet);
-  const walletConnectWallet = await initWalletConnect(chainIds[tenantName]);
-  console.log('walletConnectWallet', walletConnectWallet);
-  const metamaskWallet = await initMetamask(tenantName);
-  console.log('metamaskWallet', metamaskWallet);
-  return talismanWallet || walletConnectWallet || metamaskWallet;
+  return (
+    (await initTalisman(appName, storageAddress)) ||
+    (await initWalletConnect(chainIds[tenantName])) ||
+    (await initMetamask(tenantName))
+  );
 };
 
 export const handleWalletConnectDisconnect = async (walletAccount: WalletAccount | undefined) => {
