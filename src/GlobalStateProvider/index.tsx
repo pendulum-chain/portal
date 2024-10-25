@@ -92,9 +92,12 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       );
       if (tenantRef.current === tenantName) return;
       tenantRef.current = tenantName;
-      const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
-      console.log('In useEffect, selecting wallet: ', selectedWallet);
-      if (selectedWallet) setWallet(selectedWallet);
+      // Delay this to allow the wallet extension to be injected
+      setTimeout(async () => {
+        const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
+        console.log('In useEffect, selecting wallet: ', selectedWallet);
+        if (selectedWallet) setWallet(selectedWallet);
+      }, 400);
     };
     run();
   }, [storageAddress, dAppName, tenantName]);
