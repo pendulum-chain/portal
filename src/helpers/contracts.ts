@@ -14,6 +14,8 @@ export interface ContractBalance {
   approximateNumber: number;
 }
 
+export function parseContractBalanceResponse(decimals: number, balanceResponse: INumber): ContractBalance;
+
 export function parseContractBalanceResponse(
   decimals?: number,
   balanceResponse?: INumber,

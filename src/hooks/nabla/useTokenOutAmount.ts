@@ -32,7 +32,7 @@ export interface TokenOutData {
 export interface UseTokenOutAmountResult {
   isLoading: boolean;
   enabled: boolean;
-  data?: TokenOutData;
+  data: TokenOutData;
   error: string | null;
   refetch?: UseQueryResult<TokenOutData | undefined, string>['refetch'];
 }
@@ -91,15 +91,12 @@ export function useTokenOutAmount<FormFieldValues extends FieldValues>({
           return undefined;
 
         const amountOut = parseContractBalanceResponse(toToken.decimals, data[0]);
-        if (!amountOut) return undefined;
+        const swapFee = parseContractBalanceResponse(toToken.decimals, data[1]);
 
         const effectiveExchangeRate = debouncedAmountBigDecimal.gt(0)
           ? stringifyBigWithSignificantDecimals(amountOut.preciseBigDecimal.div(debouncedAmountBigDecimal), 6)
           : '0';
         const minAmountOut = subtractBigDecimalPercentage(amountOut.preciseBigDecimal, slippage);
-
-        const swapFee = parseContractBalanceResponse(toToken.decimals, data[1]);
-        if (!swapFee) return undefined;
 
         return {
           amountOut,
