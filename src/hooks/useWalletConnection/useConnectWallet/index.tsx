@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import { Wallet, WalletAccount, getWallets } from '@talismn/connect-wallets';
 import { useMutation } from '@tanstack/react-query';
 import { useGlobalState } from '../../../GlobalStateProvider';
@@ -9,16 +9,10 @@ import { LocalStorageKeys } from '../../useLocalStorage';
 const alwaysShowWallets = ['talisman', 'subwallet-js', 'polkadot-js'];
 
 export const useConnectWallet = () => {
-  const [wallets, setWallets] = useState<Wallet[]>();
   const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
   const { dAppName } = useGlobalState();
 
-  useEffect(() => {
-    const installedWallets = getWallets().filter(
-      (wallet) => alwaysShowWallets.includes(wallet.extensionName) || wallet.installed,
-    );
-    setWallets(installedWallets);
-  }, []);
+  const wallets = getWallets().filter((wallet) => alwaysShowWallets.includes(wallet.extensionName) || wallet.installed);
 
   const {
     mutate: selectWallet,
