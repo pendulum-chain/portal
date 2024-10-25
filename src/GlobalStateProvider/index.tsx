@@ -82,6 +82,14 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
         return;
       }
       // skip if tenant already initialized
+      console.log(
+        'tenantRef.current',
+        tenantRef.current,
+        'tenantName',
+        tenantName,
+        'returning early',
+        tenantRef.current === tenantName,
+      );
       if (tenantRef.current === tenantName) return;
       tenantRef.current = tenantName;
       const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
