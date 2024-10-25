@@ -9,12 +9,18 @@ import { LocalStorageKeys } from '../hooks/useLocalStorage';
 
 const initTalisman = async (dAppName: string, selected?: string) => {
   const name = storageService.get(LocalStorageKeys.SELECTED_WALLET_NAME);
+  console.log('name', name);
   if (!name?.length) return;
   const wallet = getWalletBySource(name);
+  console.log('wallet', wallet);
   if (!wallet) return;
+  console.log('before wallet enable');
   await wallet.enable(dAppName);
+  console.log('after wallet enable');
   const accounts = await wallet.getAccounts();
+  console.log('accounts', accounts);
   const selectedWallet = accounts.find((a) => a.address === selected) || accounts[0];
+  console.log('selectedWallet', selectedWallet, accounts, selected);
   return selectedWallet;
 };
 
