@@ -6,6 +6,8 @@ const OpenWallet = (props: ConnectProps): JSX.Element => {
   const { walletAccount } = useGlobalState();
   const { address } = walletAccount || {};
 
+  console.log('walletAccount in openwallet', walletAccount, 'address', address);
+
   return address ? <DisconnectModal /> : <ConnectModal {...props} />;
 };
 

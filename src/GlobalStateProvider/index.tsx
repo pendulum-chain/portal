@@ -54,6 +54,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
   });
 
   console.log('storageAddress', storageAddress);
+  console.log('walletAccount', walletAccount);
 
   const clearLocalStorageWallets = () => {
     storageService.remove(LocalStorageKeys.SELECTED_WALLET_NAME);
