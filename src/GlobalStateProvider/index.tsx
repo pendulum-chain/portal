@@ -84,7 +84,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
       }
       // skip if tenant already initialized
       console.log('skipping if tenant already initialized', tenantRef.current === tenantName || accountAddress);
-      if (tenantRef.current === tenantName || accountAddress) return;
+      if (tenantRef.current === tenantName || (accountAddress && storageAddress !== accountAddress)) return;
       tenantRef.current = tenantName;
       const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
       console.log('In useEffect, selecting wallet: ', selectedWallet);
