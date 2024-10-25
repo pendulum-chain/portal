@@ -49,7 +49,7 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
     set,
     clear,
   } = useLocalStorage<string | undefined>({
-    key: `${storageKeys.ACCOUNT}-${tenantName}`,
+    key: `${storageKeys.ACCOUNT}`,
     expire: EXPIRATION_PERIOD,
   });
 
@@ -79,9 +79,11 @@ const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
         return;
       }
       // skip if tenant already initialized
+      console.log('skipping if tenant already initialized', tenantRef.current === tenantName || accountAddress);
       if (tenantRef.current === tenantName || accountAddress) return;
       tenantRef.current = tenantName;
       const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
+      console.log('In useEffect, selecting wallet: ', selectedWallet);
       if (selectedWallet) setWallet(selectedWallet);
     };
     run();
