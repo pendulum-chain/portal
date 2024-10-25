@@ -15,6 +15,7 @@ export interface ContractBalance {
 }
 
 export function parseContractBalanceResponse(decimals: number, balanceResponse: INumber): ContractBalance;
+export function parseContractBalanceResponse(decimals?: number, balanceResponse?: INumber): ContractBalance;
 
 export function parseContractBalanceResponse(
   decimals?: number,

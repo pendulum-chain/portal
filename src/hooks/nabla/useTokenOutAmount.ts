@@ -32,7 +32,7 @@ export interface TokenOutData {
 export interface UseTokenOutAmountResult {
   isLoading: boolean;
   enabled: boolean;
-  data: TokenOutData;
+  data?: TokenOutData;
   error: string | null;
   refetch?: UseQueryResult<TokenOutData | undefined, string>['refetch'];
 }
