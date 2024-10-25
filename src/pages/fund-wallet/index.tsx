@@ -15,7 +15,7 @@ const CardContent = () => {
 
   if (tenantName === TenantName.Foucoco || tenantName === TenantName.Local)
     return (
-      <a className="btn btn-secondary mt-8" href={config.faucetPage} rel="noopener noreferrer" target="_blank">
+      <a className="btn btn-primary mt-8" href={config.faucetPage} rel="noopener noreferrer" target="_blank">
         Top up with Faucet
       </a>
     );
