@@ -1,11 +1,11 @@
-import _ from 'lodash';
+import { padEnd } from 'lodash';
 import { ApiPromise } from '@polkadot/api';
 import { U8aFixed } from '@polkadot/types-codec';
 import { H256 } from '@polkadot/types/interfaces';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import bs58 from 'bs58';
 import { DateTime } from 'luxon';
-import { Asset, Keypair } from 'stellar-sdk';
+import { Asset, Keypair } from '@stellar/stellar-sdk';
 import { TenantName } from '../models/Tenant';
 import { convertRawHexKeyToPublicKey } from './stellar';
 
@@ -74,7 +74,7 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
     const issuer = api.createType('Raw', issuerRawPublicKey, 32);
 
     if (asset.getCode().length <= 4) {
-      const paddedCode = _.padEnd(asset.getCode(), 4, '\0');
+      const paddedCode = padEnd(asset.getCode(), 4, '\0');
       const code = api.createType('Raw', paddedCode, 4);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
         Stellar: {
@@ -85,7 +85,7 @@ export function convertStellarAssetToCurrency(asset: Asset, api: ApiPromise): Sp
         },
       });
     } else {
-      const paddedCode = _.padEnd(asset.getCode(), 12, '\0');
+      const paddedCode = padEnd(asset.getCode(), 12, '\0');
       const code = api.createType('Raw', paddedCode, 12);
       return api.createType('SpacewalkPrimitivesCurrencyId', {
         Stellar: {

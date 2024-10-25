@@ -5,6 +5,7 @@ import { emptyCacheKey, QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 import { cacheKeys } from '../constants/cache';
+import { calculateTransferableBalance } from '../helpers/substrate';
 
 export interface UseAccountBalanceResponse {
   query: UseQueryResult<FrameSystemAccountInfo | undefined, unknown>;
@@ -50,11 +51,11 @@ export const useAccountBalance = (
 
     const { free: freeRaw, frozen: frozenRaw, reserved: reservedRaw } = data.data;
 
-    const free = nativeToDecimal(freeRaw || 0, decimals).toNumber();
-    const frozen = nativeToDecimal(frozenRaw || 0, decimals).toNumber();
-    const reserved = nativeToDecimal(reservedRaw || 0, decimals).toNumber();
-    const total = prettyNumbers(free);
-    const transferable = prettyNumbers(free - frozen - reserved);
+    const free = nativeToDecimal(freeRaw || 0, decimals);
+    const frozen = nativeToDecimal(frozenRaw || 0, decimals);
+    const reserved = nativeToDecimal(reservedRaw || 0, decimals);
+    const total = prettyNumbers(free.toNumber());
+    const transferable = prettyNumbers(calculateTransferableBalance(free, frozen, reserved).toNumber());
     return { total, transferable };
   }, [data, decimals]);
 
