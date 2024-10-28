@@ -16,7 +16,7 @@ export function NablaTokenPrice({
   fallback = null,
   formatByAmount = false,
   currentTokenAmount = Big(0),
-}: TokenPriceProps): JSX.Element | null {
+}: TokenPriceProps) {
   const { data, isLoading } = useNablaTokenPrice(address);
   if (isLoading) return <NumberLoader />;
 

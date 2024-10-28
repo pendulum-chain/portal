@@ -10,7 +10,6 @@ interface Props {
   error?: string;
   type: string;
   step?: string;
-  value: string;
   extraBtnText?: string;
   extraBtnAction?: () => void;
   onChange?: (value: string) => void;

@@ -1,3 +1,4 @@
+import { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 import { trimToMaxDecimals } from '../../../../shared/parseNumbers/maxDecimals';
 
 const removeNonNumericCharacters = (value: string): string => value.replace(/[^0-9.]/g, '');
@@ -17,7 +18,7 @@ const replaceCommasWithDots = (value: string): string => value.replace(/,/g, '.'
  * @param e - The keyboard event triggered by the input.
  * @param maxDecimals - The maximum number of decimal places allowed.
  */
-export function handleOnChangeNumericInput(e: KeyboardEvent, maxDecimals: number): void {
+export function handleOnChangeNumericInput(e: ChangeEvent, maxDecimals: number): void {
   const target = e.target as HTMLInputElement;
 
   target.value = replaceCommasWithDots(target.value);

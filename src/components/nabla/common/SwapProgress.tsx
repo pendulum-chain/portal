@@ -3,7 +3,7 @@ import { Dialog } from '../../Dialog';
 
 export type SwapProgressProps = {
   open: boolean;
-  children?: JSX.Element | null;
+  children?: JSX.Element;
   onClose: () => void;
   mutation?: TransactionProgressProps['mutation'];
 };

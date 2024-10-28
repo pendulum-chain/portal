@@ -6,6 +6,8 @@ import PendulumLogo from './PendulumLogo';
 
 interface Props extends HTMLAttributes<SVGSVGElement> {
   className?: string;
+  width?: string;
+  height?: string;
 }
 
 const ChainLogo = (props: Props) => {

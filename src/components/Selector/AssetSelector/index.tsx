@@ -59,10 +59,10 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
         type="button"
       >
         <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)]">
-          <img src={selectedItem?.icon} alt={selectedItem?.name} className="h-full w-auto" />
+          <img src={selectedItem?.icon} alt={selectedItem?.name} className="w-auto h-full" />
         </span>
         <strong className="font-bold">{selectedItem?.displayName}</strong>
-        {items.length > 1 ? <ChevronDownIcon className="ml-px inline h-4 w-4" /> : <div className="px-1" />}
+        {items.length > 1 ? <ChevronDownIcon className="inline w-4 h-4 ml-px" /> : <div className="px-1" />}
       </Button>
     </DropdownSelector>
   );

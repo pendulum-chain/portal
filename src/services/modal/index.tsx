@@ -22,7 +22,7 @@ export const useModalToggle = <T extends Dict<any>>(): ToggleModal<T> => {
 export const useModal = <T extends Dict<any>>(): [ModalState<T>, ToggleModal<T>] => [useModalState(), useModalToggle()];
 
 export interface ModalProviderProps {
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
 }
 const ModalProvider = ({ children }: ModalProviderProps): JSX.Element | null => {
   const [state, setModalState] = useState<ModalState>({});

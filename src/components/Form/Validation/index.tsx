@@ -10,7 +10,8 @@ const Validation = ({ errors = {}, className }: ValidationProps): JSX.Element | 
   if (keys.length === 0) return null;
   return (
     <ul className={`text-sm text-red-400 ${className}`}>
-      {keys.map((key, i) => (errors[key] && errors[key]?.message ? <li key={i}>{errors[key]?.message}</li> : null))}
+      {/** @ts-expect-error @todo remove */}
+      {keys.map((key) => (errors[key] && errors[key]?.message ? <li key={key}>{errors[key]?.message}</li> : null))}
     </ul>
   );
 };

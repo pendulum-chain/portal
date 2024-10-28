@@ -3,6 +3,7 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
 import { handleOnChangeNumericInput, handleOnKeyDownNumericInput, handleOnPasteNumericInput } from './helpers';
+import { ChangeEvent, ClipboardEvent } from 'react';
 
 interface NumericInputProps {
   register: UseFormRegisterReturn;
@@ -21,7 +22,7 @@ export const NumericInput = ({
   defaultValue,
   autoFocus,
 }: NumericInputProps) => {
-  function handleOnChange(e: KeyboardEvent): void {
+  function handleOnChange(e: ChangeEvent): void {
     handleOnChangeNumericInput(e, maxDecimals);
     register.onChange(e);
   }
@@ -36,21 +37,21 @@ export const NumericInput = ({
       <div className="flex-grow text-4xl text-black font-outfit">
         <Input
           {...register}
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="none"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="none"
           className={
             'font-outfit input-ghost w-full pl-0 text-4xl text-accent-content focus:text-accent-content focus:outline-none ' +
             additionalStyle
           }
-          minlength="1"
+          minLength={1}
           onChange={handleOnChange}
           onKeyDown={handleOnKeyDownNumericInput}
           onPaste={handleOnPaste}
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0.0"
           readOnly={readOnly}
-          spellcheck="false"
+          spellCheck="false"
           step="any"
           type="text"
           inputMode="decimal"

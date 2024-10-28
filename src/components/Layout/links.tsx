@@ -13,6 +13,7 @@ import { nablaConfig } from '../../config/apps/nabla';
 import { TenantName } from '../../models/Tenant';
 import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
 import { PAGES_PATHS, PATHS } from '../../app';
+import { CSSProperties } from 'react';
 
 export type LinkParameter = { isActive?: boolean };
 
@@ -39,8 +40,9 @@ export type PrefixOptions = LottieOptions | React.ReactNode;
 export type BaseLinkItem = {
   link: string;
   title: TitleOptions;
-  props?: Omit<NavLinkProps, 'className'> & {
+  props?: Omit<NavLinkProps, 'className' | 'to' | 'style'> & {
     className?: (params?: LinkParameter) => string;
+    style?: CSSProperties;
   };
   prefix?: PrefixOptions;
   suffix?: React.ReactNode;

@@ -18,12 +18,12 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
   const [isAccountsCollapseOpen, setIsAccountsCollapseOpen] = useState(false);
 
   const accountsContent = (
-    <Collapse defaultChecked icon="arrow" open={isAccountsCollapseOpen} name="accounts">
+    <Collapse defaultChecked icon="arrow" open={isAccountsCollapseOpen}>
       <Collapse.Title onClick={() => setIsAccountsCollapseOpen((state) => !state)}>Choose Account</Collapse.Title>
       <Collapse.Content>
         <ConnectModalAccountsList accounts={accounts || []} />
         {selectedWallet?.extensionName === METAMASK_EXTENSION_NAME ? (
-          <p className="mt-3 text-center text-xs">
+          <p className="mt-3 text-xs text-center">
             For Metamask connection we use Polkadot-Snap which creates only one Polkadot address for your Metamask
             Wallet.
           </p>
@@ -35,7 +35,7 @@ export const ConnectModalDialog = ({ visible, onClose }: ConnectModalDialogProps
   );
 
   const walletsContent = (
-    <Collapse defaultChecked open name="wallets">
+    <Collapse defaultChecked open>
       <Collapse.Title>Select Wallet</Collapse.Title>
       <Collapse.Content>
         <ConnectModalWalletsList

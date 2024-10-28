@@ -27,7 +27,7 @@ export function TokenApproval({
   className = '',
   disabled,
   ...rest
-}: TokenApprovalProps): JSX.Element | null {
+}: TokenApprovalProps) {
   const { state, mutate } = useErc20TokenApproval({
     decimalAmount,
     token,

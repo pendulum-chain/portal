@@ -115,7 +115,7 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element => {
                 color="secondary"
                 className="w-full mt-2"
                 type="button"
-                disable={mutation.isLoading}
+                disabled={mutation.isLoading}
                 onClick={() => toggle()}
               >
                 Cancel
