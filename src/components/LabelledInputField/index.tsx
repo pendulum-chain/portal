@@ -1,4 +1,4 @@
-import { CSSProperties, ChangeEvent, TargetedEvent, forwardRef } from 'react';
+import { CSSProperties, forwardRef } from 'react';
 import { Input, InputProps } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import './styles.css';
@@ -26,8 +26,8 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
 
   return (
     <>
-      <div className="component-preview flex w-full items-center justify-center gap-2" style={style}>
-        <div className="form-control w-full">
+      <div className="flex items-center justify-center w-full gap-2 component-preview" style={style}>
+        <div className="w-full form-control">
           <label className="label">
             {label && <span className="label-text">{label}</span>}
             {secondaryLabel && <span className="label-text-alt">{secondaryLabel}</span>}
@@ -37,12 +37,13 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
               className={`rounded-md border bg-transparent ${!error && 'border-neutral-500'}`}
               color={inputColor}
               {...rest}
-              onFocus={(event: TargetedEvent) => {
+              onFocus={(event) => {
                 if (event.target instanceof HTMLInputElement) {
                   event.target.select();
                 }
               }}
-              onInput={(event: ChangeEvent) => {
+              //@todo: check if this is correct
+              onChange={(event) => {
                 if (event.target instanceof HTMLInputElement) {
                   onChange?.(event.target.value);
                 }
@@ -50,14 +51,14 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
               {...register}
             />
             {extraBtnText && extraBtnAction && (
-              <button type="button" className="max-button rounded-md" onClick={extraBtnAction}>
+              <button type="button" className="rounded-md max-button" onClick={extraBtnAction}>
                 {extraBtnText}
               </button>
             )}
           </div>
         </div>
       </div>
-      <label className="label">{error && <span className="label-text text-red-400">{error}</span>}</label>
+      <label className="label">{error && <span className="text-red-400 label-text">{error}</span>}</label>
     </>
   );
 });
