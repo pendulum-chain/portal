@@ -4,8 +4,8 @@ import { NumberLoader } from '../../Loader';
 
 export type TokenPriceProps = {
   address: string;
-  prefix?: ReactNode;
-  fallback?: ReactNode;
+  prefix?: React.ReactNode;
+  fallback?: React.ReactNode;
   currentTokenAmount?: Big;
   formatByAmount?: boolean;
 };

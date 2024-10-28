@@ -32,8 +32,8 @@ export const NumericInput = ({
   }
 
   return (
-    <div className="flex w-full justify-between">
-      <div className="font-outfit flex-grow text-4xl text-black">
+    <div className="flex justify-between w-full">
+      <div className="flex-grow text-4xl text-black font-outfit">
         <Input
           {...register}
           autocomplete="off"
@@ -53,7 +53,7 @@ export const NumericInput = ({
           spellcheck="false"
           step="any"
           type="text"
-          inputmode="decimal"
+          inputMode="decimal"
           value={defaultValue}
           autoFocus={autoFocus}
         />

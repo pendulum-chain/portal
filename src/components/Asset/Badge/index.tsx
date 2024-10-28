@@ -9,7 +9,7 @@ const sizes = {
 export type BadgeProps = {
   size?: keyof typeof sizes;
   className?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 };
 
 const AssetBadge = ({ size = 'md', className, children }: BadgeProps): JSX.Element | null => {

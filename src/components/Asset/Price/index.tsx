@@ -7,10 +7,10 @@ import { NumberLoader } from '../../Loader';
 export type TokenPriceProps = {
   address?: string;
   currency: SpacewalkPrimitivesCurrencyId;
-  prefix?: ReactNode;
+  prefix?: React.ReactNode;
   options?: UseQueryOptions;
-  loader?: ReactNode;
-  fallback?: ReactNode;
+  loader?: React.ReactNode;
+  fallback?: React.ReactNode;
 };
 
 const TokenPrice = memo(({ currency, prefix = null, loader, fallback = null }: TokenPriceProps): JSX.Element | null => {

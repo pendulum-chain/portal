@@ -12,7 +12,7 @@ export type TokenApprovalProps = ButtonProps & {
   /** contract address (eg. router address) */
   spender: string;
   enabled?: boolean;
-  children: ReactNode;
+  children: React.ReactNode;
   decimals: number;
   disabled?: boolean;
 };
