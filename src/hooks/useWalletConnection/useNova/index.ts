@@ -1,6 +1,6 @@
 import { web3Accounts, web3Enable, web3FromAddress } from '@polkadot/extension-dapp';
 import { Wallet, WalletAccount } from '@talismn/connect-wallets';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import logo from '../../../assets/nova-wallet.png';
 
 declare global {

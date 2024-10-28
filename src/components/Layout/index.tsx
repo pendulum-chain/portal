@@ -1,5 +1,5 @@
 import { Bars3Icon } from '@heroicons/react/20/solid';
-import { memo, useState } from 'preact/compat';
+import { memo, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useGlobalState } from '../../GlobalStateProvider';

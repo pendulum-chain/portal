@@ -1,6 +1,6 @@
+// @todo
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentChildren } from 'preact';
-import { createContext, useCallback, useContext, useState } from 'preact/compat';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 export type ModalTypes = 'AddLiquidity' | 'WithdrawLiquidity' | 'Redeem';
 
@@ -22,7 +22,7 @@ export const useModalToggle = <T extends Dict<any>>(): ToggleModal<T> => {
 export const useModal = <T extends Dict<any>>(): [ModalState<T>, ToggleModal<T>] => [useModalState(), useModalToggle()];
 
 export interface ModalProviderProps {
-  children: ComponentChildren;
+  children: JSX.Element;
 }
 const ModalProvider = ({ children }: ModalProviderProps): JSX.Element | null => {
   const [state, setModalState] = useState<ModalState>({});

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'preact/hooks';
+import { useEffect, useCallback } from 'react';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { Codec } from '@polkadot/types-codec/types';
 import { StorageKey } from '@polkadot/types';

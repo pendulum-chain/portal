@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState } from 'preact/compat';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Signer } from '@polkadot/types/types';
 import Big from 'big.js';

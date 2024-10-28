@@ -1,6 +1,5 @@
-import { h } from 'preact';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { render } from '@testing-library/preact';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NumericInput } from '.';
 import { handleOnPasteNumericInput } from './helpers';

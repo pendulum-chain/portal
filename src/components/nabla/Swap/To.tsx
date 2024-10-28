@@ -1,5 +1,5 @@
 import { ArrowPathRoundedSquareIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import { useEffect } from 'preact/compat';
+import { useEffect } from 'react';
 import { Button } from 'react-daisyui';
 import { useFormContext } from 'react-hook-form';
 import Big from 'big.js';

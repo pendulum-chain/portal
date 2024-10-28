@@ -1,4 +1,4 @@
-import { CSSProperties, ChangeEvent } from 'preact/compat';
+import { CSSProperties, ChangeEvent } from 'react';
 import { Select } from 'react-daisyui';
 import { ofSelect } from '../../helpers/general';
 

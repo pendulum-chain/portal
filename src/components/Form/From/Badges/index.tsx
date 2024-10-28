@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import useSwitchChain from '../../../../hooks/useSwitchChain';
 import { TenantName } from '../../../../models/Tenant';
 

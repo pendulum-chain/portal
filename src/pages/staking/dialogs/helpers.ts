@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { WalletAccount } from '@talismn/connect-wallets';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { Dispatch } from 'react';
 import { getErrors } from '../../../helpers/substrate';
 import { ToastMessage, showToast } from '../../../shared/showToast';
 
@@ -9,8 +9,8 @@ export const doSubmitExtrinsic = (
   api: ApiPromise,
   extrinsic: SubmittableExtrinsic | undefined,
   walletAccount: WalletAccount,
-  setSubmissionPending: Dispatch<StateUpdater<boolean>>,
-  setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
+  setSubmissionPending: Dispatch<boolean>,
+  setConfirmationDialogVisible: Dispatch<boolean>,
   hideToast?: boolean,
 ) => {
   setSubmissionPending(true);

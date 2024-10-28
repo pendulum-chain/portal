@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'preact/compat';
+import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import * as Yup from 'yup';
 

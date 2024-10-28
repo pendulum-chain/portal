@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/preact';
+import { render, screen } from '@testing-library/react';
 import Pagination from '.';
 
 describe('Pagination', () => {

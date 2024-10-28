@@ -1,8 +1,8 @@
 import Big from 'big.js';
-import { JSX, useCallback, useEffect, useMemo, useState } from 'preact/compat';
+import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { Signer } from '@polkadot/types/types';
 import { ApiPromise } from '@polkadot/api';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { Dispatch } from 'react';
 import { BTreeMap } from '@polkadot/types-codec';
 
 import { useGlobalState } from '../../../GlobalStateProvider';
@@ -84,7 +84,7 @@ export function CollatorRewards() {
     unstakingDataJSON: UnstakingDataType,
     api: ApiPromise,
     tokenSymbol: string,
-    setTokensTipText: Dispatch<StateUpdater<string>>,
+    setTokensTipText: Dispatch<string>,
   ) {
     const tooltipText = await generateUnstakingTooltipText(unstakingDataJSON, api, tokenSymbol);
     setTokensTipText(tooltipText);
@@ -95,7 +95,7 @@ export function CollatorRewards() {
     setUserAvailableBalanceForUnlock(tokensReadyToUnlock);
   }
 
-  function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: Dispatch<StateUpdater<string>>) {
+  function setUnstakingTokens(unstakingData: BTreeMap, setUnstaking: Dispatch<string>) {
     const unstakingParts: number[] = [];
     unstakingData.forEach((n) => unstakingParts.push(Number(n.toString())));
     const allUnstakingTokens = unstakingParts.reduce((a, b) => a + b, 0);
@@ -186,9 +186,9 @@ export function CollatorRewards() {
     if (loadingToken) {
       return (
         <>
-          <Skeleton className="mb-2 h-8 w-full" />
-          <Skeleton className="mb-2 h-8 w-full" />
-          <Skeleton className="mb-2 h-8 w-full" />
+          <Skeleton className="w-full h-8 mb-2" />
+          <Skeleton className="w-full h-8 mb-2" />
+          <Skeleton className="w-full h-8 mb-2" />
         </>
       );
     }
@@ -198,10 +198,10 @@ export function CollatorRewards() {
 
   return (
     <>
-      <div className="mb-8 flex flex-col justify-between md:flex-row">
-        <div className="collators-box card mb-3 rounded-lg bg-base-200 md:mb-0 md:mr-5 md:w-1/2">
-          <div className="card-body px-4 py-6 xs:px-8">
-            <h2 className="card-title font-normal">Staking</h2>
+      <div className="flex flex-col justify-between mb-8 md:flex-row">
+        <div className="mb-3 rounded-lg collators-box card bg-base-200 md:mb-0 md:mr-5 md:w-1/2">
+          <div className="px-4 py-6 card-body xs:px-8">
+            <h2 className="font-normal card-title">Staking</h2>
             {renderContentWithLoading(
               <StakingContent
                 userStakingAmount={userStaking?.amount}
@@ -215,9 +215,9 @@ export function CollatorRewards() {
             )}
           </div>
         </div>
-        <div className="collators-box card rounded-lg bg-base-200 md:w-1/2">
-          <div className="card-body px-4 py-6 xs:px-8">
-            <h2 className="card-title mb-2 font-normal">Staking Rewards</h2>
+        <div className="rounded-lg collators-box card bg-base-200 md:w-1/2">
+          <div className="px-4 py-6 card-body xs:px-8">
+            <h2 className="mb-2 font-normal card-title">Staking Rewards</h2>
             {renderContentWithLoading(
               <StakingRewardsContent
                 updateButton={{

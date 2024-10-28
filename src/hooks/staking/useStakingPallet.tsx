@@ -1,7 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Option } from '@polkadot/types-codec';
 import Big from 'big.js';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { getAddressForFormat } from '../../helpers/addressFormatter';

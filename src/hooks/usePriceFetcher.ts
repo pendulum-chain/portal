@@ -1,5 +1,5 @@
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
-import { useCallback } from 'preact/compat';
+import { useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { isEqual } from 'lodash';
 import { TenantName } from '../models/Tenant';

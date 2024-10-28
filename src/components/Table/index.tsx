@@ -9,7 +9,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo } from 'preact/compat';
+import { useMemo } from 'react';
 import Pagination from '../Pagination';
 import { Skeleton } from '../Skeleton';
 import { GlobalFilter } from './GlobalFilter';

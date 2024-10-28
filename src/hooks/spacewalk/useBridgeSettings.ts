@@ -1,6 +1,6 @@
 import Big from 'big.js';
-import { useEffect, useMemo } from 'preact/compat';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { useEffect, useMemo } from 'react';
+import { Dispatch } from 'react';
 import { Asset } from '@stellar/stellar-sdk';
 import { uniqBy } from 'lodash';
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -17,9 +17,9 @@ export interface BridgeSettings {
   vaultsForCurrency?: ExtendedRegistryVault[];
   wrappedAssets?: Asset[];
   selectedAsset?: Asset;
-  setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
-  setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
-  setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+  setSelectedAsset: Dispatch<Asset | undefined>;
+  setSelectedVault: Dispatch<ExtendedRegistryVault | undefined>;
+  setManualVaultSelection: Dispatch<boolean>;
   bridgeDirection: BridgeDirection;
 }
 

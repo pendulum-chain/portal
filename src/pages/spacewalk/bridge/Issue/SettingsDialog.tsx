@@ -1,6 +1,6 @@
 import { Button, Checkbox } from 'react-daisyui';
-import { useMemo } from 'preact/hooks';
-import { ChangeEvent } from 'preact/compat';
+import { useMemo } from 'react';
+import { ChangeEvent } from 'react';
 import VaultSelector from '../../../../components/Selector/VaultSelector';
 import useBridgeSettings from '../../../../hooks/spacewalk/useBridgeSettings';
 import { Dialog } from '../../../../components/Dialog';

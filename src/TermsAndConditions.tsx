@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from 'preact/compat';
+import { PropsWithChildren, useState } from 'react';
 import { Button, Checkbox, Link, Modal } from 'react-daisyui';
 import { useLocalStorage, LocalStorageKeys } from './hooks/useLocalStorage';
 

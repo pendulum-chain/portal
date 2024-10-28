@@ -1,4 +1,3 @@
-import { JSX } from 'preact';
 import { TransactionProgress, TransactionProgressProps } from '../common/TransactionProgress';
 import { Dialog } from '../../Dialog';
 

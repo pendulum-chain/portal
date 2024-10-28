@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'preact/compat';
+import { useCallback, useState } from 'react';
 import BellIcon from '../../../../assets/bell';
 import { TenantName } from '../../../../models/Tenant';
 import { PENDULUM_SUPPORT_CHAT_URL } from '../../../../shared/constants';

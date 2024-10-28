@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 
 interface Props extends HTMLAttributes<SVGSVGElement> {
   className?: string;

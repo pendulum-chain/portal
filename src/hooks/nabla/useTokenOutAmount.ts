@@ -9,7 +9,7 @@ import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 import { useContractRead } from './useContractRead';
 import { NablaInstanceToken } from './useNablaInstance';
 import { useDebouncedValue } from '../useDebouncedValue';
-import { useEffect } from 'preact/hooks';
+import { useEffect } from 'react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { subtractBigDecimalPercentage } from '../../helpers/calc';
 

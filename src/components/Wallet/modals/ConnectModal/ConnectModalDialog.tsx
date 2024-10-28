@@ -1,5 +1,5 @@
 import { Collapse } from 'react-daisyui';
-import { useState } from 'preact/hooks';
+import { useState } from 'react';
 import { useWalletConnection } from '../../../../hooks/useWalletConnection';
 import { METAMASK_EXTENSION_NAME } from '../../../../services/metamask';
 import { Dialog } from '../../../Dialog';

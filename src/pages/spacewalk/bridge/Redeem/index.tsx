@@ -1,8 +1,8 @@
 import Big from 'big.js';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
-import { useEffect } from 'preact/compat';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useEffect } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { Signer } from '@polkadot/types/types';

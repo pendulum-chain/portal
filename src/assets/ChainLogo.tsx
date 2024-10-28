@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
 import { TenantName } from '../models/Tenant';
 import AmplitudeLogo from './AmplitudeLogo';

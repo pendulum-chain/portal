@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import Lottie from 'react-lottie';
 
 import { LinkItem, isLottieOptions } from './links';

@@ -2,7 +2,7 @@
 
 import { Abi } from '@polkadot/api-contract';
 import { QueryKey, useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useMemo } from 'preact/compat';
+import { useMemo } from 'react';
 
 import { defaultReadLimits, emptyCacheKey, QueryOptions } from '../../shared/helpers';
 import { useSharedState } from '../../shared/Provider';

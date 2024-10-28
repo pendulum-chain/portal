@@ -1,6 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { ComponentChildren, createContext } from 'preact';
-import { useContext, useMemo } from 'preact/compat';
+import { useContext, useMemo, createContext } from 'react';
 
 export interface State {
   api?: ApiPromise;
@@ -10,7 +9,7 @@ export interface State {
 
 const SharedStateContext = createContext<State | undefined>(undefined);
 
-export const SharedStateProvider = ({ children, api, signer, address }: { children: ComponentChildren } & State) => {
+export const SharedStateProvider = ({ children, api, signer, address }: { children: JSX.Element } & State) => {
   const providerValue = useMemo<State>(
     () => ({
       api,

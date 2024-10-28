@@ -1,8 +1,7 @@
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { createContext } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { ToastMessage, showToast } from './shared/showToast';
 
 async function createApiPromise(provider: WsProvider) {

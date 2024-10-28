@@ -1,5 +1,4 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import { ExecuteMessageResult } from '@pendulum-chain/api-solang';
 
@@ -10,7 +9,7 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 
 export interface TransactionProgressProps {
   mutation: UseContractWriteResponse;
-  children?: ComponentChildren;
+  children?: JSX.Element;
   onClose: () => void;
 }
 
@@ -43,10 +42,10 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
   if (mutation.isIdle) return null;
 
   if (mutation.isLoading) {
-    const isPending = false; // TODO: currently there is not status for this (waiting confirmation in wallet)
+    const isPending = false; // @todo: currently there is not status for this (waiting confirmation in wallet)
     return (
       <>
-        <div className="mt-4 flex flex-col items-center justify-center text-center">
+        <div className="flex flex-col items-center justify-center mt-4 text-center">
           <Spinner size={100} color="#ddd" />
           <h4 className="mt-12 text-2xl text-[--text]">
             {isPending ? 'Waiting for confirmation' : 'Executing transaction'}
@@ -62,11 +61,11 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
 
   return (
     <>
-      <div className="center mt-6">
+      <div className="mt-6 center">
         {mutation.isSuccess ? (
-          <CheckCircleIcon className="h-36 w-36 text-green-400" stroke-width={1} />
+          <CheckCircleIcon className="text-green-400 h-36 w-36" stroke-width={1} />
         ) : (
-          <ExclamationCircleIcon className="h-36 w-36 text-red-400" stroke-width={1} />
+          <ExclamationCircleIcon className="text-red-400 h-36 w-36" stroke-width={1} />
         )}
       </div>
       <div className="mt-4 text-center">
@@ -77,12 +76,12 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
       {!mutation.isSuccess && !!errorMsg && <p className="mt-1 text-center">{errorMsg}</p>}
       <div className="mt-6"></div>
       {explorerUrl && (
-        <a href={explorerUrl} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">
+        <a href={explorerUrl} target="_blank" rel="noreferrer" className="w-full btn btn-secondary">
           View on Explorer
         </a>
       )}
       {!!onClose && (
-        <Button color="primary" className="mt-2 w-full" onClick={onClose}>
+        <Button color="primary" className="w-full mt-2" onClick={onClose}>
           Close
         </Button>
       )}

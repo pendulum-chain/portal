@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 
 const ComingSoonTag: FC = () => {
   return <div className="coming-soon-tag">Coming soon!</div>;

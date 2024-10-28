@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 export const StellarUriScheme: FC<{ transactionURIScheme: string | null }> = ({ transactionURIScheme }) => {

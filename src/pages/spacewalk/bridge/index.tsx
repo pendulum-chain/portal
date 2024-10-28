@@ -1,5 +1,5 @@
-import { createContext } from 'preact/compat';
-import { StateUpdater, Dispatch, useMemo, useState, useContext } from 'preact/hooks';
+import { createContext } from 'react';
+import { Dispatch, useMemo, useState, useContext } from 'react';
 import { Button, Card, Tabs } from 'react-daisyui';
 import { Asset } from '@stellar/stellar-sdk';
 import AmplitudeLogo from '../../../assets/AmplitudeLogo';
@@ -27,14 +27,14 @@ export enum BridgeDirection {
 
 interface BridgeContextValue {
   selectedAsset?: Asset;
-  setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
+  setSelectedAsset: Dispatch<Asset | undefined>;
   selectedVault?: ExtendedRegistryVault;
-  setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
+  setSelectedVault: Dispatch<ExtendedRegistryVault | undefined>;
   manualVaultSelection: boolean;
-  setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+  setManualVaultSelection: Dispatch<boolean>;
   bridgeDirection: BridgeDirection;
   extendedVaults: ExtendedRegistryVault[];
-  setExtendedVaults: Dispatch<StateUpdater<ExtendedRegistryVault[]>>;
+  setExtendedVaults: Dispatch<ExtendedRegistryVault[]>;
 }
 
 const BridgeContext = createContext<BridgeContextValue>({

@@ -1,4 +1,4 @@
-import { CSSProperties, ChangeEvent, TargetedEvent, forwardRef } from 'preact/compat';
+import { CSSProperties, ChangeEvent, TargetedEvent, forwardRef } from 'react';
 import { Input, InputProps } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import './styles.css';

@@ -1,5 +1,4 @@
-import { ComponentChildren, createContext } from 'preact';
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/compat';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { config } from '../config';
@@ -26,7 +25,7 @@ export interface GlobalState {
 export const defaultTenant = TenantName.Pendulum;
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
-const GlobalStateProvider = ({ children }: { children: ComponentChildren }) => {
+const GlobalStateProvider = ({ children }: { children: JSX.Element }) => {
   const tenantRef = useRef<string>();
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
   const { pathname } = useLocation();

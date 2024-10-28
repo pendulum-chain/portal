@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'preact/compat';
+import { lazy, Suspense } from 'react';
 
 interface Opts<T> {
   importFn: T;

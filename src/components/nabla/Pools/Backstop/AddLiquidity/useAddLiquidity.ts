@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useQueryClient } from '@tanstack/react-query';

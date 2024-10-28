@@ -1,7 +1,6 @@
 import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
-import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Divider, Link, Collapse } from 'react-daisyui';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import CancelledDialogIcon from '../../../assets/dialog-status-cancelled';
@@ -31,10 +30,10 @@ interface BaseTransactionDialogProps {
   showMemo?: boolean;
   transfer: TTransfer;
   title?: string;
-  content: JSXInternal.Element;
-  footer?: JSXInternal.Element;
-  statusIcon: JSXInternal.Element;
-  actions?: (onConfirm: (() => void) | undefined) => JSXInternal.Element;
+  content: JSX.Element;
+  footer?: JSX.Element;
+  statusIcon: JSX.Element;
+  actions?: (onConfirm: (() => void) | undefined) => JSX.Element;
   onClose?: () => void;
   onConfirm?: () => void;
 }
@@ -86,9 +85,9 @@ function BaseTransactionDialog(props: BaseTransactionDialogProps) {
       <div className="flex flex-col items-center justify-between">
         {statusIcon}
         <div className="mt-5" />
-        <h1 className="transfer-dialog-contrast-text mb-1 text-2xl font-semibold">{title}</h1>
+        <h1 className="mb-1 text-2xl font-semibold transfer-dialog-contrast-text">{title}</h1>
         {content}
-        <Divider className="mx-5 mb-2 mt-1" />
+        <Divider className="mx-5 mt-1 mb-2" />
         <Collapse
           id="details"
           tabIndex={0}
@@ -104,7 +103,7 @@ function BaseTransactionDialog(props: BaseTransactionDialogProps) {
               <div className="text-sm">Destination Address (Stellar)</div>
               <CopyablePublicKey
                 inline={true}
-                className="p0 text-sm"
+                className="text-sm p0"
                 variant="short"
                 publicKey={destinationStellarAddress}
               />
@@ -177,13 +176,13 @@ export function CompletedTransactionDialog(props: TransactionDialogProps) {
   }
   const content = (
     <>
-      <div className="transfer-dialog-text text-sm">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label text my-4 rounded-lg px-4 py-2 font-semibold">
+      <div className="text-sm transfer-dialog-text">{`You have received  ${transfer.amount} ${stellarAsset}`}</div>
+      <label className="px-4 py-2 my-4 font-semibold rounded-lg transfer-dialog-label text">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
-      <div className="flex w-11/12 flex-row justify-between">
-        <div className="transfer-dialog-text text-sm">Spacewalk transaction</div>
+      <div className="flex flex-row justify-between w-11/12">
+        <div className="text-sm transfer-dialog-text">Spacewalk transaction</div>
         <CopyablePublicKey inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
@@ -209,17 +208,17 @@ export function CancelledTransactionDialog(props: TransactionDialogProps) {
   const amountToSend = nativeToDecimal(transfer.original.amount.add(transfer.original.fee).toNumber()).toNumber();
   const content = (
     <>
-      <div className="text-md transfer-dialog-text p-5 text-center align-middle">
+      <div className="p-5 text-center align-middle text-md transfer-dialog-text">
         {`You did not send a Stellar transaction in time, or the transferred amount did not meet the requested amount of ${amountToSend}
           ${stellarAsset}.`}
       </div>
       <div className="transfer-dialog-colored-text text-md">
         Contact the team for debugging if you think this is an error.
       </div>
-      <label className="transfer-dialog-label text my-4 rounded px-4 py-2 font-semibold">
+      <label className="px-4 py-2 my-4 font-semibold rounded transfer-dialog-label text">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
-      <div className="flex w-11/12 flex-row justify-between">
+      <div className="flex flex-row justify-between w-11/12">
         <div className="text-xs">Spacewalk transaction</div>
         <CopyablePublicKey inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
       </div>
@@ -299,7 +298,7 @@ export function PendingTransactionDialog(props: TransactionDialogProps) {
     <>
       <>
         <div
-          className="transfer-dialog-contrast-text text-semibold text-xl"
+          className="text-xl transfer-dialog-contrast-text text-semibold"
           title={amountToSend.toString()}
         >{`Send ${amountToSend.toNumber()} ${stellarAsset}`}</div>
         <div className="mt-2" />
@@ -312,20 +311,20 @@ export function PendingTransactionDialog(props: TransactionDialogProps) {
             className="transfer-dialog-text"
           />
         </div>
-        <div className="text-md transfer-dialog-text flex justify-center">
+        <div className="flex justify-center text-md transfer-dialog-text">
           <div className="mr-2">In a single transaction to</div>
           <CopyablePublicKey
             inline={true}
-            className="transfer-dialog-text p-0 text-sm"
+            className="p-0 text-sm transfer-dialog-text"
             variant="short"
             publicKey={destinationStellarAddress}
           />
         </div>
-        <div className="transfer-dialog-text text-md mt-2">
+        <div className="mt-2 transfer-dialog-text text-md">
           Within <TransferCountdown request={transfer.original} />
         </div>
       </>
-      <label className="transfer-dialog-label text my-4 rounded px-4 py-2 font-semibold">
+      <label className="px-4 py-2 my-4 font-semibold rounded transfer-dialog-label text">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
       <div className="mt-4" />
@@ -373,7 +372,7 @@ export function FailedTransactionDialog(props: TransactionDialogProps) {
   const content = (
     <>
       <div className="text-xl">{`${amountToSend} ${stellarAsset}`}</div>
-      <label className="transfer-dialog-label text my-4 rounded-lg px-4 py-2 font-semibold">
+      <label className="px-4 py-2 my-4 font-semibold rounded-lg transfer-dialog-label text">
         {transfer.type === TransferType.issue ? `To ${toTitle(tenantName)}` : `To Stellar`}
       </label>
     </>
@@ -385,14 +384,14 @@ export function FailedTransactionDialog(props: TransactionDialogProps) {
         compensation.
       </div>
       <div className="mt-4" />
-      <div className="text-md pb-1 font-bold">
+      <div className="pb-1 font-bold text-md">
         To redeem your {stellarAsset}, you must now pick one of the two options:
       </div>
-      <div className="text-md pb-1 pl-2">
+      <div className="pb-1 pl-2 text-md">
         1. Receive compensation of {compensation} {stellarAsset} and retry with another vault.{' '}
         <Link className="font-semibold underline">Compensate</Link>
       </div>
-      <div className="text-md pl-2">
+      <div className="pl-2 text-md">
         2. Burn {stellarAsset} and get {amountToSend} {stellarAsset} with added {compensation} {stellarAsset} as
         compensation. <Link className="font-semibold underline">Reimburse</Link>
       </div>

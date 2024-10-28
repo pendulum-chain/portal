@@ -1,6 +1,6 @@
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useMemo } from 'preact/compat';
+import { useMemo } from 'react';
 import { emptyCacheKey, QueryOptions } from './helpers';
 import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
 import { useSharedState } from './Provider';

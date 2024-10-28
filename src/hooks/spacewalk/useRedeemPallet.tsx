@@ -1,6 +1,6 @@
 import { H256 } from '@polkadot/types/interfaces';
 import type { SpacewalkPrimitivesRedeemRedeemRequest, SpacewalkPrimitivesVaultId } from '@polkadot/types/lookup';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertPublicKeyToRaw } from '../../helpers/stellar';
 

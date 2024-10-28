@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useMemo, useState } from 'preact/compat';
+import { useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, getPoolSurplusNativeAmount } from '../../../../../helpers/calc';
@@ -24,7 +24,7 @@ interface WithdrawLiquidityBodyProps {
   onClose: () => void;
 }
 
-const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): JSX.Element | null => {
+const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): JSX.Element => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const {
     form,
@@ -73,11 +73,11 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
       </TransactionProgress>
       <h3 className={`mb-8 mt-2 flex items-center gap-2 ${hideCss} absolute top-0 translate-y-2/4`}>
         <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
-          <ArrowLeftIcon className="h-4 w-4 dark:text-neutral-400" />
+          <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
         </Button>
         <span className="text-3xl font-normal">Withdraw from</span>
         <Button
-          className="rounded-2xl bg-neutral-200 px-2 dark:bg-neutral-800"
+          className="px-2 rounded-2xl bg-neutral-200 dark:bg-neutral-800"
           size="sm"
           type="button"
           onClick={() => setShowTokenModal(true)}
@@ -85,14 +85,14 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
           <strong className="font-bold">
             {selectedPool === undefined ? 'Backstop Pool' : `Swap Pool ${selectedPool.token.symbol}`}
           </strong>
-          <ChevronDownIcon className="inline h-4 w-4" />
+          <ChevronDownIcon className="inline w-4 h-4" />
         </Button>
       </h3>
       <div className={hideCss}>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             {walletAccount && (
-              <div className="align-end text-initial my-3 flex justify-between text-sm">
+              <div className="flex justify-between my-3 text-sm align-end text-initial">
                 <p>
                   Deposited: <TokenBalance query={depositQuery} symbol={backstopPool.symbol}></TokenBalance>
                 </p>
@@ -104,7 +104,7 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
             <AmountSelector maxBalance={depositQuery.data} formFieldName="amount" form={form}>
               <div className="flex items-start justify-start pt-2">
                 <div className="flex-grow">
-                  <div className="mr-2 flex flex-grow items-center justify-between">
+                  <div className="flex items-center justify-between flex-grow mr-2">
                     <div>You will withdraw</div>
                     <TokenBalance
                       query={withdrawalQuote}
@@ -113,7 +113,7 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
                     ></TokenBalance>
                   </div>
                   {walletAccount && (
-                    <div className="mr-2 flex flex-grow items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
+                    <div className="flex items-center justify-between flex-grow mr-2 text-sm text-neutral-500 dark:text-neutral-400">
                       <div>Your current balance</div>
                       <TokenBalance query={balanceQuery} symbol={tokenToReceive.symbol}></TokenBalance>
                     </div>
@@ -135,7 +135,7 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
               </div>
             </AmountSelector>
             <Validation className="mt-2 text-center" errors={errors} />
-            <div className="relative mt-4 flex w-full flex-col gap-4 rounded-lg bg-neutral-100 p-4 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-300">
+            <div className="relative flex flex-col w-full gap-4 p-4 mt-4 rounded-lg bg-neutral-100 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-300">
               <div className="flex items-center justify-between">
                 <div>Total backstop pool LP tokens</div>
                 <div>
@@ -164,7 +164,7 @@ const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): 
               ) : (
                 <OpenWallet />
               )}
-              <Button color="secondary" className="mt-2 w-full" type="button" onClick={() => toggle()}>
+              <Button color="secondary" className="w-full mt-2" type="button" onClick={() => toggle()}>
                 Cancel
               </Button>
             </div>
