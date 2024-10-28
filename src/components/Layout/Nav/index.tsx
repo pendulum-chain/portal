@@ -20,7 +20,7 @@ const Nav = memo(({ onClick }: NavProps) => {
   const state = useGlobalState();
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [links, setLinks] = useState<LinkItem[]>([]);
+  const links = createLinks(state.tenantName);
 
   const { pathname } = useLocation();
   const activeLink = useMemo(() => getActiveLink(pathname), [pathname]);
@@ -29,13 +29,6 @@ const Nav = memo(({ onClick }: NavProps) => {
   const handleMouseEnter = () => {
     setIsPlaying(true);
   };
-
-  useEffect(() => {
-    const [defaultLinks, loadedLinksPromise] = createLinks(state.tenantName);
-    setLinks(defaultLinks);
-
-    loadedLinksPromise.then(setLinks).catch((error) => console.error("Couldn't load links", error));
-  }, [state.tenantName]);
 
   return (
     <nav>

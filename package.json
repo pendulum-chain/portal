@@ -54,6 +54,7 @@
     "@walletconnect/universal-provider": "^2.11.1",
     "big.js": "^6.2.1",
     "bs58": "^5.0.0",
+    "framer-motion": "^11.11.9",
     "graphql": "~16.9.0",
     "graphql-request": "~6.1.0",
     "lodash": "^4.17.21",

@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import Big from 'big.js';
 
 import { config } from '../../../config';
@@ -21,6 +22,7 @@ import { PoolEntry } from '../common/PoolSelectorModal';
 import { useErc20ContractBalance } from '../../../hooks/nabla/useErc20ContractBalance';
 import { erc20WrapperAbi } from '../../../contracts/nabla/ERC20Wrapper';
 import { useTokenOutAmount } from '../../../hooks/nabla/useTokenOutAmount';
+import { cacheKeys } from '../../../constants/cache';
 
 export interface UseSwapComponentProps {
   from?: string;
@@ -32,6 +34,7 @@ const defaultValues = config.swap.defaults;
 const storageSet = debounce(storageService.set, 1000);
 
 export const useSwapComponent = (props: UseSwapComponentProps) => {
+  const queryClient = useQueryClient();
   const { onChange } = props;
   const { nabla, isLoading: nablaInstanceIsLoading } = useNablaInstance();
   const tokens = nabla?.swapPools.map((p) => p.token) ?? [];
@@ -117,6 +120,9 @@ export const useSwapComponent = (props: UseSwapComponentProps) => {
         toTokenBalance.refetch();
         setValue('fromAmount', '0');
         setValue('toAmount', '0');
+
+        // Reset token approval after successful swap
+        queryClient.invalidateQueries({ queryKey: [cacheKeys.tokenAllowance] });
       },
     },
   });

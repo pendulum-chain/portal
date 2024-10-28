@@ -20,6 +20,7 @@ export enum PATHS {
   NABLA_SWAP_POOLS = 'swap-pools',
   NABLA_BACKSTOP_POOLS = 'backstop-pools',
   STAKING = 'staking',
+  FUND_WALLET = 'fund-wallet',
 }
 
 export const PAGES_PATHS = {
@@ -32,6 +33,7 @@ export const PAGES_PATHS = {
   NABLA_SWAP_POOLS: `${PATHS.NABLA}/${PATHS.NABLA_SWAP_POOLS}`,
   NABLA_BACKSTOP_POOLS: `${PATHS.NABLA}/${PATHS.NABLA_BACKSTOP_POOLS}`,
   STAKING: PATHS.STAKING,
+  FUND_WALLET: PATHS.FUND_WALLET,
 };
 
 /**
@@ -52,6 +54,7 @@ const NablaPage = loadPage(PAGES_PATHS.NABLA);
 const SwapPage = loadPage(PAGES_PATHS.NABLA_SWAP);
 const SwapPoolsPage = loadPage(PAGES_PATHS.NABLA_SWAP_POOLS);
 const BackstopPoolsPage = loadPage(PAGES_PATHS.NABLA_BACKSTOP_POOLS);
+const FundWalletPage = loadPage(PAGES_PATHS.FUND_WALLET);
 
 export function App() {
   return (
@@ -74,6 +77,7 @@ export function App() {
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path={PATHS.STAKING} element={Staking} />
+          <Route path={PATHS.FUND_WALLET} element={FundWalletPage} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="staking" element={Staking} />
