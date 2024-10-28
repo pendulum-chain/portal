@@ -37,7 +37,7 @@ Open [http://127.0.0.1:5173/](http://127.0.0.1:5173) to view it in the browser.
 ### `yarn build`
 
 Builds the app for production to the `dist` folder.\
-It transpiles TypeScript, bundles Preact in production mode, splits and optimizes the builds for the best performance.
+It transpiles TypeScript, bundles React in production mode, splits and optimizes the builds for the best performance.
 
 The build is minified and the filenames include the hashes.\
 We call on `version.cjs` to show the commit version on the sidebar.\
