@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/compat';
+import { useState, useEffect } from 'react';
 
 export function useResolvedUrl(url: string | Promise<string>) {
   const [finalUrl, setFinalUrl] = useState<string>('');

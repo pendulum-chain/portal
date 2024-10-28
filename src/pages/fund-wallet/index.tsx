@@ -1,4 +1,4 @@
-import { useState } from 'preact/compat';
+import { useState } from 'react';
 import { Card } from 'react-daisyui';
 
 import { useGlobalState } from '../../GlobalStateProvider';
@@ -15,7 +15,7 @@ const CardContent = () => {
 
   if (tenantName === TenantName.Foucoco || tenantName === TenantName.Local)
     return (
-      <a className="btn btn-primary mt-8" href={config.faucetPage} rel="noopener noreferrer" target="_blank">
+      <a className="mt-8 btn btn-primary" href={config.faucetPage} rel="noopener noreferrer" target="_blank">
         Top up with Faucet
       </a>
     );
@@ -35,8 +35,8 @@ export enum FundWalletTab {
 
 function FundWallet() {
   return (
-    <div className="mt-4 flex justify-center">
-      <Card bordered className="tab-card shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
+    <div className="flex justify-center mt-4">
+      <Card bordered className="w-full max-w-xl px-8 py-6 tab-card shadow-0 bg-base-200">
         <Card.Title tag="h2" className="text-3xl font-normal">
           Fund Wallet
         </Card.Title>
