@@ -15,13 +15,6 @@ import { createRoot } from 'react-dom/client';
 
 const queryClient = new QueryClient();
 
-//@todo: remove
-/* const localStoragePersister = createSyncStoragePersister({ storage: window.localStorage });
-persistQueryClient({
-  queryClient,
-  persister: localStoragePersister,
-}); */
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
