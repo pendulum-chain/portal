@@ -1,18 +1,21 @@
-import { FieldErrors } from 'react-hook-form';
+import { FieldError, FieldErrors } from 'react-hook-form';
 
 export interface ValidationProps {
   errors?: FieldErrors;
   className?: string;
 }
 
-const Validation = ({ errors = {}, className }: ValidationProps): JSX.Element | null => {
-  const keys = Object.keys(errors);
-  if (keys.length === 0) return null;
+export const Validation = ({ errors = {}, className = '' }: ValidationProps) => {
+  const errorEntries = Object.entries(errors);
+
+  if (errorEntries.length === 0) return <></>;
+
   return (
     <ul className={`text-sm text-red-400 ${className}`}>
-      {/** @ts-expect-error @todo remove */}
-      {keys.map((key) => (errors[key] && errors[key]?.message ? <li key={key}>{errors[key]?.message}</li> : null))}
+      {errorEntries.map(([field, error]) => {
+        const message = (error as FieldError)?.message;
+        return typeof message === 'string' ? <li key={field}>{message}</li> : null;
+      })}
     </ul>
   );
 };
-export default Validation;

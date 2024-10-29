@@ -4,7 +4,7 @@ import { Big } from 'big.js';
 
 import { PoolProgress } from '../..';
 import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../../shared/parseNumbers/metric';
-import Validation from '../../../../Form/Validation';
+import { Validation } from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import { useAddLiquidity } from './useAddLiquidity';
 import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
@@ -48,16 +48,16 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element => {
         <PoolProgress symbol={data.token.symbol} amount={amountString} />
       </TransactionProgress>
       <div className={hideCss}>
-        <div className="absolute top-0 flex items-center gap-2 mt-2 mb-8 translate-y-2/4">
+        <div className="absolute top-0 mb-8 mt-2 flex translate-y-2/4 items-center gap-2">
           <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle(undefined)}>
-            <ArrowLeftIcon className="w-4 h-4 dark:text-neutral-400" />
+            <ArrowLeftIcon className="h-4 w-4 dark:text-neutral-400" />
           </Button>
           <h3 className="text-3xl font-normal">Deposit {data.token.symbol}</h3>
         </div>
         <FormProvider {...form}>
           <form onSubmit={onSubmit}>
             {walletAccount && (
-              <div className="flex justify-between my-3 text-sm align-end text-initial">
+              <div className="align-end text-initial my-3 flex justify-between text-sm">
                 <p>
                   Deposited: <TokenBalance query={depositQuery} symbol={data.symbol}></TokenBalance>
                 </p>
@@ -73,7 +73,7 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element => {
               showAvailableActions={true}
             />
             <Validation className="mt-2 text-center" errors={errors} />
-            <div className="relative flex flex-col w-full gap-4 p-4 mt-4 rounded-lg bg-base-300 text-neutral-500 dark:text-neutral-300">
+            <div className="relative mt-4 flex w-full flex-col gap-4 rounded-lg bg-base-300 p-4 text-neutral-500 dark:text-neutral-300">
               <div className="flex items-center justify-between">
                 <div>Total LP tokens</div>
                 <div>
@@ -113,7 +113,7 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element => {
               </TokenApproval>
               <Button
                 color="secondary"
-                className="w-full mt-2"
+                className="mt-2 w-full"
                 type="button"
                 disabled={mutation.isLoading}
                 onClick={() => toggle()}

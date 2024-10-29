@@ -6,7 +6,7 @@ import Big from 'big.js';
 import { PoolProgress } from '../..';
 import { calcSharePercentage } from '../../../../../helpers/calc';
 import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../../shared/parseNumbers/metric';
-import Validation from '../../../../Form/Validation';
+import { Validation } from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import { SwapPoolColumn } from '../columns';
 import { useAddLiquidity } from './useAddLiquidity';
