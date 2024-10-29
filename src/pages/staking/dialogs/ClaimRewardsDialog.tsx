@@ -95,7 +95,7 @@ function ClaimRewardsDialog(props: Props) {
     switch (step) {
       case ClaimStep.Confirm:
         return (
-          <div className="flex w-full flex-col items-center rounded-lg">
+          <div className="flex flex-col items-center w-full rounded-lg">
             <form className="flex flex-col">
               <Amount
                 fullMax={true}
@@ -139,7 +139,13 @@ function ClaimRewardsDialog(props: Props) {
   };
 
   const actions = (
-    <Button color="primary" loading={loading} onClick={getButtonAction(step)} disabled={!walletAccount || loading}>
+    <Button
+      color="primary"
+      loading={loading}
+      onClick={getButtonAction(step)}
+      disabled={!walletAccount || loading}
+      className="w-full"
+    >
       {getButtonText(step)}
     </Button>
   );
