@@ -10,16 +10,13 @@ export type LiquidityModalProps = {
 };
 
 type BasicModalComponent = FC<LiquidityModalProps>;
-
 type AdvancedModalComponent = FC<LiquidityModalProps & { onClose: () => void }>;
 
 type ModalComponent = BasicModalComponent | AdvancedModalComponent;
 
-const modalsUi: Record<ModalTypes, ModalComponent> = {
-  //@todo:
-  //@ts-expect-error todo: remove it
-  AddLiquidity,
-  WithdrawLiquidity,
+const modalsUi: Partial<Record<ModalTypes, ModalComponent>> = {
+  AddLiquidity: AddLiquidity as AdvancedModalComponent,
+  WithdrawLiquidity: WithdrawLiquidity as AdvancedModalComponent,
 };
 
 export function BackstopPoolModals() {

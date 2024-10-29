@@ -1,4 +1,4 @@
-// @todo
+// @todo remove this component! use unified modal component
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useCallback, useContext, useState } from 'react';
 
