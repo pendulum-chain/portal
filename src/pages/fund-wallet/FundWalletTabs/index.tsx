@@ -7,9 +7,9 @@ interface FundWalletTabsProps {
 }
 
 export function FundWalletTabs({ activeTab, setActiveTab }: FundWalletTabsProps) {
-  const tabItems = [
-    { index: FundWalletTab.Buy, label: 'Buy' },
-    { index: FundWalletTab.Exchange, label: 'Exchange' },
+  const tabItems: { index: FundWalletTab; children: JSX.Element }[] = [
+    { index: FundWalletTab.Buy, children: <p className="z-20 group-data-[active=true]:text-white">Buy</p> },
+    { index: FundWalletTab.Exchange, children: <p className="z-20 group-data-[active=true]:text-white">Exchange</p> },
   ];
 
   return <Tabs<FundWalletTab> activeTab={activeTab} setActiveTab={setActiveTab} tabItems={tabItems} />;

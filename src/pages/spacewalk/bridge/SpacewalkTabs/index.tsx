@@ -23,9 +23,9 @@ export function SpacewalkTabs({ activeTab, setActiveTab }: SpacewalkTabsProps) {
       <>
         {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="z-20 mr-1 h-6 w-6" />}
         {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
-          <AmplitudeLogo className="mr-1 h-6 w-6" />
+          <AmplitudeLogo className="z-20 mr-1 h-6 w-6" />
         )}
-        <p className="z-20">To {chain}</p>
+        <p className="z-20 text-gray-500 group-data-[active=true]:text-black dark:text-white">To {chain}</p>
       </>
     ) : (
       <></>
@@ -34,14 +34,26 @@ export function SpacewalkTabs({ activeTab, setActiveTab }: SpacewalkTabsProps) {
   const ToStellar = () => (
     <>
       <StellarLogo className="z-20 mr-1 h-6 w-6" />
-      <p className="z-20">To Stellar</p>
+      <p className="z-20 text-gray-500 group-data-[active=true]:text-black dark:text-white">To Stellar</p>
     </>
   );
 
-  const tabItems: { index: BridgeTabs; children: JSX.Element; className: string }[] = [
-    { index: BridgeTabs.Issue, children: <ToPendulum />, className: cs },
-    { index: BridgeTabs.Redeem, children: <ToStellar />, className: cs },
+  const tabItems: Omit<TabProps<BridgeTabs>, 'setActiveTab' | 'activeTab'>[] = [
+    {
+      index: BridgeTabs.Issue,
+      children: <ToPendulum />,
+      className: cs,
+      activeClassName: 'bg-[#f7f7f7] dark:bg-primary',
+    },
+    {
+      index: BridgeTabs.Redeem,
+      children: <ToStellar />,
+      className: cs,
+      activeClassName: 'bg-[#f7f7f7] dark:bg-primary',
+    },
   ];
 
-  return <Tabs<BridgeTabs> activeTab={activeTab} setActiveTab={setActiveTab} tabItems={tabItems} />;
+  return (
+    <Tabs<BridgeTabs> activeTab={activeTab} setActiveTab={setActiveTab} tabItems={tabItems} className="border-0" />
+  );
 }
