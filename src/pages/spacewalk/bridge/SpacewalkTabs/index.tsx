@@ -1,12 +1,9 @@
-import { BridgeTabs } from '..';
-import { Tabs } from '../../../../components/Tabs';
-
-import { AmplitudeLogo } from '../../../../assets/AmplitudeLogo';
-import { PendulumLogo } from '../../../../assets/PendulumLogo';
-import StellarLogo from '../../../../assets/StellarLogo';
-import { TenantName } from '../../../../models/Tenant';
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
+import { Tabs } from '../../../../components/Tabs';
+import StellarLogo from '../../../../assets/StellarLogo';
 import { TabProps } from '../../../../components/Tabs/Tab';
+import { ChainLogo } from '../../../../assets/ChainLogo';
+import { BridgeTabs } from '..';
 
 interface SpacewalkTabsProps {
   activeTab: BridgeTabs;
@@ -21,10 +18,7 @@ export function SpacewalkTabs({ activeTab, setActiveTab }: SpacewalkTabsProps) {
   const ToPendulum = () =>
     chain ? (
       <>
-        {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="z-20 mr-1 h-6 w-6" />}
-        {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
-          <AmplitudeLogo className="z-20 mr-1 h-6 w-6" />
-        )}
+        <ChainLogo className="z-20 mr-1 h-6 w-6" />
         <p className="z-20 text-gray-500 group-data-[active=true]:text-black dark:text-white">To {chain}</p>
       </>
     ) : (

@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMemo, useState } from 'preact/hooks';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
-import ChainLogo from '../../../assets/ChainLogo';
+import { ChainLogo } from '../../../assets/ChainLogo';
 import Amount from '../../../components/Form/Amount';
 import { PublicKey } from '../../../components/PublicKey';
 import { Dialog } from '../../../components/Dialog';

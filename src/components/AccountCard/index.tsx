@@ -1,7 +1,7 @@
 import { WalletAccount } from '@talismn/connect-wallets';
 import { trimAddress } from '../../helpers/addressFormatter';
 import { useGlobalState } from '../../GlobalStateProvider';
-import ChainLogo from '../../assets/ChainLogo';
+import { ChainLogo } from '../../assets/ChainLogo';
 
 interface AccountProps {
   account: WalletAccount;
