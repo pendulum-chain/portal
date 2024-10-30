@@ -15,14 +15,14 @@ export type SwapPoolColumn = NablaInstanceSwapPool & {
 
 const BIG_100 = new Big(100);
 
-export const nameColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'Name',
-  accessorKey: 'name',
-  accessorFn: (row) => row.token.name,
+export const assetColumn: ColumnDef<SwapPoolColumn> = {
+  header: 'Asset',
+  accessorKey: 'asset',
+  accessorFn: (row) => row.token.symbol,
   cell: ({ row: { original } }) => (
     <div className="flex items-center">
       <Avatar src={getIcon(original.token.symbol)} shape="circle" size={32} />
-      <p className="ml-2.5">{original.token.name}</p>
+      <p className="ml-2.5">{original.token.symbol}</p>
     </div>
   ),
   enableSorting: true,
@@ -122,11 +122,11 @@ export const actionsColumn: ColumnDef<SwapPoolColumn> = {
 } as const;
 
 export const columnsWithMyAmount = [
-  nameColumn,
+  assetColumn,
   liabilitiesColumn,
   reservesColumn,
   aprColumn,
   myAmountColumn,
   actionsColumn,
 ];
-export const columnsWithoutMyAmount = [nameColumn, liabilitiesColumn, reservesColumn, aprColumn, actionsColumn];
+export const columnsWithoutMyAmount = [assetColumn, liabilitiesColumn, reservesColumn, aprColumn, actionsColumn];
