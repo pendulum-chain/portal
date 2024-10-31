@@ -1,5 +1,5 @@
 import { PalletIdentityRegistration } from '@polkadot/types/lookup';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { useNodeInfoState } from '../NodeInfoProvider';
 
 export interface PalletIdentityInfo {

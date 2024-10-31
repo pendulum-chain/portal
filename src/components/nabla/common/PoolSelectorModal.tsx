@@ -1,6 +1,6 @@
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { matchSorter } from 'match-sorter';
-import { ChangeEvent, useMemo, useState } from 'preact/compat';
+import { ChangeEvent, useMemo, useState } from 'react';
 import { Avatar, AvatarProps, Button, Input } from 'react-daisyui';
 
 import { repeat } from '../../../helpers/general';

@@ -1,6 +1,5 @@
 import { hexToU8a } from '@polkadot/util';
-import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Divider } from 'react-daisyui';
 
 import { useGlobalState } from '../../../../GlobalStateProvider';
@@ -19,10 +18,10 @@ export interface BaseTransferDialogProps {
   showMemo?: boolean;
   transfer: TTransfer;
   title?: string;
-  content: JSXInternal.Element;
-  footer?: JSXInternal.Element;
-  statusIcon: JSXInternal.Element;
-  actions?: (onConfirm: (() => void) | undefined) => JSXInternal.Element;
+  content: JSX.Element;
+  footer?: JSX.Element;
+  statusIcon: JSX.Element;
+  actions?: (onConfirm: (() => void) | undefined) => JSX.Element;
   onClose?: () => void;
   onConfirm?: () => void;
 }

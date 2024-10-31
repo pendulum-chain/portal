@@ -1,5 +1,5 @@
 import { UnsubscribePromise } from '@polkadot/api-base/types';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 
 export function useSecurityPallet() {

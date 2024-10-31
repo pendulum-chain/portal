@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'preact/compat';
+import { useCallback, useMemo, useState } from 'react';
 
 export type UseBooleanActions = {
   setValue: (val: boolean) => void;

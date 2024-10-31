@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 
 import { nativeToDecimal, nativeToFormatMetric } from '../../../shared/parseNumbers/metric';

@@ -1,6 +1,5 @@
 import { hexToU8a } from '@polkadot/util';
-import { useCallback, useEffect, useMemo, useState } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Divider } from 'react-daisyui';
 
 import { useGlobalState } from '../../../../GlobalStateProvider';
@@ -19,10 +18,10 @@ export interface BaseTransferDialogProps {
   showMemo?: boolean;
   transfer: TTransfer;
   title?: string;
-  content: JSXInternal.Element;
-  footer?: JSXInternal.Element;
-  statusIcon: JSXInternal.Element;
-  actions?: (onConfirm: (() => void) | undefined) => JSXInternal.Element;
+  content: JSX.Element;
+  footer?: JSX.Element;
+  statusIcon: JSX.Element;
+  actions?: (onConfirm: (() => void) | undefined) => JSX.Element;
   onClose?: () => void;
   onConfirm?: () => void;
 }
@@ -74,25 +73,25 @@ export function BaseTransferDialog(props: BaseTransferDialogProps) {
       <div className="flex flex-col items-center justify-between">
         {statusIcon}
         <div className="mt-5" />
-        <h1 className="transfer-dialog-contrast-text mb-1 text-2xl font-semibold">{title}</h1>
+        <h1 className="mb-1 text-2xl font-semibold transfer-dialog-contrast-text">{title}</h1>
         {content}
-        <Divider className="mx-5 mb-2 mt-1" />
+        <Divider className="mx-5 mt-1 mb-2" />
         <div
           id="details"
           tabIndex={0}
           onClick={toggle}
           className={`transfer-dialog-text collapse collapse-arrow flex w-11/12 flex-col rounded-lg bg-black bg-opacity-3 ${collapseVisibility}`}
         >
-          <div className="collapse-title flex flex-row justify-between">
+          <div className="flex flex-row justify-between collapse-title">
             <div className="text-sm">Bridge fee</div>
             <div className="text-sm">{nativeToDecimal(transfer.original.fee.toNumber()).toString()}</div>
           </div>
-          <div className="collapse-content space-y-4">
+          <div className="space-y-4 collapse-content">
             <div className="flex flex-row justify-between">
               <div className="text-sm">Destination Address (Stellar)</div>
               <CopyablePublicKey
                 inline={true}
-                className="p0 text-sm"
+                className="text-sm p0"
                 variant="short"
                 publicKey={destinationStellarAddress}
               />

@@ -1,13 +1,15 @@
 import { Tab } from './Tab';
 
-interface TabsProps<T> {
+type EnumLike = string | number;
+
+interface TabsProps<T extends EnumLike> {
   activeTab: T;
   setActiveTab: (index: T) => void;
   tabItems: { index: T; children: JSX.Element; className?: string }[];
   className?: string;
 }
 
-export function Tabs<T>({ activeTab, setActiveTab, tabItems, className }: TabsProps<T>) {
+export function Tabs<T extends EnumLike>({ activeTab, setActiveTab, tabItems, className }: TabsProps<T>) {
   return (
     <div
       role="tablist"

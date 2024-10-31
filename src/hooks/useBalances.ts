@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'preact/compat';
+import { useCallback, useEffect, useState } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
 import { getAddressForFormat } from '../helpers/addressFormatter';
 import { useNodeInfoState } from '../NodeInfoProvider';

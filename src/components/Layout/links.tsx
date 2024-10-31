@@ -1,4 +1,3 @@
-import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
 import { Options } from 'react-lottie';
 import { WalletIcon } from '@heroicons/react/24/outline';
@@ -15,6 +14,7 @@ import { nablaConfig } from '../../config/apps/nabla';
 import { TenantName } from '../../models/Tenant';
 import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
 import { PAGES_PATHS, PATHS } from '../../app';
+import { CSSProperties } from 'react';
 
 export type LinkParameter = { isActive?: boolean };
 
@@ -35,17 +35,18 @@ export function isLottieOptions(obj: unknown): obj is LottieOptions {
   return false;
 }
 
-export type TitleOptions = LottieOptions | ComponentChildren;
-export type PrefixOptions = LottieOptions | ComponentChildren;
+export type TitleOptions = LottieOptions | React.ReactNode;
+export type PrefixOptions = LottieOptions | React.ReactNode;
 
 export type BaseLinkItem = {
   link: string;
   title: TitleOptions;
-  props?: Omit<NavLinkProps, 'className'> & {
+  props?: Omit<NavLinkProps, 'className' | 'to' | 'style'> & {
     className?: (params?: LinkParameter) => string;
+    style?: CSSProperties;
   };
   prefix?: PrefixOptions;
-  suffix?: ComponentChildren;
+  suffix?: React.ReactNode;
   hidden?: boolean;
   disabled?: boolean;
 };
@@ -74,7 +75,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <SwapIcon className="p-1" />,
-    suffix: <ExternalIcon className="ml-auto h-5 w-3" />,
+    suffix: <ExternalIcon className="w-3 h-5 ml-auto" />,
   };
 
   const spacewalkLinkItem: LinkItem = {
@@ -139,13 +140,13 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: <ExternalIcon className="ml-auto h-5 w-3" />,
+    suffix: <ExternalIcon className="w-3 h-5 ml-auto" />,
   };
 
   const fundWalletItem: LinkItem = {
     link: tenantName === TenantName.Foucoco ? config.faucetPage : `./${PATHS.FUND_WALLET}`,
     title: 'Fund Wallet',
-    prefix: <WalletIcon className="icon-small ml-1 fill-none" />,
+    prefix: <WalletIcon className="ml-1 icon-small fill-none" />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },

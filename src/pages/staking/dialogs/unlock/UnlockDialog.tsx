@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import { FC } from 'preact/compat';
+import { useEffect, useMemo, useState } from 'react';
+import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from 'react-daisyui';

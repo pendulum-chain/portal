@@ -1,8 +1,8 @@
-import { memo, useEffect, useMemo, useState } from 'preact/compat';
+import { memo, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { NavCollapseButtonContent } from '../NavCollapseButtonContent';
-import { createLinks, LinkItem } from '../links';
+import { createLinks } from '../links';
 import { NavItem } from './NavItem';
 import { NavCollapseMenu } from './NavCollapseMenu';
 
@@ -32,13 +32,13 @@ const Nav = memo(({ onClick }: NavProps) => {
 
   return (
     <nav>
-      {links.map((item, i) => {
+      {links.map((item) => {
         if (item.hidden) return;
 
         return item.submenu ? (
           <div onMouseEnter={handleMouseEnter} className="my-2.5">
             <NavCollapseMenu
-              key={i}
+              key={item.link}
               disabled={item.disabled}
               ariaControls="submenu"
               button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
@@ -46,9 +46,9 @@ const Nav = memo(({ onClick }: NavProps) => {
               link={item.link}
               onClick={setActiveSelection}
             >
-              <ul className="submenu" id={`submenu-${i}`}>
-                {item.submenu.map((subItem, j) => (
-                  <li key={`${i}-${j}`} className="ml-[3px]">
+              <ul className="submenu" id={`submenu-${item.link}`}>
+                {item.submenu.map((subItem) => (
+                  <li key={`${item.link}-${subItem.link}`} className="ml-[3px]">
                     <NavItem item={subItem} onClick={onClick} isSubNavItem={true} />
                   </li>
                 ))}
@@ -57,7 +57,7 @@ const Nav = memo(({ onClick }: NavProps) => {
           </div>
         ) : (
           <NavItem
-            key={i}
+            key={item.link}
             item={item}
             onClick={() => {
               setActiveSelection(item.link);

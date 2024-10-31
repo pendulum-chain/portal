@@ -25,7 +25,6 @@ export function Tab<T>({ index, children, activeTab, setActiveTab, className, ac
       {activeTab === index && (
         <motion.div
           layoutId="bubble"
-          // @ts-expect-error Caused by Preact, remove this comment once migrated to React
           className={`absolute inset-0 z-10 h-full rounded-lg ${activeClassName || 'bg-primary'}`}
           transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
         />

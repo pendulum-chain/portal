@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import Amount from '../../../../components/Form/Amount';
 import gasolinePump from '../../../../assets/gasoline-pump.svg';
 import { UseFormRegisterReturn } from 'react-hook-form';

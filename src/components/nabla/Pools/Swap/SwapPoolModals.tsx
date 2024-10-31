@@ -1,4 +1,4 @@
-import { FunctionalComponent } from 'preact';
+import { FC } from 'react';
 import { ModalTypes, useModal } from '../../../../services/modal';
 import { Dialog } from '../../../Dialog';
 import { SwapPoolColumn } from './columns';
@@ -10,8 +10,12 @@ export type LiquidityModalProps = {
   data: SwapPoolColumn;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<any>>> = {
+type BasicModalComponent = FC<LiquidityModalProps>;
+type AdvancedModalComponent = FC<LiquidityModalProps & { onClose: () => void }>;
+
+type ModalComponent = BasicModalComponent | AdvancedModalComponent;
+
+const modalsUi: Record<ModalTypes, ModalComponent> = {
   AddLiquidity,
   WithdrawLiquidity,
   Redeem,

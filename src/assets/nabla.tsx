@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 
 const NablaIcon = (props: HTMLAttributes<SVGSVGElement>) => (
   <svg

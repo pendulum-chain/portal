@@ -1,4 +1,4 @@
-import { useCallback } from 'preact/compat';
+import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../GlobalStateProvider';
 import { buildTenantPath } from '../helpers/url';

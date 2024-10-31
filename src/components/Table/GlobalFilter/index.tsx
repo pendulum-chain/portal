@@ -1,16 +1,16 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { TargetedEvent, useCallback, useRef } from 'preact/compat';
+import { FormEvent, useCallback, useRef } from 'react';
 import { Button, Input, Join } from 'react-daisyui';
 
 export interface GlobalFilterProps {
   globalFilter?: string;
   setGlobalFilter: (val: string) => void;
 }
-export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProps): JSX.Element | null => {
+export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProps): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSearch = useCallback(
-    (ev: TargetedEvent<HTMLFormElement>) => {
-      if (ev) ev.preventDefault();
+    (event: FormEvent) => {
+      if (event) event.preventDefault();
       if (!inputRef.current) return;
       setGlobalFilter(inputRef.current.value);
     },
@@ -30,14 +30,8 @@ export const GlobalFilter = ({ globalFilter, setGlobalFilter }: GlobalFilterProp
             defaultValue={globalFilter}
             placeholder="Search..."
           />
-          <Button
-            size="sm"
-            color="secondary"
-            className="dark:border-neutral-700 dark:bg-neutral-700"
-            bordered
-            type="submit"
-          >
-            <MagnifyingGlassIcon className="h-3 w-3" />
+          <Button size="sm" color="secondary" className="dark:border-neutral-700 dark:bg-neutral-700" type="submit">
+            <MagnifyingGlassIcon className="w-3 h-3" />
           </Button>
         </Join>
       </div>

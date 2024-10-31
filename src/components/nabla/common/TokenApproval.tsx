@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from 'react-daisyui';
-import { useCallback } from 'preact/hooks';
+import { useCallback } from 'react';
 import { Big } from 'big.js';
 
 import { ApprovalState, useErc20TokenApproval } from '../../../hooks/nabla/useErc20TokenApproval';
@@ -12,7 +12,7 @@ export type TokenApprovalProps = ButtonProps & {
   /** contract address (eg. router address) */
   spender: string;
   enabled?: boolean;
-  children: ReactNode;
+  children: React.ReactNode;
   decimals: number;
   disabled?: boolean;
 };
@@ -27,7 +27,7 @@ export function TokenApproval({
   className = '',
   disabled,
   ...rest
-}: TokenApprovalProps): JSX.Element | null {
+}: TokenApprovalProps) {
   const { state, mutate } = useErc20TokenApproval({
     decimalAmount,
     token,

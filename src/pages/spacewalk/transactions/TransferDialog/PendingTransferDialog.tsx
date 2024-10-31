@@ -1,6 +1,6 @@
 import { hexToU8a } from '@polkadot/util';
 import { DateTime } from 'luxon';
-import { useEffect, useMemo, useState } from 'preact/compat';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import PendingDialogIcon from '../../../../assets/dialog-status-pending';

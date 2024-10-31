@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import Big from 'big.js';
 import userEvent from '@testing-library/user-event';
-import { render } from '@testing-library/preact';
+import { render } from '@testing-library/react';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import { useForm } from 'react-hook-form';
 

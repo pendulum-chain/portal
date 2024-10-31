@@ -1,7 +1,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { SpacewalkPrimitivesCurrencyId } from '@polkadot/types/lookup';
 import Big from 'big.js';
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'react';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { fixedPointToDecimal } from '../../shared/parseNumbers/metric';
 

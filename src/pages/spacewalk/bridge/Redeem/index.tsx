@@ -1,15 +1,15 @@
 import Big from 'big.js';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
-import { useEffect } from 'preact/compat';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useEffect } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { Signer } from '@polkadot/types/types';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
 import From from '../../../../components/Form/From';
-import LabelledInputField from '../../../../components/LabelledInputField';
+import { LabelledInputField } from '../../../../components/LabelledInputField';
 import OpenWallet from '../../../../components/Wallet';
 import { assetDisplayName } from '../../../../helpers/spacewalk';
 import { isPublicKey } from '../../../../helpers/stellar';
@@ -175,8 +175,7 @@ function Redeem(props: RedeemProps): JSX.Element {
             error={formState.errors.to?.message}
             placeholder="Enter target Stellar address"
             type="text"
-            style={{ marginTop: 8 }}
-            className="border-[--base-400] bg-base-200"
+            className="mt-2 border-[--base-400] bg-base-200"
             autoComplete="off"
           />
           <FeeBox

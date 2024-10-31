@@ -2,7 +2,7 @@ import { WalletConnectModal } from '@walletconnect/modal';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { SessionTypes } from '@walletconnect/types';
 import { Button } from 'react-daisyui';
-import { useCallback, useEffect, useState } from 'preact/compat';
+import { useCallback, useEffect, useState } from 'react';
 import logo from '../../../../assets/wallet-connect.svg';
 import { config } from '../../../../config';
 import { chainIds, walletConnectConfig } from '../../../../config/walletConnect';

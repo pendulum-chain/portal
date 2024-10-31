@@ -1,5 +1,5 @@
 import BigNumber from 'big.js';
-import { StateUpdater, Dispatch, useEffect, useState } from 'preact/hooks';
+import { Dispatch, useEffect, useState } from 'react';
 import { isEmpty, find } from 'lodash';
 import { Option } from '@polkadot/types-codec';
 import { Codec } from '@polkadot/types-codec/types';
@@ -27,8 +27,8 @@ export interface BuyoutSettings {
   handleBuyout: (
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: string,
-    setSubmissionPending: Dispatch<StateUpdater<boolean>>,
-    setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
+    setSubmissionPending: Dispatch<boolean>,
+    setConfirmationDialogVisible: Dispatch<boolean>,
   ) => void;
 }
 
@@ -126,8 +126,8 @@ export const useBuyout = (): BuyoutSettings => {
   async function handleBuyout(
     currency: OrmlTraitsAssetRegistryAssetMetadata,
     amount: string,
-    setSubmissionPending: Dispatch<StateUpdater<boolean>>,
-    setConfirmationDialogVisible: Dispatch<StateUpdater<boolean>>,
+    setSubmissionPending: Dispatch<boolean>,
+    setConfirmationDialogVisible: Dispatch<boolean>,
   ) {
     if (!api || !walletAccount) {
       return;

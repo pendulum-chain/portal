@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 
 const StakedIcon = (props: HTMLAttributes<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="19" height="25" viewBox="0 0 19 25" {...props}>

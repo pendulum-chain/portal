@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMemo, useState } from 'preact/hooks';
+import { useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { ChainLogo } from '../../../assets/ChainLogo';

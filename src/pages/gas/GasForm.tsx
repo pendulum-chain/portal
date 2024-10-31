@@ -1,5 +1,5 @@
-import { StateUpdater, Dispatch, useMemo } from 'preact/hooks';
-import { ChangeEvent, FC } from 'preact/compat';
+import { Dispatch, useMemo } from 'react';
+import { ChangeEvent, FC } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { OrmlTraitsAssetRegistryAssetMetadata } from '../../hooks/useBuyout/types';
@@ -20,7 +20,7 @@ export type IssueFormValues = {
 interface GasFormProps {
   onSubmit: (data: IssueFormValues) => void;
   currencies: OrmlTraitsAssetRegistryAssetMetadata[];
-  setSelectedFromToken: Dispatch<StateUpdater<BlockchainAsset | undefined>>;
+  setSelectedFromToken: Dispatch<BlockchainAsset | undefined>;
   selectedFromToken?: BlockchainAsset;
   nativeCurrency: OrmlTraitsAssetRegistryAssetMetadata;
   calcMin: () => { amount: string; native: number };
