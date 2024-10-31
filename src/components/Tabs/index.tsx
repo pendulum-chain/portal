@@ -1,22 +1,25 @@
 import { Tab } from './Tab';
 
-interface TabsProps<T> {
+type EnumLike = string | number;
+
+interface TabsProps<T extends EnumLike> {
   activeTab: T;
   setActiveTab: (index: T) => void;
-  tabItems: { index: T; label: string }[];
+  tabItems: { index: T; children: JSX.Element; className?: string }[];
+  className?: string;
 }
 
-export function Tabs<T>({ activeTab, setActiveTab, tabItems }: TabsProps<T>) {
+export function Tabs<T extends EnumLike>({ activeTab, setActiveTab, tabItems, className }: TabsProps<T>) {
   return (
-    <div className="flex justify-between mt-5">
-      <div
-        role="tablist"
-        className="flex justify-center flex-grow p-0 border tabs-boxed tabs border-neutral-500 bg-base-100 sm:w-5/6"
-      >
-        {tabItems.map((tab) => (
-          <Tab key={tab.label} index={tab.index} label={tab.label} activeTab={activeTab} setActiveTab={setActiveTab} />
-        ))}
-      </div>
+    <div
+      role="tablist"
+      className={`tabs-boxed tabs flex flex-grow justify-center ${className || 'border border-neutral-500 bg-base-100 p-0'}`}
+    >
+      {tabItems.map((tab) => (
+        <Tab key={tab.index} activeTab={activeTab} setActiveTab={setActiveTab} {...tab}>
+          {tab.children}
+        </Tab>
+      ))}
     </div>
   );
 }

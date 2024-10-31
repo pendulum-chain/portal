@@ -1,29 +1,31 @@
 import { motion } from 'framer-motion';
 
-interface TabItemProps<T> {
+export interface TabProps<T> {
   index: T;
-  label: string;
+  children: JSX.Element;
   activeTab: T;
   setActiveTab: (index: T) => void;
+  className?: string;
+  activeClassName?: string;
 }
 
-export function Tab<T>({ index, label, activeTab, setActiveTab }: TabItemProps<T>) {
+export function Tab<T>({ index, children, activeTab, setActiveTab, className, activeClassName }: TabProps<T>) {
   const getTabProps = (tabIndex: T) => ({
     'data-active': activeTab === tabIndex,
     onClick: () => setActiveTab(tabIndex),
   });
 
+  const defaultClassName = 'group tab relative w-full h-full p-2 ';
+
+  const stylingClassName = className || 'h-full text-lg font-bold text-primary py-5';
+
   return (
-    <a
-      role="tab"
-      className="relative w-full h-full py-5 text-lg font-bold sm:text-md group tab text-primary"
-      {...getTabProps(index)}
-    >
-      <p className="z-20 group-data-[active=true]:text-white">{label}</p>
+    <a role="tab" className={defaultClassName + stylingClassName} {...getTabProps(index)}>
+      {children}
       {activeTab === index && (
         <motion.div
           layoutId="bubble"
-          className="absolute inset-0 z-10 rounded-lg bg-primary"
+          className={`absolute inset-0 z-10 h-full rounded-lg ${activeClassName || 'bg-primary'}`}
           transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
         />
       )}

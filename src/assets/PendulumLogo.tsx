@@ -3,7 +3,7 @@ interface Props {
   light?: boolean;
 }
 
-const PendulumLogo = ({ className, light, ...rest }: Props) =>
+export const PendulumLogo = ({ className, light, ...rest }: Props) =>
   light ? (
     <svg width="18" height="25" viewBox="0 0 18 25" xmlns="http://www.w3.org/2000/svg" className={className} {...rest}>
       <path
@@ -28,5 +28,3 @@ const PendulumLogo = ({ className, light, ...rest }: Props) =>
       <path d="M2.88557 24.002C4.4776 24.002 5.7682 22.6588 5.7682 21.0019C5.7682 19.345 4.4776 18.0018 2.88557 18.0018C1.29353 18.0018 0.00292969 19.345 0.00292969 21.0019C0.00292969 22.6588 1.29353 24.002 2.88557 24.002Z" />
     </svg>
   );
-
-export default PendulumLogo;
