@@ -53,7 +53,6 @@ Builds the app for production to the `dist` folder.\
 It transpiles TypeScript, bundles React in production mode, splits and optimizes the builds for the best performance.
 
 The build is minified and the filenames include the hashes.\
-We call on `version.cjs` to show the commit version on the sidebar.\
 We also create a file, on the fly, a file named `_redirects` that will serve the index.html instead of giving a 404 no
 matter what URL the browser requests.
 
