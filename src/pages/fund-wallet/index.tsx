@@ -37,7 +37,7 @@ function FundWallet() {
   return (
     <div className="mt-4 flex justify-center">
       <Card bordered className="tab-card shadow-0 w-full max-w-xl bg-base-200 px-8 py-6">
-        <Card.Title tag="h2" className="text-3xl font-normal">
+        <Card.Title tag="h2" className="mb-5 text-3xl font-normal">
           Fund Wallet
         </Card.Title>
         <CardContent />
