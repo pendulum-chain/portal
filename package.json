@@ -6,7 +6,8 @@
   "packageManager": "yarn@4.4.1",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && yarn generate-netlify-redirects",
+    "generate-netlify-redirects": "echo '/* /index.html 200' > dist/_redirects",
     "preview": "vite preview",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
