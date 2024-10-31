@@ -14,12 +14,12 @@ import { useSecurityPallet } from '../../../hooks/spacewalk/useSecurityPallet';
 import { nativeToDecimal } from '../../../shared/parseNumbers/metric';
 
 import {
-  CancelledTransactionDialog,
-  CompletedTransactionDialog,
-  FailedTransactionDialog,
-  PendingTransactionDialog,
-  ReimbursedTransactionDialog,
-} from './TransactionDialog';
+  CancelledTransferDialog,
+  CompletedTransferDialog,
+  FailedTransferDialog,
+  PendingTransferDialog,
+  ReimbursedTransferDialog,
+} from './TransferDialog';
 import {
   TTransfer,
   TransferType,
@@ -132,11 +132,11 @@ function Transactions(): JSX.Element {
     );
 
   const dialogs: Record<string, JSX.Element> = {
-    Pending: getDialog(PendingTransactionDialog),
-    Completed: getDialog(CompletedTransactionDialog),
-    Reimbursed: getDialog(ReimbursedTransactionDialog),
-    Cancelled: getDialog(CancelledTransactionDialog),
-    Failed: getDialog(FailedTransactionDialog),
+    Pending: getDialog(PendingTransferDialog),
+    Completed: getDialog(CompletedTransferDialog),
+    Reimbursed: getDialog(ReimbursedTransferDialog),
+    Cancelled: getDialog(CancelledTransferDialog),
+    Failed: getDialog(FailedTransferDialog),
   };
 
   return (
