@@ -1,8 +1,8 @@
 import { useNodeInfoState } from '../../../../NodeInfoProvider';
-import { Tabs } from '../../../../components/Tabs';
-import StellarLogo from '../../../../assets/StellarLogo';
 import { TabProps } from '../../../../components/Tabs/Tab';
+import { Tabs } from '../../../../components/Tabs';
 import { ChainLogo } from '../../../../assets/ChainLogo';
+import StellarLogo from '../../../../assets/StellarLogo';
 import { BridgeTabs } from '..';
 
 interface SpacewalkTabsProps {

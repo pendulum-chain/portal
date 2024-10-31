@@ -17,21 +17,19 @@ export function Tab<T>({ index, children, activeTab, setActiveTab, className, ac
 
   const defaultClassName = 'group tab relative w-full h-full p-2 ';
 
-  const combinedClassName = className || 'h-full text-lg font-bold text-primary py-5';
+  const stylingClassName = className || 'h-full text-lg font-bold text-primary py-5';
 
   return (
-    <>
-      <a role="tab" className={defaultClassName + combinedClassName} {...getTabProps(index)}>
-        {children}
-        {activeTab === index && (
-          <motion.div
-            layoutId="bubble"
-            // @ts-expect-error Caused by Preact, remove this comment once migrated to React
-            className={`absolute inset-0 z-10 h-full rounded-lg ${activeClassName || 'bg-primary'}`}
-            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-          />
-        )}
-      </a>
-    </>
+    <a role="tab" className={defaultClassName + stylingClassName} {...getTabProps(index)}>
+      {children}
+      {activeTab === index && (
+        <motion.div
+          layoutId="bubble"
+          // @ts-expect-error Caused by Preact, remove this comment once migrated to React
+          className={`absolute inset-0 z-10 h-full rounded-lg ${activeClassName || 'bg-primary'}`}
+          transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+        />
+      )}
+    </a>
   );
 }
