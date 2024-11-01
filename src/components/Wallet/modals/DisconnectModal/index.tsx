@@ -65,11 +65,11 @@ const WalletDropdownMenu = ({
         inline={true}
       />
     </div>
-    <p className="my-6 truncate text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
+    <p className="my-6 text-2xl font-bold text-center truncate" title={`${balance} ${tokenSymbol}`}>
       {balance} {tokenSymbol}
     </p>
     <Button className="bg-base-300" size="sm" onClick={removeWalletAccount}>
-      <ArrowLeftEndOnRectangleIcon className="mr-2 w-5" />
+      <ArrowLeftEndOnRectangleIcon className="w-5 mr-2" />
       Disconnect
     </Button>
   </Dropdown.Menu>

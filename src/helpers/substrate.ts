@@ -9,6 +9,11 @@ const EXISTENTIAL_DEPOSIT = nativeToDecimal(1_000_000_000);
 // Calculate the transferable balance. It's calculated as `transferable = free - max(frozen - reserved, ED)`,
 // see [here](https://wiki.polkadot.network/docs/learn-guides-accounts#query-account-data-in-polkadot-js).
 export function calculateTransferableBalance(free: Big, frozen: Big, reserved: Big) {
+  // Check if the free balance is zero to avoid negative results
+  if (free.lte(0)) {
+    return new Big(0);
+  }
+
   // Emulate Math.max
   const max = frozen.minus(reserved).gt(EXISTENTIAL_DEPOSIT) ? frozen.minus(reserved) : EXISTENTIAL_DEPOSIT;
   return free.minus(max);
