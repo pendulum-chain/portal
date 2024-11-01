@@ -1,14 +1,16 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 import { useGlobalState } from '../GlobalStateProvider';
 import { TenantName } from '../models/Tenant';
-import AmplitudeLogo from './AmplitudeLogo';
-import PendulumLogo from './PendulumLogo';
+import { AmplitudeLogo } from './AmplitudeLogo';
+import { PendulumLogo } from './PendulumLogo';
 
 interface Props extends HTMLAttributes<SVGSVGElement> {
   className?: string;
+  width?: string;
+  height?: string;
 }
 
-const ChainLogo = (props: Props) => {
+export const ChainLogo = (props: Props) => {
   const { tenantName } = useGlobalState();
   if (tenantName === TenantName.Pendulum) {
     return <PendulumLogo {...props} />;
@@ -16,5 +18,3 @@ const ChainLogo = (props: Props) => {
     return <AmplitudeLogo {...props} />;
   }
 };
-
-export default ChainLogo;

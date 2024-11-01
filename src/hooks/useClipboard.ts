@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { ToastMessage, showToast } from '../shared/showToast';
 
 export function useClipboard() {

@@ -1,6 +1,6 @@
 import { Button } from 'react-daisyui';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { PublicKey } from '../../../../components/PublicKey';
 import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';

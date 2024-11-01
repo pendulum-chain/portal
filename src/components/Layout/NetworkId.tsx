@@ -1,4 +1,4 @@
-import { FC, memo } from 'preact/compat';
+import { FC, memo } from 'react';
 import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 

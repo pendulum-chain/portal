@@ -110,6 +110,14 @@ nav {
   fill: currentColor;
 }
 
+.nav-item svg.fill-none {
+  fill: none !important;
+}
+
+.nav-item svg.icon-small {
+  width: 24px !important;
+}
+
 .nav-item svg:first-of-type {
   width: 32px;
   height: 32px;

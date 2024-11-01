@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from 'preact/compat';
+import { useMemo, useState } from 'react';
 import { Big } from 'big.js';
 
 import { erc20WrapperAbi } from '../../contracts/nabla/ERC20Wrapper';

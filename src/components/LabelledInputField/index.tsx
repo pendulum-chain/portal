@@ -1,4 +1,4 @@
-import { CSSProperties, ChangeEvent, TargetedEvent, forwardRef } from 'preact/compat';
+import { CSSProperties, forwardRef } from 'react';
 import { Input, InputProps } from 'react-daisyui';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import './styles.css';
@@ -10,7 +10,6 @@ interface Props {
   error?: string;
   type: string;
   step?: string;
-  value: string;
   extraBtnText?: string;
   extraBtnAction?: () => void;
   onChange?: (value: string) => void;
@@ -18,7 +17,7 @@ interface Props {
   register?: UseFormRegisterReturn;
 }
 
-const LabelledInputField = forwardRef((props: Props & InputProps) => {
+export const LabelledInputField = forwardRef((props: Props & InputProps) => {
   const { register, color, error, label, secondaryLabel, onChange, extraBtnAction, extraBtnText, style, ...rest } =
     props;
 
@@ -37,16 +36,8 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
               className={`rounded-md border bg-transparent ${!error && 'border-neutral-500'}`}
               color={inputColor}
               {...rest}
-              onFocus={(event: TargetedEvent) => {
-                if (event.target instanceof HTMLInputElement) {
-                  event.target.select();
-                }
-              }}
-              onInput={(event: ChangeEvent) => {
-                if (event.target instanceof HTMLInputElement) {
-                  onChange?.(event.target.value);
-                }
-              }}
+              onFocus={(event) => event.target.select()}
+              onChange={(event) => onChange?.(event.target.value)}
               {...register}
             />
             {extraBtnText && extraBtnAction && (
@@ -61,5 +52,3 @@ const LabelledInputField = forwardRef((props: Props & InputProps) => {
     </>
   );
 });
-
-export default LabelledInputField;

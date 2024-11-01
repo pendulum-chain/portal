@@ -1,6 +1,6 @@
 import { useGlobalState } from '../../../GlobalStateProvider';
 import { Wallet } from '@talismn/connect-wallets';
-import { useMemo } from 'preact/hooks';
+import { useMemo } from 'react';
 import { METAMASK_EXTENSION_NAME, initiateMetamaskInjectedAccount } from '../../../services/metamask';
 import logo from '../../../assets/metamask-wallet.png';
 

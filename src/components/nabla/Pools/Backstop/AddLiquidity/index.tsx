@@ -4,7 +4,7 @@ import { Big } from 'big.js';
 
 import { PoolProgress } from '../..';
 import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../../shared/parseNumbers/metric';
-import Validation from '../../../../Form/Validation';
+import { Validation } from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import { useAddLiquidity } from './useAddLiquidity';
 import { NablaInstanceBackstopPool } from '../../../../../hooks/nabla/useNablaInstance';
@@ -22,7 +22,7 @@ export interface AddLiquidityProps {
   onClose: () => void;
 }
 
-const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element | null => {
+const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element => {
   const { toggle, onSubmit, mutation, depositQuery, balanceQuery, amountString, amountBigDecimal, form } =
     useAddLiquidity(data.id, data.token.id, data.token.decimals, data.lpTokenDecimals);
 
@@ -115,7 +115,7 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element | null 
                 color="secondary"
                 className="mt-2 w-full"
                 type="button"
-                disable={mutation.isLoading}
+                disabled={mutation.isLoading}
                 onClick={() => toggle()}
               >
                 Cancel

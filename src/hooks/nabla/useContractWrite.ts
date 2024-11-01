@@ -2,7 +2,7 @@
 import { executeMessage, ExecuteMessageResult } from '@pendulum-chain/api-solang';
 import { Abi } from '@polkadot/api-contract';
 import { MutationOptions, useMutation, UseMutationResult } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'preact/compat';
+import { useCallback, useMemo } from 'react';
 
 import { defaultWriteLimits } from '../../shared/helpers';
 import { useSharedState } from '../../shared/Provider';

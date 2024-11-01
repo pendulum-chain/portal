@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/preact-hooks';
-import { waitFor } from '@testing-library/preact';
+import { renderHook } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { Asset } from '@stellar/stellar-sdk';
 import Big from 'big.js';
 import { useFeePallet } from '../useFeePallet';
@@ -7,14 +7,17 @@ import { useCalculateGriefingCollateral } from '../useCalculateGriefingCollatera
 
 const STELLAR_ONE_WITH_DECIMALS = 1000000000000;
 const VALID_ASSET = new Asset('code', 'GASOCNHNNLYFNMDJYQ3XFMI7BYHIOCFW3GJEOWRPEGK2TDPGTG2E5EDW');
-// We assume that the price is the same for all assets
-const PRICE = 1;
 
-jest.mock('../../usePriceFetcher', () => ({
-  usePriceFetcher: jest.fn().mockReturnValue({
-    getTokenPriceForCurrency: jest.fn().mockReturnValue(Promise.resolve(PRICE)),
-  }),
-}));
+jest.mock('../../usePriceFetcher', () => {
+  // We assume that the price is the same for all assets
+  const PRICE = 1;
+
+  return {
+    usePriceFetcher: jest.fn().mockReturnValue({
+      getTokenPriceForCurrency: jest.fn().mockReturnValue(Promise.resolve(PRICE)),
+    }),
+  };
+});
 
 jest.mock('../../../NodeInfoProvider', () => ({
   useNodeInfoState: jest.fn().mockReturnValue({

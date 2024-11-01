@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 
 const SwapIcon = (props: HTMLAttributes<SVGSVGElement>) => (
   <svg width="18" height="18" viewBox="0 0 18 18" {...props} fill="none" xmlns="http://www.w3.org/2000/svg">

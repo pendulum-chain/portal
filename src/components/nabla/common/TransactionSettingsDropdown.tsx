@@ -30,7 +30,7 @@ const TransactionSettings = ({
               bordered
               className={`${inputCls} w-full pr-6`}
               type="text"
-              inputmode="numeric"
+              inputMode="numeric"
               step=".1"
               min={config.transaction.settings.slippage.min}
               max={config.transaction.settings.slippage.max}
@@ -51,7 +51,7 @@ const TransactionSettings = ({
               bordered
               className={`${inputCls} pr-2v w-20`}
               type="text"
-              inputmode="numeric"
+              inputMode="numeric"
               placeholder="30"
               min={config.transaction.settings.deadline.min}
               max={config.transaction.settings.deadline.max}
@@ -65,7 +65,7 @@ const TransactionSettings = ({
   );
 };
 
-export function TransactionSettingsDropdown(props: TransactionSettingsProps & { button?: ReactNode }) {
+export function TransactionSettingsDropdown(props: TransactionSettingsProps & { button?: React.ReactNode }) {
   return (
     <Dropdown vertical="bottom" end>
       {props.button || (

@@ -1,5 +1,4 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { ComponentChildren } from 'preact';
 import { Button } from 'react-daisyui';
 import { ExecuteMessageResult } from '@pendulum-chain/api-solang';
 
@@ -10,7 +9,7 @@ import { useGlobalState } from '../../../GlobalStateProvider';
 
 export interface TransactionProgressProps {
   mutation: UseContractWriteResponse;
-  children?: ComponentChildren;
+  children?: JSX.Element;
   onClose: () => void;
 }
 
@@ -43,7 +42,7 @@ export function TransactionProgress({ mutation, children, onClose }: Transaction
   if (mutation.isIdle) return null;
 
   if (mutation.isLoading) {
-    const isPending = false; // TODO: currently there is not status for this (waiting confirmation in wallet)
+    const isPending = false; // @todo: currently there is not status for this (waiting confirmation in wallet)
     return (
       <>
         <div className="mt-4 flex flex-col items-center justify-center text-center">

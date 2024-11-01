@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LinkItem } from '../../links';
+import { isLottieOptions, LinkItem } from '../../links';
 
 const isExternalLink = (link: string) => {
   try {
@@ -23,6 +23,8 @@ export const NavItem = ({
   if (hidden) return null;
   const isExternal = isExternalLink(link);
 
+  if (isLottieOptions(prefix) || isLottieOptions(title)) return <></>;
+
   const linkUi = (
     <>
       {prefix}
@@ -30,6 +32,7 @@ export const NavItem = ({
       {suffix}
     </>
   );
+
   const cls = `nav-item font-outfit ${props?.className?.() || ''} ${isSubNavItem ? 'text-sm' : ''}`;
   return isExternal ? (
     <a href={link} {...props} className={cls} onClick={onClick}>

@@ -9,7 +9,7 @@ import { useGetAppDataByTenant } from '../useGetAppDataByTenant';
 import { useContractRead } from './useContractRead';
 import { NablaInstanceToken } from './useNablaInstance';
 import { useDebouncedValue } from '../useDebouncedValue';
-import { useEffect } from 'preact/hooks';
+import { useEffect } from 'react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { subtractBigDecimalPercentage } from '../../helpers/calc';
 
@@ -32,7 +32,7 @@ export interface TokenOutData {
 export interface UseTokenOutAmountResult {
   isLoading: boolean;
   enabled: boolean;
-  data: TokenOutData | undefined;
+  data?: TokenOutData;
   error: string | null;
   refetch?: UseQueryResult<TokenOutData | undefined, string>['refetch'];
 }
@@ -89,7 +89,10 @@ export function useTokenOutAmount<FormFieldValues extends FieldValues>({
       parseSuccessOutput: (data) => {
         if (toToken === undefined || fromToken === undefined || debouncedAmountBigDecimal === undefined)
           return undefined;
+
         const amountOut = parseContractBalanceResponse(toToken.decimals, data[0]);
+        const swapFee = parseContractBalanceResponse(toToken.decimals, data[1]);
+
         const effectiveExchangeRate = debouncedAmountBigDecimal.gt(0)
           ? stringifyBigWithSignificantDecimals(amountOut.preciseBigDecimal.div(debouncedAmountBigDecimal), 6)
           : '0';
@@ -98,7 +101,7 @@ export function useTokenOutAmount<FormFieldValues extends FieldValues>({
         return {
           amountOut,
           effectiveExchangeRate,
-          swapFee: parseContractBalanceResponse(toToken.decimals, data[1]),
+          swapFee,
           minAmountOut: stringifyBigWithSignificantDecimals(minAmountOut, 2),
         };
       },

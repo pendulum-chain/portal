@@ -1,10 +1,10 @@
-import { HTMLAttributes } from 'preact/compat';
+import { HTMLAttributes } from 'react';
 
 interface Props extends HTMLAttributes<SVGSVGElement> {
   className?: string;
 }
 
-const AmplitudeLogo = ({ className, ...rest }: Props) => (
+export const AmplitudeLogo = ({ className, ...rest }: Props) => (
   <svg fill="#4EE59A" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className={className} {...rest}>
     <path d="M3.8606 9.50286C3.8606 9.50286 4.34281 10.9582 4.61302 11.6738C4.88323 12.3895 5.03867 12.8273 5.71325 12.8259C5.99852 12.8252 6.29641 12.4543 6.62941 11.6738C7.01913 10.6583 7.4623 9.50286 7.4623 9.50286H3.8606Z" />
     <path d="M7.46228 9.50286C7.46228 9.50286 6.98006 8.04752 6.70985 7.33188C6.43964 6.61625 6.28354 6.17847 5.60953 6.18002C5.32426 6.18067 5.02638 6.55167 4.69338 7.33205C4.30366 8.34748 3.86057 9.50286 3.86057 9.50286H7.46228Z" />
@@ -15,5 +15,3 @@ const AmplitudeLogo = ({ className, ...rest }: Props) => (
     <path d="M3.90198 9.51406H7.43313" />
   </svg>
 );
-
-export default AmplitudeLogo;

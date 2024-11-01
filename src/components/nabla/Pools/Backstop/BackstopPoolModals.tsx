@@ -1,4 +1,4 @@
-import { FunctionalComponent } from 'preact';
+import { FC } from 'react';
 import { NablaInstanceBackstopPool } from '../../../../hooks/nabla/useNablaInstance';
 import { ModalTypes, useModal } from '../../../../services/modal';
 import AddLiquidity from './AddLiquidity';
@@ -9,10 +9,14 @@ export type LiquidityModalProps = {
   data?: NablaInstanceBackstopPool;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const modalsUi: Partial<Record<ModalTypes, FunctionalComponent<any>>> = {
-  AddLiquidity,
-  WithdrawLiquidity,
+type BasicModalComponent = FC<LiquidityModalProps>;
+type AdvancedModalComponent = FC<LiquidityModalProps & { onClose: () => void }>;
+
+type ModalComponent = BasicModalComponent | AdvancedModalComponent;
+
+const modalsUi: Partial<Record<ModalTypes, ModalComponent>> = {
+  AddLiquidity: AddLiquidity as AdvancedModalComponent,
+  WithdrawLiquidity: WithdrawLiquidity as AdvancedModalComponent,
 };
 
 export function BackstopPoolModals() {

@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import AmplitudeLogo from '../assets/AmplitudeLogo';
-import PendulumLogo from '../assets/PendulumLogo';
+import { AmplitudeLogo } from '../assets/AmplitudeLogo';
+import { PendulumLogo } from '../assets/PendulumLogo';
 import { toTitle } from '../helpers/string';
 import useSwitchChain from '../hooks/useSwitchChain';
 import { TenantName } from '../models/Tenant';

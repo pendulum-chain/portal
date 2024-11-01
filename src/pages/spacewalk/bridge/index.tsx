@@ -1,21 +1,18 @@
-import { createContext } from 'preact/compat';
-import { StateUpdater, Dispatch, useMemo, useState, useContext } from 'preact/hooks';
-import { Button, Card, Tabs } from 'react-daisyui';
+import { Dispatch, useMemo, useState, useContext, createContext } from 'react';
+import { Button, Card } from 'react-daisyui';
 import { Asset } from '@stellar/stellar-sdk';
-import AmplitudeLogo from '../../../assets/AmplitudeLogo';
-import PendulumLogo from '../../../assets/PendulumLogo';
+
 import SettingsIcon from '../../../assets/SettingsIcon';
-import StellarLogo from '../../../assets/StellarLogo';
 import { SpacewalkConstants } from '../../../helpers/spacewalk';
 import { ExtendedRegistryVault } from '../../../hooks/spacewalk/useVaultRegistryPallet';
 import { useNodeInfoState } from '../../../NodeInfoProvider';
-import { TenantName } from '../../../models/Tenant';
 import SettingsDialog from './Issue/SettingsDialog';
+import { SpacewalkTabs } from './SpacewalkTabs';
 import Issue from './Issue';
 import Redeem from './Redeem';
 import '../styles.css';
 
-enum BridgeTabs {
+export enum BridgeTabs {
   Issue = 0,
   Redeem = 1,
 }
@@ -27,14 +24,14 @@ export enum BridgeDirection {
 
 interface BridgeContextValue {
   selectedAsset?: Asset;
-  setSelectedAsset: Dispatch<StateUpdater<Asset | undefined>>;
+  setSelectedAsset: Dispatch<Asset | undefined>;
   selectedVault?: ExtendedRegistryVault;
-  setSelectedVault: Dispatch<StateUpdater<ExtendedRegistryVault | undefined>>;
+  setSelectedVault: Dispatch<ExtendedRegistryVault | undefined>;
   manualVaultSelection: boolean;
-  setManualVaultSelection: Dispatch<StateUpdater<boolean>>;
+  setManualVaultSelection: Dispatch<boolean>;
   bridgeDirection: BridgeDirection;
   extendedVaults: ExtendedRegistryVault[];
-  setExtendedVaults: Dispatch<StateUpdater<ExtendedRegistryVault[]>>;
+  setExtendedVaults: Dispatch<ExtendedRegistryVault[]>;
 }
 
 const BridgeContext = createContext<BridgeContextValue>({
@@ -73,11 +70,6 @@ function Bridge() {
     }
   }, [chain, tokenSymbol, tabValue, wrappedCurrencySuffix]);
 
-  const getTabProps = (index: number) => ({
-    active: tabValue === index,
-    onClick: () => setTabValue(index),
-  });
-
   const bridgeDirection = tabValue === BridgeTabs.Issue ? BridgeDirection.Issue : BridgeDirection.Redeem;
 
   return chain ? (
@@ -94,7 +86,7 @@ function Bridge() {
         setExtendedVaults,
       }}
     >
-      <div className="flex items-center justify-center h-full mt-4">
+      <div className="flex items-center justify-center mt-4">
         <SettingsDialog
           visible={settingsVisible}
           onClose={() => setSettingsVisible(false)}
@@ -102,19 +94,7 @@ function Bridge() {
         />
         <Card className="bridge-card min-h-500 w-full max-w-[520px] rounded-lg bg-base-200">
           <div className="flex justify-between px-5 mt-5">
-            <Tabs className="flex justify-center flex-grow tabs-boxed sm:w-5/6">
-              <Tabs.Tab className="w-1/2 h-full p-2 text-xs sm:w-2/5 sm:text-sm" {...getTabProps(0)}>
-                {chain.toLowerCase() === TenantName.Pendulum && <PendulumLogo className="w-6 h-6 mr-1" />}
-                {(chain.toLowerCase() === TenantName.Amplitude || chain.toLowerCase() === TenantName.Foucoco) && (
-                  <AmplitudeLogo className="w-6 h-6 mr-1" />
-                )}
-                To {chain}
-              </Tabs.Tab>
-              <Tabs.Tab className="w-1/2 h-full p-2 text-xs sm:w-2/5 sm:text-sm" {...getTabProps(1)}>
-                <StellarLogo className="w-6 h-6 mr-1" />
-                To Stellar
-              </Tabs.Tab>
-            </Tabs>
+            <SpacewalkTabs activeTab={tabValue} setActiveTab={setTabValue} />
             <Button
               color="ghost"
               className="min-h-0 p-1 m-auto settings h-fit"

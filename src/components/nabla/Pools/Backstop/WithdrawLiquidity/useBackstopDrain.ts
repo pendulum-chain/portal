@@ -1,4 +1,4 @@
-import { useCallback } from 'preact/hooks';
+import { useCallback } from 'react';
 
 import { config } from '../../../../../config';
 import { backstopPoolAbi } from '../../../../../contracts/nabla/BackstopPool';

@@ -1,11 +1,11 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useMemo, useState } from 'preact/compat';
+import { useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { PoolProgress } from '../..';
 import { calcSharePercentage, getPoolSurplusNativeAmount } from '../../../../../helpers/calc';
 import { rawToDecimal, stringifyBigWithSignificantDecimals } from '../../../../../shared/parseNumbers/metric';
-import Validation from '../../../../Form/Validation';
+import { Validation } from '../../../../Form/Validation';
 import { NumberLoader } from '../../../../Loader';
 import FormLoader from '../../../../Loader/Form';
 import { useWithdrawLiquidity } from './useWithdrawLiquidity';
@@ -24,7 +24,7 @@ interface WithdrawLiquidityBodyProps {
   onClose: () => void;
 }
 
-const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): JSX.Element | null => {
+const WithdrawLiquidityBody = ({ nabla, onClose }: WithdrawLiquidityBodyProps): JSX.Element => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const {
     form,

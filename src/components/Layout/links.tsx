@@ -1,19 +1,20 @@
-import { ComponentChildren } from 'preact';
 import { NavLinkProps } from 'react-router-dom';
 import { Options } from 'react-lottie';
+import { WalletIcon } from '@heroicons/react/24/outline';
 
+import { ExternalIcon } from '../../assets/ExternalIcon';
 import DashboardIcon from '../../assets/dashboard';
-import ExternalIcon from '../../assets/ExternalIcon';
 import GovernanceIcon from '../../assets/governance';
 import NablaIcon from '../../assets/nabla';
-import OnrampIcon from '../../assets/onramp';
 import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
+
 import { config } from '../../config';
 import { nablaConfig } from '../../config/apps/nabla';
 import { TenantName } from '../../models/Tenant';
 import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
 import { PAGES_PATHS, PATHS } from '../../app';
+import { CSSProperties } from 'react';
 
 export type LinkParameter = { isActive?: boolean };
 
@@ -34,17 +35,18 @@ export function isLottieOptions(obj: unknown): obj is LottieOptions {
   return false;
 }
 
-export type TitleOptions = LottieOptions | ComponentChildren;
-export type PrefixOptions = LottieOptions | ComponentChildren;
+export type TitleOptions = LottieOptions | React.ReactNode;
+export type PrefixOptions = LottieOptions | React.ReactNode;
 
 export type BaseLinkItem = {
   link: string;
   title: TitleOptions;
-  props?: Omit<NavLinkProps, 'className'> & {
+  props?: Omit<NavLinkProps, 'className' | 'to' | 'style'> & {
     className?: (params?: LinkParameter) => string;
+    style?: CSSProperties;
   };
   prefix?: PrefixOptions;
-  suffix?: ComponentChildren;
+  suffix?: React.ReactNode;
   hidden?: boolean;
   disabled?: boolean;
 };
@@ -54,7 +56,7 @@ export type LinkItem = BaseLinkItem & {
 
 /// Returns the links for the navigation bar. The first element of the tuple is the default/preloaded links array,
 /// the second element is a promise that resolves to the links array once all links are properly loaded.
-export function createLinks(tenantName: TenantName): [LinkItem[], Promise<LinkItem[]>] {
+export function createLinks(tenantName: TenantName): LinkItem[] {
   const dashboardLinkItem: LinkItem = {
     link: `./${PAGES_PATHS.DASHBOARD}`,
     title: 'Dashboard',
@@ -73,7 +75,7 @@ export function createLinks(tenantName: TenantName): [LinkItem[], Promise<LinkIt
       rel: 'nofollow noreferrer',
     },
     prefix: <SwapIcon className="p-1" />,
-    suffix: <ExternalIcon />,
+    suffix: <ExternalIcon className="w-3 h-5 ml-auto" />,
   };
 
   const spacewalkLinkItem: LinkItem = {
@@ -138,56 +140,25 @@ export function createLinks(tenantName: TenantName): [LinkItem[], Promise<LinkIt
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: <ExternalIcon />,
+    suffix: <ExternalIcon className="w-3 h-5 ml-auto" />,
   };
 
-  const alchemyPayLinkItem: LinkItem = {
-    link: config.alchemyPay.prodUrl,
-    title: 'Buy PEN',
-    prefix: <OnrampIcon />,
-    suffix: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="ml-auto h-3 w-5">
-        <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h50.7L169.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L384 141.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H288zM80 64C35.8 64 0 99.8 0 144V400c0 44.2 35.8 80 80 80H336c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V144c0-8.8 7.2-16 16-16h80c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z" />
-      </svg>
-    ),
+  const fundWalletItem: LinkItem = {
+    link: tenantName === TenantName.Foucoco ? config.faucetPage : `./${PATHS.FUND_WALLET}`,
+    title: 'Fund Wallet',
+    prefix: <WalletIcon className="ml-1 icon-small fill-none" />,
     props: {
-      style: {
-        visibility: tenantName === TenantName.Pendulum ? 'visible' : 'hidden',
-      },
-      target: '_blank',
-      rel: 'nofollow noreferrer',
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
   };
 
-  const links = [
+  return [
     dashboardLinkItem,
     zenlinkAmmLinkItem,
     spacewalkLinkItem,
     nablaLinkItem,
     stakingLinkItem,
     governanceLinkItem,
-    alchemyPayLinkItem,
+    fundWalletItem,
   ];
-
-  const getLinks = async () => {
-    const alchemyPayLink = await config.alchemyPay.encodeUrlWithRedirection(
-      config.alchemyPay.prodUrl,
-      window.location.href,
-    );
-
-    return [
-      dashboardLinkItem,
-      zenlinkAmmLinkItem,
-      spacewalkLinkItem,
-      nablaLinkItem,
-      stakingLinkItem,
-      governanceLinkItem,
-      {
-        ...alchemyPayLinkItem,
-        link: alchemyPayLink,
-      },
-    ];
-  };
-
-  return [links, getLinks()];
 }

@@ -62,12 +62,8 @@
 }
 
 [data-theme='pendulum'] {
-  .bridge-card .tabs-boxed :not(.tab-active) > svg {
+  .bridge-card .tabs-boxed :not([data-active='true']) > svg {
     fill: var(--gray-3, #828282);
-  }
-
-  .bridge-card .tabs-boxed :not(.tab-active) {
-    color: var(--gray-3, #828282);
   }
 
   .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
@@ -110,16 +106,12 @@
 }
 
 [data-theme='amplitude'] {
-  .bridge-card .tabs-boxed :not(.tab-active) > svg {
+  .bridge-card .tabs-boxed :not([data-active='true']) > svg {
     fill: var(--primary);
   }
 
-  .bridge-card .tabs-boxed :not(.tab-active) {
-    color: #fff;
-  }
-
-  .bridge-card .tabs-boxed .tab-active:not(.tab-disabled):not([disabled]) {
-    background-color: var(--primary);
+  .bridge-card .tabs-boxed [data-active='true'] > svg {
+    fill: black;
   }
 
   .bridge-card .disclaimer svg {

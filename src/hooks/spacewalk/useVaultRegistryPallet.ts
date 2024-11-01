@@ -1,7 +1,7 @@
 import { AccountId32 } from '@polkadot/types/interfaces';
 import type { VaultRegistryVault } from '@polkadot/types/lookup';
 import Big from 'big.js';
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'react';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import { convertRawHexKeyToPublicKey } from '../../helpers/stellar';
 import { isEmpty } from 'lodash';

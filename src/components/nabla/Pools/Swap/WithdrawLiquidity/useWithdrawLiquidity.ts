@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { useCallback } from 'preact/compat';
+import { useCallback } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { swapPoolAbi } from '../../../../../contracts/nabla/SwapPool';

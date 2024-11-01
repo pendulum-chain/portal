@@ -6,7 +6,7 @@ import { From } from './From';
 import { To } from './To';
 import { useSwapComponent, UseSwapComponentProps } from './useSwapComponent';
 import { PoolSelectorModal } from '../common/PoolSelectorModal';
-import Validation from '../../Form/Validation';
+import { Validation } from '../../Form/Validation';
 import { TransactionSettingsDropdown } from '../common/TransactionSettingsDropdown';
 import { SwapProgress } from '../common/SwapProgress';
 import { NablaFootnote } from '../common/NablaFootnote';

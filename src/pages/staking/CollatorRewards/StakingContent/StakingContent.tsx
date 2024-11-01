@@ -1,4 +1,4 @@
-import { FC } from 'preact/compat';
+import { FC } from 'react';
 import { Tooltip } from 'react-daisyui';
 import Big from 'big.js';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';

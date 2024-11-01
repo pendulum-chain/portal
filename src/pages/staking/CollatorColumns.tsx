@@ -1,7 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/20/solid';
 import { WalletAccount } from '@talismn/connect-wallets';
 import { ColumnDef } from '@tanstack/table-core';
-import { StateUpdater, Dispatch } from 'preact/hooks';
+import { Dispatch } from 'react';
 import { Button } from 'react-daisyui';
 import UnlinkIcon from '../../assets/UnlinkIcon';
 import { CopyablePublicKey } from '../../components/PublicKey/CopyablePublicKey';
@@ -69,7 +69,7 @@ export const delegatorsColumn: ColumnDef<TCollator> = {
             className="tooltip tooltip-error before:whitespace-pre-wrap before:content-[attr(data-tip)]"
             data-tip="The collator candidate has reached maximum number of delegators"
           >
-            <InformationCircleIcon className="ml-1 h-4 w-4" />
+            <InformationCircleIcon className="w-4 h-4 ml-1" />
           </div>
         )}
       </div>
@@ -109,8 +109,8 @@ export const actionsColumn = ({
   userAccountAddress: string;
   walletAccount: WalletAccount | undefined;
   userStaking: UserStaking | undefined;
-  setSelectedCandidate: Dispatch<StateUpdater<ParachainStakingCandidate | undefined>>;
-  setUnstaking: Dispatch<StateUpdater<boolean>>;
+  setSelectedCandidate: Dispatch<ParachainStakingCandidate | undefined>;
+  setUnstaking: Dispatch<boolean>;
 }): ColumnDef<TCollator> => ({
   header: '',
   enableSorting: false,
@@ -124,7 +124,7 @@ export const actionsColumn = ({
     const isDelegator = row.original.candidate.delegators.find(({ owner }) => owner === userAccountAddress);
     const canStake = isDelegator || (walletAccount && !maxDelegatorsReached && (!userStaking || canUnstake));
     return (
-      <div className="mr-2 flex flex-row justify-start">
+      <div className="flex flex-row justify-start mr-2">
         <Button
           className="mr-2 text-primary"
           size="sm"
@@ -133,7 +133,7 @@ export const actionsColumn = ({
             setUnstaking(true);
             setSelectedCandidate(row.original.candidate);
           }}
-          startIcon={<UnlinkIcon className="h-4 w-4" />}
+          startIcon={<UnlinkIcon className="w-4 h-4" />}
           disabled={!canUnstake}
           style={{ opacity: canUnstake ? '1' : '0' }}
         >
@@ -147,7 +147,7 @@ export const actionsColumn = ({
             setSelectedCandidate(row.original.candidate);
           }}
           disabled={!canStake}
-          className="rounded-md px-8"
+          className="px-8 rounded-md"
         >
           Stake
         </Button>

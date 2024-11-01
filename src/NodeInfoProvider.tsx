@@ -1,8 +1,7 @@
+import { createContext, Dispatch, useContext, useEffect, useState } from 'react';
 import { options } from '@pendulum-chain/api';
 import { rpc } from '@pendulum-chain/types';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { createContext } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
 import { ToastMessage, showToast } from './shared/showToast';
 
 async function createApiPromise(provider: WsProvider) {
@@ -29,10 +28,10 @@ export interface NodeInfoProviderInterface {
 
 const NodeInfoContext = createContext({
   state: {} as Partial<NodeInfoProviderInterface>,
-  setState: {} as Dispatch<SetStateAction<Partial<NodeInfoProviderInterface>>>,
+  setState: {} as Dispatch<Partial<NodeInfoProviderInterface>>,
 });
 
-const NodeInfoProvider = ({ children, tenantRPC }: { children: ReactNode; tenantRPC?: string }) => {
+const NodeInfoProvider = ({ children, tenantRPC }: { children: React.ReactNode; tenantRPC?: string }) => {
   const [state, setState] = useState({} as Partial<NodeInfoProviderInterface>);
   const [currentTenantRPC, setCurrentTenantRPC] = useState<string | undefined>(undefined);
   const [pendingInitiationPromise, setPendingInitiationPromise] = useState<Promise<unknown> | undefined>(undefined);
