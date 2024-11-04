@@ -14,8 +14,7 @@ const initTalisman = async (dAppName: string, selected?: string) => {
   if (!wallet) return;
   await wallet.enable(dAppName);
   const accounts = await wallet.getAccounts();
-  const selectedWallet = accounts.find((a) => a.address === selected) || accounts[0];
-  return selectedWallet;
+  return accounts.find((a) => a.address === selected) || accounts[0];
 };
 
 const initWalletConnect = async (chainId: string) => {

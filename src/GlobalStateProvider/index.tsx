@@ -9,9 +9,6 @@ import { ThemeName } from '../models/Theme';
 import { storageService } from '../services/storage/local';
 import { handleWalletConnectDisconnect, initSelectedWallet } from './helpers';
 
-const SECONDS_IN_A_DAY = 86400;
-const EXPIRATION_PERIOD = 2 * SECONDS_IN_A_DAY; // 2 days
-
 export interface GlobalState {
   dAppName: string;
   tenantName: TenantName;
@@ -48,8 +45,7 @@ const GlobalStateProvider = ({ children }: { children: JSX.Element }) => {
     set,
     clear,
   } = useLocalStorage<string | undefined>({
-    key: `${storageKeys.ACCOUNT}-${tenantName}`,
-    expire: EXPIRATION_PERIOD,
+    key: `${storageKeys.ACCOUNT}`,
   });
 
   const clearLocalStorageWallets = () => {
@@ -71,21 +67,27 @@ const GlobalStateProvider = ({ children }: { children: JSX.Element }) => {
     [set],
   );
 
-  const accountAddress = walletAccount?.address;
   useEffect(() => {
-    const run = async () => {
+    const delayWalletInitialization = async (storageAddress: string) => {
+      // Delay the wallet initialization to allow the wallet extension to be injected, otherwise the call to wallet.enable()
+      // might fail see https://github.com/TalismanSociety/talisman-connect/issues/25
+      setTimeout(async () => {
+        const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
+        if (selectedWallet) setWallet(selectedWallet);
+      }, 400);
+    };
+
+    const initializeWallet = () => {
       if (!storageAddress) {
-        removeWalletAccount();
         return;
       }
       // skip if tenant already initialized
-      if (tenantRef.current === tenantName || accountAddress) return;
+      if (tenantRef.current === tenantName) return;
       tenantRef.current = tenantName;
-      const selectedWallet = await initSelectedWallet(dAppName, tenantName, storageAddress);
-      if (selectedWallet) setWallet(selectedWallet);
+      delayWalletInitialization(storageAddress).catch(console.error);
     };
-    run();
-  }, [storageAddress, removeWalletAccount, dAppName, tenantName, accountAddress]);
+    initializeWallet();
+  }, [storageAddress, dAppName, tenantName]);
 
   const providerValue = useMemo<GlobalState>(
     () => ({
