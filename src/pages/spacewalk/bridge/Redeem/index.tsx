@@ -53,7 +53,11 @@ function Redeem(props: RedeemProps): JSX.Element {
 
   useEffect(() => {
     const selectedAssetName = assetDisplayName(selectedAsset, '', wrappedCurrencySuffix);
-    const { amount } = balances?.find(({ token }) => token === selectedAssetName) || { amount: 0 };
+    const { amount } = balances?.find(({ token, asset }) =>
+      asset && selectedAsset ? asset.equals(selectedAsset) : token === selectedAssetName,
+    ) || {
+      amount: 0,
+    };
     setSelectedAssetsBalance(amount);
   }, [balances, selectedAsset, wrappedCurrencySuffix, selectedAssetsBalance]);
 
