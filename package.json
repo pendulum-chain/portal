@@ -23,8 +23,8 @@
     "@chainsafe/metamask-polkadot-types": "^0.6.0",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^2.9.11",
-    "@pendulum-chain/api": "^0.3.8",
-    "@pendulum-chain/api-solang": "^0.4.0",
+    "@pendulum-chain/api": "^1.1.1",
+    "@pendulum-chain/api-solang": "^0.7.0",
     "@polkadot/api": "^13.2.1",
     "@polkadot/api-base": "^13.2.1",
     "@polkadot/api-contract": "^13.2.1",
@@ -73,11 +73,11 @@
     "@babel/preset-typescript": "^7.23.3",
     "@graphql-codegen/cli": "~5.0.0",
     "@graphql-codegen/client-preset": "~4.1.0",
-    "@pendulum-chain/types": "^0.3.8",
-    "@polkadot/types-augment": "^10.9.1",
-    "@polkadot/types-codec": "^10.9.1",
-    "@polkadot/types-create": "^10.9.1",
-    "@polkadot/types-known": "^10.9.1",
+    "@pendulum-chain/types": "^1.1.1",
+    "@polkadot/types-augment": "^13.2.1",
+    "@polkadot/types-codec": "^13.2.1",
+    "@polkadot/types-create": "^13.2.1",
+    "@polkadot/types-known": "^13.2.1",
     "@preact/preset-vite": "^2.5.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^11.1.0",
@@ -125,7 +125,8 @@
     "yarn": ">=1.22.19"
   },
   "resolutions": {
-    "@polkadot/api": "^10.9.1",
+    "@polkadot/api": "^13.2.1",
+    "@polkadot/util": "^13.2.1",
     "@polkadot/extension-inject": "^0.46.9"
   }
 }
