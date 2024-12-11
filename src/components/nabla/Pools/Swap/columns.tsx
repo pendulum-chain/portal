@@ -54,9 +54,9 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
   accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props) => {
     const value = props.renderValue();
-    if (typeof value !== 'string' || typeof value !== 'number') return <></>;
+    if (typeof value !== 'string' && typeof value !== 'number') return <></>;
     return (
-      <Badge className="h-auto px-2 py-1 rounded-lg bg-success/35 text-blackAlpha-700 dark:text-white">{value}%</Badge>
+      <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">{value}%</Badge>
     );
   },
   enableSorting: true,
