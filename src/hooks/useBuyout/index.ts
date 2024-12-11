@@ -31,6 +31,10 @@ export interface BuyoutSettings {
   ) => void;
 }
 
+type Exchange =
+  | { Buyout: { amount: number } }
+  | { Exchange: { amount: number } };
+
 function handleBuyoutError(error: string) {
   if (!error) return;
 
@@ -135,9 +139,9 @@ export const useBuyout = (): BuyoutSettings => {
     const assetId = currency.assetId as { XCM: number };
 
     // exchange is in selected token (KSM/USDT)... buyout is in native token (AMPE)
-    const exchange = isExchangeAmount
-      ? { buyout: { amount: scaledCurrency } }
-      : { exchange: { amount: scaledCurrency } };
+    const exchange: Exchange = isExchangeAmount
+      ? { Buyout: { amount: scaledCurrency } }
+      : { Exchange: { amount: scaledCurrency } };
 
     const submittableExtrinsic = api.tx.treasuryBuyoutExtension.buyout({ XCM: assetId.XCM }, exchange);
 

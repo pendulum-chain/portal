@@ -26,9 +26,7 @@ export const getStatsData = async (rpcEndpoint: string | undefined) => {
   accounts.forEach((entry: [StorageKey<[AccountId32]>, FrameSystemAccountInfo]) => {
     const balances = entry[1].toHuman().data as unknown as PalletBalancesAccountData;
     const free = new BN(balances.free.toString().replace(/,/g, ''));
-    const miscFrozen = new BN(balances.miscFrozen.toString().replace(/,/g, ''));
-    const feeFrozen = new BN(balances.feeFrozen.toString().replace(/,/g, ''));
-    const frozen = miscFrozen > feeFrozen ? miscFrozen : feeFrozen;
+    const frozen = new BN(balances.frozen.toString().replace(/,/g, ""));
     const reserved = new BN(balances.reserved.toString().replace(/,/g, ''));
 
     totalIssuance = totalIssuance.add(free).add(reserved);
