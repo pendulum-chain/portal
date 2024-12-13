@@ -56,7 +56,7 @@ export const aprColumn: ColumnDef<SwapPoolColumn> = {
     const value = props.renderValue();
     if (typeof value !== 'string' && typeof value !== 'number') return <></>;
     return (
-      <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">{value}%</Badge>
+      <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">{value}% + $PEN</Badge>
     );
   },
   enableSorting: true,
