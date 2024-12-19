@@ -84,7 +84,7 @@ export default async (req: Request, context: Context) => {
     showTable: showTable,
     redirectURL: redirectURL,
 
-    crypto: 'PEN',
+    crypto: 'PENDULUM',
     merchantOrderNo: merchantOrderNo,
     network: 'PEN',
     timestamp: timestamp,
