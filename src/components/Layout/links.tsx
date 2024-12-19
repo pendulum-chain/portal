@@ -102,6 +102,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
     title: 'Forex AMM',
     hidden:
       (nablaConfig.environment && !nablaConfig.environment.includes(config.env)) ||
+      !tenantName ||
       (tenantName && !nablaConfig.tenants.includes(tenantName)),
     prefix: <NablaIcon />,
     props: {
