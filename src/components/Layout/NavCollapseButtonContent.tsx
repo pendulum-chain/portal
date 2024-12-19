@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import Lottie from 'react-lottie';
+import Lottie, { LottieProps } from 'react-lottie';
 
 import { LinkItem, isLottieOptions } from './links';
 
@@ -8,10 +8,12 @@ interface NavButtonContentProps {
   isPlaying: boolean;
 }
 
+const LottieComponent = Lottie as unknown as FC<LottieProps>;
+
 export const NavCollapseButtonContent: FC<NavButtonContentProps> = ({ item, isPlaying }) => (
   <>
     {isLottieOptions(item.prefix) ? (
-      <Lottie
+      <LottieComponent
         options={item.prefix.lottieOptions}
         isStopped={!isPlaying}
         isClickToPauseDisabled={true}
@@ -22,7 +24,7 @@ export const NavCollapseButtonContent: FC<NavButtonContentProps> = ({ item, isPl
     )}
     {isLottieOptions(item.title) ? (
       <span>
-        <Lottie
+        <LottieComponent
           options={item.title.lottieOptions}
           isStopped={!isPlaying}
           isClickToPauseDisabled={true}

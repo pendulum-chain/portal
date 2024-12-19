@@ -23,7 +23,7 @@ export const defaultTenant = TenantName.Pendulum;
 const GlobalStateContext = createContext<GlobalState | undefined>(undefined);
 
 const GlobalStateProvider = ({ children }: { children: JSX.Element }) => {
-  const tenantRef = useRef<string>();
+  const tenantRef = useRef<string>('');
   const [walletAccount, setWallet] = useState<WalletAccount | undefined>(undefined);
   const { pathname } = useLocation();
   const network = pathname.split('/').filter(Boolean)[0]?.toLowerCase();
