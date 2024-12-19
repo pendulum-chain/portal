@@ -25,7 +25,7 @@ const EXCHANGE_LIST: Record<FundSupportedTenants, { buy: CardExternalLinkProps[]
         {
           title: 'Banxa',
           children: <img src={banxaIcon} className="ml-2 w-40" />,
-          href: 'https://checkout.banxa.com/',
+          href: 'https://checkout.banxa.com/?coinType=PEN&fiatType=EUR',
         },
       ],
       exchange: [
