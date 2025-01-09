@@ -2,14 +2,14 @@ import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { emptyCacheKey, QueryOptions } from './helpers';
-import { nativeToDecimal, prettyNumbers } from './parseNumbers/metric';
+import { nativeToDecimal } from './parseNumbers/metric';
 import { useSharedState } from './Provider';
 import { cacheKeys } from '../constants/cache';
 import { calculateTransferableBalance } from '../helpers/substrate';
 
 export interface UseAccountBalanceResponse {
   query: UseQueryResult<FrameSystemAccountInfo | undefined, unknown>;
-  balances: { total: string; transferable: string };
+  balances: { total: number; transferable: number };
   enabled: boolean;
 }
 
@@ -47,15 +47,15 @@ export const useAccountBalance = (
   const decimals = options?.decimals;
 
   const balances = useMemo(() => {
-    if (!data || !data?.data) return { total: '0', transferable: '0' };
+    if (!data || !data?.data) return { total: 0, transferable: 0 };
 
     const { free: freeRaw, frozen: frozenRaw, reserved: reservedRaw } = data.data;
 
     const free = nativeToDecimal(freeRaw || 0, decimals);
     const frozen = nativeToDecimal(frozenRaw || 0, decimals);
     const reserved = nativeToDecimal(reservedRaw || 0, decimals);
-    const total = prettyNumbers(free.toNumber());
-    const transferable = prettyNumbers(calculateTransferableBalance(free, frozen, reserved).toNumber());
+    const total = free.toNumber();
+    const transferable = calculateTransferableBalance(free, frozen, reserved).toNumber();
     return { total, transferable };
   }, [data, decimals]);
 
