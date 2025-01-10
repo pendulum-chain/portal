@@ -10,11 +10,12 @@ import { useAccountBalance } from '../../../../shared/useAccountBalance';
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import { CopyablePublicKey } from '../../../PublicKey/CopyablePublicKey';
 import { Skeleton } from '../../../Skeleton';
+import { prettyNumbers } from '../../../../shared/parseNumbers/metric';
 
 interface WalletButtonProps {
   wallet?: Wallet;
   query: UseQueryResult<FrameSystemAccountInfo | undefined, unknown>;
-  balance?: string;
+  balance?: number;
   tokenSymbol?: string;
   walletAccount?: WalletAccount;
 }
@@ -31,7 +32,7 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
       <Skeleton className="mr-2 hidden bg-[rgba(0,0,0,.06)] px-2 py-1 sm:flex">10000.00 TKN</Skeleton>
     ) : (
       <span className="mr-2 hidden items-center rounded-lg bg-[rgba(0,0,0,.06)] px-2 py-0.5 sm:flex">
-        {balance} {tokenSymbol}
+        {balance && prettyNumbers(balance)} {tokenSymbol}
       </span>
     )}
     <p className="hidden truncate sm:block">{walletAccount?.name}</p>
@@ -41,7 +42,7 @@ const WalletButton = ({ wallet, query, balance, tokenSymbol, walletAccount }: Wa
 
 interface WalletDropdownMenuProps {
   address: string;
-  balance?: string;
+  balance?: number;
   tokenSymbol?: string;
   walletAccount?: WalletAccount;
   ss58Format?: number;
@@ -65,11 +66,11 @@ const WalletDropdownMenu = ({
         inline={true}
       />
     </div>
-    <p className="my-6 text-2xl font-bold text-center truncate" title={`${balance} ${tokenSymbol}`}>
-      {balance} {tokenSymbol}
+    <p className="my-6 truncate text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
+      {balance && prettyNumbers(balance)} {tokenSymbol}
     </p>
     <Button className="bg-base-300" size="sm" onClick={removeWalletAccount}>
-      <ArrowLeftEndOnRectangleIcon className="w-5 mr-2" />
+      <ArrowLeftEndOnRectangleIcon className="mr-2 w-5" />
       Disconnect
     </Button>
   </Dropdown.Menu>

@@ -73,7 +73,7 @@ function Issue(props: IssueProps): JSX.Element {
   const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
   const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
-    resolver: yupResolver(getIssueValidationSchema(maxIssuable, parseFloat(transferable || '0.0'), tokenSymbol)),
+    resolver: yupResolver(getIssueValidationSchema(maxIssuable, transferable, tokenSymbol)),
     mode: 'onChange',
   });
 
