@@ -67,7 +67,7 @@ const WalletDropdownMenu = ({
       />
     </div>
     <p className="my-6 truncate text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
-      {balance} {tokenSymbol}
+      {balance && prettyNumbers(balance)} {tokenSymbol}
     </p>
     <Button className="bg-base-300" size="sm" onClick={removeWalletAccount}>
       <ArrowLeftEndOnRectangleIcon className="mr-2 w-5" />
