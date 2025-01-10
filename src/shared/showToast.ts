@@ -23,59 +23,59 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
     message: 'Could not establish connection with the bridge...',
     options: {
       toastId: ToastMessage.BRIDGE_CONNECTION_ERROR,
-      type: toast.TYPE.ERROR,
+      type: 'error',
     },
   },
   [ToastMessage.NODE_CONNECTION_ERROR]: {
     message: 'Error while connecting to the node. Refresh the page to re-connect.',
     options: {
       toastId: ToastMessage.NODE_CONNECTION_ERROR,
-      type: toast.TYPE.ERROR,
+      type: 'error',
     },
   },
   [ToastMessage.TX_SUBMISSION_FAILED]: {
     message: 'Transaction submission failed',
     options: {
       toastId: ToastMessage.TX_SUBMISSION_FAILED,
-      type: toast.TYPE.ERROR,
+      type: 'error',
     },
   },
   [ToastMessage.UPDATED_DELEGATOR_REWARDS]: {
     message: 'Delegator rewards updated',
     options: {
       toastId: ToastMessage.UPDATED_DELEGATOR_REWARDS,
-      type: toast.TYPE.SUCCESS,
+      type: 'error',
     },
   },
   [ToastMessage.NO_WALLET_SELECTED]: {
     message: 'No wallet account selected',
     options: {
       toastId: ToastMessage.NO_WALLET_SELECTED,
-      type: toast.TYPE.ERROR,
+      type: 'error',
     },
   },
   [ToastMessage.ERROR]: {
     message: 'An error occurred',
     options: {
-      type: toast.TYPE.ERROR,
+      type: 'error',
     },
   },
   [ToastMessage.INFO]: {
     message: 'Info',
     options: {
-      type: toast.TYPE.INFO,
+      type: 'info',
     },
   },
   [ToastMessage.WARNING]: {
     message: 'Warning',
     options: {
-      type: toast.TYPE.WARNING,
+      type: 'warning',
     },
   },
   [ToastMessage.BUYOUT_ERROR]: {
     message: 'A buyout error occurred',
     options: {
-      type: toast.TYPE.ERROR,
+      type: 'error',
       toastId: ToastMessage.BUYOUT_ERROR,
     },
   },
@@ -83,7 +83,7 @@ const ToastProperties: Record<ToastMessage, ToastSettings> = {
     message: 'There is already an open pending connection for this wallet. Please close it and try again.',
     options: {
       toastId: ToastMessage.WALLET_ALREADY_OPEN_PENDING_CONNECTION,
-      type: toast.TYPE.WARNING,
+      type: 'warning',
     },
   },
 };
