@@ -26,14 +26,14 @@ const Pagination = ({
         {currentIndex * pageSize || 1} - {Math.min((currentIndex + 1) * pageSize, totalCount)} of {totalCount}
       </span>
       <button className="btn btn-circle btn-ghost btn-sm px-2" onClick={onPrev} disabled={currentIndex === 0}>
-        <ChevronLeftIcon className="h-4 w-4" stroke-width="2.6" />
+        <ChevronLeftIcon className="h-4 w-4" strokeWidth="2.6" />
       </button>
       <button
         className="btn btn-circle btn-ghost btn-sm px-2"
         onClick={onNext}
         disabled={currentIndex + 1 >= totalPages}
       >
-        <ChevronRightIcon className="h-4 w-4" stroke-width="2.6" />
+        <ChevronRightIcon className="h-4 w-4" strokeWidth="2.6" />
       </button>
     </div>
   );

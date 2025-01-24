@@ -36,7 +36,7 @@ function VaultSelector(props: VaultSelectorProps): JSX.Element {
         className="no-animation flex w-full place-content-between content-center rounded-md border-base-200 bg-base-300"
       >
         <PublicKey publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''} variant="full" />
-        <ChevronDownIcon className="h-3 w-3" stroke-width="2" />
+        <ChevronDownIcon className="h-3 w-3" strokeWidth="2" />
       </Button>
       <Dropdown.Menu className="dropdown-content mt-1.5 w-full rounded-md border border-base-200 bg-base-300 p-1 shadow-none">
         {vaults.map((vault) => (
