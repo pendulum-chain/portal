@@ -29,7 +29,6 @@ export function useIdentityPallet() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const pir: any = identityResponse.toHuman() as unknown as PalletIdentityRegistration;
 
-        // Add null check for pir.info
         if (!pir?.info) {
           return;
         }
