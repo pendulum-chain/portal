@@ -28,6 +28,12 @@ export function useIdentityPallet() {
         // Therefore the cast to 'any'
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const pir: any = identityResponse.toHuman() as unknown as PalletIdentityRegistration;
+
+        // Add null check for pir.info
+        if (!pir?.info) {
+          return;
+        }
+
         return {
           display: pir.info.display ? pir.info.display.Raw : '',
           email: pir.info.email ? pir.info.email.Raw : '',

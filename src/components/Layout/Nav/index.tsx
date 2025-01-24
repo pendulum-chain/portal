@@ -36,9 +36,8 @@ const Nav = memo(({ onClick }: NavProps) => {
         if (item.hidden) return;
 
         return item.submenu ? (
-          <div onMouseEnter={handleMouseEnter} className="my-2.5">
+          <div key={item.link} onMouseEnter={handleMouseEnter} className="my-2.5">
             <NavCollapseMenu
-              key={item.link}
               disabled={item.disabled}
               ariaControls="submenu"
               button={<NavCollapseButtonContent item={item} isPlaying={isPlaying} />}
