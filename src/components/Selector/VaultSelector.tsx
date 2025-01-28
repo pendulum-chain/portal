@@ -1,10 +1,12 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Button, Dropdown } from 'react-daisyui';
+import { Button } from 'react-daisyui';
 import { BridgeDirection } from '../../pages/spacewalk/bridge';
 import { convertCurrencyToStellarAsset } from '../../helpers/spacewalk';
 import { ExtendedRegistryVault } from '../../hooks/spacewalk/useVaultRegistryPallet';
 import { nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { PublicKey } from '../PublicKey';
+import { DropdownSelector } from './DropdownSelector';
+import { AssetItem } from './AssetSelector/helpers';
 
 interface VaultSelectorProps {
   vaults: ExtendedRegistryVault[];
@@ -25,48 +27,70 @@ function getMaxTokensForVault(vault: ExtendedRegistryVault, type: 'issue' | 'red
   }
 }
 
-function VaultSelector(props: VaultSelectorProps): JSX.Element {
+interface VaultItem extends AssetItem {
+  vault: ExtendedRegistryVault;
+}
+
+export function VaultSelector(props: VaultSelectorProps): JSX.Element {
   const { vaults, selectedVault, bridgeDirection, onChange } = props;
 
+  const items: VaultItem[] = vaults.map((vault) => {
+    const displayContent = (
+      <div className="flex w-full items-center justify-between">
+        <PublicKey publicKey={vault.id.accountId.toString()} variant="short" />
+        {bridgeDirection && (
+          <div className="content-end">
+            {getMaxTokensForVault(vault, bridgeDirection)}
+            {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
+          </div>
+        )}
+      </div>
+    );
+
+    return {
+      id: vault.id.accountId.toString(),
+      name: vault.id.accountId.toString(),
+      displayName: displayContent,
+      vault,
+    };
+  });
+
+  const selectedItem = selectedVault
+    ? {
+        id: selectedVault.id.accountId.toString(),
+        name: selectedVault.id.accountId.toString(),
+        displayName: selectedVault.id.accountId.toString(),
+        vault: selectedVault,
+      }
+    : undefined;
+
   return (
-    <div className="dropdown mt-3 w-full">
-      <Button
-        type="button"
-        color="ghost"
-        className="no-animation flex w-full place-content-between content-center rounded-md border-base-200 bg-base-300"
+    <div className="mt-3 w-full">
+      <DropdownSelector<AssetItem & { vault: ExtendedRegistryVault }>
+        dropdownMenuClassName="w-full"
+        items={items}
+        value={selectedItem}
+        onChange={(item) => onChange(item.vault)}
       >
-        <PublicKey publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''} variant="full" />
-        <ChevronDownIcon className="h-3 w-3" strokeWidth="2" />
-      </Button>
-      <Dropdown.Menu className="dropdown-content mt-1.5 w-full rounded-md border border-base-200 bg-base-300 p-1 shadow-none">
-        {vaults.map((vault) => (
-          <Dropdown.Item
-            key={vault.id.accountId.toString()}
-            onClick={() => {
-              const elem = document.activeElement;
-              if (elem && elem instanceof HTMLElement) {
-                elem.blur();
-              }
-              onChange(vault);
-            }}
-            className="flex w-full rounded-md"
-          >
-            <span className="flex w-full place-content-between">
-              <span className="flex">
-                <PublicKey publicKey={vault.id.accountId.toString()} variant="short" />
-              </span>
-              {bridgeDirection && (
-                <span className="content-end">
-                  {getMaxTokensForVault(vault, bridgeDirection)}{' '}
-                  {convertCurrencyToStellarAsset(vault.id.currencies.wrapped)?.getCode()}
-                </span>
-              )}
-            </span>
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
+        <Button
+          tabIndex={0}
+          type="button"
+          color="ghost"
+          className="no-animation flex w-full place-content-between content-center rounded-md border-base-200 bg-base-300"
+        >
+          <PublicKey
+            className="hidden sm:block"
+            publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''}
+            variant="full"
+          />
+          <PublicKey
+            className="block sm:hidden"
+            publicKey={selectedVault ? selectedVault.id.accountId.toString() : ''}
+            variant="short"
+          />
+          <ChevronDownIcon className="h-3 w-3" strokeWidth="2" />
+        </Button>
+      </DropdownSelector>
     </div>
   );
 }
-
-export default VaultSelector;
