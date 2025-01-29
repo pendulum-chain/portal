@@ -103,7 +103,7 @@ export function generateAssetSelectorItem(
 }
 
 export interface AssetItem {
-  displayName: string;
+  displayName: string | React.JSX.Element;
   id: string;
   name: string;
   icon?: string;

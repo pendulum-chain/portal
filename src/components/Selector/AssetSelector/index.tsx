@@ -2,7 +2,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Button } from 'react-daisyui';
 
-import DropdownSelector from '../DropdownSelector';
+import { DropdownSelector } from '../DropdownSelector';
 import {
   BlockchainAsset,
   AssetSelectorOnChange,
@@ -53,16 +53,17 @@ function AssetSelector(props: AssetSelectorProps): JSX.Element {
   return (
     <DropdownSelector items={items} value={selectedItem} onChange={handleOnChange}>
       <Button
+        tabIndex={0}
+        role="button"
         disabled={disabled}
         size="xs"
         className="min-h-none btn mt-0.5 flex h-4 items-center rounded-full border-0 bg-neutral-200 pl-0 pr-1 text-neutral-content dark:bg-neutral-700"
-        type="button"
       >
         <span className="mr-1 h-full rounded-full bg-[rgba(0,0,0,0.15)]">
-          <img src={selectedItem?.icon} alt={selectedItem?.name} className="w-auto h-full" />
+          <img src={selectedItem?.icon} alt={selectedItem?.name} className="h-full w-auto" />
         </span>
         <strong className="font-bold">{selectedItem?.displayName}</strong>
-        {items.length > 1 ? <ChevronDownIcon className="inline w-4 h-4 ml-px" /> : <div className="px-1" />}
+        {items.length > 1 ? <ChevronDownIcon className="ml-px inline h-4 w-4" /> : <div className="px-1" />}
       </Button>
     </DropdownSelector>
   );
