@@ -123,7 +123,7 @@ const Table = <T,>({
   return (
     <>
       {search ? (
-        <div className="mb-2 flex flex-row flex-wrap gap-2">
+        <div className="mb-2 flex flex-row flex-wrap gap-2 self-end">
           <div className="ml-auto">
             <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
           </div>
