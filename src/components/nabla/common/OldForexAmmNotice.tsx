@@ -6,14 +6,14 @@ export function OldForexAmmNotice() {
       <div className="flex w-fit items-center gap-2 rounded-md bg-gray-200 p-2 text-gray-800">
         <InformationCircleIcon className="h-4" />
         <span>
-          You can find the old instance of the Forex AMM on{' '}
+          You can access the old instance of the Forex AMM{' '}
           <a
             className="text-primary transition hover:underline"
             href="https://old-forex-amm--rococo-souffle-a625f5.netlify.app/pendulum/nabla/swap"
           >
-            this
-          </a>{' '}
-          page.
+            here
+          </a>
+          .
         </span>
       </div>
     </div>
