@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Swap from '../../../components/nabla/Swap';
+import { OldForexAmmNotice } from '../../../components/nabla/common/OldForexAmmNotice';
 
 const SwapPage = (): JSX.Element | null => {
   const [params] = useSearchParams();
@@ -16,6 +17,7 @@ const SwapPage = (): JSX.Element | null => {
 
   return (
     <div id="swap" className="center mt-6">
+      <OldForexAmmNotice />
       <Swap from={params.get('from') || undefined} to={params.get('to') || undefined} onChange={onChange} />
     </div>
   );
