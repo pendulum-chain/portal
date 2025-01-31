@@ -49,14 +49,14 @@ export const reservesColumn: ColumnDef<SwapPoolColumn> = {
 } as const;
 
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'APR',
+  header: 'APR(7d)',
   accessorKey: 'apr',
   accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props) => {
     const value = props.renderValue();
     if (typeof value !== 'string' && typeof value !== 'number') return <></>;
     return (
-      <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">{value}% + $PEN</Badge>
+      <Badge className="h-auto rounded-lg bg-success/35 px-2 py-1 text-blackAlpha-700 dark:text-white">{value}%</Badge>
     );
   },
   enableSorting: true,
