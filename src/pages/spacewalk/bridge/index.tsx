@@ -73,7 +73,7 @@ function Bridge() {
   const bridgeDirection = tabValue === BridgeTabs.Issue ? BridgeDirection.Issue : BridgeDirection.Redeem;
 
   return chain ? (
-    <BridgeContext.Provider
+    <BridgeContext
       value={{
         selectedAsset,
         setSelectedAsset,
@@ -86,18 +86,18 @@ function Bridge() {
         setExtendedVaults,
       }}
     >
-      <div className="flex items-center justify-center mt-4">
+      <div className="mt-4 flex items-center justify-center">
         <SettingsDialog
           visible={settingsVisible}
           onClose={() => setSettingsVisible(false)}
           bridgeDirection={bridgeDirection}
         />
         <Card className="bridge-card min-h-500 w-full max-w-[520px] rounded-lg bg-base-200">
-          <div className="flex justify-between px-5 mt-5">
+          <div className="mt-5 flex justify-between px-5">
             <SpacewalkTabs activeTab={tabValue} setActiveTab={setTabValue} />
             <Button
               color="ghost"
-              className="min-h-0 p-1 m-auto settings h-fit"
+              className="settings m-auto h-fit min-h-0 p-1"
               onClick={() => setSettingsVisible(true)}
             >
               <SettingsIcon />
@@ -106,7 +106,7 @@ function Bridge() {
           {Content}
         </Card>
       </div>
-    </BridgeContext.Provider>
+    </BridgeContext>
   ) : (
     <></>
   );

@@ -102,7 +102,7 @@ const GlobalStateProvider = ({ children }: { children: JSX.Element }) => {
     [dAppName, getThemeName, removeWalletAccount, setWalletAccount, tenantName, walletAccount],
   );
 
-  return <GlobalStateContext.Provider value={providerValue}>{children}</GlobalStateContext.Provider>;
+  return <GlobalStateContext value={providerValue}>{children}</GlobalStateContext>;
 };
 
 const useGlobalState = () => {

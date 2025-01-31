@@ -36,9 +36,9 @@ const ModalProvider = ({ children }: ModalProviderProps): JSX.Element | null => 
   }, []);
 
   return (
-    <ModalStateContext.Provider value={state}>
-      <ModalToggleContext.Provider value={toggleModal}>{children}</ModalToggleContext.Provider>
-    </ModalStateContext.Provider>
+    <ModalStateContext value={state}>
+      <ModalToggleContext value={toggleModal}>{children}</ModalToggleContext>
+    </ModalStateContext>
   );
 };
 

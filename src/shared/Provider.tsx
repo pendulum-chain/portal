@@ -18,7 +18,7 @@ export const SharedStateProvider = ({ children, api, signer, address }: { childr
     }),
     [api, signer, address],
   );
-  return <SharedStateContext.Provider value={providerValue}>{children}</SharedStateContext.Provider>;
+  return <SharedStateContext value={providerValue}>{children}</SharedStateContext>;
 };
 
 export const useSharedState = () => {

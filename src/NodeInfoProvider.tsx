@@ -118,7 +118,7 @@ const NodeInfoProvider = ({ children, tenantRPC }: { children: React.ReactNode; 
     }
   }, [currentTenantRPC, tenantRPC, pendingInitiationPromise, setPendingInitiationPromise]);
 
-  return <NodeInfoContext.Provider value={{ state, setState }}>{children}</NodeInfoContext.Provider>;
+  return <NodeInfoContext value={{ state, setState }}>{children}</NodeInfoContext>;
 };
 
 const useNodeInfoState = () => useContext(NodeInfoContext);
