@@ -49,7 +49,7 @@ export const reservesColumn: ColumnDef<SwapPoolColumn> = {
 } as const;
 
 export const aprColumn: ColumnDef<SwapPoolColumn> = {
-  header: 'APR(7d)',
+  header: 'APR (7d)',
   accessorKey: 'apr',
   accessorFn: (row) => rawToDecimal(row.apr, row.token.decimals).mul(BIG_100).toFixed(2, 0),
   cell: (props) => {
