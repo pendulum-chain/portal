@@ -11,6 +11,7 @@ export interface ClickablePublicKeyProps {
   icon?: JSX.Element;
   onClick?: () => void;
   wrap?: boolean;
+  ss58FormatOld: number;
 }
 
 export const ClickablePublicKey = (props: ClickablePublicKeyProps) => (
