@@ -1,6 +1,6 @@
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import CancelledDialogIcon from '../../../../assets/dialog-status-cancelled';
-import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
+import { CopyablePublicKey, CopyablePublicKeyStellar } from '../../../../components/PublicKey/CopyablePublicKey';
 import { convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { toTitle } from '../../../../helpers/string';
 import { nativeToDecimal } from '../../../../shared/parseNumbers/metric';
@@ -26,7 +26,7 @@ export function CancelledTransferDialog(props: TransferDialogProps) {
       </label>
       <div className="flex w-11/12 flex-row justify-between">
         <div className="text-xs">Spacewalk transaction</div>
-        <CopyablePublicKey inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
+        <CopyablePublicKeyStellar inline={true} className="text-xs" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
   );

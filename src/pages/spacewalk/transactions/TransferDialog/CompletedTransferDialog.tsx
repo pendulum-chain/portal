@@ -1,6 +1,6 @@
 import { useGlobalState } from '../../../../GlobalStateProvider';
 import SuccessDialogIcon from '../../../../assets/dialog-status-success';
-import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
+import { CopyablePublicKey, CopyablePublicKeyStellar } from '../../../../components/PublicKey/CopyablePublicKey';
 import { addSuffix, convertCurrencyToStellarAsset } from '../../../../helpers/spacewalk';
 import { toTitle } from '../../../../helpers/string';
 import { TransferType } from '../TransactionsColumns';
@@ -22,7 +22,7 @@ export function CompletedTransferDialog(props: TransferDialogProps) {
       <div className="mt-4" />
       <div className="flex w-11/12 flex-row justify-between">
         <div className="transfer-dialog-text text-sm">Spacewalk transaction</div>
-        <CopyablePublicKey inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
+        <CopyablePublicKeyStellar inline={true} className="text-sm" variant="hexa" publicKey={transfer.transactionId} />
       </div>
     </>
   );

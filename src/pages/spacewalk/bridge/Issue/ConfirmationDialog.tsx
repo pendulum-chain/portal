@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Button, Divider } from 'react-daisyui';
 
-import { CopyablePublicKey } from '../../../../components/PublicKey/CopyablePublicKey';
+import { CopyablePublicKey, CopyablePublicKeyStellar } from '../../../../components/PublicKey/CopyablePublicKey';
 import TransferCountdown from '../../../../components/TransferCountdown';
 import { convertCurrencyToStellarAsset, deriveShortenedRequestId } from '../../../../helpers/spacewalk';
 import { convertRawHexKeyToPublicKey } from '../../../../helpers/stellar';
@@ -70,14 +70,14 @@ export function ConfirmationDialog(props: ConfirmationDialogProps): JSX.Element 
           <div className="flex items-center justify-center text-sm">
             {asset && asset.getIssuer() && (
               <>
-                <p>issued by</p> <CopyablePublicKey variant="short" publicKey={asset?.getIssuer()} />
+                <p>issued by</p> <CopyablePublicKeyStellar variant="short" publicKey={asset?.getIssuer()} />
               </>
             )}
           </div>
           <div className="text mt-4">With the text memo</div>
-          {issueRequest && <CopyablePublicKey variant="short" publicKey={expectedStellarMemo} />}
+          {issueRequest && <CopyablePublicKeyStellar variant="short" publicKey={expectedStellarMemo} />}
           <div className="text mt-4">In a single transaction to</div>
-          <CopyablePublicKey variant="short" publicKey={destination} />
+          <CopyablePublicKeyStellar variant="short" publicKey={destination} />
 
           <StellarUriScheme transactionURIScheme={transactionURIScheme} />
 

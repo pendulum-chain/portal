@@ -43,7 +43,7 @@ export const nameColumn: ColumnDef<TCollator> = {
     return (
       <div className="flex flex-row" title={desc}>
         <div className="mr-2">{(row.original.identityInfo ? row.original.identityInfo.display : 'Unknown') + ' |'}</div>
-        <CopyablePublicKey publicKey={row.original.candidate.id} variant="short" inline />
+        <CopyablePublicKey publicKey={row.original.candidate.id} variant="short" inline /> 
       </div>
     );
   },

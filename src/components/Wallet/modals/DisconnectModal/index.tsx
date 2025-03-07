@@ -62,7 +62,6 @@ const WalletDropdownMenu = ({
     <div className="text-neutral-500">
       <CopyablePublicKey
         publicKey={ss58Format ? getAddressForFormat(address, ss58Format) : address}
-        ss58FormatOld={ss58Format ? ss58Format : 56}
         variant="short"
         inline={true}
       />
