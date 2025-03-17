@@ -3,6 +3,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import Table, { SortingOrder } from '../../components/Table';
 import useBalances from '../../hooks/useBalances';
 import { amountColumn, priceColumn, tokenColumn, usdValueColumn } from './PortfolioColumns';
+import { prettyNumbers } from '../../shared/parseNumbers/metric';
 
 function Portfolio() {
   const { walletAccount } = useGlobalState();
@@ -13,11 +14,11 @@ function Portfolio() {
   }, []);
 
   return (
-    <div className="portfolio card rounded-md bg-base-100">
+    <div className="rounded-md portfolio card bg-base-100">
       <div className="flex flex-row justify-between p-4">
         <div className="text-xl font-bold">Wallet</div>
         <div className="text-xl" title={accountTotalBalance.toString()}>
-          $ {accountTotalBalance.toPrecision(2)}
+          $ {prettyNumbers(accountTotalBalance)}
         </div>
       </div>
       {walletAccount && (

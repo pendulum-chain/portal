@@ -5,7 +5,7 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   clearMocks: true,
-  testMatch: ['**/?(*.)+(test).ts'],
+  testMatch: ['**/?(*.)+(test).ts?(x)'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFilesAfterEnv: ['<rootDir>/config/setupTests.ts'],
   moduleNameMapper: {

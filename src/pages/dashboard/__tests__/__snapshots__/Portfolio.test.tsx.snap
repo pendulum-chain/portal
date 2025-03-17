@@ -1,0 +1,1368 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Portfolio Component renders correctly when balances are loading 1`] = `
+<div>
+  <div
+    class="rounded-md portfolio card bg-base-100"
+  >
+    <div
+      class="flex flex-row justify-between p-4"
+    >
+      <div
+        class="text-xl font-bold"
+      >
+        Wallet
+      </div>
+      <div
+        class="text-xl"
+        title="0"
+      >
+        $ 
+        0.00
+      </div>
+    </div>
+    <div
+      class="table-container table-border overflow-x-auto rounded-lg border border-base-300 bg-base-200 text-sm font-semibold text-md bg-base-100)"
+    >
+      <table
+        class="table w-full table-fixed"
+      >
+        <thead>
+          <tr
+            class="border-b table-border"
+          >
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Token
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Price
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Amount
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                USD Value
+                <div
+                  class="sort desc mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="rounded-lg bg-neutral-300 dark:bg-neutral-600 h-8 mb-2 animate-pulse"
+              >
+                <div
+                  class="invisible"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div
+        class="flex items-center justify-end mt-2 mb-2 text-sm font-normal normal-case text-neutral-400"
+      >
+        <span
+          class="mr-2"
+        >
+          1
+           - 
+          0
+           of 
+          0
+        </span>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Portfolio Component renders correctly when wallet is connected but no balances 1`] = `
+<div>
+  <div
+    class="rounded-md portfolio card bg-base-100"
+  >
+    <div
+      class="flex flex-row justify-between p-4"
+    >
+      <div
+        class="text-xl font-bold"
+      >
+        Wallet
+      </div>
+      <div
+        class="text-xl"
+        title="0"
+      >
+        $ 
+        0.00
+      </div>
+    </div>
+    <div
+      class="table-container table-border overflow-x-auto rounded-lg border border-base-300 bg-base-200 text-sm font-semibold text-md bg-base-100)"
+    >
+      <table
+        class="table w-full table-fixed"
+      >
+        <thead>
+          <tr
+            class="border-b table-border"
+          >
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Token
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Price
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Amount
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                USD Value
+                <div
+                  class="sort desc mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody />
+      </table>
+      <div
+        class="flex items-center justify-end mt-2 mb-2 text-sm font-normal normal-case text-neutral-400"
+      >
+        <span
+          class="mr-2"
+        >
+          1
+           - 
+          0
+           of 
+          0
+        </span>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Portfolio Component renders correctly when wallet is connected with balances 1`] = `
+<div>
+  <div
+    class="rounded-md portfolio card bg-base-100"
+  >
+    <div
+      class="flex flex-row justify-between p-4"
+    >
+      <div
+        class="text-xl font-bold"
+      >
+        Wallet
+      </div>
+      <div
+        class="text-xl"
+        title="31000"
+      >
+        $ 
+        31,000.00
+      </div>
+    </div>
+    <div
+      class="table-container table-border overflow-x-auto rounded-lg border border-base-300 bg-base-200 text-sm font-semibold text-md bg-base-100)"
+    >
+      <table
+        class="table w-full table-fixed"
+      >
+        <thead>
+          <tr
+            class="border-b table-border"
+          >
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Token
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Price
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Amount
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                USD Value
+                <div
+                  class="sort desc mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="flex flex-row"
+              >
+                <img
+                  class="mr-2"
+                  style="object-fit: cover; width: 32px; height: 32px;"
+                />
+                <div
+                  class="leading-8"
+                >
+                   
+                  USDC.axl
+                   
+                </div>
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="3000"
+              >
+                $ 3000.0000
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="2"
+              >
+                2.000
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="6000"
+              >
+                $ 6000.00
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="flex flex-row"
+              >
+                <img
+                  class="mr-2"
+                  style="object-fit: cover; width: 32px; height: 32px;"
+                />
+                <div
+                  class="leading-8"
+                >
+                   
+                  PEN
+                   
+                </div>
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="50000"
+              >
+                $ 50000.0000
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="0.5"
+              >
+                0.500
+              </div>
+            </td>
+            <td
+              class=" border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="25000"
+              >
+                $ 25000.00
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div
+        class="flex items-center justify-end mt-2 mb-2 text-sm font-normal normal-case text-neutral-400"
+      >
+        <span
+          class="mr-2"
+        >
+          1
+           - 
+          2
+           of 
+          2
+        </span>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Portfolio Component renders exponential balance in standard notation 1`] = `
+<div>
+  <div
+    class="rounded-md portfolio card bg-base-100"
+  >
+    <div
+      class="flex flex-row justify-between p-4"
+    >
+      <div
+        class="text-xl font-bold"
+      >
+        Wallet
+      </div>
+      <div
+        class="text-xl"
+        title="250000"
+      >
+        $ 
+        250,000.00
+      </div>
+    </div>
+    <div
+      class="table-container table-border overflow-x-auto rounded-lg border border-base-300 bg-base-200 text-sm font-semibold text-md bg-base-100)"
+    >
+      <table
+        class="table w-full table-fixed"
+      >
+        <thead>
+          <tr
+            class="border-b table-border"
+          >
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Token
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Price
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                Amount
+                <div
+                  class="sort false mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+            <th
+              class="cursor-pointer"
+              colspan="1"
+            >
+              <div
+                class="flex flex-row items-center font-normal text-sm table-header normal-case "
+              >
+                USD Value
+                <div
+                  class="sort desc mb-0.5 ml-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-3 h-3"
+                    data-slot="icon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                class="flex flex-row"
+              >
+                <img
+                  class="mr-2"
+                  style="object-fit: cover; width: 32px; height: 32px;"
+                />
+                <div
+                  class="leading-8"
+                >
+                   
+                  PEN
+                   
+                </div>
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="1"
+              >
+                $ 1.0000
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="250000"
+              >
+                250000.000
+              </div>
+            </td>
+            <td
+              class=" odd-rows bg-table-row border-b-base-300 table-border table-fixed"
+            >
+              <div
+                title="250000"
+              >
+                $ 250000.00
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div
+        class="flex items-center justify-end mt-2 mb-2 text-sm font-normal normal-case text-neutral-400"
+      >
+        <span
+          class="mr-2"
+        >
+          1
+           - 
+          1
+           of 
+          1
+        </span>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <button
+          class="btn btn-circle btn-ghost btn-sm px-2"
+          disabled=""
+        >
+          <svg
+            aria-hidden="true"
+            class="h-4 w-4"
+            data-slot="icon"
+            fill="currentColor"
+            stroke-width="2.6"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

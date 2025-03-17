@@ -88,7 +88,7 @@ const Table = <T,>({
 
   const tableColumns = useMemo(() => {
     return showSkeleton
-      ? columns.map((column) => ({ ...column, cell: () => <Skeleton className="mb-2 h-8" /> }))
+      ? columns.map((column) => ({ ...column, cell: () => <Skeleton className="h-8 mb-2" /> }))
       : columns;
   }, [showSkeleton, columns]);
 
@@ -123,7 +123,7 @@ const Table = <T,>({
   return (
     <>
       {search ? (
-        <div className="mb-2 flex flex-row flex-wrap gap-2">
+        <div className="flex flex-row flex-wrap gap-2 mb-2">
           <div className="ml-auto">
             <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
           </div>
@@ -134,11 +134,11 @@ const Table = <T,>({
           fontSize || 'text-sm'
         } font-semibold ${className})`}
       >
-        {title && <div className="bg-base-200 px-4 py-6 text-lg">{title}</div>}
+        {title && <div className="px-4 py-6 text-lg bg-base-200">{title}</div>}
         <table className={`table w-full ${tableFixed ? 'table-fixed' : ''}`}>
           <thead>
             {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="table-border border-b">
+              <tr key={headerGroup.id} className="border-b table-border">
                 {headerGroup.headers.map((header) => {
                   const isSortable = header.column.getCanSort();
                   return (
@@ -167,9 +167,9 @@ const Table = <T,>({
                         {isSortable ? (
                           <div className={`sort ${header.column.getIsSorted()} mb-0.5 ml-2`}>
                             {header.column.getIsSorted() === 'desc' ? (
-                              <ChevronDownIcon className="h-3 w-3" strokeWidth="2" />
+                              <ChevronDownIcon className="w-3 h-3" strokeWidth="2" />
                             ) : (
-                              <ChevronUpIcon className="h-3 w-3" strokeWidth="2" />
+                              <ChevronUpIcon className="w-3 h-3" strokeWidth="2" />
                             )}
                           </div>
                         ) : null}
@@ -204,7 +204,7 @@ const Table = <T,>({
           </tbody>
         </table>
         <Pagination
-          className="mb-2 mt-2 justify-end text-sm font-normal normal-case text-neutral-400"
+          className="justify-end mt-2 mb-2 text-sm font-normal normal-case text-neutral-400"
           currentIndex={pageIndex}
           pageSize={pageSize}
           totalCount={totalCount}
