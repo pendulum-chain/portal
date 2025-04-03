@@ -101,7 +101,7 @@ export const GetToken = () => {
         <Button size="sm" className={`px-2 text-sm sm:px-3 ${getTenantColors(currentTenant).button}`} type="button">
           <div className="hidden md:flex">
             {showCurrentToken}
-            <p className="text-neutral">GET {tokenSymbol} Gas-Free</p>
+            <p className="text-neutral">GET {tokenSymbol} (Gas-Free)</p>
           </div>
           <div className="flex md:hidden">
             <p className="mr-2 text-neutral">GET</p>
