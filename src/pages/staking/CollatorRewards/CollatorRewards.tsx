@@ -62,7 +62,7 @@ export function CollatorRewards() {
   }, [getTransactionFee, unlockUnstaked, walletAccount?.address]);
 
   const userAccountAddress = useMemo(() => {
-    return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
+    return walletAccount ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
   }, [walletAccount, ss58Format]);
 
   useEffect(() => {
@@ -186,9 +186,9 @@ export function CollatorRewards() {
     if (loadingToken) {
       return (
         <>
-          <Skeleton className="w-full h-8 mb-2" />
-          <Skeleton className="w-full h-8 mb-2" />
-          <Skeleton className="w-full h-8 mb-2" />
+          <Skeleton className="mb-2 h-8 w-full" />
+          <Skeleton className="mb-2 h-8 w-full" />
+          <Skeleton className="mb-2 h-8 w-full" />
         </>
       );
     }
@@ -198,10 +198,10 @@ export function CollatorRewards() {
 
   return (
     <>
-      <div className="flex flex-col justify-between mb-8 md:flex-row">
-        <div className="mb-3 rounded-lg collators-box card bg-base-200 md:mb-0 md:mr-5 md:w-1/2">
-          <div className="px-4 py-6 card-body xs:px-8">
-            <h2 className="font-normal card-title">Staking</h2>
+      <div className="mb-8 flex flex-col justify-between md:flex-row">
+        <div className="collators-box card mb-3 rounded-lg bg-base-200 md:mb-0 md:mr-5 md:w-1/2">
+          <div className="card-body px-4 py-6 xs:px-8">
+            <h2 className="card-title font-normal">Staking</h2>
             {renderContentWithLoading(
               <StakingContent
                 userStakingAmount={userStaking?.amount}
@@ -215,9 +215,9 @@ export function CollatorRewards() {
             )}
           </div>
         </div>
-        <div className="rounded-lg collators-box card bg-base-200 md:w-1/2">
-          <div className="px-4 py-6 card-body xs:px-8">
-            <h2 className="mb-2 font-normal card-title">Staking Rewards</h2>
+        <div className="collators-box card rounded-lg bg-base-200 md:w-1/2">
+          <div className="card-body px-4 py-6 xs:px-8">
+            <h2 className="card-title mb-2 font-normal">Staking Rewards</h2>
             {renderContentWithLoading(
               <StakingRewardsContent
                 updateButton={{

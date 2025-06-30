@@ -39,7 +39,7 @@ function useBalances() {
       if (!walletAccount) return Promise.resolve();
 
       const assets = getAllAssetsMetadata();
-      const walletAddress = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+      const walletAddress = getAddressForFormat(walletAccount.address, ss58Format);
 
       const getFree = (tokenBalanceRaw: unknown, asset: OrmlTraitsAssetRegistryAssetMetadata) => {
         const isNativeToken = asset.currencyId.toHuman() === 'Native';

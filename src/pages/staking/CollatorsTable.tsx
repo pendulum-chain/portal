@@ -33,7 +33,7 @@ function CollatorsTable() {
   const [data, setData] = useState<TCollator[] | undefined>();
 
   const userAccountAddress = useMemo(() => {
-    return walletAccount && ss58Format ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
+    return walletAccount ? getAddressForFormat(walletAccount?.address, ss58Format) : '';
   }, [walletAccount, ss58Format]);
 
   useEffect(() => {

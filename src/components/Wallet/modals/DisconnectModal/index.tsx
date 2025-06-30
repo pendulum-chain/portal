@@ -60,11 +60,7 @@ const WalletDropdownMenu = ({
   <Dropdown.Menu className="right-0 mt-2 min-w-[240px] border border-base-300 bg-base-200 p-3 text-center shadow-lg">
     <div className="text-sm text-neutral-400">{walletAccount?.name}</div>
     <div className="text-neutral-500">
-      <CopyablePublicKey
-        publicKey={ss58Format ? getAddressForFormat(address, ss58Format) : address}
-        variant="short"
-        inline={true}
-      />
+      <CopyablePublicKey publicKey={getAddressForFormat(address, ss58Format)} variant="short" inline={true} />
     </div>
     <p className="my-6 truncate text-center text-2xl font-bold" title={`${balance} ${tokenSymbol}`}>
       {balance && prettyNumbers(balance)} {tokenSymbol}
