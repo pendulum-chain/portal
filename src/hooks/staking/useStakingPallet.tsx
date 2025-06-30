@@ -58,7 +58,7 @@ export function useStakingPallet() {
 
   const fetchEstimatedReward = useCallback(async () => {
     if (!api || !walletAccount?.address) return '0';
-    const formattedAddr = ss58Format ? getAddressForFormat(walletAccount.address, ss58Format) : walletAccount.address;
+    const formattedAddr = getAddressForFormat(walletAccount.address, ss58Format);
     return (await api.query.parachainStaking.rewards(formattedAddr)).toString();
   }, [api, ss58Format, walletAccount?.address]);
 
