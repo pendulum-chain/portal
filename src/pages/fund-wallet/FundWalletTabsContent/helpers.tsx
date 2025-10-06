@@ -1,6 +1,6 @@
 import zenlinkIcon from '../../../assets/exchange/zenlink.svg';
 import zenlinkDarkIcon from '../../../assets/exchange/zenlink-dark-mode.svg';
-import hydrationIcon from '../../../assets/exchange/Hydration.png'
+import hydrationIcon from '../../../assets/exchange/hydration.svg'
 import { config } from '../../../config';
 
 import { TenantName } from '../../../models/Tenant';
