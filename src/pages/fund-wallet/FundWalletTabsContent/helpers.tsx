@@ -40,8 +40,7 @@ export function getExchangeList(tenantName: FundSupportedTenants, activeTab: Fun
 
 const BuyingTextMap: Record<FundSupportedTenants, string> = {
   [TenantName.Amplitude]: 'Currently no options available, try Exchange!',
-  [TenantName.Pendulum]:
-    'Purchase PEN through AlchemyPay, a payment system that enables users to easily buy cryptocurrencies using traditional payment methods such as credit cards, bank transfers, or mobile wallets.',
+  [TenantName.Pendulum]: 'Currently no options available, try Exchange!',
 };
 
 const ExchangeTextMap: Record<FundSupportedTenants, string> = {
