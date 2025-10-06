@@ -1,9 +1,6 @@
-import banxaIcon from '../../../assets/exchange/banxa-gradient.png';
-import mexcIcon from '../../../assets/exchange/mexc.svg';
 import zenlinkIcon from '../../../assets/exchange/zenlink.svg';
 import zenlinkDarkIcon from '../../../assets/exchange/zenlink-dark-mode.svg';
-import stellaswapIcon from '../../../assets/exchange/stellaswap.svg';
-import alchemyPayIcon from '../../../assets/alchemypay.svg';
+import hydrationIcon from '../../../assets/Hydration.png'
 import { config } from '../../../config';
 
 import { TenantName } from '../../../models/Tenant';
