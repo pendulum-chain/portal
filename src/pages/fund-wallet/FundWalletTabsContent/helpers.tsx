@@ -16,33 +16,12 @@ export type FundSupportedTenants = Exclude<TenantName, TenantName.Foucoco | Tena
 const EXCHANGE_LIST: Record<FundSupportedTenants, { buy: CardExternalLinkProps[]; exchange: CardExternalLinkProps[] }> =
   {
     pendulum: {
-      buy: [
-        {
-          title: 'AlchemyPay',
-          children: <img src={alchemyPayIcon} className="ml-6 w-40" />,
-          href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
-        },
-        {
-          title: 'Banxa',
-          children: <img src={banxaIcon} className="ml-2 w-40" />,
-          href: 'https://checkout.banxa.com/?coinType=PEN&fiatType=EUR',
-        },
-      ],
+      buy: [],
       exchange: [
         {
-          title: 'MEXC',
-          children: <img src={mexcIcon} className="ml-6 w-40" />,
-          href: 'https://www.mexc.com/exchange/PEN_USDT',
-        },
-        {
-          title: 'StellaSwap',
-          children: <img src={stellaswapIcon} className="ml-6 w-40" />,
-          href: 'https://app.stellaswap.com/exchange/swap',
-        },
-        {
-          title: 'Zenlink',
-          children: <img src={zenlinkIcon} className="ml-6 w-40" />,
-          href: 'https://app.zenlink.pro/swap',
+          title: 'Hydration',
+          children: <img src={hydrationIcon} className="ml-6 w-40" />,
+          href: 'https://app.hydration.net/trade/swap?assetIn=22&assetOut=1000081',
         },
       ],
     },
