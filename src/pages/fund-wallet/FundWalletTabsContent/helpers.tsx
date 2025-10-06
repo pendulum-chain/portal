@@ -1,9 +1,6 @@
-import banxaIcon from '../../../assets/exchange/banxa-gradient.png';
-import mexcIcon from '../../../assets/exchange/mexc.svg';
 import zenlinkIcon from '../../../assets/exchange/zenlink.svg';
 import zenlinkDarkIcon from '../../../assets/exchange/zenlink-dark-mode.svg';
-import stellaswapIcon from '../../../assets/exchange/stellaswap.svg';
-import alchemyPayIcon from '../../../assets/alchemypay.svg';
+import hydrationIcon from '../../../assets/exchange/hydration.svg'
 import { config } from '../../../config';
 
 import { TenantName } from '../../../models/Tenant';
@@ -16,33 +13,12 @@ export type FundSupportedTenants = Exclude<TenantName, TenantName.Foucoco | Tena
 const EXCHANGE_LIST: Record<FundSupportedTenants, { buy: CardExternalLinkProps[]; exchange: CardExternalLinkProps[] }> =
   {
     pendulum: {
-      buy: [
-        {
-          title: 'AlchemyPay',
-          children: <img src={alchemyPayIcon} className="ml-6 w-40" />,
-          href: config.alchemyPay.encodeUrlWithRedirection(config.alchemyPay.prodUrl, window.location.href),
-        },
-        {
-          title: 'Banxa',
-          children: <img src={banxaIcon} className="ml-2 w-40" />,
-          href: 'https://checkout.banxa.com/?coinType=PEN&fiatType=EUR',
-        },
-      ],
+      buy: [],
       exchange: [
         {
-          title: 'MEXC',
-          children: <img src={mexcIcon} className="ml-6 w-40" />,
-          href: 'https://www.mexc.com/exchange/PEN_USDT',
-        },
-        {
-          title: 'StellaSwap',
-          children: <img src={stellaswapIcon} className="ml-6 w-40" />,
-          href: 'https://app.stellaswap.com/exchange/swap',
-        },
-        {
-          title: 'Zenlink',
-          children: <img src={zenlinkIcon} className="ml-6 w-40" />,
-          href: 'https://app.zenlink.pro/swap',
+          title: 'Hydration',
+          children: <img src={hydrationIcon} className="ml-6 w-40" />,
+          href: 'https://app.hydration.net/trade/swap?assetIn=22&assetOut=1000081',
         },
       ],
     },
@@ -64,8 +40,7 @@ export function getExchangeList(tenantName: FundSupportedTenants, activeTab: Fun
 
 const BuyingTextMap: Record<FundSupportedTenants, string> = {
   [TenantName.Amplitude]: 'Currently no options available, try Exchange!',
-  [TenantName.Pendulum]:
-    'Purchase PEN through AlchemyPay, a payment system that enables users to easily buy cryptocurrencies using traditional payment methods such as credit cards, bank transfers, or mobile wallets.',
+  [TenantName.Pendulum]: 'Currently no options available, try Exchange!',
 };
 
 const ExchangeTextMap: Record<FundSupportedTenants, string> = {
