@@ -49,9 +49,6 @@ const WithdrawLiquidity = ({ data, onClose }: WithdrawLiquidityProps): JSX.Eleme
       </TransactionProgress>
       <div className={hideCss}>
         <div className="absolute top-0 mb-8 mt-2 flex translate-y-2/4 items-center gap-2">
-          <Button size="sm" color="ghost" className="px-2" type="button" onClick={() => toggle()}>
-            <ArrowLeftIcon className="h-4 w-4" />
-          </Button>
           <h3 className="text-3xl font-normal">Withdraw {data.token?.symbol}</h3>
         </div>
         <FormProvider {...form}>
