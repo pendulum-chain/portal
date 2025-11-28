@@ -24,6 +24,8 @@ const SwapPools = (): JSX.Element | null => {
         fontSize="text-base"
         search
         sortBy={{ name: SortingOrder.ASC }}
+        oddRowsClassname="odd-rows bg-table-row border-b-base-300 table-border"
+        evenRowsClassname="even-rows bg-base-200 border-b-base-300 table-border"
       />
       <NablaFootnote />
     </ModalProvider>
