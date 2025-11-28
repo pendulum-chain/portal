@@ -92,7 +92,7 @@ const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknow
         onClick={() => toggle({ type: 'AddLiquidity', props: { data: original } })}
         size="sm"
         variant="outline"
-        className="px-3"
+        className="px-3 bg-base-200"
       >
         Deposit
       </Button>
@@ -105,7 +105,7 @@ const ActionsColumn = ({ row: { original } }: CellContext<SwapPoolColumn, unknow
         }
         size="sm"
         variant="outline"
-        className="px-3"
+        className="px-3 bg-base-200"
       >
         Withdraw
       </Button>
