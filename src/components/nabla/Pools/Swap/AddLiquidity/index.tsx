@@ -111,7 +111,7 @@ const AddLiquidity = ({ data, onClose }: AddLiquidityProps): JSX.Element | null 
               </TokenApproval>
               <Button
                 color="secondary"
-                className="mt-2 w-full"
+                className="mt-2 w-full shadow"
                 type="button"
                 disabled={mutation.isLoading}
                 onClick={() => toggle()}
