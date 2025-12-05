@@ -123,7 +123,7 @@ const WithdrawLiquidity = ({ data, onClose }: WithdrawLiquidityProps): JSX.Eleme
               )}
               <Button
                 color="secondary"
-                className="mt-2 w-full"
+                className="mt-2 w-full shadow"
                 type="button"
                 disabled={mutation.isLoading}
                 onClick={() => toggle()}
