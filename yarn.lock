@@ -11299,6 +11299,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"numora-react@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "numora-react@npm:3.0.1"
+  checksum: 10c0/3734c734d0529d1ff1a6354783eba060b8060bffda74549cee57f64a1b656dacfc882d9a950965f9ffb890475f32c9a1042e44447e64490f6c496b6115823cd0
+  languageName: node
+  linkType: hard
+
+"numora@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "numora@npm:3.0.1"
+  checksum: 10c0/9a5135e6735f8c8556ff35fc34afa0e8aa36032458ff96825c5a06b410992a2c8aa53e1f2b86369dbd4b5369fadbde6c89660d9dc02539434699f358f1cf4631
+  languageName: node
+  linkType: hard
+
 "nwsapi@npm:^2.2.2":
   version: 2.2.13
   resolution: "nwsapi@npm:2.2.13"
@@ -11801,6 +11815,8 @@ __metadata:
     luxon: "npm:^3.5.0"
     match-sorter: "npm:^6.3.1"
     motion: "npm:^11.15.0"
+    numora: "npm:^3.0.1"
+    numora-react: "npm:^3.0.1"
     postcss: "npm:^8.4.47"
     postcss-import: "npm:^16.1.0"
     prettier: "npm:^3.3.3"
