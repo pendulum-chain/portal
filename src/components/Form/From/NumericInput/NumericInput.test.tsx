@@ -2,8 +2,6 @@ import { UseFormRegisterReturn } from 'react-hook-form';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NumericInput } from '.';
-import { handleOnPasteNumericInput } from './helpers';
-import { ClipboardEvent } from 'react';
 
 const mockRegister: UseFormRegisterReturn = {
   name: 'testInput',
@@ -202,40 +200,36 @@ describe('NumericInput Component', () => {
 
 describe('NumericInput onPaste should sanitize the user input', () => {
   const testCases = [
-    { input: '1.......4.....2', maxLength: 8, expected: '1.42' },
-    { input: '12....34.....56', maxLength: 8, expected: '12.3456' },
-    { input: '....56789...', maxLength: 5, expected: '.56789' },
-    { input: '1.23..4..56.', maxLength: 6, expected: '1.23456' },
-    { input: '1.....2', maxLength: 8, expected: '1.2' },
-    { input: '123..4...56.7', maxLength: 7, expected: '123.4567' },
-    { input: 'a.b.c.123.4.def56', maxLength: 8, expected: '.123456' },
-    { input: '12abc34....def567', maxLength: 2, expected: '1234.56' },
-    { input: '.....a.b.c......', maxLength: 8, expected: '.' },
-    { input: '12.....3..4..5abc6', maxLength: 7, expected: '12.3456' },
-    { input: '1a2b3c4d5e.1234567', maxLength: 4, expected: '12345.1234' },
-    { input: '12abc@#34..def$%^567', maxLength: 2, expected: '1234.56' },
-    { input: '....!@#$$%^&*((', maxLength: 8, expected: '.' },
-    { input: '123....abc.def456ghi789', maxLength: 4, expected: '123.4567' },
-    { input: '00.00123...4', maxLength: 4, expected: '00.0012' },
-    { input: '.1...2.67.865', maxLength: 3, expected: '.126' },
-    { input: '123abc...', maxLength: 6, expected: '123.' },
+    { input: '1.......4.....2', maxDecimals: 8, expected: '1.42' },
+    { input: '12....34.....56', maxDecimals: 8, expected: '12.3456' },
+    { input: '....56789...', maxDecimals: 5, expected: '.56789' },
+    { input: '1.23..4..56.', maxDecimals: 6, expected: '1.23456' },
+    { input: '1.....2', maxDecimals: 8, expected: '1.2' },
+    { input: '123..4...56.7', maxDecimals: 7, expected: '123.4567' },
+    { input: 'a.b.c.123.4.def56', maxDecimals: 8, expected: '.123456' },
+    { input: '12abc34....def567', maxDecimals: 2, expected: '1234.56' },
+    { input: '.....a.b.c......', maxDecimals: 8, expected: '.' },
+    { input: '12.....3..4..5abc6', maxDecimals: 7, expected: '12.3456' },
+    { input: '1a2b3c4d5e.1234567', maxDecimals: 4, expected: '12345.1234' },
+    { input: '12abc@#34..def$%^567', maxDecimals: 2, expected: '1234.56' },
+    { input: '....!@#$$%^&*((', maxDecimals: 8, expected: '.' },
+    { input: '123....abc.def456ghi789', maxDecimals: 4, expected: '123.4567' },
+    { input: '00.00123...4', maxDecimals: 4, expected: '00.0012' },
+    { input: '.1...2.67.865', maxDecimals: 3, expected: '.126' },
+    { input: '123abc...', maxDecimals: 6, expected: '123.' },
   ];
 
   test.each(testCases)(
-    'should sanitize the pasted input with maxLength (decimal)',
-    ({ input, maxLength, expected }) => {
-      const mockEvent = {
-        target: {
-          setSelectionRange: jest.fn(),
-          value: '',
-        },
-        preventDefault: jest.fn(),
-        clipboardData: {
-          getData: jest.fn().mockReturnValue(input),
-        },
-      } as unknown as ClipboardEvent;
+    'should sanitize the pasted input with maxDecimals: $maxDecimals',
+    async ({ input, maxDecimals, expected }) => {
+      const { getByPlaceholderText } = render(
+        <NumericInput register={mockRegister} maxDecimals={maxDecimals} />,
+      );
+      const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
-      expect(handleOnPasteNumericInput(mockEvent, maxLength)).toBe(expected);
+      inputElement.focus();
+      await userEvent.paste(input);
+      expect(inputElement.value).toBe(expected);
     },
   );
 });

@@ -1,5 +1,5 @@
 import { UseFormRegisterReturn } from 'react-hook-form';
-import { NumoraInput } from 'numora-react';
+import { NumoraInput, ThousandStyle } from 'numora-react';
 import { ChangeEvent, ClipboardEvent } from 'react';
 
 import { USER_INPUT_MAX_DECIMALS } from '../../../../shared/parseNumbers/maxDecimals';
@@ -10,6 +10,7 @@ interface NumericInputProps {
   additionalStyle?: string;
   maxDecimals?: number;
   defaultValue?: string;
+  value?: string;
   autoFocus?: boolean;
 }
 
@@ -19,6 +20,7 @@ export const NumericInput = ({
   additionalStyle,
   maxDecimals = USER_INPUT_MAX_DECIMALS.PENDULUM,
   defaultValue,
+  value,
   autoFocus,
 }: NumericInputProps) => {
   function handleOnChange(e: ChangeEvent<HTMLInputElement> | ClipboardEvent<HTMLInputElement>): void {
@@ -41,10 +43,11 @@ export const NumericInput = ({
           readOnly={readOnly}
           spellCheck="false"
           maxDecimals={maxDecimals}
-          defaultValue={defaultValue}
+          {...(value !== undefined ? { value } : { defaultValue })}
           autoFocus={autoFocus}
           onChange={handleOnChange}
           enableLeadingZeros={true}
+          thousandStyle={ThousandStyle.None}
         />
       </div>
     </div>

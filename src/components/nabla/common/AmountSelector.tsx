@@ -74,6 +74,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
         register={form.register(formFieldName)}
         autoFocus
         maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
+        value={amountString}
       />
     );
   }
@@ -85,6 +86,7 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
         register={form.register(formFieldName)}
         autoFocus
         maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
+        value={amountString}
       />
       {showAvailableActions ? (
         <div className="flex w-full justify-end">
