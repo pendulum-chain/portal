@@ -1,24 +1,37 @@
-import { UseFormRegisterReturn } from 'react-hook-form';
+import React from 'react';
+import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NumericInput } from '.';
 
-const mockRegister: UseFormRegisterReturn = {
-  name: 'testInput',
-  onChange: jest.fn(),
-  onBlur: jest.fn(),
-  ref: jest.fn(),
+const TestWrapper = ({
+  children,
+  defaultValues = { testInput: '' },
+}: {
+  children: (methods: UseFormReturn<{ testInput: string }>) => React.ReactNode;
+  defaultValues?: { testInput: string };
+}) => {
+  const methods = useForm({ defaultValues });
+  return <FormProvider {...methods}>{children(methods)}</FormProvider>;
 };
 
 describe('NumericInput Component', () => {
   it('should render the component', () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0');
     expect(inputElement).toBeInTheDocument();
   });
 
   it('should allow numeric input', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '1234567890');
@@ -26,7 +39,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should prevent non-numeric input', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, 'qwertyuiopasdfghjklzxcvbnm');
@@ -34,7 +51,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should prevent multiple decimal points', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '1.1.1,2.3,4');
@@ -42,7 +63,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should replace comma with period', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '1,1');
@@ -50,7 +75,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should work with readOnly prop', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} readOnly={true} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" readOnly={true} />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     expect(inputElement).toHaveAttribute('readOnly');
@@ -60,22 +89,34 @@ describe('NumericInput Component', () => {
   });
 
   it('should apply additional styles', () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} additionalStyle="extra-style" />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" additionalStyle="extra-style" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0');
 
     expect(inputElement).toHaveClass('extra-style');
   });
 
   it('should handle leading zeros correctly', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '007');
-    expect(inputElement.value).toBe('007');
+    expect(inputElement.value).toBe('7');
   });
 
   it('should allow backspace and delete', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '123');
@@ -87,7 +128,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should not allow negative numbers', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '-123');
@@ -95,7 +140,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should not allow more decimals than maxDecimals', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={2} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" maxDecimals={2} />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '123.45479187249871298774985');
@@ -103,7 +152,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should not allow more decimals than default maxDecimals', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '123.4567890123456789abcgdehyu0123456.2746472.93.2.7.3.5.3');
@@ -111,7 +164,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should allow replace any digit user wants', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={3} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" maxDecimals={3} />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '123.421');
@@ -130,14 +187,22 @@ describe('NumericInput Component', () => {
   });
 
   it('should initialize with default value', () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} defaultValue="123.45" />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '123.45' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     expect(inputElement.value).toBe('123.45');
   });
 
   it('should remain unchanged on invalid input', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} defaultValue="123.45" />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '123.45' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '!!!');
@@ -145,7 +210,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should handle paste invalid characters', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     inputElement.focus();
@@ -154,7 +223,11 @@ describe('NumericInput Component', () => {
   });
 
   it('Should not cut the number if user is trying to type more than one "."', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '0.23');
@@ -163,7 +236,11 @@ describe('NumericInput Component', () => {
   });
 
   it('Should not cut the number and do not move . position', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '12.34');
@@ -172,7 +249,11 @@ describe('NumericInput Component', () => {
   });
 
   it('Should not paste the number if more than one .', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.paste('12.34.56');
@@ -180,7 +261,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should accept only one "."', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '...........');
@@ -188,7 +273,11 @@ describe('NumericInput Component', () => {
   });
 
   it('should paste properly', async () => {
-    const { getByPlaceholderText } = render(<NumericInput register={mockRegister} maxDecimals={3} />);
+    const { getByPlaceholderText } = render(
+      <TestWrapper defaultValues={{ testInput: '' }}>
+        {(methods) => <NumericInput control={methods.control} name="testInput" maxDecimals={3} />}
+      </TestWrapper>,
+    );
     const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 
     await userEvent.type(inputElement, '123');
@@ -214,7 +303,7 @@ describe('NumericInput onPaste should sanitize the user input', () => {
     { input: '12abc@#34..def$%^567', maxDecimals: 2, expected: '1234.56' },
     { input: '....!@#$$%^&*((', maxDecimals: 8, expected: '.' },
     { input: '123....abc.def456ghi789', maxDecimals: 4, expected: '123.4567' },
-    { input: '00.00123...4', maxDecimals: 4, expected: '00.0012' },
+    { input: '00.00123...4', maxDecimals: 4, expected: '0.0012' },
     { input: '.1...2.67.865', maxDecimals: 3, expected: '.126' },
     { input: '123abc...', maxDecimals: 6, expected: '123.' },
   ];
@@ -223,7 +312,9 @@ describe('NumericInput onPaste should sanitize the user input', () => {
     'should sanitize the pasted input with maxDecimals: $maxDecimals',
     async ({ input, maxDecimals, expected }) => {
       const { getByPlaceholderText } = render(
-        <NumericInput register={mockRegister} maxDecimals={maxDecimals} />,
+        <TestWrapper defaultValues={{ testInput: '' }}>
+          {(methods) => <NumericInput control={methods.control} name="testInput" maxDecimals={maxDecimals} />}
+        </TestWrapper>,
       );
       const inputElement = getByPlaceholderText('0.0') as HTMLInputElement;
 

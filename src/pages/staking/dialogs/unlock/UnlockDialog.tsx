@@ -52,7 +52,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
     },
   });
 
-  const { formState, register } = form;
+  const { formState, control } = form;
 
   const showGasFee = useMemo((): string => {
     const fee = nativeToDecimal(gasFee.toString()).toNumber();
@@ -66,7 +66,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
         return (
           <UnlockConfirmStep
             {...{
-              register: register('amount'),
+              control,
               balance,
               gasFee: showGasFee,
               error: formState.errors.amount?.message?.toString(),
@@ -85,7 +85,7 @@ export const UnlockDialog: FC<UnlockDialogProps> = ({
           />
         );
     }
-  }, [step, formState, register, userAvailableBalanceForUnlock, showGasFee, balance]);
+  }, [step, formState, control, userAvailableBalanceForUnlock, showGasFee, balance]);
 
   const onConfirm = () => {
     setLoading(true);

@@ -40,38 +40,12 @@ export const GasForm: FC<GasFormProps> = ({
   calcTo,
   submissionPending,
 }) => {
-  const { handleSubmit, register, setValue, watch, formState, clearErrors, trigger } = useForm<IssueFormValues>({
+  const { handleSubmit, control, setValue, watch, formState, clearErrors, trigger } = useForm<IssueFormValues>({
     defaultValues: { isMax: false, isMin: false },
     mode: 'onChange',
   });
 
   const { balances } = useBalances();
-
-  const registerFromAmount = register('fromAmount', {
-    max: { value: Number(calcMax().amount), message: 'Amount exceeds the maximum allowable buyout' },
-    min: { value: Number(calcMin().amount), message: 'Amount is too low to meet the minimum buyout requirement' },
-    required: 'This field is required',
-    onChange: (n: ChangeEvent) => {
-      const value = (n.target as HTMLInputElement).value;
-      const valueWithoutSpaces = value.replace(/\s+/g, '').replace(/,/g, '.');
-      setValue('isMax', false);
-      setValue('isMin', false);
-      setValue('fromAmount', valueWithoutSpaces);
-      setValue('toAmount', calcTo(valueWithoutSpaces));
-    },
-    validate: {
-      balance: (value) => {
-        if (balances && selectedFromToken) {
-          const selectedTokenBalance = balances.find(
-            (balance) => balance.token === (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.symbol,
-          )?.amount;
-          if (Number(value) > Number(selectedTokenBalance || 0)) {
-            return 'Insufficient balance';
-          }
-        }
-      },
-    },
-  });
 
   const useCreateBadge = (calcValue: () => { amount: string; native: number }, isMax: boolean) => {
     const value = calcValue();
@@ -96,13 +70,38 @@ export const GasForm: FC<GasFormProps> = ({
   const maxBadge = useCreateBadge(calcMax, true);
 
   const fromPropsError = formState.errors.fromAmount?.message;
-  const FromProps: FromPropsWithVariant = useMemo(
+  const FromProps: FromPropsWithVariant<IssueFormValues> = useMemo(
     () => ({
       formControl: {
-        register: registerFromAmount,
+        control,
+        name: 'fromAmount',
         disabled: submissionPending,
         readOnly: submissionPending,
         error: fromPropsError,
+        rules: {
+          max: { value: Number(calcMax().amount), message: 'Amount exceeds the maximum allowable buyout' },
+          min: { value: Number(calcMin().amount), message: 'Amount is too low to meet the minimum buyout requirement' },
+          required: 'This field is required',
+          validate: {
+            balance: (value) => {
+              if (balances && selectedFromToken) {
+                const selectedTokenBalance = balances.find(
+                  (balance) => balance.token === (selectedFromToken as OrmlTraitsAssetRegistryAssetMetadata).metadata.symbol,
+                )?.amount;
+                if (Number(value) > Number(selectedTokenBalance || 0)) {
+                  return 'Insufficient balance';
+                }
+              }
+            },
+          },
+        },
+        onChange: (value: string) => {
+          const valueWithoutSpaces = value.replace(/\s+/g, '').replace(/,/g, '.');
+          setValue('isMax', false);
+          setValue('isMin', false);
+          setValue('fromAmount', valueWithoutSpaces);
+          setValue('toAmount', calcTo(valueWithoutSpaces));
+        },
       },
       badges: {
         minBadge,
@@ -119,21 +118,27 @@ export const GasForm: FC<GasFormProps> = ({
       variant: FromVariants.SWAP,
     }),
     [
+      control,
       currencies,
       fromPropsError,
       maxBadge,
       minBadge,
-      registerFromAmount,
       selectedFromToken,
       setSelectedFromToken,
       submissionPending,
+      balances,
+      calcMax,
+      calcMin,
+      calcTo,
+      setValue,
     ],
   );
 
   const toPropsError = formState.errors.toAmount?.message;
-  const ToProps: FromPropsWithVariant = {
+  const ToProps: FromPropsWithVariant<IssueFormValues> = {
     formControl: {
-      register: register('toAmount'),
+      control,
+      name: 'toAmount',
       readOnly: true,
       disabled: submissionPending,
       error: toPropsError,

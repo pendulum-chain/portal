@@ -72,7 +72,7 @@ function Issue(props: IssueProps): JSX.Element {
 
   const maxIssuable = nativeToDecimal(selectedVault?.issuableTokens || 0).toNumber();
 
-  const { handleSubmit, watch, register, formState, setValue, trigger } = useForm<IssueFormValues>({
+  const { handleSubmit, watch, control, register, formState, setValue, trigger } = useForm<IssueFormValues>({
     resolver: yupResolver(getIssueValidationSchema(maxIssuable, transferable, tokenSymbol)),
     mode: 'onChange',
   });
@@ -176,7 +176,8 @@ function Issue(props: IssueProps): JSX.Element {
             {...{
               formControl: {
                 maxDecimals: USER_INPUT_MAX_DECIMALS.STELLAR,
-                register: register('amount'),
+                control,
+                name: 'amount',
                 setValue: (n: string) => setValue('amount', n),
                 error:
                   getFirstErrorMessage(formState, ['amount', 'securityDeposit']) ||

@@ -31,12 +31,13 @@ const assets: BlockchainAsset[] = [mockAsset];
 const edgeCaseMaxBalances = [9e-7, 1e-7, 1e-10, 1e21, 1e22, 0.000000025164, 0.0000000025164];
 
 const TestingComponent = ({ max }: { max: number }) => {
-  const { setValue, register } = useForm();
+  const { setValue, control } = useForm();
 
   const defaultProps: FromProps = {
     formControl: {
       max: max,
-      register: register('amount'),
+      control,
+      name: 'amount',
       setValue: (n: string) => setValue('amount', n),
       error: '',
       maxDecimals: 12,
