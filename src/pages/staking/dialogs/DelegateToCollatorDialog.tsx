@@ -65,7 +65,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
 
   const titleAction = useMemo(() => (mode === 'unstaking' ? 'Unstake' : 'Stake'), [mode]);
   const max = nativeToDecimal(availableBalance).toNumber();
-  const { handleSubmit, watch, register, formState, setValue } = useForm<FormValues>({
+  const { handleSubmit, watch, control, formState, setValue } = useForm<FormValues>({
     resolver: yupResolver(getStakingValidationSchema(max)),
   });
 
@@ -84,7 +84,8 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         {CollatorInfo}
         <div className="mt-4" />
         <Amount
-          register={register('amount')}
+          control={control}
+          name="amount"
           setValue={(n: number) => setValue('amount', n)}
           error={formState.errors.amount?.message?.toString()}
           max={max}
@@ -92,7 +93,7 @@ function DelegateToCollatorDialog(props: DelegateToCollatorDialogProps) {
         />
       </>
     ),
-    [CollatorInfo, formState.errors.amount?.message, max, mode, register, setValue],
+    [CollatorInfo, control, formState.errors.amount?.message, max, mode, setValue],
   );
 
   const actions = useMemo(

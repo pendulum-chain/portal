@@ -1,3 +1,4 @@
+import { FieldValues } from 'react-hook-form';
 import { FromProps } from '..';
 import { Badges } from '../Badges';
 import { FromDescription } from '../Description';
@@ -5,13 +6,13 @@ import { NumericInput } from '../NumericInput';
 import { AssetSelector } from '../../../Selector';
 import { AssetSelectorOnChange } from '../../../Selector/AssetSelector/helpers';
 
-export const SwapFrom = ({
+export const SwapFrom = <FormFieldValues extends FieldValues = FieldValues>({
   className,
-  formControl: { register, readOnly = false, error, disabled = false, maxDecimals },
+  formControl: { control, name, readOnly = false, error, disabled = false, maxDecimals, rules, onChange },
   asset: { assetSuffix, assets, selectedAsset, setSelectedAsset },
   description: { customText, network },
   badges: { minBadge, maxBadge },
-}: FromProps) => (
+}: FromProps<FormFieldValues>) => (
   <div
     className={`rounded-lg ${disabled ? 'bg-base-100' : 'bg-base-300'} mb-3 px-4 py-3 ${className || ''} ${
       error ? 'border border-solid border-red-400' : ''
@@ -40,8 +41,11 @@ export const SwapFrom = ({
     <NumericInput
       additionalStyle={disabled ? 'text-gray-400 focus:text-gray-400' : ''}
       maxDecimals={maxDecimals}
-      register={register}
+      control={control}
+      name={name}
       readOnly={readOnly}
+      rules={rules}
+      onChange={onChange}
     />
 
     {error ? (

@@ -71,7 +71,8 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
     return (
       <NumericInput
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
-        register={form.register(formFieldName)}
+        control={form.control}
+        name={formFieldName}
         autoFocus
         maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
       />
@@ -82,10 +83,18 @@ export function AmountSelector<FormFieldValues extends FieldValues, TFieldName e
     <div className="relative rounded-lg bg-base-300 p-4">
       <NumericInput
         additionalStyle="input-ghost w-full flex-grow text-4xl font-outfit px-0 py-3"
-        register={form.register(formFieldName)}
+        control={form.control}
+        name={formFieldName}
         autoFocus
         maxDecimals={maxBalance?.decimals ?? USER_INPUT_MAX_DECIMALS.PENDULUM}
       />
+         <div className="flex w-full justify-end">
+          <AvailableActions
+            setValue={(n) => setValue(formFieldName, n as K)}
+            max={maxBalance?.approximateNumber}
+            hideAvailableBalance={true}
+          />
+        </div>
       {showAvailableActions ? (
         <div className="flex w-full justify-end">
           <AvailableActions

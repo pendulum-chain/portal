@@ -1,12 +1,13 @@
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { roundNumber } from '../../../shared/parseNumbers/metric';
 import { NumericInput } from '../From/NumericInput';
 
-export interface AmountProps {
+export interface AmountProps<FormFieldValues extends FieldValues = FieldValues> {
   className?: string;
   max?: number;
   min?: number;
-  register: UseFormRegisterReturn;
+  control: Control<FormFieldValues>;
+  name: FieldPath<FormFieldValues>;
   setValue: (n: number) => void;
   assetSuffix?: string;
   error?: string;
@@ -25,9 +26,10 @@ function calculateMaxAmount(max: number, fullMax: boolean) {
   return Math.max(0, maxAmount);
 }
 
-const Amount = ({
+const Amount = <FormFieldValues extends FieldValues = FieldValues>({
   className,
-  register,
+  control,
+  name,
   max,
   setValue,
   error,
@@ -36,7 +38,7 @@ const Amount = ({
   hideMaxButton = false,
   readOnly = false,
   defaultValue,
-}: AmountProps): JSX.Element | null => (
+}: AmountProps<FormFieldValues>): JSX.Element | null => (
   <>
     <div
       className={`rounded-lg bg-base-300 px-4 py-3 ${className || ''} ${
@@ -46,7 +48,8 @@ const Amount = ({
       <div className="flex w-full justify-between">
         <div className="font-outfit flex-grow text-4xl text-accent-content">
           <NumericInput
-            register={register}
+            control={control}
+            name={name}
             readOnly={readOnly}
             additionalStyle="input-ghost w-full text-4xl font-outfit pl-0 focus:outline-none"
             defaultValue={defaultValue}

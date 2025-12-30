@@ -1,3 +1,4 @@
+import { FieldValues } from 'react-hook-form';
 import { FromProps } from '..';
 import { NumericInput } from '../NumericInput';
 import { AssetSelector } from '../../../Selector';
@@ -5,12 +6,12 @@ import { AssetSelectorOnChange } from '../../../Selector/AssetSelector/helpers';
 import { FromDescription } from '../Description';
 import { AvailableActions } from '../AvailableActions';
 
-export const StandardFrom = ({
+export const StandardFrom = <FormFieldValues extends FieldValues = FieldValues>({
   className,
-  formControl: { max, register, readOnly, error, setValue, maxDecimals, disabled },
+  formControl: { max, control, name, readOnly, error, setValue, maxDecimals, disabled, rules, onChange },
   asset: { assetSuffix, assets, selectedAsset, setSelectedAsset },
   description: { customText, network },
-}: FromProps) => (
+}: FromProps<FormFieldValues>) => (
   <>
     <div
       className={`rounded-lg ${disabled ? 'bg-base-100' : 'bg-base-300'} px-4 py-3 ${className || ''} ${
@@ -21,8 +22,11 @@ export const StandardFrom = ({
         <NumericInput
           additionalStyle={disabled ? 'text-gray-400 focus:text-gray-400' : ''}
           maxDecimals={maxDecimals}
-          register={register}
+          control={control}
+          name={name}
           readOnly={readOnly}
+          rules={rules}
+          onChange={onChange}
         />
         {assets && setSelectedAsset && (
           <AssetSelector

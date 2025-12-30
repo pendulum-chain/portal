@@ -1,16 +1,20 @@
-import { FC } from 'react';
 import Amount from '../../../../components/Form/Amount';
 import gasolinePump from '../../../../assets/gasoline-pump.svg';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 
-interface UnlockConfirmStepProps {
-  register: UseFormRegisterReturn<'amount'>;
+interface UnlockConfirmStepProps<FormFieldValues extends FieldValues & { amount: string | number } = FieldValues & { amount: string | number }> {
+  control: Control<FormFieldValues>;
   balance: number;
   gasFee: string;
   error?: string;
 }
 
-export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, balance, gasFee, error }) => {
+export const UnlockConfirmStep = <FormFieldValues extends FieldValues & { amount: string | number } = FieldValues & { amount: string | number }>({
+  control,
+  balance,
+  gasFee,
+  error,
+}: UnlockConfirmStepProps<FormFieldValues>) => {
   const noSetValue = () => null;
   return (
     <div className="flex w-full flex-col items-center rounded-lg">
@@ -20,7 +24,8 @@ export const UnlockConfirmStep: FC<UnlockConfirmStepProps> = ({ register, balanc
       </div>
       <form className="flex w-full flex-col">
         <Amount
-          register={register}
+          control={control}
+          name={'amount' as FieldPath<FormFieldValues>}
           max={balance}
           setValue={noSetValue}
           error={error}

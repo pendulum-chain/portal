@@ -47,7 +47,7 @@ function ClaimRewardsDialog(props: Props) {
     },
   });
 
-  const { formState, register, setValue, getValues } = form;
+  const { formState, control, setValue, getValues } = form;
 
   useMemo(() => {
     if (!visible)
@@ -99,7 +99,8 @@ function ClaimRewardsDialog(props: Props) {
             <form className="flex flex-col">
               <Amount
                 fullMax={true}
-                register={register('amount')}
+                control={control}
+                name="amount"
                 max={nativeToDecimal(userRewardsBalance).toNumber()}
                 setValue={(n: number) => setValue('amount', n)}
                 error={formState.errors.amount?.message?.toString()}
@@ -116,7 +117,7 @@ function ClaimRewardsDialog(props: Props) {
           </div>
         );
     }
-  }, [step, formState, register, setValue, userRewardsBalance]);
+  }, [step, formState, control, setValue, userRewardsBalance]);
 
   const getButtonText = (step: ClaimStep) => {
     switch (step) {
