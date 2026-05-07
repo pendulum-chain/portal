@@ -7,7 +7,7 @@ import TelegramLogo from '../../assets/socials-telegram';
 import TwitterLogo from '../../assets/socials-twitter';
 
 const socialLinks = [
-  { href: 'https://discord.gg/wJ2fQh776B', Logo: DiscordLogo },
+  { href: 'https://discord.gg/qK9q4NADC', Logo: DiscordLogo },
   { href: 'https://twitter.com/pendulum_chain', Logo: TwitterLogo },
   { href: 'https://t.me/pendulum_chain', Logo: TelegramLogo },
   {
