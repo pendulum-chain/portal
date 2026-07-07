@@ -19,12 +19,14 @@ export function toChecksumAddress(address: string): string {
 }
 
 /**
- * Valid destination address for the migration. Mixed-case addresses must have
- * a correct EIP-55 checksum; single-case addresses carry no checksum
- * information and are accepted as-is.
+ * Valid destination address for the migration. The zero address is rejected
+ * (the vault refuses it, so the burn could never be released); mixed-case
+ * addresses must have a correct EIP-55 checksum; single-case addresses carry
+ * no checksum information and are accepted as-is.
  */
 export function isValidEip55Address(address: string): boolean {
   if (!isHexAddressFormat(address)) return false;
+  if (/^0x0{40}$/.test(address)) return false;
   const body = address.slice(2);
   const isMixedCase = /[A-F]/.test(body) && /[a-f]/.test(body);
   return isMixedCase ? toChecksumAddress(address) === address : true;
