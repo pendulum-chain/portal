@@ -14,6 +14,11 @@ interface SchemaParams {
   minimumMigrationAmount: number;
   existentialDeposit: number;
   tokenSymbol: string;
+  /** MigrationVault address on Base ('' until configured). Rejected as a
+   *  destination: the vault refuses a release to itself, so burning towards it
+   *  would strand the funds (and, on-chain, this is the one address the pallet
+   *  cannot reject because it has no knowledge of Base state). */
+  vaultAddress: string;
 }
 
 export function getMigrationValidationSchema({
@@ -22,6 +27,7 @@ export function getMigrationValidationSchema({
   minimumMigrationAmount,
   existentialDeposit,
   tokenSymbol,
+  vaultAddress,
 }: SchemaParams) {
   return Yup.object<MigrationFormValues>().shape({
     amount: Yup.number()
@@ -46,6 +52,11 @@ export function getMigrationValidationSchema({
         'eip55',
         'Not a valid Base (EVM) address — check the 0x-prefixed address and its checksum',
         (value) => Boolean(value && isValidEip55Address(value)),
+      )
+      .test(
+        'not-vault',
+        'That is the migration vault address — tokens sent there can never be released. Enter your own Base wallet address.',
+        (value) => !vaultAddress || !value || value.toLowerCase() !== vaultAddress.toLowerCase(),
       ),
     confirmIrreversible: Yup.boolean()
       .required()

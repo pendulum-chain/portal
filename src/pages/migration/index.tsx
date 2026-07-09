@@ -94,8 +94,9 @@ function Migration() {
         minimumMigrationAmount: constants?.minimumMigrationAmount ?? 1,
         existentialDeposit: constants?.existentialDeposit ?? 0,
         tokenSymbol,
+        vaultAddress: target?.vaultAddress ?? '',
       }),
-    [balances.transferable, balances.total, constants, tokenSymbol],
+    [balances.transferable, balances.total, constants, tokenSymbol, target?.vaultAddress],
   );
 
   const { register, control, handleSubmit, setValue, watch, formState, reset } = useForm<MigrationFormValues>({
