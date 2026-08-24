@@ -8,7 +8,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Amount from '../../components/Form/Amount';
 import { getMigrationTarget } from '../../constants/migration';
-import { isContractOnBase, isValidEip55Address, toChecksumAddress } from '../../helpers/ethereum';
+import { getPerReleaseCap, isContractOnBase, isValidEip55Address, toChecksumAddress } from '../../helpers/ethereum';
 import { useBaseReleaseStatus } from '../../hooks/migration/useBaseReleaseStatus';
 import { PendingMigration, useMigrationPallet } from '../../hooks/migration/useMigrationPallet';
 import { TenantName } from '../../models/Tenant';
@@ -82,6 +82,7 @@ function Migration() {
   const [submissionPending, setSubmissionPending] = useState(false);
   const [pendingMigration, setPendingMigration] = useState<PendingMigration | undefined>(undefined);
   const [contractConfirmed, setContractConfirmed] = useState(false);
+  const [capConfirmed, setCapConfirmed] = useState(false);
 
   const target = getMigrationTarget(tenantName);
   const lockedBalance = Math.max(0, balances.total - balances.transferable);
@@ -114,6 +115,21 @@ function Migration() {
     { enabled: Boolean(target && checksummedAddress), staleTime: 60_000 },
   );
 
+  // The vault's per-release cap, in whole PEN. A migration above it is burned
+  // but its release on Base is deferred until governance raises the cap, so we
+  // warn and ask the user to split the amount (round-7 review observation C).
+  const { data: perReleaseCapPen } = useQuery(
+    ['migration', 'perReleaseCap', target?.vaultAddress],
+    () => getPerReleaseCap(target!.baseRpcUrl, target!.vaultAddress).then((cap) => Number(cap / 10n ** 12n) / 1e6),
+    { enabled: Boolean(target), staleTime: 60_000 },
+  );
+  const amountValue = Number(watch('amount'));
+  const exceedsPerReleaseCap =
+    perReleaseCapPen !== undefined &&
+    perReleaseCapPen > 0 &&
+    Number.isFinite(amountValue) &&
+    amountValue > perReleaseCapPen;
+
   if (tenantName !== TenantName.Pendulum) {
     return (
       <div className="card mx-auto mt-8 w-full max-w-xl bg-base-200 p-6">
@@ -143,6 +159,10 @@ function Migration() {
       showToast(ToastMessage.WARNING, 'Please confirm the smart-contract destination first.');
       return;
     }
+    if (exceedsPerReleaseCap && !capConfirmed) {
+      showToast(ToastMessage.WARNING, 'Please confirm you understand the release above the cap will be delayed.');
+      return;
+    }
     setSubmissionPending(true);
     try {
       const amountNative = decimalToNative(values.amount, tokenDecimals).toString();
@@ -150,6 +170,7 @@ function Migration() {
       setPendingMigration(migration);
       reset();
       setContractConfirmed(false);
+      setCapConfirmed(false);
     } catch (error) {
       showToast(ToastMessage.ERROR, error instanceof Error ? error.message : 'Migration failed');
     } finally {
@@ -191,6 +212,29 @@ function Migration() {
                 {lockedBalance.toFixed(4)} {tokenSymbol} of your balance is locked (staking, vesting or governance).
                 Unlock it first to migrate it — note the unstaking delay applies.
               </p>
+            )}
+
+            {exceedsPerReleaseCap && (
+              <div className="alert alert-warning mt-3 text-sm">
+                <div>
+                  <p>
+                    This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
+                    {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
+                    Pendulum, but the release on Base is <strong>held</strong> until governance raises the cap, which can
+                    take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
+                    {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
+                  </p>
+                  <label className="mt-2 flex cursor-pointer items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-sm"
+                      checked={capConfirmed}
+                      onChange={(e) => setCapConfirmed(e.target.checked)}
+                    />
+                    <span>I understand this release will be delayed until governance raises the cap</span>
+                  </label>
+                </div>
+              </div>
             )}
 
             <label className="label mt-3">

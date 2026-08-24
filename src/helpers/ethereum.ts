@@ -58,6 +58,7 @@ function addressWord(address: string): string {
 const SELECTOR_NONCE_CONSUMED = '0xe406947e'; // nonceConsumed(uint64)
 const SELECTOR_ACTIVE_APPROVALS = '0xab3894a7'; // activeApprovals(bytes32)
 const SELECTOR_THRESHOLD = '0x42cde4e8'; // threshold()
+const SELECTOR_PER_RELEASE_CAP = '0x9937d635'; // perReleaseCap()
 
 /** keccak256(abi.encode(uint64 nonce, address recipient, uint256 palletAmount)) */
 export function migrationPayloadHash(nonce: bigint, recipient: string, palletAmount: bigint): string {
@@ -84,6 +85,17 @@ export async function getActiveApprovals(baseRpcUrl: string, vault: string, payl
 export async function getApprovalThreshold(baseRpcUrl: string, vault: string): Promise<number> {
   const result = await rpc(baseRpcUrl, 'eth_call', [{ to: vault, data: SELECTOR_THRESHOLD }, 'latest']);
   return Number(BigInt(result));
+}
+
+/**
+ * The vault's per-release cap, in 18-decimal token (wei) units. A single
+ * migration whose released amount exceeds this is accepted and burned on
+ * Pendulum but its release on Base is deferred until governance raises the cap
+ * — so the UI warns before submission and suggests splitting the amount.
+ */
+export async function getPerReleaseCap(baseRpcUrl: string, vault: string): Promise<bigint> {
+  const result = await rpc(baseRpcUrl, 'eth_call', [{ to: vault, data: SELECTOR_PER_RELEASE_CAP }, 'latest']);
+  return BigInt(result);
 }
 
 /** True when the address has deployed code on Base (a smart contract). */
