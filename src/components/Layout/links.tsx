@@ -132,6 +132,16 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
     prefix: <StakingIcon />,
   };
 
+  const migrationLinkItem: LinkItem = {
+    link: `./${PAGES_PATHS.MIGRATION}`,
+    title: 'Migrate to Base',
+    hidden: tenantName !== TenantName.Pendulum,
+    props: {
+      className: ({ isActive } = {}) => (isActive ? 'active' : ''),
+    },
+    prefix: <SwapIcon className="p-1" />,
+  };
+
   const governanceLinkItem: LinkItem = {
     link: `https://${tenantName}.polkassembly.io/`,
     title: 'Governance',
@@ -158,6 +168,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
     spacewalkLinkItem,
     nablaLinkItem,
     stakingLinkItem,
+    migrationLinkItem,
     governanceLinkItem,
     fundWalletItem,
   ];
