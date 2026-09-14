@@ -183,7 +183,7 @@ function Migration() {
       <div className="card bg-base-200 p-6">
         <h1 className="text-2xl font-bold">Migrate {tokenSymbol} to Base</h1>
         <p className="mt-2 text-sm text-neutral-500">
-          Lock in your migration: the amount is burned on Pendulum and released 1:1 to your address on Base by a 3-of-5
+          Lock in your migration: the amount is burned on Pendulum and released 1:1 to your address on Base by a 3-of-4
           attestor set after finality.{' '}
           <strong>This is irreversible — tokens sent to a wrong address cannot be recovered.</strong>
         </p>
