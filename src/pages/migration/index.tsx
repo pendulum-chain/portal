@@ -204,15 +204,31 @@ function Migration() {
           <div className="alert mt-4 text-sm">Connect your wallet to start the migration.</div>
         ) : (
           <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
-            <Amount
-              control={control}
-              name="amount"
-              setValue={(n) => setValue('amount', n, { shouldValidate: true })}
-              max={balances.transferable}
-              error={formState.errors.amount?.message}
-              assetSuffix={tokenSymbol}
-              hideHalfButton
-            />
+            {/* A pasted comma is ambiguous (decimal in many locales, thousands
+                separator in others) and the input strips it as a thousands
+                separator — "500,5" would migrate 5005. Migrations are one-way,
+                so refuse the paste instead of guessing. */}
+            <div
+              onPasteCapture={(e) => {
+                if (!e.clipboardData.getData('text').includes(',')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                showToast(
+                  ToastMessage.WARNING,
+                  'Use a dot as the decimal separator (for example 500.5). Amounts containing a comma are not accepted.',
+                );
+              }}
+            >
+              <Amount
+                control={control}
+                name="amount"
+                setValue={(n) => setValue('amount', n, { shouldValidate: true })}
+                max={balances.transferable}
+                error={formState.errors.amount?.message}
+                assetSuffix={tokenSymbol}
+                hideHalfButton
+              />
+            </div>
             {lockedBalance > 0.0001 && (
               <p className="mt-1 text-xs text-neutral-500">
                 {lockedBalance.toFixed(4)} {tokenSymbol} of your balance is locked (staking, vesting or governance).
