@@ -57,6 +57,12 @@ function ReleaseStatusCard({
               view on BaseScan
             </a>
           </span>
+        ) : status && status.approvals >= status.threshold ? (
+          <span>
+            Approved by the attestor set ({status.threshold}/{status.threshold}). The release is queued — the vault&rsquo;s
+            daily release cap is exhausted or releases are paused — and completes automatically once capacity frees up.
+            Nothing to do on your side; check back in a few hours.
+          </span>
         ) : (
           <span>
             Waiting for attestor approvals ({status ? `${Math.min(status.approvals, status.threshold)}/${status.threshold}` : '…'})
