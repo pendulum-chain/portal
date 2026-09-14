@@ -87,8 +87,10 @@ function Migration() {
 
   const [submissionPending, setSubmissionPending] = useState(false);
   const [pendingMigration, setPendingMigration] = useState<PendingMigration | undefined>(undefined);
-  const [contractConfirmed, setContractConfirmed] = useState(false);
-  const [capConfirmed, setCapConfirmed] = useState(false);
+  // Each acknowledgement is stored together with the value it was given for,
+  // so editing the address or the amount silently retires it.
+  const [contractConfirmedFor, setContractConfirmedFor] = useState<string | undefined>(undefined);
+  const [capConfirmedFor, setCapConfirmedFor] = useState<number | undefined>(undefined);
 
   const target = getMigrationTarget(tenantName);
   const lockedBalance = Math.max(0, balances.total - balances.transferable);
@@ -115,26 +117,39 @@ function Migration() {
   const addressIsValid = isValidEip55Address(baseAddress);
   const checksummedAddress = addressIsValid ? toChecksumAddress(baseAddress) : undefined;
 
-  const { data: destinationIsContract } = useQuery(
+  const contractQuery = useQuery(
     ['migration', 'isContract', checksummedAddress],
     () => isContractOnBase(target!.baseRpcUrl, checksummedAddress!),
     { enabled: Boolean(target && checksummedAddress), staleTime: 60_000 },
   );
+  const destinationIsContract = contractQuery.data;
+  // A failed or still-running read must not silently drop the warning: an
+  // unverifiable destination needs the same explicit acknowledgement.
+  const contractCheckFailed = contractQuery.isError;
+  const contractCheckPending = Boolean(target && checksummedAddress) && contractQuery.data === undefined && !contractQuery.isError;
+  const needsContractAck = Boolean(destinationIsContract) || contractCheckFailed;
+  const contractConfirmed = contractConfirmedFor !== undefined && contractConfirmedFor === checksummedAddress;
 
   // The vault's per-release cap, in whole PEN. A migration above it is burned
   // but its release on Base is deferred until governance raises the cap, so we
   // warn and ask the user to split the amount (round-7 review observation C).
-  const { data: perReleaseCapPen } = useQuery(
+  const capQuery = useQuery(
     ['migration', 'perReleaseCap', target?.vaultAddress],
     () => getPerReleaseCap(target!.baseRpcUrl, target!.vaultAddress).then((cap) => Number(cap / 10n ** 12n) / 1e6),
     { enabled: Boolean(target), staleTime: 60_000 },
   );
+  const perReleaseCapPen = capQuery.data;
+  const capCheckFailed = capQuery.isError;
+  const capCheckPending = Boolean(target) && capQuery.data === undefined && !capQuery.isError;
   const amountValue = Number(watch('amount'));
   const exceedsPerReleaseCap =
     perReleaseCapPen !== undefined &&
     perReleaseCapPen > 0 &&
     Number.isFinite(amountValue) &&
     amountValue > perReleaseCapPen;
+  const needsCapAck = exceedsPerReleaseCap || capCheckFailed;
+  const capConfirmed = capConfirmedFor !== undefined && capConfirmedFor === amountValue;
+  const checksPending = contractCheckPending || capCheckPending;
 
   if (tenantName !== TenantName.Pendulum) {
     return (
@@ -161,12 +176,16 @@ function Migration() {
       showToast(ToastMessage.NO_WALLET_SELECTED);
       return;
     }
-    if (destinationIsContract && !contractConfirmed) {
-      showToast(ToastMessage.WARNING, 'Please confirm the smart-contract destination first.');
+    if (checksPending) {
+      showToast(ToastMessage.WARNING, 'Still verifying the destination against Base — try again in a moment.');
       return;
     }
-    if (exceedsPerReleaseCap && !capConfirmed) {
-      showToast(ToastMessage.WARNING, 'Please confirm you understand the release above the cap will be delayed.');
+    if (needsContractAck && !contractConfirmed) {
+      showToast(ToastMessage.WARNING, 'Please confirm the destination address first.');
+      return;
+    }
+    if (needsCapAck && !capConfirmed) {
+      showToast(ToastMessage.WARNING, 'Please confirm you understand the release may be delayed.');
       return;
     }
     setSubmissionPending(true);
@@ -175,8 +194,8 @@ function Migration() {
       const migration = await submitMigration(amountNative, toChecksumAddress(values.baseAddress), walletAccount);
       setPendingMigration(migration);
       reset();
-      setContractConfirmed(false);
-      setCapConfirmed(false);
+      setContractConfirmedFor(undefined);
+      setCapConfirmedFor(undefined);
     } catch (error) {
       showToast(ToastMessage.ERROR, error instanceof Error ? error.message : 'Migration failed');
     } finally {
@@ -236,24 +255,32 @@ function Migration() {
               </p>
             )}
 
-            {exceedsPerReleaseCap && (
+            {needsCapAck && (
               <div className="alert alert-warning mt-3 text-sm">
                 <div>
-                  <p>
-                    This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
-                    {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
-                    Pendulum, but the release on Base is <strong>held</strong> until governance raises the cap, which can
-                    take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
-                    {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
-                  </p>
+                  {capCheckFailed ? (
+                    <p>
+                      We could not read the vault&rsquo;s <strong>per-release cap</strong> from Base right now, so we
+                      cannot tell whether this amount will be released promptly or held until governance raises the
+                      cap. Retry later, or continue only if a delayed release is acceptable to you.
+                    </p>
+                  ) : (
+                    <p>
+                      This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
+                      {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
+                      Pendulum, but the release on Base is <strong>held</strong> until governance raises the cap, which
+                      can take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
+                      {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
+                    </p>
+                  )}
                   <label className="mt-2 flex cursor-pointer items-center gap-2">
                     <input
                       type="checkbox"
                       className="checkbox checkbox-sm"
                       checked={capConfirmed}
-                      onChange={(e) => setCapConfirmed(e.target.checked)}
+                      onChange={(e) => setCapConfirmedFor(e.target.checked ? amountValue : undefined)}
                     />
-                    <span>I understand this release will be delayed until governance raises the cap</span>
+                    <span>I understand this release may be delayed until governance raises the cap</span>
                   </label>
                 </div>
               </div>
@@ -282,21 +309,33 @@ function Migration() {
               </p>
             )}
 
-            {destinationIsContract && (
+            {needsContractAck && (
               <div className="alert alert-warning mt-3 text-sm">
                 <div>
-                  <p>
-                    This address is a <strong>smart contract</strong> on Base. Only continue if you are certain it can
-                    hold and move ERC-20 tokens (e.g. a Safe) — otherwise the tokens will be stuck forever.
-                  </p>
+                  {contractCheckFailed ? (
+                    <p>
+                      We could not verify on Base whether this address is a <strong>smart contract</strong> (the RPC
+                      read failed). Tokens sent to a contract that cannot hold ERC-20s are lost forever. Retry later,
+                      or continue only if you are certain this is a wallet you control.
+                    </p>
+                  ) : (
+                    <p>
+                      This address is a <strong>smart contract</strong> on Base. Only continue if you are certain it
+                      can hold and move ERC-20 tokens (e.g. a Safe) — otherwise the tokens will be stuck forever.
+                    </p>
+                  )}
                   <label className="mt-2 flex cursor-pointer items-center gap-2">
                     <input
                       type="checkbox"
                       className="checkbox checkbox-sm"
                       checked={contractConfirmed}
-                      onChange={(e) => setContractConfirmed(e.target.checked)}
+                      onChange={(e) => setContractConfirmedFor(e.target.checked ? checksummedAddress : undefined)}
                     />
-                    <span>I verified this contract can receive ERC-20 tokens</span>
+                    <span>
+                      {contractCheckFailed
+                        ? 'I am certain this address is a wallet I control on Base'
+                        : 'I verified this contract can receive ERC-20 tokens'}
+                    </span>
                   </label>
                 </div>
               </div>
@@ -323,10 +362,14 @@ function Migration() {
               className="mt-4 w-full"
               color="primary"
               type="submit"
-              disabled={paused || submissionPending}
+              disabled={paused || submissionPending || checksPending}
               loading={submissionPending}
             >
-              {submissionPending ? 'Waiting for finalization…' : `Migrate ${tokenSymbol} to Base`}
+              {submissionPending
+                ? 'Waiting for finalization…'
+                : checksPending
+                  ? 'Verifying destination…'
+                  : `Migrate ${tokenSymbol} to Base`}
             </Button>
           </form>
         )}
