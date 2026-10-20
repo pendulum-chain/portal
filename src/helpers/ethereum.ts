@@ -98,8 +98,19 @@ export async function getPerReleaseCap(baseRpcUrl: string, vault: string): Promi
   return BigInt(result);
 }
 
-/** True when the address has deployed code on Base (a smart contract). */
+/**
+ * True when `eth_getCode` output is contract code. An EIP-7702 delegation
+ * designator (0xef0100 followed by the 20-byte delegate address) is not: it
+ * marks a regular key-controlled account that delegated to a smart-account
+ * implementation, and such an account holds and moves ERC-20 tokens normally.
+ */
+export function isContractCode(code: string): boolean {
+  const normalized = code.toLowerCase();
+  if (normalized === '0x' || normalized === '0x0') return false;
+  return !/^0xef0100[0-9a-f]{40}$/.test(normalized);
+}
+
+/** True when the address has deployed contract code on Base. */
 export async function isContractOnBase(baseRpcUrl: string, address: string): Promise<boolean> {
-  const code = await rpc(baseRpcUrl, 'eth_getCode', [address, 'latest']);
-  return code !== '0x' && code !== '0x0';
+  return isContractCode(await rpc(baseRpcUrl, 'eth_getCode', [address, 'latest']));
 }
