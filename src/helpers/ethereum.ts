@@ -32,13 +32,13 @@ export function isValidEip55Address(address: string): boolean {
   return isMixedCase ? toChecksumAddress(address) === address : true;
 }
 
-async function rpc(baseRpcUrl: string, method: string, params: unknown[]): Promise<string> {
+async function rpc<T = string>(baseRpcUrl: string, method: string, params: unknown[]): Promise<T> {
   const response = await fetch(baseRpcUrl, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
   });
-  const json = (await response.json()) as { result?: string; error?: { message: string } };
+  const json = (await response.json()) as { result?: T; error?: { message: string } };
   if (json.error || json.result === undefined) {
     throw new Error(`Base RPC ${method} failed: ${json.error?.message ?? 'no result'}`);
   }
@@ -59,6 +59,8 @@ const SELECTOR_NONCE_CONSUMED = '0xe406947e'; // nonceConsumed(uint64)
 const SELECTOR_ACTIVE_APPROVALS = '0xab3894a7'; // activeApprovals(bytes32)
 const SELECTOR_THRESHOLD = '0x42cde4e8'; // threshold()
 const SELECTOR_PER_RELEASE_CAP = '0x9937d635'; // perReleaseCap()
+// keccak256("Released(uint64,address,uint256,uint256)"), emitted with the token transfer to the recipient.
+const TOPIC_RELEASED = '0xba1208278d2bd6cfd1a8048239811d35ba512b87960a83e0c34dafefa650dd7b';
 
 /** keccak256(abi.encode(uint64 nonce, address recipient, uint256 palletAmount)) */
 export function migrationPayloadHash(nonce: bigint, recipient: string, palletAmount: bigint): string {
@@ -113,4 +115,36 @@ export function isContractCode(code: string): boolean {
 /** True when the address has deployed contract code on Base. */
 export async function isContractOnBase(baseRpcUrl: string, address: string): Promise<boolean> {
   return isContractCode(await rpc(baseRpcUrl, 'eth_getCode', [address, 'latest']));
+}
+
+/**
+ * Hash of the transaction that released this migration on Base: the vault's
+ * Released event for the nonce, emitted in the same transaction as the token
+ * transfer to the recipient. Searches back from the latest block in windows
+ * small enough for public RPC log limits (5 x 2,000 blocks, about 5.5 hours on
+ * Base) and returns undefined if the release is older than that.
+ */
+export async function findReleaseTxHash(
+  baseRpcUrl: string,
+  vault: string,
+  nonce: bigint,
+  windows = 5,
+  windowSize = 2_000n,
+): Promise<string | undefined> {
+  const latest = BigInt(await rpc(baseRpcUrl, 'eth_blockNumber', []));
+  for (let i = 0n; i < BigInt(windows); i++) {
+    const toBlock = latest - i * windowSize;
+    if (toBlock < 0n) break;
+    const fromBlock = toBlock - windowSize + 1n > 0n ? toBlock - windowSize + 1n : 0n;
+    const logs = await rpc<{ transactionHash: string }[]>(baseRpcUrl, 'eth_getLogs', [
+      {
+        address: vault,
+        topics: [TOPIC_RELEASED, `0x${to32ByteWord(nonce)}`],
+        fromBlock: `0x${fromBlock.toString(16)}`,
+        toBlock: `0x${toBlock.toString(16)}`,
+      },
+    ]);
+    if (logs.length) return logs[0].transactionHash;
+  }
+  return undefined;
 }

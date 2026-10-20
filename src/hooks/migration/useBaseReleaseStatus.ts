@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { MigrationTargetConfig } from '../../constants/migration';
 import {
+  findReleaseTxHash,
   getActiveApprovals,
   getApprovalThreshold,
   isNonceConsumed,
@@ -20,7 +21,10 @@ export interface BaseReleaseStatus {
  * (nonce, recipient, amount) tuple has, and whether the nonce was consumed
  * (= tokens released). Polling stops once released.
  */
-export function useBaseReleaseStatus(migration: PendingMigration | undefined, target: MigrationTargetConfig | undefined) {
+export function useBaseReleaseStatus(
+  migration: PendingMigration | undefined,
+  target: MigrationTargetConfig | undefined,
+) {
   return useQuery<BaseReleaseStatus>(
     ['migration', 'baseStatus', migration?.nonce.toString()],
     async () => {
@@ -38,5 +42,21 @@ export function useBaseReleaseStatus(migration: PendingMigration | undefined, ta
       refetchInterval: (data) => (data?.released ? false : 10_000),
       retry: 3,
     },
+  );
+}
+
+/** Hash of the release transaction on Base, looked up once the migration is released. */
+export function useReleaseTxHash(
+  migration: PendingMigration | undefined,
+  target: MigrationTargetConfig | undefined,
+  released: boolean,
+) {
+  return useQuery<string | undefined>(
+    ['migration', 'releaseTx', migration?.nonce.toString()],
+    async () => {
+      if (!migration || !target) throw new Error('not enabled');
+      return findReleaseTxHash(target.baseRpcUrl, target.vaultAddress, migration.nonce);
+    },
+    { enabled: Boolean(migration && target && released), staleTime: Infinity, retry: 2 },
   );
 }

@@ -9,7 +9,7 @@ import { useNodeInfoState } from '../../NodeInfoProvider';
 import Amount from '../../components/Form/Amount';
 import { getMigrationTarget } from '../../constants/migration';
 import { getPerReleaseCap, isContractOnBase, isValidEip55Address, toChecksumAddress } from '../../helpers/ethereum';
-import { useBaseReleaseStatus } from '../../hooks/migration/useBaseReleaseStatus';
+import { useBaseReleaseStatus, useReleaseTxHash } from '../../hooks/migration/useBaseReleaseStatus';
 import { PendingMigration, useMigrationPallet } from '../../hooks/migration/useMigrationPallet';
 import { TenantName } from '../../models/Tenant';
 import { decimalToNative, nativeToDecimal } from '../../shared/parseNumbers/metric';
@@ -32,6 +32,7 @@ function ReleaseStatusCard({
 }) {
   const target = getMigrationTarget(tenantName);
   const { data: status } = useBaseReleaseStatus(migration, target);
+  const { data: releaseTx } = useReleaseTxHash(migration, target, Boolean(status?.released));
   const checksummedRecipient = toChecksumAddress(migration.recipient);
   const amount = nativeToDecimal(migration.palletAmount.toString(), tokenDecimals).toString();
 
@@ -50,23 +51,28 @@ function ReleaseStatusCard({
             ✓ Released on Base —{' '}
             <a
               className="link"
-              href={`${target.baseExplorerUrl}/address/${checksummedRecipient}`}
+              href={
+                releaseTx
+                  ? `${target.baseExplorerUrl}/tx/${releaseTx}`
+                  : `${target.baseExplorerUrl}/address/${checksummedRecipient}`
+              }
               target="_blank"
               rel="nofollow noreferrer"
             >
-              view on BaseScan
+              {releaseTx ? 'view the release transaction on BaseScan' : 'view on BaseScan'}
             </a>
           </span>
         ) : status && status.approvals >= status.threshold ? (
           <span>
-            Approved by the attestor set ({status.threshold}/{status.threshold}). The release is queued — the vault&rsquo;s
-            daily release cap is exhausted or releases are paused — and completes automatically once capacity frees up.
-            Nothing to do on your side; check back in a few hours.
+            Approved by the attestor set ({status.threshold}/{status.threshold}). The release is queued — the
+            vault&rsquo;s daily release cap is exhausted or releases are paused — and completes automatically once
+            capacity frees up. Nothing to do on your side; check back in a few hours.
           </span>
         ) : (
           <span>
-            Waiting for attestor approvals ({status ? `${Math.min(status.approvals, status.threshold)}/${status.threshold}` : '…'})
-            — this normally completes within a few minutes of finality.
+            Waiting for attestor approvals (
+            {status ? `${Math.min(status.approvals, status.threshold)}/${status.threshold}` : '…'}) — this normally
+            completes within a few minutes of finality.
           </span>
         )}
       </div>
@@ -126,7 +132,8 @@ function Migration() {
   // A failed or still-running read must not silently drop the warning: an
   // unverifiable destination needs the same explicit acknowledgement.
   const contractCheckFailed = contractQuery.isError;
-  const contractCheckPending = Boolean(target && checksummedAddress) && contractQuery.data === undefined && !contractQuery.isError;
+  const contractCheckPending =
+    Boolean(target && checksummedAddress) && contractQuery.data === undefined && !contractQuery.isError;
   const needsContractAck = Boolean(destinationIsContract) || contractCheckFailed;
   const contractConfirmed = contractConfirmedFor !== undefined && contractConfirmedFor === checksummedAddress;
 
@@ -261,8 +268,8 @@ function Migration() {
                   {capCheckFailed ? (
                     <p>
                       We could not read the vault&rsquo;s <strong>per-release cap</strong> from Base right now, so we
-                      cannot tell whether this amount will be released promptly or held until governance raises the
-                      cap. Retry later, or continue only if a delayed release is acceptable to you.
+                      cannot tell whether this amount will be released promptly or held until governance raises the cap.
+                      Retry later, or continue only if a delayed release is acceptable to you.
                     </p>
                   ) : (
                     <p>
@@ -315,13 +322,13 @@ function Migration() {
                   {contractCheckFailed ? (
                     <p>
                       We could not verify on Base whether this address is a <strong>smart contract</strong> (the RPC
-                      read failed). Tokens sent to a contract that cannot hold ERC-20s are lost forever. Retry later,
-                      or continue only if you are certain this is a wallet you control.
+                      read failed). Tokens sent to a contract that cannot hold ERC-20s are lost forever. Retry later, or
+                      continue only if you are certain this is a wallet you control.
                     </p>
                   ) : (
                     <p>
-                      This address is a <strong>smart contract</strong> on Base. Only continue if you are certain it
-                      can hold and move ERC-20 tokens (e.g. a Safe) — otherwise the tokens will be stuck forever.
+                      This address is a <strong>smart contract</strong> on Base. Only continue if you are certain it can
+                      hold and move ERC-20 tokens (e.g. a Safe) — otherwise the tokens will be stuck forever.
                     </p>
                   )}
                   <label className="mt-2 flex cursor-pointer items-center gap-2">
