@@ -9,7 +9,13 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Amount from '../../components/Form/Amount';
 import { getMigrationTarget } from '../../constants/migration';
-import { getVaultState, isContractOnBase, isValidEip55Address, toChecksumAddress } from '../../helpers/ethereum';
+import {
+  VaultState,
+  getVaultState,
+  isContractOnBase,
+  isValidEip55Address,
+  toChecksumAddress,
+} from '../../helpers/ethereum';
 import { useBaseReleaseStatus, useReleaseTxHash } from '../../hooks/migration/useBaseReleaseStatus';
 import { PendingMigration, useMigrationPallet } from '../../hooks/migration/useMigrationPallet';
 import { TenantName } from '../../models/Tenant';
@@ -86,6 +92,18 @@ function ReleaseStatusCard({
   );
 }
 
+function getVaultBlocker(vaultState: VaultState | undefined, readFailed: boolean): string | undefined {
+  return readFailed
+    ? 'We could not read the state of the migration vault from Base, so we cannot tell whether releases are possible right now. Submissions are disabled until the read succeeds; please try again later.'
+    : vaultState?.paused
+      ? 'Releases on Base are currently paused. Submissions are disabled until they resume.'
+      : vaultState && !vaultState.tokenSet
+        ? 'The migration vault on Base is not set up yet. Submissions are disabled until it is.'
+        : vaultState?.perReleaseCap === 0n
+          ? 'Releases on Base are currently suspended. Submissions are disabled until they resume.'
+          : undefined;
+}
+
 function Migration() {
   const { walletAccount, tenantName } = useGlobalState();
   const { api, tokenSymbol = 'PEN', tokenDecimals } = useNodeInfoState().state;
@@ -154,15 +172,7 @@ function Migration() {
   );
   const vaultState = vaultQuery.data;
   const vaultCheckPending = Boolean(target) && vaultState === undefined && !vaultQuery.isError;
-  const vaultBlocker = vaultQuery.isError
-    ? 'We could not read the state of the migration vault from Base, so we cannot tell whether releases are possible right now. Submissions are disabled until the read succeeds; please try again later.'
-    : vaultState?.paused
-      ? 'Releases on Base are currently paused. Submissions are disabled until they resume.'
-      : vaultState && !vaultState.tokenSet
-        ? 'The migration vault on Base is not set up yet. Submissions are disabled until it is.'
-        : vaultState?.perReleaseCap === 0n
-          ? 'Releases on Base are currently suspended. Submissions are disabled until they resume.'
-          : undefined;
+  const vaultBlocker = getVaultBlocker(vaultState, vaultQuery.isError);
   // In whole PEN (18-decimal token units).
   const perReleaseCapPen = vaultState && Number(vaultState.perReleaseCap / 10n ** 12n) / 1e6;
   const vaultBalancePen = vaultState && Number(vaultState.balance / 10n ** 12n) / 1e6;
@@ -235,6 +245,13 @@ function Migration() {
     }
     setSubmissionPending(true);
     try {
+      // The state shown can be a minute old; re-read it so a pause since then still stops the burn.
+      const fresh = await vaultQuery.refetch();
+      const freshBlocker = getVaultBlocker(fresh.data, fresh.isError);
+      if (freshBlocker) {
+        showToast(ToastMessage.WARNING, freshBlocker);
+        return;
+      }
       const amountNative = decimalToNative(values.amount, tokenDecimals).toString();
       const migration = await submitMigration(amountNative, toChecksumAddress(values.baseAddress), walletAccount);
       setPendingMigration(migration);

@@ -3,6 +3,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MigrationTargetConfig } from '../../../constants/migration';
 import { toChecksumAddress } from '../../../helpers/ethereum';
+import { showToast } from '../../../shared/showToast';
 import Migration from '..';
 
 const VAULT = '0xB421bFBa72328Bc7F97755Eed236762a0c758C59';
@@ -156,6 +157,18 @@ describe('vault state on Base', () => {
     expect(screen.queryByLabelText(/may be delayed/)).not.toBeInTheDocument();
     await userEvent.click(button);
     expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('re-reads the vault state before the burn', async () => {
+    renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    expect(button).toBeEnabled();
+    mockBaseRpc({ ...healthyVault, paused: true });
+    await userEvent.click(button);
+    expect(mockSubmit).not.toHaveBeenCalled();
+    expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(/currently paused/));
+    expect(await screen.findByText(/Releases on Base are currently paused/)).toBeInTheDocument();
   });
 
   it('keeps submission disabled while the vault state is loading', async () => {
