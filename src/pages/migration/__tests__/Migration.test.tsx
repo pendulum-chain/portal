@@ -54,6 +54,7 @@ interface VaultFixture {
   perReleaseCap: bigint;
   balance: bigint;
   failReads?: boolean;
+  chainId?: string;
 }
 const healthyVault: VaultFixture = {
   paused: false,
@@ -70,6 +71,7 @@ function mockBaseRpc(vault: VaultFixture) {
     const { method, params } = JSON.parse(String(init?.body));
     const { to, data } = params[0] ?? {};
     let result: string | undefined;
+    if (method === 'eth_chainId') result = vault.chainId ?? '0x2105';
     if (method === 'eth_getCode') result = '0x';
     if (method === 'eth_call' && to === VAULT && !vault.failReads) {
       result = {
@@ -105,7 +107,12 @@ function renderPage() {
 beforeAll(() => jest.spyOn(console, 'log').mockImplementation(() => undefined));
 beforeEach(() => {
   mockSubmit.mockReset().mockResolvedValue({ nonce: 1n, recipient: DESTINATION, palletAmount: 500n * 10n ** 12n });
-  mockTarget = { baseRpcUrl: 'https://base.example', vaultAddress: VAULT, baseExplorerUrl: 'https://basescan.org' };
+  mockTarget = {
+    baseRpcUrl: 'https://base.example',
+    vaultAddress: VAULT,
+    baseChainId: '0x2105',
+    baseExplorerUrl: 'https://basescan.org',
+  };
   mockBaseRpc(healthyVault);
 });
 
@@ -138,6 +145,7 @@ describe('vault state on Base', () => {
     ['no token is set', { ...healthyVault, token: '0x0000000000000000000000000000000000000000' }, /not set up yet/],
     ['the per-release cap is 0', { ...healthyVault, perReleaseCap: 0n }, /currently suspended/],
     ['the vault state cannot be read', { ...healthyVault, failReads: true }, /could not read the state/],
+    ['the Base RPC is on another chain', { ...healthyVault, chainId: '0x14a34' }, /could not read the state/],
   ])('refuses submission when %s', async (_label, vault, banner) => {
     mockBaseRpc(vault);
     renderPage();

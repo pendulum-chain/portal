@@ -107,9 +107,14 @@ export interface VaultState {
  * migration is accepted and burned on Pendulum regardless, but its release is
  * deferred while the vault is paused or has no token, and when the released
  * amount exceeds the per-release cap or the vault's balance -- so the UI checks
- * all of them before submission.
+ * all of them before submission. Fails unless the RPC is on `expectedChainId`.
  */
-export async function getVaultState(baseRpcUrl: string, vault: string): Promise<VaultState> {
+export async function getVaultState(baseRpcUrl: string, vault: string, expectedChainId: string): Promise<VaultState> {
+  // A contract at the vault address on another chain says nothing about Base.
+  const chainId = await rpc(baseRpcUrl, 'eth_chainId', []);
+  if (BigInt(chainId) !== BigInt(expectedChainId)) {
+    throw new Error(`Base RPC reports chain ${chainId}, expected ${expectedChainId}`);
+  }
   const call = (to: string, data: string) => rpc(baseRpcUrl, 'eth_call', [{ to, data }, 'latest']).then(BigInt);
   const [paused, token, perReleaseCap] = await Promise.all([
     call(vault, SELECTOR_PAUSED),

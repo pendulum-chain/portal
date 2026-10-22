@@ -149,7 +149,7 @@ function Migration() {
   // release is held, so we warn and ask for an explicit acknowledgement.
   const vaultQuery = useQuery(
     ['migration', 'vaultState', target?.vaultAddress],
-    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress),
+    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress, target!.baseChainId),
     { enabled: Boolean(target), staleTime: 60_000, refetchInterval: 60_000 },
   );
   const vaultState = vaultQuery.data;
