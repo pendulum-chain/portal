@@ -174,16 +174,20 @@ describe('vault state on Base', () => {
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 
-  it('re-reads the vault state before the burn', async () => {
+  it.each([
+    ['the vault was paused', { ...healthyVault, paused: true }, /Releases on Base are currently paused/],
+    ['the vault state cannot be read', { ...healthyVault, failReads: true }, /could not read the state/],
+    ['the Base RPC is on another chain', { ...healthyVault, chainId: '0x1' }, /could not read the state/],
+  ])('re-reads the vault state before the burn and refuses it when %s', async (_label, vault, banner) => {
     renderPage();
     await fillForm('500');
     const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
     expect(button).toBeEnabled();
-    mockBaseRpc({ ...healthyVault, paused: true });
+    mockBaseRpc(vault);
     await userEvent.click(button);
     expect(mockSubmit).not.toHaveBeenCalled();
-    expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(/currently paused/));
-    expect(await screen.findByText(/Releases on Base are currently paused/)).toBeInTheDocument();
+    expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(banner));
+    expect(await screen.findByText(banner)).toBeInTheDocument();
   });
 
   it('asks for the acknowledgement when the re-read before the burn lowers the per-release cap', async () => {
@@ -198,6 +202,14 @@ describe('vault state on Base', () => {
     await userEvent.click(await screen.findByLabelText(/may be delayed/));
     await userEvent.click(screen.getByRole('button', { name: 'Migrate PEN to Base' }));
     expect(mockSubmit).toHaveBeenCalledWith('500000000000000', toChecksumAddress(DESTINATION), expect.anything());
+  });
+
+  it('accepts the expected chain id in decimal', async () => {
+    mockTarget = { ...mockTarget!, baseChainId: '8453' };
+    renderPage();
+    await fillForm('500');
+    await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(mockSubmit).toHaveBeenCalled();
   });
 
   it('keeps submission disabled while the vault state is loading', async () => {
