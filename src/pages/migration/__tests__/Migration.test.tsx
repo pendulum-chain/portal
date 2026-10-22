@@ -38,25 +38,56 @@ jest.mock('../../../shared/showToast', () => ({
   showToast: jest.fn(),
 }));
 
+const TOKEN = '0x2222222222222222222222222222222222222222';
 const word = (value: bigint) => `0x${value.toString(16).padStart(64, '0')}`;
 const PEN = 10n ** 18n;
 
+interface VaultFixture {
+  paused: boolean;
+  token: string;
+  perReleaseCap: bigint;
+  balance: bigint;
+  failReads?: boolean;
+}
+const healthyVault: VaultFixture = {
+  paused: false,
+  token: TOKEN,
+  perReleaseCap: 1_000_000n * PEN,
+  balance: 10n ** 8n * PEN,
+};
+
 // Fake Base RPC: the destination is a regular account and the vault answers
-// with the state below.
-function mockBaseRpc(state: { perReleaseCap: bigint }) {
+// with the given state. Any other call fails.
+function mockBaseRpc(vault: VaultFixture) {
+  const vaultWord = VAULT.slice(2).toLowerCase().padStart(64, '0');
   global.fetch = jest.fn(async (_url: unknown, init?: { body?: unknown }) => {
     const { method, params } = JSON.parse(String(init?.body));
+    const { to, data } = params[0] ?? {};
     let result: string | undefined;
     if (method === 'eth_getCode') result = '0x';
-    if (method === 'eth_call' && params[0].to === VAULT && params[0].data === '0x9937d635') {
-      result = word(state.perReleaseCap);
+    if (method === 'eth_call' && to === VAULT && !vault.failReads) {
+      result = {
+        '0x5c975abb': word(vault.paused ? 1n : 0n),
+        '0xfc0c546a': word(BigInt(vault.token)),
+        '0x9937d635': word(vault.perReleaseCap),
+      }[data as string];
     }
+    if (method === 'eth_call' && to === vault.token && data === `0x70a08231${vaultWord}`) result = word(vault.balance);
     return { json: async () => (result ? { result } : { error: { message: 'unexpected call' } }) } as Response;
   }) as unknown as typeof fetch;
 }
 
+async function fillForm(amount: string) {
+  await userEvent.type(screen.getByPlaceholderText('0.0'), amount);
+  await userEvent.type(screen.getByPlaceholderText('0x…'), DESTINATION);
+  await userEvent.click(screen.getByLabelText(/irreversible/));
+}
+
 function renderPage() {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+    logger: { log: () => undefined, warn: () => undefined, error: () => undefined },
+  });
   render(
     <QueryClientProvider client={queryClient}>
       <Migration />
@@ -68,7 +99,7 @@ beforeAll(() => jest.spyOn(console, 'log').mockImplementation(() => undefined));
 beforeEach(() => {
   mockSubmit.mockReset().mockResolvedValue({ nonce: 1n, recipient: DESTINATION, palletAmount: 500n * 10n ** 12n });
   mockTarget = { baseRpcUrl: 'https://base.example', vaultAddress: VAULT, baseExplorerUrl: 'https://basescan.org' };
-  mockBaseRpc({ perReleaseCap: 1_000_000n * PEN });
+  mockBaseRpc(healthyVault);
 });
 
 describe('migration vault configuration', () => {
@@ -87,10 +118,57 @@ describe('migration vault configuration', () => {
   it('shows the form when the vault address is valid', async () => {
     renderPage();
     expect(screen.queryByText(/no valid migration vault address/)).not.toBeInTheDocument();
-    await userEvent.type(screen.getByPlaceholderText('0.0'), '500');
-    await userEvent.type(screen.getByPlaceholderText('0x…'), DESTINATION);
-    await userEvent.click(screen.getByLabelText(/irreversible/));
+    await fillForm('500');
     await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
     expect(mockSubmit).toHaveBeenCalledWith('500000000000000', toChecksumAddress(DESTINATION), expect.anything());
+  });
+});
+
+describe('vault state on Base', () => {
+  it.each([
+    ['the vault is paused', { ...healthyVault, paused: true }, /Releases on Base are currently paused/],
+    ['no token is set', { ...healthyVault, token: '0x0000000000000000000000000000000000000000' }, /not set up yet/],
+    ['the per-release cap is 0', { ...healthyVault, perReleaseCap: 0n }, /currently suspended/],
+    ['the vault state cannot be read', { ...healthyVault, failReads: true }, /could not read the state/],
+  ])('refuses submission when %s', async (_label, vault, banner) => {
+    mockBaseRpc(vault);
+    renderPage();
+    expect(await screen.findByText(banner)).toBeInTheDocument();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    expect(button).toBeDisabled();
+    await userEvent.click(button);
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('keeps submission disabled while the vault state is loading', async () => {
+    global.fetch = jest.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
+    renderPage();
+    await fillForm('500');
+    const button = screen.getByRole('button', { name: /Verifying/ });
+    expect(button).toBeDisabled();
+    await userEvent.click(button);
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('asks for an acknowledgement when the vault holds less than the amount', async () => {
+    mockBaseRpc({ ...healthyVault, balance: 200n * PEN });
+    renderPage();
+    await fillForm('500');
+    expect(await screen.findByText(/more than the migration vault on Base currently holds/)).toBeInTheDocument();
+    await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(mockSubmit).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByLabelText(/may be delayed/));
+    await userEvent.click(screen.getByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(mockSubmit).toHaveBeenCalledWith('500000000000000', toChecksumAddress(DESTINATION), expect.anything());
+  });
+
+  it('asks for an acknowledgement above the per-release cap', async () => {
+    mockBaseRpc({ ...healthyVault, perReleaseCap: 200n * PEN });
+    renderPage();
+    await fillForm('500');
+    expect(await screen.findByText(/above the vault.s/)).toBeInTheDocument();
+    await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 });

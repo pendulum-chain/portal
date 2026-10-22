@@ -8,7 +8,7 @@ import { useGlobalState } from '../../GlobalStateProvider';
 import { useNodeInfoState } from '../../NodeInfoProvider';
 import Amount from '../../components/Form/Amount';
 import { getMigrationTarget } from '../../constants/migration';
-import { getPerReleaseCap, isContractOnBase, isValidEip55Address, toChecksumAddress } from '../../helpers/ethereum';
+import { getVaultState, isContractOnBase, isValidEip55Address, toChecksumAddress } from '../../helpers/ethereum';
 import { useBaseReleaseStatus, useReleaseTxHash } from '../../hooks/migration/useBaseReleaseStatus';
 import { PendingMigration, useMigrationPallet } from '../../hooks/migration/useMigrationPallet';
 import { TenantName } from '../../models/Tenant';
@@ -140,26 +140,38 @@ function Migration() {
   const needsContractAck = Boolean(destinationIsContract) || contractCheckFailed;
   const contractConfirmed = contractConfirmedFor !== undefined && contractConfirmedFor === checksummedAddress;
 
-  // The vault's per-release cap, in whole PEN. A migration above it is burned
-  // but its release on Base is deferred until governance raises the cap, so we
-  // warn and ask the user to split the amount (round-7 review observation C).
-  const capQuery = useQuery(
-    ['migration', 'perReleaseCap', target?.vaultAddress],
-    () => getPerReleaseCap(target!.baseRpcUrl, target!.vaultAddress).then((cap) => Number(cap / 10n ** 12n) / 1e6),
-    { enabled: Boolean(target), staleTime: 60_000 },
+  // The vault's state on Base. The burn on Pendulum goes through whatever it
+  // is, but while the vault is paused, has no token or a per-release cap of 0
+  // every release is deferred, so submission is refused; a failed read counts
+  // as not ready. Above the per-release cap or the vault's balance only this
+  // release is held, so we warn and ask for an explicit acknowledgement.
+  const vaultQuery = useQuery(
+    ['migration', 'vaultState', target?.vaultAddress],
+    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress),
+    { enabled: Boolean(target), staleTime: 60_000, refetchInterval: 60_000 },
   );
-  const perReleaseCapPen = capQuery.data;
-  const capCheckFailed = capQuery.isError;
-  const capCheckPending = Boolean(target) && capQuery.data === undefined && !capQuery.isError;
+  const vaultState = vaultQuery.data;
+  const vaultCheckPending = Boolean(target) && vaultState === undefined && !vaultQuery.isError;
+  const vaultBlocker = vaultQuery.isError
+    ? 'We could not read the state of the migration vault from Base, so we cannot tell whether releases are possible right now. Submissions are disabled until the read succeeds; please try again later.'
+    : vaultState?.paused
+      ? 'Releases on Base are currently paused. Submissions are disabled until they resume.'
+      : vaultState && !vaultState.tokenSet
+        ? 'The migration vault on Base is not set up yet. Submissions are disabled until it is.'
+        : vaultState?.perReleaseCap === 0n
+          ? 'Releases on Base are currently suspended. Submissions are disabled until they resume.'
+          : undefined;
+  // In whole PEN (18-decimal token units).
+  const perReleaseCapPen = vaultState && Number(vaultState.perReleaseCap / 10n ** 12n) / 1e6;
+  const vaultBalancePen = vaultState && Number(vaultState.balance / 10n ** 12n) / 1e6;
   const amountValue = Number(watch('amount'));
   const exceedsPerReleaseCap =
-    perReleaseCapPen !== undefined &&
-    perReleaseCapPen > 0 &&
-    Number.isFinite(amountValue) &&
-    amountValue > perReleaseCapPen;
-  const needsCapAck = exceedsPerReleaseCap || capCheckFailed;
+    perReleaseCapPen !== undefined && Number.isFinite(amountValue) && amountValue > perReleaseCapPen;
+  const exceedsVaultBalance =
+    vaultBalancePen !== undefined && Number.isFinite(amountValue) && amountValue > vaultBalancePen;
+  const needsCapAck = exceedsPerReleaseCap || exceedsVaultBalance;
   const capConfirmed = capConfirmedFor !== undefined && capConfirmedFor === amountValue;
-  const checksPending = contractCheckPending || capCheckPending;
+  const checksPending = contractCheckPending || vaultCheckPending;
 
   if (tenantName !== TenantName.Pendulum) {
     return (
@@ -196,6 +208,10 @@ function Migration() {
   const onSubmit = async (values: MigrationFormValues) => {
     if (!walletAccount) {
       showToast(ToastMessage.NO_WALLET_SELECTED);
+      return;
+    }
+    if (vaultBlocker) {
+      showToast(ToastMessage.WARNING, vaultBlocker);
       return;
     }
     if (checksPending) {
@@ -241,6 +257,8 @@ function Migration() {
           </div>
         )}
 
+        {vaultBlocker && <div className="alert alert-warning mt-4 text-sm">{vaultBlocker}</div>}
+
         {!walletAccount ? (
           <div className="alert mt-4 text-sm">Connect your wallet to start the migration.</div>
         ) : (
@@ -280,19 +298,20 @@ function Migration() {
             {needsCapAck && (
               <div className="alert alert-warning mt-3 text-sm">
                 <div>
-                  {capCheckFailed ? (
-                    <p>
-                      We could not read the vault&rsquo;s <strong>per-release cap</strong> from Base right now, so we
-                      cannot tell whether this amount will be released promptly or held until governance raises the cap.
-                      Retry later, or continue only if a delayed release is acceptable to you.
-                    </p>
-                  ) : (
+                  {exceedsPerReleaseCap && (
                     <p>
                       This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
                       {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
                       Pendulum, but the release on Base is <strong>held</strong> until governance raises the cap, which
                       can take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
                       {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
+                    </p>
+                  )}
+                  {exceedsVaultBalance && (
+                    <p>
+                      This is more than the migration vault on Base currently holds ({vaultBalancePen?.toLocaleString()}{' '}
+                      {tokenSymbol}). Your {tokenSymbol} would still be burned on Pendulum, but the release on Base is{' '}
+                      <strong>held</strong> until the vault is refilled.
                     </p>
                   )}
                   <label className="mt-2 flex cursor-pointer items-center gap-2">
@@ -302,7 +321,7 @@ function Migration() {
                       checked={capConfirmed}
                       onChange={(e) => setCapConfirmedFor(e.target.checked ? amountValue : undefined)}
                     />
-                    <span>I understand this release may be delayed until governance raises the cap</span>
+                    <span>I understand this release may be delayed</span>
                   </label>
                 </div>
               </div>
@@ -384,7 +403,7 @@ function Migration() {
               className="mt-4 w-full"
               color="primary"
               type="submit"
-              disabled={paused || submissionPending || checksPending}
+              disabled={paused || Boolean(vaultBlocker) || submissionPending || checksPending}
               loading={submissionPending}
             >
               {submissionPending

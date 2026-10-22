@@ -59,6 +59,9 @@ const SELECTOR_NONCE_CONSUMED = '0xe406947e'; // nonceConsumed(uint64)
 const SELECTOR_ACTIVE_APPROVALS = '0xab3894a7'; // activeApprovals(bytes32)
 const SELECTOR_THRESHOLD = '0x42cde4e8'; // threshold()
 const SELECTOR_PER_RELEASE_CAP = '0x9937d635'; // perReleaseCap()
+const SELECTOR_PAUSED = '0x5c975abb'; // paused()
+const SELECTOR_TOKEN = '0xfc0c546a'; // token()
+const SELECTOR_BALANCE_OF = '0x70a08231'; // balanceOf(address), on the token
 // keccak256("Released(uint64,address,uint256,uint256)"), emitted with the token transfer to the recipient.
 const TOPIC_RELEASED = '0xba1208278d2bd6cfd1a8048239811d35ba512b87960a83e0c34dafefa650dd7b';
 
@@ -89,15 +92,35 @@ export async function getApprovalThreshold(baseRpcUrl: string, vault: string): P
   return Number(BigInt(result));
 }
 
+export interface VaultState {
+  paused: boolean;
+  /** False until the PEN token is wired into the vault (setToken). */
+  tokenSet: boolean;
+  /** Per-release cap, in 18-decimal token (wei) units. */
+  perReleaseCap: bigint;
+  /** The vault's token balance, in 18-decimal token (wei) units; 0 while no token is set. */
+  balance: bigint;
+}
+
 /**
- * The vault's per-release cap, in 18-decimal token (wei) units. A single
- * migration whose released amount exceeds this is accepted and burned on
- * Pendulum but its release on Base is deferred until governance raises the cap
- * — so the UI warns before submission and suggests splitting the amount.
+ * The vault state that decides whether a release on Base goes through. A
+ * migration is accepted and burned on Pendulum regardless, but its release is
+ * deferred while the vault is paused or has no token, and when the released
+ * amount exceeds the per-release cap or the vault's balance -- so the UI checks
+ * all of them before submission.
  */
-export async function getPerReleaseCap(baseRpcUrl: string, vault: string): Promise<bigint> {
-  const result = await rpc(baseRpcUrl, 'eth_call', [{ to: vault, data: SELECTOR_PER_RELEASE_CAP }, 'latest']);
-  return BigInt(result);
+export async function getVaultState(baseRpcUrl: string, vault: string): Promise<VaultState> {
+  const call = (to: string, data: string) => rpc(baseRpcUrl, 'eth_call', [{ to, data }, 'latest']).then(BigInt);
+  const [paused, token, perReleaseCap] = await Promise.all([
+    call(vault, SELECTOR_PAUSED),
+    call(vault, SELECTOR_TOKEN),
+    call(vault, SELECTOR_PER_RELEASE_CAP),
+  ]);
+  const balance =
+    token === 0n
+      ? 0n
+      : await call(`0x${token.toString(16).padStart(40, '0')}`, `${SELECTOR_BALANCE_OF}${addressWord(vault)}`);
+  return { paused: paused !== 0n, tokenSet: token !== 0n, perReleaseCap, balance };
 }
 
 /**
