@@ -98,7 +98,10 @@ function Migration() {
   const [contractConfirmedFor, setContractConfirmedFor] = useState<string | undefined>(undefined);
   const [capConfirmedFor, setCapConfirmedFor] = useState<number | undefined>(undefined);
 
-  const target = getMigrationTarget(tenantName);
+  // The destination and vault checks below all need the vault address, so a
+  // build without a valid one shows no form instead of skipping them.
+  const configuredTarget = getMigrationTarget(tenantName);
+  const target = configuredTarget && isValidEip55Address(configuredTarget.vaultAddress) ? configuredTarget : undefined;
   const lockedBalance = Math.max(0, balances.total - balances.transferable);
 
   const schema = useMemo(
@@ -163,6 +166,18 @@ function Migration() {
       <div className="card mx-auto mt-8 w-full max-w-xl bg-base-200 p-6">
         <h1 className="text-2xl font-bold">Migrate to Base</h1>
         <p className="mt-2">The PEN token migration is only available on the Pendulum network.</p>
+      </div>
+    );
+  }
+
+  if (!target) {
+    return (
+      <div className="card mx-auto mt-8 w-full max-w-xl bg-base-200 p-6">
+        <h1 className="text-2xl font-bold">Migrate to Base</h1>
+        <p className="mt-2">
+          The migration is unavailable: this portal build has no valid migration vault address on Base configured
+          (VITE_MIGRATION_VAULT_ADDRESS), which the checks before the burn require.
+        </p>
       </div>
     );
   }
