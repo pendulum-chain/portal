@@ -455,8 +455,8 @@ function Migration() {
                     <p>
                       This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
                       {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
-                      Pendulum, but the release on Base is <strong>held</strong> until governance raises the cap, which
-                      can take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
+                      Pendulum, but the release on Base is <strong>held</strong> until that cap is raised, which can
+                      take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
                       {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
                     </p>
                   )}
