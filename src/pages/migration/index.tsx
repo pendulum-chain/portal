@@ -187,6 +187,21 @@ function getVaultBlocker(vaultState: VaultState | undefined, readFailed: boolean
           : undefined;
 }
 
+/**
+ * Why a release of `amount` PEN would be held: above the per-release cap or the
+ * vault's balance. The key ties an acknowledgement to the amount and reasons.
+ */
+function getReleaseDelay(vaultState: VaultState | undefined, amount: number) {
+  const valid = vaultState !== undefined && Number.isFinite(amount);
+  const exceedsPerReleaseCap = valid && amount > toPen(vaultState.perReleaseCap);
+  const exceedsVaultBalance = valid && amount > toPen(vaultState.balance);
+  return {
+    exceedsPerReleaseCap,
+    exceedsVaultBalance,
+    ackKey: `${amount}:${exceedsPerReleaseCap}:${exceedsVaultBalance}`,
+  };
+}
+
 function Migration() {
   const { walletAccount, tenantName } = useGlobalState();
   const { api, tokenSymbol = 'PEN', tokenDecimals } = useNodeInfoState().state;
@@ -259,13 +274,9 @@ function Migration() {
   const perReleaseCapPen = vaultState && toPen(vaultState.perReleaseCap);
   const vaultBalancePen = vaultState && toPen(vaultState.balance);
   const amountValue = Number(watch('amount'));
-  const exceedsPerReleaseCap =
-    perReleaseCapPen !== undefined && Number.isFinite(amountValue) && amountValue > perReleaseCapPen;
-  const exceedsVaultBalance =
-    vaultBalancePen !== undefined && Number.isFinite(amountValue) && amountValue > vaultBalancePen;
+  const { exceedsPerReleaseCap, exceedsVaultBalance, ackKey: capAckKey } = getReleaseDelay(vaultState, amountValue);
   // A blocked vault already refuses submission; a delay to acknowledge would contradict that.
   const needsCapAck = !vaultBlocker && (exceedsPerReleaseCap || exceedsVaultBalance);
-  const capAckKey = `${amountValue}:${exceedsPerReleaseCap}:${exceedsVaultBalance}`;
   const capConfirmed = capConfirmedFor === capAckKey;
   const checksPending = contractCheckPending || vaultCheckPending;
 
@@ -327,11 +338,20 @@ function Migration() {
     }
     setSubmissionPending(true);
     try {
-      // The state shown can be a minute old; re-read it so a pause since then still stops the burn.
+      // The state shown can be a minute old; re-read it so a pause or a new
+      // reason for a delay since then still stops the burn.
       const fresh = await vaultQuery.refetch();
       const freshBlocker = getVaultBlocker(fresh.data, fresh.isError);
       if (freshBlocker) {
         showToast(ToastMessage.WARNING, freshBlocker);
+        return;
+      }
+      const freshDelay = getReleaseDelay(fresh.data, Number(values.amount));
+      if (
+        (freshDelay.exceedsPerReleaseCap || freshDelay.exceedsVaultBalance) &&
+        capConfirmedFor !== freshDelay.ackKey
+      ) {
+        showToast(ToastMessage.WARNING, 'The vault state on Base changed. Please review the warning above.');
         return;
       }
       const amountNative = decimalToNative(values.amount, tokenDecimals).toString();

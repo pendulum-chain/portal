@@ -186,6 +186,20 @@ describe('vault state on Base', () => {
     expect(await screen.findByText(/Releases on Base are currently paused/)).toBeInTheDocument();
   });
 
+  it('asks for the acknowledgement when the re-read before the burn lowers the per-release cap', async () => {
+    renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    expect(screen.queryByLabelText(/may be delayed/)).not.toBeInTheDocument();
+    mockBaseRpc({ ...healthyVault, perReleaseCap: 200n * PEN });
+    await userEvent.click(button);
+    expect(mockSubmit).not.toHaveBeenCalled();
+    expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(/vault state on Base changed/));
+    await userEvent.click(await screen.findByLabelText(/may be delayed/));
+    await userEvent.click(screen.getByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(mockSubmit).toHaveBeenCalledWith('500000000000000', toChecksumAddress(DESTINATION), expect.anything());
+  });
+
   it('keeps submission disabled while the vault state is loading', async () => {
     global.fetch = jest.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
     renderPage();
