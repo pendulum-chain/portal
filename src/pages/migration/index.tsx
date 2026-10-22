@@ -92,6 +92,88 @@ function ReleaseStatusCard({
   );
 }
 
+// In whole PEN (18-decimal token units).
+const toPen = (units: bigint) => Number(units / 10n ** 12n) / 1e6;
+const formatPen = (pen: number) => pen.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+/**
+ * How much the vault can release. A release must fit the per-release cap and
+ * the rolling daily allowance, which refills linearly at the daily cap per day.
+ * A release that does not fit is queued until the allowance has refilled or,
+ * above the per-release cap, until that cap is raised.
+ */
+function ReleaseCapacityPanel({
+  vaultState,
+  readFailed,
+  blocked,
+  amount,
+  tokenSymbol,
+}: {
+  vaultState: VaultState | undefined;
+  readFailed: boolean;
+  blocked: boolean;
+  amount: number;
+  tokenSymbol: string;
+}) {
+  const box = 'mt-4 rounded-lg bg-base-300 p-3 text-sm';
+  if (readFailed) return <div className={box}>Release capacity on Base: could not be read.</div>;
+  if (!vaultState) return <div className={box}>Release capacity on Base: loading…</div>;
+
+  const dailyCap = toPen(vaultState.dailyCap);
+  const available = toPen(vaultState.availableDailyAllowance);
+  const perReleaseCap = toPen(vaultState.perReleaseCap);
+  const refillPerHour = dailyCap / 24;
+  const waitMinutes = Math.ceil(((amount - available) / refillPerHour) * 60);
+  const wait =
+    waitMinutes <= 60 ? `${waitMinutes} minute${waitMinutes === 1 ? '' : 's'}` : `${Math.ceil(waitMinutes / 60)} hours`;
+  const hint =
+    !(amount > 0) || blocked
+      ? undefined
+      : amount > perReleaseCap
+        ? 'is above the per-release cap. The release would be held until that cap is raised; waiting does not release it.'
+        : amount > toPen(vaultState.balance)
+          ? 'is more than the vault holds. The release would be held until the vault is refilled.'
+          : amount <= available
+            ? 'fits the capacity available now.'
+            : `waits for the daily allowance: roughly ${wait} at the current refill rate, if nothing else is queued.`;
+
+  return (
+    <div className={box}>
+      <div className="flex flex-wrap justify-between gap-x-4">
+        <span className="font-semibold">Release capacity on Base</span>
+        <span>
+          {formatPen(available)} of {formatPen(dailyCap)} {tokenSymbol} available now
+        </span>
+      </div>
+      <progress
+        className="progress progress-primary mt-2 w-full"
+        value={available}
+        max={dailyCap || 1}
+        aria-label="Daily release allowance available now"
+      />
+      <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-4 text-neutral-500">
+        <dt>Daily cap</dt>
+        <dd>
+          {formatPen(dailyCap)} {tokenSymbol}, refills at {formatPen(refillPerHour)} {tokenSymbol} per hour
+        </dd>
+        <dt>Per-release cap</dt>
+        <dd>
+          {formatPen(perReleaseCap)} {tokenSymbol}
+        </dd>
+        <dt>Queued for release</dt>
+        <dd>
+          {formatPen(toPen(vaultState.pendingApprovedAmount))} {tokenSymbol}
+        </dd>
+      </dl>
+      {hint && (
+        <p className="mt-2">
+          {formatPen(amount)} {tokenSymbol} {hint}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function getVaultBlocker(vaultState: VaultState | undefined, readFailed: boolean): string | undefined {
   return readFailed
     ? 'We could not read the state of the migration vault from Base, so we cannot tell whether releases are possible right now. Submissions are disabled until the read succeeds; please try again later.'
@@ -173,9 +255,8 @@ function Migration() {
   const vaultState = vaultQuery.data;
   const vaultCheckPending = Boolean(target) && vaultState === undefined && !vaultQuery.isError;
   const vaultBlocker = getVaultBlocker(vaultState, vaultQuery.isError);
-  // In whole PEN (18-decimal token units).
-  const perReleaseCapPen = vaultState && Number(vaultState.perReleaseCap / 10n ** 12n) / 1e6;
-  const vaultBalancePen = vaultState && Number(vaultState.balance / 10n ** 12n) / 1e6;
+  const perReleaseCapPen = vaultState && toPen(vaultState.perReleaseCap);
+  const vaultBalancePen = vaultState && toPen(vaultState.balance);
   const amountValue = Number(watch('amount'));
   const exceedsPerReleaseCap =
     perReleaseCapPen !== undefined && Number.isFinite(amountValue) && amountValue > perReleaseCapPen;
@@ -274,6 +355,14 @@ function Migration() {
           attestor set after finality.{' '}
           <strong>This is irreversible — tokens sent to a wrong address cannot be recovered.</strong>
         </p>
+
+        <ReleaseCapacityPanel
+          vaultState={vaultState}
+          readFailed={vaultQuery.isError}
+          blocked={Boolean(vaultBlocker)}
+          amount={amountValue}
+          tokenSymbol={tokenSymbol}
+        />
 
         {paused && (
           <div className="alert alert-warning mt-4 text-sm">

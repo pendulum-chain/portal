@@ -53,6 +53,9 @@ interface VaultFixture {
   paused: boolean;
   token: string;
   perReleaseCap: bigint;
+  dailyCap: bigint;
+  available: bigint;
+  pending: bigint;
   balance: bigint;
   failReads?: boolean;
   chainId?: string;
@@ -61,6 +64,9 @@ const healthyVault: VaultFixture = {
   paused: false,
   token: TOKEN,
   perReleaseCap: 1_000_000n * PEN,
+  dailyCap: 2_000_000n * PEN,
+  available: 1_500_000n * PEN,
+  pending: 250_000n * PEN,
   balance: 10n ** 8n * PEN,
 };
 
@@ -79,6 +85,9 @@ function mockBaseRpc(vault: VaultFixture) {
         '0x5c975abb': word(vault.paused ? 1n : 0n),
         '0xfc0c546a': word(BigInt(vault.token)),
         '0x9937d635': word(vault.perReleaseCap),
+        '0xeb339391': word(vault.dailyCap),
+        '0xed5c5de4': word(vault.available),
+        '0x3cc11b05': word(vault.pending),
       }[data as string];
     }
     if (method === 'eth_call' && to === vault.token && data === `0x70a08231${vaultWord}`) result = word(vault.balance);
@@ -155,6 +164,7 @@ describe('vault state on Base', () => {
     const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
     expect(button).toBeDisabled();
     expect(screen.queryByLabelText(/may be delayed/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/500 PEN/)).not.toBeInTheDocument();
     await userEvent.click(button);
     expect(mockSubmit).not.toHaveBeenCalled();
   });
@@ -215,6 +225,53 @@ describe('vault state on Base', () => {
     expect(screen.getByLabelText(/may be delayed/)).not.toBeChecked();
     await userEvent.click(screen.getByRole('button', { name: 'Migrate PEN to Base' }));
     expect(mockSubmit).not.toHaveBeenCalled();
+  });
+});
+
+describe('release capacity panel', () => {
+  it('shows the daily allowance, the caps and what is queued', async () => {
+    renderPage();
+    expect(screen.getByText(/Release capacity on Base: loading/)).toBeInTheDocument();
+    expect(await screen.findByText('1,500,000 of 2,000,000 PEN available now')).toBeInTheDocument();
+    const bar = screen.getByRole('progressbar', { name: /available now/ });
+    expect(bar).toHaveAttribute('value', '1500000');
+    expect(bar).toHaveAttribute('max', '2000000');
+    expect(screen.getByText(/refills at 83,333.33 PEN per hour/)).toBeInTheDocument();
+    expect(screen.getByText('Per-release cap').nextSibling).toHaveTextContent('1,000,000 PEN');
+    expect(screen.getByText('Queued for release').nextSibling).toHaveTextContent('250,000 PEN');
+  });
+
+  it('says when the capacity cannot be read', async () => {
+    mockBaseRpc({ ...healthyVault, failReads: true });
+    renderPage();
+    expect(await screen.findByText(/Release capacity on Base: could not be read/)).toBeInTheDocument();
+  });
+
+  it.each([
+    ['fits now', healthyVault, '500', /500 PEN fits the capacity available now/],
+    [
+      'waits for the allowance',
+      { ...healthyVault, perReleaseCap: 1_200n * PEN, dailyCap: 2_400n * PEN, available: 200n * PEN },
+      '500',
+      /500 PEN waits for the daily allowance: roughly 3 hours at the current refill rate, if nothing else is queued/,
+    ],
+    [
+      'is above the per-release cap',
+      { ...healthyVault, perReleaseCap: 200n * PEN },
+      '500',
+      /500 PEN is above the per-release cap.*waiting does not release it/,
+    ],
+    [
+      'is more than the vault holds',
+      { ...healthyVault, balance: 200n * PEN },
+      '500',
+      /500 PEN is more than the vault holds/,
+    ],
+  ])('tells whether the entered amount %s', async (_label, vault, amount, hint) => {
+    mockBaseRpc(vault);
+    renderPage();
+    await fillForm(amount);
+    expect(await screen.findByText(hint)).toBeInTheDocument();
   });
 });
 

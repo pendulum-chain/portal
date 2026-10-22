@@ -59,6 +59,9 @@ const SELECTOR_NONCE_CONSUMED = '0xe406947e'; // nonceConsumed(uint64)
 const SELECTOR_ACTIVE_APPROVALS = '0xab3894a7'; // activeApprovals(bytes32)
 const SELECTOR_THRESHOLD = '0x42cde4e8'; // threshold()
 const SELECTOR_PER_RELEASE_CAP = '0x9937d635'; // perReleaseCap()
+const SELECTOR_DAILY_CAP = '0xeb339391'; // dailyCap()
+const SELECTOR_AVAILABLE_DAILY_ALLOWANCE = '0xed5c5de4'; // availableDailyAllowance()
+const SELECTOR_PENDING_APPROVED_AMOUNT = '0x3cc11b05'; // pendingApprovedAmount()
 const SELECTOR_PAUSED = '0x5c975abb'; // paused()
 const SELECTOR_TOKEN = '0xfc0c546a'; // token()
 const SELECTOR_BALANCE_OF = '0x70a08231'; // balanceOf(address), on the token
@@ -98,6 +101,12 @@ export interface VaultState {
   tokenSet: boolean;
   /** Per-release cap, in 18-decimal token (wei) units. */
   perReleaseCap: bigint;
+  /** Capacity of the rolling daily allowance, which refills linearly at this amount per day. */
+  dailyCap: bigint;
+  /** What the rolling daily allowance lets the vault release right now. */
+  availableDailyAllowance: bigint;
+  /** Owed to approved releases that were deferred and are waiting to be released. */
+  pendingApprovedAmount: bigint;
   /** The vault's token balance, in 18-decimal token (wei) units; 0 while no token is set. */
   balance: bigint;
 }
@@ -116,16 +125,27 @@ export async function getVaultState(baseRpcUrl: string, vault: string, expectedC
     throw new Error(`Base RPC reports chain ${chainId}, expected ${expectedChainId}`);
   }
   const call = (to: string, data: string) => rpc(baseRpcUrl, 'eth_call', [{ to, data }, 'latest']).then(BigInt);
-  const [paused, token, perReleaseCap] = await Promise.all([
+  const [paused, token, perReleaseCap, dailyCap, availableDailyAllowance, pendingApprovedAmount] = await Promise.all([
     call(vault, SELECTOR_PAUSED),
     call(vault, SELECTOR_TOKEN),
     call(vault, SELECTOR_PER_RELEASE_CAP),
+    call(vault, SELECTOR_DAILY_CAP),
+    call(vault, SELECTOR_AVAILABLE_DAILY_ALLOWANCE),
+    call(vault, SELECTOR_PENDING_APPROVED_AMOUNT),
   ]);
   const balance =
     token === 0n
       ? 0n
       : await call(`0x${token.toString(16).padStart(40, '0')}`, `${SELECTOR_BALANCE_OF}${addressWord(vault)}`);
-  return { paused: paused !== 0n, tokenSet: token !== 0n, perReleaseCap, balance };
+  return {
+    paused: paused !== 0n,
+    tokenSet: token !== 0n,
+    perReleaseCap,
+    dailyCap,
+    availableDailyAllowance,
+    pendingApprovedAmount,
+    balance,
+  };
 }
 
 /**
