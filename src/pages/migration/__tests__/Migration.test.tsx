@@ -295,7 +295,7 @@ describe('destination check before signing', () => {
     await userEvent.type(screen.getByPlaceholderText('0x…'), DESTINATION);
     expect(screen.getByText(toChecksumAddress(DESTINATION))).toBeInTheDocument();
     expect(screen.getByText(/Your wallet will ask you to sign/)).toHaveTextContent(
-      /check that base_address is your own Base address as shown in your Base wallet, not only on this page.*must start with 0x6600 and end with your Base address.*00000000000000000000000000000000deadbeef/,
+      /check that base_address \(or baseAddress\) is your own Base address as shown in your Base wallet, not only on this page.*must start with 0x6600 and end with your Base address.*00000000000000000000000000000000deadbeef/,
     );
   });
 });
