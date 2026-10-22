@@ -3,15 +3,15 @@ import { TenantName } from '../models/Tenant';
 export interface MigrationTargetConfig {
   /** Base JSON-RPC endpoint used for read-only status polling. */
   baseRpcUrl: string;
-  /** MigrationVault contract address on Base. Empty until deployment. */
+  /** MigrationVault contract address on Base. Without a valid one the migration page shows no form. */
   vaultAddress: string;
   baseExplorerUrl: string;
 }
 
 /**
- * Base-side deployment targets for the PEN migration. The migration page only
- * shows Base release tracking when the vault address for the current tenant
- * is configured (set at deployment, PRD rollout phase 3/4).
+ * Base-side deployment targets for the PEN migration. The migration page shows
+ * its form only when the vault address for the current tenant is a valid
+ * address (set at deployment, PRD rollout phase 3/4).
  */
 export const migrationTargets: Partial<Record<TenantName, MigrationTargetConfig>> = {
   [TenantName.Pendulum]: {
