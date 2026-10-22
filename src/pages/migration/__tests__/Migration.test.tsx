@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MigrationTargetConfig } from '../../../constants/migration';
 import { toChecksumAddress } from '../../../helpers/ethereum';
@@ -99,6 +99,7 @@ function renderPage() {
       <Migration />
     </QueryClientProvider>,
   );
+  return queryClient;
 }
 
 beforeAll(() => jest.spyOn(console, 'log').mockImplementation(() => undefined));
@@ -176,6 +177,21 @@ describe('vault state on Base', () => {
     await fillForm('500');
     expect(await screen.findByText(/above the vault.s/)).toBeInTheDocument();
     await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('asks again when a re-read of the vault adds a reason for the delay', async () => {
+    mockBaseRpc({ ...healthyVault, perReleaseCap: 200n * PEN });
+    const queryClient = renderPage();
+    await fillForm('500');
+    await userEvent.click(await screen.findByLabelText(/may be delayed/));
+    expect(screen.getByLabelText(/may be delayed/)).toBeChecked();
+
+    mockBaseRpc({ ...healthyVault, perReleaseCap: 200n * PEN, balance: 200n * PEN });
+    await act(() => queryClient.refetchQueries(['migration', 'vaultState']));
+    expect(await screen.findByText(/more than the migration vault on Base currently holds/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/may be delayed/)).not.toBeChecked();
+    await userEvent.click(screen.getByRole('button', { name: 'Migrate PEN to Base' }));
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 });

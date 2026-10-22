@@ -94,10 +94,11 @@ function Migration() {
 
   const [submissionPending, setSubmissionPending] = useState(false);
   const [pendingMigration, setPendingMigration] = useState<PendingMigration | undefined>(undefined);
-  // Each acknowledgement is stored together with the value it was given for,
-  // so editing the address or the amount silently retires it.
+  // Each acknowledgement is stored together with what it was given for, so
+  // editing the address or the amount, or a new reason for the delay warning,
+  // silently retires it.
   const [contractConfirmedFor, setContractConfirmedFor] = useState<string | undefined>(undefined);
-  const [capConfirmedFor, setCapConfirmedFor] = useState<number | undefined>(undefined);
+  const [capConfirmedFor, setCapConfirmedFor] = useState<string | undefined>(undefined);
 
   // The destination and vault checks below all need the vault address, so a
   // build without a valid one shows no form instead of skipping them.
@@ -172,7 +173,8 @@ function Migration() {
     vaultBalancePen !== undefined && Number.isFinite(amountValue) && amountValue > vaultBalancePen;
   // A blocked vault already refuses submission; a delay to acknowledge would contradict that.
   const needsCapAck = !vaultBlocker && (exceedsPerReleaseCap || exceedsVaultBalance);
-  const capConfirmed = capConfirmedFor !== undefined && capConfirmedFor === amountValue;
+  const capAckKey = `${amountValue}:${exceedsPerReleaseCap}:${exceedsVaultBalance}`;
+  const capConfirmed = capConfirmedFor === capAckKey;
   const checksPending = contractCheckPending || vaultCheckPending;
 
   if (tenantName !== TenantName.Pendulum) {
@@ -324,7 +326,7 @@ function Migration() {
                       type="checkbox"
                       className="checkbox checkbox-sm"
                       checked={capConfirmed}
-                      onChange={(e) => setCapConfirmedFor(e.target.checked ? amountValue : undefined)}
+                      onChange={(e) => setCapConfirmedFor(e.target.checked ? capAckKey : undefined)}
                     />
                     <span>I understand this release may be delayed</span>
                   </label>
