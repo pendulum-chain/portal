@@ -19,6 +19,7 @@ import {
 import { useBaseReleaseStatus, useReleaseTxHash } from '../../hooks/migration/useBaseReleaseStatus';
 import { PendingMigration, useMigrationPallet } from '../../hooks/migration/useMigrationPallet';
 import { TenantName } from '../../models/Tenant';
+import { METAMASK_EXTENSION_NAME } from '../../services/metamask';
 import { decimalToNative, nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { useAccountBalance } from '../../shared/useAccountBalance';
@@ -374,6 +375,11 @@ function Migration() {
 
         {!walletAccount ? (
           <div className="alert mt-4 text-sm">Connect your wallet to start the migration.</div>
+        ) : walletAccount.source === METAMASK_EXTENSION_NAME ? (
+          <div className="alert alert-warning mt-4 text-sm">
+            MetaMask (Polkadot snap) does not show the call it signs, so you cannot check the destination before the
+            burn. To migrate, connect a wallet that shows the call details.
+          </div>
         ) : (
           <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
             {/* A pasted comma is ambiguous (decimal in many locales, thousands

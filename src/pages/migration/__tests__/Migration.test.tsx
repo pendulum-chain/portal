@@ -11,9 +11,13 @@ const DESTINATION = '0x00000000000000000000000000000000deadbeef';
 
 const mockSubmit = jest.fn();
 let mockTarget: MigrationTargetConfig | undefined;
+let mockWalletSource = 'polkadot-js';
 
 jest.mock('../../../GlobalStateProvider', () => ({
-  useGlobalState: () => ({ walletAccount: { address: '5Grw', signer: {} }, tenantName: 'pendulum' }),
+  useGlobalState: () => ({
+    walletAccount: { address: '5Grw', source: mockWalletSource, signer: {} },
+    tenantName: 'pendulum',
+  }),
 }));
 jest.mock('../../../NodeInfoProvider', () => ({
   useNodeInfoState: () => ({
@@ -116,6 +120,7 @@ function renderPage() {
 
 beforeAll(() => jest.spyOn(console, 'log').mockImplementation(() => undefined));
 beforeEach(() => {
+  mockWalletSource = 'polkadot-js';
   mockSubmit.mockReset().mockResolvedValue({ nonce: 1n, recipient: DESTINATION, palletAmount: 500n * 10n ** 12n });
   mockTarget = {
     baseRpcUrl: 'https://base.example',
@@ -276,6 +281,14 @@ describe('release capacity panel', () => {
 });
 
 describe('destination check before signing', () => {
+  it('offers no migration with the MetaMask Polkadot snap', async () => {
+    mockWalletSource = 'metamask';
+    renderPage();
+    expect(screen.getByText(/does not show the call it signs/)).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('0x…')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Migrate/ })).not.toBeInTheDocument();
+  });
+
   it('shows the exact destination and how to check it in the wallet', async () => {
     renderPage();
     expect(screen.queryByText(/Your wallet will ask you to sign/)).not.toBeInTheDocument();
