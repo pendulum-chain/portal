@@ -170,7 +170,8 @@ function Migration() {
     perReleaseCapPen !== undefined && Number.isFinite(amountValue) && amountValue > perReleaseCapPen;
   const exceedsVaultBalance =
     vaultBalancePen !== undefined && Number.isFinite(amountValue) && amountValue > vaultBalancePen;
-  const needsCapAck = exceedsPerReleaseCap || exceedsVaultBalance;
+  // A blocked vault already refuses submission; a delay to acknowledge would contradict that.
+  const needsCapAck = !vaultBlocker && (exceedsPerReleaseCap || exceedsVaultBalance);
   const capConfirmed = capConfirmedFor !== undefined && capConfirmedFor === amountValue;
   const checksPending = contractCheckPending || vaultCheckPending;
 

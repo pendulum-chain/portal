@@ -143,6 +143,7 @@ describe('vault state on Base', () => {
     await fillForm('500');
     const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
     expect(button).toBeDisabled();
+    expect(screen.queryByLabelText(/may be delayed/)).not.toBeInTheDocument();
     await userEvent.click(button);
     expect(mockSubmit).not.toHaveBeenCalled();
   });
