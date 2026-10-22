@@ -30,12 +30,14 @@ function ReleaseStatusCard({
   tenantName,
   tokenSymbol,
   tokenDecimals,
+  vaultState,
   onDone,
 }: {
   migration: PendingMigration;
   tenantName: TenantName;
   tokenSymbol: string;
   tokenDecimals: number;
+  vaultState: VaultState | undefined;
   onDone: () => void;
 }) {
   const target = getMigrationTarget(tenantName);
@@ -43,6 +45,7 @@ function ReleaseStatusCard({
   const { data: releaseTx } = useReleaseTxHash(migration, target, Boolean(status?.released));
   const checksummedRecipient = toChecksumAddress(migration.recipient);
   const amount = nativeToDecimal(migration.palletAmount.toString(), tokenDecimals).toString();
+  const { exceedsPerReleaseCap, exceedsVaultBalance } = getReleaseDelay(vaultState, Number(amount));
 
   return (
     <div className="card mt-4 bg-base-200 p-4">
@@ -72,9 +75,20 @@ function ReleaseStatusCard({
           </span>
         ) : status && status.approvals >= status.threshold ? (
           <span>
-            Approved by the attestor set ({status.threshold}/{status.threshold}). The release is queued — the
-            vault&rsquo;s daily release cap is exhausted or releases are paused — and completes automatically once
-            capacity frees up. Nothing to do on your side; check back in a few hours.
+            Approved by the attestor set ({status.threshold}/{status.threshold}).{' '}
+            {exceedsPerReleaseCap ? (
+              <>
+                The release is held: the amount is above the vault&rsquo;s per-release cap, and it is released only once
+                that cap is raised. Waiting alone does not release it.
+              </>
+            ) : exceedsVaultBalance ? (
+              <>The release is held until the migration vault on Base is refilled.</>
+            ) : (
+              <>
+                The release is queued — the vault&rsquo;s daily release cap is exhausted or releases are paused — and
+                completes automatically once capacity frees up. Nothing to do on your side; check back in a few hours.
+              </>
+            )}
           </span>
         ) : (
           <span>
@@ -582,6 +596,7 @@ function Migration() {
           tenantName={tenantName}
           tokenSymbol={tokenSymbol}
           tokenDecimals={tokenDecimals ?? 12}
+          vaultState={vaultState}
           onDone={() => setPendingMigration(undefined)}
         />
       )}

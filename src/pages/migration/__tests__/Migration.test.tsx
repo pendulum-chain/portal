@@ -12,6 +12,7 @@ const DESTINATION = '0x00000000000000000000000000000000deadbeef';
 const mockSubmit = jest.fn();
 let mockTarget: MigrationTargetConfig | undefined;
 let mockWalletSource = 'polkadot-js';
+let mockReleaseStatus: { released: boolean; approvals: number; threshold: number } | undefined;
 
 jest.mock('../../../GlobalStateProvider', () => ({
   useGlobalState: () => ({
@@ -41,7 +42,7 @@ jest.mock('../../../shared/useAccountBalance', () => ({
 }));
 jest.mock('../../../constants/migration', () => ({ getMigrationTarget: () => mockTarget }));
 jest.mock('../../../hooks/migration/useBaseReleaseStatus', () => ({
-  useBaseReleaseStatus: () => ({ data: undefined }),
+  useBaseReleaseStatus: () => ({ data: mockReleaseStatus }),
   useReleaseTxHash: () => ({ data: undefined }),
 }));
 jest.mock('../../../shared/showToast', () => ({
@@ -121,6 +122,7 @@ function renderPage() {
 beforeAll(() => jest.spyOn(console, 'log').mockImplementation(() => undefined));
 beforeEach(() => {
   mockWalletSource = 'polkadot-js';
+  mockReleaseStatus = undefined;
   mockSubmit.mockReset().mockResolvedValue({ nonce: 1n, recipient: DESTINATION, palletAmount: 500n * 10n ** 12n });
   mockTarget = {
     baseRpcUrl: 'https://base.example',
@@ -303,6 +305,27 @@ describe('release capacity panel', () => {
     renderPage();
     await fillForm(amount);
     expect(await screen.findByText(hint)).toBeInTheDocument();
+  });
+});
+
+describe('release status after the burn', () => {
+  it.each([
+    ['fits the caps', healthyVault, /completes automatically once capacity frees up/],
+    [
+      'is above the per-release cap',
+      { ...healthyVault, perReleaseCap: 200n * PEN },
+      /held: the amount is above the vault.s per-release cap.*Waiting alone does not release it/,
+    ],
+    ['is above the vault balance', { ...healthyVault, balance: 200n * PEN }, /held until the migration vault on Base/],
+  ])('describes an approved but unreleased migration that %s', async (_label, vault, text) => {
+    mockReleaseStatus = { released: false, approvals: 3, threshold: 3 };
+    const queryClient = renderPage();
+    await fillForm('500');
+    await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(await screen.findByText(/Migration #1 submitted/)).toBeInTheDocument();
+    mockBaseRpc(vault);
+    await act(() => queryClient.refetchQueries(['migration', 'vaultState']));
+    expect(await screen.findByText(text)).toBeInTheDocument();
   });
 });
 
