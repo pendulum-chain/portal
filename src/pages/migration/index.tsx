@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { u8aToHex } from '@polkadot/util';
 import { useMemo, useState } from 'react';
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
@@ -205,6 +206,9 @@ function Migration() {
     );
   }
 
+  // The raw method data of tokenMigration.migrate starts with this.
+  const migrateCallPrefix = u8aToHex(api.tx.tokenMigration.migrate.callIndex);
+
   const onSubmit = async (values: MigrationFormValues) => {
     if (!walletAccount) {
       showToast(ToastMessage.NO_WALLET_SELECTED);
@@ -390,7 +394,10 @@ function Migration() {
             )}
 
             {/* The wallet prompt is the one place the destination can be
-                checked independently of this page, so point the user to it. */}
+                checked independently of this page, so point the user to it
+                and have them compare it with their own Base wallet. The call
+                index pins raw data to tokenMigration.migrate, whose last
+                argument is the address. */}
             {checksummedAddress && (
               <div className="alert mt-4 text-sm">
                 <div className="min-w-0">
@@ -401,10 +408,12 @@ function Migration() {
                   <p className="mt-2">
                     Your wallet will ask you to sign <span className="font-mono">tokenMigration.migrate</span>. Before
                     you approve, open the call details and check that <span className="font-mono">base_address</span> is
-                    this exact address, all 40 characters (wallets usually show it in lower case). If your wallet shows
-                    only raw method data, it must end with{' '}
-                    <span className="break-all font-mono">{checksummedAddress.slice(2).toLowerCase()}</span>. Do not
-                    approve if your wallet shows a different address, and check again for every migration.
+                    your own Base address as shown in your Base wallet, not only on this page, all 40 characters
+                    (wallets usually show it in lower case). If your wallet shows only raw method data, it must start
+                    with <span className="font-mono">{migrateCallPrefix}</span> and end with your Base address in lower
+                    case without the 0x (for the address above:{' '}
+                    <span className="break-all font-mono">{checksummedAddress.slice(2).toLowerCase()}</span>). Do not
+                    approve if your wallet shows anything else, and check again for every migration.
                   </p>
                 </div>
               </div>

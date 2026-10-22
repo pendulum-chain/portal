@@ -15,7 +15,13 @@ jest.mock('../../../GlobalStateProvider', () => ({
   useGlobalState: () => ({ walletAccount: { address: '5Grw', signer: {} }, tenantName: 'pendulum' }),
 }));
 jest.mock('../../../NodeInfoProvider', () => ({
-  useNodeInfoState: () => ({ state: { api: {}, tokenSymbol: 'PEN', tokenDecimals: 12 } }),
+  useNodeInfoState: () => ({
+    state: {
+      api: { tx: { tokenMigration: { migrate: { callIndex: new Uint8Array([102, 0]) } } } },
+      tokenSymbol: 'PEN',
+      tokenDecimals: 12,
+    },
+  }),
 }));
 jest.mock('../../../hooks/migration/useMigrationPallet', () => ({
   useMigrationPallet: () => ({
@@ -180,7 +186,7 @@ describe('destination check before signing', () => {
     await userEvent.type(screen.getByPlaceholderText('0x…'), DESTINATION);
     expect(screen.getByText(toChecksumAddress(DESTINATION))).toBeInTheDocument();
     expect(screen.getByText(/Your wallet will ask you to sign/)).toHaveTextContent(
-      /check that base_address is this exact address.*must end with 00000000000000000000000000000000deadbeef/,
+      /check that base_address is your own Base address as shown in your Base wallet, not only on this page.*must start with 0x6600 and end with your Base address.*00000000000000000000000000000000deadbeef/,
     );
   });
 });
