@@ -344,12 +344,6 @@ function Migration() {
                 <span className="label-text text-red-400">{formState.errors.baseAddress.message}</span>
               </label>
             )}
-            {checksummedAddress && checksummedAddress !== baseAddress && (
-              <p className="mt-1 break-all text-xs text-neutral-500">
-                Will be sent to <span className="font-mono">{checksummedAddress}</span>
-              </p>
-            )}
-
             {needsContractAck && (
               <div className="alert alert-warning mt-3 text-sm">
                 <div>
@@ -393,6 +387,27 @@ function Migration() {
               <label className="label">
                 <span className="label-text text-red-400">{formState.errors.confirmIrreversible.message}</span>
               </label>
+            )}
+
+            {/* The wallet prompt is the one place the destination can be
+                checked independently of this page, so point the user to it. */}
+            {checksummedAddress && (
+              <div className="alert mt-4 text-sm">
+                <div className="min-w-0">
+                  <p>
+                    The burned {tokenSymbol} will be released on Base to{' '}
+                    <span className="break-all font-mono font-semibold">{checksummedAddress}</span>
+                  </p>
+                  <p className="mt-2">
+                    Your wallet will ask you to sign <span className="font-mono">tokenMigration.migrate</span>. Before
+                    you approve, open the call details and check that <span className="font-mono">base_address</span> is
+                    this exact address, all 40 characters (wallets usually show it in lower case). If your wallet shows
+                    only raw method data, it must end with{' '}
+                    <span className="break-all font-mono">{checksummedAddress.slice(2).toLowerCase()}</span>. Do not
+                    approve if your wallet shows a different address, and check again for every migration.
+                  </p>
+                </div>
+              </div>
             )}
 
             <p className="mt-3 text-xs text-neutral-500">

@@ -172,3 +172,15 @@ describe('vault state on Base', () => {
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 });
+
+describe('destination check before signing', () => {
+  it('shows the exact destination and how to check it in the wallet', async () => {
+    renderPage();
+    expect(screen.queryByText(/Your wallet will ask you to sign/)).not.toBeInTheDocument();
+    await userEvent.type(screen.getByPlaceholderText('0x…'), DESTINATION);
+    expect(screen.getByText(toChecksumAddress(DESTINATION))).toBeInTheDocument();
+    expect(screen.getByText(/Your wallet will ask you to sign/)).toHaveTextContent(
+      /check that base_address is this exact address.*must end with 00000000000000000000000000000000deadbeef/,
+    );
+  });
+});
