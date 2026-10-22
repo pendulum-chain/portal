@@ -113,6 +113,7 @@ describe('migration vault configuration', () => {
   it.each([
     ['missing', undefined],
     ['malformed', '0x1234'],
+    ['mixed case with a bad checksum', `0xb${VAULT.slice(3)}`],
     ['the zero address', '0x0000000000000000000000000000000000000000'],
   ])('shows a configuration error instead of the form when the vault address is %s', (_label, vaultAddress) => {
     mockTarget = vaultAddress === undefined ? undefined : { ...mockTarget!, vaultAddress };
