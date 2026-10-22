@@ -353,9 +353,10 @@ function Migration() {
     setSubmissionPending(true);
     try {
       // The state shown can be a minute old; re-read it so a pause or a new
-      // reason for a delay since then still stops the burn.
+      // reason for a delay since then still stops the burn. A re-read that
+      // ends without the state counts as failed.
       const fresh = await vaultQuery.refetch();
-      const freshBlocker = getVaultBlocker(fresh.data, fresh.isError);
+      const freshBlocker = getVaultBlocker(fresh.data, fresh.status !== 'success' || !fresh.data);
       if (freshBlocker) {
         showToast(ToastMessage.WARNING, freshBlocker);
         return;

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MigrationTargetConfig } from '../../../constants/migration';
 import { toChecksumAddress } from '../../../helpers/ethereum';
@@ -190,6 +190,22 @@ describe('vault state on Base', () => {
     expect(mockSubmit).not.toHaveBeenCalled();
     expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(banner));
     expect(await screen.findByText(banner)).toBeInTheDocument();
+  });
+
+  it('refuses the burn when the re-read before it ends without the vault state', async () => {
+    const queryClient = renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    global.fetch = jest.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
+    await userEvent.click(button);
+    // A reset while the re-read is in flight leaves it with neither data nor an error.
+    act(() => {
+      void queryClient.resetQueries(['migration', 'vaultState']);
+    });
+    await waitFor(() =>
+      expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(/could not read the state/)),
+    );
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 
   it('asks for the acknowledgement when the re-read before the burn lowers the per-release cap', async () => {
