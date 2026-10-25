@@ -40,7 +40,14 @@ jest.mock('../../../hooks/migration/useMigrationPallet', () => ({
 jest.mock('../../../shared/useAccountBalance', () => ({
   useAccountBalance: () => ({ balances: { total: 10_000, transferable: 10_000 } }),
 }));
-jest.mock('../../../constants/migration', () => ({ getMigrationTarget: () => mockTarget }));
+jest.mock('../../../constants/migration', () => {
+  const { isValidEip55Address } = jest.requireActual('../../../helpers/ethereum');
+  return {
+    getMigrationTarget: () => mockTarget,
+    getConfiguredMigrationTarget: () =>
+      mockTarget && isValidEip55Address(mockTarget.vaultAddress) ? mockTarget : undefined,
+  };
+});
 jest.mock('../../../hooks/migration/useBaseReleaseStatus', () => ({
   useBaseReleaseStatus: () => ({ data: mockReleaseStatus }),
   useReleaseTxHash: () => ({ data: undefined }),
@@ -142,14 +149,14 @@ describe('migration vault configuration', () => {
   ])('shows a configuration error instead of the form when the vault address is %s', (_label, vaultAddress) => {
     mockTarget = vaultAddress === undefined ? undefined : { ...mockTarget!, vaultAddress };
     renderPage();
-    expect(screen.getByText(/no valid migration vault address/)).toBeInTheDocument();
+    expect(screen.getByText(/not open yet/)).toBeInTheDocument();
     expect(screen.queryByPlaceholderText('0x…')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Migrate/ })).not.toBeInTheDocument();
   });
 
   it('shows the form when the vault address is valid', async () => {
     renderPage();
-    expect(screen.queryByText(/no valid migration vault address/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/not open yet/)).not.toBeInTheDocument();
     await fillForm('500');
     await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
     expect(mockSubmit).toHaveBeenCalledWith('500000000000000', toChecksumAddress(DESTINATION), expect.anything());

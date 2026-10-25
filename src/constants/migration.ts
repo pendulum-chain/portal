@@ -1,3 +1,4 @@
+import { isValidEip55Address } from '../helpers/ethereum';
 import { TenantName } from '../models/Tenant';
 
 export interface MigrationTargetConfig {
@@ -27,4 +28,10 @@ export const migrationTargets: Partial<Record<TenantName, MigrationTargetConfig>
 export function getMigrationTarget(tenantName: TenantName): MigrationTargetConfig | undefined {
   const target = migrationTargets[tenantName];
   return target?.vaultAddress ? target : undefined;
+}
+
+/** The target only when its vault address is a valid address: without one the migration is not open in this build. */
+export function getConfiguredMigrationTarget(tenantName: TenantName): MigrationTargetConfig | undefined {
+  const target = getMigrationTarget(tenantName);
+  return target && isValidEip55Address(target.vaultAddress) ? target : undefined;
 }

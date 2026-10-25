@@ -10,6 +10,7 @@ import StakingIcon from '../../assets/staking';
 import SwapIcon from '../../assets/swap';
 
 import { config } from '../../config';
+import { getConfiguredMigrationTarget } from '../../constants/migration';
 import { nablaConfig } from '../../config/apps/nabla';
 import { TenantName } from '../../models/Tenant';
 import { getSpacewalkInterpolation, getSpacewalkText } from './spacewalkAnimation';
@@ -75,7 +76,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <SwapIcon className="p-1" />,
-    suffix: <ExternalIcon className="w-3 h-5 ml-auto" />,
+    suffix: <ExternalIcon className="ml-auto h-5 w-3" />,
   };
 
   const spacewalkLinkItem: LinkItem = {
@@ -135,7 +136,7 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
   const migrationLinkItem: LinkItem = {
     link: `./${PAGES_PATHS.MIGRATION}`,
     title: 'Migrate to Base',
-    hidden: tenantName !== TenantName.Pendulum,
+    hidden: tenantName !== TenantName.Pendulum || !getConfiguredMigrationTarget(tenantName),
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
@@ -150,13 +151,13 @@ export function createLinks(tenantName: TenantName): LinkItem[] {
       rel: 'nofollow noreferrer',
     },
     prefix: <GovernanceIcon />,
-    suffix: <ExternalIcon className="w-3 h-5 ml-auto" />,
+    suffix: <ExternalIcon className="ml-auto h-5 w-3" />,
   };
 
   const fundWalletItem: LinkItem = {
     link: tenantName === TenantName.Foucoco ? config.faucetPage : `./${PATHS.FUND_WALLET}`,
     title: 'Fund Wallet',
-    prefix: <WalletIcon className="ml-1 icon-small fill-none" />,
+    prefix: <WalletIcon className="icon-small ml-1 fill-none" />,
     props: {
       className: ({ isActive } = {}) => (isActive ? 'active' : ''),
     },
