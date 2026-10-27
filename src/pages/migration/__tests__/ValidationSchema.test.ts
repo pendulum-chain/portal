@@ -1,6 +1,7 @@
 import { getMigrationValidationSchema } from '../ValidationSchema';
 
 const VAULT = '0x1111111111111111111111111111111111111111';
+const TOKEN = '0x2222222222222222222222222222222222222222';
 
 function schema(vaultAddress = VAULT) {
   return getMigrationValidationSchema({
@@ -10,6 +11,7 @@ function schema(vaultAddress = VAULT) {
     existentialDeposit: 1,
     tokenSymbol: 'PEN',
     vaultAddress,
+    tokenAddress: TOKEN,
   });
 }
 
@@ -37,6 +39,14 @@ describe('migration baseAddress validation', () => {
     const value = '0xabcdef0000000000000000000000000000000001'; // lower-case, passes eip55
     const vaultUpperCase = '0xABCDEF0000000000000000000000000000000001'; // same address, configured upper-case
     expect(await baseAddressValid(value, vaultUpperCase)).toBe(false);
+  });
+
+  it('rejects the token contract as a destination', async () => {
+    expect(await baseAddressValid(TOKEN)).toBe(false);
+  });
+
+  it('rejects the burn address as a destination', async () => {
+    expect(await baseAddressValid('0x000000000000000000000000000000000000dEaD')).toBe(false);
   });
 
   it('still rejects the zero address', async () => {

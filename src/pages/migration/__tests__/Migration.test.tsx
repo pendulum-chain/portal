@@ -82,8 +82,8 @@ const healthyVault: VaultFixture = {
   balance: 10n ** 8n * PEN,
 };
 
-// Fake Base RPC: the destination is a regular account and the vault answers
-// with the given state. Any other call fails.
+// Fake Base RPC: the token is a contract, any other destination a regular
+// account, and the vault answers with the given state. Any other call fails.
 function mockBaseRpc(vault: VaultFixture) {
   const vaultWord = VAULT.slice(2).toLowerCase().padStart(64, '0');
   global.fetch = jest.fn(async (_url: unknown, init?: { body?: unknown }) => {
@@ -91,7 +91,7 @@ function mockBaseRpc(vault: VaultFixture) {
     const { to, data } = params[0] ?? {};
     let result: string | undefined;
     if (method === 'eth_chainId') result = vault.chainId ?? '0x2105';
-    if (method === 'eth_getCode') result = '0x';
+    if (method === 'eth_getCode') result = params[0] === vault.token ? '0x6080' : '0x';
     if (method === 'eth_call' && to === VAULT && !vault.failReads) {
       result = {
         '0x5c975abb': word(vault.paused ? 1n : 0n),
@@ -399,6 +399,17 @@ describe('form during submission', () => {
 });
 
 describe('destination check before signing', () => {
+  it('refuses the PEN token contract even after the contract warning is ticked', async () => {
+    renderPage();
+    await userEvent.type(screen.getByPlaceholderText('0.0'), '500');
+    await userEvent.type(screen.getByPlaceholderText('0x…'), TOKEN);
+    await userEvent.click(screen.getByLabelText(/irreversible/));
+    await userEvent.click(await screen.findByLabelText(/can receive ERC-20 tokens/));
+    await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(await screen.findByText(/That is the PEN token contract/)).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
   it('offers no migration with the MetaMask Polkadot snap', async () => {
     mockWalletSource = 'metamask';
     renderPage();

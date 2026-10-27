@@ -235,6 +235,18 @@ function Migration() {
   const target = getConfiguredMigrationTarget(tenantName);
   const lockedBalance = Math.max(0, balances.total - balances.transferable);
 
+  // The vault's state on Base. The burn on Pendulum goes through whatever it
+  // is, but while the vault is paused, has no token or a per-release cap of 0
+  // every release is deferred, so submission is refused; a failed read counts
+  // as not ready. Above the per-release cap or the vault's balance only this
+  // release is held, so we warn and ask for an explicit acknowledgement.
+  const vaultQuery = useQuery(
+    ['migration', 'vaultState', target?.vaultAddress],
+    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress, target!.baseChainId),
+    { enabled: Boolean(target), staleTime: 60_000, refetchInterval: 60_000 },
+  );
+  const vaultState = vaultQuery.data;
+
   const schema = useMemo(
     () =>
       getMigrationValidationSchema({
@@ -244,8 +256,9 @@ function Migration() {
         existentialDeposit: constants?.existentialDeposit ?? 0,
         tokenSymbol,
         vaultAddress: target?.vaultAddress ?? '',
+        tokenAddress: vaultState?.token ?? '',
       }),
-    [balances.transferable, balances.total, constants, tokenSymbol, target?.vaultAddress],
+    [balances.transferable, balances.total, constants, tokenSymbol, target?.vaultAddress, vaultState?.token],
   );
 
   const { register, control, handleSubmit, setValue, getValues, watch, formState, reset } =
@@ -272,17 +285,6 @@ function Migration() {
   const needsContractAck = Boolean(destinationIsContract) || contractCheckFailed;
   const contractConfirmed = contractConfirmedFor !== undefined && contractConfirmedFor === checksummedAddress;
 
-  // The vault's state on Base. The burn on Pendulum goes through whatever it
-  // is, but while the vault is paused, has no token or a per-release cap of 0
-  // every release is deferred, so submission is refused; a failed read counts
-  // as not ready. Above the per-release cap or the vault's balance only this
-  // release is held, so we warn and ask for an explicit acknowledgement.
-  const vaultQuery = useQuery(
-    ['migration', 'vaultState', target?.vaultAddress],
-    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress, target!.baseChainId),
-    { enabled: Boolean(target), staleTime: 60_000, refetchInterval: 60_000 },
-  );
-  const vaultState = vaultQuery.data;
   const vaultCheckPending = Boolean(target) && vaultState === undefined && !vaultQuery.isError;
   const vaultBlocker = getVaultBlocker(vaultState, vaultQuery.isError);
   const perReleaseCapPen = vaultState && toPen(vaultState.perReleaseCap);
