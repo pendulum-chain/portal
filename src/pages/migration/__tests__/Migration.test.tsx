@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MigrationTargetConfig } from '../../../constants/migration';
 import { toChecksumAddress } from '../../../helpers/ethereum';
@@ -377,6 +377,24 @@ describe('form during submission', () => {
     release();
     expect(await screen.findByText(/Migration #1 submitted/)).toBeInTheDocument();
     expect(screen.getByPlaceholderText('0x…')).toBeEnabled();
+  });
+
+  it.each([
+    ['address', '0x…', '0x00000000000000000000000000000000cafebabe'],
+    ['amount', '0.0', '5000'],
+  ])('refuses the burn when the %s changed after the click', async (_label, placeholder, value) => {
+    renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    const release = holdBaseRpc();
+    await userEvent.click(button);
+    // The inputs are locked; this stands for a change that bypasses the lock.
+    fireEvent.change(screen.getByPlaceholderText(placeholder), { target: { value } });
+    release();
+    await waitFor(() =>
+      expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(/changed after you clicked/)),
+    );
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 });
 

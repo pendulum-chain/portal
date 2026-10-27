@@ -248,10 +248,11 @@ function Migration() {
     [balances.transferable, balances.total, constants, tokenSymbol, target?.vaultAddress],
   );
 
-  const { register, control, handleSubmit, setValue, watch, formState, reset } = useForm<MigrationFormValues>({
-    resolver: yupResolver(schema),
-    defaultValues: { confirmIrreversible: false },
-  });
+  const { register, control, handleSubmit, setValue, getValues, watch, formState, reset } =
+    useForm<MigrationFormValues>({
+      resolver: yupResolver(schema),
+      defaultValues: { confirmIrreversible: false },
+    });
 
   const baseAddress = watch('baseAddress') ?? '';
   const addressIsValid = isValidEip55Address(baseAddress);
@@ -363,6 +364,16 @@ function Migration() {
         capConfirmedFor !== freshDelay.ackKey
       ) {
         showToast(ToastMessage.WARNING, 'The vault state on Base changed. Please review the warning above.');
+        return;
+      }
+      // The form is locked during submission; should it have changed anyway,
+      // the page no longer shows what would be signed.
+      const current = getValues();
+      if (current.baseAddress !== values.baseAddress || Number(current.amount) !== values.amount) {
+        showToast(
+          ToastMessage.WARNING,
+          'The amount or address changed after you clicked. Nothing was burned; please check them and submit again.',
+        );
         return;
       }
       const amountNative = decimalToNative(values.amount, tokenDecimals).toString();
