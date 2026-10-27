@@ -11,6 +11,7 @@ import Amount from '../../components/Form/Amount';
 import { getConfiguredMigrationTarget, getMigrationTarget } from '../../constants/migration';
 import {
   VaultState,
+  getTransactionCountOnBase,
   getVaultState,
   isContractOnBase,
   isValidEip55Address,
@@ -235,6 +236,18 @@ function Migration() {
   const target = getConfiguredMigrationTarget(tenantName);
   const lockedBalance = Math.max(0, balances.total - balances.transferable);
 
+  // The vault's state on Base. The burn on Pendulum goes through whatever it
+  // is, but while the vault is paused, has no token or a per-release cap of 0
+  // every release is deferred, so submission is refused; a failed read counts
+  // as not ready. Above the per-release cap or the vault's balance only this
+  // release is held, so we warn and ask for an explicit acknowledgement.
+  const vaultQuery = useQuery(
+    ['migration', 'vaultState', target?.vaultAddress],
+    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress, target!.baseChainId),
+    { enabled: Boolean(target), staleTime: 60_000, refetchInterval: 60_000 },
+  );
+  const vaultState = vaultQuery.data;
+
   const schema = useMemo(
     () =>
       getMigrationValidationSchema({
@@ -244,14 +257,16 @@ function Migration() {
         existentialDeposit: constants?.existentialDeposit ?? 0,
         tokenSymbol,
         vaultAddress: target?.vaultAddress ?? '',
+        tokenAddress: vaultState?.token ?? '',
       }),
-    [balances.transferable, balances.total, constants, tokenSymbol, target?.vaultAddress],
+    [balances.transferable, balances.total, constants, tokenSymbol, target?.vaultAddress, vaultState?.token],
   );
 
-  const { register, control, handleSubmit, setValue, watch, formState, reset } = useForm<MigrationFormValues>({
-    resolver: yupResolver(schema),
-    defaultValues: { confirmIrreversible: false },
-  });
+  const { register, control, handleSubmit, setValue, getValues, watch, formState, reset } =
+    useForm<MigrationFormValues>({
+      resolver: yupResolver(schema),
+      defaultValues: { confirmIrreversible: false },
+    });
 
   const baseAddress = watch('baseAddress') ?? '';
   const addressIsValid = isValidEip55Address(baseAddress);
@@ -270,18 +285,16 @@ function Migration() {
     Boolean(target && checksummedAddress) && contractQuery.data === undefined && !contractQuery.isError;
   const needsContractAck = Boolean(destinationIsContract) || contractCheckFailed;
   const contractConfirmed = contractConfirmedFor !== undefined && contractConfirmedFor === checksummedAddress;
-
-  // The vault's state on Base. The burn on Pendulum goes through whatever it
-  // is, but while the vault is paused, has no token or a per-release cap of 0
-  // every release is deferred, so submission is refused; a failed read counts
-  // as not ready. Above the per-release cap or the vault's balance only this
-  // release is held, so we warn and ask for an explicit acknowledgement.
-  const vaultQuery = useQuery(
-    ['migration', 'vaultState', target?.vaultAddress],
-    () => getVaultState(target!.baseRpcUrl, target!.vaultAddress, target!.baseChainId),
-    { enabled: Boolean(target), staleTime: 60_000, refetchInterval: 60_000 },
+  // A Safe or smart wallet from another network may not exist on Base yet,
+  // and whether its owner can still deploy it there depends on how it was
+  // created. An address without code or transactions on Base gets a reminder.
+  const txCountQuery = useQuery(
+    ['migration', 'txCount', checksummedAddress],
+    () => getTransactionCountOnBase(target!.baseRpcUrl, checksummedAddress!),
+    { enabled: Boolean(target && checksummedAddress), staleTime: 60_000 },
   );
-  const vaultState = vaultQuery.data;
+  const destinationUnused = destinationIsContract === false && txCountQuery.data === 0;
+
   const vaultCheckPending = Boolean(target) && vaultState === undefined && !vaultQuery.isError;
   const vaultBlocker = getVaultBlocker(vaultState, vaultQuery.isError);
   const perReleaseCapPen = vaultState && toPen(vaultState.perReleaseCap);
@@ -365,6 +378,16 @@ function Migration() {
         showToast(ToastMessage.WARNING, 'The vault state on Base changed. Please review the warning above.');
         return;
       }
+      // The form is locked during submission; should it have changed anyway,
+      // the page no longer shows what would be signed.
+      const current = getValues();
+      if (current.baseAddress !== values.baseAddress || Number(current.amount) !== values.amount) {
+        showToast(
+          ToastMessage.WARNING,
+          'The amount or address changed after you clicked. Nothing was burned; please check them and submit again.',
+        );
+        return;
+      }
       const amountNative = decimalToNative(values.amount, tokenDecimals).toString();
       const migration = await submitMigration(amountNative, toChecksumAddress(values.baseAddress), walletAccount);
       setPendingMigration(migration);
@@ -413,176 +436,191 @@ function Migration() {
           </div>
         ) : (
           <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
-            {/* A pasted comma is ambiguous (decimal in many locales, thousands
+            {/* Locked while a migration is submitted, so the page keeps showing
+                what is being signed and burned. */}
+            <fieldset className="min-w-0" disabled={submissionPending}>
+              {/* A pasted comma is ambiguous (decimal in many locales, thousands
                 separator in others) and the input strips it as a thousands
                 separator — "500,5" would migrate 5005. Migrations are one-way,
                 so refuse the paste instead of guessing. */}
-            <div
-              onPasteCapture={(e) => {
-                if (!e.clipboardData.getData('text').includes(',')) return;
-                e.preventDefault();
-                e.stopPropagation();
-                showToast(
-                  ToastMessage.WARNING,
-                  'Use a dot as the decimal separator (for example 500.5). Amounts containing a comma are not accepted.',
-                );
-              }}
-            >
-              <Amount
-                control={control}
-                name="amount"
-                setValue={(n) => setValue('amount', n, { shouldValidate: true })}
-                max={balances.transferable}
-                error={formState.errors.amount?.message}
-                assetSuffix={tokenSymbol}
-                hideHalfButton
+              <div
+                onPasteCapture={(e) => {
+                  if (!e.clipboardData.getData('text').includes(',')) return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                  showToast(
+                    ToastMessage.WARNING,
+                    'Use a dot as the decimal separator (for example 500.5). Amounts containing a comma are not accepted.',
+                  );
+                }}
+              >
+                <Amount
+                  control={control}
+                  name="amount"
+                  setValue={(n) => setValue('amount', n, { shouldValidate: true })}
+                  max={balances.transferable}
+                  error={formState.errors.amount?.message}
+                  assetSuffix={tokenSymbol}
+                  hideHalfButton
+                />
+              </div>
+              {lockedBalance > 0.0001 && (
+                <p className="mt-1 text-xs text-neutral-500">
+                  {lockedBalance.toFixed(4)} {tokenSymbol} of your balance is locked (staking, vesting or governance).
+                  Unlock it first to migrate it — note the unstaking delay applies.
+                </p>
+              )}
+
+              {needsCapAck && (
+                <div className="alert alert-warning mt-3 text-sm">
+                  <div>
+                    {exceedsPerReleaseCap && (
+                      <p>
+                        This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
+                        {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
+                        Pendulum, but the release on Base is <strong>held</strong> until that cap is raised, which can
+                        take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
+                        {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
+                      </p>
+                    )}
+                    {exceedsVaultBalance && (
+                      <p>
+                        This is more than the migration vault on Base currently holds (
+                        {vaultBalancePen?.toLocaleString()} {tokenSymbol}). Your {tokenSymbol} would still be burned on
+                        Pendulum, but the release on Base is <strong>held</strong> until the vault is refilled.
+                      </p>
+                    )}
+                    <label className="mt-2 flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-sm"
+                        checked={capConfirmed}
+                        onChange={(e) => setCapConfirmedFor(e.target.checked ? capAckKey : undefined)}
+                      />
+                      <span>I understand this release may be delayed</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              <label className="label mt-3">
+                <span className="label-text">Your Base (EVM) address</span>
+              </label>
+              <input
+                className={`input input-bordered w-full font-mono text-sm ${
+                  baseAddress && !addressIsValid ? 'input-error' : ''
+                }`}
+                placeholder="0x…"
+                autoComplete="off"
+                spellCheck={false}
+                {...register('baseAddress')}
               />
-            </div>
-            {lockedBalance > 0.0001 && (
-              <p className="mt-1 text-xs text-neutral-500">
-                {lockedBalance.toFixed(4)} {tokenSymbol} of your balance is locked (staking, vesting or governance).
-                Unlock it first to migrate it — note the unstaking delay applies.
-              </p>
-            )}
-
-            {needsCapAck && (
-              <div className="alert alert-warning mt-3 text-sm">
-                <div>
-                  {exceedsPerReleaseCap && (
-                    <p>
-                      This is above the vault&rsquo;s <strong>per-release cap</strong> of{' '}
-                      {perReleaseCapPen?.toLocaleString()} {tokenSymbol}. Your {tokenSymbol} would still be burned on
-                      Pendulum, but the release on Base is <strong>held</strong> until that cap is raised, which can
-                      take a while. To receive your tokens without that delay, migrate in amounts of at most{' '}
-                      {perReleaseCapPen?.toLocaleString()} {tokenSymbol} each.
-                    </p>
-                  )}
-                  {exceedsVaultBalance && (
-                    <p>
-                      This is more than the migration vault on Base currently holds ({vaultBalancePen?.toLocaleString()}{' '}
-                      {tokenSymbol}). Your {tokenSymbol} would still be burned on Pendulum, but the release on Base is{' '}
-                      <strong>held</strong> until the vault is refilled.
-                    </p>
-                  )}
-                  <label className="mt-2 flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-sm"
-                      checked={capConfirmed}
-                      onChange={(e) => setCapConfirmedFor(e.target.checked ? capAckKey : undefined)}
-                    />
-                    <span>I understand this release may be delayed</span>
-                  </label>
+              {formState.errors.baseAddress?.message && (
+                <label className="label">
+                  <span className="label-text text-red-400">{formState.errors.baseAddress.message}</span>
+                </label>
+              )}
+              {needsContractAck && (
+                <div className="alert alert-warning mt-3 text-sm">
+                  <div>
+                    {contractCheckFailed ? (
+                      <p>
+                        We could not verify on Base whether this address is a <strong>smart contract</strong> (the RPC
+                        read failed). Tokens sent to a contract that cannot hold ERC-20s are lost forever. Retry later,
+                        or continue only if you are certain this is a wallet you control.
+                      </p>
+                    ) : (
+                      <p>
+                        This address is a <strong>smart contract</strong> on Base. Only continue if you are certain it
+                        can hold and move ERC-20 tokens (e.g. a Safe) — otherwise the tokens will be stuck forever.
+                      </p>
+                    )}
+                    <label className="mt-2 flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-sm"
+                        checked={contractConfirmed}
+                        onChange={(e) => setContractConfirmedFor(e.target.checked ? checksummedAddress : undefined)}
+                      />
+                      <span>
+                        {contractCheckFailed
+                          ? 'I am certain this address is a wallet I control on Base'
+                          : 'I verified this contract can receive ERC-20 tokens'}
+                      </span>
+                    </label>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <label className="label mt-3">
-              <span className="label-text">Your Base (EVM) address</span>
-            </label>
-            <input
-              className={`input input-bordered w-full font-mono text-sm ${
-                baseAddress && !addressIsValid ? 'input-error' : ''
-              }`}
-              placeholder="0x…"
-              autoComplete="off"
-              spellCheck={false}
-              {...register('baseAddress')}
-            />
-            {formState.errors.baseAddress?.message && (
-              <label className="label">
-                <span className="label-text text-red-400">{formState.errors.baseAddress.message}</span>
-              </label>
-            )}
-            {needsContractAck && (
-              <div className="alert alert-warning mt-3 text-sm">
-                <div>
-                  {contractCheckFailed ? (
-                    <p>
-                      We could not verify on Base whether this address is a <strong>smart contract</strong> (the RPC
-                      read failed). Tokens sent to a contract that cannot hold ERC-20s are lost forever. Retry later, or
-                      continue only if you are certain this is a wallet you control.
-                    </p>
-                  ) : (
-                    <p>
-                      This address is a <strong>smart contract</strong> on Base. Only continue if you are certain it can
-                      hold and move ERC-20 tokens (e.g. a Safe) — otherwise the tokens will be stuck forever.
-                    </p>
-                  )}
-                  <label className="mt-2 flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-sm"
-                      checked={contractConfirmed}
-                      onChange={(e) => setContractConfirmedFor(e.target.checked ? checksummedAddress : undefined)}
-                    />
-                    <span>
-                      {contractCheckFailed
-                        ? 'I am certain this address is a wallet I control on Base'
-                        : 'I verified this contract can receive ERC-20 tokens'}
-                    </span>
-                  </label>
+              {destinationUnused && (
+                <div className="alert mt-3 text-sm">
+                  <p>
+                    This address has never sent a transaction on Base and has no contract there. That is fine for a new
+                    wallet whose key you hold. If it is a Safe or another smart wallet, make sure it exists on Base and
+                    that you control it there: one deployed only on another network cannot always be recreated on Base,
+                    and the tokens would be stuck.
+                  </p>
                 </div>
-              </div>
-            )}
+              )}
 
-            <label className="mt-4 flex cursor-pointer items-center gap-2">
-              <input type="checkbox" className="checkbox checkbox-sm" {...register('confirmIrreversible')} />
-              <span className="text-sm">
-                I understand this migration is <strong>irreversible</strong> and my {tokenSymbol} on Pendulum will be
-                burned.
-              </span>
-            </label>
-            {formState.errors.confirmIrreversible?.message && (
-              <label className="label">
-                <span className="label-text text-red-400">{formState.errors.confirmIrreversible.message}</span>
+              <label className="mt-4 flex cursor-pointer items-center gap-2">
+                <input type="checkbox" className="checkbox checkbox-sm" {...register('confirmIrreversible')} />
+                <span className="text-sm">
+                  I understand this migration is <strong>irreversible</strong> and my {tokenSymbol} on Pendulum will be
+                  burned.
+                </span>
               </label>
-            )}
+              {formState.errors.confirmIrreversible?.message && (
+                <label className="label">
+                  <span className="label-text text-red-400">{formState.errors.confirmIrreversible.message}</span>
+                </label>
+              )}
 
-            {/* The wallet prompt is the one place the destination can be
+              {/* The wallet prompt is the one place the destination can be
                 checked independently of this page, so point the user to it
                 and have them compare it with their own Base wallet. The call
                 index pins raw data to tokenMigration.migrate, whose last
                 argument is the address. */}
-            {checksummedAddress && (
-              <div className="alert mt-4 text-sm">
-                <div className="min-w-0">
-                  <p>
-                    The burned {tokenSymbol} will be released on Base to{' '}
-                    <span className="break-all font-mono font-semibold">{checksummedAddress}</span>
-                  </p>
-                  <p className="mt-2">
-                    Your wallet will ask you to sign <span className="font-mono">tokenMigration.migrate</span>. Before
-                    you approve, open the call details and check that <span className="font-mono">base_address</span>{' '}
-                    (or <span className="font-mono">baseAddress</span>) is your own Base address as shown in your Base
-                    wallet, not only on this page, all 40 characters (wallets usually show it in lower case). If your
-                    wallet shows only raw method data, it must start with{' '}
-                    <span className="font-mono">{migrateCallPrefix}</span> and end with your Base address in lower case
-                    without the 0x (for the address above:{' '}
-                    <span className="break-all font-mono">{checksummedAddress.slice(2).toLowerCase()}</span>). Do not
-                    approve if your wallet shows anything else, and check again for every migration.
-                  </p>
+              {checksummedAddress && (
+                <div className="alert mt-4 text-sm">
+                  <div className="min-w-0">
+                    <p>
+                      The burned {tokenSymbol} will be released on Base to{' '}
+                      <span className="break-all font-mono font-semibold">{checksummedAddress}</span>
+                    </p>
+                    <p className="mt-2">
+                      Your wallet will ask you to sign <span className="font-mono">tokenMigration.migrate</span>. Before
+                      you approve, open the call details and check that <span className="font-mono">base_address</span>{' '}
+                      (or <span className="font-mono">baseAddress</span>) is your own Base address as shown in your Base
+                      wallet, not only on this page, all 40 characters (wallets usually show it in lower case). If your
+                      wallet shows only raw method data, it must start with{' '}
+                      <span className="font-mono">{migrateCallPrefix}</span> and end with your Base address in lower
+                      case without the 0x (for the address above:{' '}
+                      <span className="break-all font-mono">{checksummedAddress.slice(2).toLowerCase()}</span>). Do not
+                      approve if your wallet shows anything else, and check again for every migration.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <p className="mt-3 text-xs text-neutral-500">
-              Tip for large amounts: do a small test migration first and confirm it arrives on Base.
-            </p>
+              <p className="mt-3 text-xs text-neutral-500">
+                Tip for large amounts: do a small test migration first and confirm it arrives on Base.
+              </p>
 
-            <Button
-              className="mt-4 w-full"
-              color="primary"
-              type="submit"
-              disabled={paused || Boolean(vaultBlocker) || submissionPending || checksPending}
-              loading={submissionPending}
-            >
-              {submissionPending
-                ? 'Waiting for finalization…'
-                : checksPending
-                  ? 'Verifying destination…'
-                  : `Migrate ${tokenSymbol} to Base`}
-            </Button>
+              <Button
+                className="mt-4 w-full"
+                color="primary"
+                type="submit"
+                disabled={paused || Boolean(vaultBlocker) || submissionPending || checksPending}
+                loading={submissionPending}
+              >
+                {submissionPending
+                  ? 'Waiting for finalization…'
+                  : checksPending
+                    ? 'Verifying destination…'
+                    : `Migrate ${tokenSymbol} to Base`}
+              </Button>
+            </fieldset>
           </form>
         )}
       </div>

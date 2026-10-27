@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MigrationTargetConfig } from '../../../constants/migration';
 import { toChecksumAddress } from '../../../helpers/ethereum';
@@ -12,6 +12,7 @@ const DESTINATION = '0x00000000000000000000000000000000deadbeef';
 const mockSubmit = jest.fn();
 let mockTarget: MigrationTargetConfig | undefined;
 let mockWalletSource = 'polkadot-js';
+let mockDestinationNonce = '0x5';
 let mockReleaseStatus: { released: boolean; approvals: number; threshold: number } | undefined;
 
 jest.mock('../../../GlobalStateProvider', () => ({
@@ -82,8 +83,9 @@ const healthyVault: VaultFixture = {
   balance: 10n ** 8n * PEN,
 };
 
-// Fake Base RPC: the destination is a regular account and the vault answers
-// with the given state. Any other call fails.
+// Fake Base RPC: the token is a contract, any other destination a regular
+// account with mockDestinationNonce, and the vault answers with the given
+// state. Any other call fails.
 function mockBaseRpc(vault: VaultFixture) {
   const vaultWord = VAULT.slice(2).toLowerCase().padStart(64, '0');
   global.fetch = jest.fn(async (_url: unknown, init?: { body?: unknown }) => {
@@ -91,7 +93,8 @@ function mockBaseRpc(vault: VaultFixture) {
     const { to, data } = params[0] ?? {};
     let result: string | undefined;
     if (method === 'eth_chainId') result = vault.chainId ?? '0x2105';
-    if (method === 'eth_getCode') result = '0x';
+    if (method === 'eth_getCode') result = params[0] === vault.token ? '0x6080' : '0x';
+    if (method === 'eth_getTransactionCount') result = mockDestinationNonce;
     if (method === 'eth_call' && to === VAULT && !vault.failReads) {
       result = {
         '0x5c975abb': word(vault.paused ? 1n : 0n),
@@ -129,6 +132,7 @@ function renderPage() {
 beforeAll(() => jest.spyOn(console, 'log').mockImplementation(() => undefined));
 beforeEach(() => {
   mockWalletSource = 'polkadot-js';
+  mockDestinationNonce = '0x5';
   mockReleaseStatus = undefined;
   mockSubmit.mockReset().mockResolvedValue({ nonce: 1n, recipient: DESTINATION, palletAmount: 500n * 10n ** 12n });
   mockTarget = {
@@ -352,7 +356,73 @@ describe('release status after the burn', () => {
   });
 });
 
+describe('form during submission', () => {
+  // Holds every Base RPC call until the returned function is called.
+  function holdBaseRpc() {
+    const fetchNow = global.fetch as jest.Mock;
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    global.fetch = jest.fn(async (url: unknown, init?: unknown) => {
+      await gate;
+      return fetchNow(url, init);
+    }) as unknown as typeof fetch;
+    return release;
+  }
+
+  it('locks the inputs until the submission has ended', async () => {
+    renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    const release = holdBaseRpc();
+    await userEvent.click(button);
+    expect(screen.getByPlaceholderText('0x…')).toBeDisabled();
+    expect(screen.getByPlaceholderText('0.0')).toBeDisabled();
+    expect(screen.getByLabelText(/irreversible/)).toBeDisabled();
+    release();
+    expect(await screen.findByText(/Migration #1 submitted/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('0x…')).toBeEnabled();
+  });
+
+  it.each([
+    ['address', '0x…', '0x00000000000000000000000000000000cafebabe'],
+    ['amount', '0.0', '5000'],
+  ])('refuses the burn when the %s changed after the click', async (_label, placeholder, value) => {
+    renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    const release = holdBaseRpc();
+    await userEvent.click(button);
+    // The inputs are locked; this stands for a change that bypasses the lock.
+    fireEvent.change(screen.getByPlaceholderText(placeholder), { target: { value } });
+    release();
+    await waitFor(() =>
+      expect(showToast).toHaveBeenCalledWith('WARNING', expect.stringMatching(/changed after you clicked/)),
+    );
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+});
+
 describe('destination check before signing', () => {
+  it('refuses the PEN token contract even after the contract warning is ticked', async () => {
+    renderPage();
+    await userEvent.type(screen.getByPlaceholderText('0.0'), '500');
+    await userEvent.type(screen.getByPlaceholderText('0x…'), TOKEN);
+    await userEvent.click(screen.getByLabelText(/irreversible/));
+    await userEvent.click(await screen.findByLabelText(/can receive ERC-20 tokens/));
+    await userEvent.click(await screen.findByRole('button', { name: 'Migrate PEN to Base' }));
+    expect(await screen.findByText(/That is the PEN token contract/)).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('reminds the user to check a destination that was never used on Base', async () => {
+    mockDestinationNonce = '0x0';
+    renderPage();
+    await userEvent.type(screen.getByPlaceholderText('0x…'), DESTINATION);
+    expect(await screen.findByText(/never sent a transaction on Base/)).toHaveTextContent(
+      /If it is a Safe or another smart wallet, make sure it exists on Base and that you control it there/,
+    );
+  });
+
   it('offers no migration with the MetaMask Polkadot snap', async () => {
     mockWalletSource = 'metamask';
     renderPage();

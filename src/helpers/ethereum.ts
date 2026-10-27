@@ -97,6 +97,8 @@ export async function getApprovalThreshold(baseRpcUrl: string, vault: string): P
 
 export interface VaultState {
   paused: boolean;
+  /** The PEN token contract; the zero address until it is wired into the vault (setToken). */
+  token: string;
   /** False until the PEN token is wired into the vault (setToken). */
   tokenSet: boolean;
   /** Per-release cap, in 18-decimal token (wei) units. */
@@ -133,12 +135,11 @@ export async function getVaultState(baseRpcUrl: string, vault: string, expectedC
     call(vault, SELECTOR_AVAILABLE_DAILY_ALLOWANCE),
     call(vault, SELECTOR_PENDING_APPROVED_AMOUNT),
   ]);
-  const balance =
-    token === 0n
-      ? 0n
-      : await call(`0x${token.toString(16).padStart(40, '0')}`, `${SELECTOR_BALANCE_OF}${addressWord(vault)}`);
+  const tokenAddress = `0x${token.toString(16).padStart(40, '0')}`;
+  const balance = token === 0n ? 0n : await call(tokenAddress, `${SELECTOR_BALANCE_OF}${addressWord(vault)}`);
   return {
     paused: paused !== 0n,
+    token: tokenAddress,
     tokenSet: token !== 0n,
     perReleaseCap,
     dailyCap,
@@ -163,6 +164,11 @@ export function isContractCode(code: string): boolean {
 /** True when the address has deployed contract code on Base. */
 export async function isContractOnBase(baseRpcUrl: string, address: string): Promise<boolean> {
   return isContractCode(await rpc(baseRpcUrl, 'eth_getCode', [address, 'latest']));
+}
+
+/** Number of transactions the address has sent on Base (its nonce). */
+export async function getTransactionCountOnBase(baseRpcUrl: string, address: string): Promise<number> {
+  return Number(BigInt(await rpc(baseRpcUrl, 'eth_getTransactionCount', [address, 'latest'])));
 }
 
 /**

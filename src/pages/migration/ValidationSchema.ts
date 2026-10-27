@@ -19,7 +19,16 @@ interface SchemaParams {
    *  would strand the funds (and, on-chain, this is the one address the pallet
    *  cannot reject because it has no knowledge of Base state). */
   vaultAddress: string;
+  /** The PEN token contract on Base ('' until read). Rejected as a destination:
+   *  tokens sent to the token contract itself are stuck there. */
+  tokenAddress: string;
 }
+
+/** The usual burn address on EVM chains. */
+const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
+
+const isNot = (address: string) => (value?: string) =>
+  !address || !value || value.toLowerCase() !== address.toLowerCase();
 
 export function getMigrationValidationSchema({
   transferable,
@@ -28,6 +37,7 @@ export function getMigrationValidationSchema({
   existentialDeposit,
   tokenSymbol,
   vaultAddress,
+  tokenAddress,
 }: SchemaParams) {
   return Yup.object<MigrationFormValues>().shape({
     amount: Yup.number()
@@ -56,7 +66,17 @@ export function getMigrationValidationSchema({
       .test(
         'not-vault',
         'That is the migration vault address — tokens sent there can never be released. Enter your own Base wallet address.',
-        (value) => !vaultAddress || !value || value.toLowerCase() !== vaultAddress.toLowerCase(),
+        isNot(vaultAddress),
+      )
+      .test(
+        'not-token',
+        `That is the ${tokenSymbol} token contract on Base — tokens sent there are stuck for good. Enter your own Base wallet address.`,
+        isNot(tokenAddress),
+      )
+      .test(
+        'not-burn-address',
+        'That is a burn address — tokens sent there are lost for good. Enter your own Base wallet address.',
+        isNot(BURN_ADDRESS),
       ),
     confirmIrreversible: Yup.boolean()
       .required()
