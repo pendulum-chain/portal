@@ -166,6 +166,11 @@ export async function isContractOnBase(baseRpcUrl: string, address: string): Pro
   return isContractCode(await rpc(baseRpcUrl, 'eth_getCode', [address, 'latest']));
 }
 
+/** Number of transactions the address has sent on Base (its nonce). */
+export async function getTransactionCountOnBase(baseRpcUrl: string, address: string): Promise<number> {
+  return Number(BigInt(await rpc(baseRpcUrl, 'eth_getTransactionCount', [address, 'latest'])));
+}
+
 /**
  * Hash of the transaction that released this migration on Base: the vault's
  * Released event for the nonce, emitted in the same transaction as the token

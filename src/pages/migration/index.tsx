@@ -11,6 +11,7 @@ import Amount from '../../components/Form/Amount';
 import { getConfiguredMigrationTarget, getMigrationTarget } from '../../constants/migration';
 import {
   VaultState,
+  getTransactionCountOnBase,
   getVaultState,
   isContractOnBase,
   isValidEip55Address,
@@ -284,6 +285,15 @@ function Migration() {
     Boolean(target && checksummedAddress) && contractQuery.data === undefined && !contractQuery.isError;
   const needsContractAck = Boolean(destinationIsContract) || contractCheckFailed;
   const contractConfirmed = contractConfirmedFor !== undefined && contractConfirmedFor === checksummedAddress;
+  // A Safe or smart wallet from another network may not exist on Base yet,
+  // and whether its owner can still deploy it there depends on how it was
+  // created. An address without code or transactions on Base gets a reminder.
+  const txCountQuery = useQuery(
+    ['migration', 'txCount', checksummedAddress],
+    () => getTransactionCountOnBase(target!.baseRpcUrl, checksummedAddress!),
+    { enabled: Boolean(target && checksummedAddress), staleTime: 60_000 },
+  );
+  const destinationUnused = destinationIsContract === false && txCountQuery.data === 0;
 
   const vaultCheckPending = Boolean(target) && vaultState === undefined && !vaultQuery.isError;
   const vaultBlocker = getVaultBlocker(vaultState, vaultQuery.isError);
@@ -539,6 +549,17 @@ function Migration() {
                       </span>
                     </label>
                   </div>
+                </div>
+              )}
+
+              {destinationUnused && (
+                <div className="alert mt-3 text-sm">
+                  <p>
+                    This address has never sent a transaction on Base and has no contract there. That is fine for a new
+                    wallet whose key you hold. If it is a Safe or another smart wallet, make sure it exists on Base and
+                    that you control it there: one deployed only on another network cannot always be recreated on Base,
+                    and the tokens would be stuck.
+                  </p>
                 </div>
               )}
 
