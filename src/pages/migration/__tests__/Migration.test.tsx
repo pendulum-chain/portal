@@ -352,6 +352,34 @@ describe('release status after the burn', () => {
   });
 });
 
+describe('form during submission', () => {
+  // Holds every Base RPC call until the returned function is called.
+  function holdBaseRpc() {
+    const fetchNow = global.fetch as jest.Mock;
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    global.fetch = jest.fn(async (url: unknown, init?: unknown) => {
+      await gate;
+      return fetchNow(url, init);
+    }) as unknown as typeof fetch;
+    return release;
+  }
+
+  it('locks the inputs until the submission has ended', async () => {
+    renderPage();
+    await fillForm('500');
+    const button = await screen.findByRole('button', { name: 'Migrate PEN to Base' });
+    const release = holdBaseRpc();
+    await userEvent.click(button);
+    expect(screen.getByPlaceholderText('0x…')).toBeDisabled();
+    expect(screen.getByPlaceholderText('0.0')).toBeDisabled();
+    expect(screen.getByLabelText(/irreversible/)).toBeDisabled();
+    release();
+    expect(await screen.findByText(/Migration #1 submitted/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('0x…')).toBeEnabled();
+  });
+});
+
 describe('destination check before signing', () => {
   it('offers no migration with the MetaMask Polkadot snap', async () => {
     mockWalletSource = 'metamask';
