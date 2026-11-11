@@ -70,16 +70,21 @@ export function useMigrationPallet() {
    * Signs and submits `tokenMigration.migrate(amount, baseAddress)`, resolving
    * once the transaction is FINALIZED with the emitted migration identifiers
    * needed to track the release on Base.
+   *
+   * The wallet may return the signed transaction itself, which is how wallets
+   * that sign with the metadata hash (Ledger) work; @polkadot/api refuses one
+   * whose call differs from this extrinsic.
    */
   const submitMigration = useCallback(
     (amountNative: string, baseAddress: string, walletAccount: WalletAccount): Promise<PendingMigration> => {
       if (!api) return Promise.reject(new Error('API not ready'));
       const extrinsic = api.tx.tokenMigration.migrate(amountNative, baseAddress);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const options = { signer: walletAccount.signer as any, withSignedTransaction: true };
 
       return new Promise<PendingMigration>((resolve, reject) =>
         extrinsic
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .signAndSend(walletAccount.address, { signer: walletAccount.signer as any }, (result) => {
+          .signAndSend(walletAccount.address, options, (result) => {
             const { status, events } = result;
             const errors = getErrors(events, api);
 
