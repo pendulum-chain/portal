@@ -1,0 +1,19 @@
+# A pull request that changes one of these paths needs an approving review from
+# a listed owner (branch rule "Require review from Code Owners").
+# The last matching pattern wins.
+
+# PEN migration page
+/src/pages/migration/        @ebma
+/src/hooks/migration/        @ebma
+/src/constants/migration.ts  @ebma
+/src/helpers/ethereum.ts     @ebma
+
+# Build, deploy and dependencies
+/.github/                    @ebma
+/netlify/                    @ebma
+/vite.config.ts              @ebma
+/index.html                  @ebma
+/package.json                @ebma
+/yarn.lock                   @ebma
+/.yarnrc.yml                 @ebma
+/.yarn/                      @ebma
