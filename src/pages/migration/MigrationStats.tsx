@@ -1,8 +1,11 @@
+import { ReactNode } from 'react';
+import { ExternalIcon } from '../../assets/ExternalIcon';
 import { MigrationTargetConfig } from '../../constants/migration';
 import { toChecksumAddress } from '../../helpers/ethereum';
 import { MigrationStats as Stats, useMigrationStats } from '../../hooks/migration/useMigrationStats';
 
 const UNIT = 10n ** 18n;
+const ZERO_ADDRESS = /^0x0{40}$/;
 
 /** Whole tokens, e.g. "149,933,029". */
 function whole(units: bigint) {
@@ -28,105 +31,120 @@ function status(stats: Stats) {
   return { label: 'Open', className: 'badge-success' };
 }
 
-function Figure({ title, units, symbol, desc }: { title: string; units: bigint; symbol: string; desc?: string }) {
+function Row({ label, children, title }: { label: string; children: ReactNode; title?: string }) {
   return (
-    <div className="stat px-4 py-3">
-      <div className="stat-title">{title}</div>
-      <div className="stat-value whitespace-normal text-lg" title={exact(units, symbol)}>
-        {whole(units)} {symbol}
-      </div>
-      {desc && <div className="stat-desc whitespace-normal">{desc}</div>}
+    <div className="flex items-baseline justify-between gap-4 py-1.5">
+      <dt className="text-neutral-500">{label}</dt>
+      <dd className="font-semibold tabular-nums" title={title}>
+        {children}
+      </dd>
     </div>
   );
 }
 
-const ZERO_ADDRESS = /^0x0{40}$/;
-
-/** A contract on Base, linked to the explorer so anyone can check the figures themselves. */
-function ContractLink({ label, address, href }: { label: string; address: string; href: string }) {
-  const checksummed = toChecksumAddress(address);
+function ExplorerLink({ label, href }: { label: string; href: string }) {
   return (
-    <li>
-      {label}:{' '}
-      <a className="link break-all font-mono" href={href} target="_blank" rel="nofollow noreferrer">
-        {checksummed}
-      </a>
-    </li>
+    <a
+      className="btn btn-ghost btn-xs gap-1 border border-base-300 font-normal normal-case"
+      href={href}
+      target="_blank"
+      rel="nofollow noreferrer"
+    >
+      {label}
+      <ExternalIcon className="h-3 w-3" fill="currentColor" />
+    </a>
   );
 }
 
-/** Totals of the migration on both chains; no individual migrations are shown. */
-export function MigrationStats({ target, tokenSymbol }: { target: MigrationTargetConfig; tokenSymbol: string }) {
+/**
+ * Totals of the migration on both chains, for the side of the migration page;
+ * no individual migrations are shown. `capacity` is rendered below the totals.
+ */
+export function MigrationStats({
+  target,
+  tokenSymbol,
+  capacity,
+}: {
+  target: MigrationTargetConfig;
+  tokenSymbol: string;
+  capacity?: ReactNode;
+}) {
   const { data: stats, isError } = useMigrationStats(target);
   const badge = stats && status(stats);
+  const explorer = (kind: 'address' | 'token', address: string) =>
+    `${target.baseExplorerUrl}/${kind}/${toChecksumAddress(address)}`;
 
   return (
-    <div className="card mb-4 bg-base-200 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-bold">{tokenSymbol} migration</h2>
-        {badge && <span className={`badge ${badge.className}`}>{badge.label}</span>}
+    <div className="card bg-base-200 p-5">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">Migration overview</h2>
+        {badge && <span className={`badge badge-sm ${badge.className}`}>{badge.label}</span>}
       </div>
 
       {isError && !stats ? (
-        <p className="mt-2 text-sm">The migration figures could not be read right now. Please try again later.</p>
+        <p className="mt-3 text-sm">The migration figures could not be read right now. Please try again later.</p>
       ) : !stats ? (
-        <p className="mt-2 text-sm">Loading the migration figures…</p>
+        <p className="mt-3 text-sm">Loading the migration figures…</p>
       ) : (
         <>
-          <p className="mt-3 text-sm">
-            Migrated to Base:{' '}
-            <strong title={exact(stats.onBase, tokenSymbol)}>
-              {whole(stats.onBase)} {tokenSymbol}
-            </strong>
-            , {shareOnBase(stats)} % of all {tokenSymbol}
-          </p>
-          <progress
-            className="progress progress-primary mt-1 w-full"
-            value={Number(stats.onBase / UNIT)}
-            max={Number((stats.onPendulum + stats.onBase) / UNIT) || 1}
-            aria-label={`Share of ${tokenSymbol} migrated to Base`}
-          />
-
-          <div className="stats stats-vertical mt-3 w-full bg-base-300 sm:stats-horizontal">
-            <Figure title="On Pendulum" units={stats.onPendulum} symbol={tokenSymbol} desc="including the treasury" />
-            <Figure title="On Base" units={stats.onBase} symbol={tokenSymbol} desc="including the treasury" />
-            <Figure
-              title="Treasury"
-              units={stats.treasuryOnPendulum + stats.treasuryOnBase}
-              symbol={tokenSymbol}
-              desc={`${whole(stats.treasuryOnPendulum)} on Pendulum, ${whole(stats.treasuryOnBase)} on Base`}
+          <div className="mt-3">
+            <div className="text-3xl font-bold tabular-nums" title={exact(stats.onBase, tokenSymbol)}>
+              {whole(stats.onBase)} <span className="text-base font-semibold">{tokenSymbol}</span>
+            </div>
+            <p className="text-sm text-neutral-500">
+              migrated to Base, {shareOnBase(stats)} % of all {tokenSymbol}
+            </p>
+            <progress
+              className="progress progress-primary mt-2 h-1.5 w-full"
+              value={Number(stats.onBase / UNIT)}
+              max={Number((stats.onPendulum + stats.onBase) / UNIT) || 1}
+              aria-label={`Share of ${tokenSymbol} migrated to Base`}
             />
           </div>
 
-          <p className="mt-3 text-sm">
-            In flight to Base: {whole(stats.inFlight)} {tokenSymbol} · Migrations so far: {stats.migrations}
-          </p>
-          <div className="mt-3 text-xs">
-            <span className="font-semibold">Contracts on Base</span>
-            <ul className="mt-1 space-y-1">
-              {!ZERO_ADDRESS.test(stats.tokenAddress) && (
-                <ContractLink
-                  label={`${tokenSymbol} token`}
-                  address={stats.tokenAddress}
-                  href={`${target.baseExplorerUrl}/token/${toChecksumAddress(stats.tokenAddress)}`}
-                />
-              )}
-              <ContractLink
-                label="Migration vault"
-                address={target.vaultAddress}
-                href={`${target.baseExplorerUrl}/address/${toChecksumAddress(target.vaultAddress)}`}
-              />
-              {stats.treasuryAddress && (
-                <ContractLink
-                  label="Treasury (governance timelock)"
-                  address={stats.treasuryAddress}
-                  href={`${target.baseExplorerUrl}/address/${toChecksumAddress(stats.treasuryAddress)}`}
-                />
-              )}
-            </ul>
+          <dl className="mt-3 divide-y divide-base-300 text-sm">
+            <Row label="On Pendulum" title={exact(stats.onPendulum, tokenSymbol)}>
+              {whole(stats.onPendulum)}
+            </Row>
+            <Row label="On Base" title={exact(stats.onBase, tokenSymbol)}>
+              {whole(stats.onBase)}
+            </Row>
+            <div className="py-1.5">
+              <div className="flex items-baseline justify-between gap-4">
+                <dt className="text-neutral-500">Treasury</dt>
+                <dd
+                  className="font-semibold tabular-nums"
+                  title={exact(stats.treasuryOnPendulum + stats.treasuryOnBase, tokenSymbol)}
+                >
+                  {whole(stats.treasuryOnPendulum + stats.treasuryOnBase)}
+                </dd>
+              </div>
+              <dd className="text-right text-xs text-neutral-500">
+                {whole(stats.treasuryOnPendulum)} on Pendulum, {whole(stats.treasuryOnBase)} on Base
+              </dd>
+            </div>
+            <Row label="In flight to Base">{whole(stats.inFlight)}</Row>
+            <Row label="Migrations so far">{stats.migrations}</Row>
+          </dl>
+          <p className="mt-1 text-xs text-neutral-500">Amounts in {tokenSymbol}; both chains include the treasury.</p>
+        </>
+      )}
+
+      {capacity}
+
+      {stats && (
+        <>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {!ZERO_ADDRESS.test(stats.tokenAddress) && (
+              <ExplorerLink label={`${tokenSymbol} token`} href={explorer('token', stats.tokenAddress)} />
+            )}
+            <ExplorerLink label="Migration vault" href={explorer('address', target.vaultAddress)} />
+            {stats.treasuryAddress && (
+              <ExplorerLink label="Treasury" href={explorer('address', stats.treasuryAddress)} />
+            )}
           </div>
           <p className="mt-3 text-xs text-neutral-500">
-            As of Pendulum block {stats.pendulumBlock.toLocaleString()} (finalized) and Base block{' '}
+            Pendulum block {stats.pendulumBlock.toLocaleString()} (finalized), Base block{' '}
             {stats.baseBlock.toLocaleString()}. Updated every minute.
           </p>
         </>
