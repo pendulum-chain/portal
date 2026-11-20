@@ -64,6 +64,7 @@ const SELECTOR_AVAILABLE_DAILY_ALLOWANCE = '0xed5c5de4'; // availableDailyAllowa
 const SELECTOR_PENDING_APPROVED_AMOUNT = '0x3cc11b05'; // pendingApprovedAmount()
 const SELECTOR_PAUSED = '0x5c975abb'; // paused()
 const SELECTOR_TOKEN = '0xfc0c546a'; // token()
+const SELECTOR_TOTAL_RELEASED = '0xe33b7de3'; // totalReleased()
 const SELECTOR_BALANCE_OF = '0x70a08231'; // balanceOf(address), on the token
 // keccak256("Released(uint64,address,uint256,uint256)"), emitted with the token transfer to the recipient.
 const TOPIC_RELEASED = '0xba1208278d2bd6cfd1a8048239811d35ba512b87960a83e0c34dafefa650dd7b';
@@ -121,11 +122,7 @@ export interface VaultState {
  * all of them before submission. Fails unless the RPC is on `expectedChainId`.
  */
 export async function getVaultState(baseRpcUrl: string, vault: string, expectedChainId: string): Promise<VaultState> {
-  // A contract at the vault address on another chain says nothing about Base.
-  const chainId = await rpc(baseRpcUrl, 'eth_chainId', []);
-  if (BigInt(chainId) !== BigInt(expectedChainId)) {
-    throw new Error(`Base RPC reports chain ${chainId}, expected ${expectedChainId}`);
-  }
+  await assertChainId(baseRpcUrl, expectedChainId);
   const call = (to: string, data: string) => rpc(baseRpcUrl, 'eth_call', [{ to, data }, 'latest']).then(BigInt);
   const [paused, token, perReleaseCap, dailyCap, availableDailyAllowance, pendingApprovedAmount] = await Promise.all([
     call(vault, SELECTOR_PAUSED),
@@ -147,6 +144,48 @@ export async function getVaultState(baseRpcUrl: string, vault: string, expectedC
     pendingApprovedAmount,
     balance,
   };
+}
+
+// A contract at the vault address on another chain says nothing about Base.
+async function assertChainId(baseRpcUrl: string, expectedChainId: string) {
+  const chainId = await rpc(baseRpcUrl, 'eth_chainId', []);
+  if (BigInt(chainId) !== BigInt(expectedChainId)) {
+    throw new Error(`Base RPC reports chain ${chainId}, expected ${expectedChainId}`);
+  }
+}
+
+export interface BaseMigrationSnapshot {
+  /** The Base block all values were read at. */
+  blockNumber: bigint;
+  paused: boolean;
+  /** PEN the vault has released so far, in 18-decimal token units. */
+  totalReleased: bigint;
+  /** PEN held by the treasury destination on Base, in 18-decimal token units; 0 without one. */
+  treasuryBalance: bigint;
+}
+
+/**
+ * The migration totals on Base. Every value is read at the same block, so
+ * they never mix two states of the vault.
+ */
+export async function getBaseMigrationSnapshot(
+  baseRpcUrl: string,
+  vault: string,
+  treasury: string | undefined,
+  expectedChainId: string,
+): Promise<BaseMigrationSnapshot> {
+  await assertChainId(baseRpcUrl, expectedChainId);
+  const block = await rpc(baseRpcUrl, 'eth_blockNumber', []);
+  const call = (to: string, data: string) => rpc(baseRpcUrl, 'eth_call', [{ to, data }, block]).then(BigInt);
+  const [paused, token, totalReleased] = await Promise.all([
+    call(vault, SELECTOR_PAUSED),
+    call(vault, SELECTOR_TOKEN),
+    call(vault, SELECTOR_TOTAL_RELEASED),
+  ]);
+  const tokenAddress = `0x${token.toString(16).padStart(40, '0')}`;
+  const treasuryBalance =
+    token === 0n || !treasury ? 0n : await call(tokenAddress, `${SELECTOR_BALANCE_OF}${addressWord(treasury)}`);
+  return { blockNumber: BigInt(block), paused: paused !== 0n, totalReleased, treasuryBalance };
 }
 
 /**

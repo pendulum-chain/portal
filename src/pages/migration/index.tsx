@@ -24,6 +24,7 @@ import { METAMASK_EXTENSION_NAME } from '../../services/metamask';
 import { decimalToNative, nativeToDecimal } from '../../shared/parseNumbers/metric';
 import { ToastMessage, showToast } from '../../shared/showToast';
 import { useAccountBalance } from '../../shared/useAccountBalance';
+import { MigrationStats } from './MigrationStats';
 import { MigrationFormValues, getMigrationValidationSchema } from './ValidationSchema';
 
 function ReleaseStatusCard({
@@ -403,6 +404,7 @@ function Migration() {
 
   return (
     <div className="mx-auto mt-4 w-full max-w-xl">
+      <MigrationStats target={target} tokenSymbol={tokenSymbol} />
       <div className="card bg-base-200 p-6">
         <h1 className="text-2xl font-bold">Migrate {tokenSymbol} to Base</h1>
         <p className="mt-2 text-sm text-neutral-500">
