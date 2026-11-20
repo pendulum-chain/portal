@@ -53,6 +53,9 @@ jest.mock('../../../hooks/migration/useBaseReleaseStatus', () => ({
   useBaseReleaseStatus: () => ({ data: mockReleaseStatus }),
   useReleaseTxHash: () => ({ data: undefined }),
 }));
+jest.mock('../../../hooks/migration/useMigrationStats', () => ({
+  useMigrationStats: () => ({ data: undefined, isError: false }),
+}));
 jest.mock('../../../shared/showToast', () => ({
   ToastMessage: { WARNING: 'WARNING', ERROR: 'ERROR', NO_WALLET_SELECTED: 'NO_WALLET_SELECTED' },
   showToast: jest.fn(),
