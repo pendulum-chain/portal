@@ -26,34 +26,37 @@ const stats: Stats = {
   tokenAddress: '0x0fc4a6ff1cdae34e1a481e4da38d402de0733955',
   treasuryAddress: '0x74f00d5ff15f0d2526792e5939e3bc45d445ce04',
 };
+const row = (label: string) => screen.getByText(label, { selector: 'dt' }).nextSibling?.textContent;
 
 describe('MigrationStats', () => {
   it('shows the totals of both chains and the treasury split', () => {
     mockResult = { data: stats, isError: false };
     render(<MigrationStats target={target} tokenSymbol="PEN" />);
     expect(screen.getByText('Open')).toBeTruthy();
-    expect(screen.getByText('149,933,029 PEN')).toBeTruthy();
-    expect(screen.getAllByText('200 PEN')).toHaveLength(2);
-    expect(screen.getByText('33,532,216 PEN')).toBeTruthy();
+    expect(screen.getByText(/migrated to Base, 0\.00013 % of all PEN/)).toBeTruthy();
+    expect(row('On Pendulum')).toBe('149,933,029');
+    expect(row('On Base')).toBe('200');
+    expect(row('Treasury')).toBe('33,532,216');
     expect(screen.getByText('33,532,116 on Pendulum, 100 on Base')).toBeTruthy();
-    expect(screen.getByText(/0\.00013 % of all PEN/)).toBeTruthy();
-    expect(screen.getByText(/Migrations so far: 2/)).toBeTruthy();
-    expect(screen.getByText(/Pendulum block 8,037,637 \(finalized\) and Base block 59,860,400/)).toBeTruthy();
+    expect(row('In flight to Base')).toBe('0');
+    expect(row('Migrations so far')).toBe('2');
+    expect(screen.getByText(/Pendulum block 8,037,637 \(finalized\), Base block 59,860,400/)).toBeTruthy();
   });
 
-  it('links the token, the vault and the treasury on Base, checksummed', () => {
+  it('renders the capacity below the totals', () => {
+    mockResult = { data: stats, isError: false };
+    render(<MigrationStats target={target} tokenSymbol="PEN" capacity={<div>capacity panel</div>} />);
+    expect(screen.getByText('capacity panel')).toBeTruthy();
+  });
+
+  it('links the token, the vault and the treasury on BaseScan without printing the addresses', () => {
     mockResult = { data: stats, isError: false };
     render(<MigrationStats target={target} tokenSymbol="PEN" />);
-    const href = (name: string) => screen.getByText(name).closest('a')?.getAttribute('href');
-    expect(href('0x0FC4A6FF1cDae34E1A481e4Da38D402dE0733955')).toBe(
-      'https://basescan.org/token/0x0FC4A6FF1cDae34E1A481e4Da38D402dE0733955',
-    );
-    expect(href('0x8A02A4BDd2536F85Af39Cc86Ef43f55bc69b9b2b')).toBe(
-      'https://basescan.org/address/0x8A02A4BDd2536F85Af39Cc86Ef43f55bc69b9b2b',
-    );
-    expect(href('0x74F00d5ff15f0d2526792E5939e3bC45D445Ce04')).toBe(
-      'https://basescan.org/address/0x74F00d5ff15f0d2526792E5939e3bC45D445Ce04',
-    );
+    const href = (name: string) => screen.getByRole('link', { name }).getAttribute('href');
+    expect(href('PEN token')).toBe('https://basescan.org/token/0x0FC4A6FF1cDae34E1A481e4Da38D402dE0733955');
+    expect(href('Migration vault')).toBe('https://basescan.org/address/0x8A02A4BDd2536F85Af39Cc86Ef43f55bc69b9b2b');
+    expect(href('Treasury')).toBe('https://basescan.org/address/0x74F00d5ff15f0d2526792E5939e3bC45D445Ce04');
+    expect(screen.queryByText(/0x8A02A4BDd2536F85Af39Cc86Ef43f55bc69b9b2b/)).toBeNull();
   });
 
   it('leaves out the links it has no address for', () => {
@@ -62,9 +65,9 @@ describe('MigrationStats', () => {
       isError: false,
     };
     render(<MigrationStats target={target} tokenSymbol="PEN" />);
-    expect(screen.queryByText(/PEN token:/)).toBeNull();
-    expect(screen.queryByText(/Treasury \(governance timelock\)/)).toBeNull();
-    expect(screen.getByText(/Migration vault:/)).toBeTruthy();
+    expect(screen.queryByRole('link', { name: 'PEN token' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Treasury' })).toBeNull();
+    expect(screen.getByRole('link', { name: 'Migration vault' })).toBeTruthy();
   });
 
   it('shows the exact amount on hover', () => {
