@@ -18,7 +18,8 @@ export interface MigrationTargetConfig {
  */
 export const migrationTargets: Partial<Record<TenantName, MigrationTargetConfig>> = {
   [TenantName.Pendulum]: {
-    baseRpcUrl: (import.meta.env.VITE_BASE_RPC_URL as string | undefined) ?? 'https://mainnet.base.org',
+    // mainnet.base.org rate-limits; publicnode needs no key and serves the log scans of findReleaseTxHash.
+    baseRpcUrl: (import.meta.env.VITE_BASE_RPC_URL as string | undefined) ?? 'https://base-rpc.publicnode.com',
     vaultAddress: (import.meta.env.VITE_MIGRATION_VAULT_ADDRESS as string | undefined) ?? '',
     baseChainId: (import.meta.env.VITE_BASE_CHAIN_ID as string | undefined) || '0x2105',
     baseExplorerUrl: 'https://basescan.org',
