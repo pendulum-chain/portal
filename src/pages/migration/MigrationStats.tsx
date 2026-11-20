@@ -1,4 +1,5 @@
 import { MigrationTargetConfig } from '../../constants/migration';
+import { toChecksumAddress } from '../../helpers/ethereum';
 import { MigrationStats as Stats, useMigrationStats } from '../../hooks/migration/useMigrationStats';
 
 const UNIT = 10n ** 18n;
@@ -36,6 +37,21 @@ function Figure({ title, units, symbol, desc }: { title: string; units: bigint; 
       </div>
       {desc && <div className="stat-desc whitespace-normal">{desc}</div>}
     </div>
+  );
+}
+
+const ZERO_ADDRESS = /^0x0{40}$/;
+
+/** A contract on Base, linked to the explorer so anyone can check the figures themselves. */
+function ContractLink({ label, address, href }: { label: string; address: string; href: string }) {
+  const checksummed = toChecksumAddress(address);
+  return (
+    <li>
+      {label}:{' '}
+      <a className="link break-all font-mono" href={href} target="_blank" rel="nofollow noreferrer">
+        {checksummed}
+      </a>
+    </li>
   );
 }
 
@@ -85,7 +101,31 @@ export function MigrationStats({ target, tokenSymbol }: { target: MigrationTarge
           <p className="mt-3 text-sm">
             In flight to Base: {whole(stats.inFlight)} {tokenSymbol} · Migrations so far: {stats.migrations}
           </p>
-          <p className="mt-1 text-xs text-neutral-500">
+          <div className="mt-3 text-xs">
+            <span className="font-semibold">Contracts on Base</span>
+            <ul className="mt-1 space-y-1">
+              {!ZERO_ADDRESS.test(stats.tokenAddress) && (
+                <ContractLink
+                  label={`${tokenSymbol} token`}
+                  address={stats.tokenAddress}
+                  href={`${target.baseExplorerUrl}/token/${toChecksumAddress(stats.tokenAddress)}`}
+                />
+              )}
+              <ContractLink
+                label="Migration vault"
+                address={target.vaultAddress}
+                href={`${target.baseExplorerUrl}/address/${toChecksumAddress(target.vaultAddress)}`}
+              />
+              {stats.treasuryAddress && (
+                <ContractLink
+                  label="Treasury (governance timelock)"
+                  address={stats.treasuryAddress}
+                  href={`${target.baseExplorerUrl}/address/${toChecksumAddress(stats.treasuryAddress)}`}
+                />
+              )}
+            </ul>
+          </div>
+          <p className="mt-3 text-xs text-neutral-500">
             As of Pendulum block {stats.pendulumBlock.toLocaleString()} (finalized) and Base block{' '}
             {stats.baseBlock.toLocaleString()}. Updated every minute.
           </p>

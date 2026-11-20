@@ -94,6 +94,7 @@ describe('getBaseMigrationSnapshot', () => {
     await expect(getBaseMigrationSnapshot('https://rpc', vault, treasury, '0x2105')).resolves.toEqual({
       blockNumber: 10_000n,
       paused: false,
+      token,
       totalReleased: 200n * 10n ** 18n,
       treasuryBalance: 100n * 10n ** 18n,
     });

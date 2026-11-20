@@ -13,7 +13,13 @@ const pendulum = {
   nextNonce: 2,
   treasuryBalance: 33_532_116n * PEN_NATIVE,
 };
-const base = { blockNumber: 59_860_400n, paused: false, totalReleased: 200n * PEN, treasuryBalance: 100n * PEN };
+const base = {
+  blockNumber: 59_860_400n,
+  paused: false,
+  token: '0x0fc4a6ff1cdae34e1a481e4da38d402de0733955',
+  totalReleased: 200n * PEN,
+  treasuryBalance: 100n * PEN,
+};
 
 describe('computeMigrationStats', () => {
   it('converts the 12-decimal Pendulum amounts to the 18 decimals of Base', () => {
@@ -24,6 +30,12 @@ describe('computeMigrationStats', () => {
     expect(stats.treasuryOnBase).toBe(100n * PEN);
     expect(stats.migrations).toBe(2);
     expect([stats.pendulumBlock, stats.baseBlock]).toEqual([8_037_637, 59_860_400n]);
+  });
+
+  it('passes the token and treasury addresses through for the explorer links', () => {
+    const stats = computeMigrationStats(pendulum, base, 12, '0x74f00d5ff15f0d2526792e5939e3bc45d445ce04');
+    expect(stats.tokenAddress).toBe(base.token);
+    expect(stats.treasuryAddress).toBe('0x74f00d5ff15f0d2526792e5939e3bc45d445ce04');
   });
 
   it('counts burned but not yet released PEN as in flight', () => {

@@ -158,6 +158,8 @@ export interface BaseMigrationSnapshot {
   /** The Base block all values were read at. */
   blockNumber: bigint;
   paused: boolean;
+  /** The PEN token contract the vault releases; the zero address until it is set. */
+  token: string;
   /** PEN the vault has released so far, in 18-decimal token units. */
   totalReleased: bigint;
   /** PEN held by the treasury destination on Base, in 18-decimal token units; 0 without one. */
@@ -185,7 +187,7 @@ export async function getBaseMigrationSnapshot(
   const tokenAddress = `0x${token.toString(16).padStart(40, '0')}`;
   const treasuryBalance =
     token === 0n || !treasury ? 0n : await call(tokenAddress, `${SELECTOR_BALANCE_OF}${addressWord(treasury)}`);
-  return { blockNumber: BigInt(block), paused: paused !== 0n, totalReleased, treasuryBalance };
+  return { blockNumber: BigInt(block), paused: paused !== 0n, token: tokenAddress, totalReleased, treasuryBalance };
 }
 
 /**

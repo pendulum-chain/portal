@@ -28,6 +28,10 @@ export interface MigrationStats {
   basePaused: boolean;
   pendulumBlock: number;
   baseBlock: bigint;
+  /** The PEN token contract on Base; the zero address until the vault has one. */
+  tokenAddress: string;
+  /** The treasury on Base (the pallet's treasury destination), if one is set. */
+  treasuryAddress?: string;
 }
 
 /** The treasury's account: "modl" + its 8-byte pallet id, zero-padded to 32 bytes. */
@@ -39,6 +43,7 @@ export function computeMigrationStats(
   pendulum: PendulumMigrationSnapshot,
   base: BaseMigrationSnapshot,
   pendulumDecimals: number,
+  treasuryAddress?: string,
 ): MigrationStats {
   const toBaseUnits = (native: bigint) => native * 10n ** BigInt(18 - pendulumDecimals);
   const migrated = toBaseUnits(pendulum.totalMigrated);
@@ -53,6 +58,8 @@ export function computeMigrationStats(
     basePaused: base.paused,
     pendulumBlock: pendulum.blockNumber,
     baseBlock: base.blockNumber,
+    tokenAddress: base.token,
+    treasuryAddress,
   };
 }
 
@@ -97,7 +104,7 @@ export function useMigrationStats(target: MigrationTargetConfig | undefined) {
         target.baseChainId,
       );
       const pendulum = await getPendulumSnapshot(api);
-      return computeMigrationStats(pendulum, base, api.registry.chainDecimals[0]);
+      return computeMigrationStats(pendulum, base, api.registry.chainDecimals[0], destination ?? undefined);
     },
     { enabled: Boolean(api && target), staleTime: 30_000, refetchInterval: 60_000, retry: 2 },
   );
