@@ -3,17 +3,17 @@
 # The last matching pattern wins.
 
 # PEN migration page
-/src/pages/migration/        @ebma
-/src/hooks/migration/        @ebma
-/src/constants/migration.ts  @ebma
-/src/helpers/ethereum.ts     @ebma
+/src/pages/migration/        @ebma @alexatsatoshi @gianfra-t
+/src/hooks/migration/        @ebma @alexatsatoshi @gianfra-t
+/src/constants/migration.ts  @ebma @alexatsatoshi @gianfra-t
+/src/helpers/ethereum.ts     @ebma @alexatsatoshi @gianfra-t
 
 # Build, deploy and dependencies
-/.github/                    @ebma
-/netlify/                    @ebma
-/vite.config.ts              @ebma
-/index.html                  @ebma
-/package.json                @ebma
-/yarn.lock                   @ebma
-/.yarnrc.yml                 @ebma
-/.yarn/                      @ebma
+/.github/                    @ebma @alexatsatoshi @gianfra-t
+/netlify/                    @ebma @alexatsatoshi @gianfra-t
+/vite.config.ts              @ebma @alexatsatoshi @gianfra-t
+/index.html                  @ebma @alexatsatoshi @gianfra-t
+/package.json                @ebma @alexatsatoshi @gianfra-t
+/yarn.lock                   @ebma @alexatsatoshi @gianfra-t
+/.yarnrc.yml                 @ebma @alexatsatoshi @gianfra-t
+/.yarn/                      @ebma @alexatsatoshi @gianfra-t
